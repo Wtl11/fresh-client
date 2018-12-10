@@ -12,11 +12,11 @@ module.exports = [
   },
   {
     type: 'input',
-    name: 'note',
-    message: '注释：',
+    name: 'title',
+    message: '标题:',
     validate(value) {
       if (!value.length) {
-        return '路由注释不能为空！'
+        return '页面标题不能为空！'
       }
       return true
     }
