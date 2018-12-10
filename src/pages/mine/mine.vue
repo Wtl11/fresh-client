@@ -93,4 +93,6 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
+   .demo
+     background $color-main
 </style>
