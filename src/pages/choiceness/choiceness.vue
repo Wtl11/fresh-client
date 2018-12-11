@@ -244,8 +244,8 @@
         color: $color-text-main
         width: 20%
         text-align: center
-        height: 33px
-        line-height: 33px
+        height: 33pxpx
+        line-height: 33
         transition: all 0.3s
       .cur-item
         color: #fff

@@ -24,6 +24,26 @@ export default {
       navigationBarTitleText: 'WeChat',
       navigationBarTextStyle: 'black',
       navigationStyle: 'custom' // 自定义导航栏
+    },
+    tabBar: {
+      color: '#2c2c2c',
+      selectedColor: '#FF3F54',
+      backgroundColor: '#ffffff',
+      borderStyle: 'white',
+      list: [
+        {
+          pagePath: 'pages/test',
+          text: '测试'
+        },
+        {
+          pagePath: 'pages/shopping-cart',
+          text: '购物车'
+        },
+        {
+          pagePath: 'pages/mine-core',
+          text: '我的'
+        }
+      ]
     }
   }
 }
