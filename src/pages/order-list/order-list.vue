@@ -153,7 +153,7 @@
         text-align: center
         font-family: $font-family-regular
         font-size: $font-size-14
-        color: $color-text-major
+        color: $color-sub
       .nav-item-active
         font-family: $font-family-medium
         font-size: $font-size-16
@@ -174,7 +174,7 @@
         .group-name
           font-family: $font-family-regular
           font-size: $font-size-14
-          color: $color-text-major
+          color: $color-sub
         .status
           font-family: $font-family-regular
           font-size: $font-size-14
@@ -206,7 +206,7 @@
             .tit
               font-family: $font-family-medium
               font-size: $font-size-14
-              color: $color-text-major
+              color: $color-sub
               letter-spacing: 0.3px
             .guige
               font-family: $font-family-regular
@@ -218,7 +218,7 @@
               color: #1F1F1F
               .num
                 font-family: $font-family-regular
-                color: $color-text-major
+                color: $color-sub
                 font-size: $font-size-16
       .center
         border-bottom-1px(#e6e6e6)

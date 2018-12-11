@@ -245,7 +245,7 @@
       .tit
         font-family: $font-family-medium
         font-size: $font-size-14
-        color: $color-text-major
+        color: $color-sub
         letter-spacing: 0.3px
       .guige
         font-family: $font-family-regular
@@ -264,14 +264,14 @@
           .num
             font-family: $font-family-regular
             font-size: $font-size-16
-            color: $color-text-major
+            color: $color-sub
          .amout
           font-family: $font-family-regular
           font-size: $font-size-11
           color: #1F1F1F
           .num
             font-family: $font-family-regular
-            color: $color-text-major
+            color: $color-sub
             font-size: $font-size-16
   .actual-amount
     layout(row)
