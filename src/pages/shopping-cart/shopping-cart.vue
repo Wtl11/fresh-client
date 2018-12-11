@@ -2,7 +2,7 @@
   <div class="wrap">
     <navigation-bar title="购物车" :showArrow="false" :translucent="false"></navigation-bar>
     <div class="shop-list">
-      <div class="shop-item" v-for="(item, index) in [1,2]" :key="index">
+      <div class="shop-item" v-for="(item, index) in [1]" :key="index">
         <!--<div class="sel-box"></div>-->
         <img class="sel-box" v-if="imgUrl" :src="imgUrl+'/yx-image/cart/icon-pick@2x.png'" alt="" />
         <div class="goods-image">
@@ -76,6 +76,14 @@
         <div class="pay-btn">结算</div>
       </div>
     </div>
+    <!--没有商品-->
+    <div class="without" v-if="false">
+      <div class="without-img"><img class="img" v-if="imageUrl" :src="imageUrl+'/yx-image/cart/pic-gwc@2x.png'" alt=""></div>
+      <div class="txt">购物车没有商品哦!</div>
+      <div class="txt">赶快去挑选吧</div>
+      <div class="btn">去逛逛</div>
+    </div>
+    <confirm-msg ref="msg"></confirm-msg>
   </div>
 
 </template>
@@ -84,6 +92,7 @@
   import WePaint from '@components/we-paint/we-paint'
   // import { mapGetters } from 'vuex'
   import NavigationBar from '@components/navigation-bar/navigation-bar'
+  import ConfirmMsg from '@components/confirm-msg/confirm-msg'
   import API from '@api'
   import {oauthComputed} from '@state/helpers'
   import Vue from 'vue'
@@ -91,6 +100,7 @@
   export default {
     components: {
       WePaint,
+      ConfirmMsg,
       NavigationBar
     },
     beforeCreate() {
@@ -105,6 +115,9 @@
       }
     },
     onShow() {
+      setTimeout(() => {
+        this.$refs.msg.show('lalal')
+      }, 100)
       console.log(this.$imageUrl)
       if (getApp().globalData.imgUrl) {
         this.testSrc = getApp().globalData.imgUrl
@@ -165,7 +178,7 @@
     background: $color-background
     position: relative
   .payment
-    position: absolute
+    position: fixed
     width: 100vw
     height: 50px
     background: $color-white
@@ -189,7 +202,7 @@
       .txt
         font-family: $font-family-regular
         font-size: $font-size-14
-        color: $color-text-major
+        color: $color-sub
         letter-spacing: 0.3px
     .payment-content
       layout(row)
@@ -387,6 +400,37 @@
             opacity: .5
         .bot
           opacity: .6
+  .without
+    widht: 100vw
+    margin-top: 146px
+    text-align: center
+    .without-img
+      width: 119.5px
+      height: 109px
+      margin: 0 auto
+      margin-bottom: 11px
+      .img
+        display: block
+        width: 100%
+        height: 100%
+    .txt
+      font-family: $font-family-regular
+      font-size: $font-size-14
+      color: #808080
+      line-height: 19px
+    .btn
+      width: 100px
+      height: 32px
+      box-sizing: border-box
+      margin: 11px auto 0
+      font-family: $font-family-regular
+      font-size: $font-size-14
+      color: $color-white
+      line-height: 32px
+      text-align: center
+      background: #73C200
+      border-1px(#73C200, 16px)
+      border-radius: 16px
   .test
     background: #fff
 

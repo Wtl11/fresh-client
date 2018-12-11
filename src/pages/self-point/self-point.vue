@@ -118,7 +118,7 @@
     .name
       font-family: $font-family-regular
       font-size: $font-size-14
-      color: $color-text-major
+      color: $color-sub
   .history-list
     margin-top: 19px
     padding-left: 3.2vw
@@ -146,7 +146,7 @@
             font-family: $font-family-medium
             font-size: $font-size-15
             padding-bottom: 8px
-            color: $color-text-major
+            color: $color-sub
           .addr
             padding-top: 5px
             font-family: $font-family-regular

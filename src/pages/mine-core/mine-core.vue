@@ -18,7 +18,7 @@
         <div class="txt">{{item.name}}</div>
       </div>
       <div class="arr-order">
-        <img class="eor-img" v-if="imageUrl" src="https://img.jerryf.cn/defaults/yx-image/cart/pic-division@2x.png" alt="">
+        <img class="eor-img" v-if="imageUrl" :src="imageUrl+'/yx-image/cart/mydivision@2x.png'" alt="">
       </div>
     </div>
     <div class="self-addr">
@@ -142,7 +142,7 @@
         .tit
           font-family: $font-family-medium
           font-size: $font-size-16
-          color: $color-text-major
+          color: $color-sub
           height: 24px
           line-height: 24px
           letter-spacing: 0.4px
@@ -212,7 +212,7 @@
         position: absolute
         top: 50%
         margin-top: -20.5px
-        right: 74px
+        right: 20.6vw
         width: 4px
         height: 45px
         .eor-img
@@ -236,7 +236,7 @@
         .txt
           font-family: $font-family-regular
           font-size: $font-size-12
-          color: $color-text-major
+          color: $color-sub
         &:last-child
           margin-left: 20px
 
