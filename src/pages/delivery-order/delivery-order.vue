@@ -39,11 +39,13 @@
       <p class="bulk-pickup-num">20件</p>
       <p class="bulk-pickup-btn">批量提货</p>
     </div>
+    <dialog-model></dialog-model>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
+  import DialogModel from '@components/dialog-model/dialog-model'
 
   const PAGE_NAME = 'DELIVERY_ORDER'
 
@@ -77,7 +79,8 @@
       }
     },
     components: {
-      NavigationBar
+      NavigationBar,
+      DialogModel
     }
   }
 </script>
