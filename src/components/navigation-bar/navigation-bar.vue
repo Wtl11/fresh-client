@@ -21,6 +21,7 @@
   }
 
   let DEFAULT_PAGE = pageRouter()
+  console.log(DEFAULT_PAGE)
   export default {
     name: 'HEAD_ITEM',
     props: {

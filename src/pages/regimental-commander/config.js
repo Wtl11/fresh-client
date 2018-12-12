@@ -7,6 +7,7 @@ page.$mount()
 
 export default {
   config: {
-    navigationBarTitleText: 'REGIMENTAL_COMMANDER'
+    navigationBarTitleText: 'REGIMENTAL_COMMANDER',
+    backgroundColor: '#F7F7F7'
   }
 }

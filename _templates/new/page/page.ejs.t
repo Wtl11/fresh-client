@@ -3,11 +3,14 @@ to: "src/pages/<%= h.inflection.dasherize(name) %>/<%= h.inflection.dasherize(na
 ---
 <template>
   <div class="<%= h.inflection.dasherize(name) %>">
+    <navigation-bar title="<%=  h.inflection.dasherize(title) %>"></navigation-bar>
     <%= h.inflection.dasherize(name) %>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
+  import NavigationBar from '@components/navigation-bar/navigation-bar'
+
   const PAGE_NAME = '<%=  h.inflection.dasherize(name).toUpperCase().replace(/-/g, '_')%>'
 
   export default {
@@ -16,6 +19,9 @@ to: "src/pages/<%= h.inflection.dasherize(name) %>/<%= h.inflection.dasherize(na
       return {
 
       }
+    },
+    components: {
+      NavigationBar
     }
   }
 </script>
