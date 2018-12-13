@@ -115,9 +115,9 @@
       }
     },
     onShow() {
-      setTimeout(() => {
-        this.$refs.msg.show('lalal')
-      }, 100)
+      // setTimeout(() => {
+      //   this.$refs.msg.show('lalal')
+      // }, 100)
       console.log(this.$imageUrl)
       if (getApp().globalData.imgUrl) {
         this.testSrc = getApp().globalData.imgUrl
@@ -210,7 +210,7 @@
       .price
         font-family: $font-family-medium
         font-size: $font-size-18
-        color: #FF8300
+        color: $color-money
       .pay-btn
         margin-left: 8px
         background: #73C200
@@ -369,28 +369,28 @@
               padding-bottom: 5px
             .remain
               layout(row)
-              color: $color-FF830
+              color: $color-money
               lin-height: 15px
               padding-bottom: 8px
               .txt
                 padding: 0 1.34vw
                 font-family: $font-family-regular
                 font-size: $font-size-10
-                color: $color-FF8300
+                color: $color-money
                 height: 13px
                 line-height: 13px
                 box-sizing: border-box
-                border-1px($color-FF8300, 10px)
+                border-1px($color-money, 10px)
                 border-radius: 10px
             .price
               font-family: $font-family-regular
               font-size: $font-size-12
-              color: $color-FF8300
+              color: $color-money
               line-height: 19px
               .num
                 font-family: $font-family-regular
                 font-size: $font-size-18
-                color: $color-FF8300
+                color: $color-money
     .shop-item-opcta
       .sel-box
         opacity: .5

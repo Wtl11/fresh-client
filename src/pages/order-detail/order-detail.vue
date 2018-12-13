@@ -250,7 +250,7 @@
       .guige
         font-family: $font-family-regular
         font-size: $font-size-14
-        color: #808080
+        color: $color-text-sub
         margin-top: 2px
         margin-bottom: 12px
       .price
@@ -288,11 +288,11 @@
     .price
       font-family: $font-family-medium
       font-size: $font-size-14
-      color: #FF8300
+      color: $color-money
       .num
         font-family: $font-family-medium
         font-size: $font-size-16
-        color: #FF8300
+        color: $color-money
   .oinfo
     box-sizing: border-box
     min-height: 80px
@@ -306,11 +306,11 @@
       .price
         font-family: $font-family-medium
         font-size: $font-size-14
-        color: #FF8300
+        color: $color-money
         .num
           font-family: $font-family-medium
           font-size: $font-size-16
-          color: #FF8300
+          color: $color-money
     .order-iden
       layout(row)
       align-items: center
@@ -328,7 +328,7 @@
         line-height: 20px
         font-family: $font-family-regular
         font-size: $font-size-12
-        color: #111111
+        color: $color-text-main
         letter-spacing: 0.3px
     .order-time
       padding-top: 16px
@@ -343,18 +343,18 @@
     layout(row)
     justify-content: center
     align-items: center
-    background-color: #f7f7f7
+    background-color: $color-background
     .service-btn
       width: 106px
       height: 34px
       text-align: center
       line-height: 34px
-      border-1px(#b7b7b7, 17px)
+      border-1px($color-text-assist, 17px)
       font-family: $font-family-regular
       font-size: $font-size-15
       color: #000000
   .gary-box
     width: 100vw
     height: 10px
-    background: #f7f7f7
+    background: $color-background
 </style>

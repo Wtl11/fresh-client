@@ -30,7 +30,18 @@
         </div>
       </div>
       <div class="selt-location">
-        <map class="map-box" id="map" longitude="113.3172" latitude="23.08331" :markers="markers" show-location style="width: 100%; height:100%"></map>
+        <map class="map-box" id="map" longitude="113.3172" latitude="23.08331" markers="" show-location style="width: 100%; height:100%">
+          <cover-view class="map-model">
+            <cover-view class="map-addr map-model-item">
+              <cover-image v-if="imageUrl" :src="imageUrl+'/yx-image/choiceness/icon-address_small@2x.png'" alt="" class="icon"></cover-image>
+              <cover-view class="txt">白云黄边北路国颐堂店</cover-view>
+            </cover-view>
+            <cover-view class="map-phone map-model-item">
+              <cover-image v-if="imageUrl" :src="imageUrl+'/yx-image/choiceness/icon-address_small@2x.png'" alt="" class="icon"></cover-image>
+              <cover-view class="txt">18844514445</cover-view>
+            </cover-view>
+          </cover-view>
+        </map>
       </div>
     </div>
     <div class="self-addr group">
@@ -41,8 +52,15 @@
         </div>
       </div>
     </div>
+    <div class="mine-model">
+      <div class="model-con">
+          <div class="erm">
+            <img class="erm-img" src="" alt="">
+          </div>
+          <div class="txt">向团长出示二维码提货</div>
+      </div>
+    </div>
   </div>
-
 </template>
 
 <script type="text/ecmascript-6">
@@ -116,6 +134,40 @@
     min-height: 100vh
     background: $color-white
     position: relative
+    .mine-model
+      background-color: rgba(17, 17, 17, 0.8)
+      fill-box(fixed)
+      z-index: 100
+      layout()
+      align-items: center
+      .model-con
+        position: relative
+        width: 290px
+        height: 320px
+        border-radius: 8px
+        background: $color-white
+        layout()
+        left:0
+        top:0
+        bottom:0
+        right:0
+        margin:auto
+        .erm
+          width: 150px
+          height: 150px
+          background-color: #f6f6f6
+          margin: 65px auto 0
+          .erm-img
+            display: block
+            width: 100%
+            height: 100%
+        .txt
+          font-family: $font-family-medium
+          font-size: $font-size-16
+          color: $color-main
+          margin-top: 29px
+          text-align: center
+          letter-spacing: 0.5px
     .self-addr
       width: 100vw
       box-sizing: border-box
@@ -125,12 +177,30 @@
         margin: 0 auto
         height: 90px
         position: relative
-        .lll
+        .map-model
           position: absolute
           width: 156px
-          height: 50px
+          height: 46px
+          left: 50%
+          margin-top: 20px
+          margin-left: -78px
           background: $color-white
-          z-index: 999
+          .map-model-item
+            layout(row)
+            align-items: center
+            .icon
+              width: 11px
+              height: 11px
+              padding: 0 3.5px 0 10px
+              display: block
+            .txt
+              font-family: $font-family-regular
+              font-size: $font-size-12
+              color: $color-text-sub
+              line-height: 13px
+            &:first-child
+              margin-bottom: 7px
+              margin-top: 7px
         .map-box
           width: 92vw
           height: 90px
@@ -152,7 +222,7 @@
           .txt
             font-family: $font-family-regular
             font-size: $font-size-13
-            color: #808080
+            color: $color-text-sub
             height: 24px
             line-height: 24px
             padding-right: 10px

@@ -57,7 +57,7 @@
   import Vue from 'vue'
   const NAVLIST = [{id: 1, name: '全部'}, {id: 2, name: '待付款'}, {id: 3, name: '待提货'}, {id: 4, name: '已完成'}]
   const ORDERLIST = [
-    {id: 1, status: 1, group: '黄骅市花园小区', goodsInfo: [{image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}], time: '2018-06-05 14:23', payment: '3.7'},
+    {id: 1, status: 1, group: '黄骅市a花园小区', goodsInfo: [{image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}], time: '2018-06-05 14:23', payment: '3.7'},
     {id: 1, status: 1, group: '黄骅市花园小区', goodsInfo: [{image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}], time: '2018-06-05 18:23', payment: '5.8'},
     {id: 1, status: 1, group: '黄骅市花园小区', goodsInfo: [{image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}], time: '2018-06-05 17:23', payment: '9.8'},
     {id: 1, status: 1, group: '黄骅市花园小区', goodsInfo: [{image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}], time: '2018-06-05 17:23', payment: '3.8'}
@@ -129,11 +129,11 @@
           width: 33%
           height: 3px
           margin: 0 auto
-          background: #73C200
+          background: $color-main
     .order-nav
       width: 100vw
       height: 40px
-      border-bottom-1px(#e6e6e6)
+      border-bottom-1px($color-line)
       background: $color-white
       layout(row)
       position: relative
@@ -147,7 +147,7 @@
         text-align: center
         font-family: $font-family-regular
         font-size: $font-size-14
-        color: $color-text-major
+        color: $color-sub
       .nav-item-active
         font-family: $font-family-medium
         font-size: $font-size-16
@@ -164,15 +164,15 @@
         layout(row)
         align-items: center
         justify-content: space-between
-        border-bottom-1px(#e6e6e6)
+        border-bottom-1px($color-line)
         .group-name
           font-family: $font-family-regular
           font-size: $font-size-14
-          color: $color-text-major
+          color: $color-sub
         .status
           font-family: $font-family-regular
           font-size: $font-size-14
-          color: $color-major
+          color: $color-money
       .center
         .goods-item
           height: 104.5px
@@ -180,7 +180,7 @@
           layout(row)
           justify-content: space-between
           align-items: center
-          border-bottom-1px(#e6e6e6)
+          border-bottom-1px($color-line)
           .goodsinfo
             layout(row)
             align-items: center
@@ -200,13 +200,13 @@
             .tit
               font-family: $font-family-medium
               font-size: $font-size-14
-              color: $color-text-major
+              color: $color-sub
               letter-spacing: 0.3px
               line-height: 14px
             .guige
               font-family: $font-family-regular
               font-size: $font-size-14
-              color: #808080
+              color: $color-text-sub
               line-height: 14px
               padding: 7px 0 16px 0
             .price
@@ -215,10 +215,10 @@
               color: #1F1F1F
               .num
                 font-family: $font-family-regular
-                color: $color-text-major
+                color: $color-sub
                 font-size: $font-size-16
       .center
-        border-bottom-1px(#e6e6e6)
+        border-bottom-1px($color-line)
         .goods-list
           layout(row)
           align-items: center
@@ -250,7 +250,7 @@
           .all-number
             font-family: $font-family-regular
             font-size: $font-size-12
-            color: #808080
+            color: $color-text-sub
           .arrlow
             width: 5.5px
             height: 10.5px
@@ -298,7 +298,7 @@
     .txt
       font-family: $font-family-regular
       font-size: $font-size-14
-      color: #808080
+      color: $color-text-sub
   .txt
     height: 100px
 

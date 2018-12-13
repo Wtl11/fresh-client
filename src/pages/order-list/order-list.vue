@@ -135,11 +135,11 @@
           width: 33%
           height: 3px
           margin: 0 auto
-          background: #73C200
+          background: $color-main
     .order-nav
       width: 100vw
       height: 40px
-      border-bottom-1px(#e6e6e6)
+      border-bottom-1px($color-line)
       background: $color-white
       layout(row)
       position: relative
@@ -170,15 +170,15 @@
         layout(row)
         align-items: center
         justify-content: space-between
-        border-bottom-1px(#e6e6e6)
+        border-bottom-1px($color-line)
         .group-name
           font-family: $font-family-regular
           font-size: $font-size-14
-          color: $color-sub
+          color: $color-text-main
         .status
           font-family: $font-family-regular
           font-size: $font-size-14
-          color: $color-major
+          color: $color-money
       .center
         .goods-item
           height: 104.5px
@@ -186,7 +186,7 @@
           layout(row)
           justify-content: space-between
           align-items: center
-          border-bottom-1px(#e6e6e6)
+          border-bottom-1px($color-line)
           .goodsinfo
             layout(row)
             align-items: center
@@ -211,7 +211,7 @@
             .guige
               font-family: $font-family-regular
               font-size: $font-size-14
-              color: #808080
+              color: $color-text-sub
             .price
               font-family: $font-family-regular
               font-size: $font-size-11
@@ -221,7 +221,7 @@
                 color: $color-sub
                 font-size: $font-size-16
       .center
-        border-bottom-1px(#e6e6e6)
+        border-bottom-1px($color-line)
         .goods-list
           layout(row)
           align-items: center
@@ -253,7 +253,7 @@
           .all-number
             font-family: $font-family-regular
             font-size: $font-size-12
-            color: #808080
+            color: $color-text-sub
           .arrlow
             width: 5.5px
             height: 10.5px
@@ -301,7 +301,7 @@
     .txt
       font-family: $font-family-regular
       font-size: $font-size-14
-      color: #808080
+      color: $color-text-sub
   .txt
     height: 100px
 

@@ -1,12 +1,12 @@
 <template>
   <div class="wrap">
-    <navigation-bar title="我的自提点" :showArrow="false" :translucent="true"></navigation-bar>
+    <navigation-bar title="我的自提点" :showArrow="true" :translucent="true"></navigation-bar>
     <div class="self-point-banner">
       <div class="curren">
         <div class="sub">当前自提点</div>
         <div class="point">
           <!--<img class="icon" v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-address_sy@2x.png'" alt="" >-->
-          <img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-aftersales@2x.png'" alt="" class="icon">
+          <img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-address_sy@2x.png'" alt="" class="icon">
           <div class="txt">白云黄边北路国颐堂店</div>
         </div>
       </div>
@@ -129,9 +129,9 @@
       box-sizing: border-box
       layout(row)
       justify-content: space-between
-      border-bottom-1px(#E6E6E6)
+      border-bottom-1px($color-line)
       &:first-child
-        border-top-1px(#E6E6E6)
+        border-top-1px($color-line)
       .left
         layout(row)
         .avatar
