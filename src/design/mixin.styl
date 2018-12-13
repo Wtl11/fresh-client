@@ -126,7 +126,7 @@ border-left-1px($color = #ECEDF1, $style = solid)
     transform: scaleX(.5) translateZ(0)
     border-left: 1px $style $color
 
-border-1px($color = #ECEDF1, $radius = 2px, $style = solid)
+border-1px($color = #ECEDF1, $radius = 2px, $style = solid, $size = 1px)
   position: relative
   &:after
     content: ""
@@ -136,7 +136,7 @@ border-1px($color = #ECEDF1, $radius = 2px, $style = solid)
     left: 0
     top: 0
     transform-origin: 0 0
-    border: 1px $style $color
+    border: $size $style $color
     border-radius: $radius
     box-sizing border-box
     width 100%

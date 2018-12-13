@@ -1,8 +1,8 @@
 <template>
   <div class="goods-detail">
-    <navigation-bar showArrow="true" :title="title" :arrowType="arrowType" :headStyle="headStyle" :titleColor="titleColor"></navigation-bar>
+    <navigation-bar :title="title" :arrowType="arrowType" :headStyle="headStyle" :titleColor="titleColor"></navigation-bar>
     <div class="banner-box">
-      <div class="banner-share">
+      <div class="banner-share" @click="showShare">
         <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/icon-share3@2x.png'"  mode="aspectFill">
       </div>
       <swiper class="banner" @change="bannerChange" interval="5000">
@@ -48,11 +48,15 @@
       </div>
       <div class="goods-info-bootom">
         <div class="info-bootom-list">
-          <div class="info-user"></div>
+          <div class="info-user">
+            <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/5@1x.png'" class="detail-img"  mode="widthFix">
+          </div>
           <div class="info-name">段刚</div>
         </div>
         <div class="info-bootom-list">
-          <div class="info-user"></div>
+          <div class="info-user">
+            <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/5@1x.png'" class="detail-img"  mode="widthFix">
+          </div>
           <div class="info-name">段刚</div>
         </div>
         <div class="info-bootom-text">等刚刚购买了此商品</div>
@@ -67,28 +71,47 @@
     </div>
     <div class="fixed-btn">
       <div class="hlep-btn">
-        <div class="hlep-btn-box">
-          <div class="hlep-top"></div>
-          <div class="hlep-bottom">首页</div>
-        </div>
-        <div class="hlep-btn-box">
-          <div class="hlep-top"></div>
-          <div class="hlep-bottom">首页</div>
-        </div>
-        <div class="hlep-btn-box">
-          <div class="hlep-top"></div>
-          <div class="hlep-bottom">首页</div>
+        <div class="hlep-btn-box" v-for="(item, index) in typeBtn" :key="index" @click.stop="switchItem(item)">
+          <div class="hlep-top">
+            <img v-if="imageUrl" :src="imageUrl + item.url" class="detail-img"  mode="widthFix">
+          </div>
+          <div class="hlep-bottom">{{item.text}}</div>
         </div>
       </div>
-      <div class="goods-btn">加入购物车</div>
+      <div class="goods-btn" @click="_action()">加入购物车</div>
       <div class="goods-btn goods-btn-active">立即购买</div>
+    </div>
+    <add-number></add-number>
+    <link-group ref="groupList" phoneTxt="678910" wechatTxt="eleven丶"></link-group>
+    <link-group ref="shareList" :linkType="2"></link-group>
+    <we-paint ref="wePaint" @drawDone="_drawDone"></we-paint>
+    <div class="share-goods" style="opacity: 0">
+      <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-sharegoods@2x.png'" class="share-bg"  mode="aspectFill">
+      <div class="share-box">
+        <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/5@1x.png'" class="share-img"  mode="aspectFill">
+        <div class="share-bottom">
+          <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/5@1x.png'" class="wem-img"  mode="aspectFill">
+          <div class="share-title">智利J级车厘子250g</div>
+          <div class="share-sub-title">智利J级车厘子250g</div>
+          <div class="share-group-box">团购价</div>
+          <div class="price-box">
+            <div class="share-price-number">3.8</div>
+            <div class="share-price-icon">元</div>
+            <div class="share-price-line">12元</div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
+  import AddNumber from '@components/add-number/add-number'
+  import LinkGroup from '@components/link-group/link-group'
+  import WePaint from '@components/we-paint/we-paint'
   const PAGE_NAME = 'GOODS_DETAIL'
+  const TYPEBTN = [{url: '/yx-image/choiceness/icon-homepage@2x.png', text: '首页', type: 0}, {url: '/yx-image/choiceness/icon-service@2x.png', text: '客服', type: 1}, {url: '/yx-image/choiceness/icon-shopcart@2x.png', text: '购物车', type: 2}]
 
   export default {
     name: PAGE_NAME,
@@ -98,22 +121,296 @@
         headStyle: 'background: linear-gradient(0deg, rgba(0,0,0,0.00) 10%, rgba(0,0,0,0.55) 150%)',
         titleColor: 'white',
         arrowType: 'white',
-        currentNum: 0
+        currentNum: 0,
+        typeBtn: TYPEBTN
       }
     },
     methods: {
       bannerChange(e) {
         this.currentNum = e.mp.detail.current * 1 + 1
+      },
+      switchItem(item) {
+        switch (item.type) {
+          case 0:
+            console.log('00')
+            break
+          case 1:
+            this.$refs.groupList.showLink()
+            break
+          case 2:
+            console.log('222')
+            break
+        }
+      },
+      showShare() {
+        this.$refs.shareList.showLink()
+      },
+      _action() {
+        // let name = this.postMsg.coupon ? this.postMsg.coupon.activity_name.length >= 18 ? this.postMsg.coupon.activity_name.slice(0, 18) + '...' : this.postMsg.coupon.activity_name : ''
+        let options = {
+          canvasId: 'we-paint',
+          multiple: 1,
+          panel: {
+            el: '.share-goods'
+          },
+          els: [
+            {
+              el: '.share-goods',
+              drawType: 'rect',
+              color: '#fff'
+            },
+            {
+              el: '.share-bg', // 背景图
+              drawType: 'img',
+              mode: 'aspectFill',
+              source: this.imageUrl + '/yx-image/choiceness/pic-sharegoods@2x.png'
+              // width: this.deviceInfo.width
+            },
+            {
+              el: '.share-box',
+              drawType: 'rect-shadow',
+              color: '#fff',
+              shadow: [0, 2, 22, 'rgba(0,0,0,0.10)', '#fff', 0]
+            },
+            {
+              el: '.share-img', // 图片
+              drawType: 'img',
+              source: this.imageUrl + '/yx-image/choiceness/5@1x.png',
+              mode: 'aspectFill'
+            },
+            {
+              el: '.share-title', // 店铺名称
+              drawType: 'text-area',
+              source: '智利J级车厘子250g',
+              fontSize: 16,
+              color: '#1f1f1f'
+            },
+            {
+              el: '.share-sub-title', // 签名
+              drawType: 'text-area',
+              source: `智利J级车厘子250g`,
+              fontSize: 14,
+              align: 'left',
+              color: '#808080'
+            },
+            {
+              el: '.share-group-box',
+              drawType: 'text-area',
+              source: '团购价',
+              fontSize: 14,
+              color: '#FF8300'
+            },
+            {
+              el: '.share-price-number',
+              drawType: 'text',
+              source: '3.8',
+              fontSize: 30,
+              color: '#FF8300'
+            },
+            {
+              el: '.share-price-icon',
+              drawType: 'text',
+              source: '元',
+              fontSize: 17,
+              color: '#FF8300'
+            },
+            {
+              el: '.share-price-line',
+              drawType: 'text',
+              source: '12元',
+              fontSize: 17,
+              color: '#B7B7B7'
+            },
+            {
+              el: '.wem-img',
+              drawType: 'img',
+              source: this.imageUrl + '/yx-image/choiceness/5@1x.png'
+            }
+          ]
+        }
+        let optionsNull = {
+          canvasId: 'we-paint',
+          multiple: 1,
+          panel: {
+            el: '.share-goods'
+          },
+          els: [
+            {
+              el: '.share-goods',
+              drawType: 'rect',
+              color: '#fff'
+            },
+            {
+              el: '.share-bg', // 背景图
+              drawType: 'img',
+              mode: 'aspectFill',
+              source: this.imageUrl + '/yx-image/choiceness/pic-sharegoods@2x.png'
+              // width: this.deviceInfo.width
+            },
+            {
+              el: '.share-img', // 图片
+              drawType: 'img',
+              source: this.imageUrl + '/yx-image/choiceness/5@1x.png',
+              mode: 'aspectFill'
+            },
+            {
+              el: '.share-title', // 店铺名称
+              drawType: 'text-area',
+              source: '智利J级车厘子250g',
+              fontSize: 16,
+              color: '#1f1f1f'
+            },
+            {
+              el: '.share-sub-title', // 签名
+              drawType: 'text-area',
+              source: `智利J级车厘子250g`,
+              fontSize: 14,
+              align: 'center',
+              color: '#808080'
+            },
+            {
+              el: '.share-group-box',
+              drawType: 'text-area',
+              source: '团购价',
+              fontSize: 14,
+              color: '#FF8300'
+            },
+            {
+              el: '.share-price-number',
+              drawType: 'text',
+              source: '3.8',
+              fontSize: 30,
+              color: '#FF8300'
+            },
+            {
+              el: '.share-price-icon',
+              drawType: 'text',
+              source: '元',
+              fontSize: 17,
+              color: '#FF8300'
+            },
+            {
+              el: '.share-price-line',
+              drawType: 'text',
+              source: '12元',
+              fontSize: 17,
+              color: '#B7B7B7'
+            },
+            {
+              el: '.wem-img',
+              drawType: 'img',
+              source: this.qrCode
+            }
+          ]
+        }
+        let obj = options
+        console.log(optionsNull)
+        this.$refs.wePaint.action(obj, false)
+      },
+      _drawDone(pic) {
+        this.pic = pic
+        // 保存到本地，并预览
+        this.$wx.saveImageToPhotosAlbum({
+          filePath: pic,
+          success: () => {
+            console.log(11)
+            this.$wechat.previewImage({ urls: [pic] })
+          },
+          fail: () => {
+            // 拒绝授权重新调起授权
+            this.active = 1
+            this.$wx.openSetting()
+          }
+        })
       }
     },
-    component: {
-      NavigationBar
+    components: {
+      NavigationBar,
+      AddNumber,
+      WePaint,
+      LinkGroup
     }
   }
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
+  .share-goods
+    padding: 32.8vw 5.3vw 17vw
+    box-sizing: border-box
+    position: relative
+    .share-bg
+      position: absolute
+      left: 0
+      top: 0
+      height: 52.5vw
+      width: 100vw
+      display: block
+      z-index: 9
+    .share-box
+      border-radius: 10px
+      background: #fff
+      box-shadow: 0 2px 11px 0 rgba(0,0,0,0.10)
+      z-index: 11
+      position: relative
+      .share-img
+        display: block
+        width:  89.4vw
+        height: 89.4vw
+        border-top-left-radius: 10px
+        border-top-right-radius: 10px
+    .share-bottom
+      padding: 15px 15px 30px
+      position: relative
+    .wem-img
+      position: absolute
+      right: 15px
+      bottom: 30px
+      width: 90px
+      height: 90px
+      display: block
+    .share-title
+      font-size: $font-size-16
+      color: #1f1f1f
+      font-family: $font-family-medium
+      margin-bottom: 8px
+    .share-sub-title
+      font-size: $font-size-14
+      color: $color-text-sub
+      font-family: $font-family-regular
+      margin-bottom: 11px
+    .share-group-box
+      font-size: $font-size-14
+      color: $color-money
+      font-family: $font-family-regular
+      width: 55px
+      height: 20px
+      text-align: center
+      line-height: 20px
+      border-1px($color-money, 2px)
+      margin-bottom: 11px
+    .price-box
+      layout(row)
+      align-items: flex-end
+      .share-price-number
+        font-size: 30px
+        color: $color-money
+        font-family: $font-family-medium
+        line-height: 1
+      .share-price-icon
+        font-size: $font-size-17
+        color: $color-money
+        font-family: $font-family-medium
+        line-height: 1
+        padding-bottom: 2px
+        margin-right: 7px
+      .share-price-line
+        font-size: $font-size-17
+        color: #b7b7b7
+        font-family: $font-family-regular
+        line-height: 1
+        padding-bottom: 2px
+        text-decoration: line-through
   .goods-detail
     width: 100%
     min-height: 100vh
@@ -293,7 +590,6 @@
       align-items: center
       width: 25px
       height: 25px
-      background: #333
       margin-right: 3px
       img
         width: 25px
@@ -345,6 +641,7 @@
     width: 100%
     background: #fff
     layout(row)
+    z-index: 111
     .hlep-btn
       width: 40vw
       height: 55px
@@ -358,8 +655,11 @@
         .hlep-top
           width: 20px
           height: 20px
-          background: #333
           margin-bottom: 8px
+          img
+            width: 100%
+            height: 100%
+            display: block
         .hlep-bottom
           font-size: $font-size-10
           font-family: $font-family-regular
