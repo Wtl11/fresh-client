@@ -80,6 +80,9 @@
       this._initHeadStyle()
     },
     methods: {
+      getStatusBarHeight() {
+        return this.statusBarHeight
+      },
       _diyHeadNavigation(e) {
         // 是否为沉浸式
         if (!this.translucent) return
