@@ -33,7 +33,7 @@
         <map class="map-box" id="map" longitude="113.3172" latitude="23.08331" markers="" show-location style="width: 100%; height:100%">
           <cover-view class="map-model">
             <cover-view class="map-addr map-model-item">
-              <cover-image v-if="imageUrl" :src="imageUrl+'/yx-image/choiceness/icon-address_small@2x.png'" alt="" class="icon"></cover-image>
+              <cover-image v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-phone_samll@2x.png'" alt="" class="icon"></cover-image>
               <cover-view class="txt">白云黄边北路国颐堂店</cover-view>
             </cover-view>
             <cover-view class="map-phone map-model-item">
@@ -41,6 +41,7 @@
               <cover-view class="txt">18844514445</cover-view>
             </cover-view>
           </cover-view>
+          <cover-view class="cover-icon"></cover-view>
         </map>
       </div>
     </div>
@@ -52,8 +53,8 @@
         </div>
       </div>
     </div>
-    <div class="mine-model" v-if="showModal">
-      <div class="model-con">
+    <div class="mine-model" v-if="showModal" :animation="maskAnimation">
+      <div class="model-con" :animation="modalAnimation">
           <div class="erm">
             <img class="erm-img" src="" alt="">
           </div>
@@ -67,6 +68,7 @@
   import WePaint from '@components/we-paint/we-paint'
   // import { mapGetters } from 'vuex'
   import NavigationBar from '@components/navigation-bar/navigation-bar'
+  import QrcodeMsg from '@components/qrcode-msg/qrcode-msg'
   import API from '@api'
   import {oauthComputed} from '@state/helpers'
   import Vue from 'vue'
@@ -80,10 +82,6 @@
   ]
 
   export default {
-    components: {
-      WePaint,
-      NavigationBar
-    },
     beforeCreate() {
     },
     data() {
@@ -124,6 +122,11 @@
       testApi() {
         API.Jwt.getToken()
       }
+    },
+    components: {
+      WePaint,
+      QrcodeMsg,
+      NavigationBar
     }
   }
 </script>
@@ -135,40 +138,6 @@
     min-height: 100vh
     background: $color-white
     position: relative
-    .mine-model
-      background-color: rgba(17, 17, 17, 0.8)
-      fill-box(fixed)
-      z-index: 100
-      layout()
-      align-items: center
-      .model-con
-        position: relative
-        width: 290px
-        height: 320px
-        border-radius: 8px
-        background: $color-white
-        layout()
-        left:0
-        top:0
-        bottom:0
-        right:0
-        margin:auto
-        .erm
-          width: 150px
-          height: 150px
-          background-color: #f6f6f6
-          margin: 65px auto 0
-          .erm-img
-            display: block
-            width: 100%
-            height: 100%
-        .txt
-          font-family: $font-family-medium
-          font-size: $font-size-16
-          color: $color-main
-          margin-top: 29px
-          text-align: center
-          letter-spacing: 0.5px
     .self-addr
       width: 100vw
       box-sizing: border-box
@@ -178,6 +147,15 @@
         margin: 0 auto
         height: 90px
         position: relative
+        .cover-icon
+          position: absolute
+          left: 50%
+          width: 0
+          height: 0
+          border-width: 0 10px 10px
+          border-style: solid
+          z-index: 15
+          border-color: transparent transparent #333
         .map-model
           position: absolute
           width: 156px

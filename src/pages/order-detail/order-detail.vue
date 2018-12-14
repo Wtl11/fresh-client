@@ -59,8 +59,8 @@
       <div class="o-item" v-if="false">退款金额：<span class="price"><span class="num">3.5</span>元</span></div>
       <div class="o-item" v-if="false">退款方式：微信红包</div>
       <div class="order-iden">
-        <div class="txt">订单编号：65465416651651</div>
-        <div class="copy-btn">复制</div>
+        <div class="txt">订单编号：{{orderId}}</div>
+        <div class="copy-btn" @click.stop="clipOrderId">复制</div>
       </div>
       <div class="order-time">下单时间：2018-06-05 17:23</div>
     </div>
@@ -88,7 +88,8 @@
     },
     data() {
       return {
-        testSrc: ''
+        testSrc: '',
+        orderId: '65465416651651'
         // title: '',
         // headStyle: 'background: rgba(255, 255, 255, 0)',
         // titleColor: 'white'
@@ -110,6 +111,17 @@
       },
       showGroupList() {
         this.$refs.groupList.showLink()
+      },
+      clipOrderId() {
+        let that = this
+        that.$wx.setClipboardData({
+          data: this.orderId,
+          success: function(res) {
+            that.$wx.getClipboardData({
+              success: function(res) {}
+            })
+          }
+        })
       }
     },
     components: {
