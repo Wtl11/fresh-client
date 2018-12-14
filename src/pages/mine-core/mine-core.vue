@@ -150,12 +150,14 @@
         .cover-icon
           position: absolute
           left: 50%
+          margin-left: -2.5px
+          bottom: 17px
           width: 0
           height: 0
-          border-width: 0 10px 10px
-          border-style: solid
+          border-left: 5px solid transparent
+          border-right: 5px solid transparent
+          border-top: 8px solid $color-white
           z-index: 15
-          border-color: transparent transparent #333
         .map-model
           position: absolute
           width: 156px
