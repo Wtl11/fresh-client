@@ -20,7 +20,7 @@
                 </div>
               </div>
             </div>
-            <div class="right-info">联系团长</div>
+            <div class="right-info" @click="linkGroup">联系团长</div>
           </div>
           <div class="info-box-bottom">公告：今天下雨，大家17:00可以取货</div>
         </div>
@@ -60,13 +60,35 @@
           <div class="text-sales-box">
             <div class="text-sales">已售3303斤</div>
           </div>
+          <div class="add-box">
+            <div class="add-box-left">
+              <section class="left">
+                <div class="text-group">团购价</div>
+              </section>
+              <div class="price-box">
+                <div class="money">3.8</div>
+                <div class="unit">元</div>
+                <div class="lineation">12元</div>
+              </div>
+            </div>
+            <div class="add-box-right">
+              <div class="add-goods-btn">+购物车</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
+    <div class="foot-ties">
+      <div class="left lines"></div>
+      <div class="center">已经到底了</div>
+      <div class="bot lines"></div>
+    </div>
+    <link-group ref="groupComponents" phoneTxt="678910" wechatTxt="eleven丶"></link-group>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
+  import LinkGroup from '@components/link-group/link-group'
   const PAGE_NAME = 'CHOICENESS'
   const SELECTTAB = [{text: '限时尝鲜'}, {text: '精选菜篮'}, {text: '水果'}, {text: '粮油'}, {text: '百货'}]
   export default {
@@ -84,7 +106,13 @@
       },
       selectIndex(index) {
         this.tabIdx = index
+      },
+      linkGroup() {
+        this.$refs.groupComponents.showLink()
       }
+    },
+    components: {
+      LinkGroup
     }
   }
 </script>
@@ -316,11 +344,74 @@
             font-size: $font-size-10
             font-family: $font-family-regular
             color: $color-text-sub
-            min-height: $font-size-16
-            margin-bottom: 9px
+            margin-bottom: 11px
             border-radius: 10px
             border-1px($color-text-sub, 10px)
-            padding: 3px 5px 1px
-  .choiceness
-    width: 100%
+            padding: 2px 5px 1px
+        .add-box
+          layout(row)
+          justify-content: space-between
+          align-items: center
+          .left
+            layout(row)
+            .text-group
+              font-size: $font-size-10
+              font-family: $font-family-regular
+              color: $color-money
+              min-height: $font-size-16
+              margin-bottom: 6px
+              border-radius: 10px
+              background: rgba(255,131,0,0.10)
+              border-1px(#FF8300, 10px)
+              padding: 1px 8px 0
+          .price-box
+            layout(row)
+            align-items: flex-end
+            .money
+              font-family: $font-family-medium
+              color: $color-money
+              font-size: $font-size-20
+              line-height:1
+            .unit
+              font-family: $font-family-medium
+              color: $color-money
+              font-size: $font-size-12
+              line-height:1
+              margin-right: 2px
+            .lineation
+              font-family: $font-family-regular
+              color: $color-text-assist
+              font-size: $font-size-12
+              text-decoration line-through
+              line-height:1
+          .add-goods-btn
+            width: 20vw
+            height: 26px
+            line-height: 26px
+            font-size: $font-size-14
+            font-family: $font-family-regular
+            color: #fff
+            background: $color-main
+            text-align: center
+            border-radius: 14px
+  .foot-ties
+    layout(row)
+    justify-content: center
+    align-items: center
+    height: 60px
+    box-sizing: border-box
+    padding-top: 25px
+    padding-bottom: 20px
+    .lines
+      width: 10px
+      height: 1px
+      background: rgba(124, 132, 156, 0.20)
+      margin: 0 5px
+    .center
+      font-family: $font-family-regular
+      font-size: $font-size-14
+      color: rgba(152, 152, 159, 0.30)
+      text-align: justify
+      line-height: 1
+
 </style>
