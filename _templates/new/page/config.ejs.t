@@ -1,7 +1,6 @@
 ---
 to: "src/pages/<%= h.inflection.dasherize(name) %>/config.js"
 ---
-// <%= note %>
 import Vue from 'vue'
 import Page from './<%=  h.inflection.dasherize(name) %>'
 
@@ -10,6 +9,6 @@ page.$mount()
 
 export default {
   config: {
-    navigationBarTitleText: '<%=  h.inflection.dasherize(name).toUpperCase().replace(/-/g, '_')%>'
+    navigationBarTitleText: '<%=  h.inflection.dasherize(title) %>'
   }
 }

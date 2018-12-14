@@ -21,6 +21,7 @@
   }
 
   let DEFAULT_PAGE = pageRouter()
+  console.log(DEFAULT_PAGE)
   export default {
     name: 'HEAD_ITEM',
     props: {
@@ -79,6 +80,9 @@
       this._initHeadStyle()
     },
     methods: {
+      getStatusBarHeight() {
+        return this.statusBarHeight
+      },
       _diyHeadNavigation(e) {
         // 是否为沉浸式
         if (!this.translucent) return
