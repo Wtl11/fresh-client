@@ -65,28 +65,25 @@
       <div class="order-time">下单时间：2018-06-05 17:23</div>
     </div>
     <div class="service">
-      <div class="service-btn">联系团长</div>
+      <div class="service-btn" @click.stop="showGroupList">联系团长</div>
     </div>
     <div class="operation">
       <div class="refund">退款</div>
     </div>
+    <link-group ref="groupList" phoneTxt="13692451542" wechatTxt="eleven丶"></link-group>
   </div>
-
 </template>
 
 <script type="text/ecmascript-6">
   import WePaint from '@components/we-paint/we-paint'
-  // import { mapGetters } from 'vuex'
+  import LinkGroup from '@components/link-group/link-group'
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import API from '@api'
   import {oauthComputed} from '@state/helpers'
   import Vue from 'vue'
+  // import { mapGetters } from 'vuex'
 
   export default {
-    components: {
-      WePaint,
-      NavigationBar
-    },
     beforeCreate() {
     },
     data() {
@@ -110,7 +107,15 @@
     methods: {
       testApi() {
         API.Jwt.getToken()
+      },
+      showGroupList() {
+        this.$refs.groupList.showLink()
       }
+    },
+    components: {
+      WePaint,
+      NavigationBar,
+      LinkGroup
     }
   }
 </script>
@@ -134,7 +139,7 @@
       layout(row)
       justify-content: flex-end
       align-items: center
-      box-shadow: 0 -0.5px 0 0 #E6E6E6
+      box-shadow: 0 -0.5px 0 0 $color-line
       .refund
         width: 77px
         height: 30px
@@ -143,8 +148,8 @@
         font-size: $font-size-14
         text-align: center
         color: $color-white
-        background: #73C200
-        border: 1px solid #73C200
+        background: $color-main
+        border: 1px solid $color-main
         border-radius: 15px
     .order-banner
       width: 100vw
@@ -185,7 +190,7 @@
       height: 74px
       box-sizing: border-box
       padding:3.2vw 0
-      border-bottom-1px(#e6e6e6)
+      border-bottom-1px($color-line)
     .addr
       font-family: $font-family-medium
       font-size: $font-size-15
@@ -195,13 +200,13 @@
     .warp
       layout(row)
       align-items: center
-      color: #808080
+      color: $color-text-sub
       .design
         width: 30px
         font-family: $font-family-regular
-        border-1px(#73C200)
+        border-1px($color-main)
         text-align: center
-        color: #73C200
+        color: $color-main
         border-radius: 2px
         font-size: $font-size-12
         height: 15px
@@ -210,12 +215,12 @@
       .phone
         font-family: $font-family-regular
         font-size: $font-size-15
-        color: #808080
+        color: $color-text-sub
       .name
         font-family: $font-family-regular
         font-size: $font-size-15
         padding: 0 5px 0 10px
-        color: #808080
+        color: $color-text-sub
   .goods-item
     height: 105px
     box-sizing: border-box
@@ -224,7 +229,7 @@
     layout(row)
     justify-content: space-between
     align-items: center
-    border-bottom-1px(#e6e6e6)
+    border-bottom-1px($color-line)
     .goodsinfo
       layout(row)
       align-items: center

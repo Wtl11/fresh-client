@@ -52,7 +52,7 @@
         </div>
       </div>
     </div>
-    <div class="mine-model">
+    <div class="mine-model" v-if="showModal">
       <div class="model-con">
           <div class="erm">
             <img class="erm-img" src="" alt="">
@@ -95,6 +95,7 @@
           id: 0,
           latitude: 23.08331,
           longitude: 113.3172,
+          showModal: false,
           callout: {
             content: '白云黄边北路国颐堂店',
             bgColor: '#fff',
