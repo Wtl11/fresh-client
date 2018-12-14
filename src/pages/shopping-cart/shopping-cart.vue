@@ -2,31 +2,34 @@
   <div class="wrap">
     <navigation-bar title="购物车" :showArrow="false" :translucent="false"></navigation-bar>
     <div class="shop-list">
-      <div class="shop-item" v-for="(item, index) in [1]" :key="index">
+      <div class="shop-item" :class="{'shop-item-opcta' : item.number <= 0}" v-for="(item, index) in orderList" :key="index">
         <!--<div class="sel-box"></div>-->
-        <img class="sel-box" v-if="imgUrl" :src="imgUrl+'/yx-image/cart/icon-pick@2x.png'" alt="" />
+        <img class="sel-box" @click.stop="ischoose(index)" v-if="imageUrl && !item.checked && item.number > 0" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt="" />
+        <img class="sel-box" v-if="imageUrl && item.number <= 0" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt="" />
+        <img class="sel-box" @click.stop="ischoose(index)" v-if="imageUrl && item.checked && item.number > 0" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt="" />
         <div class="goods-image">
-          <img class="goods-img" mode="aspectFill" src="http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300" alt="">
+          <img class="goods-img" mode="aspectFill" :src="item.goods_img" alt="">
+          <div class="robbed" v-if="item.number <= 0">已抢完</div>
         </div>
         <div class="good-info">
           <div class="top">
-            <div class="title">超超值特惠 4斤新鲜柠檬</div>
-            <div class="del">
-              <img class="del-img" v-if="imgUrl" :src="imgUrl + '/ws-image/icon-delete@2x.png'" alt="">
+            <div class="title">{{item.title}}</div>
+            <div class="del" @click.stop="delGoodsInfo(index)">
+              <img class="del-img" v-if="imageUrl" :src="imageUrl + '/yx-image/cart/icon_delete@2x.png'" alt="">
             </div>
           </div>
           <div class="bot">
             <div class="left">
-              <div class="spec">规格：包</div>
+              <div class="spec" v-if="item.guige">规格：{{item.guige}}</div>
               <div class="remain">
-                <div class="txt">仅剩10件</div>
+                <div class="txt"  v-if="item.number">仅剩{{item.number}}件</div>
               </div>
-              <div class="price"><span class="num">3.8</span>元</div>
+              <div class="price" v-if="item.price"><span class="num">{{item.price}}</span>元</div>
             </div>
             <div class="right">
               <div class="number-box">
                 <div class="minus"></div>
-                <div class="num">4</div>
+                <div class="num">{{item.buynum ? item.buynum : 0}}</div>
                 <div class="add"></div>
               </div>
             </div>
@@ -34,7 +37,7 @@
         </div>
       </div>
       <div class="shop-item shop-item-opcta" v-for="(item, index) in [1]" :key="index">
-        <img class="sel-box" v-if="imgUrl" :src="imgUrl+'/yx-image/cart/icon-pick@2x.png'" alt="" />
+        <img class="sel-box" v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt="" />
         <div class="goods-image">
           <img class="goods-img" mode="aspectFill" src="http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300" alt="">
           <div class="robbed">已抢完</div>
@@ -42,8 +45,8 @@
         <div class="good-info">
           <div class="top">
             <div class="title">超超值特惠 4斤新鲜柠檬</div>
-            <div class="del">
-              <img class="del-img" v-if="imgUrl" :src="imgUrl + '/ws-image/icon-delete@2x.png'" alt="">
+            <div class="del" @click.stop="delGoodsInfo(index)">
+              <img class="del-img" v-if="imageUrl" :src="imageUrl + '/yx-image/cart/icon_delete@2x.png'" alt="">
             </div>
           </div>
           <div class="bot">
@@ -67,8 +70,9 @@
     </div>
     <!--结算-->
     <div class="payment">
-      <div class="check-all">
-        <img class="sel-box" v-if="imgUrl" :src="imgUrl+'/yx-image/cart/icon-pick@2x.png'" alt="" />
+      <div class="check-all" @click.stop="allIsChoose">
+        <img class="sel-box" v-if="imageUrl && allcheck" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt="" />
+        <img class="sel-box" v-if="imageUrl && !allcheck" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt="" />
         <div class="txt">全选</div>
       </div>
       <div class="payment-content">
@@ -83,66 +87,95 @@
       <div class="txt">赶快去挑选吧</div>
       <div class="btn">去逛逛</div>
     </div>
-    <confirm-msg ref="msg"></confirm-msg>
+    <confirm-msg ref="msg" :msg="msg" useType="double" @confirm="confirm"></confirm-msg>
   </div>
 
 </template>
 
 <script type="text/ecmascript-6">
   import WePaint from '@components/we-paint/we-paint'
-  // import { mapGetters } from 'vuex'
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import ConfirmMsg from '@components/confirm-msg/confirm-msg'
   import API from '@api'
   import {oauthComputed} from '@state/helpers'
-  import Vue from 'vue'
+
+  const CARTLIST = [
+    {goods_id: 1, goods_img: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300', title: '超超值特惠 4斤新鲜柠檬', guige: '斤', number: 10, price: '10.00', buynum: '2', checked: false},
+    {goods_id: 3, goods_img: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300', title: '超超值特惠 4斤新鲜柠檬', guige: '斤', number: 0, price: '10.00', buynum: '2', checked: false},
+    {goods_id: 4, goods_img: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300', title: '超超值特惠 4斤新鲜柠檬', guige: '斤', number: 10, price: '10.00', buynum: '2', checked: false},
+    {goods_id: 8, goods_img: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300', title: '超超值特惠 4斤新鲜柠檬', guige: '斤', number: 0, price: '10.00', buynum: '2', checked: false},
+    {goods_id: 6, goods_img: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300', title: '超超值特惠 4斤新鲜柠檬', guige: '斤', number: 10, price: '6.00', buynum: '1', checked: false}
+  ]
 
   export default {
-    components: {
-      WePaint,
-      ConfirmMsg,
-      NavigationBar
-    },
     beforeCreate() {
     },
     data() {
       return {
-        imgUrl: this.$imageUrl,
-        testSrc: ''
-        // title: '',
-        // headStyle: 'background: rgba(255, 255, 255, 0)',
-        // titleColor: 'white'
+        testSrc: '',
+        msg: '确定删除该商品吗?',
+        allcheck: false,
+        orderArr: [],
+        delIndex: 0,
+        orderList: CARTLIST
       }
     },
     onShow() {
       // setTimeout(() => {
       //   this.$refs.msg.show('lalal')
       // }, 100)
+      wx.setTabBarBadge({
+        index: 1,
+        text: '1'
+      })
       console.log(this.$imageUrl)
       if (getApp().globalData.imgUrl) {
         this.testSrc = getApp().globalData.imgUrl
       }
-      console.log(this.info, 'vuex helpers')
-      console.log(Vue.Component)
+      this.allUsechecked()
     },
     computed: {
       ...oauthComputed
       // ...mapGetters(['role'])
     },
-    // onPageScroll(e) {
-    //   if (e.scrollTop >= 100) {
-    //     this.headStyle = 'background: rgba(255, 255, 255, 1)'
-    //     this.titleColor = '#000000'
-    //     this.title = '导购'
-    //   } else {
-    //     this.headStyle = 'background: rgba(255, 255, 255, 0)'
-    //     this.titleColor = 'white'
-    //     this.title = ''
-    //   }
-    // },
     methods: {
       testApi() {
         API.Jwt.getToken()
+      },
+      delGoodsInfo(i) {
+        this.$refs.msg.show()
+        this.delIndex = i
+      },
+      confirm() {
+        this.orderList.splice(this.delIndex, 1)
+      },
+      ischoose(i) {
+        this.allcheck = this.allcheck === true ? false : ''
+        this.orderList[i].checked = !this.orderList[i].checked
+        this.isallCheck()
+      },
+      allUsechecked() {
+        this.orderList.forEach((item) => {
+          if (item.number > 0) {
+            this.orderArr.push(item)
+          }
+        })
+      },
+      isallCheck() {
+        let arr = []
+        this.orderList.forEach((item) => {
+          if (item.checked === true) {
+            arr.push(item)
+          }
+        })
+        arr.length === this.orderArr.length ? this.allcheck = true : this.allcheck = false
+      },
+      allIsChoose() {
+        this.allcheck = !this.allcheck
+        this.orderList.forEach((item, index) => {
+          this.allcheck === true && item.number > 0 ? item.checked = true : item.checked = false
+        })
+        // console.log(this.orderList)
       },
       navTo() {
         this.$wx.navigateTo({url: `/pages/other-page`})
@@ -166,6 +199,11 @@
           console.error(e)
         }
       }
+    },
+    components: {
+      WePaint,
+      ConfirmMsg,
+      NavigationBar
     }
   }
 </script>
@@ -224,6 +262,7 @@
         color: $color-white
   .shop-list
     background: $color-white
+    margin-bottom: 60px
     .shop-item
       layout(row)
       align-items: center

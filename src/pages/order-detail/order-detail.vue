@@ -26,11 +26,14 @@
           <div class="goodsinfo">
             <img class="goods-img" mode="aspectFill" src="http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300" alt="">
             <div class="goods-info">
-              <div class="tit">超值特惠 智利J级车厘子250g</div>
+              <div class="tit">
+                <div class="name">超值特惠 智利J级车厘子250g</div>
+                <div class="quantity">x<span class="num">1</span></div>
+              </div>
               <div class="guige">规格：包</div>
               <div class="price">
                 <div class="amout"><span class="num">3.8</span>元</div>
-                <div class="quantity">x<span class="num">1</span></div>
+                <div class="refund" @click="isRefund">退款</div>
               </div>
             </div>
           </div>
@@ -39,11 +42,14 @@
           <div class="goodsinfo">
             <img class="goods-img" mode="aspectFill" src="http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300" alt="">
             <div class="goods-info">
-              <div class="tit">超值特惠 智利J级车厘子250g</div>
+              <div class="tit">
+                <div class="name">超值特惠 智利J级车厘子250g</div>
+                <div class="quantity">x<span class="num">1</span></div>
+              </div>
               <div class="guige">规格：包</div>
               <div class="price">
                 <div class="amout"><span class="num">3.8</span>元</div>
-                <div class="quantity">x<span class="num">1</span></div>
+                <div class="refund">退款</div>
               </div>
             </div>
           </div>
@@ -67,9 +73,10 @@
     <div class="service">
       <div class="service-btn" @click.stop="showGroupList">联系团长</div>
     </div>
-    <div class="operation">
-      <div class="refund">退款</div>
-    </div>
+    <!--<div class="operation">-->
+      <!--<div class="refund">退款</div>-->
+    <!--</div>-->
+    <confirm-msg ref="refundModel" useType="double" msg="确定退款吗?"></confirm-msg>
     <link-group ref="groupList" phoneTxt="13692451542" wechatTxt="eleven丶"></link-group>
   </div>
 </template>
@@ -78,9 +85,9 @@
   import WePaint from '@components/we-paint/we-paint'
   import LinkGroup from '@components/link-group/link-group'
   import NavigationBar from '@components/navigation-bar/navigation-bar'
+  import ConfirmMsg from '@components/confirm-msg/confirm-msg'
   import API from '@api'
   import {oauthComputed} from '@state/helpers'
-  import Vue from 'vue'
   // import { mapGetters } from 'vuex'
 
   export default {
@@ -90,16 +97,12 @@
       return {
         testSrc: '',
         orderId: '65465416651651'
-        // title: '',
-        // headStyle: 'background: rgba(255, 255, 255, 0)',
-        // titleColor: 'white'
       }
     },
     onShow() {
       if (getApp().globalData.imgUrl) {
         this.testSrc = getApp().globalData.imgUrl
       }
-      console.log(Vue.Component)
     },
     computed: {
       ...oauthComputed
@@ -111,6 +114,9 @@
       },
       showGroupList() {
         this.$refs.groupList.showLink()
+      },
+      isRefund() {
+        this.$refs.refundModel.show()
       },
       clipOrderId() {
         let that = this
@@ -127,7 +133,8 @@
     components: {
       WePaint,
       NavigationBar,
-      LinkGroup
+      LinkGroup,
+      ConfirmMsg
     }
   }
 </script>
@@ -260,20 +267,17 @@
       box-sizing: border-box
       padding-left: 2.67vw
       .tit
-        font-family: $font-family-medium
-        font-size: $font-size-14
-        color: $color-sub
-        letter-spacing: 0.3px
-      .guige
-        font-family: $font-family-regular
-        font-size: $font-size-14
-        color: $color-text-sub
-        margin-top: 2px
-        margin-bottom: 12px
-      .price
         layout(row)
         align-items: center
+        height: 15px
         justify-content: space-between
+        .name
+          width: 61.2vw
+          font-family: $font-family-medium
+          font-size: $font-size-14
+          color: $color-sub
+          letter-spacing: 0.3px
+          no-wrap()
         .quantity
           font-family: $font-family-regular
           font-size: $font-size-12
@@ -282,7 +286,27 @@
             font-family: $font-family-regular
             font-size: $font-size-16
             color: $color-sub
-         .amout
+      .guige
+        font-family: $font-family-regular
+        font-size: $font-size-14
+        color: $color-text-sub
+        margin-top: 6px
+        margin-bottom: 16px
+      .price
+        layout(row)
+        align-items: center
+        justify-content: space-between
+        .refund
+          width: 65px
+          height: 25px
+          line-height: 25px
+          font-family: $font-family-regular
+          font-size: $font-size-12
+          color: #000000
+          text-align: center
+          background: $color-white
+          border-1px($color-text-assist, 15px)
+        .amout
           font-family: $font-family-regular
           font-size: $font-size-11
           color: #1F1F1F
