@@ -1,5 +1,6 @@
 <template>
   <div class="choiceness">
+    <navigation-bar title="赞播优鲜" :showArrow="false" :translucent="true"></navigation-bar>
     <div class="choiceness-top">
       <div class="choiceness-bgimg">
         <img class="bgimg-url" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-bg@2x.png'">
@@ -38,46 +39,54 @@
         <div class="dots-item" :class="{'dots-item-active': praiseIndex === idx}" v-for="(item,idx) in [1,2,3,4,5]" :key="idx" v-if="[1,2,3,4,5].length > 1"></div>
       </div>
     </div>
-    <div class="select-tab">
-      <div class="select-box">
-        <div class="select-list" v-for="(item, index) in selectTab" :key="index" :class="tabIdx * 1 === index ? 'cur-item' : ''" @click="selectIndex(index)">{{item.text}}</div>
-        <div class="select-bg">
-          <div class="cur-select-bg" :style="'transform: translate(' + tabIdx*100 + '%,0)'"></div>
+    <div class="select-tab" id="selTab" :class="{'topnav': menuFixed}">
+      <scroll-view
+        scroll-x
+        style="height: 35px"
+        @scrolltoupper="upper"
+        @scrolltolower="lower"
+      >
+        <div class="select-box">
+          <div class="select-list" v-for="(item, index) in selectTab" :key="index" :class="tabIdx * 1 === index ? 'cur-item' : ''" @click="selectIndex(index)">{{item.text}}</div>
+          <div class="select-bg">
+            <div class="cur-select-bg" :style="'transform: translate(' + tabIdx*100 + '%,0)'"></div>
+          </div>
         </div>
-      </div>
+      </scroll-view>
     </div>
     <div class="goods-box">
-      <div class="goods-list">
-        <div class="goods-left">
-          <div class="goods-left-img"></div>
-          <div class="goods-left-icon">
-            <img class="item-img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/icon-label@2x.png'">
-          </div>
-        </div>
-        <div class="goods-right">
-          <div class="title">超值特惠 4斤新鲜柠檬4斤新鲜柠檬4斤新鲜柠檬</div>
-          <div class="text-sub">超值特惠 4斤新鲜柠檬4斤新鲜柠檬4斤新鲜柠檬</div>
-          <div class="text-sales-box">
-            <div class="text-sales">已售3303斤</div>
-          </div>
-          <div class="add-box">
-            <div class="add-box-left">
-              <section class="left">
-                <div class="text-group">团购价</div>
-              </section>
-              <div class="price-box">
-                <div class="money">3.8</div>
-                <div class="unit">元</div>
-                <div class="lineation">12元</div>
-              </div>
+        <div class="goods-list" v-for="(item, index) in [0,1,2,4,5,4]" :key="index">
+          <div class="goods-left">
+            <div class="goods-left-img"></div>
+            <div class="goods-left-icon">
+              <img class="item-img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/icon-label@2x.png'">
             </div>
-            <div class="add-box-right">
-              <div class="add-goods-btn">+购物车</div>
+          </div>
+          <div class="goods-right">
+            <div class="title">超值特惠 4斤新鲜柠檬4斤新鲜柠檬4斤新鲜柠檬</div>
+            <div class="text-sub">超值特惠 4斤新鲜柠檬4斤新鲜柠檬4斤新鲜柠檬</div>
+            <div class="text-sales-box">
+              <div class="text-sales">已售3303斤</div>
+            </div>
+            <div class="add-box">
+              <div class="add-box-left">
+                <section class="left">
+                  <div class="text-group">团购价</div>
+                </section>
+                <div class="price-box">
+                  <div class="money">3.8</div>
+                  <div class="unit">元</div>
+                  <div class="lineation">12元</div>
+                </div>
+              </div>
+              <div class="add-box-right">
+                <div class="add-goods-btn">+购物车</div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+
     <div class="foot-ties">
       <div class="left lines"></div>
       <div class="center">已经到底了</div>
@@ -88,17 +97,34 @@
 </template>
 
 <script type="text/ecmascript-6">
+  import NavigationBar from '@components/navigation-bar/navigation-bar'
   import LinkGroup from '@components/link-group/link-group'
   const PAGE_NAME = 'CHOICENESS'
-  const SELECTTAB = [{text: '限时尝鲜'}, {text: '精选菜篮'}, {text: '水果'}, {text: '粮油'}, {text: '百货'}]
+  const SELECTTAB = [{text: '限时尝鲜'}, {text: '精选菜篮'}, {text: '水果'}, {text: '粮油'}, {text: '百货'}, {text: '粮油'}, {text: '百货'}, {text: '粮油'}, {text: '百货'}]
   export default {
     name: PAGE_NAME,
     data() {
       return {
         praiseIndex: 0,
         selectTab: SELECTTAB,
-        tabIdx: 0
+        tabIdx: 0,
+        menuFixed: false,
+        menuTop: 0
       }
+    },
+    onShow() {
+      this.initClientRect()
+    },
+    onPageScroll(scroll) {
+      console.log(this.menuTop)
+      console.log(scroll.scrollTop)
+      if (scroll.scrollTop >= this.menuTop - 84) {
+        this.menuFixed = true
+      } else {
+        this.menuFixed = false
+      }
+      // if (this.menuFixed === (scroll.scrollTop > this.menuTop)) return
+      // this.menuFixed = scroll.scrollTop > this.menuTop
     },
     methods: {
       _setPraiseIndex(e) { // 设置集赞活动index
@@ -107,18 +133,29 @@
       selectIndex(index) {
         this.tabIdx = index
       },
+      initClientRect() {
+        let that = this
+        let query = wx.createSelectorQuery()
+        query.select('#selTab').boundingClientRect()
+        query.exec(function (res) {
+          that.menuTop = res[0].top
+          console.log(that.menuTop)
+        })
+      },
       linkGroup() {
         this.$refs.groupComponents.showLink()
       }
     },
     components: {
-      LinkGroup
+      LinkGroup,
+      NavigationBar
     }
   }
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
+
   .choiceness
     width: 100%
     min-height: 100vh
@@ -256,6 +293,7 @@
     padding: 0 3.2vw
     box-sizing: border-box
     position: relative
+    transition: all .1s
     background: $color-background
     .select-box
       height: 35px
@@ -270,7 +308,7 @@
         font-size: $font-size-14
         font-family: $font-family-medium
         color: $color-text-main
-        width: 20%
+        width: 18.72vw
         text-align: center
         height: 33px
         line-height: 33px
@@ -289,6 +327,14 @@
           transition: all 0.3s
           border-top-left-radius: 6px
           border-top-right-radius: 6px
+  .topnav
+    position: fixed
+    width: 100vw
+    padding: 0 3.2vw
+    top: 64px
+    left: 0
+    box-sizing: border-box
+    z-index:99
   .goods-box
     padding: 0 3.2vw
     box-sizing: border-box

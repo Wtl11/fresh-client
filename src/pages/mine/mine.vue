@@ -1,6 +1,6 @@
 <template>
   <div class="demo">
-    <navigation-bar title="我的" :showArrow="false" :translucent="true"></navigation-bar>
+    <navigation-bar title="我的" :showArrow="false" :translucent="false"></navigation-bar>
     <img style="width: 100%" mode="widthFix" v-if="imageUrl" :src="imageUrl + '/zd-image/test-img/1@1x.png'" alt="">
     <button @click="editorAvatar">切图</button>
     <we-paint ref="wePaint" @drawDone="drawDone"></we-paint>
