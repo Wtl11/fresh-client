@@ -127,9 +127,6 @@
       // if (this.menuFixed === (scroll.scrollTop > this.menuTop)) return
       // this.menuFixed = scroll.scrollTop > this.menuTop
     },
-    onLoad(option) {
-      console.log(option)
-    },
     methods: {
       _setPraiseIndex(e) { // 设置集赞活动index
         this.praiseIndex = e.target.current
