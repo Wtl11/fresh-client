@@ -55,37 +55,37 @@
       </scroll-view>
     </div>
     <div class="goods-box">
-        <div class="goods-list" v-for="(item, index) in [0,1,2,4,5,4]" :key="index">
-          <div class="goods-left">
-            <div class="goods-left-img"></div>
-            <div class="goods-left-icon">
-              <img class="item-img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/icon-label@2x.png'">
-            </div>
+      <div class="goods-list" v-for="(item, index) in [0,1,2,4,5,4]" :key="index">
+        <div class="goods-left">
+          <div class="goods-left-img"></div>
+          <div class="goods-left-icon">
+            <img class="item-img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/icon-label@2x.png'">
           </div>
-          <div class="goods-right">
-            <div class="title">超值特惠 4斤新鲜柠檬4斤新鲜柠檬4斤新鲜柠檬</div>
-            <div class="text-sub">超值特惠 4斤新鲜柠檬4斤新鲜柠檬4斤新鲜柠檬</div>
-            <div class="text-sales-box">
-              <div class="text-sales">已售3303斤</div>
+        </div>
+        <div class="goods-right">
+          <div class="title">超值特惠 4斤新鲜柠檬4斤新鲜柠檬4斤新鲜柠檬</div>
+          <div class="text-sub">超值特惠 4斤新鲜柠檬4斤新鲜柠檬4斤新鲜柠檬</div>
+          <div class="text-sales-box">
+            <div class="text-sales">已售3303斤</div>
+          </div>
+          <div class="add-box">
+            <div class="add-box-left">
+              <section class="left">
+                <div class="text-group">团购价</div>
+              </section>
+              <div class="price-box">
+                <div class="money">3.8</div>
+                <div class="unit">元</div>
+                <div class="lineation">12元</div>
+              </div>
             </div>
-            <div class="add-box">
-              <div class="add-box-left">
-                <section class="left">
-                  <div class="text-group">团购价</div>
-                </section>
-                <div class="price-box">
-                  <div class="money">3.8</div>
-                  <div class="unit">元</div>
-                  <div class="lineation">12元</div>
-                </div>
-              </div>
-              <div class="add-box-right">
-                <div class="add-goods-btn">+购物车</div>
-              </div>
+            <div class="add-box-right">
+              <div class="add-goods-btn">+购物车</div>
             </div>
           </div>
         </div>
       </div>
+    </div>
 
     <div class="foot-ties">
       <div class="left lines"></div>
@@ -99,6 +99,7 @@
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import LinkGroup from '@components/link-group/link-group'
+
   const PAGE_NAME = 'CHOICENESS'
   const SELECTTAB = [{text: '限时尝鲜'}, {text: '精选菜篮'}, {text: '水果'}, {text: '粮油'}, {text: '百货'}, {text: '粮油'}, {text: '百货'}, {text: '粮油'}, {text: '百货'}]
   export default {
@@ -125,6 +126,9 @@
       }
       // if (this.menuFixed === (scroll.scrollTop > this.menuTop)) return
       // this.menuFixed = scroll.scrollTop > this.menuTop
+    },
+    onLoad(option) {
+      console.log(option)
     },
     methods: {
       _setPraiseIndex(e) { // 设置集赞活动index
@@ -160,6 +164,7 @@
     width: 100%
     min-height: 100vh
     background: $color-background
+
   .choiceness-top
     position: relative
     padding-top: 17vw
@@ -175,7 +180,7 @@
         height: 100px
         background: #fff
         border-radius: 6px
-        box-shadow: 0 3px 10px 0 rgba(17,17,17,0.06)
+        box-shadow: 0 3px 10px 0 rgba(17, 17, 17, 0.06)
         padding: 0 2.7vw
         box-sizing: border-box
         position: relative
@@ -245,7 +250,6 @@
           font-family: $font-family-regular
           color: $color-text-sub
 
-
     .choiceness-bgimg
       width: 100%
       height: 23.5vw
@@ -255,6 +259,7 @@
       .bgimg-url
         width: 100%
         height: 100%
+
   .banner-box
     padding: 0 3.2vw
     box-sizing: border-box
@@ -327,6 +332,7 @@
           transition: all 0.3s
           border-top-left-radius: 6px
           border-top-right-radius: 6px
+
   .topnav
     position: fixed
     width: 100vw
@@ -334,7 +340,8 @@
     top: 64px
     left: 0
     box-sizing: border-box
-    z-index:99
+    z-index: 99
+
   .goods-box
     padding: 0 3.2vw
     box-sizing: border-box
@@ -407,7 +414,7 @@
               min-height: $font-size-16
               margin-bottom: 6px
               border-radius: 10px
-              background: rgba(255,131,0,0.10)
+              background: rgba(255, 131, 0, 0.10)
               border-1px(#FF8300, 10px)
               padding: 1px 8px 0
           .price-box
@@ -417,19 +424,19 @@
               font-family: $font-family-medium
               color: $color-money
               font-size: $font-size-20
-              line-height:1
+              line-height: 1
             .unit
               font-family: $font-family-medium
               color: $color-money
               font-size: $font-size-12
-              line-height:1
+              line-height: 1
               margin-right: 2px
             .lineation
               font-family: $font-family-regular
               color: $color-text-assist
               font-size: $font-size-12
               text-decoration line-through
-              line-height:1
+              line-height: 1
           .add-goods-btn
             width: 20vw
             height: 26px
@@ -440,6 +447,7 @@
             background: $color-main
             text-align: center
             border-radius: 14px
+
   .foot-ties
     layout(row)
     justify-content: center

@@ -51,7 +51,7 @@
     data() {
       return {
         nav: NAV,
-        navIdx: 1,
+        navIdx: 0,
         navLeft: 97.5,
         width: 0,
         codeText: '获取验证码'
@@ -69,11 +69,9 @@
       _setNav(index, e) {
         this.navIdx = index
         this.navLeft = 47.5 + index * NAV_WIDTH + (NAV_WIDTH - 40) / 2
-        console.log(this.navLeft)
       },
       _getScroll(e) {
         this._setNav(e.target.current)
-        console.log(e.target.current)
       }
     },
     components: {
