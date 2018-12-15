@@ -42,7 +42,7 @@
 
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
-  import API from '@api'
+  // import API from '@api'
 
   const PAGE_NAME = 'MINE_HOUSING'
   const NAV = ['申请团长', '团长登录']
@@ -69,58 +69,20 @@
       })
     },
     methods: {
-      //      点击获取验证码
+      // 点击获取验证码
       async setCode() {
-//         if (this.phoneNum === '') {
-//           this.$wechat.showToast('请输入手机号码')
-//           return false
-//         }
-//         let data = {mobile: this.phoneNum}
-//         if (this.tapCode) {
-//           let codeData = await API.Leader.messageBind(data)
-//           this.codeText = '发送中…'
-// //          this.$invoke('Toast', 'show', codeData.message)
-//           this.loaded()
-//           if (codeData.error !== ERR_OK) {
-//             this.codeText = '获取验证码'
-//             this.rightTip(codeData.message, false)
-//           } else {
-//             this.isSet = false
-//             this.rightTip(codeData.message)
-//             let time = 60
-//             this.codeText = time + 's'
-//             let timer = setInterval(() => {
-//               this.tapCode = false
-//               time--
-//               this.codeText = time + 's'
-//               if (time <= 0) {
-//                 this.codeText = '获取验证码'
-//                 this.tapCode = true
-//                 // if (REGPHONE.test(this.phoneNum)) {
-//                 //   this.isSet = true
-//                 // } else {
-//                 //   this.isSet = false
-//                 // }
-//                 clearInterval(timer)
-//               }
-//             }, 1000)
-// //           }
-//       } else {
-//         return false
-//       }
+      },
+      _setNav(index, e) {
+        this.navIdx = index
+        this.navLeft = 47.5 + index * NAV_WIDTH + (NAV_WIDTH - 40) / 2
+      },
+      _getScroll(e) {
+        this._setNav(e.target.current)
+      }
     },
-    _setNav(index, e) {
-      this.navIdx = index
-      this.navLeft = 47.5 + index * NAV_WIDTH + (NAV_WIDTH - 40) / 2
-    },
-    _getScroll(e) {
-      this._setNav(e.target.current)
+    components: {
+      NavigationBar
     }
-  }
-  ,
-  components: {
-    NavigationBar
-  }
   }
 </script>
 
