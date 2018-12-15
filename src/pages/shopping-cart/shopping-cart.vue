@@ -122,7 +122,7 @@
     },
     onShow() {
       // setTimeout(() => {
-      //   this.$refs.msg.show('lalal')
+      //   、this.$refs.msg.show('lalal')
       // }, 100)
       wx.setTabBarBadge({
         index: 1,
