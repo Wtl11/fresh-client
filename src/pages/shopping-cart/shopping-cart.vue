@@ -2,25 +2,25 @@
   <div class="wrap">
     <navigation-bar title="购物车" :showArrow="false" :translucent="false"></navigation-bar>
     <div class="shop-list">
-      <div class="shop-item" :class="{'shop-item-opcta' : item.number <= 0}" v-for="(item, index) in orderList" :key="index">
+      <div class="shop-item" :class="{'shop-item-opcta' : item.num <= 0}" v-for="(item, index) in orderList" :key="index">
         <!--<div class="sel-box"></div>-->
-        <img class="sel-box" @click.stop="ischoose(index)" v-if="imageUrl && !item.checked && item.number > 0" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt="" />
-        <img class="sel-box" v-if="imageUrl && item.number <= 0" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt="" />
-        <img class="sel-box" @click.stop="ischoose(index)" v-if="imageUrl && item.checked && item.number > 0" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt="" />
+        <img class="sel-box" @click.stop="ischoose(index)" v-if="imageUrl && !item.checked && item.num > 0" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt="" />
+        <img class="sel-box" v-if="imageUrl && item.num <= 0" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt="" />
+        <img class="sel-box" @click.stop="ischoose(index)" v-if="imageUrl && item.checked && item.num > 0" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt="" />
         <div class="goods-image">
-          <img class="goods-img" mode="aspectFill" :src="item.goods_img" alt="">
-          <div class="robbed" v-if="item.number <= 0">已抢完</div>
+          <img class="goods-img" mode="aspectFill" :src="item.goods_image_url" alt="">
+          <div class="robbed" v-if="item.num <= 0">已抢完</div>
         </div>
         <div class="good-info">
           <div class="top">
-            <div class="title">{{item.title}}</div>
-            <div class="del" @click.stop="delGoodsInfo(index)">
+            <div class="title">{{item.goods_name}}</div>
+            <div class="del" @click.stop="delGoodsInfo(index, item.id)">
               <img class="del-img" v-if="imageUrl" :src="imageUrl + '/yx-image/cart/icon_delete@2x.png'" alt="">
             </div>
           </div>
           <div class="bot">
             <div class="left">
-              <div class="spec" v-if="item.guige">规格：{{item.guige}}</div>
+              <div class="spec" v-if="item.goods_units">规格：{{item.goods_units}}</div>
               <div class="remain">
                 <div class="txt"  v-if="item.number">仅剩{{item.number}}件</div>
               </div>
@@ -28,15 +28,15 @@
             </div>
             <div class="right">
               <div class="number-box">
-                <div class="minus"></div>
-                <div class="num">{{item.buynum ? item.buynum : 0}}</div>
-                <div class="add"></div>
+                <div class="minus" @click.stop="subNum(index, item.num, item.id)"></div>
+                <div class="num">{{item.num ? item.num : 0}}</div>
+                <div class="add" @click.stop="addNum(index, item.num, item.buy_limit, item.id)"></div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="shop-item shop-item-opcta" v-for="(item, index) in [1]" :key="index">
+      <!--<div class="shop-item shop-item-opcta" v-for="(item, index) in [1]" :key="index">
         <img class="sel-box" v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt="" />
         <div class="goods-image">
           <img class="goods-img" mode="aspectFill" src="http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300" alt="">
@@ -66,7 +66,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </div>-->
     </div>
     <!--结算-->
     <div class="payment">
@@ -76,8 +76,8 @@
         <div class="txt">全选</div>
       </div>
       <div class="payment-content">
-        <div class="price">合计 12元</div>
-        <div class="pay-btn">结算</div>
+        <div class="price">合计 {{totalPrice}}元</div>
+        <div class="pay-btn" @click.stop="toSubmitOrder">结算</div>
       </div>
     </div>
     <!--没有商品-->
@@ -97,14 +97,10 @@
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import ConfirmMsg from '@components/confirm-msg/confirm-msg'
   import API from '@api'
-  import {oauthComputed} from '@state/helpers'
+  import { orderComputed, orderMethods } from '@state/helpers'
 
   const CARTLIST = [
-    {goods_id: 1, goods_img: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300', title: '超超值特惠 4斤新鲜柠檬', guige: '斤', number: 10, price: '10.00', buynum: '2', checked: false},
-    {goods_id: 3, goods_img: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300', title: '超超值特惠 4斤新鲜柠檬', guige: '斤', number: 0, price: '10.00', buynum: '2', checked: false},
-    {goods_id: 4, goods_img: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300', title: '超超值特惠 4斤新鲜柠檬', guige: '斤', number: 10, price: '10.00', buynum: '2', checked: false},
-    {goods_id: 8, goods_img: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300', title: '超超值特惠 4斤新鲜柠檬', guige: '斤', number: 0, price: '10.00', buynum: '2', checked: false},
-    {goods_id: 6, goods_img: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300', title: '超超值特惠 4斤新鲜柠檬', guige: '斤', number: 10, price: '6.00', buynum: '1', checked: false}
+    // {goods_id: 1, goods_img: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300', title: '超超值特惠 4斤新鲜柠檬', guige: '斤', number: 10, price: '10.00', buynum: '2', checked: false},
   ]
 
   export default {
@@ -116,14 +112,13 @@
         msg: '确定删除该商品吗?',
         allcheck: false,
         orderArr: [],
+        chooseArr: [],
         delIndex: 0,
+        totalPrice: 0,
         orderList: CARTLIST
       }
     },
-    onShow() {
-      // setTimeout(() => {
-      //   、this.$refs.msg.show('lalal')
-      // }, 100)
+    async onShow() {
       wx.setTabBarBadge({
         index: 1,
         text: '1'
@@ -132,31 +127,99 @@
       if (getApp().globalData.imgUrl) {
         this.testSrc = getApp().globalData.imgUrl
       }
+      await this._getShopCart()
       this.allUsechecked()
     },
     computed: {
-      ...oauthComputed
+      ...orderComputed
       // ...mapGetters(['role'])
     },
     methods: {
+      ...orderMethods,
       testApi() {
         API.Jwt.getToken()
       },
-      delGoodsInfo(i) {
+      async _getShopCart(loading = true) {
+        let arr = []
+        let res = await API.Cart.shopCart(loading)
+        this.$wechat.hideLoading()
+        if (res.error !== this.$ERR_OK) {
+          this.$wechat.showToast(res.message)
+        }
+        res.data.forEach((item, index) => {
+          item.checked = false
+          arr.push(item)
+        })
+        this.orderList = res.data
+      },
+      addNum(i, num, limit, id) {
+        if (num >= limit) {
+          this.$wechat.showToast('已达最大购买数量!')
+          return
+        }
+        num++
+        this.editGoodsNum(id, num)
+        this.orderList[i].num = num
+      },
+      subNum(i, num, id) {
+        if (num > 1) {
+          num--
+          this.orderList[i].num = num
+          this.editGoodsNum(id, num)
+        } else {
+          this.delGoodsInfo()
+        }
+      },
+      // 商品数量
+      async editGoodsNum(id, num) {
+        let res = await API.Cart.editCartGoodsNum(id, num)
+        if (res.error !== this.$ERR_OK) {
+          this.$wechat.showToast(res.message)
+        }
+      },
+      // 点击删除按钮
+      delGoodsInfo(i, id) {
         this.$refs.msg.show()
         this.delIndex = i
+        this.cartId = id
       },
-      confirm() {
-        this.orderList.splice(this.delIndex, 1)
+      async confirm() {
+        let res = await API.Cart.delCartGoods(this.cartId)
+        if (res.error !== this.$ERR_OK) {
+          this.$wechat.showToast(res.message)
+        }
+        this.$wechat.showToast(res.message)
+        await this._getShopCart(false)
+        // this.orderList.splice(this.delIndex, 1)
       },
       ischoose(i) {
-        this.allcheck = this.allcheck === true ? false : ''
-        this.orderList[i].checked = !this.orderList[i].checked
-        this.isallCheck()
+        let that = this
+        that.allcheck = that.allcheck === true ? false : ''
+        that.orderList[i].checked = !that.orderList[i].checked
+        that.isallCheck()
+        that.orderTotal()
+      },
+      allIsChoose() {
+        this.allcheck = !this.allcheck
+        this.orderList.forEach((item, index) => {
+          this.allcheck === true && item.num > 0 ? item.checked = true : item.checked = false
+        })
+        this.orderTotal()
+        // console.log(this.orderList)
+      },
+      orderTotal() {
+        let that = this
+        that.totalPrice = 0
+        this.orderList.forEach((item, index) => {
+          if (item.checked === true && item.num <= item.buy_limit) {
+            that.totalPrice += item.price * item.num
+            that.chooseArr.push(item)
+          }
+        })
       },
       allUsechecked() {
         this.orderList.forEach((item) => {
-          if (item.number > 0) {
+          if (item.num > 0) {
             this.orderArr.push(item)
           }
         })
@@ -170,34 +233,17 @@
         })
         arr.length === this.orderArr.length ? this.allcheck = true : this.allcheck = false
       },
-      allIsChoose() {
-        this.allcheck = !this.allcheck
-        this.orderList.forEach((item, index) => {
-          this.allcheck === true && item.number > 0 ? item.checked = true : item.checked = false
-        })
-        // console.log(this.orderList)
-      },
-      navTo() {
-        this.$wx.navigateTo({url: `/pages/other-page`})
+      toSubmitOrder() {
+        let that = this
+        if (that.chooseArr.length > 0) {
+          that.update(that.chooseArr)
+          wx.redirectTo({url: `/pages/submit-order`})
+        } else {
+          that.$wechat.showToast('请选择商品!')
+        }
       },
       testToast() {
         this.$wechat.showToast('123123')
-      },
-      createQrCode() {
-        let str = JSON.stringify({ 'code': 8297128291, 'store_id': 8 }) // todo
-        let img = this.$createQrCode.png(str) // png
-        img = this.$createQrCode.svg(str) // svg
-        this.testSrc = img
-      },
-      async editorAvatar() {
-        try {
-          let res = await this.$wechat.chooseImage()
-          let file = res.tempFilePaths[0]
-          getApp().globalData.imgUrl = file
-          this.$wx.navigateTo({ url: '/pages/cut-picture?cutType=avatar' })
-        } catch (e) {
-          console.error(e)
-        }
       }
     },
     components: {
@@ -241,6 +287,8 @@
         font-family: $font-family-regular
         font-size: $font-size-14
         color: $color-sub
+        height: 5.34vw
+        line-height: 5.34vw
         letter-spacing: 0.3px
     .payment-content
       layout(row)
@@ -410,6 +458,7 @@
               layout(row)
               color: $color-money
               lin-height: 15px
+              height: 15px
               padding-bottom: 8px
               .txt
                 padding: 0 1.34vw

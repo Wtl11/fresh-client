@@ -1,5 +1,6 @@
 <template>
   <div class="submit-order">
+    <navigation-bar title="提交订单" :showArrow="true" :translucent="false"></navigation-bar>
     <div class="order-title">请在11月20日 16:00到货后，到团长代理点自提</div>
     <div class="order-info">
       <div class="order-info-top">
@@ -10,12 +11,29 @@
         </div>
       </div>
       <div class="order-info-bottom">
-        <div class="info-bottom-phone">提货人：19252926954</div>
+        <div class="info-bottom-phone">提货人：{{userInfo.nickname}}</div>
         <div class="wechat-btn">使用微信手机号</div>
       </div>
     </div>
     <div class="order-list">
-      <div class="list-item">
+      <div class="list-item" v-for="(item, index) in info" :key="index">
+        <div class="item-left-img"><img class="img" :src="item.goods_image_url" alt=""></div>
+        <div class="item-right">
+          <div class="title">{{item.goods_name}}</div>
+          <div class="sub-title">规格：{{item.goods_units}}</div>
+          <div class="price-box">
+            <div class="price-left">
+              <div class="number">{{item.price}}</div>
+              <div class="icon">元</div>
+            </div>
+            <div class="price-right">
+              <div class="icon">x</div>
+              <div class="number">{{item.num}}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--<div class="list-item">
         <div class="item-left-img"></div>
         <div class="item-right">
           <div class="title">超值特惠 智利J级车厘子250g智利J级车厘子250g智利J级车厘子250g</div>
@@ -31,41 +49,80 @@
             </div>
           </div>
         </div>
-      </div>
-      <div class="list-item">
-        <div class="item-left-img"></div>
-        <div class="item-right">
-          <div class="title">超值特惠 智利J级车厘子250g智利J级车厘子250g智利J级车厘子250g</div>
-          <div class="sub-title">规格：包</div>
-          <div class="price-box">
-            <div class="price-left">
-              <div class="number">3.4</div>
-              <div class="icon">元</div>
-            </div>
-            <div class="price-right">
-              <div class="icon">x</div>
-              <div class="number">1</div>
-            </div>
-          </div>
-        </div>
-      </div>
+      </div>-->
     </div>
     <div class="fixed-btn">
-      <div class="money">总计 12元</div>
-      <div class="pay">去支付</div>
+      <div class="money">总计 {{totalPrice}}元</div>
+      <div class="pay" @click.stop="_confirmOeder">去支付</div>
     </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
+  import { orderComputed, orderMethods } from '@state/helpers'
+  import NavigationBar from '@components/navigation-bar/navigation-bar'
+  import API from '@api'
   const PAGE_NAME = 'SUBMIT_ORDER'
 
   export default {
     name: PAGE_NAME,
     data() {
       return {
-
+        userInfo: '',
+        goods: [],
+        orderId: '',
+        totalPrice: 0
       }
+    },
+    computed: {
+      ...orderComputed
+    },
+    onShow() {
+      this.userInfo = wx.getStorageSync('userInfo')
+      this.orderTotal()
+      console.log(this.info)
+    },
+    methods: {
+      ...orderMethods,
+      orderTotal() {
+        let that = this
+        that.totalPrice = 0
+        this.info.forEach((item, index) => {
+          that.totalPrice += item.price * item.num
+          this.goods.push({
+            sku_id: item.goods_sku_id,
+            num: item.num
+          })
+        })
+      },
+      async _confirmOeder() {
+        // 手机号码暂无，后面加入
+        let data = {
+          goods: this.goods,
+          nickname: this.userInfo.nickname,
+          mobile: ''
+        }
+        let res = await API.SubmitOrder.confirmOeder(data)
+        if (res.error !== this.$ERR_OK) {
+          this.$wechat.showToast(res.message)
+        }
+        console.log(res)
+        this.orderId = res.data.order_id
+        // const {timestamp, signType, nonceStr, package, paySign} = payRes
+        wx.requestPayment({
+          timestamp: res.timestamp,
+          signType: res.signType,
+          nonceStr: res.nonceStr,
+          package: res.package,
+          paySign: res.paySign,
+          success(res) {},
+          fail(res) { }
+        })
+        // this.orderList.splice(this.delIndex, 1)
+      }
+    },
+    components: {
+      NavigationBar
     }
   }
 </script>
