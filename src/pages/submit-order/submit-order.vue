@@ -108,7 +108,7 @@
         }
         console.log(res)
         this.orderId = res.data.order_id
-        // const {timestamp, signType, nonceStr, package, paySign} = payRes
+        // const {timestamp, signType, nonceStr, package, paySign} = payRs
         wx.requestPayment({
           timestamp: res.timestamp,
           signType: res.signType,
