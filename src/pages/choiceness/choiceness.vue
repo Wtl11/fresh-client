@@ -10,33 +10,35 @@
           <div class="info-shop-name">赞播优鲜</div>
           <div class="info-box-top">
             <div class="left-info">
-              <div class="left-info-user"></div>
+              <div class="left-info-user">
+                <img mode="aspectFill" v-if="imageUrl" :src="groupInfo.head_image_url">
+              </div>
               <div class="name-box">
-                <div class="name-text">刘娇娇</div>
+                <div class="name-text">{{groupInfo.name}}</div>
                 <div class="address-box">
                   <div class="address-icon">
                     <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/icon-address_small@2x.png'">
                   </div>
-                  <div class="address-text">海珠区新港东</div>
+                  <div class="address-text">{{groupInfo.district}}{{groupInfo.address}}</div>
                 </div>
               </div>
             </div>
             <div class="right-info" @click="linkGroup">联系团长</div>
           </div>
-          <div class="info-box-bottom">公告：今天下雨，大家17:00可以取货</div>
+          <div class="info-box-bottom">公告：{{groupInfo.notice}}</div>
         </div>
       </div>
     </div>
     <div class="banner-box">
       <swiper class="banner" :current="praiseIndex" autoplay interval="5000" circular @change="_setPraiseIndex">
-        <block v-for="(item,index) in [1,2,3,4,5]" :key="index">
+        <block v-for="(item,index) in plantingList" :key="index">
           <swiper-item class="banner-item">
-            <img class="item-img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-bg@2x.png'">
+            <img class="item-img" mode="aspectFill" v-if="item.image_url" :src="item.image_url" @click="jumpDetail(item)">
           </swiper-item>
         </block>
       </swiper>
       <div class="dots">
-        <div class="dots-item" :class="{'dots-item-active': praiseIndex === idx}" v-for="(item,idx) in [1,2,3,4,5]" :key="idx" v-if="[1,2,3,4,5].length > 1"></div>
+        <div class="dots-item" :class="{'dots-item-active': praiseIndex === idx}" v-for="(item,idx) in plantingList" :key="idx" v-if="plantingList.length > 1"></div>
       </div>
     </div>
     <div class="select-tab" id="selTab" :class="{'topnav': menuFixed}">
@@ -55,18 +57,20 @@
       </scroll-view>
     </div>
     <div class="goods-box">
-      <div class="goods-list" v-for="(item, index) in [0,1,2,4,5,4]" :key="index">
+      <div class="goods-list" v-for="(item, index) in goodsList" :key="index">
         <div class="goods-left">
-          <div class="goods-left-img"></div>
+          <div class="goods-left-img">
+            <img class="item-img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/icon-label@2x.png'">
+          </div>
           <div class="goods-left-icon">
             <img class="item-img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/icon-label@2x.png'">
           </div>
         </div>
         <div class="goods-right">
-          <div class="title">超值特惠 4斤新鲜柠檬4斤新鲜柠檬4斤新鲜柠檬</div>
-          <div class="text-sub">超值特惠 4斤新鲜柠檬4斤新鲜柠檬4斤新鲜柠檬</div>
+          <div class="title">{{item.name}}</div>
+          <div class="text-sub">{{item.describe}}</div>
           <div class="text-sales-box">
-            <div class="text-sales">已售3303斤</div>
+            <div class="text-sales">已售{{item.sale_count}}{{item.goods_units}}</div>
           </div>
           <div class="add-box">
             <div class="add-box-left">
@@ -74,9 +78,9 @@
                 <div class="text-group">团购价</div>
               </section>
               <div class="price-box">
-                <div class="money">3.8</div>
+                <div class="money">{{item.shop_price}}</div>
                 <div class="unit">元</div>
-                <div class="lineation">12元</div>
+                <div class="lineation">{{item.original_price}}元</div>
               </div>
             </div>
             <div class="add-box-right">
@@ -92,13 +96,14 @@
       <div class="center">已经到底了</div>
       <div class="bot lines"></div>
     </div>
-    <link-group ref="groupComponents" phoneTxt="678910" wechatTxt="eleven丶"></link-group>
+    <link-group ref="groupComponents" :wechatInfo="groupInfo"></link-group>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import LinkGroup from '@components/link-group/link-group'
+  import API from '@api'
 
   const PAGE_NAME = 'CHOICENESS'
   const SELECTTAB = [{text: '限时尝鲜'}, {text: '精选菜篮'}, {text: '水果'}, {text: '粮油'}, {text: '百货'}, {text: '粮油'}, {text: '百货'}, {text: '粮油'}, {text: '百货'}]
@@ -110,15 +115,29 @@
         selectTab: SELECTTAB,
         tabIdx: 0,
         menuFixed: false,
-        menuTop: 0
+        menuTop: 0,
+        groupInfo: {},
+        groupId: 0,
+        plantingList: [],
+        tabList: [],
+        shelfId: 0,
+        goodsList: [],
+        goodsMore: false,
+        goodsPage: 1
       }
     },
-    onShow() {
+    async onShow() {
       this.initClientRect()
+      if (this.$mp.query.groupId) {
+        this.groupId = this.$mp.query.groupId
+      }
+      this.getPlantList()
+      this.getTabList()
+      await this._groupInfo(this.groupId)
     },
     onPageScroll(scroll) {
-      console.log(this.menuTop)
-      console.log(scroll.scrollTop)
+      // console.log(this.menuTop)
+      // console.log(scroll.scrollTop)
       if (scroll.scrollTop >= this.menuTop - 84) {
         this.menuFixed = true
       } else {
@@ -128,7 +147,7 @@
       // this.menuFixed = scroll.scrollTop > this.menuTop
     },
     methods: {
-      _setPraiseIndex(e) { // 设置集赞活动index
+      _setPraiseIndex(e) {
         this.praiseIndex = e.target.current
       },
       selectIndex(index) {
@@ -140,11 +159,101 @@
         query.select('#selTab').boundingClientRect()
         query.exec(function (res) {
           that.menuTop = res[0].top
-          console.log(that.menuTop)
+          // console.log(that.menuTop)
         })
       },
       linkGroup() {
         this.$refs.groupComponents.showLink()
+      },
+      async _groupInfo(id) {
+        let res = await API.Choiceness.getGroupInfo(id)
+        this.$wechat.hideLoading()
+        if (res.error !== this.$ERR_OK) {
+          this.$wechat.showToast(res.message)
+        }
+        console.log(res.data)
+        this.groupInfo = res.data
+        wx.setStorageSync('groupInfo', res.data)
+      },
+      getPlantList() {
+        API.Choiceness.getPlanting().then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.plantingList = res.data
+            console.log(res.data)
+          } else {
+            this.$wechat.showToast(res.message)
+          }
+        })
+      },
+      jumpDetail(item) {
+        console.log(item.type)
+        if (item.type === 'mini_goods') {
+          wx.navigateTo({
+            url: `/pages/goods-detail/?id=${item.content.id}`
+          })
+        } else {
+          console.log(item.content.url)
+          wx.navigateTo({
+            url: `/pages/out-html?url=${item.content.url}`
+          })
+        }
+      },
+      getTabList() {
+        API.Choiceness.getGoodsTag().then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.tabList = res.data
+            this.shelfId = res.shelf_id
+            this.sheTag_id = res.data[0].id
+            this.getGoodsList()
+            console.log(res.data)
+          } else {
+            this.$wechat.showToast(res.message)
+          }
+        })
+      },
+      getGoodsList() {
+        this.goodsPage = 1
+        let data = {
+          shelf_tag_id: this.sheTag_id,
+          shelf_id: this.shelfId,
+          page: this.goodsPage,
+          limit: 10
+        }
+        API.Choiceness.getGoodsShelfList(data).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.goodsList = res.data
+            console.log(res.data)
+            this._isUpList(res)
+          } else {
+            this.$wechat.showToast(res.message)
+          }
+        })
+      },
+      getMoreGoodsList() {
+        if (this.goodsMore) {
+          return
+        }
+        let data = {
+          shelf_tag_id: this.sheTag_id,
+          shelf_id: this.shelfId,
+          page: this.goodsPage,
+          limit: 10
+        }
+        API.Choiceness.getGoodsShelfList(data, true).then((res) => {
+          this.$wechat.hideLoading()
+          if (res.error === this.$ERR_OK) {
+            this.goodsList = this.goodsList.concat(res.data)
+            this._isUpList(res)
+          } else {
+            this.$wechat.showToast(res.message)
+          }
+        })
+      },
+      _isUpList(res) {
+        this.goodsPage++
+        if (this.goodsList.length >= res.meta.total * 1) {
+          this.goodsMore = true
+        }
       }
     },
     components: {
@@ -160,7 +269,7 @@
   .choiceness
     width: 100%
     min-height: 100vh
-    background: $color-background
+    background: #fff
 
   .choiceness-top
     position: relative
@@ -203,12 +312,13 @@
               width: 13.3vw
               height: 13.3vw
               margin-right: 9px
-              background: $color-main
               border-radius: 50%
               img
                 width: 100%
                 height: 100%
                 display: block
+                border-radius: 50%
+                background: $color-main
             .name-text
               height: $font-size-16
               font-size: $font-size-16
@@ -296,7 +406,7 @@
     box-sizing: border-box
     position: relative
     transition: all .1s
-    background: $color-background
+    background: #fff
     .select-box
       height: 35px
       width: 100%
@@ -348,7 +458,6 @@
       align-items: center
       .goods-left
         margin-left: 5px
-        background: $color-text-main
         position: relative
         width: 32vw
         height: 32vw
@@ -357,6 +466,11 @@
           width: 100%
           height: 100%
           border-radius: 3px
+          img
+            width: 100%
+            height: 100%
+            border-radius: 3px
+            display: block
         .goods-left-icon
           width: 32px
           height: 32px
@@ -397,7 +511,7 @@
             margin-bottom: 11px
             border-radius: 10px
             border-1px($color-text-sub, 10px)
-            padding: 2px 5px 1px
+            padding: 2px 5px 3px
         .add-box
           layout(row)
           justify-content: space-between
@@ -409,11 +523,12 @@
               font-family: $font-family-regular
               color: $color-money
               min-height: $font-size-16
+              line-height: $font-size-16
               margin-bottom: 6px
               border-radius: 10px
               background: rgba(255, 131, 0, 0.10)
               border-1px(#FF8300, 10px)
-              padding: 1px 8px 0
+              padding: 0px 8px 1px
           .price-box
             layout(row)
             align-items: flex-end
