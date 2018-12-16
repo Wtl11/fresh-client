@@ -5,10 +5,10 @@
     <div class="reg-img-box">
       <img class="reg-img" :src="imageUrl + '/yx-image/group/group-bg@2x.png'" v-if="imageUrl">
       <div class="reg-info">
-        <div class="reg-header"></div>
+        <img :src="leaderDetail.head_image_url" class="reg-header">
         <div class="reg-msg">
-          <div class="reg-name">刘娇娇</div>
-          <div class="reg-address">白云区黄石商圈国颐堂店asfasfasfasfasdfas</div>
+          <div class="reg-name">{{leaderDetail.nickname}}</div>
+          <div class="reg-address">{{address}}</div>
         </div>
       </div>
       <div class="reg-tip">
@@ -21,39 +21,39 @@
       <img :src="imageUrl + '/yx-image/group/pic-shop@2x.png'" v-if="imageUrl" class="reg-shop-icon">
       <div class="order-item">
         <div class="reg-order-title">今日收入(元)</div>
-        <div class="reg-order-money">820.00</div>
+        <div class="reg-order-money">{{orderTotal.today_income}}</div>
       </div>
       <div class="order-item">
         <div class="reg-order-title">今日订单(笔)</div>
-        <div class="reg-order-money">820.00</div>
+        <div class="reg-order-money">{{orderTotal.today_order}}</div>
       </div>
       <div class="order-item">
         <div class="reg-order-title">今日销售(元)</div>
-        <div class="reg-order-money">820.00</div>
+        <div class="reg-order-money">{{orderTotal.today_sale}}</div>
       </div>
     </div>
     <!--功能模块-->
     <div class="reg-manager">
       <div class="reg-manager-box">
-        <div class="reg-manager-item">
+        <navigator url="/pages/yesterday-sale-manager" hover-class="none" class="reg-manager-item">
           <img :src="imageUrl + '/yx-image/group/icon-order@2x.png'" v-if="imageUrl" class="reg-manager-icon">
           <p class="reg-manager-text">消费者订单</p>
-        </div>
-        <div class="reg-manager-item">
+        </navigator>
+        <navigator url="/pages/after-sale-management" hover-class="none" class="reg-manager-item">
           <img :src="imageUrl + '/yx-image/group/icon-sale@2x.png'" v-if="imageUrl" class="reg-manager-icon">
           <p class="reg-manager-text">售后管理</p>
-        </div>
-        <div class="reg-manager-item">
+        </navigator>
+        <navigator url="/pages/delivery-order" hover-class="none" class="reg-manager-item">
           <img :src="imageUrl + '/yx-image/group/icon-delivery@2x.png'" v-if="imageUrl" class="reg-manager-icon">
           <p class="reg-manager-text">配送收货</p>
-        </div>
+        </navigator>
       </div>
       <div class="reg-manager-box">
         <div class="reg-manager-item">
           <img :src="imageUrl + '/yx-image/group/icon-scan@2x.png'" v-if="imageUrl" class="reg-manager-icon">
           <p class="reg-manager-text">扫一扫</p>
         </div>
-        <div class="reg-manager-item">
+        <div class="reg-manager-item" @click="_inDevelopment">
           <img :src="imageUrl + '/yx-image/group/icon-soon@2x.png'" v-if="imageUrl" class="reg-manager-icon">
           <p class="reg-manager-text">团长钱包</p>
         </div>
@@ -71,28 +71,19 @@
         </span>
       </div>
       <div class="reg-goods-box">
-        <div class="reg-goods-item">
-          <img src="" class="reg-goods-img">
+        <div class="reg-goods-item" v-for="(item,index) in goodsList" :key="index">
+          <img :src="item.goods_cover_image" class="reg-goods-img">
           <div class="reg-goods-content">
-            <div class="reg-goods-title">超值特惠4斤新鲜柠檬沙发沙发沙发上</div>
+            <div class="reg-goods-title">{{item.name}}</div>
             <div class="reg-goods-tip">团购价</div>
-            <span class="reg-goods-money">9.8<span class="reg-goods-small">元</span></span>
-            <span class="reg-goods-del-money">96元</span>
+            <span class="reg-goods-money">{{item.shop_price}}<span class="reg-goods-small">元</span></span>
+            <span class="reg-goods-del-money">{{item.original_price}}元</span>
           </div>
           <div class="ability">
-            <button class="share">
+            <button class="share" open-type="share" :data-goodsItem="item">
               <img :src="imageUrl + '/yx-image/group/icon-share@2x.png'" v-if="imageUrl" class="share-icon">
             </button>
-            <p class="scale-count">销量335</p>
-          </div>
-        </div>
-        <div class="reg-goods-item">
-          <img src="" class="reg-goods-img">
-          <div class="reg-goods-content">
-            <div class="reg-goods-title">超值特惠4斤新鲜柠檬沙发沙发沙发上</div>
-            <div class="reg-goods-tip">团购价</div>
-            <span class="reg-goods-money">9.8<span class="reg-goods-small">元</span></span>
-            <span class="reg-goods-del-money">96元</span>
+            <p class="scale-count">销量{{item.sale_count}}</p>
           </div>
         </div>
       </div>
@@ -103,6 +94,7 @@
 
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
+  import API from '@api'
 
   const PAGE_NAME = 'REGIMENTAL_COMMANDER'
   const Nav = [{title: '商品推荐', status: 2}, {title: '素材推荐', status: 3}]
@@ -111,12 +103,72 @@
     data() {
       return {
         nav: Nav,
-        navIndex: 0
+        navIndex: 0,
+        isLoading: true,
+        leaderDetail: {},
+        orderTotal: {},
+        goodsList: []
+      }
+    },
+    onShareAppMessage(res) {
+      let goodsItem = res.target.dataset.goodsitem
+      let shopId = wx.getStorageSync('shopId')
+      console.log(shopId)
+      return {
+        title: goodsItem.name,
+        path: `/pages/goods-detail?id=${goodsItem.id}&shopId=${shopId}`, // 商品详情
+        imageUrl: goodsItem.thumb_image || goodsItem.goods_cover_image,
+        success: (res) => {
+          // 转发成功
+        },
+        fail: (res) => {
+          // 转发失败
+        }
+      }
+    },
+    async onLoad() {
+      await Promise.all([
+        this._getLeaderDetail(),
+        this._leaderOrderTotal(),
+        this._getRecommendGoods()
+      ])
+      this.isLoading = false
+    },
+    computed: {
+      address() {
+        return this.leaderDetail.province ? this.leaderDetail.province + this.leaderDetail.city + this.leaderDetail.district + this.leaderDetail.address : ''
       }
     },
     methods: {
-      _setNav(index, item) {
+      _inDevelopment() {
         this.$wechat.showToast('功能正在努力研发中')
+      },
+      _setNav(index, item) {
+        this._inDevelopment()
+      },
+      async _getLeaderDetail() {
+        let res = await API.Leader.leaderDetail()
+        if (res.error !== this.$ERR_OK) {
+          this.$wechat.showToast(res.message)
+          return
+        }
+        this.leaderDetail = res.data
+      },
+      async _leaderOrderTotal() {
+        let res = await API.Leader.leaderOrderTotal()
+        if (res.error !== this.$ERR_OK) {
+          this.$wechat.showToast(res.message)
+          return
+        }
+        this.orderTotal = res.data
+      },
+      async _getRecommendGoods() {
+        let res = await API.Leader.recommendGoods()
+        if (res.error !== this.$ERR_OK) {
+          this.$wechat.showToast(res.message)
+          return
+        }
+        this.goodsList = res.data
       }
     },
     components: {
