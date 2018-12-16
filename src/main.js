@@ -27,21 +27,27 @@ export default {
     },
     tabBar: {
       color: '#2c2c2c',
-      selectedColor: '#FF3F54',
+      selectedColor: '#73C200',
       backgroundColor: '#ffffff',
       borderStyle: 'white',
       list: [
         {
           pagePath: 'pages/choiceness',
-          text: '首页'
+          text: '首页',
+          iconPath: '/static/img/icon-select.png',
+          selectedIconPath: '/static/img/icon-select_press.png'
         },
         {
           pagePath: 'pages/shopping-cart',
-          text: '购物车'
+          text: '购物车',
+          iconPath: '/static/img/icon-goodscart.png',
+          selectedIconPath: '/static/img/icon-goodscat_press.png'
         },
         {
           pagePath: 'pages/mine-core',
-          text: '我的'
+          text: '我的',
+          iconPath: '/static/img/icon-my.png',
+          selectedIconPath: '/static/img/icon-my_press.png'
         }
       ]
     }

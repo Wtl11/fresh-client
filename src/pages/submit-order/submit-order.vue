@@ -1,21 +1,42 @@
 <template>
   <div class="submit-order">
+    <navigation-bar title="提交订单" :showArrow="true" :translucent="false"></navigation-bar>
     <div class="order-title">请在11月20日 16:00到货后，到团长代理点自提</div>
     <div class="order-info">
       <div class="order-info-top">
-        <div class="info-address">提货地址：广州市越秀区中山四路居家佳友便利店</div>
+        <div class="info-address">提货地址：{{groupInfo.province}}{{groupInfo.city}}{{groupInfo.district}}{{groupInfo.address}}</div>
         <div class="info-phone">
-          <div class="icon-text">团长</div>
-          <div class="icon-number">19252926954</div>
+          <div class="icon-text">团长 </div>
+          <div class="icon-number"><span class="name">{{groupInfo.name}}</span><span class="txt">{{groupInfo.mobile}}</span></div>
         </div>
       </div>
       <div class="order-info-bottom">
-        <div class="info-bottom-phone">提货人：19252926954</div>
-        <div class="wechat-btn">使用微信手机号</div>
+        <div class="info-bottom-phone">
+          <div class="lable">提货人手机号：</div>
+          <div class="mobile"><input class="ipt" type="text" v-model="consigneeNum"></div>
+        </div>
+        <button class="wechat-btn" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber">使用微信手机号</button>
       </div>
     </div>
     <div class="order-list">
-      <div class="list-item">
+      <div class="list-item" v-for="(item, index) in info" :key="index">
+        <div class="item-left-img"><img class="img" :src="item.goods_image_url" alt=""></div>
+        <div class="item-right">
+          <div class="title">{{item.goods_name}}</div>
+          <div class="sub-title">规格：{{item.goods_units}}</div>
+          <div class="price-box">
+            <div class="price-left">
+              <div class="number">{{item.price}}</div>
+              <div class="icon">元</div>
+            </div>
+            <div class="price-right">
+              <div class="icon">x</div>
+              <div class="number">{{item.num}}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--<div class="list-item">
         <div class="item-left-img"></div>
         <div class="item-right">
           <div class="title">超值特惠 智利J级车厘子250g智利J级车厘子250g智利J级车厘子250g</div>
@@ -31,41 +52,99 @@
             </div>
           </div>
         </div>
-      </div>
-      <div class="list-item">
-        <div class="item-left-img"></div>
-        <div class="item-right">
-          <div class="title">超值特惠 智利J级车厘子250g智利J级车厘子250g智利J级车厘子250g</div>
-          <div class="sub-title">规格：包</div>
-          <div class="price-box">
-            <div class="price-left">
-              <div class="number">3.4</div>
-              <div class="icon">元</div>
-            </div>
-            <div class="price-right">
-              <div class="icon">x</div>
-              <div class="number">1</div>
-            </div>
-          </div>
-        </div>
-      </div>
+      </div>-->
     </div>
     <div class="fixed-btn">
-      <div class="money">总计 12元</div>
-      <div class="pay">去支付</div>
+      <div class="money">总计 {{totalPrice}}元</div>
+      <div class="pay" @click.stop="_confirmOeder">去支付</div>
     </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
+  import { orderComputed, orderMethods } from '@state/helpers'
+  import NavigationBar from '@components/navigation-bar/navigation-bar'
+  import API from '@api'
   const PAGE_NAME = 'SUBMIT_ORDER'
 
   export default {
     name: PAGE_NAME,
     data() {
       return {
-
+        userInfo: '',
+        goods: [],
+        orderId: '',
+        totalPrice: 0,
+        consigneeNum: '',
+        groupInfo: {}
       }
+    },
+    computed: {
+      ...orderComputed
+    },
+    async onShow() {
+      this.userInfo = wx.getStorageSync('userInfo')
+      this.consigneeNum = 13694240
+      this.groupInfo = wx.getStorageSync('groupInfo')
+      this.orderTotal()
+      if (!this.groupInfo) { await this._groupInfo() }
+      console.log(this.info)
+    },
+    methods: {
+      ...orderMethods,
+      orderTotal() {
+        let that = this
+        that.totalPrice = 0
+        this.info.forEach((item, index) => {
+          that.totalPrice += item.price * item.num
+          this.goods.push({
+            sku_id: item.goods_sku_id,
+            num: item.num
+          })
+        })
+      },
+      getPhoneNumber(e) {
+        console.log(e.mp.detail.encryptedData)
+        console.log(e.mp.detail.errMsg)
+        console.log(e.mp.detail.iv)
+      },
+      async _groupInfo() {
+        let res = await API.SubmitOrder.groupInfo()
+        this.$wechat.hideLoading()
+        if (res.error !== this.$ERR_OK) {
+          this.$wechat.showToast(res.message)
+        }
+        console.log(res.data)
+        this.groupInfo = res.data
+      },
+      async _confirmOeder() {
+        // 手机号码暂无，后面加入
+        let data = {
+          goods: this.goods,
+          nickname: this.userInfo.nickname,
+          mobile: this.userInfo.mobile
+        }
+        let res = await API.SubmitOrder.confirmOeder(data)
+        this.$wechat.hideLoading()
+        if (res.error !== this.$ERR_OK) {
+          this.$wechat.showToast(res.message)
+        }
+        let payRes = res.data
+        const {timestamp, nonceStr, signType, paySign} = payRes
+        this.orderId = res.data.order_id
+        wx.requestPayment({
+          timeStamp: timestamp,
+          nonceStr,
+          package: payRes.package,
+          signType,
+          paySign,
+          success(res) {},
+          fail(res) { }
+        })
+      }
+    },
+    components: {
+      NavigationBar
     }
   }
 </script>
@@ -112,13 +191,23 @@
           font-family: $font-family-regular
           border-1px($color-main, 2px)
           padding: 1px 4px 2px
-          margin-right: 5px
+          margin-right: 8px
         .icon-number
           font-size: $font-size-15
           color: $color-text-sub
           font-family: $font-family-regular
+          .name
+            font-size: $font-size-15
+            color: $color-text-sub
+            font-family: $font-family-regular
+            margin-right: 8px
+          .txt
+            font-size: $font-size-15
+            color: $color-text-sub
+            font-family: $font-family-regular
     .order-info-bottom
       height: 50px
+      line-height: 50px
       layout(row)
       align-items: center
       justify-content: space-between
@@ -128,6 +217,25 @@
         font-size: $font-size-15
         color: #000000
         font-family: $font-family-medium
+        layout(row)
+        align-items: center
+        .lable
+          font-size: $font-size-15
+          color: #000000
+          font-family: $font-family-medium
+        .mobile
+          font-size: $font-size-15
+          color: #000000
+          border-1px()
+          font-family: $font-family-medium
+          .ipt
+            width: 128px
+            box-sizing: border-box
+            font-size: $font-size-13
+            height: 20px
+            line-height: 20px
+            //border: 1px solid #e4e4e4
+            padding: 2px
       .wechat-btn
         font-size: $font-size-12
         color: $color-main

@@ -17,3 +17,11 @@ export const oauthComputed = {
 export const oauthMethods = {
   ...mapActions('oauth', ['update'])
 }
+
+export const orderComputed = {
+  ...mapGetters('order', ['info'])
+}
+
+export const orderMethods = {
+  ...mapActions('order', ['update'])
+}
