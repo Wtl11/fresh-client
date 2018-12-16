@@ -1,6 +1,6 @@
 <template>
   <div class="after-sale-management">
-    <navigation-bar title="售后管理"></navigation-bar>
+    <navigation-bar title="消费者订单"></navigation-bar>
     <div class="after-header">
       <div class="after-search">
         <img :src="imageUrl + '/yx-image/group/icon-search@2x.png'" v-if="imageUrl" class="search-icon">
