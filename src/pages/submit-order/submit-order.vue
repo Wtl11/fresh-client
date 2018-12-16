@@ -4,15 +4,18 @@
     <div class="order-title">请在11月20日 16:00到货后，到团长代理点自提</div>
     <div class="order-info">
       <div class="order-info-top">
-        <div class="info-address">提货地址：广州市越秀区中山四路居家佳友便利店</div>
+        <div class="info-address">提货地址：{{groupInfo.province}}{{groupInfo.city}}{{groupInfo.district}}{{groupInfo.address}}</div>
         <div class="info-phone">
-          <div class="icon-text">团长</div>
-          <div class="icon-number">19252926954</div>
+          <div class="icon-text">团长 </div>
+          <div class="icon-number"><span class="name">{{groupInfo.name}}</span><span class="txt">{{groupInfo.mobile}}</span></div>
         </div>
       </div>
       <div class="order-info-bottom">
-        <div class="info-bottom-phone">提货人：{{userInfo.nickname}}</div>
-        <div class="wechat-btn">使用微信手机号</div>
+        <div class="info-bottom-phone">
+          <div class="lable">提货人手机号：</div>
+          <div class="mobile"><input class="ipt" type="text" v-model="consigneeNum"></div>
+        </div>
+        <button class="wechat-btn" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber">使用微信手机号</button>
       </div>
     </div>
     <div class="order-list">
@@ -71,15 +74,20 @@
         userInfo: '',
         goods: [],
         orderId: '',
-        totalPrice: 0
+        totalPrice: 0,
+        consigneeNum: '',
+        groupInfo: {}
       }
     },
     computed: {
       ...orderComputed
     },
-    onShow() {
+    async onShow() {
       this.userInfo = wx.getStorageSync('userInfo')
+      this.consigneeNum = 13694240
+      this.groupInfo = wx.getStorageSync('groupInfo')
       this.orderTotal()
+      if (!this.groupInfo) { await this._groupInfo() }
       console.log(this.info)
     },
     methods: {
@@ -95,30 +103,44 @@
           })
         })
       },
+      getPhoneNumber(e) {
+        console.log(e.mp.detail.encryptedData)
+        console.log(e.mp.detail.errMsg)
+        console.log(e.mp.detail.iv)
+      },
+      async _groupInfo() {
+        let res = await API.SubmitOrder.groupInfo()
+        this.$wechat.hideLoading()
+        if (res.error !== this.$ERR_OK) {
+          this.$wechat.showToast(res.message)
+        }
+        console.log(res.data)
+        this.groupInfo = res.data
+      },
       async _confirmOeder() {
         // 手机号码暂无，后面加入
         let data = {
           goods: this.goods,
           nickname: this.userInfo.nickname,
-          mobile: ''
+          mobile: this.userInfo.mobile
         }
         let res = await API.SubmitOrder.confirmOeder(data)
+        this.$wechat.hideLoading()
         if (res.error !== this.$ERR_OK) {
           this.$wechat.showToast(res.message)
         }
-        console.log(res)
+        let payRes = res.data
+        const {timestamp, nonceStr, signType, paySign} = payRes
         this.orderId = res.data.order_id
-        // const {timestamp, signType, nonceStr, package, paySign} = payRs
         wx.requestPayment({
-          timestamp: res.timestamp,
-          signType: res.signType,
-          nonceStr: res.nonceStr,
-          package: res.package,
-          paySign: res.paySign,
+          timeStamp: timestamp,
+          nonceStr,
+          package: payRes.package,
+          signType,
+          paySign,
           success(res) {},
           fail(res) { }
         })
-        // this.orderList.splice(this.delIndex, 1)
       }
     },
     components: {
@@ -169,13 +191,23 @@
           font-family: $font-family-regular
           border-1px($color-main, 2px)
           padding: 1px 4px 2px
-          margin-right: 5px
+          margin-right: 8px
         .icon-number
           font-size: $font-size-15
           color: $color-text-sub
           font-family: $font-family-regular
+          .name
+            font-size: $font-size-15
+            color: $color-text-sub
+            font-family: $font-family-regular
+            margin-right: 8px
+          .txt
+            font-size: $font-size-15
+            color: $color-text-sub
+            font-family: $font-family-regular
     .order-info-bottom
       height: 50px
+      line-height: 50px
       layout(row)
       align-items: center
       justify-content: space-between
@@ -185,6 +217,25 @@
         font-size: $font-size-15
         color: #000000
         font-family: $font-family-medium
+        layout(row)
+        align-items: center
+        .lable
+          font-size: $font-size-15
+          color: #000000
+          font-family: $font-family-medium
+        .mobile
+          font-size: $font-size-15
+          color: #000000
+          border-1px()
+          font-family: $font-family-medium
+          .ipt
+            width: 128px
+            box-sizing: border-box
+            font-size: $font-size-13
+            height: 20px
+            line-height: 20px
+            //border: 1px solid #e4e4e4
+            padding: 2px
       .wechat-btn
         font-size: $font-size-12
         color: $color-main

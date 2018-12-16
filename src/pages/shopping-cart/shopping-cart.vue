@@ -22,7 +22,7 @@
             <div class="left">
               <div class="spec" v-if="item.goods_units">规格：{{item.goods_units}}</div>
               <div class="remain">
-                <div class="txt"  v-if="item.number">仅剩{{item.number}}件</div>
+                <div class="txt"  v-if="item.usable_stock">仅剩{{item.usable_stock}}件</div>
               </div>
               <div class="price" v-if="item.price"><span class="num">{{item.price}}</span>元</div>
             </div>
@@ -362,7 +362,7 @@
           align-items: center
           width: 100%
           height: 15px
-          padding-bottom: 5px
+          padding-bottom: 6px
           line-height: 15px
           .title
             width: 48.5vw
@@ -453,13 +453,13 @@
               font-family: $font-family-regular
               font-size: $font-size-14
               color: #808080
-              padding-bottom: 5px
+              padding-bottom: 6px
             .remain
               layout(row)
               color: $color-money
-              lin-height: 15px
-              height: 15px
-              padding-bottom: 8px
+              lin-height: 13px
+              height: 13px
+              padding-bottom: 7.5px
               .txt
                 padding: 0 1.34vw
                 font-family: $font-family-regular
