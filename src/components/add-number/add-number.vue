@@ -3,13 +3,15 @@
     <scroll-view scroll-y class="link-box" v-show="linkShow" @touchmove.prevent="" @click.stop="hideLink"></scroll-view>
     <div class="link-bottom" :class="linkShow ? 'show' : ''">
       <div class="goods-info">
-        <div class="goods-info-left"></div>
+        <div class="goods-info-left">
+          <img v-if="msgDetail.goods_cover_image" :src="msgDetail.goods_cover_image" class="item-img"  mode="aspectFill">
+        </div>
         <div class="goods-info-right">
-          <div class="title">智利J级车厘子250g</div>
-          <div class="price-box">
-            <div class="price-small">3.8</div>
+          <div class="title">{{msgDetail.name}}</div>
+          <div class="order-price-box">
+            <div class="price-small">{{msgDetail.shop_price}}</div>
             <div class="price-icon">元</div>
-            <div class="price-line">12元</div>
+            <div class="price-line">{{msgDetail.original_price}}元</div>
           </div>
         </div>
       </div>
@@ -27,13 +29,13 @@
         </div>
       </div>
       <div class="price-box">
-        <div class="price-box-left">价格</div>
-        <div class="price-box-right">
-          <div class="number">11.9</div>
+        <div class="order-price-box-left">价格</div>
+        <div class="order-price-box-right">
+          <div class="number">{{orderTotal}}</div>
           <div class="icon">元</div>
         </div>
       </div>
-      <button class="subimit-btn">确定</button>
+      <button class="subimit-btn" @click="comfirmNumer">确定</button>
     </div>
   </div>
 </template>
@@ -44,19 +46,21 @@
   export default {
     name: COMPONENT_NAME,
     props: {
-      wechatTxt: {
-        type: Object,
-        default: ''
-      },
-      phoneTxt: {
+      msgDetail: {
         type: Object,
         default: ''
       }
     },
     data() {
       return {
+        showOrderNum: true,
         linkShow: false,
         orderNum: 1
+      }
+    },
+    computed: {
+      orderTotal() {
+        return (this.msgDetail.shop_price * this.orderNum).toFixed(2)
       }
     },
     methods: {
@@ -66,21 +70,28 @@
       showLink() {
         this.linkShow = true
       },
-      clipWechat() {
-        let that = this
-        that.$wx.setClipboardData({
-          data: this.wechatTxt,
-          success: function(res) {
-            that.$wx.getClipboardData({
-              success: function(res) {}
-            })
-          }
-        })
+      addNum() {
+        if (this.orderNum > 0) {
+          this.showOrderNum = false
+        }
+        let number = this.msgDetail.buy_limit - this.msgDetail.buy_count
+        if (this.orderNum >= number) {
+          this.$wechat.showToast(`该商品限购${this.msgDetail.buy_limit}件`)
+          return
+        }
+        this.orderNum++
       },
-      callPhone() {
-        this.$wx.makePhoneCall({
-          phoneNumber: this.phoneTxt
-        })
+      subNum() {
+        if (this.orderNum > 1) {
+          this.orderNum--
+        }
+        if (this.orderNum <= 1) {
+          this.showOrderNum = true
+        }
+      },
+      comfirmNumer() {
+        this.hideLink()
+        this.$emit('comfirmNumer', this.orderNum)
       }
     }
   }
@@ -113,7 +124,6 @@
       .goods-info-left
         width: 26.7vw
         height: 26.7vw
-        background: #333
         margin-right: 4vw
         position: relative
         top: -6.9vw
@@ -131,7 +141,7 @@
           line-height: 1
           min-height: $font-size-18
           margin-bottom: 10px
-        .price-box
+        .order-price-box
           layout(row)
           align-items: flex-end
           .price-small
@@ -163,7 +173,7 @@
       color: $color-text-main
       width: 75px
     .num-btn-box1
-      width: 120px
+      width: 123px
       height: 32px
       border-radius: 4px
       border-1px(#EEEEEE, 4px, solid, 2px)
@@ -210,11 +220,11 @@
     align-items: center
     justify-content: space-between
     padding: 10px 0 50px
-    .price-box-left
+    .order-price-box-left
       font-family: $font-family-regular
       font-size: $font-size-16
       color: $color-text-main
-    .price-box-right
+    .order-price-box-right
       layout(row)
       align-items: flex-end
       .number
@@ -223,6 +233,7 @@
         color: $color-money
         line-height: 1
       .icon
+        padding-bottom: 3px
         font-family: $font-family-medium
         font-size: $font-size-12
         color: $color-money

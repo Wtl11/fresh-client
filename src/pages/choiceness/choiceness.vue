@@ -41,7 +41,7 @@
         <div class="dots-item" :class="{'dots-item-active': praiseIndex === idx}" v-for="(item,idx) in plantingList" :key="idx" v-if="plantingList.length > 1"></div>
       </div>
     </div>
-    <div class="select-tab" id="selTab" :class="{'topnav': menuFixed}">
+    <div class="select-tab" id="selTab">
       <scroll-view
         scroll-x
         style="height: 35px"
@@ -57,10 +57,10 @@
       </scroll-view>
     </div>
     <div class="goods-box">
-      <div class="goods-list" v-for="(item, index) in goodsList" :key="index">
+      <div class="goods-list" v-for="(item, index) in goodsList" :key="index" @click="jumpGoodsDetail(item)">
         <div class="goods-left">
           <div class="goods-left-img">
-            <img class="item-img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/icon-label@2x.png'">
+            <img class="item-img" mode="aspectFill" v-if="item.goods_cover_image" :src="item.goods_cover_image">
           </div>
           <div class="goods-left-icon">
             <img class="item-img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/icon-label@2x.png'">
@@ -84,7 +84,7 @@
               </div>
             </div>
             <div class="add-box-right">
-              <div class="add-goods-btn">+购物车</div>
+              <div class="add-goods-btn" @click.stop="addShoppingCart(item)">+购物车</div>
             </div>
           </div>
         </div>
@@ -117,7 +117,6 @@
         menuFixed: false,
         menuTop: 0,
         groupInfo: {},
-        groupId: 0,
         plantingList: [],
         tabList: [],
         shelfId: 0,
@@ -127,13 +126,11 @@
       }
     },
     async onShow() {
-      this.initClientRect()
-      if (this.$mp.query.groupId) {
-        this.groupId = this.$mp.query.groupId
-      }
+      // this.initClientRect()
       this.getPlantList()
       this.getTabList()
-      await this._groupInfo(this.groupId)
+      this.changeShoppingNumber()
+      await this._groupInfo()
     },
     onPageScroll(scroll) {
       // console.log(this.menuTop)
@@ -159,40 +156,34 @@
         query.select('#selTab').boundingClientRect()
         query.exec(function (res) {
           that.menuTop = res[0].top
-          // console.log(that.menuTop)
         })
       },
       linkGroup() {
         this.$refs.groupComponents.showLink()
       },
-      async _groupInfo(id) {
-        let res = await API.Choiceness.getGroupInfo(id)
+      async _groupInfo() {
+        let res = await API.Choiceness.getGroupInfo()
         this.$wechat.hideLoading()
         if (res.error !== this.$ERR_OK) {
           this.$wechat.showToast(res.message)
         }
-        console.log(res.data)
         this.groupInfo = res.data
-        wx.setStorageSync('groupInfo', res.data)
       },
       getPlantList() {
         API.Choiceness.getPlanting().then((res) => {
           if (res.error === this.$ERR_OK) {
             this.plantingList = res.data
-            console.log(res.data)
           } else {
             this.$wechat.showToast(res.message)
           }
         })
       },
       jumpDetail(item) {
-        console.log(item.type)
         if (item.type === 'mini_goods') {
           wx.navigateTo({
-            url: `/pages/goods-detail/?id=${item.content.id}`
+            url: `/pages/goods-detail?id=${item.content.id}`
           })
         } else {
-          console.log(item.content.url)
           wx.navigateTo({
             url: `/pages/out-html?url=${item.content.url}`
           })
@@ -254,6 +245,35 @@
         if (this.goodsList.length >= res.meta.total * 1) {
           this.goodsMore = true
         }
+      },
+      jumpGoodsDetail(item) {
+        wx.navigateTo({
+          url: `/pages/goods-detail?id=${item.id}`
+        })
+      },
+      addShoppingCart(item) {
+        console.log(item)
+        API.Choiceness.addShopCart({sku_id: item.shop_sku_id}).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.$wechat.showToast('加入购物车成功')
+            this.changeShoppingNumber()
+          } else {
+            this.$wechat.showToast(res.message)
+          }
+        })
+      },
+      changeShoppingNumber() {
+        API.Choiceness.shopCartNumber().then((res) => {
+          if (res.error === this.$ERR_OK) {
+            console.log(res.data)
+            wx.setTabBarBadge({
+              index: 1,
+              text: res.data.count + ''
+            })
+          } else {
+            this.$wechat.showToast(res.message)
+          }
+        })
       }
     },
     components: {
