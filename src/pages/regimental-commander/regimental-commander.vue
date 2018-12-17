@@ -49,7 +49,7 @@
         </navigator>
       </div>
       <div class="reg-manager-box">
-        <div class="reg-manager-item">
+        <div class="reg-manager-item" @click="_scanCode">
           <img :src="imageUrl + '/yx-image/group/icon-scan@2x.png'" v-if="imageUrl" class="reg-manager-icon">
           <p class="reg-manager-text">扫一扫</p>
         </div>
@@ -140,6 +140,14 @@
       }
     },
     methods: {
+      _scanCode() {
+        wx.scanCode({
+          success(res) {
+            let id = JSON.parse(res.result).customer_id
+            wx.navigateTo({url: `/pages/find-product?id=${id}`})
+          }
+        })
+      },
       _inDevelopment() {
         this.$wechat.showToast('功能正在努力研发中')
       },
