@@ -28,7 +28,7 @@
             <div class="right">
               <div class="number-box">
                 <div class="minus" @click.stop="subNum(index, item.num, item.id)">-</div>
-                <div class="num">{{item.num ? item.num : 0}}</div>
+                <div class="num">{{item.num ? item.num : 1}}</div>
                 <div class="add" @click.stop="addNum(index, item.num, item.buy_limit, item.id)">+</div>
               </div>
             </div>
@@ -101,15 +101,15 @@
     methods: {
       ...orderMethods,
       async _getShopCart(loading = true) {
-        let arr = []
         let res = await API.Cart.shopCart(loading)
         this.$wechat.hideLoading()
         if (res.error !== this.$ERR_OK) {
           this.$wechat.showToast(res.message)
         }
-        res.data.forEach((item, index) => {
+        res.data.forEach((item) => {
+          let usableStock = item.usable_stock * 1
           item.checked = false
-          arr.push(item)
+          item.num = item.num > usableStock ? item.num : usableStock
         })
         this.goodsList = res.data
         this.deliverAt = res.shelf_delivery_at
