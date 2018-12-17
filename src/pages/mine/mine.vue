@@ -46,7 +46,7 @@
         </div>
       </div>
     </div>
-    <div class="self-addr group">
+    <div class="self-addr group" @click="_goMyHosing">
       <div class="self-top">
         <div class="tit">我的小区/小区管理</div>
         <div class="switch-btn">
@@ -112,6 +112,12 @@
       // ...mapGetters(['role'])
     },
     methods: {
+      // 跳转我的小区
+      _goMyHosing() {
+        let isLeader = wx.getStorageSync('isLeader') || false
+        let page = isLeader ? '/pages/regimental-commander' : '/pages/mine-housing'
+        wx.navigateTo({url: page})
+      },
       _showQrCodeBox() {
         let modalAnimation = wx.createAnimation({
           duration: 500,

@@ -21,8 +21,10 @@
           query += `${key}=${options.query[key]}`
           console.log(query)
         }
-        // console.log(options)
-        wx.setStorageSync('targetPage', `${options.path}${query ? '?' : ''}${query}`)
+        console.log(options.path)
+        if (options.path !== 'pages/lost' && options.path !== 'pages/error' && options.path !== 'pages/login') {
+          wx.setStorageSync('targetPage', `${options.path}${query ? '?' : ''}${query}`)
+        }
         wx.reLaunch({url: '/pages/login'})
       }
       // todo
