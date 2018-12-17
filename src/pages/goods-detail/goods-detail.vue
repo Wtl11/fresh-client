@@ -101,7 +101,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import { orderMethods } from '@state/helpers'
+  import { orderMethods, cartMethods } from '@state/helpers'
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import AddNumber from '@components/add-number/add-number'
   import LinkGroup from '@components/link-group/link-group'
@@ -138,6 +138,7 @@
     },
     methods: {
       ...orderMethods,
+      ...cartMethods,
       async _groupInfo() {
         let res = await API.Choiceness.getGroupInfo()
         this.$wechat.hideLoading()
@@ -178,20 +179,7 @@
         API.Choiceness.addShopCart({sku_id: this.goodsMsg.shop_skus[0].id}).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.$wechat.showToast('加入购物车成功')
-            this.changeShoppingNumber()
-          } else {
-            this.$wechat.showToast(res.message)
-          }
-        })
-      },
-      changeShoppingNumber() {
-        API.Choiceness.shopCartNumber().then((res) => {
-          if (res.error === this.$ERR_OK) {
-            console.log(res.data)
-            wx.setTabBarBadge({
-              index: 1,
-              text: res.data.count + ''
-            })
+            this.setCartCount()
           } else {
             this.$wechat.showToast(res.message)
           }

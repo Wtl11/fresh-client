@@ -25,3 +25,7 @@ export const orderComputed = {
 export const orderMethods = {
   ...mapActions('order', ['setOrderInfo'])
 }
+
+export const cartMethods = {
+  ...mapActions('cart', ['setCartCount'])
+}

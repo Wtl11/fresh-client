@@ -65,7 +65,7 @@
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import ConfirmMsg from '@components/confirm-msg/confirm-msg'
   import API from '@api'
-  import {orderMethods} from '@state/helpers'
+  import {orderMethods, cartMethods} from '@state/helpers'
 
   export default {
     beforeCreate() {
@@ -95,11 +95,12 @@
         }, 0)
       },
       allChecked() {
-        return this.checkedGoods.length === this.goodsList.length
+        return this.goodsList.length && this.checkedGoods.length === this.goodsList.length
       }
     },
     methods: {
       ...orderMethods,
+      ...cartMethods,
       async _getShopCart(loading = true) {
         let res = await API.Cart.shopCart(loading)
         this.$wechat.hideLoading()
@@ -152,6 +153,7 @@
         }
         this.$wechat.showToast(res.message)
         this.goodsList.splice(this.deleteInfo.delIndex, 1)
+        this.setCartCount()
       },
       toggelCheck(i) {
         this.goodsList[i].checked = !this.goodsList[i].checked

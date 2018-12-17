@@ -102,6 +102,7 @@
   import LinkGroup from '@components/link-group/link-group'
   import ScrollTab from '@components/scroll-tab/scroll-tab'
   import API from '@api'
+  import {cartMethods} from '@state/helpers'
 
   const PAGE_NAME = 'CHOICENESS'
   const SELECTTAB = [{text: '限时尝鲜'}, {text: '精选菜篮'}, {text: '水果'}, {text: '粮油'}, {text: '百货'}, {text: '粮油'}, {text: '百货'}, {text: '粮油'}, {text: '百货'}]
@@ -128,7 +129,7 @@
       // this.initClientRect()
       this.getPlantList()
       this.getTabList()
-      this.changeShoppingNumber()
+      this.setCartCount()
       await this._groupInfo()
     },
     onPageScroll(scroll) {
@@ -146,6 +147,7 @@
       this.getMoreGoodsList()
     },
     methods: {
+      ...cartMethods,
       _setPraiseIndex(e) {
         this.praiseIndex = e.target.current
       },
@@ -258,20 +260,7 @@
         API.Choiceness.addShopCart({sku_id: item.shop_sku_id}).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.$wechat.showToast('加入购物车成功')
-            this.changeShoppingNumber()
-          } else {
-            this.$wechat.showToast(res.message)
-          }
-        })
-      },
-      changeShoppingNumber() {
-        API.Choiceness.shopCartNumber().then((res) => {
-          if (res.error === this.$ERR_OK) {
-            console.log(res.data)
-            wx.setTabBarBadge({
-              index: 1,
-              text: res.data.count + ''
-            })
+            this.setCartCount()
           } else {
             this.$wechat.showToast(res.message)
           }
