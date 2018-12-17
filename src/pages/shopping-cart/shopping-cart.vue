@@ -7,12 +7,12 @@
         <img class="sel-box" v-if="imageUrl && item.num <= 0" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt="" />
         <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && item.checked && item.num > 0" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt="" />
         <div class="goods-image">
-          <img class="goods-img" mode="aspectFill" :src="item.goods_image_url" alt="">
+          <img class="goods-img" mode="aspectFill" :src="item.goods_cover_image" alt="">
           <div class="robbed" v-if="item.num <= 0">已抢完</div>
         </div>
         <div class="good-info">
           <div class="top">
-            <div class="title">{{item.goods_name}}</div>
+            <div class="title">{{item.name}}</div>
             <div class="del" @click.stop="delGoodsInfo(index, item.id)">
               <img class="del-img" v-if="imageUrl" :src="imageUrl + '/yx-image/cart/icon_delete@2x.png'" alt="">
             </div>
@@ -23,12 +23,12 @@
               <div class="remain">
                 <div class="txt"  v-if="item.usable_stock">仅剩{{item.usable_stock}}件</div>
               </div>
-              <div class="price" v-if="item.price"><span class="num">{{item.price}}</span>元</div>
+              <div class="price" v-if="item.shop_price"><span class="num">{{item.shop_price}}</span>元</div>
             </div>
             <div class="right">
               <div class="number-box">
                 <div class="minus" @click.stop="subNum(index, item.num, item.id)">-</div>
-                <div class="num">{{item.num ? item.num : 0}}</div>
+                <div class="num">{{item.num ? item.num : 1}}</div>
                 <div class="add" @click.stop="addNum(index, item.num, item.buy_limit, item.id)">+</div>
               </div>
             </div>
@@ -78,7 +78,8 @@
         deleteInfo: {
           delIndex: null,
           cartId: null
-        }
+        },
+        deliverAt: ''
       }
     },
     async onShow() {
@@ -90,7 +91,7 @@
       },
       totalPrice() {
         return this.checkedGoods.reduce((total, current) => {
-          return total + (current.price * 1) * current.num
+          return total + (current.shop_price * 1) * current.num
         }, 0)
       },
       allChecked() {
@@ -100,17 +101,18 @@
     methods: {
       ...orderMethods,
       async _getShopCart(loading = true) {
-        let arr = []
         let res = await API.Cart.shopCart(loading)
         this.$wechat.hideLoading()
         if (res.error !== this.$ERR_OK) {
           this.$wechat.showToast(res.message)
         }
-        res.data.forEach((item, index) => {
+        res.data.forEach((item) => {
+          let usableStock = item.usable_stock * 1
           item.checked = false
-          arr.push(item)
+          item.num = item.num > usableStock ? item.num : usableStock
         })
         this.goodsList = res.data
+        this.deliverAt = res.shelf_delivery_at
       },
       addNum(i, num, limit, id) {
         if (num >= limit) {
@@ -171,7 +173,13 @@
           this.$wechat.showToast('请选择商品!')
           return
         }
-        console.log(this.checkedGoods)
+        let orderInfo = {
+          goodsList: this.checkedGoods,
+          total: this.totalPrice,
+          deliverAt: this.deliverAt
+        }
+        this.setOrderInfo(orderInfo)
+        wx.navigateTo({url: '/pages/submit-order'})
       }
     },
     components: {
