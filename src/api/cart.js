@@ -19,7 +19,7 @@ export default {
    */
   delCartGoods(id, loading) {
     const url = `/social-shopping/api/wap/cart/${id}`
-    return request.delete(url, loading)
+    return request.delete(url, null, loading)
   },
   /**
    * 购物车商品数量增加

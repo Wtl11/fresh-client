@@ -30,19 +30,19 @@
         </div>
       </div>
       <div class="location-wrapper">
-        <img :src="imageUrl + '/yx-image/mine/pic-map_bg@2x.png'" alt="" class="map">
+        <img v-if="imageUrl" :src="imageUrl + '/yx-image/mine/pic-map_bg@2x.png'" alt="" class="map">
         <div class="maker-wrapper">
           <div class="maker-content">
             <div class="item-wrapper">
-              <img :src="imageUrl+'/yx-image/choiceness/icon-address_small@2x.png'" alt="" class="icon">
+              <img v-if="imageUrl":src="imageUrl+'/yx-image/choiceness/icon-address_small@2x.png'" alt="" class="icon">
               <div class="text">{{detail.address}}</div>
             </div>
             <div class="item-wrapper">
-              <img :src="imageUrl+'/yx-image/mine/icon-phone_samll@2x.png'" alt="" class="icon">
+              <img v-if="imageUrl" :src="imageUrl+'/yx-image/mine/icon-phone_samll@2x.png'" alt="" class="icon">
               <div class="text">{{detail.mobile}}</div>
             </div>
           </div>
-          <img :src="imageUrl+'/yx-image/mine/pic-map_triangle@2x.png'" class="maker-triangle">
+          <img v-if="imageUrl" :src="imageUrl+'/yx-image/mine/pic-map_triangle@2x.png'" class="maker-triangle">
         </div>
       </div>
     </div>

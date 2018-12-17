@@ -19,9 +19,9 @@ export const oauthMethods = {
 }
 
 export const orderComputed = {
-  ...mapGetters('order', ['info'])
+  ...mapGetters('order', ['goodsList'])
 }
 
 export const orderMethods = {
-  ...mapActions('order', ['update'])
+  ...mapActions('order', ['setGoodsList'])
 }
