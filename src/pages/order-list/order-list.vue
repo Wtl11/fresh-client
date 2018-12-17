@@ -1,32 +1,36 @@
 <template>
   <div class="wrap">
-    <navigation-bar title="购物车" :showArrow="true" :translucent="false"></navigation-bar>
+    <navigation-bar title="我的订单" :showArrow="true" :translucent="false"></navigation-bar>
     <div class="nav-box">
       <div class="order-nav">
-        <div class="nav-item" :class="tabIdx * 1 === index ? 'nav-item-active' : ''" v-for="(item, index) in navList" :key="index" @click="selectIndex(index)">{{item.name}}</div>
+        <div class="nav-item" :class="tabIdx * 1 === index ? 'nav-item-active' : ''" v-for="(item, index) in navList" :key="index" @click="selectIndex(item, index)">{{item.name}}</div>
       </div>
       <div class="line-box">
         <div class="line" :style="'transform: translate(' + tabIdx*100 + '%,0)'"><div class="lins"></div></div>
       </div>
     </div>
     <div class="order-list" v-if="orderList.length > 0">
-      <div class="order-item" v-for="(item, index) in orderList" :key="index">
+      <div class="order-item" v-for="(item, index) in orderList" :key="index" @click="jumpDetail(item)">
         <div class="top">
-          <div class="group-name">{{item.group}}</div>
-          <div class="status" v-if="item.status === 1">代付款</div>
+          <div class="group-name">{{item.social_name}}</div>
+          <div class="status" v-if="item.status === 0">待付款</div>
+          <div class="status" v-if="item.status === 1">待提货</div>
+          <div class="status" v-if="item.status === 2">已完成</div>
+          <div class="status" v-if="item.status === 3">待付款</div>
+          <div class="status" v-if="item.status === 4">已关闭</div>
         </div>
         <div class="center">
           <div class="goods-list">
             <div class="goods-img-list">
-              <img v-for="(items, indx) in item.goodsInfo" :key="indx" v-if="indx < 4" class="goods-img" mode="aspectFill" :src="items.image_url" alt="">
-              <div class="img-item" v-if="item.goodsInfo.length > 4">
+              <img v-for="(items, indx) in item.goods" :key="indx" v-if="indx < 4" class="goods-img" mode="aspectFill" :src="items.goods_image_url" alt="">
+              <div class="img-item" v-if="item.goods.length > 4">
                 <div class="circle"></div>
                 <div class="circle"></div>
                 <div class="circle"></div>
               </div>
             </div>
             <div class="arr-warp">
-              <div class="all-number">共{{item.goodsInfo.length}}件</div>
+              <div class="all-number">共{{item.goods.length}}件</div>
               <div class="arrlow"><img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="arr"></div>
             </div>
           </div>
@@ -43,8 +47,8 @@
           </div>-->
         </div>
         <div class="bot">
-          <div class="time">{{item.time}}</div>
-          <div class="payment"><span class="actual">实付：</span><span class="sum">{{item.payment}}</span><span class="principal">元</span></div>
+          <div class="time">{{item.created_at}}</div>
+          <div class="payment"><span class="actual">实付：</span><span class="sum">{{item.total}}</span><span class="principal">元</span></div>
         </div>
       </div>
     </div>
@@ -59,19 +63,11 @@
 
 <script type="text/ecmascript-6">
   import WePaint from '@components/we-paint/we-paint'
-  // import { mapGetters } from 'vuex'
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import API from '@api'
   import {oauthComputed} from '@state/helpers'
-  import Vue from 'vue'
 
-  const NAVLIST = [{id: 1, name: '全部'}, {id: 2, name: '待付款'}, {id: 3, name: '待提货'}, {id: 4, name: '已完成'}]
-  const ORDERLIST = [
-    {id: 1, status: 1, group: '黄骅市花园小区', goodsInfo: [{image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}], time: '2018-06-05 14:23', payment: '3.7'},
-    {id: 1, status: 1, group: '黄骅市花园小区', goodsInfo: [{image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}], time: '2018-06-05 18:23', payment: '5.8'},
-    {id: 1, status: 1, group: '黄骅市花园小区', goodsInfo: [{image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}], time: '2018-06-05 17:23', payment: '9.8'},
-    {id: 1, status: 1, group: '黄骅市花园小区', goodsInfo: [{image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}], time: '2018-06-05 17:23', payment: '3.8'}
-  ]
+  const NAVLIST = [{id: 1, name: '全部', status: ''}, {id: 2, name: '待付款', status: 0}, {id: 3, name: '待提货', status: 1}, {id: 4, name: '已完成', status: 2}]
 
   export default {
     components: {
@@ -82,29 +78,66 @@
       return {
         testSrc: '',
         navList: NAVLIST,
-        orderList: ORDERLIST,
+        orderList: [],
         orderLists: [],
-        tabIdx: 0
-        // headStyle: 'background: rgba(255, 255, 255, 0)',
-        // titleColor: 'white'
+        tabIdx: 0,
+        status: '',
+        orderPage: 1,
+        orderMore: false
       }
     },
     onShow() {
-      if (getApp().globalData.imgUrl) {
-        this.testSrc = getApp().globalData.imgUrl
-      }
-      console.log(Vue.Component)
+      this.getOrderList()
+    },
+    onReachBottom() {
+      this.getMoreOrderList()
     },
     computed: {
       ...oauthComputed
       // ...mapGetters(['role'])
     },
     methods: {
-      testApi() {
-        API.Jwt.getToken()
+      getOrderList() {
+        this.orderPage = 1
+        this.orderMore = false
+        API.Order.getOrderListData(this.status, this.orderPage).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.orderList = res.data
+            this._isUpList(res)
+            console.log(res.data)
+          } else {
+            this.$wechat.showToast(res.message)
+          }
+        })
       },
-      selectIndex(index) {
+      getMoreOrderList() {
+        if (this.orderMore) {
+          return
+        }
+        API.Order.getOrderListData(this.status, this.orderPage).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.orderList = this.orderList.concat(res.data)
+            this._isUpList(res)
+          } else {
+            this.$wechat.showToast(res.message)
+          }
+        })
+      },
+      _isUpList(res) {
+        this.orderPage++
+        if (this.orderList.length >= res.meta.total * 1) {
+          this.orderMore = true
+        }
+      },
+      selectIndex(item, index) {
+        this.status = item.status
         this.tabIdx = index
+        this.getOrderList()
+      },
+      jumpDetail(item) {
+        wx.navigateTo({
+          url: `/pages/order-detail?id=${item.order_id}`
+        })
       }
     }
   }

@@ -1,10 +1,10 @@
 <template>
   <div class="goods-detail">
-    <navigation-bar :title="title" :showArrow="true" :translucent="true"></navigation-bar>
+    <navigation-bar :title="goodsMsg.name" :showArrow="true" :translucent="true"></navigation-bar>
     <div class="banner-box">
-      <div class="banner-share" @click="showShare">
-        <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/icon-share3@2x.png'"  mode="aspectFill">
-      </div>
+      <!--<div class="banner-share" @click="showShare">-->
+        <!--<img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/icon-share3@2x.png'"  mode="aspectFill">-->
+      <!--</div>-->
       <swiper class="banner" @change="bannerChange" interval="5000">
         <block v-for="(item, index) in goodsMsg.goods_banner_images" :key="index">
           <swiper-item class="banner-item">
@@ -46,18 +46,12 @@
           <div class="stock-number">库存{{goodsMsg.usable_stock}}{{goodsMsg.goods_units}}</div>
         </div>
       </div>
-      <div class="goods-info-bootom">
-        <div class="info-bootom-list">
+      <div class="goods-info-bootom" v-if="userImgList.length > 0">
+        <div class="info-bootom-list" v-for="(item, index) in userImgList" :key="index">
           <div class="info-user">
-            <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/5@1x.png'" class="detail-img"  mode="widthFix">
+            <img v-if="imageUrl" :src="item.url ? item.url : imageUrl + '/yx-image/choiceness/default_avatar@2x.png'" class="detail-img"  mode="widthFix">
           </div>
-          <div class="info-name">段刚</div>
-        </div>
-        <div class="info-bootom-list">
-          <div class="info-user">
-            <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/5@1x.png'" class="detail-img"  mode="widthFix">
-          </div>
-          <div class="info-name">段刚</div>
+          <div class="info-name">{{item.name}}</div>
         </div>
         <div class="info-bootom-text">等刚刚购买了此商品</div>
       </div>
@@ -83,7 +77,7 @@
       <div v-if="goodsMsg.usable_stock * 1 === 0" class="goods-btn goods-btn-assint">已抢完</div>
     </div>
     <add-number ref="addNumber" :msgDetail="goodsMsg" @comfirmNumer="comfirmNumer"></add-number>
-    <link-group ref="groupList" phoneTxt="678910" wechatTxt="eleven丶"></link-group>
+    <link-group ref="groupList" :wechatInfo="groupInfo"></link-group>
     <link-group ref="shareList" :linkType="2"></link-group>
     <we-paint ref="wePaint" @drawDone="_drawDone"></we-paint>
     <div class="share-goods" style="display: none">
@@ -131,30 +125,49 @@
         goodsId: 0,
         goodsMsg: {},
         timeEnd: false,
-        title: '商品详情',
-        chooseArr: []
+        groupInfo: {},
+        userImgList: [],
+        deliverAt: ''
       }
     },
     onLoad(e) {
       this.goodsId = e.id
-      console.log(e)
       this.getGoodsDetailData()
+      this._groupInfo()
+      this.getUserImgList()
     },
     methods: {
       ...orderMethods,
+      async _groupInfo() {
+        let res = await API.Choiceness.getGroupInfo()
+        this.$wechat.hideLoading()
+        if (res.error !== this.$ERR_OK) {
+          this.$wechat.showToast(res.message)
+        }
+        this.groupInfo = res.data
+      },
+      getUserImgList() {
+        API.Choiceness.getUserImg({id: this.goodsId, limit: 3}).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.userImgList = res.data
+          } else {
+            this.$wechat.showToast(res.message)
+          }
+        })
+      },
       bannerChange(e) {
         this.currentNum = e.mp.detail.current * 1 + 1
       },
       switchItem(item) {
         switch (item.type) {
           case 0:
-            console.log('00')
+            wx.switchTab({ url: '/pages/choiceness' })
             break
           case 1:
             this.$refs.groupList.showLink()
             break
           case 2:
-            console.log('222')
+            wx.switchTab({ url: '/pages/shopping-cart' })
             break
         }
       },
@@ -373,6 +386,7 @@
         API.Choiceness.getGoodsDetail(this.goodsId).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.goodsMsg = res.data
+            this.deliverAt = res.data.shelf_delivery_at
             this._kanTimePlay()
           } else {
             this.$wechat.showToast(res.message)
@@ -380,13 +394,15 @@
         })
       },
       comfirmNumer(number) {
-        let item = this.goodsMsg
-        item.goods_name = this.goodsMsg.name
-        item.price = this.goodsMsg.shop_price
-        item.goods_image_url = this.goodsMsg.goods_cover_image
-        item.num = number
-        this.chooseArr.push(item)
-        this.update(this.chooseArr)
+        let goodsList = this.goodsMsg.shop_skus[0]
+        goodsList.sku_id = goodsList.id
+        goodsList.num = number
+        let orderInfo = {
+          goodsList: new Array(goodsList),
+          total: goodsList.shop_price * number,
+          deliverAt: this.deliverAt
+        }
+        this.setOrderInfo(orderInfo)
         wx.redirectTo({url: `/pages/submit-order`})
       },
       _kanTimePlay() {
@@ -651,7 +667,6 @@
     margin-bottom: 11px
   .goods-info-top
     padding: 17px 0
-    border-bottom-1px(#E6E6E6)
     layout(row)
     align-items: center
     justify-content: space-between
@@ -686,6 +701,7 @@
       font-family: $font-family-regular
       text-align: center
   .goods-info-bootom
+    border-top-1px(#E6E6E6)
     height: 45px
     layout(row)
     align-items: center
@@ -709,6 +725,8 @@
       font-size: $font-size-12
       color: $color-text-sub
       font-family: $font-family-regular
+      max-width: 35px
+      no-wrap()
   .info-bootom-text
     font-size: $font-size-12
     color: $color-text-sub

@@ -4,16 +4,19 @@
     <div class="order-title">请在{{deliverAt}}到货后，到团长代理点自提</div>
     <div class="order-info">
       <div class="order-info-top">
-        <div class="info-address">提货地址：{{groupInfo.province}}{{groupInfo.city}}{{groupInfo.district}}{{groupInfo.address}}</div>
+        <div class="info-address">
+          提货地址：{{groupInfo.province}}{{groupInfo.city}}{{groupInfo.district}}{{groupInfo.address}}
+        </div>
         <div class="info-phone">
-          <div class="icon-text">团长 </div>
-          <div class="icon-number"><span class="name">{{groupInfo.name}}</span><span class="txt">{{groupInfo.mobile}}</span></div>
+          <div class="icon-text">团长</div>
+          <div class="icon-number"><span class="name">{{groupInfo.name}}</span><span
+            class="txt">{{groupInfo.mobile}}</span></div>
         </div>
       </div>
       <div class="order-info-bottom">
         <div class="info-bottom-phone">
           <div class="lable">提货人手机号：</div>
-          <div class="mobile"><input class="ipt" type="text" v-model="userInfo.mobile"></div>
+          <div class="mobile"><input class="ipt" type="text" v-model="mobile"></div>
         </div>
         <button class="wechat-btn" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber">使用微信手机号</button>
       </div>
@@ -45,29 +48,46 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import { orderComputed, orderMethods } from '@state/helpers'
+  import {orderComputed, orderMethods} from '@state/helpers'
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import API from '@api'
+
   const PAGE_NAME = 'SUBMIT_ORDER'
 
   export default {
     name: PAGE_NAME,
     data() {
       return {
-        userInfo: '',
+        code: '',
+        mobile: '',
         orderId: '',
-        groupInfo: {}
+        groupInfo: {},
+        userInfo: {}
       }
     },
     computed: {
       ...orderComputed
     },
     async onShow() {
-      this.userInfo = wx.getStorageSync('userInfo')
+      this._getCode()
+      this._setMobile()
       this._getShopDetail()
     },
     methods: {
       ...orderMethods,
+      _getCode() {
+        this.$wechat.login()
+          .then(res => {
+            this.code = res.code
+          })
+      },
+      _setMobile() {
+        this.$wechat.getStorage('userInfo')
+          .then(res => {
+            this.userInfo = res.data
+            this.mobile = this.userInfo.mobile
+          })
+      },
       _getShopDetail() {
         API.Mine.getShopDetail()
           .then((res) => {
@@ -78,21 +98,19 @@
           })
       },
       getPhoneNumber(e) {
-        this.$wechat.login()
-          .then((login) => {
-            let data = {
-              code: login.code,
-              iv: e.mp.detail.iv,
-              encryptedData: e.mp.detail.encryptedData
+        let data = {
+          code: this.code,
+          iv: e.mp.detail.iv,
+          encryptedData: e.mp.detail.encryptedData
+        }
+        API.Mine.getWechatMobile(data)
+          .then(res => {
+            if (res.error !== this.$ERR_OK) {
+              return
             }
-            API.Mine.getWechatMobile(data)
-              .then(res => {
-                if (res.error !== this.$ERR_OK) {
-                  return
-                }
-                this.userInfo.mobile = res.data.mobile ? res.data.mobile : ''
-                this.$wechat.setStorage('userInfo', this.userInfo)
-              })
+            this.mobile = res.data.mobile ? res.data.mobile : ''
+            this.userInfo.mobile = this.mobile
+            this.$wechat.setStorage('userInfo', this.userInfo)
           })
       },
       async submitOrder() {
@@ -116,8 +134,10 @@
           package: payRes.package,
           signType,
           paySign,
-          success(res) {},
-          fail(res) { }
+          success(res) {
+          },
+          fail(res) {
+          }
         })
       }
     },
@@ -135,6 +155,7 @@
     background: $color-background
     padding-bottom: 50px
     box-sizing: border-box
+
   .order-title
     height: 35px
     line-height: 35px
@@ -143,7 +164,8 @@
     font-size: $font-size-13
     color: $color-money
     font-family: $font-family-regular
-    background: rgba(255,131,0,.12)
+    background: rgba(255, 131, 0, .12)
+
   .order-info
     box-sizing: border-box
     padding-left: 3.2vw
@@ -223,6 +245,7 @@
         width: 104px
         text-align: center
         border-1px($color-main, 15px)
+
   .order-list
     background: #fff
     padding-left: 3.2vw
@@ -292,6 +315,7 @@
               padding-bottom: 2px
       &:last-child
         border-none()
+
   .fixed-btn
     position: fixed
     width: 100%
@@ -318,6 +342,7 @@
       text-align: center
       border-radius: 17px
       background: $color-main
+
   .submit-order
     width: 100%
 </style>

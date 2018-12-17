@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="head-item" :style="headStyle">
+    <div class="head-item" :style="headStyleData">
       <div class="status-bar" :style="{height: statusBarHeight + 'px'}"></div>
       <div class="head-content" :style="{color: titleColor}">{{currentTitle}}</div>
       <div class="head-arrow" v-if="showArrow" @click="goBackUrl">
@@ -63,6 +63,10 @@
       arrowUrl: {
         type: String,
         default: '/zd-image/1.2/icon-title_back@2x.png'
+      },
+      hasTranslucentHeight: {
+        type: Number,
+        default: 100
       }
     },
     onPageScroll(e) {
@@ -71,7 +75,9 @@
     data() {
       return {
         statusBarHeight: 20,
-        translucentTitle: this.title
+        translucentTitle: this.title,
+        headStyleData: this.headStyle,
+        titleColorData: this.titleColor
       }
     },
     created() {
@@ -92,20 +98,21 @@
           return
         }
         // 沉浸式滚动时的效果
-        if (e.scrollTop >= 100) {
-          this.headStyle = 'background: rgba(255, 255, 255, 1)'
-          this.titleColor = '#000000'
-          this.title = this.translucentTitle
+        if (e.scrollTop >= this.hasTranslucentHeight) {
+          this.headStyleData = 'background: rgba(255, 255, 255, 1)'
+          this.titleColorData = '#000000'
+          this.translucentTitle = this.title
         } else {
-          this.headStyle = 'background: rgba(255, 255, 255, 0)'
-          this.titleColor = 'white'
-          this.title = ''
+          this.headStyleData = 'background: rgba(255, 255, 255, 0)'
+          this.titleColorData = 'white'
+          this.translucentTitle = ''
         }
       },
       _initHeadStyle() {
         if (this.translucent) {
-          this.headStyle = 'background: rgba(255, 255, 255, 0)'
-          this.titleColor = 'transparent'
+          this.headStyleData = 'background: rgba(255, 255, 255, 0)'
+          this.titleColorData = 'transparent'
+          this.translucentTitle = ''
         }
       },
       goBackUrl() {
@@ -124,10 +131,10 @@
     },
     computed: {
       currentTitle() {
-        if (this.title.length > 10) {
-          return this.title.slice(0, 10) + '···'
+        if (this.translucentTitle.length > 10) {
+          return this.translucentTitle.slice(0, 10) + '···'
         } else {
-          return this.title
+          return this.translucentTitle
         }
       }
     }
