@@ -35,8 +35,8 @@
           </div>
           <div class="goods-num-box">x<span class="goods-num">{{item.num}}</span></div>
         </div>
-        <div class="btn-box">
-          <div class="goods-btn" v-if="!item.delivery_status" @click="_showDialog('', item.goods_id)">确认收货</div>
+        <div class="btn-box" v-if="!item.delivery_status">
+          <div class="goods-btn" @click="_showDialog('', item.order_detail_id)">确认收货</div>
         </div>
       </div>
     </div>
@@ -51,10 +51,10 @@
         <div class="order-time">下单时间: {{orderDetail.created_at}}</div>
       </div>
     </div>
-    <div class="order-btn-box">
+    <div class="order-btn-box" v-if="orderDetail.status === 1">
       <form action="">
         <button class="order-btn order-dark" :class="{'order-disable': orderDetail.remind_status}">{{orderDetail.remind_status ? '已提醒' : '提醒收货'}}</button>
-        <button class="order-btn order-dark">分享订单</button>
+        <!--<button class="order-btn order-dark" open-type="share">分享订单</button>-->
         <button class="order-btn order-main" @click="_showDialog('all')">确认提货</button>
       </form>
     </div>
@@ -82,14 +82,28 @@
         ids: []
       }
     },
+    // onShareAppMessage(res) {
+    //   let shopId = wx.getStorageSync('shopId')
+    //   console.log(shopId)
+    //   return {
+    //     title: `亲爱的“${this.orderDetail.address.customer_name}”，您刚刚下了一个单，记得及时来提货...`,
+    //     path: `/pages/goods-detail?id=${this.orderDetail.goods[0].good_id}&shopId=${shopId}`, // 商品详情
+    //     success: (res) => {
+    //       // 转发成功
+    //     },
+    //     fail: (res) => {
+    //       // 转发失败
+    //     }
+    //   }
+    // },
     async onLoad(option) {
       this.id = option.id || null
       await this._getOrderDetail()
     },
     methods: {
       // 获取订单详情
-      async _getOrderDetail() {
-        let res = await API.Leader.groupOrder(this.id)
+      async _getOrderDetail(loading = true) {
+        let res = await API.Leader.groupOrder(this.id, loading)
         this.$wechat.hideLoading()
         if (res.error !== this.$ERR_OK) {
           this.$wechat.showToast(res.message)
@@ -114,16 +128,22 @@
         this.$refs.dialog.show({msg: '确定已经提货？'})
         if (type === 'all') {
           this.ids = []
-          this.ids.push(this.orderDetail.goods.map((item) => {
-            return item.goods_id
-          }))
+          this.ids = this.orderDetail.goods.map((item) => {
+            return item.order_detail_id
+          })
           return
         }
         this.ids = [id]
       },
       // 确认提货
-      _confirmDelivery() {
-        console.log(this.ids)
+      async _confirmDelivery() {
+        let res = await API.Leader.delivery({ids: this.ids})
+        this.$wechat.showToast(res.message)
+        if (res.error === this.$ERR_OK) {
+          setTimeout(async () => {
+            await this._getOrderDetail(false)
+          }, 500)
+        }
       }
     }
   }

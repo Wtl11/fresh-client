@@ -134,7 +134,6 @@
             if (after.error === this.$ERR_OK) {
               this.page = 1
               await this._afterManagementList()
-              console.log(after)
             }
             break
           case 1:
@@ -144,7 +143,6 @@
             if (res.error === this.$ERR_OK) {
               this.recordPage = 1
               await this._applicationRecordList()
-              console.log(res)
             }
             break
         }

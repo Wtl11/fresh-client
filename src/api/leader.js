@@ -131,7 +131,27 @@ export default {
    * @returns {*}
    */
   groupOrder(id, loading = true) {
-    const url = `social-shopping/api/wap/order/${id}`
+    const url = `/social-shopping/api/wap/order/${id}`
     return request.get(url, {}, loading)
+  },
+  /**
+   * 确定提货
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  delivery(data, loading = false) {
+    const url = `/social-shopping/api/wap/delivery`
+    return request.post(url, data, loading)
+  },
+  /**
+   * 客户的订单列表
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  deliveryOrder(data, loading = false) {
+    const url = `/social-shopping/api/wap/delivery-orders`
+    return request.get(url, data, loading)
   }
 }
