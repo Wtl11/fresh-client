@@ -11,10 +11,10 @@
           <div class="reg-address">{{address}}</div>
         </div>
       </div>
-      <div class="reg-tip">
+      <navigator url="/pages/regimental-info" hover-class="none" class="reg-tip">
         <span class="reg-text">团长信息</span>
         <img :src="imageUrl + '/yx-image/group/icon-samllarrow@2x.png'" v-if="imageUrl" class="way">
-      </div>
+      </navigator>
     </div>
     <!--收入信息-->
     <div class="reg-home">
