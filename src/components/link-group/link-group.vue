@@ -2,8 +2,8 @@
   <div class="link-group">
     <scroll-view scroll-y class="link-box" v-show="linkShow" @touchmove.prevent=""></scroll-view>
     <div class="link-bottom" :class="linkShow ? 'show' : ''">
-      <div v-if="linkType === 1" class="link-tab link-tab-border" @click.stop="clipWechat">复制微信号：{{wechatTxt}}</div>
-      <div v-if="linkType === 1" class="link-tab" @click.stop="callPhone">呼叫：{{phoneTxt}}</div>
+      <div v-if="linkType === 1" class="link-tab link-tab-border" @click.stop="clipWechat">复制微信号：{{wechatInfo.wx_account}}</div>
+      <div v-if="linkType === 1" class="link-tab" @click.stop="callPhone">呼叫：{{wechatInfo.mobile}}</div>
       <div v-if="linkType === 2" class="link-tab link-tab-border" @click.stop="clipWechat">发送给朋友</div>
       <div v-if="linkType === 2" class="link-tab" @click.stop="callPhone">生成卡片保存分享</div>
       <div class="line"></div>
@@ -18,13 +18,9 @@
   export default {
     name: COMPONENT_NAME,
     props: {
-      wechatTxt: {
+      wechatInfo: {
         type: Object,
-        default: ''
-      },
-      phoneTxt: {
-        type: Object,
-        default: ''
+        default: {}
       },
       linkType: {
         type: Number,

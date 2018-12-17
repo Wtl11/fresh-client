@@ -11,7 +11,8 @@
       console.log('app created and cache logs by setStorageSync')
     },
     onShow(options) {
-      wx.setStorageSync('shopId', options.query.shopId)
+      let shopId = options.query.shopId || wx.getStorageSync('shopId')
+      wx.setStorageSync('shopId', shopId)
       let token = wx.getStorageSync('token')
       if (!token) {
         let query = ''
