@@ -37,5 +37,10 @@ export default {
   getCarsss(data, loading = true) {
     const url = `/social-shopping/api/wap/create-order`
     return request.post(url, data, loading)
+  },
+  // 购物车数量
+  shopCartNumber(data = null, loading = false) {
+    const url = `/social-shopping/api/wap/cart-count`
+    return request.get(url, data, loading)
   }
 }

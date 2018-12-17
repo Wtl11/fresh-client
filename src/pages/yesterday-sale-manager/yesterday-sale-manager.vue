@@ -148,6 +148,11 @@
         return status
       }
     },
+    async onPullDownRefresh() {
+      this.pageObj[this.nav[this.navIndex].status + 'Page'] = 1
+      await this._setList()
+      wx.stopPullDownRefresh() // 停止下拉刷新
+    },
     async onLoad() {
       let data = this.$wx.getSystemInfoSync()
       this.$wx.getSystemInfo({
@@ -214,7 +219,7 @@
     height: 100vh
     box-sizing: border-box
     overflow: hidden
-    background: $color-background
+    background: $color-white
     width: 100vw
 
   .after-header
@@ -281,6 +286,7 @@
       transform: translateX(0)
       transition: all 0.3s
     .order-box
+      background: $color-background
       box-sizing: border-box
       width: 100vw
 

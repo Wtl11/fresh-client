@@ -7,8 +7,8 @@ export default {
    * @param loading
    * @returns {*}
    */
-  getToken(data, loading) {
-    const url = `/api/jwt/customer/login`
+  getFormId(data, loading = false) {
+    const url = `/social-shopping/api/wap/collect-formid`
     return request.post(url, data, loading)
   }
 }

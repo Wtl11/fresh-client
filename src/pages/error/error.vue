@@ -5,19 +5,36 @@
       <img :src="imageUrl + '/yx-image/group/pic-wifi@2x.png'" v-if="imageUrl" class="error-img">
       <p class="text">网络繁忙，稍后再试吧！</p>
     </div>
-    <div class="btn">刷新</div>
+    <div class="btn" @click="_refresh">刷新</div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
+  import app from '@src/main'
 
   const PAGE_NAME = 'ERROR'
-
+  const TAB_BAR = app.config.tabBar.list
   export default {
     name: PAGE_NAME,
     data() {
-      return {}
+      return {
+        isTab: false,
+        targetPage: ''
+      }
+    },
+    onLoad() {
+      this.targetPage = wx.getStorageSync('errorUrl')
+      this.isTab = TAB_BAR.findIndex((item) => this.targetPage.includes(item.pagePath))
+    },
+    methods: {
+      _refresh() {
+        if (this.isTab) {
+          wx.redirectTo({url: '/' + this.targetPage})
+          return
+        }
+        wx.switchTab({url: '/' + this.targetPage})
+      }
     },
     components: {
       NavigationBar

@@ -153,5 +153,25 @@ export default {
   deliveryOrder(data, loading = false) {
     const url = `/social-shopping/api/wap/delivery-orders`
     return request.get(url, data, loading)
+  },
+  /**
+   * 配送单确认收货
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  deliveryConfirm(id, loading = false) {
+    const url = `/social-shopping/api/wap/shop-manager/store-delivery-confirm/${id}`
+    return request.put(url, {}, loading)
+  },
+  /**
+   * 提醒收货
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  remindDelivery(data, loading = false) {
+    const url = `/social-shopping/api/wap/remind-delivery`
+    return request.post(url, data, loading)
   }
 }

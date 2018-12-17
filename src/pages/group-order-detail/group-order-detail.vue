@@ -51,9 +51,10 @@
         <div class="order-time">下单时间: {{orderDetail.created_at}}</div>
       </div>
     </div>
+    <!---->
     <div class="order-btn-box" v-if="orderDetail.status === 1">
-      <form action="">
-        <button class="order-btn order-dark" :class="{'order-disable': orderDetail.remind_status}">{{orderDetail.remind_status ? '已提醒' : '提醒收货'}}</button>
+      <form action="" report-submit @submit="$getFormId">
+        <button class="order-btn order-dark" :class="{'order-disable': orderDetail.remind_status}" formType="submit" @click="_remind">{{orderDetail.remind_status ? '已提醒' : '提醒收货'}}</button>
         <!--<button class="order-btn order-dark" open-type="share">分享订单</button>-->
         <button class="order-btn order-main" @click="_showDialog('all')">确认提货</button>
       </form>
@@ -134,6 +135,16 @@
           return
         }
         this.ids = [id]
+      },
+      // 提现收货
+      async _remind() {
+        let res = await API.Leader.remindDelivery({order_id: this.id})
+        this.$wechat.showToast(res.message)
+        if (res.error === this.$ERR_OK) {
+          setTimeout(async () => {
+            await this._getOrderDetail(false)
+          }, 500)
+        }
       },
       // 确认提货
       async _confirmDelivery() {

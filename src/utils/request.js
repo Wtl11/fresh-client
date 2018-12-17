@@ -7,6 +7,7 @@ const fly = new Fly()
 
 // 公共请求头
 const COMMON_HEADER = {}
+const NETPAGE = `/pages/error`
 
 // 请求拦截器
 fly.interceptors.request.use((request) => {
@@ -33,6 +34,8 @@ function checkStatus(response) {
   if (response && (response.status === 200 || response.status === 304 || response.status === 422)) {
     return response
     // 如果不需要除了data之外的数据，可以直接 return response.data
+  } else if (response && response.status >= 500) {
+    wx.reLaunch({url: NETPAGE})
   }
   // 异常状态下，把错误信息返回去
   return {
@@ -55,6 +58,11 @@ function checkCode(res) {
   if (res.data && (res.data.code !== ERR_OK)) {
     // 可以进行switch操作，根据返回的code进行相对应的操作，然后抛异常
     console.warn(res.data.message)
+    switch (res.data.code) {
+      case 13001: // 无团长权限code,跳转团长登录页面
+        wx.redirectTo({url: '/pages/mine-housing'})
+        break
+    }
     throw requestException(res)
   }
   return res.data

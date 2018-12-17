@@ -9,7 +9,7 @@
         <div class="name">{{userInfo.nickname}}</div>
       </div>
       <div class="erwcode">
-        <img class="ecode-img" v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-code@2x.png'" alt="">
+        <img class="ecode-img" v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-code@2x.png'" @click="createQrCode">
       </div>
     </div>
     <div class="order-nav">
@@ -34,7 +34,7 @@
         <div class="maker-wrapper">
           <div class="maker-content">
             <div class="item-wrapper">
-              <img v-if="imageUrl":src="imageUrl+'/yx-image/choiceness/icon-address_small@2x.png'" alt="" class="icon">
+              <img v-if="imageUrl" :src="imageUrl+'/yx-image/choiceness/icon-address_small@2x.png'" alt="" class="icon">
               <div class="text">{{detail.address}}</div>
             </div>
             <div class="item-wrapper">
@@ -46,7 +46,7 @@
         </div>
       </div>
     </div>
-    <div class="self-addr group">
+    <div class="self-addr group" @click="_goMyHosing">
       <div class="self-top">
         <div class="tit">我的小区/小区管理</div>
         <div class="switch-btn">
@@ -54,12 +54,12 @@
         </div>
       </div>
     </div>
-    <div class="mine-model" v-if="showModal" :animation="maskAnimation">
+    <div class="mine-model" v-if="showModal" :animation="maskAnimation" @click="_cancelQrCodeBox">
       <div class="model-con" :animation="modalAnimation">
-          <div class="erm">
-            <img class="erm-img" src="" alt="">
-          </div>
-          <div class="txt">向团长出示二维码提货</div>
+        <div class="erm" @click.stop>
+          <img class="erm-img" :src="testSrc">
+        </div>
+        <div class="txt">向团长出示二维码提货</div>
       </div>
     </div>
   </div>
@@ -93,7 +93,11 @@
           latitude: 23.08331,
           address: '',
           mobile: 18844514445
-        }
+        },
+        testSrc: '',
+        showModal: false,
+        maskAnimation: '',
+        modalAnimation: ''
       }
     },
     async onLoad() {
@@ -108,6 +112,68 @@
       // ...mapGetters(['role'])
     },
     methods: {
+      // 跳转我的小区
+      _goMyHosing() {
+        let isLeader = wx.getStorageSync('isLeader') || false
+        let page = isLeader ? '/pages/regimental-commander' : '/pages/mine-housing'
+        wx.navigateTo({url: page})
+      },
+      _showQrCodeBox() {
+        let modalAnimation = wx.createAnimation({
+          duration: 500,
+          timingFunction: 'cubic-bezier(1, -0.07, 0.51, 1.48)',
+          delay: 0
+        })
+        let maskAnimation = wx.createAnimation({
+          duration: 500,
+          timingFunction: 'linear',
+          delay: 0
+        })
+        maskAnimation.opacity(0).step()
+        modalAnimation.scale(0.3).step()
+        this.maskAnimation = maskAnimation.export()
+        this.modalAnimation = modalAnimation.export()
+        this.showModal = true
+        setTimeout(() => {
+          maskAnimation.opacity(1).step()
+          modalAnimation.scale(1).step()
+          this.maskAnimation = maskAnimation.export()
+          this.modalAnimation = modalAnimation.export()
+        }, 200)
+      },
+      _cancelQrCodeBox() {
+        // this.isShow = false
+        // this.$emit('close')
+        let modalAnimation = wx.createAnimation({
+          duration: 300,
+          timingFunction: 'linear',
+          delay: 0
+        })
+        let maskAnimation = wx.createAnimation({
+          duration: 300,
+          timingFunction: 'linear',
+          delay: 0
+        })
+        maskAnimation.opacity(0).step()
+        modalAnimation.scale(0.3).step()
+        this.maskAnimation = maskAnimation.export()
+        this.modalAnimation = modalAnimation.export()
+        setTimeout(() => {
+          maskAnimation.opacity(1).step()
+          modalAnimation.scale(1).step()
+          this.maskAnimation = maskAnimation.export()
+          this.modalAnimation = modalAnimation.export()
+          this.showModal = false
+        }, 300)
+      },
+      createQrCode() {
+        let id = wx.getStorageSync('userInfo') ? wx.getStorageSync('userInfo').id : 0
+        let str = JSON.stringify({'customer_id': id}) // todo
+        let img = this.$createQrCode.png(str) // png
+        img = this.$createQrCode.svg(str) // svg
+        this.testSrc = img
+        this._showQrCodeBox()
+      },
       toChangeShop() {
         wx.navigateTo({url: '/pages/self-point'})
       },
@@ -213,7 +279,7 @@
           .maker-content
             padding: 7.5px 10px
             background: $color-white
-            box-shadow: 0 3px 8px 0 rgba(17,17,17,0.12)
+            box-shadow: 0 3px 8px 0 rgba(17, 17, 17, 0.12)
             border-radius: 3px
             .item-wrapper
               layout(row)
@@ -271,7 +337,7 @@
       height: 93.5px
       margin: 0 auto
       background: $color-white
-      box-shadow: 0 3px 10px 0 rgba(17,17,17,0.06)
+      box-shadow: 0 3px 10px 0 rgba(17, 17, 17, 0.06)
       border-radius: 6px
       position: relative
       layout(row)
@@ -307,8 +373,38 @@
         &:last-child
           margin-left: 20px
 
-
   .test
     height: 100px
 
+  .mine-model
+    position: fixed
+    top: 0
+    left: 0
+    bottom: 0
+    right: 0
+    background-color: rgba(17, 17, 17, 0.8)
+    fill-box(fixed)
+    z-index: 100
+    layout()
+    justify-content: center
+    align-items: center
+    .model-con
+      display: flex
+      align-items: center
+      justify-content: center
+      border: 1px solid rgba(32, 32, 46, 0.10)
+      border-radius: 8px
+      background: $color-white
+      width: 290px
+      height: 319.5px
+      flex-direction: column
+      .erm-img
+        height: 150px
+        width: 150px
+      .txt
+        margin-top: 28px
+        color: $color-main
+        font-family: $font-family-medium
+        letter-spacing: 1px
+        font-size: $font-size-16
 </style>
