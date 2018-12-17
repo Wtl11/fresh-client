@@ -86,7 +86,9 @@
         orderMore: false
       }
     },
-    onShow() {
+    onLoad(e) {
+      this.status = e.id
+      this.tabIdx = e.index
       this.getOrderList()
     },
     onReachBottom() {

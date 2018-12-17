@@ -13,7 +13,7 @@
       </div>
     </div>
     <div class="order-nav">
-      <div class="order-item" v-for="(item, index) in orderNav" :key="index">
+      <div class="order-item" v-for="(item, index) in orderNav" :key="index" @click="jumpOrder(item)">
         <div class="icon"><img class="icon-img" v-if="imageUrl" :src="imageUrl+item.icon_url" alt=""></div>
         <div class="txt">{{item.name}}</div>
       </div>
@@ -74,11 +74,11 @@
   import {oauthComputed} from '@state/helpers'
 
   const ORRDER_NAV_LIST = [
-    {icon_url: '/yx-image/cart/icon-payment@2x.png', name: '代付款'},
-    {icon_url: '/yx-image/cart/icon-delivery@2x.png', name: '待提货'},
-    {icon_url: '/yx-image/cart/icon-finish@2x.png', name: '已完成'},
-    {icon_url: '/yx-image/cart/icon-aftersales@2x.png', name: '售后'},
-    {icon_url: '/yx-image/cart/icon-order@2x.png', name: '全部'}
+    {icon_url: '/yx-image/cart/icon-payment@2x.png', name: '待付款', id: 0, index: 1},
+    {icon_url: '/yx-image/cart/icon-delivery@2x.png', name: '待提货', id: 1, index: 2},
+    {icon_url: '/yx-image/cart/icon-finish@2x.png', name: '已完成', id: 2, index: 3},
+    {icon_url: '/yx-image/cart/icon-aftersales@2x.png', name: '售后', id: 4},
+    {icon_url: '/yx-image/cart/icon-order@2x.png', name: '全部', id: '', index: 0}
   ]
 
   export default {
@@ -123,6 +123,18 @@
             this.detail.latitude = latitude
             this.detail.mobile = mobile
           })
+      },
+      jumpOrder(item) {
+        console.log(item)
+        if (item.id === 4) {
+          wx.navigateTo({
+            url: `/pages/after-service`
+          })
+        } else {
+          wx.navigateTo({
+            url: `/pages/order-list?id=${item.id}&&index=${item.index}`
+          })
+        }
       }
     },
     components: {
