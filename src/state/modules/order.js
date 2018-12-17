@@ -1,20 +1,37 @@
 export const state = {
   goodsList: [],
-  total: ''
+  total: '',
+  deliverAt: ''
 }
 
 export const getters = {
-  info: state => state.goodsList
+  goodsList(state) {
+    return state.goodsList
+  },
+  total(state) {
+    return state.total
+  },
+  deliverAt(state) {
+    return state.deliverAt
+  }
 }
 
 export const actions = {
-  update({commit, state}, info) {
-    commit('update', info)
+  setOrderInfo({commit, state}, {goodsList, total, deliverAt}) {
+    commit('SET_GOODS_LIST', goodsList)
+    commit('SET_TOTAL', total)
+    commit('DELIVER_AT', deliverAt)
   }
 }
 
 export const mutations = {
-  update(state, info) {
-    state.goodsList = info
+  SET_GOODS_LIST(state, goodsList) {
+    state.goodsList = goodsList
+  },
+  SET_TOTAL(state, total) {
+    state.total = total
+  },
+  DELIVER_AT(state, deliverAt) {
+    state.deliverAt = deliverAt
   }
 }

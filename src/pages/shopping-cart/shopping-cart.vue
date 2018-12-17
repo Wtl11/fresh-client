@@ -2,18 +2,17 @@
   <div class="wrap">
     <navigation-bar title="购物车" :showArrow="false" :translucent="false"></navigation-bar>
     <div class="shop-list">
-      <div class="shop-item" :class="{'shop-item-opcta' : item.num <= 0}" v-for="(item, index) in orderList" :key="index">
-        <!--<div class="sel-box"></div>-->
-        <img class="sel-box" @click.stop="ischoose(index)" v-if="imageUrl && !item.checked && item.num > 0" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt="" />
+      <div class="shop-item" :class="{'shop-item-opcta' : item.num <= 0}" v-for="(item, index) in goodsList" :key="index">
+        <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && !item.checked && item.num > 0" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt="" />
         <img class="sel-box" v-if="imageUrl && item.num <= 0" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt="" />
-        <img class="sel-box" @click.stop="ischoose(index)" v-if="imageUrl && item.checked && item.num > 0" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt="" />
+        <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && item.checked && item.num > 0" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt="" />
         <div class="goods-image">
-          <img class="goods-img" mode="aspectFill" :src="item.goods_image_url" alt="">
+          <img class="goods-img" mode="aspectFill" :src="item.goods_cover_image" alt="">
           <div class="robbed" v-if="item.num <= 0">已抢完</div>
         </div>
         <div class="good-info">
           <div class="top">
-            <div class="title">{{item.goods_name}}</div>
+            <div class="title">{{item.name}}</div>
             <div class="del" @click.stop="delGoodsInfo(index, item.id)">
               <img class="del-img" v-if="imageUrl" :src="imageUrl + '/yx-image/cart/icon_delete@2x.png'" alt="">
             </div>
@@ -24,60 +23,29 @@
               <div class="remain">
                 <div class="txt"  v-if="item.usable_stock">仅剩{{item.usable_stock}}件</div>
               </div>
-              <div class="price" v-if="item.price"><span class="num">{{item.price}}</span>元</div>
+              <div class="price" v-if="item.shop_price"><span class="num">{{item.shop_price}}</span>元</div>
             </div>
             <div class="right">
               <div class="number-box">
-                <div class="minus" @click.stop="subNum(index, item.num, item.id)"></div>
-                <div class="num">{{item.num ? item.num : 0}}</div>
-                <div class="add" @click.stop="addNum(index, item.num, item.buy_limit, item.id)"></div>
+                <div class="minus" @click.stop="subNum(index, item.num, item.id)">-</div>
+                <div class="num">{{item.num ? item.num : 1}}</div>
+                <div class="add" @click.stop="addNum(index, item.num, item.buy_limit, item.id)">+</div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <!--<div class="shop-item shop-item-opcta" v-for="(item, index) in [1]" :key="index">
-        <img class="sel-box" v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt="" />
-        <div class="goods-image">
-          <img class="goods-img" mode="aspectFill" src="http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300" alt="">
-          <div class="robbed">已抢完</div>
-        </div>
-        <div class="good-info">
-          <div class="top">
-            <div class="title">超超值特惠 4斤新鲜柠檬</div>
-            <div class="del" @click.stop="delGoodsInfo(index)">
-              <img class="del-img" v-if="imageUrl" :src="imageUrl + '/yx-image/cart/icon_delete@2x.png'" alt="">
-            </div>
-          </div>
-          <div class="bot">
-            <div class="left">
-              <div class="spec">规格：包</div>
-              <div class="remain">
-                <div class="txt">仅剩10件</div>
-              </div>
-              <div class="price"><span class="num">3.8</span>元</div>
-            </div>
-            <div class="right">
-              <div class="number-box">
-                <div class="minus"></div>
-                <div class="num">4</div>
-                <div class="add"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>-->
     </div>
     <!--结算-->
     <div class="payment">
-      <div class="check-all" @click.stop="allIsChoose">
-        <img class="sel-box" v-if="imageUrl && allcheck" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt="" />
-        <img class="sel-box" v-if="imageUrl && !allcheck" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt="" />
+      <div class="check-all" @click.stop="toggleCheckAll">
+        <img class="sel-box" v-if="imageUrl && allChecked" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt="" />
+        <img class="sel-box" v-if="imageUrl && !allChecked" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt="" />
         <div class="txt">全选</div>
       </div>
       <div class="payment-content">
         <div class="price">合计 {{totalPrice}}元</div>
-        <div class="pay-btn" @click.stop="toSubmitOrder">结算</div>
+        <div class="pay-btn" @click.stop="submitOrder">结算</div>
       </div>
     </div>
     <!--没有商品-->
@@ -87,7 +55,7 @@
       <div class="txt">赶快去挑选吧</div>
       <div class="btn">去逛逛</div>
     </div>
-    <confirm-msg ref="msg" :msg="msg" useType="double" @confirm="confirm"></confirm-msg>
+    <confirm-msg ref="msg" :msg="msg" useType="double" @confirm="deleteCartGood"></confirm-msg>
   </div>
 
 </template>
@@ -97,60 +65,54 @@
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import ConfirmMsg from '@components/confirm-msg/confirm-msg'
   import API from '@api'
-  import { orderComputed, orderMethods } from '@state/helpers'
-
-  const CARTLIST = [
-    // {goods_id: 1, goods_img: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300', title: '超超值特惠 4斤新鲜柠檬', guige: '斤', number: 10, price: '10.00', buynum: '2', checked: false},
-  ]
+  import {orderMethods} from '@state/helpers'
 
   export default {
     beforeCreate() {
     },
     data() {
       return {
-        testSrc: '',
         msg: '确定删除该商品吗?',
-        allcheck: false,
-        orderArr: [],
-        chooseArr: [],
         delIndex: 0,
-        totalPrice: 0,
-        orderList: CARTLIST
+        goodsList: [],
+        deleteInfo: {
+          delIndex: null,
+          cartId: null
+        },
+        deliverAt: ''
       }
     },
     async onShow() {
-      wx.setTabBarBadge({
-        index: 1,
-        text: '1'
-      })
-      console.log(this.$imageUrl)
-      if (getApp().globalData.imgUrl) {
-        this.testSrc = getApp().globalData.imgUrl
-      }
       await this._getShopCart()
-      this.allUsechecked()
     },
     computed: {
-      ...orderComputed
-      // ...mapGetters(['role'])
+      checkedGoods() {
+        return this.goodsList.filter((item) => item.checked)
+      },
+      totalPrice() {
+        return this.checkedGoods.reduce((total, current) => {
+          return total + (current.shop_price * 1) * current.num
+        }, 0)
+      },
+      allChecked() {
+        return this.checkedGoods.length === this.goodsList.length
+      }
     },
     methods: {
       ...orderMethods,
-      testApi() {
-        API.Jwt.getToken()
-      },
       async _getShopCart(loading = true) {
-        let arr = []
         let res = await API.Cart.shopCart(loading)
         this.$wechat.hideLoading()
         if (res.error !== this.$ERR_OK) {
           this.$wechat.showToast(res.message)
         }
-        res.data.forEach((item, index) => {
+        res.data.forEach((item) => {
+          let usableStock = item.usable_stock * 1
           item.checked = false
-          arr.push(item)
+          item.num = item.num > usableStock ? item.num : usableStock
         })
-        this.orderList = res.data
+        this.goodsList = res.data
+        this.deliverAt = res.shelf_delivery_at
       },
       addNum(i, num, limit, id) {
         if (num >= limit) {
@@ -159,12 +121,12 @@
         }
         num++
         this.editGoodsNum(id, num)
-        this.orderList[i].num = num
+        this.goodsList[i].num = num
       },
       subNum(i, num, id) {
         if (num > 1) {
           num--
-          this.orderList[i].num = num
+          this.goodsList[i].num = num
           this.editGoodsNum(id, num)
         } else {
           this.delGoodsInfo()
@@ -178,72 +140,46 @@
         }
       },
       // 点击删除按钮
-      delGoodsInfo(i, id) {
+      delGoodsInfo(delIndex, cartId) {
         this.$refs.msg.show()
-        this.delIndex = i
-        this.cartId = id
+        this.deleteInfo = {delIndex, cartId}
       },
-      async confirm() {
-        let res = await API.Cart.delCartGoods(this.cartId)
+      // 删除购物车商品
+      async deleteCartGood() {
+        let res = await API.Cart.delCartGoods(this.deleteInfo.cartId)
         if (res.error !== this.$ERR_OK) {
           this.$wechat.showToast(res.message)
         }
         this.$wechat.showToast(res.message)
-        await this._getShopCart(false)
-        // this.orderList.splice(this.delIndex, 1)
+        this.goodsList.splice(this.deleteInfo.delIndex, 1)
       },
-      ischoose(i) {
-        let that = this
-        that.allcheck = that.allcheck === true ? false : ''
-        that.orderList[i].checked = !that.orderList[i].checked
-        that.isallCheck()
-        that.orderTotal()
+      toggelCheck(i) {
+        this.goodsList[i].checked = !this.goodsList[i].checked
       },
-      allIsChoose() {
-        this.allcheck = !this.allcheck
-        this.orderList.forEach((item, index) => {
-          this.allcheck === true && item.num > 0 ? item.checked = true : item.checked = false
-        })
-        this.orderTotal()
-        // console.log(this.orderList)
-      },
-      orderTotal() {
-        let that = this
-        that.totalPrice = 0
-        this.orderList.forEach((item, index) => {
-          if (item.checked === true && item.num <= item.buy_limit) {
-            that.totalPrice += item.price * item.num
-            that.chooseArr.push(item)
+      toggleCheckAll() {
+        let goodsList = this.goodsList
+        let currentAllChecked = this.allChecked
+        goodsList.forEach((item) => {
+          if (!currentAllChecked && item.num > 0) {
+            item.checked = true
+          } else {
+            item.checked = false
           }
         })
+        this.goodsList = goodsList
       },
-      allUsechecked() {
-        this.orderList.forEach((item) => {
-          if (item.num > 0) {
-            this.orderArr.push(item)
-          }
-        })
-      },
-      isallCheck() {
-        let arr = []
-        this.orderList.forEach((item) => {
-          if (item.checked === true) {
-            arr.push(item)
-          }
-        })
-        arr.length === this.orderArr.length ? this.allcheck = true : this.allcheck = false
-      },
-      toSubmitOrder() {
-        let that = this
-        if (that.chooseArr.length > 0) {
-          that.update(that.chooseArr)
-          wx.redirectTo({url: `/pages/submit-order`})
-        } else {
-          that.$wechat.showToast('请选择商品!')
+      submitOrder() {
+        if (!this.checkedGoods.length) {
+          this.$wechat.showToast('请选择商品!')
+          return
         }
-      },
-      testToast() {
-        this.$wechat.showToast('123123')
+        let orderInfo = {
+          goodsList: this.checkedGoods,
+          total: this.totalPrice,
+          deliverAt: this.deliverAt
+        }
+        this.setOrderInfo(orderInfo)
+        wx.navigateTo({url: '/pages/submit-order'})
       }
     },
     components: {
@@ -254,6 +190,11 @@
   }
 </script>
 
+
+
+
+
+
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
   .wrap
@@ -263,7 +204,7 @@
     position: relative
   .payment
     position: fixed
-    width: 100vw
+    width: 100%
     height: 50px
     background: $color-white
     left: 0
@@ -278,8 +219,8 @@
       .sel-box
         display: block
         margin-right: 5px
-        width: 5.34vw
-        height: 5.34vw
+        width: 20px
+        height: 20px
         background: $color-white
         box-sizing: border-box
         border-radius: 50%
@@ -301,7 +242,7 @@
         margin-left: 8px
         background: #73C200
         border-radius: 17px
-        width: 26.67vw
+        width: 100px
         height: 34px
         text-align: center
         font-size: $font-size-16
@@ -314,23 +255,21 @@
     .shop-item
       layout(row)
       align-items: center
-      padding: 3.34vw 3.2vw
+      padding: 12.5px 12px 12.5px 0
       widht: 100vw
       height: 115px
       box-sizing: border-box
       .sel-box
         display: block
-        margin-right: 3.46vw
-        width: 5.34vw
-        height: 5.34vw
+        width: 20px
+        height: 20px
+        padding: 12px
         background: $color-white
-        box-sizing: border-box
-        border-radius: 50%
       .goods-image
-        background: #F6F9F4
-        width: 24vw
-        height: 24vw
         position: relative
+        width: 90px
+        height: 90px
+        background: #F6F9F4
         .robbed
           opacity: 0.75
           background: rgba(0, 0, 0, 0.6)
@@ -352,8 +291,9 @@
           width: 24vw
           height: 24vw
       .good-info
-        width: 60.8vw
-        padding-left: 3.46vw
+        flex: 1
+        overflow: hidden
+        padding-left: 13px
         box-sizing: border-box
         layout()
         .top
@@ -365,7 +305,8 @@
           padding-bottom: 6px
           line-height: 15px
           .title
-            width: 48.5vw
+            flex: 1
+            padding-right: 12px
             no-wrap()
             family: $font-family-medium
             font-size: $font-size-14
@@ -388,65 +329,31 @@
             .number-box
               layout(row)
               align-items: flex-end
-              width: 22.67vw
-              height: 6.4vw
+              width: 84px
+              height: 24px
               background: $color-white
-              border: 1px solid #EEEEEE
-              border-radius: 1px
+              border-1px()
               .add
-                width: 6.4vw
-                height: 6.4vw
+                width: 24px
+                height: 24px
                 position: relative
                 text-align: center
-                line-height: 6.4vw
-                &:before
-                  content: ''
-                  position: absolute
-                  left: 50%
-                  top: 50%
-                  width: 8px
-                  height: 1px
-                  margin-left: -4px
-                  margin-top: -0.5px
-                  background-color: #625E61
-                &:after
-                  content: ''
-                  position: absolute
-                  left: 50%
-                  top: 50%
-                  height: 8px
-                  width: 1px
-                  margin-left: -0.5px
-                  margin-top: -4px
-                  background-color: #625E61
+                line-height: 1
               .minus
-                width: 6.4vw
-                height: 6.4vw
+                width: 24px
+                height: 24px
                 position: relative
                 text-align: center
-                line-height: 6.4vw
-                &:before
-                  content: ''
-                  position: absolute
-                  left: 50%
-                  top: 50%
-                  width: 8px
-                  height: 1px
-                  margin-left: -4px
-                  margin-top: -0.5px
-                  background-color: #625E61
+                line-height: 1
               .num
                 font-family: $font-family-medium
                 font-size: $font-size-14
                 color: #111111
-                width: 9.3vw
-                height: 6.4vw
+                width: 35px
+                height: 24px
                 text-align: center
                 line-height: 24px
-                border-left: 1px solid #EEEEEE
-                border-right: 1px solid #EEEEEE
-
-
+                border-1px()
           .left
             width: 26.67vw
             .spec

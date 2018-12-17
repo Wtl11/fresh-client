@@ -44,7 +44,7 @@ export default {
           selectedIconPath: '/static/img/icon-goodscat_press.png'
         },
         {
-          pagePath: 'pages/mine-core',
+          pagePath: 'pages/mine',
           text: '我的',
           iconPath: '/static/img/icon-my.png',
           selectedIconPath: '/static/img/icon-my_press.png'
@@ -53,5 +53,5 @@ export default {
     }
   }
 }
-console.log(11)
+
 export const _this = app

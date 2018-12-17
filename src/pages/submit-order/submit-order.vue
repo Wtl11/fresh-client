@@ -1,32 +1,35 @@
 <template>
   <div class="submit-order">
     <navigation-bar title="提交订单" :showArrow="true" :translucent="false"></navigation-bar>
-    <div class="order-title">请在11月20日 16:00到货后，到团长代理点自提</div>
+    <div class="order-title">请在{{deliverAt}}到货后，到团长代理点自提</div>
     <div class="order-info">
       <div class="order-info-top">
-        <div class="info-address">提货地址：{{groupInfo.province}}{{groupInfo.city}}{{groupInfo.district}}{{groupInfo.address}}</div>
+        <div class="info-address">
+          提货地址：{{groupInfo.province}}{{groupInfo.city}}{{groupInfo.district}}{{groupInfo.address}}
+        </div>
         <div class="info-phone">
-          <div class="icon-text">团长 </div>
-          <div class="icon-number"><span class="name">{{groupInfo.name}}</span><span class="txt">{{groupInfo.mobile}}</span></div>
+          <div class="icon-text">团长</div>
+          <div class="icon-number"><span class="name">{{groupInfo.name}}</span><span
+            class="txt">{{groupInfo.mobile}}</span></div>
         </div>
       </div>
       <div class="order-info-bottom">
         <div class="info-bottom-phone">
           <div class="lable">提货人手机号：</div>
-          <div class="mobile"><input class="ipt" type="text" v-model="consigneeNum"></div>
+          <div class="mobile"><input class="ipt" type="text" v-model="mobile"></div>
         </div>
         <button class="wechat-btn" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber">使用微信手机号</button>
       </div>
     </div>
     <div class="order-list">
-      <div class="list-item" v-for="(item, index) in info" :key="index">
-        <div class="item-left-img"><img class="img" :src="item.goods_image_url" alt=""></div>
+      <div class="list-item" v-for="(item, index) in goodsList" :key="index">
+        <div class="item-left-img"><img class="img" :src="item.goods_cover_image" alt=""></div>
         <div class="item-right">
-          <div class="title">{{item.goods_name}}</div>
+          <div class="title">{{item.name}}</div>
           <div class="sub-title">规格：{{item.goods_units}}</div>
           <div class="price-box">
             <div class="price-left">
-              <div class="number">{{item.price}}</div>
+              <div class="number">{{item.shop_price}}</div>
               <div class="icon">元</div>
             </div>
             <div class="price-right">
@@ -36,95 +39,88 @@
           </div>
         </div>
       </div>
-      <!--<div class="list-item">
-        <div class="item-left-img"></div>
-        <div class="item-right">
-          <div class="title">超值特惠 智利J级车厘子250g智利J级车厘子250g智利J级车厘子250g</div>
-          <div class="sub-title">规格：包</div>
-          <div class="price-box">
-            <div class="price-left">
-              <div class="number">3.4</div>
-              <div class="icon">元</div>
-            </div>
-            <div class="price-right">
-              <div class="icon">x</div>
-              <div class="number">1</div>
-            </div>
-          </div>
-        </div>
-      </div>-->
     </div>
     <div class="fixed-btn">
-      <div class="money">总计 {{totalPrice}}元</div>
-      <div class="pay" @click.stop="_confirmOeder">去支付</div>
+      <div class="money">总计 {{total}}元</div>
+      <div class="pay" @click.stop="submitOrder">去支付</div>
     </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-  import { orderComputed, orderMethods } from '@state/helpers'
+  import {orderComputed, orderMethods} from '@state/helpers'
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import API from '@api'
+
   const PAGE_NAME = 'SUBMIT_ORDER'
 
   export default {
     name: PAGE_NAME,
     data() {
       return {
-        userInfo: '',
-        goods: [],
+        code: '',
+        mobile: '',
         orderId: '',
-        totalPrice: 0,
-        consigneeNum: '',
-        groupInfo: {}
+        groupInfo: {},
+        userInfo: {}
       }
     },
     computed: {
       ...orderComputed
     },
     async onShow() {
-      this.userInfo = wx.getStorageSync('userInfo')
-      this.consigneeNum = 13694240
-      this.groupInfo = wx.getStorageSync('groupInfo')
-      this.orderTotal()
-      if (!this.groupInfo) { await this._groupInfo() }
-      console.log(this.info)
+      this._getCode()
+      this._setMobile()
+      this._getShopDetail()
     },
     methods: {
       ...orderMethods,
-      orderTotal() {
-        let that = this
-        that.totalPrice = 0
-        this.info.forEach((item, index) => {
-          that.totalPrice += item.price * item.num
-          this.goods.push({
-            sku_id: item.goods_sku_id,
-            num: item.num
+      _getCode() {
+        this.$wechat.login()
+          .then(res => {
+            this.code = res.code
           })
-        })
+      },
+      _setMobile() {
+        this.$wechat.getStorage('userInfo')
+          .then(res => {
+            this.userInfo = res.data
+            this.mobile = this.userInfo.mobile
+          })
+      },
+      _getShopDetail() {
+        API.Mine.getShopDetail()
+          .then((res) => {
+            if (res.error !== this.$ERR_OK) {
+              return
+            }
+            this.groupInfo = res.data
+          })
       },
       getPhoneNumber(e) {
-        console.log(e.mp.detail.encryptedData)
-        console.log(e.mp.detail.errMsg)
-        console.log(e.mp.detail.iv)
-      },
-      async _groupInfo() {
-        let res = await API.SubmitOrder.groupInfo()
-        this.$wechat.hideLoading()
-        if (res.error !== this.$ERR_OK) {
-          this.$wechat.showToast(res.message)
+        let data = {
+          code: this.code,
+          iv: e.mp.detail.iv,
+          encryptedData: e.mp.detail.encryptedData
         }
-        console.log(res.data)
-        this.groupInfo = res.data
+        API.Mine.getWechatMobile(data)
+          .then(res => {
+            if (res.error !== this.$ERR_OK) {
+              return
+            }
+            this.mobile = res.data.mobile ? res.data.mobile : ''
+            this.userInfo.mobile = this.mobile
+            this.$wechat.setStorage('userInfo', this.userInfo)
+          })
       },
-      async _confirmOeder() {
+      async submitOrder() {
         // 手机号码暂无，后面加入
         let data = {
-          goods: this.goods,
+          goods: this.goodsList,
           nickname: this.userInfo.nickname,
           mobile: this.userInfo.mobile
         }
-        let res = await API.SubmitOrder.confirmOeder(data)
+        let res = await API.SubmitOrder.submitOrder(data)
         this.$wechat.hideLoading()
         if (res.error !== this.$ERR_OK) {
           this.$wechat.showToast(res.message)
@@ -138,8 +134,10 @@
           package: payRes.package,
           signType,
           paySign,
-          success(res) {},
-          fail(res) { }
+          success(res) {
+          },
+          fail(res) {
+          }
         })
       }
     },
@@ -157,6 +155,7 @@
     background: $color-background
     padding-bottom: 50px
     box-sizing: border-box
+
   .order-title
     height: 35px
     line-height: 35px
@@ -165,7 +164,8 @@
     font-size: $font-size-13
     color: $color-money
     font-family: $font-family-regular
-    background: rgba(255,131,0,.12)
+    background: rgba(255, 131, 0, .12)
+
   .order-info
     box-sizing: border-box
     padding-left: 3.2vw
@@ -245,6 +245,7 @@
         width: 104px
         text-align: center
         border-1px($color-main, 15px)
+
   .order-list
     background: #fff
     padding-left: 3.2vw
@@ -314,6 +315,7 @@
               padding-bottom: 2px
       &:last-child
         border-none()
+
   .fixed-btn
     position: fixed
     width: 100%
@@ -340,6 +342,7 @@
       text-align: center
       border-radius: 17px
       background: $color-main
+
   .submit-order
     width: 100%
 </style>

@@ -1,14 +1,14 @@
 <template>
   <div class="goods-detail">
-    <navigation-bar :title="title" :arrowType="arrowType" :headStyle="headStyle" :titleColor="titleColor"></navigation-bar>
+    <navigation-bar :title="goodsMsg.name" :showArrow="true" :translucent="true"></navigation-bar>
     <div class="banner-box">
-      <div class="banner-share" @click="showShare">
-        <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/icon-share3@2x.png'"  mode="aspectFill">
-      </div>
+      <!--<div class="banner-share" @click="showShare">-->
+        <!--<img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/icon-share3@2x.png'"  mode="aspectFill">-->
+      <!--</div>-->
       <swiper class="banner" @change="bannerChange" interval="5000">
-        <block v-for="(item, index) in [1,2,3,4,5,6]" :key="index">
+        <block v-for="(item, index) in goodsMsg.goods_banner_images" :key="index">
           <swiper-item class="banner-item">
-            <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/5@1x.png'" class="item-img"  mode="aspectFill">
+            <img v-if="item.image_url" :src="item.image_url" class="item-img"  mode="aspectFill">
           </swiper-item>
         </block>
       </swiper>
@@ -18,52 +18,46 @@
       <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/bg-details@2x.png'"  mode="aspectFill" class="group-bg">
       <div class="group-main-box">
         <div class="main-box-left">
-          <div class="left-price">3.8</div>
+          <div class="left-price">{{goodsMsg.shop_price}}</div>
           <div class="left-price-text">元</div>
           <div class="small-box">
-            <div class="line-price">4.5元</div>
+            <div class="line-price">{{goodsMsg.original_price}}元</div>
             <div class="line-price-text">团购价</div>
           </div>
         </div>
         <div class="main-box-right">
           <div class="time-text">距结束</div>
-          <div class="time-box">66</div>
+          <div class="time-box">{{activityTime.hour}}</div>
           <div class="time-line">:</div>
-          <div class="time-box">66</div>
+          <div class="time-box">{{activityTime.minute}}</div>
           <div class="time-line">:</div>
-          <div class="time-box">66</div>
+          <div class="time-box">{{activityTime.second}}</div>
         </div>
       </div>
     </div>
     <div class="goods-info">
       <div class="goods-info-top">
         <div class="info-top-left">
-          <div class="title">智利J级车厘子250g智利J级车厘子250g</div>
-          <div class="sub-title">智利J级车厘子250g智利J级车厘子250g</div>
+          <div class="title">{{goodsMsg.name}}</div>
+          <div class="sub-title">{{goodsMsg.describe}}</div>
         </div>
         <div class="info-top-right">
-          <div class="sales-number">已售3303斤</div>
-          <div class="stock-number">库存2545件</div>
+          <div class="sales-number">已售{{goodsMsg.sale_count}}{{goodsMsg.goods_units}}</div>
+          <div class="stock-number">库存{{goodsMsg.usable_stock}}{{goodsMsg.goods_units}}</div>
         </div>
       </div>
-      <div class="goods-info-bootom">
-        <div class="info-bootom-list">
+      <div class="goods-info-bootom" v-if="userImgList.length > 0">
+        <div class="info-bootom-list" v-for="(item, index) in userImgList" :key="index">
           <div class="info-user">
-            <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/5@1x.png'" class="detail-img"  mode="widthFix">
+            <img v-if="imageUrl" :src="item.url ? item.url : imageUrl + '/yx-image/choiceness/default_avatar@2x.png'" class="detail-img"  mode="widthFix">
           </div>
-          <div class="info-name">段刚</div>
-        </div>
-        <div class="info-bootom-list">
-          <div class="info-user">
-            <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/5@1x.png'" class="detail-img"  mode="widthFix">
-          </div>
-          <div class="info-name">段刚</div>
+          <div class="info-name">{{item.name}}</div>
         </div>
         <div class="info-bootom-text">等刚刚购买了此商品</div>
       </div>
     </div>
     <div class="detail-title">商品详情</div>
-    <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/5@1x.png'" class="detail-img"  mode="widthFix">
+    <img v-for="(item, index) in goodsMsg.goods_detail_images" v-if="item.image_url" :src="item.image_url" class="detail-img"  mode="widthFix" :key="index">
     <div class="send-box">
       <div class="send-title">发货须知</div>
       <div class="send-sub-title">当天下午23:00前下单，当天发货次日送达；</div>
@@ -78,14 +72,15 @@
           <div class="hlep-bottom">{{item.text}}</div>
         </div>
       </div>
-      <div class="goods-btn" @click="_action()">加入购物车</div>
-      <div class="goods-btn goods-btn-active">立即购买</div>
+      <div v-if="goodsMsg.usable_stock * 1 !== 0" class="goods-btn" @click="addShoppingCart">加入购物车</div>
+      <div v-if="goodsMsg.usable_stock * 1 !== 0" class="goods-btn goods-btn-active" @click="instantlyBuy">立即购买</div>
+      <div v-if="goodsMsg.usable_stock * 1 === 0" class="goods-btn goods-btn-assint">已抢完</div>
     </div>
-    <add-number></add-number>
-    <link-group ref="groupList" phoneTxt="678910" wechatTxt="eleven丶"></link-group>
+    <add-number ref="addNumber" :msgDetail="goodsMsg" @comfirmNumer="comfirmNumer"></add-number>
+    <link-group ref="groupList" :wechatInfo="groupInfo"></link-group>
     <link-group ref="shareList" :linkType="2"></link-group>
     <we-paint ref="wePaint" @drawDone="_drawDone"></we-paint>
-    <div class="share-goods" style="opacity: 0">
+    <div class="share-goods" style="display: none">
       <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-sharegoods@2x.png'" class="share-bg"  mode="aspectFill">
       <div class="share-box">
         <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/5@1x.png'" class="share-img"  mode="aspectFill">
@@ -106,10 +101,12 @@
 </template>
 
 <script type="text/ecmascript-6">
+  import { orderMethods } from '@state/helpers'
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import AddNumber from '@components/add-number/add-number'
   import LinkGroup from '@components/link-group/link-group'
   import WePaint from '@components/we-paint/we-paint'
+  import API from '@api'
   const PAGE_NAME = 'GOODS_DETAIL'
   const TYPEBTN = [{url: '/yx-image/choiceness/icon-homepage@2x.png', text: '首页', type: 0}, {url: '/yx-image/choiceness/icon-service@2x.png', text: '客服', type: 1}, {url: '/yx-image/choiceness/icon-shopcart@2x.png', text: '购物车', type: 2}]
 
@@ -117,33 +114,95 @@
     name: PAGE_NAME,
     data() {
       return {
-        title: '23',
-        headStyle: 'background: linear-gradient(0deg, rgba(0,0,0,0.00) 10%, rgba(0,0,0,0.55) 150%)',
-        titleColor: 'white',
-        arrowType: 'white',
+        activityTime: {
+          day: '00',
+          hour: '00',
+          minute: '00',
+          second: '00'
+        },
         currentNum: 0,
-        typeBtn: TYPEBTN
+        typeBtn: TYPEBTN,
+        goodsId: 0,
+        goodsMsg: {},
+        timeEnd: false,
+        groupInfo: {},
+        userImgList: [],
+        deliverAt: ''
       }
     },
+    onLoad(e) {
+      this.goodsId = e.id
+      this.getGoodsDetailData()
+      this._groupInfo()
+      this.getUserImgList()
+    },
     methods: {
+      ...orderMethods,
+      async _groupInfo() {
+        let res = await API.Choiceness.getGroupInfo()
+        this.$wechat.hideLoading()
+        if (res.error !== this.$ERR_OK) {
+          this.$wechat.showToast(res.message)
+        }
+        this.groupInfo = res.data
+      },
+      getUserImgList() {
+        API.Choiceness.getUserImg({id: this.goodsId, limit: 3}).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.userImgList = res.data
+          } else {
+            this.$wechat.showToast(res.message)
+          }
+        })
+      },
       bannerChange(e) {
         this.currentNum = e.mp.detail.current * 1 + 1
       },
       switchItem(item) {
         switch (item.type) {
           case 0:
-            console.log('00')
+            wx.switchTab({ url: '/pages/choiceness' })
             break
           case 1:
             this.$refs.groupList.showLink()
             break
           case 2:
-            console.log('222')
+            wx.switchTab({ url: '/pages/shopping-cart' })
             break
         }
       },
       showShare() {
         this.$refs.shareList.showLink()
+      },
+      addShoppingCart() {
+        API.Choiceness.addShopCart({sku_id: this.goodsMsg.shop_skus[0].id}).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.$wechat.showToast('加入购物车成功')
+            this.changeShoppingNumber()
+          } else {
+            this.$wechat.showToast(res.message)
+          }
+        })
+      },
+      changeShoppingNumber() {
+        API.Choiceness.shopCartNumber().then((res) => {
+          if (res.error === this.$ERR_OK) {
+            console.log(res.data)
+            wx.setTabBarBadge({
+              index: 1,
+              text: res.data.count + ''
+            })
+          } else {
+            this.$wechat.showToast(res.message)
+          }
+        })
+      },
+      instantlyBuy() {
+        if (this.goodsMsg.buy_count >= this.goodsMsg.buy_limit) {
+          this.$wechat.showToast(`该商品限购${this.goodsMsg.buy_limit}件`)
+        } else {
+          this.$refs.addNumber.showLink()
+        }
       },
       _action() {
         // let name = this.postMsg.coupon ? this.postMsg.coupon.activity_name.length >= 18 ? this.postMsg.coupon.activity_name.slice(0, 18) + '...' : this.postMsg.coupon.activity_name : ''
@@ -322,6 +381,70 @@
             this.$wx.openSetting()
           }
         })
+      },
+      getGoodsDetailData() {
+        API.Choiceness.getGoodsDetail(this.goodsId).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.goodsMsg = res.data
+            this.deliverAt = res.data.shelf_delivery_at
+            this._kanTimePlay()
+          } else {
+            this.$wechat.showToast(res.message)
+          }
+        })
+      },
+      comfirmNumer(number) {
+        let goodsList = this.goodsMsg.shop_skus[0]
+        goodsList.sku_id = goodsList.id
+        goodsList.num = number
+        let orderInfo = {
+          goodsList: new Array(goodsList),
+          total: goodsList.shop_price * number,
+          deliverAt: this.deliverAt
+        }
+        this.setOrderInfo(orderInfo)
+        wx.redirectTo({url: `/pages/submit-order`})
+      },
+      _kanTimePlay() {
+        clearInterval(this.timer)
+        this.activityTime = this._groupTimeCheckout(this.goodsMsg.shelf_end_at)
+        console.log(this.activityTime)
+        this.timer = setInterval(() => {
+          this.activityTime = this._groupTimeCheckout(this.goodsMsg.shelf_end_at)
+          if (this.timeEnd) {
+            clearInterval(this.timer)
+          }
+        }, 1000)
+      },
+      _groupTimeCheckout(time) {
+        let nowSecond = parseInt(Date.now() / 1000)
+        let differ = time * 1 - nowSecond
+        let day = Math.floor(differ / (60 * 60 * 24))
+        day = day >= 10 ? day : '0' + day
+        let hour = Math.floor(differ / (60 * 60)) - (day * 24)
+        hour = hour >= 10 ? hour : '0' + hour
+        let minute = Math.floor(differ / 60) - (day * 24 * 60) - (hour * 60)
+        minute = minute >= 10 ? minute : '0' + minute
+        let second = Math.floor(differ) - (day * 24 * 60 * 60) - (hour * 60 * 60) - (minute * 60)
+        second = second >= 10 ? second : '0' + second
+        let times
+        if (differ > 0) {
+          times = {
+            day,
+            hour,
+            minute,
+            second
+          }
+        } else {
+          times = {
+            day: '00',
+            hour: '00',
+            minute: '00',
+            second: '00'
+          }
+          this.timeEnd = true
+        }
+        return times
       }
     },
     components: {
@@ -544,7 +667,6 @@
     margin-bottom: 11px
   .goods-info-top
     padding: 17px 0
-    border-bottom-1px(#E6E6E6)
     layout(row)
     align-items: center
     justify-content: space-between
@@ -577,7 +699,9 @@
       font-size: $font-size-12
       color: $color-text-sub
       font-family: $font-family-regular
+      text-align: center
   .goods-info-bootom
+    border-top-1px(#E6E6E6)
     height: 45px
     layout(row)
     align-items: center
@@ -601,6 +725,8 @@
       font-size: $font-size-12
       color: $color-text-sub
       font-family: $font-family-regular
+      max-width: 35px
+      no-wrap()
   .info-bootom-text
     font-size: $font-size-12
     color: $color-text-sub
@@ -677,4 +803,8 @@
     .goods-btn-active
       color: #fff
       background: $color-main
+    .goods-btn-assint
+      color: #fff
+      background: $color-text-assist
+      width: 60vw
 </style>

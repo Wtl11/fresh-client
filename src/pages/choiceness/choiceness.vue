@@ -1,6 +1,6 @@
 <template>
   <div class="choiceness">
-    <navigation-bar title="赞播优鲜" :showArrow="false" :translucent="true"></navigation-bar>
+    <navigation-bar :title="title" :showArrow="false" :translucent="true"></navigation-bar>
     <div class="choiceness-top">
       <div class="choiceness-bgimg">
         <img class="bgimg-url" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-bg@2x.png'">
@@ -41,26 +41,24 @@
         <div class="dots-item" :class="{'dots-item-active': praiseIndex === idx}" v-for="(item,idx) in plantingList" :key="idx" v-if="plantingList.length > 1"></div>
       </div>
     </div>
-    <div class="select-tab" id="selTab" :class="{'topnav': menuFixed}">
-      <scroll-view
-        scroll-x
-        style="height: 35px"
-        @scrolltoupper="upper"
-        @scrolltolower="lower"
-      >
-        <div class="select-box">
-          <div class="select-list" v-for="(item, index) in selectTab" :key="index" :class="tabIdx * 1 === index ? 'cur-item' : ''" @click="selectIndex(index)">{{item.text}}</div>
-          <div class="select-bg">
-            <div class="cur-select-bg" :style="'transform: translate(' + tabIdx*100 + '%,0)'"></div>
-          </div>
-        </div>
-      </scroll-view>
+    <div class="select-scroll">
+      <scroll-tab
+        ref="scrollTab"
+        @changeTab="toTap"
+        :infoBorderWidth="68"
+        :tabList="tabList"
+        :showLine="true"
+        :autoWidth="true"
+        activeStyle=";color:#73C200;font-size:32rpx;font-family: PingFangSC-Medium"
+        lineStyle="border-bottom-color: #ff3f54;height:2px"
+        boxStyle="color: #c2c2c; height: 44px; line-height: 44px;font-size:28rpx;font-family: PingFangSC-Medium;padding: 0 13.75px"
+      ></scroll-tab>
     </div>
     <div class="goods-box">
-      <div class="goods-list" v-for="(item, index) in goodsList" :key="index">
+      <div class="goods-list" v-for="(item, index) in goodsList" :key="index" @click="jumpGoodsDetail(item)">
         <div class="goods-left">
           <div class="goods-left-img">
-            <img class="item-img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/icon-label@2x.png'">
+            <img class="item-img" mode="aspectFill" v-if="item.goods_cover_image" :src="item.goods_cover_image">
           </div>
           <div class="goods-left-icon">
             <img class="item-img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/icon-label@2x.png'">
@@ -84,14 +82,13 @@
               </div>
             </div>
             <div class="add-box-right">
-              <div class="add-goods-btn">+购物车</div>
+              <div class="add-goods-btn" @click.stop="addShoppingCart(item)">+购物车</div>
             </div>
           </div>
         </div>
       </div>
     </div>
-
-    <div class="foot-ties">
+    <div class="foot-ties" v-if="goodsMore">
       <div class="left lines"></div>
       <div class="center">已经到底了</div>
       <div class="bot lines"></div>
@@ -103,6 +100,7 @@
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import LinkGroup from '@components/link-group/link-group'
+  import ScrollTab from '@components/scroll-tab/scroll-tab'
   import API from '@api'
 
   const PAGE_NAME = 'CHOICENESS'
@@ -117,23 +115,21 @@
         menuFixed: false,
         menuTop: 0,
         groupInfo: {},
-        groupId: 0,
         plantingList: [],
         tabList: [],
         shelfId: 0,
         goodsList: [],
         goodsMore: false,
-        goodsPage: 1
+        goodsPage: 1,
+        title: '赞播优鲜'
       }
     },
     async onShow() {
-      this.initClientRect()
-      if (this.$mp.query.groupId) {
-        this.groupId = this.$mp.query.groupId
-      }
+      // this.initClientRect()
       this.getPlantList()
       this.getTabList()
-      await this._groupInfo(this.groupId)
+      this.changeShoppingNumber()
+      await this._groupInfo()
     },
     onPageScroll(scroll) {
       // console.log(this.menuTop)
@@ -145,6 +141,9 @@
       }
       // if (this.menuFixed === (scroll.scrollTop > this.menuTop)) return
       // this.menuFixed = scroll.scrollTop > this.menuTop
+    },
+    onReachBottom() {
+      this.getMoreGoodsList()
     },
     methods: {
       _setPraiseIndex(e) {
@@ -159,40 +158,34 @@
         query.select('#selTab').boundingClientRect()
         query.exec(function (res) {
           that.menuTop = res[0].top
-          // console.log(that.menuTop)
         })
       },
       linkGroup() {
         this.$refs.groupComponents.showLink()
       },
-      async _groupInfo(id) {
-        let res = await API.Choiceness.getGroupInfo(id)
+      async _groupInfo() {
+        let res = await API.Choiceness.getGroupInfo()
         this.$wechat.hideLoading()
         if (res.error !== this.$ERR_OK) {
           this.$wechat.showToast(res.message)
         }
-        console.log(res.data)
         this.groupInfo = res.data
-        wx.setStorageSync('groupInfo', res.data)
       },
       getPlantList() {
         API.Choiceness.getPlanting().then((res) => {
           if (res.error === this.$ERR_OK) {
             this.plantingList = res.data
-            console.log(res.data)
           } else {
             this.$wechat.showToast(res.message)
           }
         })
       },
       jumpDetail(item) {
-        console.log(item.type)
         if (item.type === 'mini_goods') {
           wx.navigateTo({
-            url: `/pages/goods-detail/?id=${item.content.id}`
+            url: `/pages/goods-detail?id=${item.content.id}`
           })
         } else {
-          console.log(item.content.url)
           wx.navigateTo({
             url: `/pages/out-html?url=${item.content.url}`
           })
@@ -213,6 +206,7 @@
       },
       getGoodsList() {
         this.goodsPage = 1
+        this.goodsMore = false
         let data = {
           shelf_tag_id: this.sheTag_id,
           shelf_id: this.shelfId,
@@ -222,7 +216,6 @@
         API.Choiceness.getGoodsShelfList(data).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.goodsList = res.data
-            console.log(res.data)
             this._isUpList(res)
           } else {
             this.$wechat.showToast(res.message)
@@ -254,11 +247,46 @@
         if (this.goodsList.length >= res.meta.total * 1) {
           this.goodsMore = true
         }
+      },
+      jumpGoodsDetail(item) {
+        wx.navigateTo({
+          url: `/pages/goods-detail?id=${item.id}`
+        })
+      },
+      addShoppingCart(item) {
+        console.log(item)
+        API.Choiceness.addShopCart({sku_id: item.shop_sku_id}).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.$wechat.showToast('加入购物车成功')
+            this.changeShoppingNumber()
+          } else {
+            this.$wechat.showToast(res.message)
+          }
+        })
+      },
+      changeShoppingNumber() {
+        API.Choiceness.shopCartNumber().then((res) => {
+          if (res.error === this.$ERR_OK) {
+            console.log(res.data)
+            wx.setTabBarBadge({
+              index: 1,
+              text: res.data.count + ''
+            })
+          } else {
+            this.$wechat.showToast(res.message)
+          }
+        })
+      },
+      toTap(id) {
+        if (id * 1 === this.sheTag_id) return
+        this.sheTag_id = id
+        this.getGoodsList()
       }
     },
     components: {
       LinkGroup,
-      NavigationBar
+      NavigationBar,
+      ScrollTab
     }
   }
 </script>
@@ -372,7 +400,7 @@
     box-sizing: border-box
     position: relative
     height: 40vw
-    margin-bottom: 13px
+    /*margin-bottom: 13px*/
     .banner
       width: 100%
       height: 100%
@@ -400,45 +428,6 @@
       .dots-item-active
         width: 10px
         background: #fff
-
-  .select-tab
-    padding: 0 3.2vw
-    box-sizing: border-box
-    position: relative
-    transition: all .1s
-    background: #fff
-    .select-box
-      height: 35px
-      width: 100%
-      layout(row)
-      align-items: center
-      border-bottom: 2px solid $color-main
-      position: relative
-      .select-list
-        position: relative
-        z-index: 11
-        font-size: $font-size-14
-        font-family: $font-family-medium
-        color: $color-text-main
-        width: 18.72vw
-        text-align: center
-        height: 33px
-        line-height: 33px
-        transition: all 0.3s
-      .cur-item
-        color: #fff
-      .select-bg
-        width: 100%
-        height: 100%
-        position: absolute
-        .cur-select-bg
-          width: 20%
-          height: 100%
-          background: $color-main
-          transform: translate(0, 0)
-          transition: all 0.3s
-          border-top-left-radius: 6px
-          border-top-right-radius: 6px
 
   .topnav
     position: fixed

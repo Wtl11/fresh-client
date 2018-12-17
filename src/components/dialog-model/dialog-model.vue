@@ -33,6 +33,10 @@
       tip: {
         type: String,
         default: ''
+      },
+      msg: {
+        type: String,
+        default: ''
       }
     },
     data() {
