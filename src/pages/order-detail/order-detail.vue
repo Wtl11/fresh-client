@@ -1,6 +1,6 @@
 <template>
   <div class="wrap">
-    <navigation-bar title="购物车" :translucent="false"></navigation-bar>
+    <navigation-bar title="订单详情" :translucent="false"></navigation-bar>
     <div class="order-banner">
       <div class="status">
         <div class="icon"><img v-if="imageUrl" class="icon-img" :src="imageUrl+'/yx-image/cart/icon-finish_xq@2x.png'" alt=""></div>
@@ -100,9 +100,6 @@
       }
     },
     onShow() {
-      if (getApp().globalData.imgUrl) {
-        this.testSrc = getApp().globalData.imgUrl
-      }
     },
     computed: {
       ...oauthComputed
@@ -380,7 +377,7 @@
   .service
     width: 100vw
     padding-top: 15px
-    padding-bottom: 80px
+    padding-bottom: 15px
     layout(row)
     justify-content: center
     align-items: center
