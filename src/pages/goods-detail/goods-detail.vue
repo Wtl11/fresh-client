@@ -125,14 +125,13 @@
         goodsId: 0,
         goodsMsg: {},
         timeEnd: false,
-        chooseArr: [],
         groupInfo: {},
-        userImgList: []
+        userImgList: [],
+        deliverAt: ''
       }
     },
     onLoad(e) {
       this.goodsId = e.id
-      console.log(e)
       this.getGoodsDetailData()
       this._groupInfo()
       this.getUserImgList()
@@ -387,6 +386,7 @@
         API.Choiceness.getGoodsDetail(this.goodsId).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.goodsMsg = res.data
+            this.deliverAt = res.data.shelf_delivery_at
             this._kanTimePlay()
           } else {
             this.$wechat.showToast(res.message)
@@ -394,13 +394,15 @@
         })
       },
       comfirmNumer(number) {
-        let item = this.goodsMsg
-        item.goods_name = this.goodsMsg.name
-        item.price = this.goodsMsg.shop_price
-        item.goods_image_url = this.goodsMsg.goods_cover_image
-        item.num = number
-        this.chooseArr.push(item)
-        this.update(this.chooseArr)
+        let goodsList = this.goodsMsg
+        goodsList.sku_id = goodsList.id
+        goodsList.num = number
+        let orderInfo = {
+          goodsList: new Array(goodsList),
+          total: goodsList.shop_price * number,
+          deliverAt: this.deliverAt
+        }
+        this.setOrderInfo(orderInfo)
         wx.redirectTo({url: `/pages/submit-order`})
       },
       _kanTimePlay() {
