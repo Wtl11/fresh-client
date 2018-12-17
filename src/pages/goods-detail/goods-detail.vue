@@ -394,7 +394,7 @@
         })
       },
       comfirmNumer(number) {
-        let goodsList = this.goodsMsg
+        let goodsList = this.goodsMsg.shop_skus[0]
         goodsList.sku_id = goodsList.id
         goodsList.num = number
         let orderInfo = {
