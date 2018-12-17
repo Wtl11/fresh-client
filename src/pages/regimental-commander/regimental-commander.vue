@@ -72,7 +72,7 @@
       </div>
       <div class="reg-goods-box">
         <div class="reg-goods-item" v-for="(item,index) in goodsList" :key="index">
-          <img :src="item.goods_cover_image" class="reg-goods-img">
+          <img :src="item.goods_cover_image" class="reg-goods-img" mode="aspectFill">
           <div class="reg-goods-content">
             <div class="reg-goods-title">{{item.name}}</div>
             <div class="reg-goods-tip">团购价</div>

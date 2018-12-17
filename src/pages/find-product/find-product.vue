@@ -5,11 +5,11 @@
       <order-item :isShowExamine="false" :orderList="productList" @dealOrder="_showDialog"></order-item>
     </div>
     <div class="noting" v-if="showMore">
-      <div class="noting-img"><img class="img" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'" alt=""></div>
+      <div class="noting-img"><img class="img" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'"></div>
       <div class="txt">空空如也</div>
     </div>
     <div class="bulk-pickup">
-      <p class="bulk-pickup-text">共3笔订单，3件商品</p>
+      <p class="bulk-pickup-text">共{{orderCount.length}}笔订单，{{goodsCount}}件商品</p>
       <p class="bulk-pickup-btn" @click="_showDialog">批量提货</p>
     </div>
     <dialog-model ref="dialog" @confirm="_confirmDelivery"></dialog-model>
@@ -33,7 +33,9 @@
         productList: [],
         showMore: false,
         idsAll: [],
-        ids: []
+        ids: [],
+        goodsCount: 0,
+        orderCount: 0
       }
     },
     async onLoad(option) {
@@ -55,6 +57,8 @@
         this.showMore = !res.data.length
         this.productList = this._infoList(res.data)
         this.title = this.productList[0].nickname
+        this.goodsCount = res.goods_count
+        this.orderCount = res.order_count
         this.idsAll = res.ids
       },
       _infoList(arr) {
@@ -77,6 +81,10 @@
         }
       },
       _showDialog(index, item) {
+        if (!this.productList.length) {
+          this.$wechat.showToast('暂无可提货商品')
+          return
+        }
         this.ids = []
         this.$refs.dialog.show({msg: '确定已经提货？'})
         if (typeof index !== 'number') {

@@ -6,6 +6,9 @@ page.$mount()
 
 export default {
   config: {
-    navigationBarTitleText: '昨日订单'
+    navigationBarTitleText: '昨日订单',
+    enablePullDownRefresh: true,
+    backgroundColor: '#ffffff',
+    backgroundTextStyle: 'dark'
   }
 }

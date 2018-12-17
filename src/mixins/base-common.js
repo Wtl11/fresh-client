@@ -1,4 +1,6 @@
-// 不需要自动重置data数据的页面
+// 不需要自动重置data数据的页
+import API from '@api'
+
 const unResetPage = []
 
 export default {
@@ -28,7 +30,7 @@ export default {
         }
         url = string ? `${url}?${string.slice(1)}` : url
       }
-      if (url.includes('pages/error') || url.includes('pages/error-network')) {
+      if (url.includes('pages/lost') || url.includes('pages/error')) {
         return
       }
       this.$wx.setStorageSync('errorUrl', url)
@@ -59,6 +61,9 @@ export default {
     },
     // 手机formId
     $getFormId(e) {
+      console.log(e)
+      let formId = e.mp.detail.formId
+      API.Form.getFormId({form_ids: [formId]})
       // let id = e.mp.detail.formId todo
       // Jwt.updateFormId({form_ids: [id]}) todo
     }

@@ -5,7 +5,7 @@
       <img :src="imageUrl + '/yx-image/group/pic-miss@2x.png'" v-if="imageUrl" class="error-img">
       <p class="text">抱歉！您访问的页面丢失啦</p>
     </div>
-    <div class="btn">返回首页</div>
+    <navigator class="btn" open-type="switchTab" url="/pages/choiceness">返回首页</navigator>
   </div>
 </template>
 
