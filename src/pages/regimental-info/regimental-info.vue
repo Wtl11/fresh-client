@@ -3,26 +3,27 @@
     <navigation-bar title="团长信息"></navigation-bar>
     <div class="regimental-header-box">
       <p class="regimental-name">头像</p>
-      <img src="" class="regimental-header">
+      <img :src="leaderDetail.head_image_url" class="regimental-header">
       <img :src="imageUrl + '/yx-image/group/icon-pressed@2x.png'" v-if="imageUrl" class="way">
     </div>
     <div class="line"></div>
     <div class="chang-box">
       <div class="regimental-item">
         <div class="regimental-name">团长名称</div>
-        <div class="regimental-input text-color">团长名称--不可修改</div>
+        <div class="regimental-input text-color">{{leaderDetail.nickname}}</div>
       </div>
       <div class="regimental-text-box">
         <div class="regimental-name">公告</div>
-        <textarea type="text" :class="{'regimental-text-ios': isIos}" maxlength="20" class="regimental-text" placeholder="请添加注意事项" placeholder-class="text-color"></textarea>
+        <textarea type="text" :class="{'regimental-text-ios': isIos}" maxlength="20" class="regimental-text" placeholder="请添加注意事项" placeholder-class="text-color" v-model="leaderDetail.notice"></textarea>
       </div>
     </div>
-    <div :class="{'btn-disable': !isSave}" class="btn" @click="go">保存</div>
+    <div :class="{'btn-disable': !leaderDetail.notice}" class="btn" @click="_saveLeader">保存</div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
+  import API from '@api'
 
   const PAGE_NAME = 'REGIMENTAL_INFO'
 
@@ -31,18 +32,38 @@
     data() {
       return {
         isIos: false,
-        isSave: false
+        isSave: false,
+        leaderDetail: {}
       }
     },
-    onLoad() {
+    async onLoad() {
       this.$wx.getSystemInfo({
         success: (res) => {
           this.isIos = res.system.includes('iOS')
-          console.log(res.system)
         }
       })
+      await this._getLeaderDetail()
     },
-    methods: {},
+    methods: {
+      async _getLeaderDetail() {
+        let res = await API.Leader.leaderDetail()
+        if (res.error !== this.$ERR_OK) {
+          this.$wechat.showToast(res.message)
+          return
+        }
+        this.leaderDetail = res.data
+      },
+      async _saveLeader() {
+        let res = await API.Leader.saveLeader({name: this.leaderDetail.name, notice: this.leaderDetail.notice})
+        this.$wechat.showToast(res.message)
+        if (res.error !== this.$ERR_OK) {
+          return
+        }
+        setTimeout(() => {
+          wx.navigateBack()
+        }, 500)
+      }
+    },
     components: {
       NavigationBar
     }
