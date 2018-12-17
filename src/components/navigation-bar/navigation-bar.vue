@@ -21,7 +21,7 @@
   }
 
   let DEFAULT_PAGE = pageRouter()
-  console.log(DEFAULT_PAGE)
+
   export default {
     name: 'HEAD_ITEM',
     props: {
@@ -116,9 +116,9 @@
         }
         let pages = getCurrentPages()
         if (+pages.length === 1) {
-          wx.switchTab({url: DEFAULT_PAGE})
+          wx.switchTab({ url: DEFAULT_PAGE })
         } else {
-          wx.navigateBack({delta: 1})
+          wx.navigateBack({ delta: 1 })
         }
       }
     },
@@ -143,6 +143,7 @@
     left: 0
     top: 0
     z-index: 100
+
     .head-arrow
       position: absolute
       width: 20px
@@ -152,15 +153,18 @@
       display: flex
       justify-content: center
       align-items: center
+
       &:after
         content: ''
         position: absolute
         width: 100%
         height: 100%
         padding: 12px 20px
+
       .head-arrow-img
         width: 18px
         height: @width
+
     .head-content
       text-align: center
       line-height: 44px

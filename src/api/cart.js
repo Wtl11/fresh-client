@@ -7,9 +7,9 @@ export default {
    * @param loading
    * @returns {*}
    */
-  shopCart(data, loading) {
+  shopCart(loading) {
     const url = `/social-shopping/api/wap/cart`
-    return request.get(url, data, loading)
+    return request.get(url, null, loading)
   },
   /**
    * 删除购物车商品

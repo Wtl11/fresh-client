@@ -123,7 +123,6 @@
         index: 1,
         text: '1'
       })
-      console.log(this.$imageUrl)
       if (getApp().globalData.imgUrl) {
         this.testSrc = getApp().globalData.imgUrl
       }
