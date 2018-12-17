@@ -1,3 +1,7 @@
+import API from '@api'
+import * as wechat from '@utils/wechat'
+import {ERR_OK} from '@utils/config'
+
 export const state = {
   goodsList: [],
   total: '',
@@ -21,6 +25,28 @@ export const actions = {
     commit('SET_GOODS_LIST', goodsList)
     commit('SET_TOTAL', total)
     commit('DELIVER_AT', deliverAt)
+  },
+  submitOrder({commit, state}, {orderInfo, success, error, complete}) {
+    API.SubmitOrder.submitOrder(orderInfo)
+      .then(res => {
+        wechat.hideLoading()
+        if (res.error !== ERR_OK) {
+          wechat.showToast(res.message)
+        }
+        let payRes = res.data
+        const {timestamp, nonceStr, signType, paySign} = payRes
+        this.orderId = res.data.order_id
+        wx.requestPayment({
+          timeStamp: timestamp,
+          nonceStr,
+          package: payRes.package,
+          signType,
+          paySign,
+          success,
+          error,
+          complete
+        })
+      })
   }
 }
 

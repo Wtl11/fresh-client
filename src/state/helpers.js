@@ -23,5 +23,5 @@ export const orderComputed = {
 }
 
 export const orderMethods = {
-  ...mapActions('order', ['setOrderInfo'])
+  ...mapActions('order', ['setOrderInfo', 'submitOrder'])
 }
