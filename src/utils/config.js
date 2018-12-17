@@ -3,9 +3,9 @@ const version = process.env.VERSION
 
 // todo 测试专用记得更新
 const DEV = {
-  api: 'https://zhidian-api.jerryf.cn',
+  api: 'http://social-shopping-api.jerryf.cn',
   image: 'https://img.jerryf.cn/defaults',
-  upload: 'https://zhidian-api.jerryf.cn',
+  upload: 'http://social-shopping-api.jerryf.cn',
   imRecord: 'https://data-analysis-api.jkweixin.net'
 }
 

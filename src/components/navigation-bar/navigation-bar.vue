@@ -4,7 +4,7 @@
       <div class="status-bar" :style="{height: statusBarHeight + 'px'}"></div>
       <div class="head-content" :style="{color: titleColor}">{{currentTitle}}</div>
       <div class="head-arrow" v-if="showArrow" @click="goBackUrl">
-        <img v-if="imageUrl" :src="imageUrl + '/zd-image/1.2/icon-title_back@2x.png'" class="head-arrow-img">
+        <img v-if="imageUrl" :src="imageUrl + arrowUrl" class="head-arrow-img">
       </div>
     </div>
     <div v-if="!translucent" :style="{height: statusBarHeight + 44 + 'px'}"></div>
@@ -14,11 +14,14 @@
   /* eslint-disable no-undef */
   import wx from 'wx'
   import app from '@src/main'
+
   function pageRouter() {
     let page = app.config.pages.find(item => /\^/.test(item))
     return page.replace('^', '/')
   }
+
   let DEFAULT_PAGE = pageRouter()
+  console.log(DEFAULT_PAGE)
   export default {
     name: 'HEAD_ITEM',
     props: {
@@ -56,12 +59,16 @@
       hasTranslucentFn: {
         type: Boolean,
         default: false
+      },
+      arrowUrl: {
+        type: String,
+        default: '/zd-image/1.2/icon-title_back@2x.png'
       }
     },
     onPageScroll(e) {
       this._diyHeadNavigation(e)
     },
-    data () {
+    data() {
       return {
         statusBarHeight: 20,
         translucentTitle: this.title
@@ -73,6 +80,9 @@
       this._initHeadStyle()
     },
     methods: {
+      getStatusBarHeight() {
+        return this.statusBarHeight
+      },
       _diyHeadNavigation(e) {
         // 是否为沉浸式
         if (!this.translucent) return
@@ -144,10 +154,10 @@
       align-items: center
       &:after
         content: ''
-        position :absolute
-        width :100%
-        height :100%
-        padding :12px 20px
+        position: absolute
+        width: 100%
+        height: 100%
+        padding: 12px 20px
       .head-arrow-img
         width: 18px
         height: @width

@@ -1,0 +1,331 @@
+<template>
+  <div class="group-order-detail">
+    <navigation-bar title="订单详情"></navigation-bar>
+    <div class="order-status">
+      <img :src="imageUrl + '/yx-image/group/bg-ddxq@2x.png'" v-if="imageUrl" class="order-status-bg">
+      <div class="order-content">
+        <img :src="imageUrl + '/yx-image/group/icon_waiting@2x.png'" v-if="imageUrl" class="order-status-icon">
+        <p class="order-status-text">待提货</p>
+      </div>
+      <p class="order-num">提货单号: 20</p>
+    </div>
+    <div class="group">
+      <div class="group-address-box">
+        <div class="group-address">提货地址：广州市越秀区中山四路居家佳友便利店广州市越秀区中山四路居家佳友便利店</div>
+        <div class="customer-msg">
+          <p class="group-tip">团长</p>
+          <p class="group-name">刘娇娇</p>
+          <p class="group-phone">19252926954</p>
+        </div>
+      </div>
+      <div class="customer">
+        <p class="customer-phone">提货人: 19252926954</p>
+        <img :src="imageUrl + '/yx-image/group/icon-phone-green@2x.png'" v-if="imageUrl" class="phone-icon">
+      </div>
+    </div>
+    <!--商品-->
+    <div class="goods">
+      <div class="goods-item">
+        <div class="goods-detail">
+          <img src="" class="goods-img" mode="aspectFill">
+          <div class="goods-content">
+            <div class="goods-title">超值特惠 智利J级车厘子250g超值特惠 智利J级车厘子250g</div>
+            <div class="goods-sku">规格：包</div>
+            <div class="goods-money">3.8</div>
+          </div>
+          <div class="goods-num-box">x<span class="goods-num">1</span></div>
+        </div>
+        <div class="btn-box">
+          <div class="goods-btn">确认收货</div>
+        </div>
+      </div>
+      <div class="goods-item">
+        <div class="goods-detail">
+          <img src="" class="goods-img" mode="aspectFill">
+          <div class="goods-content">
+            <div class="goods-title">超值特惠 智利J级车厘子250g超值特惠 智利J级车厘子250g</div>
+            <div class="goods-sku">规格：包</div>
+            <div class="goods-money">3.8</div>
+          </div>
+          <div class="goods-num-box">x<span class="goods-num">1</span></div>
+        </div>
+        <div class="btn-box">
+          <div class="goods-btn">确认收货</div>
+        </div>
+      </div>
+    </div>
+    <!--订单信息-->
+    <div class="order-msg">
+      <div class="order-price">
+        <p class="price-title">实付金额</p>
+        <p class="price-money">¥7.60</p>
+      </div>
+      <div class="order-detail">
+        <div class="order-sn">订单编号: 65465416651651 <span class="copy">复制</span></div>
+        <div class="order-time">下单时间: 2018-06-05 17:23</div>
+      </div>
+    </div>
+    <div class="order-btn-box">
+      <form action="">
+        <button class="order-btn order-dark order-disable">已提醒</button>
+        <button class="order-btn order-dark">分享订单</button>
+        <button class="order-btn order-main">确认提货</button>
+      </form>
+    </div>
+  </div>
+</template>
+
+<script type="text/ecmascript-6">
+  import NavigationBar from '@components/navigation-bar/navigation-bar'
+
+  const PAGE_NAME = 'GROUP_ORDER_DETAIL'
+
+  export default {
+    name: PAGE_NAME,
+    data() {
+      return {}
+    },
+    components: {
+      NavigationBar
+    }
+  }
+</script>
+
+<style scoped lang="stylus" rel="stylesheet/stylus">
+  @import "~@design"
+  button
+    padding: 0
+    margin: 0
+    &:after
+      border: none
+
+  .group-order-detail
+    word-break: break-all
+    min-height: 100vh
+    padding-bottom: 96px
+    background: $color-background
+
+  .order-status
+    height: 18.67vw
+    overflow: hidden
+    position: relative
+    display: flex
+    align-items: center
+    padding: 0 15px
+    box-sizing: border-box
+    justify-content: space-between
+    .order-status-bg
+      position: absolute
+      width: 100%
+      height: 100%
+      left: 0
+      top: 0
+    .order-content
+      transform: translateY(3px)
+      display: flex
+      color: $color-white
+      font-family: $font-family-regular
+      font-size: $font-size-16
+      position: relative
+      z-index: 1
+      align-items: center
+      .order-status-icon
+        width: 31px
+        height: @width
+      .order-status-text
+        margin-left: 2px
+        transform: translateY(-2px)
+    .order-num
+      color: $color-white
+      font-family: $font-family-regular
+      font-size: $font-size-16
+      position: relative
+      z-index: 1
+
+  .group
+    font-family: $font-family-regular
+    font-size: 15px
+    background: $color-white
+    padding: 16px 0px 0 12px
+    box-sizing: border-box
+    .group-address-box
+      padding: 0 12px 16px 0px
+      background: $color-white
+      border-bottom-1px($color-line)
+    .group-address
+      line-height: 19px
+      font-family: $font-family-medium
+      color: #000000
+    .customer-msg
+      align-items: center
+      margin-top: 12px
+      display: flex
+      color: $color-text-sub
+      font-size: 15px
+      .group-tip
+        border-1px($color-money, 2px)
+        font-size: $font-size-12
+        width: 30px
+        padding: 1.5px 0
+        text-align: center
+        border-radius: 2px
+        color: $color-money
+      .group-name, .group-phone
+        margin-left: 5px
+        font-family: $font-family-regular
+      .group-phone
+        margin-left: 10px
+    .customer
+      display: flex
+      height: 49.5px
+      align-items: center
+      justify-content: space-between
+      box-sizing: border-box
+      padding-right: 12px
+      .phone-icon
+        height: 23px
+        width: @height
+      .customer-phone
+        color #000
+        font-family: $font-family-regular
+
+  .goods
+    background: $color-white
+    margin-top: 10px
+    .goods-item
+      padding: 10px 12px
+      box-sizing: border-box
+      border-bottom-1px($color-line)
+      &:last-child
+        border-none()
+      .goods-detail
+        display: flex
+        width: 100%
+        background: #FAFAFA
+        margin: 12px 0
+        padding: 10px
+        box-sizing: border-box
+        position: relative
+        .goods-img
+          background: $color-white
+          min-width: 60px
+          min-height: 60px
+          height: 60px
+          width: 60px
+        .goods-content
+          margin-left: 10px
+          width: 79%
+          display: flex
+          flex-direction: column
+          height: 60px
+          font-family: $font-family-regular
+          .goods-title
+            min-height: 15px
+            font-size: $font-size-14
+            color: $color-text-main
+            no-wrap()
+          .goods-money
+            height: 14px
+            margin-top: 13px
+            font-size: $font-size-14
+            color: $color-text-main
+          .goods-sku
+            height: 14px
+            margin-top: 7px
+            color: $color-text-sub
+            font-size $font-size-14
+        .goods-num-box
+          font-size: $font-size-12
+          position: absolute
+          bottom: 8px
+          right: 10px
+          .goods-num
+            margin-left: 1.5px
+            font-size: $font-size-16
+
+      .btn-box
+        height: 25px
+        display: flex
+        justify-content: flex-end
+      .goods-btn
+        text-align: center
+        box-sizing: border-box
+        border-1px($color-main, 15px)
+        color: $color-main
+        font-size: $font-size-12
+        font-family: $font-family-regular
+        line-height: 25px
+        width: 70px
+        height: 25px
+
+  .order-msg
+    margin-top: 10px
+    background: $color-white
+    .order-price
+      height: 50px
+      display: flex
+      padding: 0 12px
+      box-sizing: border-box
+      font-size: $font-size-14
+      align-items: center
+      font-family: $font-family-regular
+      border-bottom-1px($color-line)
+      justify-content: space-between
+      .price-title
+        color: $color-text-main
+      .price-money
+        color: $color-money
+    .order-detail
+      font-size: $font-size-14
+      font-family: $font-family-regular
+      color: $color-text-main
+      line-height: 1
+      padding: 6px 12px 27.5px
+      box-sizing: border-box
+      .order-sn
+        margin: 9px 0
+        .copy
+          font-size: $font-size-12
+          margin-left: 15px
+          display: inline-block
+          height: 22px
+          line-height: 22px
+          border-1px($color-text-assist, 11px)
+          text-align: center
+          width: 54px
+
+  .order-btn-box
+    display: flex
+    justify-content: flex-end
+    box-shadow: 0 -5px 10px 0 rgba(0, 0, 0, 0.03)
+    background: $color-white
+    position: fixed
+    width: 100vw
+    bottom: 0
+    left: 0
+    height: 55px
+    align-items: center
+    .order-btn
+      width: 80px
+      text-align: center
+      font-size: $font-size-14
+      font-family: $font-family-regular
+      padding: 8px 0
+      border-radius: 15px
+      margin-right: 12px
+      display: inline-block
+    .order-dark
+      color: $color-text-sub
+      border-1px($color-text-assist, 15px)
+    .order-main
+      color: $color-white
+      background: $color-main
+      &:active
+        background: #9DD44C
+        color: #E1F2C9
+    .order-disable
+      border-none()
+      color: $color-text-assist
+      background: $color-background
+
+</style>
