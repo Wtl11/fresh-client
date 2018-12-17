@@ -62,6 +62,9 @@ function checkCode(res) {
       case 13001: // 无团长权限code,跳转团长登录页面
         wx.redirectTo({url: '/pages/mine-housing'})
         break
+      case 10000: // 无团长权限code,跳转团长登录页面
+        wx.reLaunch({url: '/pages/login'})
+        break
     }
     throw requestException(res)
   }

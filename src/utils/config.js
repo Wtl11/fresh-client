@@ -17,9 +17,9 @@ const TEST = {
 }
 
 const PROD = {
-  api: 'http://social-shopping-api.jkweixin.com' + version,
+  api: 'http://social-shopping-api.jkweixin.com/' + version,
   image: 'https://img.jkweixin.com/defaults',
-  upload: 'http://social-shopping-api.jkweixin.com' + version,
+  upload: 'http://social-shopping-api.jkweixin.com/' + version,
   imRecord: 'https://data-analysis-api.jkweixin.com'
 }
 
