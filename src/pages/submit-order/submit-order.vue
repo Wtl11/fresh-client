@@ -60,7 +60,6 @@
       return {
         code: '',
         mobile: '',
-        orderId: '',
         groupInfo: {},
         userInfo: {}
       }
@@ -127,16 +126,15 @@
         }
         let payRes = res.data
         const {timestamp, nonceStr, signType, paySign} = payRes
-        this.orderId = res.data.order_id
+        const orderId = res.data.order_id
         wx.requestPayment({
           timeStamp: timestamp,
           nonceStr,
           package: payRes.package,
           signType,
           paySign,
-          success(res) {
-          },
-          fail(res) {
+          complete: () => {
+            wx.redirect({url: `/pages/order-detail?id=${orderId}`})
           }
         })
       }
