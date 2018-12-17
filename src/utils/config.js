@@ -10,16 +10,16 @@ const DEV = {
 }
 
 const TEST = {
-  api: 'https://zhidian-api.jkweixin.net',
+  api: 'http://social-shopping-api.jkweixin.net',
   image: 'https://img.jkweixin.net/defaults',
-  upload: 'https://zhidian-api.jkweixin.net',
+  upload: 'http://social-shopping-api.jkweixin.net',
   imRecord: 'https://data-analysis-api.jkweixin.net'
 }
 
 const PROD = {
-  api: 'https://zhidian-api.jkweixin.com' + version,
+  api: 'http://social-shopping-api.jkweixin.com' + version,
   image: 'https://img.jkweixin.com/defaults',
-  upload: 'https://zhidian-api.jkweixin.com' + version,
+  upload: 'http://social-shopping-api.jkweixin.com' + version,
   imRecord: 'https://data-analysis-api.jkweixin.com'
 }
 
