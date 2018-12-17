@@ -1,7 +1,11 @@
 <template>
   <div class="delivery-order">
     <navigation-bar title="配送订单"></navigation-bar>
-    <div class="scroll-view2" v-if="tabList.length" id="scrollView">
+    <div class="noting" v-if="showMore">
+      <div class="noting-img"><img class="img" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'"></div>
+      <div class="txt">空空如也</div>
+    </div>
+    <div class="scroll-view2" id="scrollView" v-if="!showMore">
       <div class="under-line" :style="{left: move + 'px'}"></div>
       <div v-for="(item, index) in orderList" :class="tabIndex === index ? 'item-active' : ''" :key="index" class="item" @click="_setTab(index, item,$event)">
         {{tabIndex === index ? item.month_day : item.day}}
@@ -30,11 +34,15 @@
                 <div class="goods-num-box">x<span class="goods-num">{{good.num}}</span></div>
               </div>
             </div>
+            <div class="noting" v-if="item.detail_list && !item.detail_list.length">
+              <div class="noting-img"><img class="img" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'"></div>
+              <div class="txt">空空如也</div>
+            </div>
           </scroll-view>
         </div>
       </div>
     </div>
-    <div class="bulk-pickup">
+    <div class="bulk-pickup" v-if="!showMore">
       <p class="bulk-pickup-text">商品共计:</p>
       <p class="bulk-pickup-num">{{orderList[tabIndex].num}}件</p>
       <p class="bulk-pickup-btn" v-if="orderList[tabIndex].status === 2" @click="_openDialog">确认提货</p>
@@ -55,12 +63,12 @@
     data() {
       return {
         tabIndex: 0,
-        tabList: [{name: '12月10日'}, {name: '9日'}, {name: '8日'}, {name: '7日'}, {name: '6日'}, {name: '5日'}],
         move: 39.7,
         scrollMove: 0,
         width: 0,
         orderList: [[], [], [], [], [], []],
-        scrollHeight: 0
+        scrollHeight: 0,
+        showMore: false
       }
     },
     async onLoad() {
@@ -89,9 +97,11 @@
       async _getDelivery() {
         let res = await API.Leader.deliveryList(false)
         if (res.error !== this.$ERR_OK) {
+          this.showMore = true
           return
         }
         this.orderList = res.data
+        this.showMore = !this.orderList.length
       },
       _openDialog() {
         this.$refs.dialog.show({msg: '确定已清点所有商品？'})
@@ -287,4 +297,20 @@
       &:active
         color: #E1F2C9
         background: #9DD44C
+
+  .noting
+    text-align: center
+    padding-top: 106px
+    .noting-img
+      width: 116px
+      height: 110px
+      margin: 0 auto 15px
+      .img
+        display: block
+        width: 100%
+        height: 100%
+    .txt
+      font-family: $font-family-regular
+      font-size: $font-size-14
+      color: $color-text-sub
 </style>

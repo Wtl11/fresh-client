@@ -64,8 +64,6 @@ export default {
       console.log(e)
       let formId = e.mp.detail.formId
       API.Form.getFormId({form_ids: [formId]})
-      // let id = e.mp.detail.formId todo
-      // Jwt.updateFormId({form_ids: [id]}) todo
     }
   }
 }

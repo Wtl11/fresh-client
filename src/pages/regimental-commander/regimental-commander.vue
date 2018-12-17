@@ -127,11 +127,13 @@
       }
     },
     async onLoad() {
+      this.$wechat.showLoading()
       await Promise.all([
         this._getLeaderDetail(),
         this._leaderOrderTotal(),
         this._getRecommendGoods()
       ])
+      this.$wechat.hideLoading()
       this.isLoading = false
     },
     computed: {

@@ -58,6 +58,11 @@ function checkCode(res) {
   if (res.data && (res.data.code !== ERR_OK)) {
     // 可以进行switch操作，根据返回的code进行相对应的操作，然后抛异常
     console.warn(res.data.message)
+    switch (res.data.code) {
+      case 13001: // 无团长权限code,跳转团长登录页面
+        wx.redirectTo({url: '/pages/mine-housing'})
+        break
+    }
     throw requestException(res)
   }
   return res.data
