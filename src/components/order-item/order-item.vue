@@ -1,29 +1,41 @@
 <template>
-  <div class="order-item">
-    <div class="order-header">
-      <div class="order-num">20</div>
-      <div class="name">刘娇娇</div>
-      <div class="phone">13512345678</div>
-      <div class="order-status" v-if="isShowStatus">待提货</div>
-    </div>
-    <!--商品信息-->
-    <div class="goods-detail">
-      <img src="" class="goods-img" mode="aspectFill">
-      <div class="goods-content">
-        <div class="goods-title">超值特惠 智利J级车厘子250g超值特惠 智利J级车厘子250g</div>
-        <div class="goods-money">3.8</div>
+  <div class="big-order-box">
+    <div class="order-item" v-for="(item, index) in orderList" :key="index">
+      <div class="order-header">
+        <div class="order-num">{{item.code || 0}}</div>
+        <div class="name">{{item.nickname}}</div>
+        <div class="phone">{{item.mobile}}</div>
+        <div class="order-status" v-if="isShowStatus">{{item.status_text}}</div>
       </div>
-      <div class="goods-num-box">x<span class="goods-num">1</span></div>
-    </div>
-    <!--审核-->
-    <div class="examine" v-if="isShowExamine">
-      <p class="examine-text">审核中</p>
-      <p class="liner"></p>
-      <p class="examine-content">您的售后单已申请成功，等待审核中 </p>
-    </div>
-    <div class="order-footer">
-      <div class="time">下单时间：2018-06-05 17:23</div>
-      <div class="footer-btn">确认提货</div>
+      <!--商品信息-->
+      <div class="goods-detail" v-if="!item.goods">
+        <img :src="item.image_url" class="goods-img" mode="aspectFill">
+        <div class="goods-content">
+          <div class="goods-title">{{item.goods_name}}</div>
+          <div class="goods-money">{{item.price}}</div>
+        </div>
+        <div class="goods-num-box">x<span class="goods-num">{{item.num}}</span></div>
+      </div>
+      <!--商品信息-->
+      <div class="goods-detail" v-for="(good,idx) in item.goods" :key="idx">
+        <img :src="good.image_url" class="goods-img" mode="aspectFill">
+        <div class="goods-content">
+          <div class="goods-title">{{good.goods_name}}</div>
+          <div class="goods-money">{{good.price}}</div>
+        </div>
+        <div class="goods-num-box">x<span class="goods-num">{{good.num}}</span></div>
+      </div>
+      <!--审核-->
+      <div class="examine" v-if="isShowExamine">
+        <p class="examine-text">{{item.status_str}}</p>
+        <p class="liner"></p>
+        <p class="examine-content">{{item.status_describe}}</p>
+      </div>
+      <div class="order-footer">
+        <div class="time">下单时间：{{item.created_at}}</div>
+        <!--item.btn_text格式化功能按钮-->
+        <div class="footer-btn" :class="{'footer-btn-disable': item.disable}" @click="_dealOrder(index, item)" v-if="item.isShowBtn">{{item.btn_text}}</div>
+      </div>
     </div>
   </div>
 </template>
@@ -49,12 +61,24 @@
     },
     data() {
       return {}
+    },
+    watch: {
+      orderList(news) {
+        console.log(news)
+      }
+    },
+    methods: {
+      _dealOrder(index, item) {
+        this.$emit('dealOrder', index, item)
+      }
     }
   }
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
+  .big-order-box
+    background: $color-background
 
   .order-item
     margin-bottom: 12px
@@ -172,9 +196,14 @@
     .footer-btn
       font-size: $font-size-12
       color: $color-main
-      padding: 0 11px
       box-sizing: border-box
       height: 25px
       line-height: 25px
-      border-1px($color-main, 15px)
+      border: 1px solid $color-main
+      border-radius: 15px
+      min-width: 70px
+      text-align: center
+    .footer-btn-disable
+      color: #808080
+      border-color: #B7B7B7
 </style>

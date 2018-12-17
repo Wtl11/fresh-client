@@ -5,52 +5,38 @@
       <img :src="imageUrl + '/yx-image/group/bg-ddxq@2x.png'" v-if="imageUrl" class="order-status-bg">
       <div class="order-content">
         <img :src="imageUrl + '/yx-image/group/icon_waiting@2x.png'" v-if="imageUrl" class="order-status-icon">
-        <p class="order-status-text">待提货</p>
+        <p class="order-status-text">{{orderDetail.status_text}}</p>
       </div>
-      <p class="order-num">提货单号: 20</p>
+      <p class="order-num">提货单号: {{orderDetail.code || 0}}</p>
     </div>
     <div class="group">
       <div class="group-address-box">
-        <div class="group-address">提货地址：广州市越秀区中山四路居家佳友便利店广州市越秀区中山四路居家佳友便利店</div>
+        <div class="group-address">提货地址：{{orderDetail.address.delivery_address}}</div>
         <div class="customer-msg">
           <p class="group-tip">团长</p>
-          <p class="group-name">刘娇娇</p>
-          <p class="group-phone">19252926954</p>
+          <p class="group-name">{{orderDetail.address.shop_manager_name}}</p>
+          <p class="group-phone">{{orderDetail.address.shop_manager_mobile}}</p>
         </div>
       </div>
       <div class="customer">
-        <p class="customer-phone">提货人: 19252926954</p>
-        <img :src="imageUrl + '/yx-image/group/icon-phone-green@2x.png'" v-if="imageUrl" class="phone-icon">
+        <p class="customer-phone">提货人: {{orderDetail.address.customer_mobile}}</p>
+        <img :src="imageUrl + '/yx-image/group/icon-phone-green@2x.png'" v-if="imageUrl" class="phone-icon" @click="_callPhone(orderDetail.address.customer_mobile)">
       </div>
     </div>
     <!--商品-->
     <div class="goods">
-      <div class="goods-item">
+      <div class="goods-item" v-for="(item, index) in orderDetail.goods" :key="index">
         <div class="goods-detail">
-          <img src="" class="goods-img" mode="aspectFill">
+          <img :src="item.goods_image_url" class="goods-img" mode="aspectFill">
           <div class="goods-content">
-            <div class="goods-title">超值特惠 智利J级车厘子250g超值特惠 智利J级车厘子250g</div>
-            <div class="goods-sku">规格：包</div>
-            <div class="goods-money">3.8</div>
+            <div class="goods-title">{{item.goods_name}}</div>
+            <div class="goods-sku">规格：{{item.goods_units}}</div>
+            <div class="goods-money">{{item.price}}</div>
           </div>
-          <div class="goods-num-box">x<span class="goods-num">1</span></div>
+          <div class="goods-num-box">x<span class="goods-num">{{item.num}}</span></div>
         </div>
-        <div class="btn-box">
-          <div class="goods-btn">确认收货</div>
-        </div>
-      </div>
-      <div class="goods-item">
-        <div class="goods-detail">
-          <img src="" class="goods-img" mode="aspectFill">
-          <div class="goods-content">
-            <div class="goods-title">超值特惠 智利J级车厘子250g超值特惠 智利J级车厘子250g</div>
-            <div class="goods-sku">规格：包</div>
-            <div class="goods-money">3.8</div>
-          </div>
-          <div class="goods-num-box">x<span class="goods-num">1</span></div>
-        </div>
-        <div class="btn-box">
-          <div class="goods-btn">确认收货</div>
+        <div class="btn-box" v-if="!item.delivery_status">
+          <div class="goods-btn" @click="_showDialog('', item.order_detail_id)">确认收货</div>
         </div>
       </div>
     </div>
@@ -58,35 +44,107 @@
     <div class="order-msg">
       <div class="order-price">
         <p class="price-title">实付金额</p>
-        <p class="price-money">¥7.60</p>
+        <p class="price-money">¥{{orderDetail.total}}</p>
       </div>
       <div class="order-detail">
-        <div class="order-sn">订单编号: 65465416651651 <span class="copy">复制</span></div>
-        <div class="order-time">下单时间: 2018-06-05 17:23</div>
+        <div class="order-sn">订单编号: {{orderDetail.order_sn}} <span class="copy" @click="_copyOrderSn(orderDetail.order_sn)">复制</span></div>
+        <div class="order-time">下单时间: {{orderDetail.created_at}}</div>
       </div>
     </div>
-    <div class="order-btn-box">
+    <div class="order-btn-box" v-if="orderDetail.status === 1">
       <form action="">
-        <button class="order-btn order-dark order-disable">已提醒</button>
-        <button class="order-btn order-dark">分享订单</button>
-        <button class="order-btn order-main">确认提货</button>
+        <button class="order-btn order-dark" :class="{'order-disable': orderDetail.remind_status}">{{orderDetail.remind_status ? '已提醒' : '提醒收货'}}</button>
+        <!--<button class="order-btn order-dark" open-type="share">分享订单</button>-->
+        <button class="order-btn order-main" @click="_showDialog('all')">确认提货</button>
       </form>
     </div>
+    <dialog-model ref="dialog" @confirm="_confirmDelivery"></dialog-model>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
+  import DialogModel from '@components/dialog-model/dialog-model'
+  import API from '@api'
 
   const PAGE_NAME = 'GROUP_ORDER_DETAIL'
 
   export default {
     name: PAGE_NAME,
-    data() {
-      return {}
-    },
     components: {
-      NavigationBar
+      NavigationBar,
+      DialogModel
+    },
+    data() {
+      return {
+        id: null,
+        orderDetail: {address: {}, goods: []},
+        ids: []
+      }
+    },
+    // onShareAppMessage(res) {
+    //   let shopId = wx.getStorageSync('shopId')
+    //   console.log(shopId)
+    //   return {
+    //     title: `亲爱的“${this.orderDetail.address.customer_name}”，您刚刚下了一个单，记得及时来提货...`,
+    //     path: `/pages/goods-detail?id=${this.orderDetail.goods[0].good_id}&shopId=${shopId}`, // 商品详情
+    //     success: (res) => {
+    //       // 转发成功
+    //     },
+    //     fail: (res) => {
+    //       // 转发失败
+    //     }
+    //   }
+    // },
+    async onLoad(option) {
+      this.id = option.id || null
+      await this._getOrderDetail()
+    },
+    methods: {
+      // 获取订单详情
+      async _getOrderDetail(loading = true) {
+        let res = await API.Leader.groupOrder(this.id, loading)
+        this.$wechat.hideLoading()
+        if (res.error !== this.$ERR_OK) {
+          this.$wechat.showToast(res.message)
+          return
+        }
+        this.orderDetail = res.data
+        console.log(res.data)
+      },
+      _copyOrderSn(text) {
+        wx.setClipboardData({
+          data: text,
+          success: (res) => {
+          }
+        })
+      },
+      _callPhone(phone) {
+        wx.makePhoneCall({
+          phoneNumber: phone
+        })
+      },
+      _showDialog(type, id) {
+        this.$refs.dialog.show({msg: '确定已经提货？'})
+        if (type === 'all') {
+          this.ids = []
+          this.ids = this.orderDetail.goods.map((item) => {
+            return item.order_detail_id
+          })
+          return
+        }
+        this.ids = [id]
+      },
+      // 确认提货
+      async _confirmDelivery() {
+        let res = await API.Leader.delivery({ids: this.ids})
+        this.$wechat.showToast(res.message)
+        if (res.error === this.$ERR_OK) {
+          setTimeout(async () => {
+            await this._getOrderDetail(false)
+          }, 500)
+        }
+      }
     }
   }
 </script>
@@ -100,6 +158,7 @@
       border: none
 
   .group-order-detail
+    box-sizing: border-box
     word-break: break-all
     min-height: 100vh
     padding-bottom: 96px
