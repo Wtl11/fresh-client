@@ -41,20 +41,18 @@
         <div class="dots-item" :class="{'dots-item-active': praiseIndex === idx}" v-for="(item,idx) in plantingList" :key="idx" v-if="plantingList.length > 1"></div>
       </div>
     </div>
-    <div class="select-tab" id="selTab">
-      <scroll-view
-        scroll-x
-        style="height: 35px"
-        @scrolltoupper="upper"
-        @scrolltolower="lower"
-      >
-        <div class="select-box">
-          <div class="select-list" v-for="(item, index) in selectTab" :key="index" :class="tabIdx * 1 === index ? 'cur-item' : ''" @click="selectIndex(index)">{{item.text}}</div>
-          <div class="select-bg">
-            <div class="cur-select-bg" :style="'transform: translate(' + tabIdx*100 + '%,0)'"></div>
-          </div>
-        </div>
-      </scroll-view>
+    <div class="select-scroll">
+      <scroll-tab
+        ref="scrollTab"
+        @changeTab="toTap"
+        :infoBorderWidth="68"
+        :tabList="tabList"
+        :showLine="true"
+        :autoWidth="true"
+        activeStyle=";color:#73C200;font-size:32rpx;font-family: PingFangSC-Medium"
+        lineStyle="border-bottom-color: #ff3f54;height:2px"
+        boxStyle="color: #c2c2c; height: 44px; line-height: 44px;font-size:28rpx;font-family: PingFangSC-Medium;padding: 0 13.75px"
+      ></scroll-tab>
     </div>
     <div class="goods-box">
       <div class="goods-list" v-for="(item, index) in goodsList" :key="index" @click="jumpGoodsDetail(item)">
@@ -90,8 +88,7 @@
         </div>
       </div>
     </div>
-
-    <div class="foot-ties">
+    <div class="foot-ties" v-if="goodsMore">
       <div class="left lines"></div>
       <div class="center">已经到底了</div>
       <div class="bot lines"></div>
@@ -103,6 +100,7 @@
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import LinkGroup from '@components/link-group/link-group'
+  import ScrollTab from '@components/scroll-tab/scroll-tab'
   import API from '@api'
 
   const PAGE_NAME = 'CHOICENESS'
@@ -143,6 +141,9 @@
       }
       // if (this.menuFixed === (scroll.scrollTop > this.menuTop)) return
       // this.menuFixed = scroll.scrollTop > this.menuTop
+    },
+    onReachBottom() {
+      this.getMoreGoodsList()
     },
     methods: {
       _setPraiseIndex(e) {
@@ -205,6 +206,7 @@
       },
       getGoodsList() {
         this.goodsPage = 1
+        this.goodsMore = false
         let data = {
           shelf_tag_id: this.sheTag_id,
           shelf_id: this.shelfId,
@@ -214,7 +216,6 @@
         API.Choiceness.getGoodsShelfList(data).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.goodsList = res.data
-            console.log(res.data)
             this._isUpList(res)
           } else {
             this.$wechat.showToast(res.message)
@@ -275,11 +276,17 @@
             this.$wechat.showToast(res.message)
           }
         })
+      },
+      toTap(id) {
+        if (id * 1 === this.sheTag_id) return
+        this.sheTag_id = id
+        this.getGoodsList()
       }
     },
     components: {
       LinkGroup,
-      NavigationBar
+      NavigationBar,
+      ScrollTab
     }
   }
 </script>
@@ -393,7 +400,7 @@
     box-sizing: border-box
     position: relative
     height: 40vw
-    margin-bottom: 13px
+    /*margin-bottom: 13px*/
     .banner
       width: 100%
       height: 100%
@@ -421,45 +428,6 @@
       .dots-item-active
         width: 10px
         background: #fff
-
-  .select-tab
-    padding: 0 3.2vw
-    box-sizing: border-box
-    position: relative
-    transition: all .1s
-    background: #fff
-    .select-box
-      height: 35px
-      width: 100%
-      layout(row)
-      align-items: center
-      border-bottom: 2px solid $color-main
-      position: relative
-      .select-list
-        position: relative
-        z-index: 11
-        font-size: $font-size-14
-        font-family: $font-family-medium
-        color: $color-text-main
-        width: 18.72vw
-        text-align: center
-        height: 33px
-        line-height: 33px
-        transition: all 0.3s
-      .cur-item
-        color: #fff
-      .select-bg
-        width: 100%
-        height: 100%
-        position: absolute
-        .cur-select-bg
-          width: 20%
-          height: 100%
-          background: $color-main
-          transform: translate(0, 0)
-          transition: all 0.3s
-          border-top-left-radius: 6px
-          border-top-right-radius: 6px
 
   .topnav
     position: fixed

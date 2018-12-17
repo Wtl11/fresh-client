@@ -63,6 +63,10 @@
       arrowUrl: {
         type: String,
         default: '/zd-image/1.2/icon-title_back@2x.png'
+      },
+      hasTranslucentHeight: {
+        type: Number,
+        default: 100
       }
     },
     onPageScroll(e) {
@@ -94,9 +98,9 @@
           return
         }
         // 沉浸式滚动时的效果
-        if (e.scrollTop >= 100) {
+        if (e.scrollTop >= this.hasTranslucentHeight) {
           this.headStyleData = 'background: rgba(255, 255, 255, 1)'
-          this.titleColor = '#000000'
+          this.titleColorData = '#000000'
           this.translucentTitle = this.title
         } else {
           this.headStyleData = 'background: rgba(255, 255, 255, 0)'
