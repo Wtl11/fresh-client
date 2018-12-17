@@ -35,5 +35,10 @@ export default {
   shopCartNumber(data, loading = false) {
     const url = `/social-shopping/api/wap/cart-count`
     return request.get(url, data, loading)
+  },
+  // 活动商品购买用户列表
+  getUserImg(data, loading = false) {
+    const url = `/social-shopping/api/wap/goods/shop-shelf-goods-customer`
+    return request.get(url, data, loading)
   }
 }

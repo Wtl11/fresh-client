@@ -1,6 +1,6 @@
 <template>
   <div class="choiceness">
-    <navigation-bar title="赞播优鲜" :showArrow="false" :translucent="true"></navigation-bar>
+    <navigation-bar :title="title" :showArrow="false" :translucent="true"></navigation-bar>
     <div class="choiceness-top">
       <div class="choiceness-bgimg">
         <img class="bgimg-url" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-bg@2x.png'">
@@ -122,7 +122,8 @@
         shelfId: 0,
         goodsList: [],
         goodsMore: false,
-        goodsPage: 1
+        goodsPage: 1,
+        title: '赞播优鲜'
       }
     },
     async onShow() {
