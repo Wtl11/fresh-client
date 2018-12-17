@@ -1,3 +1,4 @@
+// 个人中心
 import Vue from 'vue'
 import Page from './mine'
 

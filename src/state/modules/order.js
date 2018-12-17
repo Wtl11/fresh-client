@@ -4,17 +4,19 @@ export const state = {
 }
 
 export const getters = {
-  info: state => state.goodsList
+  goodsList(state) {
+    return state.goodsList
+  }
 }
 
 export const actions = {
-  update({commit, state}, info) {
-    commit('update', info)
+  setGoodsList({commit, state}, goodsList) {
+    commit('update', goodsList)
   }
 }
 
 export const mutations = {
-  update(state, info) {
-    state.goodsList = info
+  SET_GOODS_LIST(state, goodsList) {
+    state.goodsList = goodsList
   }
 }

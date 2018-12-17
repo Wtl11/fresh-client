@@ -6,20 +6,20 @@
         <div class="sub">当前自提点</div>
         <div class="point">
           <!--<img class="icon" v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-address_sy@2x.png'" alt="" >-->
-          <img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-address_sy@2x.png'" alt="" class="icon">
+          <img v-if="imageUrl" :src="imageUrl+'/yx-image/mine/icon-address_sy@2x.png'" alt="" class="icon">
           <div class="txt">白云黄边北路国颐堂店</div>
         </div>
       </div>
       <div class="selt-point-history"><div class="name">历史自提点</div></div>
     </div>
     <div class="history-list">
-      <div class="history-item" v-for="(item, index) in [1,2,3]" :key="index">
+      <div class="history-item" v-for="(item, index) in shopList" :key="index" @click="showChangeShop(item)">
         <div class="left">
-          <img class="avatar" mode="aspectFill" src="https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83er1Y2xVxQibcgQO7xblfYjo5yWt2Jo5GiaW1MsAoyHkV8fmffNkwDnBXP7If0cn9sdw3kfWFbByG0aw/132" alt="">
+          <img class="avatar" mode="aspectFill" :src="item.head_image_url" alt="">
           <div class="info">
-            <div class="colonel">团长：董秀英</div>
-            <div class="group">社区：白云黄边社区</div>
-            <div class="addr">提货地址：广东省广州市海珠区新港大道TIT创意园翡冷翠小镇A9赞播</div>
+            <div class="colonel">团长：{{item.name}}</div>
+            <div class="group">社区：{{item.social_name}}</div>
+            <div class="addr">提货地址：{{item.province + item.city + item.district + item.address}}</div>
           </div>
         </div>
         <div class="right">
@@ -27,45 +27,57 @@
         </div>
       </div>
     </div>
+    <dialog-modal ref="dialogModal" tip="温馨提示" msg="确定切换自提点吗？" @confirm="changeShop"></dialog-modal>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-  import WePaint from '@components/we-paint/we-paint'
-  // import { mapGetters } from 'vuex'
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import API from '@api'
   import {oauthComputed} from '@state/helpers'
-  import Vue from 'vue'
+  import DialogModal from '@components/dialog-model/dialog-model'
 
   export default {
     components: {
-      WePaint,
-      NavigationBar
+      NavigationBar,
+      DialogModal
     },
     beforeCreate() {
     },
     data() {
       return {
-        testSrc: ''
-        // title: '',
-        // headStyle: 'background: rgba(255, 255, 255, 0)',
-        // titleColor: 'white'
+        shopList: [],
+        changedShop: {}
       }
     },
     onShow() {
-      if (getApp().globalData.imgUrl) {
-        this.testSrc = getApp().globalData.imgUrl
-      }
-      console.log(Vue.Component)
+      this._getShopList()
     },
     computed: {
       ...oauthComputed
       // ...mapGetters(['role'])
     },
     methods: {
-      testApi() {
-        API.Jwt.getToken()
+      showChangeShop(shop) {
+        this.changedShop = shop
+        this.$refs.dialogModal.show()
+      },
+      changeShop() {
+        let shopId = this.changedShop.id
+        this.$wechat.setStorage('shopId', shopId)
+        wx.switchTab({url: '/pages/choiceness'})
+      },
+      _getShopList() {
+        API.Mine.getShopList()
+          .then((res) => {
+            this.$wechat.hideLoading()
+            if (res.error !== this.$ERR_OK) {
+              return
+            }
+            this.shopList = res.data
+          }).catch(() => {
+            this.$wechat.hideLoading()
+          })
       }
     }
   }

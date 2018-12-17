@@ -64,6 +64,7 @@
   import API from '@api'
   import {oauthComputed} from '@state/helpers'
   import Vue from 'vue'
+
   const NAVLIST = [{id: 1, name: '全部'}, {id: 2, name: '待付款'}, {id: 3, name: '待提货'}, {id: 4, name: '已完成'}]
   const ORDERLIST = [
     {id: 1, status: 1, group: '黄骅市花园小区', goodsInfo: [{image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}], time: '2018-06-05 14:23', payment: '3.7'},
