@@ -15,7 +15,7 @@ export default {
   },
   onUnload() {
     this._resetData()
-    this._clearWatcher()
+    // this._clearWatcher()
   },
   methods: {
     _saveCurrentPage() {

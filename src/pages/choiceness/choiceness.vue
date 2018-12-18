@@ -284,9 +284,10 @@
   @import "~@design"
 
   .choiceness
-    width: 100%
+    max-width: 100vw
     min-height: 100vh
     background: #fff
+    overflow-x: hidden
 
   .choiceness-top
     position: relative
@@ -335,7 +336,7 @@
                 height: 100%
                 display: block
                 border-radius: 50%
-                background: $color-main
+                background: #fff
             .name-text
               height: $font-size-16
               font-size: $font-size-16
