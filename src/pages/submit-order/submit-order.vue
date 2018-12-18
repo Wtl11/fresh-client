@@ -114,6 +114,10 @@
       },
       async submitOrder() {
         // 手机号码暂无，后面加入
+        if (this.mobile.length !== 11) {
+          this.$wechat.showToast('请输入手机号码')
+          return
+        }
         let data = {
           goods: this.goodsList,
           nickname: this.userInfo.nickname,

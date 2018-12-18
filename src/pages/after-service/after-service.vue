@@ -1,11 +1,11 @@
 <template>
   <div class="wrap">
     <navigation-bar title="售后订单" :showArrow="true" :translucent="false"></navigation-bar>
-    <div class="order-list" v-if="orderList.length > 0">
-      <div class="order-item" v-for="(item, index) in orderLists" :key="index" @click.stop="toOrderDetail">
+    <div class="order-list" v-if="orderLists.length > 0">
+      <div class="order-item" v-for="(item, index) in orderLists" :key="index" @click.stop="toOrderDetail(item)">
         <div class="top">
           <div class="group-name">{{item.social_name}}</div>
-          <div class="status" v-if="item.after_sale_status * 1 === 0">退款生和中</div>
+          <div class="status" v-if="item.after_sale_status * 1 === 0">退款中</div>
           <div class="status" v-if="item.after_sale_status * 1 === 1">退款成功</div>
           <div class="status" v-if="item.after_sale_status * 1 === 2">退款失败</div>
           <div class="status" v-if="item.after_sale_status * 1 === 3">退款取消</div>
@@ -57,14 +57,6 @@
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import API from '@api'
   import {oauthComputed} from '@state/helpers'
-  import Vue from 'vue'
-  const NAVLIST = [{id: 1, name: '全部'}, {id: 2, name: '待付款'}, {id: 3, name: '待提货'}, {id: 4, name: '已完成'}]
-  const ORDERLIST = [
-    {id: 1, status: 1, group: '黄骅市a花园小区', goodsInfo: [{image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}], time: '2018-06-05 14:23', payment: '3.7'},
-    {id: 1, status: 1, group: '黄骅市花园小区', goodsInfo: [{image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}], time: '2018-06-05 18:23', payment: '5.8'},
-    {id: 1, status: 1, group: '黄骅市花园小区', goodsInfo: [{image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}, {image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}], time: '2018-06-05 17:23', payment: '9.8'},
-    {id: 1, status: 1, group: '黄骅市花园小区', goodsInfo: [{image_url: 'http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300'}], time: '2018-06-05 17:23', payment: '3.8'}
-  ]
 
   export default {
     components: {
@@ -73,25 +65,17 @@
     },
     data() {
       return {
-        testSrc: '',
-        navList: NAVLIST,
-        orderList: ORDERLIST,
+        orderList: [],
         orderLists: [],
         orderPage: 1,
         orderMore: false,
         tabIdx: 0
-        // headStyle: 'background: rgba(255, 255, 255, 0)',
-        // titleColor: 'white'
       }
     },
     onLoad() {
       this.getGoodsDetailData()
     },
     onShow() {
-      if (getApp().globalData.imgUrl) {
-        this.testSrc = getApp().globalData.imgUrl
-      }
-      console.log(Vue.Component)
     },
     onReachBottom() {
       this.getMoreGoodsDetailData()
@@ -132,9 +116,9 @@
           this.orderMore = true
         }
       },
-      toOrderDetail() {
+      toOrderDetail(item) {
         wx.navigateTo({
-          url: '/pages/oeder-detail'
+          url: `/pages/order-detail?id=${item.id}&&type=1`
         })
         // this.$router.push('/pages/oeder-detail')
       }

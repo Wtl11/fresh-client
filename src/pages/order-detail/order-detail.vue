@@ -5,29 +5,31 @@
       <div class="status">
         <div class="icon" v-if="orderMsg.status * 1 === 2" v><img v-if="imageUrl" class="icon-img" :src="imageUrl+'/yx-image/cart/icon-finish_xq@2x.png'" alt=""></div>
         <div class="icon" v-if="orderMsg.status * 1 === 3"><img v-if="imageUrl" class="icon-img" :src="imageUrl+'/yx-image/cart/icon_close_xq@2x.png'" alt=""></div>
-        <div class="icon" v-if="orderMsg.status * 1 === 1"><img v-if="imageUrl" class="icon-img" :src="imageUrl+'/yx-image/cart/icon_refund_xq@2x.png'" alt=""></div>
-        <div class="icon" v-if="orderMsg.status * 1 === 0"><img v-if="imageUrl" class="icon-img" :src="imageUrl+'/yx-image/cart/icon-delivery_xq@2x.png'" alt=""></div>
-        <div class="statu-txt">{{orderMsg.status_text}}</div>
+        <div class="icon" v-if="orderMsg.status * 1 === 1"><img v-if="imageUrl" class="icon-img" :src="imageUrl+'/yx-image/cart/icon-delivery_xq@2x.png'" alt=""></div>
+        <div class="icon" v-if="orderMsg.status * 1 === 0"><img v-if="imageUrl" class="icon-img" :src="imageUrl+'/yx-image/cart/icon-payment_xq@2x.png'" alt=""></div>
+        <div class="icon" v-if="orderType * 1 === 1"><img v-if="imageUrl" class="icon-img" :src="imageUrl+'/yx-image/cart/icon_refund_xq@2x.png'" alt=""></div>
+        <div class="statu-txt">{{orderType * 1 !== 1 ? orderMsg.status_text : saleText}}</div>
       </div>
-      <div class="extract">提货单号: {{address.code}}</div>
+      <div class="extract" v-if="orderType * 1 !== 1">提货单号: {{address.code}}</div>
     </div>
     <div class="addr-info">
       <div class="top">
-        <div class="addr">提货地址： {{address.delivery_address}}</div>
+        <div class="addr" v-if="orderType * 1 !== 1">提货地址： {{address.shop_address}}</div>
+        <div class="addr" v-if="orderType * 1 === 1">{{address.social_name}}</div>
         <div class="warp">
           <div class="design">团长</div>
-          <div class="name">{{address.shop_manager_name}}</div>
-          <div class="phone">{{address.shop_manager_mobile}}</div>
+          <div class="name">{{address.shop_name}}</div>
+          <div class="phone">{{address.shop_mobile}}</div>
         </div>
       </div>
-      <div class="bot">提货人：{{address.customer_mobile}}</div>
+      <div class="bot" v-if="orderType * 1 !== 1">提货人：{{address.mobile}}</div>
     </div>
     <div class="gary-box"></div>
     <div class="order-list">
       <div class="order-item">
         <div class="goods-item" v-for="(item, index) in orderMsg.goods" :key="index">
           <div class="goodsinfo">
-            <img class="goods-img" mode="aspectFill" :src="item.goods_image_url" alt="">
+            <img class="goods-img" mode="aspectFill" :src="item.image_url" alt="">
             <div class="goods-info">
               <div class="tit">
                 <div class="name">{{item.goods_name}}</div>
@@ -36,33 +38,34 @@
               <div class="guige">规格：{{item.goods_units}}</div>
               <div class="price">
                 <div class="amout"><span class="num">{{item.price}}</span>元</div>
-                <div class="refund" @click="isRefund" v-if="orderMsg.status * 1 === 1 || orderMsg.status * 1 === 2">退款</div>
+                <div class="refund" @click="isRefund(item)" v-if="(orderMsg.status * 1 === 1 || orderMsg.status * 1 === 2) && item.after_sale_status * 1 === 0">退款</div>
+                <div class="refund-text" v-if="item.after_sale_status * 1 === 1 || item.after_sale_status * 1 === 2">{{item.after_sale_status_text}}</div>
               </div>
             </div>
           </div>
         </div>
-        <div class="actual-amount">
+        <div class="actual-amount" v-if="orderType * 1 === 0">
           <div class="sub">实付金额</div>
           <div class="price"><span class="num">{{orderMsg.total}}</span>元</div>
         </div>
       </div>
     </div>
-    <div class="gary-box"></div>
+    <div class="gary-box" v-if="orderType * 1 === 0"></div>
     <div class="oinfo">
-      <div class="o-item" v-if="false">退款金额：<span class="price"><span class="num">3.5</span>元</span></div>
-      <div class="o-item" v-if="false">退款方式：微信红包</div>
+      <div class="o-item" v-if="orderType * 1 === 1">退款金额：<span class="price"><span class="num">{{orderMsg.total}}</span>元</span></div>
+      <div class="o-item" v-if="orderType * 1 === 1">退款方式：{{orderMsg.refund_method}}</div>
       <div class="order-iden">
         <div class="txt">订单编号：{{orderMsg.order_sn}}</div>
         <div class="copy-btn" @click.stop="clipOrderId">复制</div>
       </div>
-      <div class="order-time">下单时间：{{orderMsg.created_at}}</div>
+      <div class="order-time">{{orderType * 1 === 1 ? '申请时间' : '下单时间'}}：{{orderMsg.created_at}}</div>
     </div>
     <div class="service">
       <div class="service-btn" @click.stop="showGroupList">联系团长</div>
     </div>
     <div class="order-fixed" v-if="orderMsg.status * 1 === 0">
       <div class="order-bottom-left">
-        <span>请在</span><span class="color-time">{{payTime}}</span><span>内付款</span>
+        <div>请在</div><div class="color-time">{{payTime}}</div><div>内付款</div>
       </div>
       <div class="order-bottom-right">
         <div class="refund close" @click="closeOrder">取消</div>
@@ -70,7 +73,7 @@
       </div>
     </div>
     <confirm-msg ref="refundModel" useType="double" :msg="modelMsg" @confirm="confirm"></confirm-msg>
-    <!--<confirm-msg ref="colseModel" useType="close"></confirm-msg>-->
+    <confirm-msg ref="colseModel" useType="close"></confirm-msg>
     <link-group ref="groupList" :wechatInfo="groupInfo"></link-group>
   </div>
 </template>
@@ -90,15 +93,23 @@
         orderMsg: {},
         groupInfo: {},
         address: {},
-        payTime: '00:00',
+        payTime: '',
         timeEnd: false,
         confirmtype: 0,
-        modelMsg: '确定退款吗？'
+        orderType: 0,
+        modelMsg: '确定退款吗？',
+        curItem: '',
+        saleText: ''
       }
     },
     onLoad(e) {
       this.orderId = e.id
-      this.getGoodsDetailData()
+      this.orderType = e.type
+      if (this.orderType * 1 === 0) {
+        this.getGoodsDetailData()
+      } else {
+        this.getAfterGoodsDetailData()
+      }
       this._groupInfo()
     },
     onShow() {
@@ -124,8 +135,14 @@
             }
           })
         } else {
-          console.log(111)
-          this.$refs.colseModel.show()
+          API.Order.reqSaleOrder(this.curItem.order_detail_id).then((res) => {
+            if (res.error === this.$ERR_OK) {
+              this.$wechat.showToast('申请退款售后成功')
+              this.getGoodsDetailData()
+            } else {
+              this.$wechat.showToast(res.message)
+            }
+          })
         }
       },
       showGroupList() {
@@ -134,8 +151,8 @@
       goPay() {
         let orderInfo = {
           goods: this.orderMsg.goods,
-          nickname: this.address.customer_name,
-          mobile: this.address.customer_mobile
+          nickname: this.address.nickname,
+          mobile: this.address.mobile
         }
         this.submitOrder({
           orderInfo,
@@ -145,13 +162,17 @@
       _paySuccess(res) {
         console.log(res)
         this.orderMsg.status = 1
-        this.orderMsg.status_text = '待取货'
+        this.orderMsg.status_text = '待提货'
       },
-      isRefund() {
-        console.log(111)
-        this.modelMsg = '确定退款吗？'
-        this.confirmtype = 1
-        this.$refs.refundModel.show()
+      isRefund(item) {
+        this.curItem = item
+        if (item.is_time_out * 1 === 0) {
+          this.modelMsg = '确定退款吗？'
+          this.confirmtype = 1
+          this.$refs.refundModel.show()
+        } else {
+          this.$refs.colseModel.show()
+        }
       },
       clipOrderId() {
         let that = this
@@ -176,12 +197,44 @@
         API.Order.getOrderDetailData(this.orderId).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.orderMsg = res.data
-            console.log(this.orderMsg)
             this.address = res.data.address
             if (this.orderMsg.status * 1 === 0) {
               this.getActiveEndTime(this.orderMsg.remind_timestamp)
             }
-            console.log(res.data)
+          } else {
+            this.$wechat.showToast(res.message)
+          }
+        })
+      },
+      getAfterGoodsDetailData() {
+        API.Order.reqSaleOrderDetail(this.orderId).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.orderMsg = res.data
+            this.address.shop_name = res.data.shop_name
+            this.address.shop_mobile = res.data.shop_mobile
+            this.address.social_name = res.data.social_name
+            switch (res.data.after_sale_status * 1) {
+              case 0 :
+                this.saleText = '审核中'
+                break
+              case 1 :
+                this.saleText = '退款成功'
+                break
+              case 2 :
+                this.saleText = '退款失败'
+                break
+              case 3 :
+                this.saleText = '取消退款'
+                break
+            }
+            let goodsData = {
+              goods_name: res.data.goods_name,
+              goods_units: res.data.goods_units,
+              image_url: res.data.image_url,
+              num: res.data.num,
+              price: res.data.price
+            }
+            this.orderMsg.goods = [goodsData]
           } else {
             this.$wechat.showToast(res.message)
           }
@@ -242,7 +295,7 @@
   @import "~@design"
   .wrap
     width: 100vw
-    background: $color-white
+    background: $color-background
     min-height: 100vh
     .order-banner
       width: 100vw
@@ -264,6 +317,7 @@
         .icon
           width: 31px
           height: 31px
+          padding-top: 3px
          .icon-img
            width: 100%
            display: block
@@ -274,17 +328,18 @@
         color: $color-white
   .addr-info
     padding-left: 3.2vw
+    background: $color-white
     .bot
       font-family: $font-family-medium
       font-size: $font-size-15
       color: #000000
       height: 50px
       line-height: 50px
+      border-top-1px($color-line)
     .top
       height: 74px
       box-sizing: border-box
       padding:3.2vw 0
-      border-bottom-1px($color-line)
     .addr
       font-family: $font-family-medium
       font-size: $font-size-15
@@ -381,6 +436,12 @@
           text-align: center
           background: $color-white
           border-1px($color-text-assist, 15px)
+        .refund-text
+          height: 25px
+          line-height: 25px
+          font-family: $font-family-regular
+          font-size: $font-size-14
+          color: $color-money
         .amout
           font-family: $font-family-regular
           font-size: $font-size-11
@@ -389,6 +450,8 @@
             font-family: $font-family-regular
             color: $color-sub
             font-size: $font-size-16
+  .order-list
+    background: $color-white
   .actual-amount
     layout(row)
     padding:0 3.2vw
@@ -412,6 +475,7 @@
   .oinfo
     box-sizing: border-box
     min-height: 80px
+    background: $color-white
     padding: 16px 3.2vw
     .o-item
       padding-bottom: 16px
@@ -456,6 +520,7 @@
     z-index: 99
     layout(row)
     align-items: center
+    background: #fff
     border-top-1px(#E6E6E6)
     position: fixed
     left: 0
@@ -468,8 +533,12 @@
       font-size: $font-size-14
       color: #000
       font-family: $font-family-regular
+      layout(row)
+      align-items: center
       .color-time
         color: #ff8300
+        width: 42px
+        text-align: center
     .order-bottom-right
       layout(row)
       align-items: center
@@ -498,7 +567,7 @@
   .service
     width: 100vw
     padding-top: 15px
-    padding-bottom: 15px
+    padding-bottom: 65px
     layout(row)
     justify-content: center
     align-items: center

@@ -18,7 +18,7 @@
         <div class="center">
           <div class="goods-list">
             <div class="goods-img-list">
-              <img v-for="(items, indx) in item.goods" :key="indx" v-if="indx < 4" class="goods-img" mode="aspectFill" :src="items.goods_image_url" alt="">
+              <img v-for="(items, indx) in item.goods" :key="indx" v-if="indx < 4" class="goods-img" mode="aspectFill" :src="items.image_url" alt="">
               <div class="img-item" v-if="item.goods.length > 4">
                 <div class="circle"></div>
                 <div class="circle"></div>
@@ -102,7 +102,6 @@
           if (res.error === this.$ERR_OK) {
             this.orderList = res.data
             this._isUpList(res)
-            console.log(res.data)
           } else {
             this.$wechat.showToast(res.message)
           }
@@ -134,7 +133,7 @@
       },
       jumpDetail(item) {
         wx.navigateTo({
-          url: `/pages/order-detail?id=${item.order_id}`
+          url: `/pages/order-detail?id=${item.order_id}&&type=0`
         })
       }
     }
