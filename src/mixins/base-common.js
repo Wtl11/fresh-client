@@ -38,7 +38,9 @@ export default {
     _clearWatcher() {
       // 清除mpvue的wathcers
       this._watchers = []
-      this._watcher && this._watcher.teardown()
+      if (this.$mp) {
+        this._watcher && this._watcher.teardown()
+      }
     },
     _resetData() {
       // 重置页面组件的data数据

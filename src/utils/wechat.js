@@ -108,6 +108,12 @@ export function getClipboardData () {
   })
 }
 
+export function makePhoneCall (data) {
+  return new Promise((resolve, reject) => {
+    wx.makePhoneCall({phoneNumber: data, success: resolve, fail: reject})
+  })
+}
+
 /**
  * 选择照片
  * @returns {Promise<any>}

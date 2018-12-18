@@ -27,7 +27,7 @@
         </div>
       </div>
     </div>
-    <dialog-modal ref="dialogModal" tip="温馨提示" msg="确定切换自提点吗？" @confirm="changeShop"></dialog-modal>
+    <dialog-modal ref="dialogModal" tip="温馨提示" message="确定切换自提点吗？" @confirm="changeShop"></dialog-modal>
   </div>
 </template>
 
@@ -46,19 +46,31 @@
     },
     data() {
       return {
+        currentShopId: '',
         shopList: [],
         changedShop: {}
       }
     },
     onShow() {
       this._getShopList()
+      this._setShopId()
     },
     computed: {
       ...oauthComputed
       // ...mapGetters(['role'])
     },
     methods: {
+      _setShopId() {
+        this.$wechat.getStorage('shopId')
+          .then(res => {
+            this.currentShopId = res.data
+          })
+      },
       showChangeShop(shop) {
+        if (this.currentShopId === shop.id) {
+          this.$wechat.showToast('您已在当前自提点')
+          return
+        }
         this.changedShop = shop
         this.$refs.dialogModal.show()
       },
