@@ -26,9 +26,12 @@
       NavigationBar
     },
     data() {
-      return {}
+      return {
+        codeMsg: null
+      }
     },
-    onLoad() {
+    async onLoad() {
+      this.codeMsg = await this.$wechat.login()
     },
     methods: {
       _goNextPage() {
@@ -43,9 +46,8 @@
         wx.switchTab({url: '/' + TAB_BAR[0].pagePath})
       },
       async _login(e) {
-        let codeMsg = await this.$wechat.login()
         if (e.mp.detail.errMsg !== 'getUserInfo:ok') return
-        let data = {code: codeMsg.code, iv: e.target.iv, encryptedData: e.target.encryptedData}
+        let data = {code: this.codeMsg.code, iv: e.target.iv, encryptedData: e.target.encryptedData}
         let res = await API.Login.getToken(data)
         this.$wechat.hideLoading()
         if (res.error !== this.$ERR_OK) {

@@ -110,7 +110,7 @@
         res.data.forEach((item) => {
           let usableStock = item.usable_stock * 1
           item.checked = false
-          item.num = item.num > usableStock ? item.num : usableStock
+          item.num = item.num <= usableStock ? item.num : usableStock
         })
         this.goodsList = res.data
         this.deliverAt = res.shelf_delivery_at
