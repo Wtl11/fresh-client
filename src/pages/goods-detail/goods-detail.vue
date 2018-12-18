@@ -130,6 +130,20 @@
         deliverAt: ''
       }
     },
+    onShareAppMessage() {
+      let shopId = wx.getStorageSync('shopId')
+      return {
+        title: this.goodsMsg.name,
+        path: `/pages/goods-detail?id=${this.goodsMsg.id}&shopId=${shopId}`, // 商品详情
+        imageUrl: this.goodsMsg.thumb_image || this.goodsMsg.goods_cover_image,
+        success: (res) => {
+          // 转发成功
+        },
+        fail: (res) => {
+          // 转发失败
+        }
+      }
+    },
     onLoad(e) {
       this.goodsId = e.id
       this.getGoodsDetailData()
@@ -360,7 +374,6 @@
         this.$wx.saveImageToPhotosAlbum({
           filePath: pic,
           success: () => {
-            console.log(11)
             this.$wechat.previewImage({ urls: [pic] })
           },
           fail: () => {
@@ -396,7 +409,6 @@
       _kanTimePlay() {
         clearInterval(this.timer)
         this.activityTime = this._groupTimeCheckout(this.goodsMsg.shelf_end_at)
-        console.log(this.activityTime)
         this.timer = setInterval(() => {
           this.activityTime = this._groupTimeCheckout(this.goodsMsg.shelf_end_at)
           if (this.timeEnd) {

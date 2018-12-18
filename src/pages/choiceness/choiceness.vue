@@ -125,6 +125,18 @@
         title: '赞播优鲜'
       }
     },
+    onShareAppMessage(res) {
+      let shopId = wx.getStorageSync('shopId')
+      return {
+        path: `/pages/choiceness?shopId=${shopId}`, // 商品详情
+        success: (res) => {
+          // 转发成功
+        },
+        fail: (res) => {
+          // 转发失败
+        }
+      }
+    },
     async onShow() {
       // this.initClientRect()
       this.getPlantList()
