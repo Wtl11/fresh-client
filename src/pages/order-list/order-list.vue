@@ -13,11 +13,7 @@
       <div class="order-item" v-for="(item, index) in orderList" :key="index" @click="jumpDetail(item)">
         <div class="top">
           <div class="group-name">{{item.social_name}}</div>
-          <div class="status" v-if="item.status === 0">待付款</div>
-          <div class="status" v-if="item.status === 1">待提货</div>
-          <div class="status" v-if="item.status === 2">已完成</div>
-          <div class="status" v-if="item.status === 3">待付款</div>
-          <div class="status" v-if="item.status === 4">已关闭</div>
+          <div class="status">{{item.status_text}}</div>
         </div>
         <div class="center">
           <div class="goods-list">
