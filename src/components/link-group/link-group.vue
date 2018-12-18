@@ -1,6 +1,6 @@
 <template>
   <div class="link-group">
-    <scroll-view scroll-y class="link-box" v-show="linkShow" @touchmove.prevent=""></scroll-view>
+    <div scroll-y class="link-box" v-show="linkShow" @touchmove.prevent=""  @click.stop="hideLink"></div>
     <div class="link-bottom" :class="linkShow ? 'show' : ''">
       <div v-if="linkType === 1" class="link-tab link-tab-border" @click.stop="clipWechat">复制微信号：{{wechatInfo.wx_account}}</div>
       <div v-if="linkType === 1" class="link-tab" @click.stop="callPhone">呼叫：{{wechatInfo.mobile}}</div>

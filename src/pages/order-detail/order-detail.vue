@@ -36,7 +36,7 @@
               <div class="guige">规格：{{item.goods_units}}</div>
               <div class="price">
                 <div class="amout"><span class="num">{{item.price}}</span>元</div>
-                <!--<div class="refund" @click="isRefund" v-if="orderMsg.status * 1 === 1 || orderMsg.status * 1 === 2">退款</div>-->
+                <div class="refund" @click="isRefund" v-if="orderMsg.status * 1 === 1 || orderMsg.status * 1 === 2">退款</div>
               </div>
             </div>
           </div>
@@ -60,9 +60,6 @@
     <div class="service">
       <div class="service-btn" @click.stop="showGroupList">联系团长</div>
     </div>
-    <!--<div class="operation">-->
-      <!--<div class="refund">退款</div>-->
-    <!--</div>-->
     <div class="order-fixed" v-if="orderMsg.status * 1 === 0">
       <div class="order-bottom-left">
         <span>请在</span><span class="color-time">{{payTime}}</span><span>内付款</span>
@@ -79,7 +76,6 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import WePaint from '@components/we-paint/we-paint'
   import LinkGroup from '@components/link-group/link-group'
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import ConfirmMsg from '@components/confirm-msg/confirm-msg'
@@ -235,7 +231,6 @@
       }
     },
     components: {
-      WePaint,
       NavigationBar,
       LinkGroup,
       ConfirmMsg
@@ -249,30 +244,6 @@
     width: 100vw
     background: $color-white
     min-height: 100vh
-    .operation
-      position: fixed
-      bottom: 0
-      left: 0
-      width: 100vw
-      height: 50px
-      padding: 0 3.2vw
-      box-sizing: border-box
-      background: $color-white
-      layout(row)
-      justify-content: flex-end
-      align-items: center
-      box-shadow: 0 -0.5px 0 0 $color-line
-      .refund
-        width: 77px
-        height: 30px
-        line-height: 30px
-        font-family: $font-family-regular
-        font-size: $font-size-14
-        text-align: center
-        color: $color-white
-        background: $color-main
-        border: 1px solid $color-main
-        border-radius: 15px
     .order-banner
       width: 100vw
       height: 70px
@@ -482,18 +453,17 @@
       color: #000000
       line-height: 14px
   .order-fixed
-    position: fixed
-    left: 0
-    bottom: -45px
-    height: 50px
-    width: 100%
     z-index: 99
     layout(row)
     align-items: center
     border-top-1px(#E6E6E6)
+    position: fixed
+    left: 0
+    bottom: 0
+    height: 50px
+    right :0
     justify-content: space-between
     padding: 0 3.2vw
-    box-sizing: border-box
     .order-bottom-left
       font-size: $font-size-14
       color: #000
