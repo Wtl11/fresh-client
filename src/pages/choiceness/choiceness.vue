@@ -133,8 +133,6 @@
       await this._groupInfo()
     },
     onPageScroll(scroll) {
-      // console.log(this.menuTop)
-      // console.log(scroll.scrollTop)
       if (scroll.scrollTop >= this.menuTop - 84) {
         this.menuFixed = true
       } else {
@@ -200,7 +198,6 @@
             this.shelfId = res.shelf_id
             this.sheTag_id = res.data[0].id
             this.getGoodsList()
-            console.log(res.data)
           } else {
             this.$wechat.showToast(res.message)
           }
@@ -256,7 +253,6 @@
         })
       },
       addShoppingCart(item) {
-        console.log(item)
         API.Choiceness.addShopCart({sku_id: item.shop_sku_id}).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.$wechat.showToast('加入购物车成功')

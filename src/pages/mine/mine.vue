@@ -29,7 +29,7 @@
           <div class="arri"><img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="sowarr"></div>
         </div>
       </div>
-      <div class="location-wrapper">
+      <div class="location-wrapper" @click="navigateLocation">
         <img v-if="imageUrl" :src="imageUrl + '/yx-image/mine/pic-map_bg@2x.png'" alt="" class="map">
         <div class="maker-wrapper">
           <div class="maker-content">
@@ -92,7 +92,8 @@
           longitude: 113.3172,
           latitude: 23.08331,
           address: '',
-          mobile: 18844514445
+          mobile: 18844514445,
+          socialName: ''
         },
         testSrc: '',
         showModal: false,
@@ -112,6 +113,14 @@
       // ...mapGetters(['role'])
     },
     methods: {
+      navigateLocation() {
+        this.$wechat.openLocation({
+          latitude: this.detail.latitude,
+          longitude: this.detail.longitude,
+          name: this.detail.socialName,
+          address: this.detail.address
+        })
+      },
       // 跳转我的小区
       _goMyHosing() {
         let isLeader = wx.getStorageSync('isLeader') || false
@@ -183,11 +192,12 @@
             if (res.error !== this.$ERR_OK) {
               return
             }
-            let {city, district, address, longitude, latitude, mobile} = res.data
+            let {city, district, address, longitude, latitude, mobile, social_name: socialName} = res.data
             this.detail.address = city + district + address
             this.detail.longitude = longitude
             this.detail.latitude = latitude
             this.detail.mobile = mobile
+            this.detail.socialName = socialName
           })
       },
       jumpOrder(item) {

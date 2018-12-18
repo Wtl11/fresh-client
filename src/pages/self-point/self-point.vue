@@ -46,20 +46,31 @@
     },
     data() {
       return {
+        currentShopId: '',
         shopList: [],
         changedShop: {}
       }
     },
     onShow() {
       this._getShopList()
+      this._setShopId()
     },
     computed: {
       ...oauthComputed
       // ...mapGetters(['role'])
     },
     methods: {
+      _setShopId() {
+        this.$wechat.getStorage('shopId')
+          .then(res => {
+            this.currentShopId = res.data
+          })
+      },
       showChangeShop(shop) {
-        console.log(shop)
+        if (this.currentShopId === shop.id) {
+          this.$wechat.showToast('您已在当前自提点')
+          return
+        }
         this.changedShop = shop
         this.$refs.dialogModal.show()
       },
