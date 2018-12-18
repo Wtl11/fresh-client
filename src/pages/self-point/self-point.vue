@@ -27,7 +27,7 @@
         </div>
       </div>
     </div>
-    <dialog-modal ref="dialogModal" tip="温馨提示" msg="确定切换自提点吗？" @confirm="changeShop"></dialog-modal>
+    <dialog-modal ref="dialogModal" tip="温馨提示" message="确定切换自提点吗？" @confirm="changeShop"></dialog-modal>
   </div>
 </template>
 
@@ -59,6 +59,7 @@
     },
     methods: {
       showChangeShop(shop) {
+        console.log(shop)
         this.changedShop = shop
         this.$refs.dialogModal.show()
       },

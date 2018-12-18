@@ -1,22 +1,24 @@
 <template>
-  <article class="confirm-msg" v-if="isShow" :animation="maskAnimation">
-    <!--<div class="mask"  ></div>-->
-    <section class="reminderContent" v-if="useType==='reminder'" :animation="modalAnimation">
-      <div class="confirm-tip" v-if="tip">{{tip}}</div>
-      <div class="msg">{{msg}}</div>
-      <img :src="imageUrl + '/yx-image/group/icon-del@2x.png'" v-if="imageUrl" class="close" @tap="cancel">
-    </section>
-    <section class="content" v-else :animation="modalAnimation">
-      <div class="msg">
+  <div class="modal-wrapper">
+    <article class="confirm-msg" v-if="isShow" :animation="maskAnimation">
+      <!--<div class="mask"  ></div>-->
+      <section class="reminderContent" v-if="useType==='reminder'" :animation="modalAnimation">
         <div class="confirm-tip" v-if="tip">{{tip}}</div>
-        <div class="text">{{msg}}</div>
-      </div>
-      <div class="btn-group">
-        <div class="btn cancel" @tap="cancel">取消</div>
-        <div class="btn confirm" @tap="confirm">{{sureString}}</div>
-      </div>
-    </section>
-  </article>
+        <div class="msg">{{msg}}</div>
+        <img :src="imageUrl + '/yx-image/group/icon-del@2x.png'" v-if="imageUrl" class="close" @tap="cancel">
+      </section>
+      <section class="content" v-else :animation="modalAnimation">
+        <div class="msg">
+          <div class="confirm-tip" v-if="tip">{{tip}}</div>
+          <div class="text">{{msg}}</div>
+        </div>
+        <div class="btn-group">
+          <div class="btn cancel" @click="cancel">取消</div>
+          <div class="btn confirm" @click="confirm">{{sureString}}</div>
+        </div>
+      </section>
+    </article>
+  </div>
 </template>
 
 <script type="text/ecmascript-6">
@@ -34,14 +36,14 @@
         type: String,
         default: ''
       },
-      msg: {
+      message: {
         type: String,
         default: ''
       }
     },
     data() {
       return {
-        msg: '',
+        msg: this.message,
         isShow: false,
         maskAnimation: '',
         modalAnimation: ''
@@ -75,17 +77,13 @@
         }, 200)
         this.$emit('show')
       },
-      close() {
-        this.isShow = false
-        this.$emit('cancel')
-      },
       confirm() {
         this.cancel()
-        this.$emit('confirm')
+        setTimeout(() => {
+          this.$emit('confirm')
+        }, 300)
       },
       cancel() {
-        // this.isShow = false
-        // this.$emit('close')
         let modalAnimation = wx.createAnimation({
           duration: 300,
           timingFunction: 'linear',
