@@ -17,6 +17,9 @@ export const getters = {
   },
   deliverAt(state) {
     return state.deliverAt
+  },
+  orderId(state) {
+    return state.orderId
   }
 }
 
@@ -32,7 +35,15 @@ export const actions = {
         wechat.hideLoading()
         if (res.error !== ERR_OK) {
           wechat.showToast(res.message)
+          return
         }
+        API.SubmitOrder.saveMobile(orderInfo.mobile)
+          .then(res => {
+            wechat.hideLoading()
+            if (res.error !== ERR_OK) {
+              wechat.showToast(res.message)
+            }
+          })//  API.SubmitOrder.saveMobile
         let payRes = res.data
         const {timestamp, nonceStr, signType, paySign} = payRes
         this.orderId = res.data.order_id
@@ -44,7 +55,7 @@ export const actions = {
           paySign,
           success,
           error,
-          complete
+          complete: complete(this.orderId)
         })
       })
   }

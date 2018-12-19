@@ -16,7 +16,7 @@
       <div class="order-info-bottom">
         <div class="info-bottom-phone">
           <div class="lable">提货人手机号：</div>
-          <div class="mobile"><input class="ipt" type="text" v-model="mobile"></div>
+          <div class="mobile"><input class="mobile-content" type="text" v-model="mobile"></div>
         </div>
         <button class="wechat-btn" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber">使用微信手机号</button>
       </div>
@@ -42,7 +42,7 @@
     </div>
     <div class="fixed-btn">
       <div class="money">总计 {{total}}元</div>
-      <div class="pay" @click.stop="submitOrder">去支付</div>
+      <div class="pay" @click.stop="goPay">去支付</div>
     </div>
   </div>
 </template>
@@ -80,6 +80,22 @@
             this.code = res.code
           })
       },
+      async goPay() {
+        let orderInfo = {
+          goods: this.goodsList,
+          nickname: this.userInfo.nickname,
+          mobile: this.mobile
+        }
+        this.userInfo.mobile = this.mobile
+        this.$wechat.setStorage('userInfo', this.userInfo)
+        await this.submitOrder({
+          orderInfo,
+          complete: this._payComplete
+        })
+      },
+      _payComplete(id) {
+        wx.redirectTo({url: `/pages/order-detail?id=${id}&&type=0`})
+      },
       _setMobile() {
         this.$wechat.getStorage('userInfo')
           .then(res => {
@@ -111,36 +127,6 @@
             this.userInfo.mobile = this.mobile
             this.$wechat.setStorage('userInfo', this.userInfo)
           })
-      },
-      async submitOrder() {
-        // 手机号码暂无，后面加入
-        if (this.mobile.length !== 11) {
-          this.$wechat.showToast('请输入手机号码')
-          return
-        }
-        let data = {
-          goods: this.goodsList,
-          nickname: this.userInfo.nickname,
-          mobile: this.userInfo.mobile
-        }
-        let res = await API.SubmitOrder.submitOrder(data)
-        this.$wechat.hideLoading()
-        if (res.error !== this.$ERR_OK) {
-          this.$wechat.showToast(res.message)
-        }
-        let payRes = res.data
-        const {timestamp, nonceStr, signType, paySign} = payRes
-        const orderId = res.data.order_id
-        wx.requestPayment({
-          timeStamp: timestamp,
-          nonceStr,
-          package: payRes.package,
-          signType,
-          paySign,
-          complete: () => {
-            wx.redirect({url: `/pages/order-detail?id=${orderId}`})
-          }
-        })
       }
     },
     components: {
@@ -180,7 +166,7 @@
       .info-address
         font-size: 15px
         color: #000000
-        font-family: $font-family-regular
+        font-family: $font-family-medium
         line-height: 18px
         min-height: 18px
         margin-bottom: 12px
@@ -190,6 +176,7 @@
         .icon-text
           font-size: $font-size-12
           color: $color-main
+          text-align: center
           font-family: $font-family-regular
           border-1px($color-main, 2px)
           padding: 1px 4px 2px
@@ -208,8 +195,8 @@
             color: $color-text-sub
             font-family: $font-family-regular
     .order-info-bottom
-      height: 50px
-      line-height: 50px
+      height: 56px
+      line-height: 56px
       layout(row)
       align-items: center
       justify-content: space-between
@@ -229,15 +216,17 @@
           font-size: $font-size-15
           color: #000000
           border-1px()
+          height: 100%
+          line-height: 100%
           font-family: $font-family-medium
-          .ipt
-            width: 128px
+          .mobile-content
+            width: 34vw
             box-sizing: border-box
             font-size: $font-size-13
             height: 20px
             line-height: 20px
-            //border: 1px solid #e4e4e4
-            padding: 2px
+            box-sizing: border-box
+            padding: 0px 2px
       .wechat-btn
         font-size: $font-size-12
         color: $color-main

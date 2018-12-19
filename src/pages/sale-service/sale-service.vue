@@ -8,20 +8,6 @@
           <div class="status">退款成功</div>
         </div>
         <div class="center">
-          <!--<div class="goods-list">
-            <div class="goods-img-list">
-              <img v-for="(items, indx) in item.goodsInfo" :key="indx" v-if="indx < 4" class="goods-img" mode="aspectFill" :src="items.image_url" alt="">
-              <div class="img-item" v-if="item.goodsInfo.length > 4">
-                <div class="circle"></div>
-                <div class="circle"></div>
-                <div class="circle"></div>
-              </div>
-            </div>
-            <div class="arr-warp">
-              <div class="all-number">共{{item.goodsInfo.length}}件</div>
-              <div class="arrlow"><img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="arr"></div>
-            </div>
-          </div>-->
           <div class="goods-item">
             <div class="goodsinfo">
               <img class="goods-img" mode="aspectFill" src="http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300" alt="">

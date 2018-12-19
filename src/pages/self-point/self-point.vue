@@ -7,10 +7,10 @@
         <div class="point">
           <!--<img class="icon" v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-address_sy@2x.png'" alt="" >-->
           <img v-if="imageUrl" :src="imageUrl+'/yx-image/mine/icon-address_sy@2x.png'" alt="" class="icon">
-          <div class="txt">白云黄边北路国颐堂店</div>
+          <div class="txt">{{groupInfo.province + groupInfo.city + groupInfo.district + groupInfo.address}}</div>
         </div>
       </div>
-      <div class="selt-point-history"><div class="name">历史自提点</div></div>
+      <div class="selt-point-history"><div class="name">其他自提点</div></div>
     </div>
     <div class="history-list">
       <div class="history-item" v-for="(item, index) in shopList" :key="index" @click="showChangeShop(item)">
@@ -19,11 +19,11 @@
           <div class="info">
             <div class="colonel">团长：{{item.name}}</div>
             <div class="group">社区：{{item.social_name}}</div>
-            <div class="addr">提货地址：{{item.province + item.city + item.district + item.address}}</div>
+            <div class="address">提货地址：{{item.province + item.city + item.district + item.address}}</div>
           </div>
         </div>
         <div class="right">
-          <img class="arr" v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="">
+          <img class="arrow" v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="">
         </div>
       </div>
     </div>
@@ -48,12 +48,14 @@
       return {
         currentShopId: '',
         shopList: [],
+        groupInfo: {},
         changedShop: {}
       }
     },
-    onShow() {
-      this._getShopList()
+    async onShow() {
+      await this._getShopList()
       this._setShopId()
+      await this._groupInfo()
     },
     computed: {
       ...oauthComputed
@@ -65,6 +67,14 @@
           .then(res => {
             this.currentShopId = res.data
           })
+      },
+      async _groupInfo() {
+        let res = await API.Choiceness.getGroupInfo()
+        this.$wechat.hideLoading()
+        if (res.error !== this.$ERR_OK) {
+          this.$wechat.showToast(res.message)
+        }
+        this.groupInfo = res.data
       },
       showChangeShop(shop) {
         if (this.currentShopId === shop.id) {
@@ -130,10 +140,11 @@
           color: $color-white
           line-height: 16px
   .selt-point-history
-    padding: 3.2vw
+    padding-right: 0px 12px
     width: 100vw
     background: $color-white
     height: 45px
+    line-height: 45px
     position: absolute
     bottom: -19px
     z-index: 9
@@ -142,50 +153,60 @@
     .name
       font-family: $font-family-regular
       font-size: $font-size-14
+      height: 45px
+      margin-left: 12px
+      line-height: 45px
+      border-bottom: 0.5px solid $color-line
       color: $color-sub
   .history-list
     margin-top: 19px
-    padding-left: 3.2vw
+    padding:0 3.2vw
     .history-item
-      height: 140px
-      padding: 20px 3.2vw
-      padding-left: 0
+      padding: 20px 0
       box-sizing: border-box
       layout(row)
       justify-content: space-between
+      align-items: center
       border-bottom-1px($color-line)
       &:first-child
-        border-top-1px($color-line)
       .left
         layout(row)
         .avatar
           display: block
-          width: 13.34vw
-          height: 13.34vw
-          margin-right: 2.67vw
+          width: 50px
+          height: 50px
+          margin-right: 10px
           border-radius: 50%
         .info
           width: 69.6vw
           .colonel,.group
             font-family: $font-family-medium
             font-size: $font-size-15
-            padding-bottom: 8px
+            height: 15px
+            no-wrap()
+            padding-bottom: 11px
             color: $color-sub
-          .addr
-            padding-top: 5px
+          .group
+            font-family: $font-family-medium
+            font-size: $font-size-15
+            no-wrap()
+            height: 15px
+            padding-bottom: 15px
+            color: $color-sub
+          .address
             font-family: $font-family-regular
             font-size: $font-size-14
             color: #999999
             line-height: 20px
       .right
-        width: 5.5px
-        height: 100px
+        width: 7.5px
+        height: 100%
         layout(row)
         align-items: center
-        .arr
+        .arrow
           display: block
-          width: 5.5px
-          height: 10.5px
+          width: 7.5px
+          height: 12.5px
 
   .txtsr
     min-height: 10px
