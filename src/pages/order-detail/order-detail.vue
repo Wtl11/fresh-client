@@ -2,15 +2,18 @@
   <div class="wrap">
     <navigation-bar title="订单详情"></navigation-bar>
     <div class="order-banner">
-      <div class="status">
-        <div class="icon" v-if="orderMsg.status * 1 === 2" v><img v-if="imageUrl" class="icon-img" :src="imageUrl+'/yx-image/cart/icon-finish_xq@2x.png'" alt=""></div>
-        <div class="icon" v-if="orderMsg.status * 1 === 3"><img v-if="imageUrl" class="icon-img" :src="imageUrl+'/yx-image/cart/icon_close_xq@2x.png'" alt=""></div>
-        <div class="icon" v-if="orderMsg.status * 1 === 1"><img v-if="imageUrl" class="icon-img" :src="imageUrl+'/yx-image/cart/icon-delivery_xq@2x.png'" alt=""></div>
-        <div class="icon" v-if="orderMsg.status * 1 === 0"><img v-if="imageUrl" class="icon-img" :src="imageUrl+'/yx-image/cart/icon-payment_xq@2x.png'" alt=""></div>
-        <div class="icon" v-if="orderType * 1 === 1"><img v-if="imageUrl" class="icon-img" :src="imageUrl+'/yx-image/cart/icon_refund_xq@2x.png'" alt=""></div>
-        <div class="statu-txt">{{orderType * 1 !== 1 ? orderMsg.status_text : saleText}}</div>
+      <div class="backdrop"><img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/bg-ddxq@2x.png'" alt="" class="backdrop-img"></div>
+      <div class="content">
+        <div class="status">
+          <div class="icon" v-if="orderMsg.status * 1 === 2" v><img v-if="imageUrl" class="icon-img" :src="imageUrl+'/yx-image/cart/icon-finish_xq@2x.png'" alt=""></div>
+          <div class="icon" v-if="orderMsg.status * 1 === 3"><img v-if="imageUrl" class="icon-img" :src="imageUrl+'/yx-image/cart/icon_close_xq@2x.png'" alt=""></div>
+          <div class="icon" v-if="orderMsg.status * 1 === 1"><img v-if="imageUrl" class="icon-img" :src="imageUrl+'/yx-image/cart/icon-delivery_xq@2x.png'" alt=""></div>
+          <div class="icon" v-if="orderMsg.status * 1 === 0"><img v-if="imageUrl" class="icon-img" :src="imageUrl+'/yx-image/cart/icon-payment_xq@2x.png'" alt=""></div>
+          <div class="icon" v-if="orderType * 1 === 1"><img v-if="imageUrl" class="icon-img" :src="imageUrl+'/yx-image/cart/icon_refund_xq@2x.png'" alt=""></div>
+          <div class="statu-txt">{{orderType * 1 !== 1 ? orderMsg.status_text : saleText}}</div>
+        </div>
+        <div class="extract" v-if="orderType * 1 !== 1">提货单号: {{address.code}}</div>
       </div>
-      <div class="extract" v-if="orderType * 1 !== 1">提货单号: {{address.code}}</div>
     </div>
     <div class="addr-info">
       <div class="top">
@@ -300,32 +303,53 @@
     .order-banner
       width: 100vw
       height: 70px
-      padding: 0 3.2vw
       box-sizing: border-box
       layout(row)
       justify-content: space-between
       align-items: center
       margin: 0
+      position: relative
       background-image: radial-gradient(95% -74%, #73C200 0%, #ABE300 100%)
-      .status
+      .backdrop
+        position: absolute
+        left: 0
+        top: 0
+        width: 100vw
+        height: 70px
+        z-index:2
+        .backdrop-img
+          width: 100%
+          height: 100%
+      .content
+        position: absolute
+        left: 0
+        top: 0
+        padding: 0 3.2vw
+        width: 100vw
+        height: 70px
+        z-index: 9
+        box-sizing: border-box
         layout(row)
-        .statu-txt
+        justify-content: space-between
+        align-items: center
+        .status
+          layout(row)
+          align-items: center
+          .statu-txt
+            font-family: $font-family-medium
+            font-size: $font-size-18
+            color: $color-white
+          .icon
+            width: 31px
+            height: 31px
+           .icon-img
+             width: 100%
+             display: block
+             height: 100%
+        .extract
           font-family: $font-family-medium
-          font-size: $font-size-18
+          font-size: $font-size-16
           color: $color-white
-          line-height: 31px
-        .icon
-          width: 31px
-          height: 31px
-          padding-top: 3px
-         .icon-img
-           width: 100%
-           display: block
-           height: 100%
-      .extract
-        font-family: $font-family-medium
-        font-size: $font-size-16
-        color: $color-white
   .addr-info
     padding-left: 3.2vw
     background: $color-white
@@ -383,8 +407,9 @@
       layout(row)
       align-items: center
     .goods-img
-      width: 20vw
-      height: 20vw
+      width: 75px
+      border-radius: 2px
+      height: 75px
     .arrlow
       width: 5.5px
       height: 10.5px
@@ -406,6 +431,8 @@
           font-family: $font-family-medium
           font-size: $font-size-14
           color: $color-sub
+          height: 16px
+          line-height: 16px
           letter-spacing: 0.3px
           no-wrap()
         .quantity
@@ -551,7 +578,7 @@
         text-align: center
         color: $color-white
         background: $color-main
-        border: 1px solid $color-main
+        border: 0.5px solid $color-main
         border-radius: 15px
         margin-left: 10px
       .close
@@ -563,7 +590,7 @@
         text-align: center
         color: $color-text-main
         background: $color-white
-        border: 1px solid $color-text-main
+        border: 0.5px solid $color-text-assist
   .service
     width: 100vw
     padding-top: 15px

@@ -264,6 +264,7 @@
             .goods-img
               width: 13.33vw
               height: 13.33vw
+              border-radius: 2px
               margin-right: 2.67vw
             .img-item
               width: 13.33vw

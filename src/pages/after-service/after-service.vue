@@ -26,7 +26,7 @@
             </div>
           </div>-->
           <div class="goods-item">
-            <div class="goodsinfo">
+            <div class="goods-info">
               <img class="goods-img" mode="aspectFill" :src="item.image_url" alt="">
               <div class="goods-info">
                 <div class="tit">{{item.goods_name}}</div>
@@ -201,10 +201,11 @@
           height: 104.5px
           padding: 0 3.2vw
           layout(row)
+
           justify-content: space-between
           align-items: center
           border-bottom-1px($color-line)
-          .goodsinfo
+          .goods-info
             layout(row)
             align-items: center
           .goods-img

@@ -1,12 +1,12 @@
 <template>
   <div class="wrap">
-    <navigation-bar title="购物车" :showArrow="false" :translucent="false"></navigation-bar>
+    <navigation-bar title="我的" :showArrow="false" :translucent="false"></navigation-bar>
     <div class="mine-top">
       <div class="info">
         <div class="avatar">
-          <img class="ava-img" :src="userInfo.avatar" alt="">
+          <img class="avatar-img" :src="userInfo.avatar" alt="">
         </div>
-        <div class="name">{{userInfo.nickname}}</div>
+        <div class="nickname">{{userInfo.nickname}}</div>
       </div>
       <div class="erwcode">
         <img class="ecode-img" v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-code@2x.png'" @click="createQrCode">
@@ -25,8 +25,8 @@
       <div class="self-top">
         <div class="tit">我的自提点</div>
         <div class="switch-btn" @click="toChangeShop">
-          <div class="txt">切换自提点</div>
-          <div class="arri"><img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="sowarr"></div>
+          <div class="switch-content">切换自提点</div>
+          <img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="arrow-img">
         </div>
       </div>
       <div class="location-wrapper" @click="navigateLocation">
@@ -48,9 +48,9 @@
     </div>
     <div class="self-addr group" @click="_goMyHosing">
       <div class="self-top">
-        <div class="tit">我的小区/小区管理</div>
+        <div class="switch-content">我的小区/小区管理</div>
         <div class="switch-btn">
-          <div class="arri"><img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="sowarr"></div>
+          <img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="arrow-img">
         </div>
       </div>
     </div>
@@ -59,7 +59,7 @@
         <div class="erm" @click.stop>
           <img class="erm-img" :src="testSrc">
         </div>
-        <div class="txt">向团长出示二维码提货</div>
+        <div class="erm-text">向团长出示二维码提货</div>
       </div>
     </div>
   </div>
@@ -251,20 +251,18 @@
         .switch-btn
           layout(row)
           align-items: center
-          .txt
+          justify-content: flex-start
+          .switch-content
             font-family: $font-family-regular
             font-size: $font-size-13
             color: $color-text-sub
             height: 24px
             line-height: 24px
             padding-right: 10px
-          .arri
-            width: 5.5px
-            height: 10.5px
-            .sowarr
-              display: block
-              width: 5.5px
-              height: 10.5px
+          .arrow-img
+            display: block
+            width: 6px
+            height: 10px
       .location-wrapper
         position: relative
         width: 100%
@@ -310,9 +308,11 @@
       padding: 0px 3.46vw 0px 3.2vw
     .mine-top
       width: 100vw
-      height: 90px
+      height: 60px
       layout(row)
       align-items: center
+      padding-top: 5px
+      box-sizing: border-box
       justify-content: space-between
       .info
         layout(row)
@@ -322,12 +322,12 @@
           border-radius: 50%
           height: 14.6vw
           margin: 0 2.67vw 0 3.2vw
-          .ava-img
+          .avatar-img
             display: block
             border-radius: 50%
             width: 100%
             height: 100%
-        .name
+        .nickname
           max-width: 53vw
           font-family: $font-family-medium
           font-size: $font-size-18
@@ -345,7 +345,7 @@
     .order-nav
       width: 93.6vw
       height: 93.5px
-      margin: 0 auto
+      margin: 30px auto 0
       background: $color-white
       box-shadow: 0 3px 10px 0 rgba(17, 17, 17, 0.06)
       border-radius: 6px
@@ -369,7 +369,7 @@
         text-align: center
         .icon
           width: 22px
-          height: 20px
+          height: 22px
           margin: 0 auto
           padding-bottom: 12.5px
           .icon-img
@@ -382,10 +382,6 @@
           color: $color-sub
         &:last-child
           margin-left: 20px
-
-  .test
-    height: 100px
-
   .mine-model
     position: fixed
     top: 0
@@ -411,7 +407,7 @@
       .erm-img
         height: 150px
         width: 150px
-      .txt
+      .erm-text
         margin-top: 28px
         color: $color-main
         font-family: $font-family-medium

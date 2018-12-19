@@ -21,7 +21,7 @@
             <div class="left">
               <div class="spec" v-if="item.goods_units">规格：{{item.goods_units}}</div>
               <div class="remain">
-                <div class="txt"  v-if="item.usable_stock">仅剩{{item.usable_stock}}件</div>
+                <div class="txt"  v-if="item.is_urgency">仅剩{{item.usable_stock}}件</div>
               </div>
               <div class="price" v-if="item.shop_price"><span class="num">{{item.shop_price}}</span>元</div>
             </div>
@@ -37,7 +37,7 @@
       </div>
     </div>
     <!--结算-->
-    <div class="payment">
+    <div class="payment" v-if="goodsList.length > 0">
       <div class="check-all" @click.stop="toggleCheckAll">
         <img class="sel-box" v-if="imageUrl && allChecked" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt="" />
         <img class="sel-box" v-if="imageUrl && !allChecked" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt="" />
@@ -45,15 +45,15 @@
       </div>
       <div class="payment-content">
         <div class="price">合计 {{totalPrice}}元</div>
-        <div class="pay-btn" @click.stop="submitOrder">结算</div>
+        <div class="pay-btn" @click.stop="submitOrder">去结算</div>
       </div>
     </div>
     <!--没有商品-->
-    <div class="without" v-if="false">
+    <div class="without" v-if="goodsList.length <= 0">
       <div class="without-img"><img class="img" v-if="imageUrl" :src="imageUrl+'/yx-image/cart/pic-gwc@2x.png'" alt=""></div>
       <div class="txt">购物车没有商品哦!</div>
       <div class="txt">赶快去挑选吧</div>
-      <div class="btn">去逛逛</div>
+      <div class="btn" @click.stop="toChoicenessPage">去逛逛</div>
     </div>
     <confirm-msg ref="msg" :msg="msg" useType="double" @confirm="deleteCartGood"></confirm-msg>
   </div>
@@ -84,6 +84,7 @@
     },
     async onShow() {
       await this._getShopCart()
+      this.setCartCount()
     },
     computed: {
       checkedGoods() {
@@ -117,7 +118,7 @@
       },
       addNum(i, num, limit, id) {
         if (num >= limit) {
-          this.$wechat.showToast('已达最大购买数量!')
+          // this.$wechat.showToast('已达最大购买数量!')
           return
         }
         num++
@@ -130,7 +131,7 @@
           this.goodsList[i].num = num
           this.editGoodsNum(id, num)
         } else {
-          this.delGoodsInfo()
+          this.delGoodsInfo(i, id)
         }
       },
       // 商品数量
@@ -139,6 +140,7 @@
         if (res.error !== this.$ERR_OK) {
           this.$wechat.showToast(res.message)
         }
+        this.setCartCount()
       },
       // 点击删除按钮
       delGoodsInfo(delIndex, cartId) {
@@ -182,6 +184,9 @@
         }
         this.setOrderInfo(orderInfo)
         wx.navigateTo({url: '/pages/submit-order'})
+      },
+      toChoicenessPage() {
+        wx.switchTab({url: '/pages/choiceness'})
       }
     },
     components: {
@@ -211,6 +216,7 @@
     layout(row)
     justify-content: space-between
     align-items: center
+    border-bottom: .5px solid #EEEEEE
     .check-all
       layout(row)
       .sel-box
@@ -287,6 +293,7 @@
           display: block
           width: 24vw
           height: 24vw
+          border-radius: 2px
       .good-info
         flex: 1
         overflow: hidden
@@ -298,9 +305,9 @@
           justify-content: space-between
           align-items: center
           width: 100%
-          height: 15px
+          height: 16px
           padding-bottom: 6px
-          line-height: 15px
+          line-height: 16px
           .title
             flex: 1
             padding-right: 12px
@@ -308,11 +315,12 @@
             family: $font-family-medium
             font-size: $font-size-14
             color: #111111
+            height: 16px
             letter-spacing: 0.3px
           .del
             .del-img
-              width: 15px
-              height: 15px
+              width: 14px
+              height: 15.5px
         .bot
           width: 100%
           layout(row)
@@ -335,13 +343,13 @@
                 height: 24px
                 position: relative
                 text-align: center
-                line-height: 1
+                line-height: 24px
               .minus
                 width: 24px
                 height: 24px
                 position: relative
                 text-align: center
-                line-height: 1
+                line-height: 24px
               .num
                 font-family: $font-family-medium
                 font-size: $font-size-14
