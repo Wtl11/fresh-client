@@ -12,7 +12,8 @@
           <div class="icon" v-if="orderType * 1 === 1"><img v-if="imageUrl" class="icon-img" :src="imageUrl+'/yx-image/cart/icon_refund_xq@2x.png'" alt=""></div>
           <div class="statu-txt">{{orderType * 1 !== 1 ? orderMsg.status_text : saleText}}</div>
         </div>
-        <div class="extract" v-if="orderType * 1 !== 1 && orderMsg.status !== 0">提货单号: {{address.code}}</div>
+        <div class="extract" v-if="orderType * 1 !== 1 && orderMsg.status === 2">提货单号: {{address.code}}</div>
+        <div class="extract" v-if="orderType * 1 !== 1 && orderMsg.status === 1">提货单号: {{address.code}}</div>
       </div>
     </div>
     <div class="addr-info">
