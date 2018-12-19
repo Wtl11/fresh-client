@@ -6,7 +6,7 @@
     },
     onShow(options) {
       let storyShopId = wx.getStorageSync('shopId') || 1
-      let shopId = options.query.shopId || storyShopId
+      let shopId = options.query.shopId || +storyShopId
       wx.setStorageSync('shopId', shopId)
       let token = wx.getStorageSync('token')
       if (!token) {

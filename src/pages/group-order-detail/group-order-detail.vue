@@ -36,7 +36,7 @@
           <div class="goods-num-box">x<span class="goods-num">{{item.num}}</span></div>
         </div>
         <div class="btn-box" v-if="!item.delivery_status">
-          <div class="goods-btn" @click="_showDialog('', item.order_detail_id)">确认提货</div>
+          <div class="goods-btn" v-if="orderDetail.status === 1 || orderDetail.delivery_status === 3" @click="_showDialog('', item.order_detail_id)">确认提货</div>
         </div>
       </div>
     </div>
@@ -52,7 +52,7 @@
       </div>
     </div>
     <!---->
-    <div class="order-btn-box" v-if="orderDetail.status === 1">
+    <div class="order-btn-box" v-if="orderDetail.status === 1 || orderDetail.delivery_status === 3">
       <form action="" report-submit @submit="$getFormId">
         <button class="order-btn order-dark" :class="{'order-disable': orderDetail.remind_status}" formType="submit" @click="_remind">{{orderDetail.remind_status ? '已提醒' : '提醒收货'}}</button>
         <!--<button class="order-btn order-dark" open-type="share">分享订单</button>-->
