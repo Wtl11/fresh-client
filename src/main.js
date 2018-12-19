@@ -29,7 +29,7 @@ export default {
       color: '#2c2c2c',
       selectedColor: '#73C200',
       backgroundColor: '#ffffff',
-      borderStyle: 'white',
+      borderStyle: 'black',
       list: [
         {
           pagePath: 'pages/choiceness',

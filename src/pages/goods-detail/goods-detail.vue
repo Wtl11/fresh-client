@@ -2,9 +2,9 @@
   <div class="goods-detail">
     <navigation-bar :title="goodsMsg.name" :showArrow="true" :translucent="true"></navigation-bar>
     <div class="banner-box">
-      <!--<div class="banner-share" @click="showShare">-->
-        <!--<img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/icon-share3@2x.png'"  mode="aspectFill">-->
-      <!--</div>-->
+      <div class="banner-share" @click="showShare">
+        <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/icon-share3@2x.png'"  mode="aspectFill">
+      </div>
       <swiper class="banner" @change="bannerChange" interval="5000">
         <block v-for="(item, index) in goodsMsg.goods_banner_images" :key="index">
           <swiper-item class="banner-item">
@@ -12,7 +12,6 @@
           </swiper-item>
         </block>
       </swiper>
-      <!--<span class="page-box"><text class="currentNum">{{currentNum}}</text>/{{bannerImgs.length}}</span>-->
     </div>
     <div class="group-price">
       <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/bg-details@2x.png'"  mode="aspectFill" class="group-bg">
@@ -78,9 +77,9 @@
     </div>
     <add-number ref="addNumber" :msgDetail="goodsMsg" @comfirmNumer="comfirmNumer"></add-number>
     <link-group ref="groupList" :wechatInfo="groupInfo"></link-group>
-    <link-group ref="shareList" :linkType="2"></link-group>
+    <link-group ref="shareList" :linkType="2" @saveImg="_action"></link-group>
     <we-paint ref="wePaint" @drawDone="_drawDone"></we-paint>
-    <div class="share-goods" style="display: none">
+    <div class="share-goods">
       <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-sharegoods@2x.png'" class="share-bg"  mode="aspectFill">
       <div class="share-box">
         <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/5@1x.png'" class="share-img"  mode="aspectFill">
@@ -90,9 +89,12 @@
           <div class="share-sub-title">智利J级车厘子250g</div>
           <div class="share-group-box">团购价</div>
           <div class="price-box">
-            <div class="share-price-number">3.8</div>
+            <div class="share-price-number">{{goodsMsg.shop_price}}</div>
             <div class="share-price-icon">元</div>
-            <div class="share-price-line">12元</div>
+            <div class="share-price-line">
+              {{goodsMsg.original_price}}元
+              <i class="share-money-line"></i>
+            </div>
           </div>
         </div>
       </div>
@@ -108,7 +110,7 @@
   import WePaint from '@components/we-paint/we-paint'
   import API from '@api'
   const PAGE_NAME = 'GOODS_DETAIL'
-  const TYPEBTN = [{url: '/yx-image/choiceness/icon-homepage@2x.png', text: '首页', type: 0}, {url: '/yx-image/choiceness/icon-service@2x.png', text: '客服', type: 1}, {url: '/yx-image/choiceness/icon-shopcart@2x.png', text: '购物车', type: 2}]
+  const TYPEBTN = [{url: '/yx-image/goods/icon-homepage@2x.png', text: '首页', type: 0}, {url: '/yx-image/goods/icon-service@2x.png', text: '客服', type: 1}, {url: '/yx-image/goods/icon-shopcart@2x.png', text: '购物车', type: 2}]
 
   export default {
     name: PAGE_NAME,
@@ -127,7 +129,8 @@
         timeEnd: false,
         groupInfo: {},
         userImgList: [],
-        deliverAt: ''
+        deliverAt: '',
+        shareImg: ''
       }
     },
     onShareAppMessage() {
@@ -149,6 +152,8 @@
       this.getGoodsDetailData()
       this._groupInfo()
       this.getUserImgList()
+      console.log(this.shareImg)
+      // this.getQrCode()
     },
     methods: {
       ...orderMethods,
@@ -201,13 +206,15 @@
       },
       instantlyBuy() {
         if (this.goodsMsg.buy_count >= this.goodsMsg.buy_limit) {
-          this.$wechat.showToast(`该商品限购${this.goodsMsg.buy_limit}件`)
+          this.$wechat.showToast(`该商品限购${this.goodsMsg.buy_limit}件，您不能在购买了`)
         } else {
           this.$refs.addNumber.showLink()
         }
       },
       _action() {
-        // let name = this.postMsg.coupon ? this.postMsg.coupon.activity_name.length >= 18 ? this.postMsg.coupon.activity_name.slice(0, 18) + '...' : this.postMsg.coupon.activity_name : ''
+        let name = this.goodsMsg.name.length >= 12 ? this.goodsMsg.name.slice(0, 12) + '...' : this.goodsMsg.name
+        let subName = this.goodsMsg.describe.length >= 12 ? this.goodsMsg.describe.slice(0, 12) + '...' : this.goodsMsg.describe
+        this.shareImg = this.shareImg || this.imageUrl + '/yx-image/choiceness/5@1x.png'
         let options = {
           canvasId: 'we-paint',
           multiple: 1,
@@ -225,7 +232,6 @@
               drawType: 'img',
               mode: 'aspectFill',
               source: this.imageUrl + '/yx-image/choiceness/pic-sharegoods@2x.png'
-              // width: this.deviceInfo.width
             },
             {
               el: '.share-box',
@@ -236,20 +242,20 @@
             {
               el: '.share-img', // 图片
               drawType: 'img',
-              source: this.imageUrl + '/yx-image/choiceness/5@1x.png',
+              source: this.goodsMsg.goods_cover_image,
               mode: 'aspectFill'
             },
             {
               el: '.share-title', // 店铺名称
               drawType: 'text-area',
-              source: '智利J级车厘子250g',
+              source: name,
               fontSize: 16,
               color: '#1f1f1f'
             },
             {
               el: '.share-sub-title', // 签名
               drawType: 'text-area',
-              source: `智利J级车厘子250g`,
+              source: subName,
               fontSize: 14,
               align: 'left',
               color: '#808080'
@@ -264,7 +270,7 @@
             {
               el: '.share-price-number',
               drawType: 'text',
-              source: '3.8',
+              source: this.goodsMsg.shop_price,
               fontSize: 30,
               color: '#FF8300'
             },
@@ -278,94 +284,23 @@
             {
               el: '.share-price-line',
               drawType: 'text',
-              source: '12元',
+              source: `${this.goodsMsg.original_price}元`,
               fontSize: 17,
               color: '#B7B7B7'
             },
             {
-              el: '.wem-img',
-              drawType: 'img',
-              source: this.imageUrl + '/yx-image/choiceness/5@1x.png'
-            }
-          ]
-        }
-        let optionsNull = {
-          canvasId: 'we-paint',
-          multiple: 1,
-          panel: {
-            el: '.share-goods'
-          },
-          els: [
-            {
-              el: '.share-goods',
+              el: '.share-money-line',
               drawType: 'rect',
-              color: '#fff'
-            },
-            {
-              el: '.share-bg', // 背景图
-              drawType: 'img',
-              mode: 'aspectFill',
-              source: this.imageUrl + '/yx-image/choiceness/pic-sharegoods@2x.png'
-              // width: this.deviceInfo.width
-            },
-            {
-              el: '.share-img', // 图片
-              drawType: 'img',
-              source: this.imageUrl + '/yx-image/choiceness/5@1x.png',
-              mode: 'aspectFill'
-            },
-            {
-              el: '.share-title', // 店铺名称
-              drawType: 'text-area',
-              source: '智利J级车厘子250g',
-              fontSize: 16,
-              color: '#1f1f1f'
-            },
-            {
-              el: '.share-sub-title', // 签名
-              drawType: 'text-area',
-              source: `智利J级车厘子250g`,
-              fontSize: 14,
-              align: 'center',
-              color: '#808080'
-            },
-            {
-              el: '.share-group-box',
-              drawType: 'text-area',
-              source: '团购价',
-              fontSize: 14,
-              color: '#FF8300'
-            },
-            {
-              el: '.share-price-number',
-              drawType: 'text',
-              source: '3.8',
-              fontSize: 30,
-              color: '#FF8300'
-            },
-            {
-              el: '.share-price-icon',
-              drawType: 'text',
-              source: '元',
-              fontSize: 17,
-              color: '#FF8300'
-            },
-            {
-              el: '.share-price-line',
-              drawType: 'text',
-              source: '12元',
-              fontSize: 17,
-              color: '#B7B7B7'
+              color: '#b7b7b7'
             },
             {
               el: '.wem-img',
               drawType: 'img',
-              source: this.qrCode
+              source: this.shareImg
             }
           ]
         }
         let obj = options
-        console.log(optionsNull)
         this.$refs.wePaint.action(obj, false)
       },
       _drawDone(pic) {
@@ -445,6 +380,15 @@
           this.timeEnd = true
         }
         return times
+      },
+      getQrCode() {
+        API.Choiceness.createQrCodeApi({path: `pages/goods-detail`}).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.shareImg = res.data.image_url
+          } else {
+            this.$wechat.showToast(res.message)
+          }
+        })
       }
     },
     components: {
@@ -483,7 +427,7 @@
         border-top-left-radius: 10px
         border-top-right-radius: 10px
     .share-bottom
-      padding: 15px 15px 30px
+      padding: 10px 15px 30px
       position: relative
     .wem-img
       position: absolute
@@ -501,7 +445,7 @@
       font-size: $font-size-14
       color: $color-text-sub
       font-family: $font-family-regular
-      margin-bottom: 11px
+      margin-bottom: 5px
     .share-group-box
       font-size: $font-size-14
       color: $color-money
@@ -510,8 +454,6 @@
       height: 20px
       text-align: center
       line-height: 20px
-      border-1px($color-money, 2px)
-      margin-bottom: 11px
     .price-box
       layout(row)
       align-items: flex-end
@@ -526,14 +468,18 @@
         font-family: $font-family-medium
         line-height: 1
         padding-bottom: 2px
-        margin-right: 7px
       .share-price-line
         font-size: $font-size-17
         color: #b7b7b7
         font-family: $font-family-regular
         line-height: 1
         padding-bottom: 2px
-        text-decoration: line-through
+        position: relative
+        .share-money-line
+          height: 1px
+          width: 100%
+          background: #888
+          col-center()
   .goods-detail
     width: 100%
     min-height: 100vh
@@ -580,8 +526,8 @@
     position: absolute
     width: 40px
     height: 40px
-    right: 15px
-    bottom: 15px
+    right: 16.5px
+    bottom: 15.5px
     z-index: 22
     img
       width: 100%
@@ -592,7 +538,7 @@
     width: 100%
     height: 50px
     position: relative
-    padding: 0 3.2vw
+    padding: 0 12px
     box-sizing: border-box
     .group-bg
       position: absolute
@@ -631,9 +577,11 @@
         .line-price-text
           font-size: $font-size-10
           font-family: $font-family-regular
-          line-height: 1
-          padding: 1.5px 2px 3px 3px
+          line-height: 13px
+          padding-left: 2px
+          padding-right: 1px
           color: #fff
+          height: 13px
           border-1px(#FFFFFF, 2px)
       .main-box-right
         layout(row)
@@ -645,11 +593,11 @@
           margin-right: 5px
         .time-box
           font-size: $font-size-13
-          font-family: 'PingFang-SC-Bold'
-          background: rgba(255,255,255,1)
+          font-family: $font-family-medium
+          background: $color-white
           width: 20px
           text-align: center
-          line-height: 20px
+          line-height: 22px
           height: 20px
           border-radius: 3px
           color: $color-main
@@ -660,7 +608,7 @@
           margin: 0 4px 3px 3px
   .goods-info
     background: #fff
-    padding: 0 3.2vw
+    padding: 0 12px
     box-sizing: border-box
     width: 100%
     background: #fff
@@ -671,7 +619,7 @@
     align-items: center
     justify-content: space-between
     .title
-      width: 180px
+      width: 220px
       font-size: $font-size-16
       color: #1F1F1F
       line-height: 1
@@ -680,7 +628,7 @@
       margin-bottom: 9px
       no-wrap()
     .sub-title
-      width: 170px
+      width: 200px
       font-size: $font-size-14
       color: $color-text-sub
       line-height: 1
@@ -693,13 +641,15 @@
       font-family: $font-family-regular
       border-radius: 8px
       background: rgba(128,128,128,.5)
-      padding: 2px 5px 3px
+      padding: 0 5px
+      height: 16px
+      line-height: 16px
       margin-bottom: 8px
     .stock-number
       font-size: $font-size-12
       color: $color-text-sub
       font-family: $font-family-regular
-      text-align: center
+      text-align: right
   .goods-info-bootom
     border-top-1px(#E6E6E6)
     height: 45px
@@ -734,8 +684,8 @@
   .detail-title
     font-size: $font-size-16
     color: $color-text-main
-    font-family: $font-family-regular
-    padding-left: 3.2vw
+    font-family: $font-family-medium
+    padding-left: 12px
     box-sizing: border-box
     background: #fff
     height: 50px
@@ -746,12 +696,13 @@
     width: 100%
     height: auto
   .send-box
-    padding: 17px 0 25px 3.2vw
+    padding: 17px 0 25px 12px
     box-sizing: border-box
     background: #fff
     .send-title
-      font-size: $font-size-14
+      font-size: $font-size-16
       color: $color-text-main
+      line-height: 18px
       font-family: $font-family-medium
       margin-bottom: 12px
     .send-sub-title
