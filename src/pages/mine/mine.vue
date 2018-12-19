@@ -48,7 +48,7 @@
     </div>
     <div class="self-addr group" @click="_goMyHosing">
       <div class="self-top">
-        <div class="subtitle">我的小区/小区管理</div>
+        <div class="subtitle">我的小区</div>
         <div class="switch-btn">
           <img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="arrow-img">
         </div>
