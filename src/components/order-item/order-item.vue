@@ -2,7 +2,7 @@
   <div class="big-order-box">
     <div class="order-item" v-for="(item, index) in orderList" :key="index">
       <div class="order-header">
-        <div class="order-num">{{item.code || 0}}</div>
+        <div class="order-num">{{item.code}}</div>
         <div class="name">{{item.nickname}}</div>
         <div class="phone">{{item.mobile}}</div>
         <div class="order-status" v-if="isShowStatus">{{item.status_text}}</div>
@@ -64,7 +64,6 @@
     },
     watch: {
       orderList(news) {
-        console.log(news)
       }
     },
     methods: {
@@ -103,6 +102,7 @@
       width: 22px
       height: 22px
     .name
+      line-height: 1.2
       no-wrap()
       margin-left: 7px
       font-size: $font-size-14

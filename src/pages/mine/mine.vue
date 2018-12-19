@@ -201,7 +201,6 @@
           })
       },
       jumpOrder(item) {
-        console.log(item)
         if (item.id === 4) {
           wx.navigateTo({
             url: `/pages/after-service`

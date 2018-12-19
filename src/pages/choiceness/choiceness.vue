@@ -1,9 +1,12 @@
 <template>
   <div class="choiceness">
     <navigation-bar :title="title" :showArrow="false" :translucent="true"></navigation-bar>
-    <div class="choiceness-top">
-      <div class="choiceness-bgimg">
+    <div class="choiceness-top" :class="statusBarHeight * 1 === 20 ? '' : 'choiceness-top-x'">
+      <div class="choiceness-bgimg" v-if="statusBarHeight * 1 === 20">
         <img class="bgimg-url" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-bg@2x.png'">
+      </div>
+      <div class="choiceness-top-bgimg choiceness-bgimg" v-else>
+        <img class="bgimg-url" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-top-bg@2x.png'">
       </div>
       <div class="group-info">
         <div class="info-box">
@@ -19,7 +22,7 @@
                   <div class="address-icon">
                     <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/icon-address_small@2x.png'">
                   </div>
-                  <div class="address-text">{{groupInfo.district}}{{groupInfo.address}}</div>
+                  <div class="address-text">{{groupInfo.social_name}}</div>
                 </div>
               </div>
             </div>
@@ -41,19 +44,12 @@
         <div class="dots-item" :class="{'dots-item-active': praiseIndex === idx}" v-for="(item,idx) in plantingList" :key="idx" v-if="plantingList.length > 1"></div>
       </div>
     </div>
-    <div class="select-scroll">
-      <scroll-tab
-        ref="scrollTab"
-        @changeTab="toTap"
-        :infoBorderWidth="68"
-        :tabList="tabList"
-        :showLine="true"
-        :autoWidth="true"
-        activeStyle=";color:#73C200;font-size:32rpx;font-family: PingFangSC-Medium"
-        lineStyle="border-bottom-color: #ff3f54;height:2px"
-        boxStyle="color: #c2c2c; height: 44px; line-height: 44px;font-size:28rpx;font-family: PingFangSC-Medium;padding: 0 13.75px"
-      ></scroll-tab>
-    </div>
+    <scroll-view class="scroll-view2" v-if="tabList1.length" id="scrollView" :scroll-into-view="viewToItem" scroll-x scroll-with-animation>
+      <div class="under-line" :style="{left: move + 'px', width: arrWidth[tabIndex] + 'px' }"></div>
+      <div v-for="(item, index) in tabList1" :class="tabIndex === index ? 'item-active'  : ''" :key="index" class="item" :id="'item'+index" @click="_changeTab(index, item.id, $event)">
+        {{item.name}}
+      </div>
+    </scroll-view>
     <div class="goods-box">
       <div class="goods-list" v-for="(item, index) in goodsList" :key="index" @click="jumpGoodsDetail(item)">
         <div class="goods-left">
@@ -65,10 +61,12 @@
           </div>
         </div>
         <div class="goods-right">
-          <div class="title">{{item.name}}</div>
-          <div class="text-sub">{{item.describe}}</div>
-          <div class="text-sales-box">
-            <div class="text-sales">已售{{item.sale_count}}{{item.goods_units}}</div>
+          <div class="goods-right-top">
+            <div class="title">{{item.name}}</div>
+            <div class="text-sub" v-if="item.describe">{{item.describe}}</div>
+            <div class="text-sales-box">
+              <div class="text-sales">已售{{item.sale_count}}{{item.goods_units}}</div>
+            </div>
           </div>
           <div class="add-box">
             <div class="add-box-left">
@@ -82,16 +80,26 @@
               </div>
             </div>
             <div class="add-box-right">
-              <div class="add-goods-btn" @click.stop="addShoppingCart(item)">+购物车</div>
+              <div class="add-goods-btn" @click.stop="addShoppingCart(item)">
+                <div class="add-icon">
+                  <div class="add1"></div>
+                  <div class="add2"></div>
+                </div>
+                <div class="add-text">购物车</div>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="foot-ties" v-if="goodsMore">
+    <div class="foot-ties" v-if="goodsMore && goodsList.length !== 0">
       <div class="left lines"></div>
       <div class="center">已经到底了</div>
       <div class="bot lines"></div>
+    </div>
+    <div class="noting" v-if="goodsMore && goodsList.length === 0">
+      <div class="notingimg"><img class="img" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'" alt=""></div>
+      <div class="txt">空空如也</div>
     </div>
     <link-group ref="groupComponents" :wechatInfo="groupInfo"></link-group>
   </div>
@@ -105,40 +113,59 @@
   import {cartMethods} from '@state/helpers'
 
   const PAGE_NAME = 'CHOICENESS'
-  const SELECTTAB = [{text: '限时尝鲜'}, {text: '精选菜篮'}, {text: '水果'}, {text: '粮油'}, {text: '百货'}, {text: '粮油'}, {text: '百货'}, {text: '粮油'}, {text: '百货'}]
   export default {
     name: PAGE_NAME,
+    watch: {
+      tabList(news) {
+        this.tabList1 = news
+        setTimeout(() => {
+          this.getWidth('', '', '', false)
+        }, 100)
+      },
+      infoTabIndex(newVal) {
+        this.tabIndex = newVal
+      }
+    },
     data() {
       return {
         praiseIndex: 0,
-        selectTab: SELECTTAB,
+        selectTab: [],
         tabIdx: 0,
         menuFixed: false,
         menuTop: 0,
         groupInfo: {},
         plantingList: [],
         tabList: [],
+        tabList1: [],
         shelfId: 0,
         goodsList: [],
         goodsMore: false,
         goodsPage: 1,
-        title: '赞播优鲜'
+        title: '赞播优鲜',
+        statusBarHeight: 20,
+        arrWidth: [],
+        width: 0,
+        move: 0,
+        tabIndex: 0,
+        viewToItem: 'item0'
       }
+    },
+    created() {
+      let res = wx.getSystemInfoSync()
+      this.statusBarHeight = res.statusBarHeight || 20
+      console.log(this.statusBarHeight)
     },
     onShareAppMessage(res) {
       let shopId = wx.getStorageSync('shopId')
       return {
         path: `/pages/choiceness?shopId=${shopId}`, // 商品详情
         success: (res) => {
-          // 转发成功
         },
         fail: (res) => {
-          // 转发失败
         }
       }
     },
     async onShow() {
-      // this.initClientRect()
       this.getPlantList()
       this.getTabList()
       this.setCartCount()
@@ -206,7 +233,11 @@
       getTabList() {
         API.Choiceness.getGoodsTag().then((res) => {
           if (res.error === this.$ERR_OK) {
-            this.tabList = res.data
+            // this.tabList = res.data
+            this.tabList.push(...res.data)
+            this.tabList.push(...res.data)
+            this.tabList.push(...res.data)
+            this.tabList.push(...res.data)
             this.shelfId = res.shelf_id
             this.sheTag_id = res.data[0].id
             this.getGoodsList()
@@ -263,6 +294,32 @@
         wx.navigateTo({
           url: `/pages/goods-detail?id=${item.id}`
         })
+      },
+      getWidth(index, id, e) {
+        this.allWidth = 0
+        let query = wx.createSelectorQuery()
+        query.selectAll('.item').boundingClientRect()
+        query.exec((res) => {
+          this.arrWidth = res[0].map((item, index) => {
+            this.allWidth += item.width
+            return item.width
+          })
+        })
+      },
+      async _changeTab(index, id, e) {
+        console.log(this.tabIndex, index)
+        let number = index * 1 === 0 ? 1 : index
+        if (this.tabIndex > index) {
+          number--
+        } else if (this.tabIndex < index && (index - this.tabIndex) >= 3) {
+          number++
+        } else if (this.tabIndex < index && (index - this.tabIndex) <= 3) {
+          number = index
+        }
+        this.viewToItem = `item${number}`
+        console.log(this.viewToItem)
+        this.tabIndex = index
+        this.move = e.target.offsetLeft
       },
       addShoppingCart(item) {
         API.Choiceness.addShopCart({sku_id: item.shop_sku_id}).then((res) => {
@@ -333,6 +390,8 @@
           border-bottom-1px(#E6E6E6)
           .left-info
             layout(row)
+            flex: 1
+            overflow: hidden
             align-items: center
             .left-info-user
               width: 13.3vw
@@ -344,19 +403,26 @@
                 height: 100%
                 display: block
                 border-radius: 50%
-                background: #fff
+                background: #ff
+            .name-box
+              flex: 1
+              overflow: hidden
             .name-text
               height: $font-size-16
               font-size: $font-size-16
               font-family: $font-family-medium
               color: $color-text-main
               margin-bottom: 8.5px
+              flex: 1
+              no-wrap()
             .address-box
               layout(row)
               align-items: center
+              width: 100%
+              overflow: hidden
               .address-icon
-                width: 8.5px
-                height: 10px
+                width: 11px
+                height: 11px
                 margin-right: 3px
                 img
                   display: block
@@ -366,6 +432,8 @@
                 font-size: $font-size-13
                 font-family: $font-family-regular
                 color: $color-text-sub
+                flex: 1
+                no-wrap()
           .right-info
             width: 20vw
             height: 28px
@@ -379,6 +447,8 @@
           text-align: left
           width: 100%
           margin-top: 9px
+          max-height: 25px
+          overflow: hidden
           font-size: $font-size-12
           font-family: $font-family-regular
           color: $color-text-sub
@@ -392,25 +462,39 @@
       .bgimg-url
         width: 100%
         height: 100%
-
+        display: block
+    .choiceness-bgimg
+      height: 35.2vw
+  .choiceness-top-x
+    padding-top: 29.6vw
   .banner-box
-    padding: 0 3.2vw
+    margin: 0 3.2vw
     box-sizing: border-box
     position: relative
     height: 40vw
+    border-radius: 6px !important
+    overflow: hidden !important
     /*margin-bottom: 13px*/
     .banner
       width: 100%
       height: 100%
-      border-radius: 6px
-      overflow: hidden
+      border-radius: 6px !important
+      transform: translateY(0)
+      overflow: hidden !important
       .banner-item
         width: 100%
         height: 100%
         position: relative
+        border-radius: 6px !important
+        transform: translateY(0)
+        overflow: hidden !important
         .item-img
           width: 100%
           height: 100%
+          display: block
+          border-radius: 6px !important
+          transform: translateY(0)
+          overflow: hidden !important
     .dots
       position: absolute
       bottom: 12px
@@ -471,13 +555,16 @@
       .goods-right
         flex: 1
         overflow: hidden
+        layout()
+        justify-content: space-between
+        min-height: 32vw
         .title
           font-size: $font-size-16
           font-family: $font-family-medium
           color: $color-text-main
           line-height: 1
-          min-height: $font-size-16
-          margin-bottom: 7px
+          min-height: $font-size-18
+          margin-bottom: 6px
           no-wrap()
         .text-sub
           font-size: $font-size-14
@@ -485,7 +572,7 @@
           color: $color-text-sub
           line-height: 1
           min-height: $font-size-16
-          margin-bottom: 9px
+          margin-bottom: 7px
           no-wrap()
           padding-right: 10px
           box-sizing: border-box
@@ -497,8 +584,10 @@
             color: $color-text-sub
             margin-bottom: 11px
             border-radius: 10px
+            height: 13px
+            line-height: 13px
             border-1px($color-text-sub, 10px)
-            padding: 2px 5px 3px
+            padding: 0 5px
         .add-box
           layout(row)
           justify-content: space-between
@@ -509,13 +598,13 @@
               font-size: $font-size-10
               font-family: $font-family-regular
               color: $color-money
-              min-height: $font-size-16
-              line-height: $font-size-16
-              margin-bottom: 6px
+              height: 13px
+              line-height: 13px
+              margin-bottom: 4px
               border-radius: 10px
               background: rgba(255, 131, 0, 0.10)
               border-1px(#FF8300, 10px)
-              padding: 0px 8px 1px
+              padding: 0 5px
           .price-box
             layout(row)
             align-items: flex-end
@@ -530,22 +619,47 @@
               font-size: $font-size-12
               line-height: 1
               margin-right: 2px
+              padding-bottom: 2.5px
             .lineation
               font-family: $font-family-regular
               color: $color-text-assist
               font-size: $font-size-12
               text-decoration line-through
+              padding-bottom: 1px
               line-height: 1
           .add-goods-btn
-            width: 20vw
-            height: 26px
-            line-height: 26px
-            font-size: $font-size-14
-            font-family: $font-family-regular
-            color: #fff
+            layout(row)
+            width: 75px
+            height: 28px
             background: $color-main
-            text-align: center
+            justify-content: center
+            align-items: center
             border-radius: 14px
+            .add-text
+              font-size: $font-size-14
+              font-family: $font-family-regular
+              color: #fff
+            .add-icon
+              width: 11px
+              height: 11px
+              position: relative
+              margin-right: 2px
+              .add1
+                width: 11px
+                height: 1.5px
+                background-color: #fff
+                position: absolute
+                left: 0
+                top: 4.5px
+                border-radius: 30px
+              .add2
+                width: 1.5px
+                height: 11px
+                background-color: #fff
+                border-radius: 30px
+                position: absolute
+                left: 4.5px
+                top: 0
 
   .foot-ties
     layout(row)
@@ -566,5 +680,67 @@
       color: rgba(152, 152, 159, 0.30)
       text-align: justify
       line-height: 1
+  .noting
+    text-align: center
+    margin-top: 30px
+    .notingimg
+      width: 116px
+      height: 110px
+      margin: 0 auto 15px
+      .img
+        display: block
+        width: 100%
+        height: 100%
+    .txt
+      font-family: $font-family-regular
+      font-size: $font-size-14
+      color: $color-text-sub
+  .txt
+    height: 100px
+
+  .scroll-view2
+    display: block
+    margin: 23px auto 10px
+    height: 33px
+    width: 93.6vw
+    background: $color-white
+    box-shadow: 0 1px 8px 0 rgba(55, 75, 99, 0.04)
+    white-space: nowrap
+    box-sizing: border-box
+    transform: translateX(0)
+    position: relative
+    transition: all 0.3s
+    border-bottom: 2px solid $color-main
+    ::-webkit-scrollbar
+      width: 0
+      height: 0
+      color: transparent
+    .item
+      height: 100%
+      line-height: 33px
+      white-space: nowrap
+      padding: 0 7px
+      font-family: $font-family-medium
+      font-size: $font-size-14
+      color: $color-text-main
+      text-align: center
+      display: inline-block
+      position: relative
+      transition: all 0.3s
+      min-width: 70px
+      box-sizing: border-box
+      transform-origin: 50%
+    .item-active
+      color: $color-white
+
+  .under-line
+    position: absolute
+    bootom: 0
+    left: 0
+    width: 30px
+    background: $color-main
+    transition: all 0.3s
+    height: 33px
+    border-radius: 8px 8px 0px 0px
 
 </style>

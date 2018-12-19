@@ -16,16 +16,16 @@
       <div class="order-big-box" :style="{'transform': ' translateX('+ -(navIndex * width) +'px)', width: width * nav.length + 'px'}">
         <!--今日订单-->
         <scroll-view class="order-box" :style="{'height': scrollHeight + 'px'}" scroll-y @scrolltolower="_getMoreList">
-          <navigator :url="'/pages/group-order-detail?id=' + order.order_id" hover-class="none" class="order-item" v-for="(order, idx) in todayList" :key="idx">
+          <navigator :url="'/pages/group-order-detail?id=' + order.order_id" :hover-stop-propagation="true" hover-class="none" class="order-item" v-for="(order, idx) in todayList" :key="idx">
             <div class="order-header">
-              <div class="order-num">{{order.code || 0}}</div>
-              <div class="name">{{order.address.customer_name}}</div>
-              <div class="phone">{{order.address.customer_mobile}}</div>
+              <div class="order-num">{{order.code}}</div>
+              <div class="name">{{order.address.nickname}}</div>
+              <div class="phone">{{order.address.mobile}}</div>
               <div class="order-status">{{order.status_text}}</div>
             </div>
             <div class="goods-more">
               <div class="goods-box">
-                <img v-for="(img, imgIdx) in order.goods" :src="img.goods_image_url" :key="imgIdx" v-if="imgIdx < 4" class="goods-img" mode="aspectFill">
+                <img v-for="(img, imgIdx) in order.goods" :src="img.image_url" :key="imgIdx" v-if="imgIdx < 4" class="goods-img" mode="aspectFill">
               </div>
               <div class="num-box">
                 <div class="num-text">共{{order.goods.length}}件</div>
@@ -46,16 +46,16 @@
           </div>
         </scroll-view>
         <scroll-view class="order-box" :style="{'height': scrollHeight + 'px'}" scroll-y>
-          <navigator :url="'/pages/group-order-detail?id=' + order.order_id" class="order-item" v-for="(order, idx) in yesterdayList" :key="idx">
+          <navigator :url="'/pages/group-order-detail?id=' + order.order_id" :hover-stop-propagation="true" hover-class="none" class="order-item" v-for="(order, idx) in yesterdayList" :key="idx">
             <div class="order-header">
-              <div class="order-num">{{order.code || 0}}</div>
-              <div class="name">{{order.address.customer_name}}</div>
-              <div class="phone">{{order.address.customer_mobile}}</div>
+              <div class="order-num">{{order.code}}</div>
+              <div class="name">{{order.address.nickname}}</div>
+              <div class="phone">{{order.address.mobile}}</div>
               <div class="order-status">{{order.status_text}}</div>
             </div>
             <div class="goods-more">
               <div class="goods-box">
-                <img v-for="(img, imgIdx) in order.goods" :src="img.goods_image_url" :key="imgIdx" v-if="imgIdx <= 4" class="goods-img" mode="aspectFill">
+                <img v-for="(img, imgIdx) in order.goods" :src="img.image_url" :key="imgIdx" v-if="imgIdx <= 4" class="goods-img" mode="aspectFill">
                 <img :src="imageUrl + '/yx-image/group/pic-order_more@2x.png'" v-if="imgIdx > 4" class="goods-img" mode="aspectFill">
               </div>
               <div class="num-box">
@@ -77,16 +77,16 @@
           </div>
         </scroll-view>
         <scroll-view class="order-box" :style="{'height': scrollHeight + 'px'}" scroll-y>
-          <navigator :url="'/pages/group-order-detail?id=' + order.order_id" class="order-item" v-for="(order, idx) in list" :key="idx">
+          <navigator :url="'/pages/group-order-detail?id=' + order.order_id" :hover-stop-propagation="true" hover-class="none" class="order-item" v-for="(order, idx) in list" :key="idx">
             <div class="order-header">
-              <div class="order-num">{{order.code || 0}}</div>
-              <div class="name">{{order.address.customer_name}}</div>
-              <div class="phone">{{order.address.customer_mobile}}</div>
+              <div class="order-num">{{order.code}}</div>
+              <div class="name">{{order.address.nickname}}</div>
+              <div class="phone">{{order.address.mobile}}</div>
               <div class="order-status">{{order.status_text}}</div>
             </div>
             <div class="goods-more">
               <div class="goods-box">
-                <img v-for="(img, imgIdx) in order.goods" :src="img.goods_image_url" :key="imgIdx" v-if="imgIdx < 4" class="goods-img" mode="aspectFill">
+                <img v-for="(img, imgIdx) in order.goods" :src="img.image_url" :key="imgIdx" v-if="imgIdx < 4" class="goods-img" mode="aspectFill">
               </div>
               <div class="num-box">
                 <div class="num-text">共{{order.goods.length}}件</div>
@@ -188,7 +188,6 @@
         return res.data
       },
       async _setList() {
-        console.log(this.nav[this.navIndex].status)
         let time = this.nav[this.navIndex].status
         let page = this.pageObj[this.nav[this.navIndex].status + 'Page']
         if (this.pageObj[this.nav[this.navIndex].status + 'AllPage'] < this.pageObj[this.nav[this.navIndex].status + 'Page']) {
@@ -312,6 +311,7 @@
         width: 22px
         height: 22px
       .name
+        line-height: 1.2
         no-wrap()
         margin-left: 7px
         font-size: $font-size-14
