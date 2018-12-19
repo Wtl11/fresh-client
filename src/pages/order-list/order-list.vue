@@ -74,6 +74,9 @@
     onLoad(e) {
       this.status = e.id
       this.tabIdx = e.index
+      // this.getOrderList()
+    },
+    onShow() {
       this.getOrderList()
     },
     onReachBottom() {
