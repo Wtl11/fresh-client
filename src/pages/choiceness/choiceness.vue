@@ -563,7 +563,7 @@
           font-family: $font-family-medium
           color: $color-text-main
           line-height: 1
-          min-height: $font-size-16
+          min-height: $font-size-18
           margin-bottom: 6px
           no-wrap()
         .text-sub
