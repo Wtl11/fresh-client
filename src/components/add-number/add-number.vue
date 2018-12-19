@@ -15,7 +15,7 @@
           </div>
         </div>
       </div>
-      <div class="order-num-box ">
+      <div class="order-num-box">
         <div class="num-title">数量</div>
         <div class="num-btn-box1">
           <div class="left" @click.stop="subNum">
@@ -134,13 +134,17 @@
           border-radius: 2px
       .goods-info-right
         padding-top: 4vw
+        flex: 1
+        overflow: hidden
         .title
           font-size: $font-size-16
           color: $color-text-main
           font-family: $font-family-medium
           line-height: 1
           min-height: $font-size-18
-          margin-bottom: 10px
+          width: 220px
+          no-wrap()
+          margin-bottom: 20px
         .order-price-box
           layout(row)
           align-items: flex-end
@@ -228,7 +232,7 @@
       layout(row)
       align-items: flex-end
       .number
-        font-family: 'PingFang-SC-Bold'
+        font-family: $font-family-medium
         font-size: $font-size-20
         color: $color-money
         line-height: 1

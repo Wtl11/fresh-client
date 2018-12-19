@@ -1,13 +1,11 @@
 <template>
-  <div class="scroll-view2" v-if="tabList1.length" id="scrollView" :style="{'transform': 'translateX('+ -scrollMove + 'px)'}" @touchstart="_getNowLeft" @touchmove="_setMove">
-    <div class="under-line" :style="{left: move + 'px', lineStyle}"></div>
-    <div v-for="(item, index) in tabList1" :style="tabIndex === index ? (boxStyle + activeStyle)  : boxStyle" :key="index" class="item" :class="{'item-last': isMask && index + 1 === tabList1.length}" :id="'item'+index" @click="_changeTab(index, item.id, $event)">
+  <!--<scroll-view class="scroll-view2" v-if="tabList1.length" id="scrollView" :scroll-into-view="" :style="{'transform': 'translateX('+ -scrollMove + 'px)'}" @touchstart="_getNowLeft" @touchmove="_setMove">-->
+  <scroll-view class="scroll-view2" v-if="tabList1.length" id="scrollView" :scroll-into-view="viewToItem" scroll-x scroll-with-animation>
+    <div class="under-line" :style="{left: move + 'px', width: arrWidth[tabIndex] + 'px' }"></div>
+    <div v-for="(item, index) in tabList1" :class="tabIndex === index ? 'item-active'  : ''" :key="index" class="item" :id="'item'+index" @click="_changeTab(index, item.id, $event)">
       {{item.name}}
-      <!--另一种下划线-->
-      <!--<span v-if="showLine" :style="lineStyle" :class="{'active':tabIndex === index}" class="line"></span>-->
     </div>
-    <!--<div class="liner" v-if="isMask" :style="{'top': pageHeadH + 'px'}"></div>-->
-  </div>
+  </scroll-view>
   <!--
   **用法**
   <scroll-tab
@@ -102,11 +100,12 @@
         lineLeft: 0,
         arrWidth: [],
         width: 0,
-        move: 12.75,
+        move: 0,
         scrollMove: 0,
         allWidth: 0,
         nowLeft: 0,
-        paddingLeft: this.isMask ? PADDING_LEFT : 0
+        paddingLeft: this.isMask ? PADDING_LEFT : 0,
+        viewToItem: 'item0'
       }
     },
     onLoad() {
@@ -135,30 +134,20 @@
         })
       },
       async _changeTab(index, id, e) {
-        // if (!this.arrWidth.length) {
-        this.getWidth(index, id, e)
-        // }
-        // this.infoMove(index, id, e)
+        let number = index * 1 === 0 ? 1 : index
+        if (this.tabIndex > index) {
+          number--
+        } else if (this.tabIndex < index) {
+          number++
+        }
+        console.log(this.tabIndex, index)
+        this.viewToItem = `item${number}`
+        console.log(e.target.offsetLeft)
+        this.tabIndex = index
+        this.move = e.target.offsetLeft
+        this.$emit('changeTab', id)
       },
       infoMove(index, id, e) {
-        this.tabIndex = index
-        let width = 0
-        for (let i in this.arrWidth) {
-          if (+i < index) {
-            width += this.arrWidth[i]
-          } else if (+i === index) {
-            width += (this.arrWidth[i] - 30) / 2
-            break
-          }
-        }
-        this.move = width
-        if (this.allWidth <= SCREEN_WIDTH) {
-          this.$emit('changeTab', id)
-          return
-        }
-        let target = e.target.offsetLeft - (SCREEN_WIDTH - this.arrWidth[index]) / 2
-        this.scrollMove = target < 0 ? 0 : Math.abs(target) >= this.allWidth - SCREEN_WIDTH ? this.allWidth - SCREEN_WIDTH + this.paddingLeft : target
-        this.$emit('changeTab', id)
       },
       _getNowLeft(e) {
         this.nowLeft = e.target.offsetLeft
@@ -184,59 +173,51 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@design"
 
-  .scroll-view
-    padding-top: 50px
-    width: 100vw
-    position: relative
-    height: 44px
-    display: flex
-    flex-wrap: nowrap
-    ::-webkit-scrollbar
-      width: 0
-      height: 0
-      color: transparent
-    .item
-      white-space: nowrap
-      width: 70px
-      text-align: center
-      display: inline-block
-      position: relative
-      transition: all 0.3s
 
   .scroll-view2
-    padding-top: 0px
-    height: 44px
-    width: 100vw
+    display: block
+    margin: 23px auto 10px
+    height: 33px
+    width: 93.6vw
     background: $color-white
     box-shadow: 0 1px 8px 0 rgba(55, 75, 99, 0.04)
-    min-width: 100vw
     white-space: nowrap
     box-sizing: border-box
     transform: translateX(0)
+    position: relative
     transition: all 0.3s
+    border-bottom: 2px solid $color-main
     ::-webkit-scrollbar
       width: 0
       height: 0
       color: transparent
     .item
+      height: 100%
+      line-height: 33px
       white-space: nowrap
-      padding: 0 20px
+      padding: 0 7px
+      font-family: $font-family-medium
+      font-size: $font-size-14
+      color: $color-text-main
       text-align: center
       display: inline-block
       position: relative
       transition: all 0.3s
+      min-width: 70px
+      box-sizing: border-box
       transform-origin: 50%
+    .item-active
+      color: $color-white
 
   .under-line
     position: absolute
-    top: 0
-    transform: translate3d(0, 42px, 0)
-    left: 20px
-    height: 20px
+    bootom: 0
+    left: 0
     width: 30px
-    z-index: 11111
     background: $color-main
     transition: all 0.3s
+    height: 33px
+    border-radius: 8px 8px 0px 0px
 
   .liner
     width: 40px
