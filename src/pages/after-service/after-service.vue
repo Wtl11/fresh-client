@@ -11,27 +11,13 @@
           <div class="status" v-if="item.after_sale_status * 1 === 3">退款取消</div>
         </div>
         <div class="center">
-          <!--<div class="goods-list">
-            <div class="goods-img-list">
-              <img v-for="(items, indx) in item.goodsInfo" :key="indx" v-if="indx < 4" class="goods-img" mode="aspectFill" :src="items.image_url" alt="">
-              <div class="img-item" v-if="item.goodsInfo.length > 4">
-                <div class="circle"></div>
-                <div class="circle"></div>
-                <div class="circle"></div>
-              </div>
-            </div>
-            <div class="arr-warp">
-              <div class="all-number">共{{item.goodsInfo.length}}件</div>
-              <div class="arrlow"><img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="arr"></div>
-            </div>
-          </div>-->
           <div class="goods-item">
             <div class="goods-info">
               <img class="goods-img" mode="aspectFill" :src="item.image_url" alt="">
               <div class="goods-info">
                 <div class="tit">{{item.goods_name}}</div>
                 <div class="guige">规格：{{item.goods_units}}</div>
-                <div class="price"><span class="num">{{item.num}}</span>元</div>
+                <div class="price"><span class="price-text">{{item.price}}</span>元</div>
               </div>
             </div>
             <div class="arrlow"><img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="arr"></div>
@@ -201,7 +187,6 @@
           height: 104.5px
           padding: 0 3.2vw
           layout(row)
-
           justify-content: space-between
           align-items: center
           border-bottom-1px($color-line)
@@ -237,7 +222,7 @@
               font-family: $font-family-regular
               font-size: $font-size-11
               color: #1F1F1F
-              .num
+              .price-text
                 font-family: $font-family-regular
                 color: $color-sub
                 font-size: $font-size-16

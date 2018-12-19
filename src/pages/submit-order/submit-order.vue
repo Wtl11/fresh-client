@@ -93,8 +93,8 @@
         })
       },
       _paySuccess(res) {
-        console.log(res)
-        wx.redirect({url: `/pages/order-detail?id=${this.orderId}`})
+        console.log(this.orderId)
+        wx.redirectTo({url: `/pages/order-detail?id=${this.orderId}`})
       },
       _setMobile() {
         this.$wechat.getStorage('userInfo')
@@ -225,8 +225,8 @@
             font-size: $font-size-13
             height: 20px
             line-height: 20px
-            //border: 1px solid #e4e4e4
-            padding: 2px
+            box-sizing: border-box
+            padding: 0px 2px
       .wechat-btn
         font-size: $font-size-12
         color: $color-main

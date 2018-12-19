@@ -32,6 +32,7 @@ export const actions = {
         wechat.hideLoading()
         if (res.error !== ERR_OK) {
           wechat.showToast(res.message)
+          return
         }
         let payRes = res.data
         const {timestamp, nonceStr, signType, paySign} = payRes

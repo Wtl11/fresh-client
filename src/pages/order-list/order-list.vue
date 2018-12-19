@@ -6,7 +6,7 @@
         <div class="nav-item" :class="tabIdx * 1 === index ? 'nav-item-active' : ''" v-for="(item, index) in navList" :key="index" @click="selectIndex(item, index)">{{item.name}}</div>
       </div>
       <div class="line-box">
-        <div class="line" :style="'transform: translate(' + tabIdx*100 + '%,0)'"><div class="lins"></div></div>
+        <div class="line" :style="'transform: translate(' + tabIdx*100 + '%,0)'"><div class="lines"></div></div>
       </div>
     </div>
     <div class="order-list" v-if="orderList.length > 0">
@@ -30,17 +30,6 @@
               <div class="arrlow"><img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="arr"></div>
             </div>
           </div>
-          <!--<div class="goods-item">
-            <div class="goodsinfo">
-              <img class="goods-img" mode="aspectFill" src="http://service-ws-app-1254297111.picgz.myqcloud.com/300000/2018/12/01/154363269682158.png?imageView2/3/w/300/h/300" alt="">
-              <div class="goods-info">
-                <div class="tit">超值特惠 智利J级车厘子250g</div>
-                <div class="guige">规格：包</div>
-                <div class="price"><span class="num">3.8</span>元</div>
-              </div>
-            </div>
-            <div class="arrlow"><img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="arr"></div>
-          </div>-->
         </div>
         <div class="bot">
           <div class="time">{{item.created_at}}</div>
@@ -162,10 +151,11 @@
         transform: translate(0, 0)
         transition: all .3s
         height: 3px
-        .lins
+        .lines
           width: 33%
           height: 3px
           margin: 0 auto
+          border-radius: 1.5px
           background: $color-main
     .order-nav
       width: 100vw

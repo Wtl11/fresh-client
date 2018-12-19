@@ -7,7 +7,7 @@
         <div class="point">
           <!--<img class="icon" v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-address_sy@2x.png'" alt="" >-->
           <img v-if="imageUrl" :src="imageUrl+'/yx-image/mine/icon-address_sy@2x.png'" alt="" class="icon">
-          <div class="txt">{{groupInfo.district}}{{groupInfo.address}}</div>
+          <div class="txt">{{groupInfo.province + groupInfo.city + groupInfo.district + groupInfo.address}}</div>
         </div>
       </div>
       <div class="selt-point-history"><div class="name">其他自提点</div></div>

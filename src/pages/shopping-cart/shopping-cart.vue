@@ -303,10 +303,11 @@
         .top
           layout(row)
           justify-content: space-between
-          align-items: center
+          align-items: center/
+
           width: 100%
           height: 16px
-          padding-bottom: 6px
+          padding-bottom: 5px
           line-height: 16px
           .title
             flex: 1
