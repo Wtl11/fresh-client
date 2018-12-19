@@ -218,8 +218,8 @@
             width: 20vw
             height: 20vw
           .arrlow
-            width: 5.5px
-            height: 10.5px
+            width: 6px
+            height: 10px
             .arr
               width: 100%
               height: 100%
@@ -280,8 +280,8 @@
             font-size: $font-size-12
             color: $color-text-sub
           .arrlow
-            width: 5.5px
-            height: 10.5px
+            width: 6px
+            height: 10px
             margin-left: 6px
             .arr
               display: block

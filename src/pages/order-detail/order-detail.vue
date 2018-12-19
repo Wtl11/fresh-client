@@ -448,8 +448,8 @@
         font-family: $font-family-regular
         font-size: $font-size-14
         color: $color-text-sub
-        margin-top: 6px
-        margin-bottom: 16px
+        margin-top: 7px
+        margin-bottom: 20px
       .price
         layout(row)
         align-items: center

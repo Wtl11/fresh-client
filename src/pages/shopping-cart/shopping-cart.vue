@@ -309,12 +309,14 @@
             flex: 1
             padding-right: 12px
             no-wrap()
-            family: $font-family-medium
+            font-family: $font-family-medium
             font-size: $font-size-14
             color: #111111
             height: 16px
             letter-spacing: 0.3px
           .del
+            width: 14px
+            height: 15.5px
             .del-img
               width: 14px
               height: 15.5px
