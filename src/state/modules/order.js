@@ -37,6 +37,13 @@ export const actions = {
           wechat.showToast(res.message)
           return
         }
+        API.SubmitOrder.saveMobile(orderInfo.mobile)
+          .then(res => {
+            wechat.hideLoading()
+            if (res.error !== ERR_OK) {
+              wechat.showToast(res.message)
+            }
+          })//  API.SubmitOrder.saveMobile
         let payRes = res.data
         const {timestamp, nonceStr, signType, paySign} = payRes
         this.orderId = res.data.order_id

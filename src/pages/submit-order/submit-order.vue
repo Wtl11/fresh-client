@@ -86,6 +86,8 @@
           nickname: this.userInfo.nickname,
           mobile: this.mobile
         }
+        this.userInfo.mobile = this.mobile
+        this.$wechat.setStorage('userInfo', this.userInfo)
         await this.submitOrder({
           orderInfo,
           complete: this._payComplete
