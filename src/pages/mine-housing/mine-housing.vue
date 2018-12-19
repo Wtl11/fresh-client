@@ -146,10 +146,10 @@
         }
         let res = await API.Leader.loginLeader({mobile: this.phoneNum, auth_code: this.code})
         this.$wechat.hideLoading()
+        this.$wechat.showToast(res.message)
         if (res.error === this.$ERR_OK) {
           wx.setStorageSync('isLeader', true)
           wx.setStorageSync('shopId', res.data.id)
-          this.$wechat.showToast(res.message)
           wx.redirectTo({url: '/pages/regimental-commander'})
         }
       },
@@ -188,7 +188,6 @@
       height: 100%
 
   .hose-tab
-    padding: 0 47.5px
     display: flex
     width: 100vw
     box-sizing: border-box
