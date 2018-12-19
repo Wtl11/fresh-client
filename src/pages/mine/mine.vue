@@ -25,7 +25,7 @@
       <div class="self-top">
         <div class="subtitle">我的自提点</div>
         <div class="switch-btn" @click="toChangeShop">
-          <div class="switch-con">切换自提点</div>
+          <div class="switch-content">切换自提点</div>
           <img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="arrow-img">
         </div>
       </div>
