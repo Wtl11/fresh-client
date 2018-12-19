@@ -92,7 +92,7 @@
       },
       totalPrice() {
         return this.checkedGoods.reduce((total, current) => {
-          return total + (current.shop_price * 1) * current.num
+          return (total * 100 + (current.shop_price * 1) * current.num * 100) / 100
         }, 0)
       },
       allChecked() {
