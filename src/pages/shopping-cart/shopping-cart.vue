@@ -317,9 +317,11 @@
           .del
             width: 14px
             height: 15.5px
+            line-height: 15.5px
             .del-img
               width: 14px
               height: 15.5px
+              line-height: 15.5px
         .bot
           width: 100%
           layout(row)
