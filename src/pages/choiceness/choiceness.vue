@@ -44,19 +44,12 @@
         <div class="dots-item" :class="{'dots-item-active': praiseIndex === idx}" v-for="(item,idx) in plantingList" :key="idx" v-if="plantingList.length > 1"></div>
       </div>
     </div>
-    <div class="select-scroll">
-      <scroll-tab
-        ref="scrollTab"
-        @changeTab="toTap"
-        :infoBorderWidth="68"
-        :tabList="tabList"
-        :showLine="true"
-        :autoWidth="true"
-        activeStyle=";color:#73C200;font-size:32rpx;font-family: PingFangSC-Medium"
-        lineStyle="border-bottom-color: #ff3f54;height:2px"
-        boxStyle="color: #c2c2c; height: 44px; line-height: 44px;font-size:28rpx;font-family: PingFangSC-Medium;padding: 0 13.75px"
-      ></scroll-tab>
-    </div>
+    <scroll-view class="scroll-view2" v-if="tabList1.length" id="scrollView" :scroll-into-view="viewToItem" scroll-x scroll-with-animation>
+      <div class="under-line" :style="{left: move + 'px', width: arrWidth[tabIndex] + 'px' }"></div>
+      <div v-for="(item, index) in tabList1" :class="tabIndex === index ? 'item-active'  : ''" :key="index" class="item" :id="'item'+index" @click="_changeTab(index, item.id, $event)">
+        {{item.name}}
+      </div>
+    </scroll-view>
     <div class="goods-box">
       <div class="goods-list" v-for="(item, index) in goodsList" :key="index" @click="jumpGoodsDetail(item)">
         <div class="goods-left">
@@ -122,6 +115,17 @@
   const PAGE_NAME = 'CHOICENESS'
   export default {
     name: PAGE_NAME,
+    watch: {
+      tabList(news) {
+        this.tabList1 = news
+        setTimeout(() => {
+          this.getWidth('', '', '', false)
+        }, 100)
+      },
+      infoTabIndex(newVal) {
+        this.tabIndex = newVal
+      }
+    },
     data() {
       return {
         praiseIndex: 0,
@@ -132,12 +136,18 @@
         groupInfo: {},
         plantingList: [],
         tabList: [],
+        tabList1: [],
         shelfId: 0,
         goodsList: [],
         goodsMore: false,
         goodsPage: 1,
         title: '赞播优鲜',
-        statusBarHeight: 20
+        statusBarHeight: 20,
+        arrWidth: [],
+        width: 0,
+        move: 0,
+        tabIndex: 0,
+        viewToItem: 'item0'
       }
     },
     created() {
@@ -223,7 +233,11 @@
       getTabList() {
         API.Choiceness.getGoodsTag().then((res) => {
           if (res.error === this.$ERR_OK) {
-            this.tabList = res.data
+            // this.tabList = res.data
+            this.tabList.push(...res.data)
+            this.tabList.push(...res.data)
+            this.tabList.push(...res.data)
+            this.tabList.push(...res.data)
             this.shelfId = res.shelf_id
             this.sheTag_id = res.data[0].id
             this.getGoodsList()
@@ -280,6 +294,32 @@
         wx.navigateTo({
           url: `/pages/goods-detail?id=${item.id}`
         })
+      },
+      getWidth(index, id, e) {
+        this.allWidth = 0
+        let query = wx.createSelectorQuery()
+        query.selectAll('.item').boundingClientRect()
+        query.exec((res) => {
+          this.arrWidth = res[0].map((item, index) => {
+            this.allWidth += item.width
+            return item.width
+          })
+        })
+      },
+      async _changeTab(index, id, e) {
+        console.log(this.tabIndex, index)
+        let number = index * 1 === 0 ? 1 : index
+        if (this.tabIndex > index) {
+          number--
+        } else if (this.tabIndex < index && (index - this.tabIndex) >= 3) {
+          number++
+        } else if (this.tabIndex < index && (index - this.tabIndex) <= 3) {
+          number = index
+        }
+        this.viewToItem = `item${number}`
+        console.log(this.viewToItem)
+        this.tabIndex = index
+        this.move = e.target.offsetLeft
       },
       addShoppingCart(item) {
         API.Choiceness.addShopCart({sku_id: item.shop_sku_id}).then((res) => {
@@ -657,4 +697,50 @@
       color: $color-text-sub
   .txt
     height: 100px
+
+  .scroll-view2
+    display: block
+    margin: 23px auto 10px
+    height: 33px
+    width: 93.6vw
+    background: $color-white
+    box-shadow: 0 1px 8px 0 rgba(55, 75, 99, 0.04)
+    white-space: nowrap
+    box-sizing: border-box
+    transform: translateX(0)
+    position: relative
+    transition: all 0.3s
+    border-bottom: 2px solid $color-main
+    ::-webkit-scrollbar
+      width: 0
+      height: 0
+      color: transparent
+    .item
+      height: 100%
+      line-height: 33px
+      white-space: nowrap
+      padding: 0 7px
+      font-family: $font-family-medium
+      font-size: $font-size-14
+      color: $color-text-main
+      text-align: center
+      display: inline-block
+      position: relative
+      transition: all 0.3s
+      min-width: 70px
+      box-sizing: border-box
+      transform-origin: 50%
+    .item-active
+      color: $color-white
+
+  .under-line
+    position: absolute
+    bootom: 0
+    left: 0
+    width: 30px
+    background: $color-main
+    transition: all 0.3s
+    height: 33px
+    border-radius: 8px 8px 0px 0px
+
 </style>
