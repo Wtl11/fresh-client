@@ -205,8 +205,8 @@
         align-items: center
         .arrow
           display: block
-          width: 6px
-          height: 10px
+          width: 7.5px
+          height: 12.5px
 
   .txtsr
     min-height: 10px

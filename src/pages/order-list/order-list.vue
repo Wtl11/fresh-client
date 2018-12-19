@@ -280,8 +280,8 @@
             font-size: $font-size-12
             color: $color-text-sub
           .arrlow
-            width: 6px
-            height: 10px
+            width: 7.5px
+            height: 12.5px
             margin-left: 6px
             .arr
               display: block

@@ -261,8 +261,8 @@
             padding-right: 10px
           .arrow-img
             display: block
-            width: 6px
-            height: 10px
+            width: 7.5px
+            height: 12.5px
       .location-wrapper
         position: relative
         width: 100%
