@@ -199,7 +199,7 @@
             color: #999999
             line-height: 20px
       .right
-        width: 6px
+        width: 7.5px
         height: 100%
         layout(row)
         align-items: center
