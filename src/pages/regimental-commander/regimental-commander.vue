@@ -71,7 +71,7 @@
         </span>
       </div>
       <div class="reg-goods-box">
-        <navigator hover-class="name" :url="'/pages/goods-detail?id=' + item.id" @click="_checkShop" class="reg-goods-item" v-for="(item,index) in goodsList" :key="index">
+        <div @click="_checkShop" class="reg-goods-item" v-for="(item,index) in goodsList" :key="index">
           <img :src="item.goods_cover_image" class="reg-goods-img" mode="aspectFill">
           <div class="reg-goods-content">
             <div class="reg-goods-title">{{item.name}}</div>
@@ -85,7 +85,7 @@
             </button>
             <p class="scale-count">销量{{item.sale_count}}</p>
           </div>
-        </navigator>
+        </div>
       </div>
       <div class="noting" v-if="isNoGoods">
         <div class="noting-img"><img class="img" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'"></div>
@@ -137,7 +137,6 @@
       for (let key in this.adaptation) {
         this.adaptation[key] += statusBarHeight
       }
-      console.log(statusBarHeight)
       this.$wechat.showLoading()
       await Promise.all([
         this._getLeaderDetail(),

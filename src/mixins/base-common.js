@@ -63,7 +63,6 @@ export default {
     },
     // 手机formId
     $getFormId(e) {
-      console.log(e)
       let formId = e.mp.detail.formId
       API.Form.getFormId({form_ids: [formId]})
     }
