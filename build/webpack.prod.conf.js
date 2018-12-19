@@ -48,6 +48,11 @@ var webpackConfig = merge(baseWebpackConfig, {
         safe: true
       }
     }),
+    // 打包丢失app.wxss, 所以添加这一个配置
+    new ExtractTextPlugin({
+      // filename: utils.assetsPath('css/[name].[contenthash].css')
+      filename: utils.assetsPath('css/app.wxss')
+    }),
     // generate dist index.html with correct asset hash for caching.
     // you can customize output by editing /index.html
     // see https://github.com/ampedandwired/html-webpack-plugin

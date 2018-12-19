@@ -2,7 +2,7 @@
   <div class="regimental-commander">
     <navigation-bar :translucent="true" title="我的小区"></navigation-bar>
     <!--头部信息-->
-    <div class="reg-img-box">
+    <div class="reg-img-box" :style="{'padding-top': adaptation.marginTop + 'px', height: adaptation.height + 'px'}">
       <img class="reg-img" :src="imageUrl + '/yx-image/group/group-bg@2x.png'" v-if="imageUrl">
       <div class="reg-info">
         <img :src="leaderDetail.head_image_url" class="reg-header">
@@ -17,7 +17,7 @@
       </navigator>
     </div>
     <!--收入信息-->
-    <div class="reg-home">
+    <div class="reg-home" :style="{'margin-top': adaptation.hoseMarginTop + 'px'}">
       <img :src="imageUrl + '/yx-image/group/pic-shop@2x.png'" v-if="imageUrl" class="reg-shop-icon">
       <div class="order-item">
         <div class="reg-order-title">今日收入(元)</div>
@@ -71,7 +71,7 @@
         </span>
       </div>
       <div class="reg-goods-box">
-        <div class="reg-goods-item" v-for="(item,index) in goodsList" :key="index">
+        <navigator hover-class="name" :url="'/pages/goods-detail?id=' + item.id" @click="_checkShop" class="reg-goods-item" v-for="(item,index) in goodsList" :key="index">
           <img :src="item.goods_cover_image" class="reg-goods-img" mode="aspectFill">
           <div class="reg-goods-content">
             <div class="reg-goods-title">{{item.name}}</div>
@@ -85,10 +85,14 @@
             </button>
             <p class="scale-count">销量{{item.sale_count}}</p>
           </div>
-        </div>
+        </navigator>
+      </div>
+      <div class="noting" v-if="isNoGoods">
+        <div class="noting-img"><img class="img" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'"></div>
+        <div class="txt">空空如也</div>
       </div>
     </div>
-    <div class="end">— 到底了—</div>
+    <div class="end" v-if="!isNoGoods">— 到底了—</div>
   </div>
 </template>
 
@@ -107,13 +111,14 @@
         isLoading: true,
         leaderDetail: {},
         orderTotal: {},
-        goodsList: []
+        goodsList: [],
+        adaptation: {height: 195, marginTop: 64.5, hoseMarginTop: 164},
+        isNoGoods: false
       }
     },
     onShareAppMessage(res) {
       let goodsItem = res.target.dataset.goodsitem
       let shopId = wx.getStorageSync('shopId')
-      console.log(shopId)
       return {
         title: goodsItem.name,
         path: `/pages/goods-detail?id=${goodsItem.id}&shopId=${shopId}`, // 商品详情
@@ -127,6 +132,12 @@
       }
     },
     async onLoad() {
+      let res = this.$wx.getSystemInfoSync()
+      let statusBarHeight = res.statusBarHeight - 20 || 0
+      for (let key in this.adaptation) {
+        this.adaptation[key] += statusBarHeight
+      }
+      console.log(statusBarHeight)
       this.$wechat.showLoading()
       await Promise.all([
         this._getLeaderDetail(),
@@ -154,6 +165,9 @@
         this.$wechat.showToast('功能正在努力研发中')
       },
       _setNav(index, item) {
+        if (index === 0) {
+          return
+        }
         this._inDevelopment()
       },
       async _getLeaderDetail() {
@@ -176,9 +190,14 @@
         let res = await API.Leader.recommendGoods()
         if (res.error !== this.$ERR_OK) {
           this.$wechat.showToast(res.message)
+          this.isNoGoods = true
           return
         }
         this.goodsList = res.data
+        this.isNoGoods = !this.goodsList.length
+      },
+      _checkShop() {
+        wx.setStorageSync('shopId', this.detail.shop_id)
       }
     },
     components: {
@@ -210,7 +229,7 @@
     top: 0
     left: 0
     display: flex
-    padding: 0 12.5px
+    padding: 64.5px 12.5px 0
     box-sizing: border-box
     justify-content: space-between
     .reg-img
@@ -224,7 +243,6 @@
       position: relative
       z-index: 1
       display: flex
-      margin-top: 64.5px
       .reg-header
         border-radius: 50%
         background: $color-background
@@ -258,7 +276,7 @@
       width: 64.5px
       line-height: 1
       color: $color-white
-      margin-top: 84.5px
+      margin-top: 16px
       justify-content: space-between
       display: flex
       height: 14px
@@ -277,7 +295,7 @@
     height: 29.3vw
     width: 93.6vw
     background: $color-white
-    margin: 43.73vw auto 0
+    margin: 164px auto 0
     box-shadow: 0 3px 10px 0 rgba(17, 17, 17, 0.06)
     border-radius: 10px
     position: relative
@@ -352,7 +370,7 @@
       margin: 0 auto
       display: flex
       overflow: hidden
-      margin-bottom: 11.5px
+      margin-bottom: 20px
       .rag-goods-tab-item
         box-sizing: border-box
         width: 88px
@@ -459,4 +477,20 @@
     font-family: $font-family-regular
     font-size: $font-size-13
     color: $color-text-assist
+
+  .noting
+    text-align: center
+    padding: 40px 0
+    .noting-img
+      width: 116px
+      height: 110px
+      margin: 0 auto 15px
+      .img
+        display: block
+        width: 100%
+        height: 100%
+    .txt
+      font-family: $font-family-regular
+      font-size: $font-size-14
+      color: $color-text-sub
 </style>

@@ -312,12 +312,13 @@
             right: 10px
             font-size: $font-size-13
             font-family: $font-family-regular
-            padding: 0 8px
+            padding: 0 10px
             white-space: nowrap
             height: 30px
             text-align: center
             line-height: 30px
             color: $color-main
+            box-sizing: border-box
           .get-code-disable
             background: #F8FAF7
             color: #B7B7B7
