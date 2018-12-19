@@ -80,21 +80,19 @@
             this.code = res.code
           })
       },
-      goPay() {
-        console.log(this.mobile)
+      async goPay() {
         let orderInfo = {
           goods: this.goodsList,
           nickname: this.userInfo.nickname,
           mobile: this.mobile
         }
-        this.submitOrder({
+        await this.submitOrder({
           orderInfo,
-          success: this._paySuccess
+          complete: this._payComplete
         })
       },
-      _paySuccess(res) {
-        console.log(this.orderId)
-        wx.redirectTo({url: `/pages/order-detail?id=${this.orderId}`})
+      _payComplete(id) {
+        wx.redirectTo({url: `/pages/order-detail?id=${id}&&type=0`})
       },
       _setMobile() {
         this.$wechat.getStorage('userInfo')

@@ -12,7 +12,7 @@
         </div>
         <div class="center">
           <div class="goods-item">
-            <div class="goods-info">
+            <div class="goods-info-box">
               <img class="goods-img" mode="aspectFill" :src="item.image_url" alt="">
               <div class="goods-info">
                 <div class="tit">{{item.goods_name}}</div>
@@ -190,7 +190,7 @@
           justify-content: space-between
           align-items: center
           border-bottom-1px($color-line)
-          .goods-info
+          .goods-info-box
             layout(row)
             align-items: center
           .goods-img
@@ -204,7 +204,6 @@
               height: 100%
               display: block
           .goods-info
-            width: 53.34vw
             padding-left: 2.67vw
             .tit
               font-family: $font-family-medium

@@ -110,36 +110,33 @@
         }
         res.data.forEach((item) => {
           let usableStock = item.usable_stock * 1
-          item.checked = false
+          item.checked = true
           item.num = item.num <= usableStock ? item.num : usableStock
         })
         this.goodsList = res.data
         this.deliverAt = res.shelf_delivery_at
       },
       addNum(i, num, limit, id) {
-        if (num >= limit) {
-          // this.$wechat.showToast('已达最大购买数量!')
-          return
-        }
         num++
-        this.editGoodsNum(id, num)
-        this.goodsList[i].num = num
+        this.editGoodsNum(i, id, num)
       },
       subNum(i, num, id) {
         if (num > 1) {
           num--
           this.goodsList[i].num = num
-          this.editGoodsNum(id, num)
+          this.editGoodsNum(i, id, num)
         } else {
           this.delGoodsInfo(i, id)
         }
       },
       // 商品数量
-      async editGoodsNum(id, num) {
+      async editGoodsNum(i, id, num) {
         let res = await API.Cart.editCartGoodsNum(id, num)
         if (res.error !== this.$ERR_OK) {
           this.$wechat.showToast(res.message)
+          return
         }
+        this.goodsList[i].num = num
         this.setCartCount()
       },
       // 点击删除按钮
@@ -303,8 +300,7 @@
         .top
           layout(row)
           justify-content: space-between
-          align-items: center/
-
+          align-items: center
           width: 100%
           height: 16px
           padding-bottom: 5px

@@ -17,6 +17,9 @@ export const getters = {
   },
   deliverAt(state) {
     return state.deliverAt
+  },
+  orderId(state) {
+    return state.orderId
   }
 }
 
@@ -45,7 +48,7 @@ export const actions = {
           paySign,
           success,
           error,
-          complete
+          complete: complete(this.orderId)
         })
       })
   }
