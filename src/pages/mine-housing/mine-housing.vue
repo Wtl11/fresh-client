@@ -80,10 +80,10 @@
           success: (res) => {
             wx.saveImageToPhotosAlbum({
               filePath: res.tempFilePath,
-              success: (res) => {
+              success: () => {
                 this.$wechat.showToast('保存成功')
               },
-              fail: (error) => {
+              fail: () => {
                 // 拒绝授权重新调起授权
                 setTimeout(() => {
                   wx.openSetting()
