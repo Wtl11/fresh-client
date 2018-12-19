@@ -5,8 +5,10 @@
       <img :src="imageUrl + '/yx-image/group/pic-banner4@2x.png'" v-if="imageUrl" class="hose-img">
     </div>
     <div class="hose-tab">
-      <div :class="{'hose-tab-item-active': navIdx === index}" class="hose-tab-item" v-for="(item, index) in nav" :key="index" @click="_setNav(index, $event)">{{item}}</div>
-      <div class="line" :style="{'left': navLeft + 'px'}"></div>
+      <div class="hose-box">
+        <div :class="{'hose-tab-item-active': navIdx === index}" class="hose-tab-item" v-for="(item, index) in nav" :key="index" @click="_setNav(index, $event)">{{item}}</div>
+        <div class="line" :style="{'left': navLeft + 'px'}"></div>
+      </div>
     </div>
     <div class="big-box">
       <div class="hose-content" :style="{'transform': ' translateX('+ -(navIdx * width) +'px)'}">
@@ -54,7 +56,7 @@
       return {
         nav: NAV,
         navIdx: 0,
-        navLeft: 97.5,
+        navLeft: 50,
         width: 0,
         codeText: '获取验证码',
         phoneNum: '',
@@ -78,12 +80,10 @@
           success: (res) => {
             wx.saveImageToPhotosAlbum({
               filePath: res.tempFilePath,
-              success: (res) => {
+              success: () => {
                 this.$wechat.showToast('保存成功')
-                console.log(res)
               },
-              fail: (error) => {
-                console.log(error)
+              fail: () => {
                 // 拒绝授权重新调起授权
                 setTimeout(() => {
                   wx.openSetting()
@@ -146,17 +146,16 @@
         }
         let res = await API.Leader.loginLeader({mobile: this.phoneNum, auth_code: this.code})
         this.$wechat.hideLoading()
+        this.$wechat.showToast(res.message)
         if (res.error === this.$ERR_OK) {
           wx.setStorageSync('isLeader', true)
           wx.setStorageSync('shopId', res.data.id)
-          this.$wechat.showToast(res.message)
           wx.redirectTo({url: '/pages/regimental-commander'})
         }
-        console.log(res)
       },
       _setNav(index, e) {
         this.navIdx = index
-        this.navLeft = 47.5 + index * NAV_WIDTH + (NAV_WIDTH - 40) / 2
+        this.navLeft = index * NAV_WIDTH + (NAV_WIDTH - 40) / 2
       },
       _getScroll(e) {
         this._setNav(e.target.current)
@@ -189,12 +188,15 @@
       height: 100%
 
   .hose-tab
-    padding: 0 47.5px
     display: flex
     width: 100vw
     box-sizing: border-box
     position: relative
     box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.04)
+    justify-content: center
+    .hose-box
+      position: relative
+      display: flex
     .hose-tab-item
       height: 50px
       font-size: 15px
@@ -209,7 +211,7 @@
       transition: all 0.3s
       position: absolute
       bottom: 0
-      left: 98px
+      left: 0
       width: 40px
       height: 3px
       border-radius: 22.5px
@@ -312,12 +314,13 @@
             right: 10px
             font-size: $font-size-13
             font-family: $font-family-regular
-            padding: 0 8px
+            padding: 0 10px
             white-space: nowrap
             height: 30px
             text-align: center
             line-height: 30px
             color: $color-main
+            box-sizing: border-box
           .get-code-disable
             background: #F8FAF7
             color: #B7B7B7

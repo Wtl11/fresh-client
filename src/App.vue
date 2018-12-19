@@ -3,15 +3,10 @@
 
   export default {
     created() {
-      // 调用API从本地缓存中获取数据
-      // const logs = wx.getStorageSync('logs') || []
-      // logs.unshift(Date.now())
-      // wx.setStorageSync('logs', logs)
-      //
-      // console.log('app created and cache logs by setStorageSync')
     },
     onShow(options) {
-      let shopId = options.query.shopId || wx.getStorageSync('shopId')
+      let storyShopId = wx.getStorageSync('shopId') || 1
+      let shopId = options.query.shopId || storyShopId
       wx.setStorageSync('shopId', shopId)
       let token = wx.getStorageSync('token')
       if (!token) {
@@ -19,9 +14,7 @@
         for (let key in options.query) {
           // 获取页面请求参数
           query += `${key}=${options.query[key]}`
-          console.log(query)
         }
-        console.log(options.path)
         if (options.path !== 'pages/lost' && options.path !== 'pages/error' && options.path !== 'pages/login') {
           wx.setStorageSync('targetPage', `${options.path}${query ? '?' : ''}${query}`)
         }

@@ -7,19 +7,19 @@
         <img :src="imageUrl + '/yx-image/group/icon_waiting@2x.png'" v-if="imageUrl" class="order-status-icon">
         <p class="order-status-text">{{orderDetail.status_text}}</p>
       </div>
-      <p class="order-num">提货单号: {{orderDetail.code || 0}}</p>
+      <p class="order-num">提货单号: {{orderDetail.code}}</p>
     </div>
     <div class="group">
       <div class="group-address-box">
-        <div class="group-address">提货地址：{{orderDetail.address.delivery_address}}</div>
+        <div class="group-address">提货地址：{{orderDetail.address.shop_address}}</div>
         <div class="customer-msg">
           <p class="group-tip">团长</p>
-          <p class="group-name">{{orderDetail.address.shop_manager_name}}</p>
-          <p class="group-phone">{{orderDetail.address.shop_manager_mobile}}</p>
+          <p class="group-name">{{orderDetail.address.shop_name}}</p>
+          <p class="group-phone">{{orderDetail.address.shop_mobile}}</p>
         </div>
       </div>
       <div class="customer">
-        <p class="customer-phone">提货人: {{orderDetail.address.customer_mobile}}</p>
+        <p class="customer-phone">提货人: {{orderDetail.address.mobile}}</p>
         <img :src="imageUrl + '/yx-image/group/icon-phone-green@2x.png'" v-if="imageUrl" class="phone-icon" @click="_callPhone(orderDetail.address.customer_mobile)">
       </div>
     </div>
@@ -27,7 +27,7 @@
     <div class="goods">
       <div class="goods-item" v-for="(item, index) in orderDetail.goods" :key="index">
         <div class="goods-detail">
-          <img :src="item.goods_image_url" class="goods-img" mode="aspectFill">
+          <img :src="item.image_url" class="goods-img" mode="aspectFill">
           <div class="goods-content">
             <div class="goods-title">{{item.goods_name}}</div>
             <div class="goods-sku">规格：{{item.goods_units}}</div>
@@ -36,7 +36,7 @@
           <div class="goods-num-box">x<span class="goods-num">{{item.num}}</span></div>
         </div>
         <div class="btn-box" v-if="!item.delivery_status">
-          <div class="goods-btn" @click="_showDialog('', item.order_detail_id)">确认收货</div>
+          <div class="goods-btn" @click="_showDialog('', item.order_detail_id)">确认提货</div>
         </div>
       </div>
     </div>
@@ -83,20 +83,6 @@
         ids: []
       }
     },
-    // onShareAppMessage(res) {
-    //   let shopId = wx.getStorageSync('shopId')
-    //   console.log(shopId)
-    //   return {
-    //     title: `亲爱的“${this.orderDetail.address.customer_name}”，您刚刚下了一个单，记得及时来提货...`,
-    //     path: `/pages/goods-detail?id=${this.orderDetail.goods[0].good_id}&shopId=${shopId}`, // 商品详情
-    //     success: (res) => {
-    //       // 转发成功
-    //     },
-    //     fail: (res) => {
-    //       // 转发失败
-    //     }
-    //   }
-    // },
     async onLoad(option) {
       this.id = option.id || null
       await this._getOrderDetail()
@@ -111,7 +97,6 @@
           return
         }
         this.orderDetail = res.data
-        console.log(res.data)
       },
       _copyOrderSn(text) {
         wx.setClipboardData({
@@ -243,6 +228,7 @@
       .group-name, .group-phone
         margin-left: 5px
         font-family: $font-family-regular
+        line-height: 1.2
       .group-phone
         margin-left: 10px
     .customer

@@ -14,7 +14,7 @@
       </div>
       <div class="regimental-text-box">
         <div class="regimental-name">公告</div>
-        <textarea type="text" :class="{'regimental-text-ios': isIos}" maxlength="20" class="regimental-text" placeholder="请添加注意事项" placeholder-class="text-color" v-model="leaderDetail.notice"></textarea>
+        <textarea type="text" :class="{'regimental-text-ios': isIos}" maxlength="28" class="regimental-text" placeholder="请添加注意事项" placeholder-class="text-color" v-model="leaderDetail.notice"></textarea>
       </div>
     </div>
     <div :class="{'btn-disable': !leaderDetail.notice}" class="btn" @click="_saveLeader">保存</div>

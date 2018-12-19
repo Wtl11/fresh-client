@@ -80,7 +80,6 @@
     watch: {
       tabList(news) {
         this.tabList1 = news
-        console.log(this.tabList1.length)
         setTimeout(() => {
           this.getWidth('', '', '', false)
         }, 100)
