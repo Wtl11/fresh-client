@@ -211,7 +211,7 @@
           justify-content: space-between
           align-items: center
           border-bottom-1px($color-line)
-          .goodsinfo
+          .goods-info
             layout(row)
             align-items: center
           .goods-img

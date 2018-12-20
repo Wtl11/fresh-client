@@ -29,7 +29,7 @@ export const actions = {
     commit('SET_TOTAL', total)
     commit('DELIVER_AT', deliverAt)
   },
-  submitOrder({commit, state}, {orderInfo, success, error, complete}) {
+  submitOrder({commit, state}, {orderInfo, complete}) {
     API.SubmitOrder.submitOrder(orderInfo)
       .then(res => {
         wechat.hideLoading()
@@ -46,15 +46,21 @@ export const actions = {
           })//  API.SubmitOrder.saveMobile
         let payRes = res.data
         const {timestamp, nonceStr, signType, paySign} = payRes
-        this.orderId = res.data.order_id
+        let orderId = res.data.order_id
         wx.requestPayment({
           timeStamp: timestamp,
           nonceStr,
           package: payRes.package,
           signType,
           paySign,
-          success: success(res, this.orderId),
-          error: error(res, this.orderId),
+          success (res) {
+            console.log(orderId)
+            wx.redirectTo({url: `/pages/order-detail?id=${orderId}&&type=0`})
+          },
+          fail (res) {
+            console.log(orderId)
+            wx.redirectTo({url: `/pages/order-detail?id=${orderId}&&type=0`})
+          },
           complete
         })
       })
