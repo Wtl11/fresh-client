@@ -32,7 +32,7 @@
         </div>
       </div>
     </div>
-    <div class="banner-box">
+    <div class="banner-box" v-if="plantingList.length !== 0">
       <swiper class="banner" :current="praiseIndex" autoplay interval="5000" circular @change="_setPraiseIndex">
         <block v-for="(item,index) in plantingList" :key="index">
           <swiper-item class="banner-item">
@@ -153,7 +153,6 @@
     created() {
       let res = wx.getSystemInfoSync()
       this.statusBarHeight = res.statusBarHeight || 20
-      console.log(this.statusBarHeight)
     },
     onShareAppMessage(res) {
       let shopId = wx.getStorageSync('shopId')
@@ -233,16 +232,13 @@
       getTabList() {
         API.Choiceness.getGoodsTag().then((res) => {
           if (res.error === this.$ERR_OK) {
-            // this.tabList = res.data
-            this.tabList.push(...res.data)
-            this.tabList.push(...res.data)
-            this.tabList.push(...res.data)
-            this.tabList.push(...res.data)
+            this.tabList = res.data
             this.shelfId = res.shelf_id
             this.sheTag_id = res.data[0].id
             this.getGoodsList()
           } else {
-            this.$wechat.showToast(res.message)
+            // this.$wechat.showToast(res.message)
+            this.goodsMore = true
           }
         })
       },
@@ -682,7 +678,7 @@
       line-height: 1
   .noting
     text-align: center
-    margin-top: 30px
+    margin-top: 50px
     .notingimg
       width: 116px
       height: 110px

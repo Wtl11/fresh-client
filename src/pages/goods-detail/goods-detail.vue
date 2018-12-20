@@ -48,7 +48,7 @@
       <div class="goods-info-bootom" v-if="userImgList.length > 0">
         <div class="info-bootom-list" v-for="(item, index) in userImgList" :key="index">
           <div class="info-user">
-            <img v-if="imageUrl" :src="item.url ? item.url : imageUrl + '/yx-image/choiceness/default_avatar@2x.png'" class="detail-img"  mode="widthFix">
+            <img v-if="imageUrl" :src="item.head_image_url ? item.head_image_url : imageUrl + '/yx-image/choiceness/default_avatar@2x.png'" class="detail-img"  mode="widthFix">
           </div>
           <div class="info-name">{{item.name}}</div>
         </div>
@@ -406,7 +406,10 @@
   .share-goods
     padding: 32.8vw 5.3vw 17vw
     box-sizing: border-box
-    position: relative
+    position: fixed
+    width: 100vw
+    height: 100vh
+    right: -100%
     .share-bg
       position: absolute
       left: 0
@@ -487,6 +490,7 @@
     background: $color-background
     padding-bottom: 55px
     box-sizing: border-box
+    overflow-x: hidden
   .banner-box
     width: 100vw
     height: 100vw
