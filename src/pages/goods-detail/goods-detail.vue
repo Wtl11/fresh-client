@@ -48,7 +48,7 @@
       <div class="goods-info-bootom" v-if="userImgList.length > 0">
         <div class="info-bootom-list" v-for="(item, index) in userImgList" :key="index">
           <div class="info-user">
-            <img v-if="imageUrl" :src="item.url ? item.url : imageUrl + '/yx-image/choiceness/default_avatar@2x.png'" class="detail-img"  mode="widthFix">
+            <img v-if="imageUrl" :src="item.head_image_url ? item.head_image_url : imageUrl + '/yx-image/choiceness/default_avatar@2x.png'" class="detail-img"  mode="widthFix">
           </div>
           <div class="info-name">{{item.name}}</div>
         </div>
@@ -71,8 +71,12 @@
           <div class="hlep-bottom">{{item.text}}</div>
         </div>
       </div>
-      <div v-if="goodsMsg.usable_stock * 1 !== 0" class="goods-btn" @click="addShoppingCart">加入购物车</div>
-      <div v-if="goodsMsg.usable_stock * 1 !== 0" class="goods-btn goods-btn-active" @click="instantlyBuy">立即购买</div>
+      <form action="" report-submit @submit="$getFormId">
+        <button v-if="goodsMsg.usable_stock * 1 !== 0" class="goods-btn"  open-type="getUserInfo"  formType="submit" @click="addShoppingCart">加入购物车</button>
+      </form>
+      <form action="" report-submit @submit="$getFormId">
+        <button v-if="goodsMsg.usable_stock * 1 !== 0" class="goods-btn goods-btn-active"open-type="getUserInfo"  formType="submit"  @click="instantlyBuy">立即购买</button>
+      </form>
       <div v-if="goodsMsg.usable_stock * 1 === 0" class="goods-btn goods-btn-assint">已抢完</div>
     </div>
     <add-number ref="addNumber" :msgDetail="goodsMsg" @comfirmNumer="comfirmNumer"></add-number>
@@ -135,7 +139,6 @@
     },
     onShareAppMessage() {
       let shopId = wx.getStorageSync('shopId')
-      console.log(`/pages/goods-detail?id=${this.goodsMsg.id}&shopId=${shopId}`)
       return {
         title: this.goodsMsg.name,
         path: `/pages/goods-detail?id=${this.goodsMsg.id}&shopId=${shopId}`, // 商品详情
@@ -150,11 +153,12 @@
     },
     onLoad(e) {
       this.goodsId = e.id
+    },
+    onShow() {
       this.getGoodsDetailData()
       this._groupInfo()
       this.getUserImgList()
-      console.log(this.shareImg)
-      // this.getQrCode()
+      this.getQrCode()
     },
     methods: {
       ...orderMethods,
@@ -339,8 +343,10 @@
           total: goodsList.shop_price * number,
           deliverAt: this.deliverAt
         }
+        console.log(goodsList)
+        console.log(orderInfo)
         this.setOrderInfo(orderInfo)
-        wx.redirectTo({url: `/pages/submit-order`})
+        wx.navigateTo({url: `/pages/submit-order`})
       },
       _kanTimePlay() {
         clearInterval(this.timer)
@@ -387,7 +393,6 @@
           if (res.error === this.$ERR_OK) {
             this.shareImg = res.data.image_url
           } else {
-            this.$wechat.showToast(res.message)
           }
         })
       }
@@ -406,7 +411,10 @@
   .share-goods
     padding: 32.8vw 5.3vw 17vw
     box-sizing: border-box
-    position: relative
+    position: fixed
+    width: 100vw
+    height: 100vh
+    right: -100%
     .share-bg
       position: absolute
       left: 0
@@ -428,12 +436,12 @@
         border-top-left-radius: 10px
         border-top-right-radius: 10px
     .share-bottom
-      padding: 10px 15px 30px
+      padding: 15px 15px 30px
       position: relative
     .wem-img
       position: absolute
       right: 15px
-      bottom: 30px
+      bottom: 15px
       width: 90px
       height: 90px
       display: block
@@ -441,12 +449,12 @@
       font-size: $font-size-16
       color: #1f1f1f
       font-family: $font-family-medium
-      margin-bottom: 8px
+      margin-bottom: 5px
     .share-sub-title
       font-size: $font-size-14
       color: $color-text-sub
       font-family: $font-family-regular
-      margin-bottom: 5px
+      margin-bottom: 16px
     .share-group-box
       font-size: $font-size-14
       color: $color-money
@@ -455,6 +463,7 @@
       height: 20px
       text-align: center
       line-height: 20px
+      margin-bottom: -5px
     .price-box
       layout(row)
       align-items: flex-end
@@ -487,6 +496,7 @@
     background: $color-background
     padding-bottom: 55px
     box-sizing: border-box
+    overflow-x: hidden
   .banner-box
     width: 100vw
     height: 100vw
@@ -710,6 +720,7 @@
       font-size: $font-size-13
       color: $color-text-sub
       font-family: $font-family-regular
+      line-height: 19.5px
       margin-bottom: 1px
   .fixed-btn
     position: fixed
@@ -752,6 +763,8 @@
       font-family: $font-family-regular
       color: $color-text-main
       background: $color-tag
+      &:after
+        border: none
     .goods-btn-active
       color: #fff
       background: $color-main

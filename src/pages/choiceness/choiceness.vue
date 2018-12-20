@@ -32,7 +32,7 @@
         </div>
       </div>
     </div>
-    <div class="banner-box">
+    <div class="banner-box" v-if="plantingList.length !== 0">
       <swiper class="banner" :current="praiseIndex" autoplay interval="5000" circular @change="_setPraiseIndex">
         <block v-for="(item,index) in plantingList" :key="index">
           <swiper-item class="banner-item">
@@ -79,13 +79,20 @@
                 <div class="lineation">{{item.original_price}}元</div>
               </div>
             </div>
-            <div class="add-box-right">
-              <div class="add-goods-btn" @click.stop="addShoppingCart(item)">
-                <div class="add-icon">
-                  <div class="add1"></div>
-                  <div class="add2"></div>
+            <form action="" report-submit @submit="$getFormId" @click.stop="addShoppingCart(item)">
+              <button class="add-box-right" v-if="item.usable_stock * 1 > 0"  open-type="getUserInfo"  formType="submit">
+                <div class="add-goods-btn">
+                  <div class="add-icon">
+                    <div class="add1"></div>
+                    <div class="add2"></div>
+                  </div>
+                  <div class="add-text">购物车</div>
                 </div>
-                <div class="add-text">购物车</div>
+              </button>
+            </form>
+            <div class="add-box-right" v-if="item.usable_stock * 1 <= 0" @click.stop>
+              <div class="add-goods-btn add-goods-btn-active">
+                <div class="add-text">已抢完</div>
               </div>
             </div>
           </div>
@@ -147,29 +154,31 @@
         width: 0,
         move: 0,
         tabIndex: 0,
-        viewToItem: 'item0'
+        viewToItem: 'item0',
+        curShopId: 1
       }
     },
-    created() {
-      let res = wx.getSystemInfoSync()
-      this.statusBarHeight = res.statusBarHeight || 20
-      console.log(this.statusBarHeight)
-    },
-    onShareAppMessage(res) {
-      let shopId = wx.getStorageSync('shopId')
-      return {
-        path: `/pages/choiceness?shopId=${shopId}`, // 商品详情
-        success: (res) => {
-        },
-        fail: (res) => {
-        }
-      }
-    },
-    async onShow() {
+    async onLoad() {
+      let syncRes = wx.getSystemInfoSync()
+      this.statusBarHeight = syncRes.statusBarHeight || 20
+      this.curShopId = wx.getStorageSync('shopId')
       this.getPlantList()
       this.getTabList()
       this.setCartCount()
-      await this._groupInfo()
+      await this._groupInfo(true)
+    },
+    async onShow() {
+      let shopId = wx.getStorageSync('shopId')
+      if (this.curShopId * 1 === shopId) {
+        return
+      }
+      this.curShopId = shopId
+      this.tabIndex = 0
+      this.move = 0
+      this.getPlantList()
+      this.getTabList()
+      this.setCartCount()
+      await this._groupInfo(false)
     },
     onPageScroll(scroll) {
       if (scroll.scrollTop >= this.menuTop - 84) {
@@ -183,27 +192,39 @@
     onReachBottom() {
       this.getMoreGoodsList()
     },
+    async onPullDownRefresh() {
+      this.getPlantList()
+      if (this.tabList1.length === 0) {
+        this.tabIndex = 0
+        this.move = 0
+        this.getTabList()
+      } else {
+        this.getGoodsList()
+      }
+      await this._groupInfo(true)
+      wx.stopPullDownRefresh()
+    },
+    onShareAppMessage(res) {
+      return {
+        title: '服务只有更好，没有最好；满意只有起点，没有终点。',
+        path: `/pages/choiceness?shopId=${this.curShopId}`,
+        imageUrl: this.imageUrl + '/yx-image/choiceness/pic-friand_share@2x.png',
+        success: (res) => {
+        },
+        fail: (res) => {
+        }
+      }
+    },
     methods: {
       ...cartMethods,
       _setPraiseIndex(e) {
         this.praiseIndex = e.target.current
       },
-      selectIndex(index) {
-        this.tabIdx = index
-      },
-      initClientRect() {
-        let that = this
-        let query = wx.createSelectorQuery()
-        query.select('#selTab').boundingClientRect()
-        query.exec(function (res) {
-          that.menuTop = res[0].top
-        })
-      },
       linkGroup() {
         this.$refs.groupComponents.showLink()
       },
-      async _groupInfo() {
-        let res = await API.Choiceness.getGroupInfo()
+      async _groupInfo(loading) {
+        let res = await API.Choiceness.getGroupInfo(loading)
         this.$wechat.hideLoading()
         if (res.error !== this.$ERR_OK) {
           this.$wechat.showToast(res.message)
@@ -233,16 +254,17 @@
       getTabList() {
         API.Choiceness.getGoodsTag().then((res) => {
           if (res.error === this.$ERR_OK) {
-            // this.tabList = res.data
-            this.tabList.push(...res.data)
-            this.tabList.push(...res.data)
-            this.tabList.push(...res.data)
-            this.tabList.push(...res.data)
-            this.shelfId = res.shelf_id
-            this.sheTag_id = res.data[0].id
-            this.getGoodsList()
+            if (res.data.length === 0) {
+              this.goodsMore = true
+            } else {
+              this.tabList = res.data
+              this.shelfId = res.shelf_id
+              this.sheTag_id = res.data[0].id
+              this.getGoodsList()
+            }
           } else {
-            this.$wechat.showToast(res.message)
+            // this.$wechat.showToast(res.message)
+            this.goodsMore = true
           }
         })
       },
@@ -260,6 +282,7 @@
             this.goodsList = res.data
             this._isUpList(res)
           } else {
+            this.goodsMore = true
             this.$wechat.showToast(res.message)
           }
         })
@@ -307,7 +330,6 @@
         })
       },
       async _changeTab(index, id, e) {
-        console.log(this.tabIndex, index)
         let number = index * 1 === 0 ? 1 : index
         if (this.tabIndex > index) {
           number--
@@ -317,9 +339,10 @@
           number = index
         }
         this.viewToItem = `item${number}`
-        console.log(this.viewToItem)
         this.tabIndex = index
         this.move = e.target.offsetLeft
+        this.sheTag_id = id
+        this.getGoodsList()
       },
       addShoppingCart(item) {
         API.Choiceness.addShopCart({sku_id: item.shop_sku_id}).then((res) => {
@@ -526,6 +549,7 @@
     .goods-list
       height: 40.5vw
       layout(row)
+      border-bottom-1px(#e6e6e6)
       align-items: center
       .goods-left
         margin-left: 5px
@@ -661,6 +685,8 @@
                 left: 4.5px
                 top: 0
 
+          .add-goods-btn-active
+            background: #b7b7b7
   .foot-ties
     layout(row)
     justify-content: center
@@ -682,7 +708,7 @@
       line-height: 1
   .noting
     text-align: center
-    margin-top: 30px
+    margin-top: 50px
     .notingimg
       width: 116px
       height: 110px
@@ -742,5 +768,7 @@
     transition: all 0.3s
     height: 33px
     border-radius: 8px 8px 0px 0px
-
+  .add-box-right
+    &:after
+      border: none
 </style>

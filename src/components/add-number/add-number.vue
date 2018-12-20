@@ -35,7 +35,9 @@
           <div class="icon">元</div>
         </div>
       </div>
-      <button class="subimit-btn" @click="comfirmNumer">确定</button>
+      <form action="" report-submit @submit="$getFormId">
+        <button class="subimit-btn"  open-type="getUserInfo"  formType="submit"  @click="comfirmNumer">确定</button>
+      </form>
     </div>
   </div>
 </template>

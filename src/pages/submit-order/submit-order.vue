@@ -89,12 +89,14 @@
         this.userInfo.mobile = this.mobile
         this.$wechat.setStorage('userInfo', this.userInfo)
         await this.submitOrder({
-          orderInfo,
-          complete: this._payComplete
+          orderInfo
         })
       },
-      _payComplete(id) {
-        wx.redirectTo({url: `/pages/order-detail?id=${id}&&type=0`})
+      _payback(res, id) {
+        console.log(res)
+        setTimeout(() => {
+          // wx.redirectTo({url: `/pages/order-detail?id=${id}&&type=0`})
+        }, 2000)
       },
       _setMobile() {
         this.$wechat.getStorage('userInfo')
@@ -179,7 +181,9 @@
           text-align: center
           font-family: $font-family-regular
           border-1px($color-main, 2px)
-          padding: 1px 4px 2px
+          width: 30px
+          height: 15px
+          line-height: 15px
           margin-right: 8px
         .icon-number
           font-size: $font-size-15
@@ -267,7 +271,7 @@
           font-family: $font-family-regular
           line-height: 1
           margin-bottom: 7px
-          min-height: $font-size-14
+          min-height: 16px
           no-wrap()
         .sub-title
           font-size: $font-size-14
