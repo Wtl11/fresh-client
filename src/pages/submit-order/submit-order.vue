@@ -96,9 +96,6 @@
       },
       _payback(res, id) {
         console.log(res)
-        setTimeout(() => {
-          // wx.redirectTo({url: `/pages/order-detail?id=${id}&&type=0`})
-        }, 2000)
       },
       _setMobile() {
         this.$wechat.getStorage('userInfo')
