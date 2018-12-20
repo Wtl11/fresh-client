@@ -1,16 +1,13 @@
 <template>
   <div class="wrap">
     <navigation-bar title="我的自提点" :showArrow="true" :translucent="true"></navigation-bar>
-    <div class="self-point-banner">
-      <div class="banner">
-        <img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/bg-ddxq@2x.png'" class="banner-img" alt="">
-      </div>
+    <div class="self-point-banner" :class="statusBarHeight * 1 === 20 ? '' : 'self-point-top'">
       <div class="curren">
         <div class="sub">当前自提点</div>
         <div class="point">
           <!--<img class="icon" v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-address_sy@2x.png'" alt="" >-->
-          <img v-if="imageUrl" :src="imageUrl+'/yx-image/mine/icon-address_sy@2x.png'" alt="" class="icon">
-          <div class="txt">{{groupInfo.province + groupInfo.city + groupInfo.district + groupInfo.address}}</div>
+          <img v-if="imageUrl" mode="aspectFill" :src="imageUrl+'/yx-image/mine/icon-address_sy@2x.png'" alt="" class="icon">
+          <div v-if="groupInfo !== ''" class="txt">{{groupInfo.province + groupInfo.city + groupInfo.district + groupInfo.address}}</div>
         </div>
       </div>
       <div class="selt-point-history"><div class="name">其他自提点</div></div>
@@ -51,9 +48,15 @@
       return {
         currentShopId: '',
         shopList: [],
-        groupInfo: {},
+        statusBarHeight: 20,
+        groupInfo: '',
         changedShop: {}
       }
+    },
+    created() {
+      let res = wx.getSystemInfoSync()
+      this.statusBarHeight = res.statusBarHeight || 20
+      console.log(this.statusBarHeight)
     },
     async onShow() {
       await this._getShopList()
@@ -118,13 +121,13 @@
   .self-point-banner
     box-sizing: border-box
     width: 100vw
-    padding: 64px 0 0
+    padding-top: 17vw
     position: relative
-    height: 170px
+    height: 45.33vw
     background-image: linear-gradient(0deg, #ABE300 0%, #73C200 89%)
     .banner
       width: 100vw
-      height: 45.34vw
+      height: 45.33vw
       position: absolute
       left: 0
       z-index: 3
@@ -155,6 +158,8 @@
           font-size: $font-size-16
           color: $color-white
           line-height: 16px
+  .self-point-top
+    padding-top: 29.6vw
   .selt-point-history
     padding-right: 0px 12px
     width: 100vw
