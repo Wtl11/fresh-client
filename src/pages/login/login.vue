@@ -3,7 +3,7 @@
     <navigation-bar title="登录" :showArrow="false"></navigation-bar>
     <div class="login-img-box">
       <img :src="imageUrl + '/yx-image/login/login.png'" v-if="imageUrl" class="login-img">
-      <form action="" report-submit @submit="getFormId">
+      <form action="" report-submit>
         <button class="login-btn" @getuserinfo="_login" open-type="getUserInfo" formType="submit">
           <img :src="imageUrl + '/yx-image/login/icon-wechat@2x.png'" v-if="imageUrl" class="wx-logo">
           <span class="title">微信授权登录</span>

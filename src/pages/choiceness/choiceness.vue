@@ -79,16 +79,18 @@
                 <div class="lineation">{{item.original_price}}元</div>
               </div>
             </div>
-            <div class="add-box-right" v-if="item.usable_stock > 0">
-              <div class="add-goods-btn" @click.stop="addShoppingCart(item)">
-                <div class="add-icon">
-                  <div class="add1"></div>
-                  <div class="add2"></div>
+            <form action="" report-submit @submit="$getFormId" @click.stop="addShoppingCart(item)">
+              <button class="add-box-right" v-if="item.usable_stock * 1 > 0"  open-type="getUserInfo"  formType="submit">
+                <div class="add-goods-btn">
+                  <div class="add-icon">
+                    <div class="add1"></div>
+                    <div class="add2"></div>
+                  </div>
+                  <div class="add-text">购物车</div>
                 </div>
-                <div class="add-text">购物车</div>
-              </div>
-            </div>
-            <div class="add-box-right" v-else>
+              </button>
+            </form>
+            <div class="add-box-right" v-if="item.usable_stock * 1 <= 0" @click.stop>
               <div class="add-goods-btn add-goods-btn-active">
                 <div class="add-text">已抢完</div>
               </div>
@@ -765,5 +767,7 @@
     transition: all 0.3s
     height: 33px
     border-radius: 8px 8px 0px 0px
-
+  .add-box-right
+    &:after
+      border: none
 </style>

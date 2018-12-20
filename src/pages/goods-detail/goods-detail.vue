@@ -71,8 +71,12 @@
           <div class="hlep-bottom">{{item.text}}</div>
         </div>
       </div>
-      <div v-if="goodsMsg.usable_stock * 1 !== 0" class="goods-btn" @click="addShoppingCart">加入购物车</div>
-      <div v-if="goodsMsg.usable_stock * 1 !== 0" class="goods-btn goods-btn-active" @click="instantlyBuy">立即购买</div>
+      <form action="" report-submit @submit="$getFormId">
+        <button v-if="goodsMsg.usable_stock * 1 !== 0" class="goods-btn"  open-type="getUserInfo"  formType="submit" @click="addShoppingCart">加入购物车</button>
+      </form>
+      <form action="" report-submit @submit="$getFormId">
+        <button v-if="goodsMsg.usable_stock * 1 !== 0" class="goods-btn goods-btn-active"open-type="getUserInfo"  formType="submit"  @click="instantlyBuy">立即购买</button>
+      </form>
       <div v-if="goodsMsg.usable_stock * 1 === 0" class="goods-btn goods-btn-assint">已抢完</div>
     </div>
     <add-number ref="addNumber" :msgDetail="goodsMsg" @comfirmNumer="comfirmNumer"></add-number>
@@ -759,6 +763,8 @@
       font-family: $font-family-regular
       color: $color-text-main
       background: $color-tag
+      &:after
+        border: none
     .goods-btn-active
       color: #fff
       background: $color-main
