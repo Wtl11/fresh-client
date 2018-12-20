@@ -6,6 +6,6 @@ page.$mount()
 
 export default {
   config: {
-    navigationBarTitleText: '外部链接'
+    navigationBarTitleText: ''
   }
 }

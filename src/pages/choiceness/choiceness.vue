@@ -79,13 +79,18 @@
                 <div class="lineation">{{item.original_price}}元</div>
               </div>
             </div>
-            <div class="add-box-right">
+            <div class="add-box-right" v-if="item.usable_stock > 0">
               <div class="add-goods-btn" @click.stop="addShoppingCart(item)">
                 <div class="add-icon">
                   <div class="add1"></div>
                   <div class="add2"></div>
                 </div>
                 <div class="add-text">购物车</div>
+              </div>
+            </div>
+            <div class="add-box-right" v-else>
+              <div class="add-goods-btn add-goods-btn-active">
+                <div class="add-text">已抢完</div>
               </div>
             </div>
           </div>
@@ -147,28 +152,34 @@
         width: 0,
         move: 0,
         tabIndex: 0,
-        viewToItem: 'item0'
-      }
-    },
-    created() {
-      let res = wx.getSystemInfoSync()
-      this.statusBarHeight = res.statusBarHeight || 20
-    },
-    onShareAppMessage(res) {
-      let shopId = wx.getStorageSync('shopId')
-      return {
-        path: `/pages/choiceness?shopId=${shopId}`, // 商品详情
-        success: (res) => {
-        },
-        fail: (res) => {
-        }
+        viewToItem: 'item0',
+        curShopId: 1
       }
     },
     async onLoad() {
+      let syncRes = wx.getSystemInfoSync()
+      this.statusBarHeight = syncRes.statusBarHeight || 20
+      this.curShopId = wx.getStorageSync('shopId')
+      console.log(this.curShopId)
+      console.log(this.statusBarHeight)
       this.getPlantList()
       this.getTabList()
       this.setCartCount()
-      await this._groupInfo()
+      await this._groupInfo(true)
+    },
+    async onShow() {
+      let shopId = wx.getStorageSync('shopId')
+      if (this.curShopId * 1 === shopId) {
+        return
+      }
+      this.curShopId = shopId
+      console.log(this.curShopId)
+      this.tabIndex = 0
+      this.move = 0
+      this.getPlantList()
+      this.getTabList()
+      this.setCartCount()
+      await this._groupInfo(false)
     },
     onPageScroll(scroll) {
       if (scroll.scrollTop >= this.menuTop - 84) {
@@ -182,6 +193,21 @@
     onReachBottom() {
       this.getMoreGoodsList()
     },
+    async onPullDownRefresh() {
+      this.getPlantList()
+      this.getGoodsList()
+      await this._groupInfo(true)
+      wx.stopPullDownRefresh()
+    },
+    onShareAppMessage(res) {
+      return {
+        path: `/pages/choiceness?shopId=${this.curShopId}`, // 商品详情
+        success: (res) => {
+        },
+        fail: (res) => {
+        }
+      }
+    },
     methods: {
       ...cartMethods,
       _setPraiseIndex(e) {
@@ -190,8 +216,8 @@
       linkGroup() {
         this.$refs.groupComponents.showLink()
       },
-      async _groupInfo() {
-        let res = await API.Choiceness.getGroupInfo()
+      async _groupInfo(loading) {
+        let res = await API.Choiceness.getGroupInfo(loading)
         this.$wechat.hideLoading()
         if (res.error !== this.$ERR_OK) {
           this.$wechat.showToast(res.message)
@@ -514,6 +540,7 @@
     .goods-list
       height: 40.5vw
       layout(row)
+      border-bottom-1px(#e6e6e6)
       align-items: center
       .goods-left
         margin-left: 5px
@@ -649,6 +676,8 @@
                 left: 4.5px
                 top: 0
 
+          .add-goods-btn-active
+            background: #b7b7b7
   .foot-ties
     layout(row)
     justify-content: center
