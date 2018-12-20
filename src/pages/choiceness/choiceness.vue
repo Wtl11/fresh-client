@@ -19,7 +19,7 @@
               <div class="name-box">
                 <div class="name-text">{{groupInfo.name}}</div>
                 <div class="address-box">
-                  <div class="address-icon">
+                  <div class="address-icon" v-if="groupInfo.social_name">
                     <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/icon-address_small@2x.png'">
                   </div>
                   <div class="address-text">{{groupInfo.social_name}}</div>
@@ -28,7 +28,7 @@
             </div>
             <div class="right-info" @click="linkGroup">联系团长</div>
           </div>
-          <div class="info-box-bottom">公告：{{groupInfo.notice}}</div>
+          <div class="info-box-bottom" v-if="groupInfo.notice">公告：{{groupInfo.notice}}</div>
         </div>
       </div>
     </div>
@@ -477,9 +477,10 @@
           text-align: left
           width: 100%
           margin-top: 9px
-          max-height: 25px
+          max-height: 32px
           overflow: hidden
           font-size: $font-size-12
+          line-height: $font-size-16
           font-family: $font-family-regular
           color: $color-text-sub
 
