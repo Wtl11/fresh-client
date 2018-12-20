@@ -489,7 +489,7 @@
     .choiceness-bgimg
       height: 35.2vw
   .choiceness-top-x
-    padding-top: 29.6vw
+    padding-top: 25vw
   .banner-box
     margin: 0 3.2vw
     box-sizing: border-box
@@ -583,12 +583,13 @@
         justify-content: space-between
         min-height: 32vw
         .title
+          padding-top: 3px
           font-size: $font-size-16
           font-family: $font-family-medium
           color: $color-text-main
           line-height: 1
           min-height: $font-size-18
-          margin-bottom: 6px
+          margin-bottom: 4px
           no-wrap()
         .text-sub
           font-size: $font-size-14
@@ -596,7 +597,7 @@
           color: $color-text-sub
           line-height: 1
           min-height: $font-size-16
-          margin-bottom: 7px
+          margin-bottom: 5px
           no-wrap()
           padding-right: 10px
           box-sizing: border-box
@@ -624,7 +625,7 @@
               color: $color-money
               height: 13px
               line-height: 13px
-              margin-bottom: 4px
+              margin-bottom: 2px
               border-radius: 10px
               background: rgba(255, 131, 0, 0.10)
               border-1px(#FF8300, 10px)
@@ -763,9 +764,9 @@
     position: absolute
     bootom: 0
     left: 0
-    width: 30px
+    width: 70px
     background: $color-main
-    transition: all 0.3s
+    transition: left 0.3s
     height: 33px
     border-radius: 8px 8px 0px 0px
   .add-box-right
