@@ -31,7 +31,7 @@
           <div class="goods-content">
             <div class="goods-title">{{item.goods_name}}</div>
             <div class="goods-sku">规格：{{item.goods_units}}</div>
-            <div class="goods-money">{{item.price}}</div>
+            <div class="goods-money">{{item.price}}<span class="small">元</span></div>
           </div>
           <div class="goods-num-box">x<span class="goods-num">{{item.num}}</span></div>
         </div>
@@ -285,6 +285,9 @@
             margin-top: 13px
             font-size: $font-size-14
             color: $color-text-main
+            .small
+              font-size: $font-size-11
+              margin-left: 1.5px
           .goods-sku
             height: 14px
             margin-top: 7px

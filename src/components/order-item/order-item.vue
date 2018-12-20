@@ -12,7 +12,7 @@
         <img :src="item.image_url" class="goods-img" mode="aspectFill">
         <div class="goods-content">
           <div class="goods-title">{{item.goods_name}}</div>
-          <div class="goods-money">{{item.price}}</div>
+          <div class="goods-money">{{item.price}}<span class="small">元</span></div>
         </div>
         <div class="goods-num-box">x<span class="goods-num">{{item.num}}</span></div>
       </div>
@@ -21,7 +21,7 @@
         <img :src="good.image_url" class="goods-img" mode="aspectFill">
         <div class="goods-content">
           <div class="goods-title">{{good.goods_name}}</div>
-          <div class="goods-money">{{good.price}}</div>
+          <div class="goods-money">{{good.price}}<span class="small">元</span></div>
         </div>
         <div class="goods-num-box">x<span class="goods-num">{{good.num}}</span></div>
       </div>
@@ -153,6 +153,9 @@
         margin-top: 13px
         font-size: $font-size-14
         color: $color-text-main
+        .small
+          font-size: $font-size-11
+          margin-left: 1.5px
     .goods-num-box
       font-size: $font-size-12
       position: absolute
