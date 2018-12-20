@@ -332,12 +332,19 @@
       async _changeTab(index, id, e) {
         let number = index * 1 === 0 ? 1 : index
         if (this.tabIndex > index) {
-          number--
-        } else if (this.tabIndex < index && (index - this.tabIndex) >= 3) {
-          number++
-        } else if (this.tabIndex < index && (index - this.tabIndex) <= 3) {
-          number = index
+          if (index <= 3) {
+            number = 0
+          } else {
+            number = index
+          }
+        } else if (this.tabIndex < index) {
+          if (index <= 3) {
+            number = 0
+          } else {
+            number = index
+          }
         }
+        console.log(number)
         this.viewToItem = `item${number}`
         this.tabIndex = index
         this.move = e.target.offsetLeft
@@ -379,7 +386,7 @@
 
   .choiceness-top
     position: relative
-    padding-top: 17vw
+    padding-top: 18vw
     margin-bottom: 11px
     .group-info
       padding: 0 3.2vw
@@ -486,10 +493,10 @@
         width: 100%
         height: 100%
         display: block
-    .choiceness-bgimg
+    .choiceness-top-bgimg
       height: 35.2vw
   .choiceness-top-x
-    padding-top: 29.6vw
+    padding-top: 25vw
   .banner-box
     margin: 0 3.2vw
     box-sizing: border-box
@@ -583,12 +590,13 @@
         justify-content: space-between
         min-height: 32vw
         .title
+          padding-top: 3px
           font-size: $font-size-16
           font-family: $font-family-medium
           color: $color-text-main
           line-height: 1
           min-height: $font-size-18
-          margin-bottom: 6px
+          margin-bottom: 4px
           no-wrap()
         .text-sub
           font-size: $font-size-14
@@ -596,7 +604,7 @@
           color: $color-text-sub
           line-height: 1
           min-height: $font-size-16
-          margin-bottom: 7px
+          margin-bottom: 5px
           no-wrap()
           padding-right: 10px
           box-sizing: border-box
@@ -624,7 +632,7 @@
               color: $color-money
               height: 13px
               line-height: 13px
-              margin-bottom: 4px
+              margin-bottom: 2px
               border-radius: 10px
               background: rgba(255, 131, 0, 0.10)
               border-1px(#FF8300, 10px)
@@ -752,7 +760,7 @@
       text-align: center
       display: inline-block
       position: relative
-      transition: all 0.3s
+      /*transition: all 0.3s*/
       min-width: 70px
       box-sizing: border-box
       transform-origin: 50%
@@ -763,9 +771,9 @@
     position: absolute
     bootom: 0
     left: 0
-    width: 30px
+    width: 70px
     background: $color-main
-    transition: all 0.3s
+    /*transition: left 0.3s*/
     height: 33px
     border-radius: 8px 8px 0px 0px
   .add-box-right

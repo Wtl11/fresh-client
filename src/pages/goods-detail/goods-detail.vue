@@ -50,9 +50,9 @@
           <div class="info-user">
             <img v-if="imageUrl" :src="item.head_image_url ? item.head_image_url : imageUrl + '/yx-image/choiceness/default_avatar@2x.png'" class="detail-img"  mode="widthFix">
           </div>
-          <div class="info-name">{{item.name}}</div>
+          <div class="info-name">{{item.nickname}}</div>
         </div>
-        <div class="info-bootom-text">等刚刚购买了此商品</div>
+        <div class="info-bootom-text"><span v-if="userImgList.length >= 3">等</span>刚刚购买了此商品</div>
       </div>
     </div>
     <div class="detail-title">商品详情</div>
@@ -67,6 +67,7 @@
         <div class="hlep-btn-box" v-for="(item, index) in typeBtn" :key="index" @click.stop="switchItem(item)">
           <div class="hlep-top">
             <img v-if="imageUrl" :src="imageUrl + item.url" class="detail-img"  mode="widthFix">
+            <div class="hlep-number" v-if="index * 1 === 2 && count * 1 >= 1">{{count * 1 > 99 ? 99 : count}}</div>
           </div>
           <div class="hlep-bottom">{{item.text}}</div>
         </div>
@@ -107,7 +108,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import { orderMethods, cartMethods } from '@state/helpers'
+  import { orderMethods, cartMethods, cartComputed } from '@state/helpers'
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import AddNumber from '@components/add-number/add-number'
   import LinkGroup from '@components/link-group/link-group'
@@ -134,8 +135,12 @@
         groupInfo: {},
         userImgList: [],
         deliverAt: '',
-        shareImg: ''
+        shareImg: '',
+        shopCrile: 0
       }
+    },
+    computed: {
+      ...cartComputed
     },
     onShareAppMessage() {
       let shopId = wx.getStorageSync('shopId')
@@ -158,6 +163,7 @@
       this.getGoodsDetailData()
       this._groupInfo()
       this.getUserImgList()
+      this.setCartCount()
       this.getQrCode()
     },
     methods: {
@@ -338,13 +344,12 @@
         let goodsList = this.goodsMsg.shop_skus[0]
         goodsList.sku_id = goodsList.id
         goodsList.num = number
+        goodsList.goods_units = this.goodsMsg.goods_units
         let orderInfo = {
           goodsList: new Array(goodsList),
           total: goodsList.shop_price * number,
           deliverAt: this.deliverAt
         }
-        console.log(goodsList)
-        console.log(orderInfo)
         this.setOrderInfo(orderInfo)
         wx.navigateTo({url: `/pages/submit-order`})
       },
@@ -472,11 +477,13 @@
         color: $color-money
         font-family: $font-family-medium
         line-height: 1
+        margin-right: 1px
       .share-price-icon
         font-size: $font-size-17
         color: $color-money
         font-family: $font-family-medium
         line-height: 1
+        margin-right: 1px
         padding-bottom: 2px
       .share-price-line
         font-size: $font-size-17
@@ -571,7 +578,7 @@
         align-items: center
         .left-price
           font-size: 28px
-          font-family: 'PingFang-SC-Bold'
+          font-family: $font-family-medium
           color: #fff
         .left-price-text
           font-size: $font-size-22
@@ -745,10 +752,27 @@
           width: 20px
           height: 20px
           margin-bottom: 8px
+          position: relative
           img
             width: 100%
             height: 100%
             display: block
+          .hlep-number
+            position: absolute
+            top: -5px
+            right: -7px
+            min-width: 14px
+            text-align: center
+            height: 14px
+            line-height: 12px
+            padding: 0 3px
+            box-sizing: border-box
+            font-family: $font-family-medium
+            color: $color-white
+            font-size: $font-size-11
+            border: 1px solid $color-white
+            background: #FF3B39
+            border-radius: 50%
         .hlep-bottom
           font-size: $font-size-10
           font-family: $font-family-regular

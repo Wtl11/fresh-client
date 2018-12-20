@@ -22,6 +22,10 @@ export const orderComputed = {
   ...mapGetters('order', ['goodsList', 'total', 'deliverAt'])
 }
 
+export const cartComputed = {
+  ...mapGetters('cart', ['count'])
+}
+
 export const orderMethods = {
   ...mapActions('order', ['setOrderInfo', 'submitOrder'])
 }
