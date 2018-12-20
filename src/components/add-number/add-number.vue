@@ -71,6 +71,7 @@
       },
       showLink() {
         this.linkShow = true
+        this.orderNum = 1
       },
       addNum() {
         if (this.orderNum > 0) {
@@ -79,6 +80,10 @@
         let number = this.msgDetail.buy_limit - this.msgDetail.buy_count
         if (this.orderNum >= number) {
           this.$wechat.showToast(`该商品限购${this.msgDetail.buy_limit}件`)
+          return
+        }
+        if (this.orderNum >= this.msgDetail.usable_stock) {
+          this.$wechat.showToast(`该商品库存不足`)
           return
         }
         this.orderNum++
