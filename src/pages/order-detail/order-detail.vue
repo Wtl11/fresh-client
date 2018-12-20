@@ -32,7 +32,7 @@
     <div class="order-list">
       <div class="order-item">
         <div class="goods-item" v-for="(item, index) in orderMsg.goods" :key="index">
-          <div class="goodsinfo">
+          <div class="goods-info-box">
             <img class="goods-img" mode="aspectFill" :src="item.image_url" alt="">
             <div class="goods-info">
               <div class="tit">
@@ -416,8 +416,9 @@
     justify-content: space-between
     align-items: center
     border-bottom-1px($color-line)
-    .goodsinfo
+    .goods-info-box
       layout(row)
+      flex: 1
       align-items: center
     .goods-img
       width: 75px
@@ -433,6 +434,7 @@
     .goods-info
       box-sizing: border-box
       padding-left: 2.67vw
+      flex: 1
       .tit
         layout(row)
         align-items: center
