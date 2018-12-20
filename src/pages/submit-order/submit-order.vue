@@ -18,7 +18,9 @@
           <div class="lable">提货人手机号：</div>
           <div class="mobile"><input class="mobile-content" type="text" v-model="mobile"></div>
         </div>
-        <button class="wechat-btn" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber">使用微信手机号</button>
+        <form class="btn-box" report-submit @submit="getFormId">
+          <button class="wechat-btn" formType="submit" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber">使用微信手机号</button>
+        </form>
       </div>
     </div>
     <div class="order-list">
@@ -104,6 +106,9 @@
             this.userInfo = res.data
             this.mobile = this.userInfo.mobile
           })
+      },
+      getFormId(e) {
+        this.$getFormId(e)
       },
       _getShopDetail() {
         API.Mine.getShopDetail()
