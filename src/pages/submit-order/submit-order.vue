@@ -89,16 +89,14 @@
         this.userInfo.mobile = this.mobile
         this.$wechat.setStorage('userInfo', this.userInfo)
         await this.submitOrder({
-          orderInfo,
-          success: this._payback,
-          error: this._payback
+          orderInfo
         })
       },
       _payback(res, id) {
         console.log(res)
         setTimeout(() => {
-          wx.redirectTo({url: `/pages/order-detail?id=${id}&&type=0`})
-        }, 1000)
+          // wx.redirectTo({url: `/pages/order-detail?id=${id}&&type=0`})
+        }, 2000)
       },
       _setMobile() {
         this.$wechat.getStorage('userInfo')
@@ -274,6 +272,7 @@
           line-height: 1
           margin-bottom: 7px
           min-height: $font-size-14
+          line-height: 16px
           no-wrap()
         .sub-title
           font-size: $font-size-14

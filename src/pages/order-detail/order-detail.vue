@@ -436,14 +436,13 @@
       .tit
         layout(row)
         align-items: center
-        height: 15px
+        height: 16px
         justify-content: space-between
         .name
           width: 61.2vw
           font-family: $font-family-medium
           font-size: $font-size-14
           color: $color-sub
-          height: 16px
           line-height: 16px
           letter-spacing: 0.3px
           no-wrap()
