@@ -20,7 +20,14 @@
                 <div class="price"><span class="price-text">{{item.price}}</span>元</div>
               </div>
             </div>
-            <div class="arrlow"><img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="arr"></div>
+            <div class="arr-warp">
+              <div class="all-number">x<span class="number-text">{{item.num}}</span></div>
+              <div class="arrlow"><img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="arr"></div>
+            </div>
+            <!--<div class="arrlow">
+              <div class="goods-num">{{item.num}}</div>
+              <img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="arr">
+            </div>-->
           </div>
         </div>
         <div class="bot">
@@ -199,9 +206,12 @@
           .arrlow
             width: 6px
             height: 10px
+            layout()
+            .goods-num
+              font-size: 12px
             .arr
-              width: 100%
-              height: 100%
+              width: 6px
+              height: 10px
               display: block
           .goods-info
             padding-left: 2.67vw
@@ -259,6 +269,14 @@
             font-family: $font-family-regular
             font-size: $font-size-12
             color: $color-text-sub
+            .number-icon
+              font-family: $font-family-regular
+              font-size: $font-size-12
+              color: $color-text-sub
+            .number-text
+              font-family: $font-family-regular
+              font-size: $font-size-16
+              color: $color-text-sub
           .arrlow
             width: 5.5px
             height: 10.5px

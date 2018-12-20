@@ -16,6 +16,7 @@
       <div class="order-item" v-for="(item, index) in orderNav" :key="index" @click="jumpOrder(item)">
         <div class="icon"><img class="icon-img" v-if="imageUrl" :src="imageUrl+item.icon_url" alt=""></div>
         <div class="txt">{{item.name}}</div>
+        <div class="mark" v-if="(index === 0 || index === 1 || index === 3) && item.count > 0">{{item.count > 99 ? 99 : item.count}}</div>
       </div>
       <div class="arr-order">
         <img class="eor-img" v-if="imageUrl" :src="imageUrl+'/yx-image/cart/mydivision@2x.png'" alt="">
@@ -74,11 +75,11 @@
   import {oauthComputed} from '@state/helpers'
 
   const ORRDER_NAV_LIST = [
-    {icon_url: '/yx-image/cart/icon-payment@2x.png', name: '待付款', id: 0, index: 1},
-    {icon_url: '/yx-image/cart/icon-delivery@2x.png', name: '待提货', id: 1, index: 2},
-    {icon_url: '/yx-image/cart/icon-finish@2x.png', name: '已完成', id: 2, index: 3},
-    {icon_url: '/yx-image/cart/icon-aftersales@2x.png', name: '售后', id: 4},
-    {icon_url: '/yx-image/cart/icon-order@2x.png', name: '全部', id: '', index: 0}
+    {icon_url: '/yx-image/cart/icon-payment@2x.png', name: '待付款', id: 0, index: 1, count: 1},
+    {icon_url: '/yx-image/cart/icon-delivery@2x.png', name: '待提货', id: 1, index: 2, count: 0},
+    {icon_url: '/yx-image/cart/icon-finish@2x.png', name: '已完成', id: 2, index: 3, count: 2},
+    {icon_url: '/yx-image/cart/icon-aftersales@2x.png', name: '售后', id: 4, count: 0},
+    {icon_url: '/yx-image/cart/icon-order@2x.png', name: '全部', id: '', index: 0, count: 0}
   ]
 
   export default {
@@ -107,6 +108,8 @@
     },
     onShow() {
       this._getShopDetail()
+      this._getOrderCount()
+      this._getAfterOrderCount()
     },
     computed: {
       ...oauthComputed
@@ -185,6 +188,35 @@
       },
       toChangeShop() {
         wx.navigateTo({url: '/pages/self-point'})
+      },
+      _getOrderCount() {
+        API.Mine.getOrderCount()
+          .then((res) => {
+            console.log(res)
+            this.$wechat.hideLoading()
+            if (res.error !== this.$ERR_OK) {
+              return
+            }
+            res.data.forEach((item, index) => {
+              if (item.status === 0) {
+                this.orderNav[0].count = item.count
+              }
+              if (item.status === 1) {
+                this.orderNav[1].count = item.count
+              }
+            })
+          })
+      },
+      _getAfterOrderCount() {
+        API.Mine.getAfterOrderCount()
+          .then((res) => {
+            console.log(res)
+            this.$wechat.hideLoading()
+            if (res.error !== this.$ERR_OK) {
+              return
+            }
+            this.orderNav[3].count = res.data.count
+          })
       },
       _getShopDetail() {
         API.Mine.getShopDetail()
@@ -366,6 +398,23 @@
         margin: 0 2.667vw
         padding-top: 6.93vw
         text-align: center
+        position: relative
+        .mark
+          position: absolute
+          right: 3px
+          top: 19px
+          min-width: 14px
+          text-align: center
+          height: 14px
+          line-height: 12px
+          padding: 0 3px
+          box-sizing: border-box
+          font-family: $font-family-medium
+          color: $color-white
+          font-size: $font-size-11
+          border: 1px solid $color-white
+          background: #FF3B39
+          border-radius: 50%
         .icon
           width: 22px
           height: 22px
