@@ -28,7 +28,7 @@
             <div class="right">
               <div class="number-box">
                 <div class="minus" @click.stop="subNum(index, item.num, item.id)">-</div>
-                <div class="num">{{item.num ? item.num : 1}}</div>
+                <div class="num">{{item.num}}</div>
                 <div class="add" @click.stop="addNum(index, item.num, item.buy_limit, item.id)">+</div>
               </div>
             </div>
@@ -84,7 +84,6 @@
     },
     async onShow() {
       await this._getShopCart()
-      this.setCartCount()
     },
     computed: {
       checkedGoods() {
@@ -92,7 +91,9 @@
       },
       totalPrice() {
         return this.checkedGoods.reduce((total, current) => {
-          return (total * 100 + (current.shop_price * 1) * current.num * 100) / 100
+          let money = (total * 1) + (current.shop_price * current.num)
+          money = money.toFixed(2)
+          return money
         }, 0)
       },
       allChecked() {
@@ -116,6 +117,7 @@
         })
         this.goodsList = res.data
         this.deliverAt = res.shelf_delivery_at
+        this.setCartCount()
       },
       addNum(i, num, limit, id) {
         num++
