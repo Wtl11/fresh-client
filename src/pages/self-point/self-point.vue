@@ -139,7 +139,7 @@
     .curren
       position: absolute
       padding: 3.2vw
-      bottom: 30px
+      bottom: 36px
       z-index: 9
       .sub
         font-family: $font-family-regular
@@ -161,6 +161,7 @@
           width: 86vw
           no-wrap()
   .self-point-top
+    height: 48vw
     padding-top: 29.6vw
   .selt-point-history
     padding-right: 0px 12px
