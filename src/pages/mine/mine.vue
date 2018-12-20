@@ -16,7 +16,7 @@
       <div class="order-item" v-for="(item, index) in orderNav" :key="index" @click="jumpOrder(item)">
         <div class="icon"><img class="icon-img" v-if="imageUrl" :src="imageUrl+item.icon_url" alt=""></div>
         <div class="txt">{{item.name}}</div>
-        <div class="mark" v-if="(index === 0 || index === 1 || index === 3) && item.count > 0">{{item.count > 99 ? 99 : item.count}}</div>
+        <div class="mark" v-if="(index === 0 || index === 1) && item.count > 0">{{item.count > 99 ? 99 : item.count}}</div>
       </div>
       <div class="arr-order">
         <img class="eor-img" v-if="imageUrl" :src="imageUrl+'/yx-image/cart/mydivision@2x.png'" alt="">
@@ -109,7 +109,6 @@
     onShow() {
       this._getShopDetail()
       this._getOrderCount()
-      this._getAfterOrderCount()
     },
     computed: {
       ...oauthComputed
@@ -155,7 +154,6 @@
       },
       _cancelQrCodeBox() {
         // this.isShow = false
-        // this.$emit('close')
         let modalAnimation = wx.createAnimation({
           duration: 300,
           timingFunction: 'linear',
@@ -205,17 +203,6 @@
                 this.orderNav[1].count = item.count
               }
             })
-          })
-      },
-      _getAfterOrderCount() {
-        API.Mine.getAfterOrderCount()
-          .then((res) => {
-            console.log(res)
-            this.$wechat.hideLoading()
-            if (res.error !== this.$ERR_OK) {
-              return
-            }
-            this.orderNav[3].count = res.data.count
           })
       },
       _getShopDetail() {
@@ -406,15 +393,15 @@
           position: absolute
           right: 3px
           top: 19px
-          min-width: 14px
+          min-width: 16px
           text-align: center
-          height: 14px
-          line-height: 12px
+          height: 16px
+          line-height: 14px
           padding: 0 3px
           box-sizing: border-box
           font-family: $font-family-medium
           color: $color-white
-          font-size: $font-size-11
+          font-size: $font-size-10
           border: 1px solid $color-white
           background: #FF3B39
           border-radius: 50%
