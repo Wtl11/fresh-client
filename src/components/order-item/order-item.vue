@@ -32,7 +32,7 @@
         <p class="examine-content">{{item.status_describe}}</p>
       </div>
       <div class="order-footer">
-        <div class="time">下单时间：{{item.created_at}}</div>
+        <div class="time">{{item.text || '下单时间'}}：{{item.created_at}}</div>
         <!--item.btn_text格式化功能按钮-->
         <div class="footer-btn" :class="{'footer-btn-disable': item.disable}" @click="_dealOrder(index, item)" v-if="item.isShowBtn">{{item.btn_text}}</div>
       </div>
