@@ -179,7 +179,9 @@
           text-align: center
           font-family: $font-family-regular
           border-1px($color-main, 2px)
-          padding: 1px 4px 2px
+          width: 30px
+          height: 15px
+          line-height: 15px
           margin-right: 8px
         .icon-number
           font-size: $font-size-15
