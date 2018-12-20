@@ -477,9 +477,10 @@
           text-align: left
           width: 100%
           margin-top: 9px
-          max-height: 25px
+          max-height: 32px
           overflow: hidden
           font-size: $font-size-12
+          line-height: $font-size-16
           font-family: $font-family-regular
           color: $color-text-sub
 
