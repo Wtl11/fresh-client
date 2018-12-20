@@ -443,7 +443,7 @@
           font-family: $font-family-medium
           font-size: $font-size-14
           color: $color-sub
-          line-height: 16px
+          min-height: 16px
           letter-spacing: 0.3px
           no-wrap()
         .quantity

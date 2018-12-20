@@ -271,8 +271,7 @@
           font-family: $font-family-regular
           line-height: 1
           margin-bottom: 7px
-          min-height: $font-size-14
-          line-height: 16px
+          min-height: 16px
           no-wrap()
         .sub-title
           font-size: $font-size-14
