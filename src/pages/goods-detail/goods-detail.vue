@@ -142,7 +142,7 @@
       return {
         title: this.goodsMsg.name,
         path: `/pages/goods-detail?id=${this.goodsMsg.id}&shopId=${shopId}`, // 商品详情
-        imageUrl: this.imageUrl + '/yx-image/choiceness/pic-friand_share@2x.png',
+        imageUrl: this.goodsMsg.thumb_image || this.goodsMsg.goods_cover_image,
         success: (res) => {
           // 转发成功
         },

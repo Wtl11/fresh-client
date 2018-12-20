@@ -208,6 +208,7 @@
       return {
         title: '服务只有更好，没有最好；满意只有起点，没有终点。',
         path: `/pages/choiceness?shopId=${this.curShopId}`,
+        imageUrl: this.imageUrl + '/yx-image/choiceness/pic-friand_share@2x.png',
         success: (res) => {
         },
         fail: (res) => {
