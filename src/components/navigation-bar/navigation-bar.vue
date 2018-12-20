@@ -153,12 +153,11 @@
 
     .head-arrow
       position: absolute
-      width: 20px
-      height: 20px
-      left: 5px
-      bottom: 11px
+      width: 50px
+      height: 100%
+      left: 0
+      bottom: 0
       display: flex
-      justify-content: center
       align-items: center
 
       &:after
@@ -169,6 +168,8 @@
         padding: 12px 20px
 
       .head-arrow-img
+        display :block
+        margin-left: 5px
         width: 18px
         height: @width
 

@@ -12,8 +12,8 @@
           <div class="icon" v-if="orderType * 1 === 1"><img v-if="imageUrl" class="icon-img" :src="imageUrl+'/yx-image/cart/icon_refund_xq@2x.png'" alt=""></div>
           <div class="statu-txt">{{orderType * 1 !== 1 ? orderMsg.status_text : saleText}}</div>
         </div>
-        <div class="extract" v-if="orderType * 1 !== 1 && orderMsg.status === 2">提货单号: {{address.code}}</div>
-        <div class="extract" v-if="orderType * 1 !== 1 && orderMsg.status === 1">提货单号: {{address.code}}</div>
+        <div class="extract" v-if="orderType * 1 !== 1 && orderMsg.status === 2">提货单号: {{orderMsg.code}}</div>
+        <div class="extract" v-if="orderType * 1 !== 1 && orderMsg.status === 1">提货单号: {{orderMsg.code}}</div>
       </div>
     </div>
     <div class="addr-info">
@@ -117,6 +117,7 @@
       this._groupInfo()
     },
     onShow() {
+      this.getGoodsDetailData()
     },
     computed: {
       ...oauthComputed
@@ -153,15 +154,25 @@
         this.$refs.groupList.showLink()
       },
       goPay() {
-        let orderInfo = {
-          goods: this.orderMsg.goods,
-          nickname: this.address.nickname,
-          mobile: this.address.mobile
-        }
-        this.submitOrder({
-          orderInfo,
-          success: this._paySuccess
-        })
+        API.SubmitOrder.rePayment(this.orderId)
+          .then(res => {
+            this.$wechat.hideLoading()
+            if (res.error !== this.$ERR_OK) {
+              this.$wechat.showToast(res.message)
+              return
+            }
+            let payRes = res.data
+            const {timestamp, nonceStr, signType, paySign} = payRes
+            this.orderId = res.data.order_id
+            wx.requestPayment({
+              timeStamp: timestamp,
+              nonceStr,
+              package: payRes.package,
+              signType,
+              paySign,
+              success: this._paySuccess
+            })
+          })
       },
       _paySuccess(res) {
         console.log(res)
