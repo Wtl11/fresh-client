@@ -476,11 +476,13 @@
         color: $color-money
         font-family: $font-family-medium
         line-height: 1
+        margin-right: 1px
       .share-price-icon
         font-size: $font-size-17
         color: $color-money
         font-family: $font-family-medium
         line-height: 1
+        margin-right: 1px
         padding-bottom: 2px
       .share-price-line
         font-size: $font-size-17

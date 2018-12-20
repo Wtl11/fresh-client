@@ -379,7 +379,7 @@
 
   .choiceness-top
     position: relative
-    padding-top: 17vw
+    padding-top: 18vw
     margin-bottom: 11px
     .group-info
       padding: 0 3.2vw
@@ -486,7 +486,7 @@
         width: 100%
         height: 100%
         display: block
-    .choiceness-bgimg
+    .choiceness-top-bgimg
       height: 35.2vw
   .choiceness-top-x
     padding-top: 25vw
