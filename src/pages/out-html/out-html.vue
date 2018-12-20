@@ -1,6 +1,6 @@
 <template>
   <div class="out-html">
-    <navigation-bar title="赞播" :showArrow="true"></navigation-bar>
+    <navigation-bar title="" :showArrow="true"></navigation-bar>
     <web-view :src="url"></web-view>
   </div>
 </template>

@@ -4,7 +4,7 @@
     <div class="regimental-header-box">
       <p class="regimental-name">头像</p>
       <img :src="leaderDetail.head_image_url" class="regimental-header">
-      <img :src="imageUrl + '/yx-image/group/icon-pressed@2x.png'" v-if="imageUrl" class="way">
+      <!--<img :src="imageUrl + '/yx-image/group/icon-pressed@2x.png'" v-if="imageUrl" class="way">-->
     </div>
     <div class="line"></div>
     <div class="chang-box">

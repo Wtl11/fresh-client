@@ -7,6 +7,7 @@ page.$mount()
 
 export default {
   config: {
-    navigationBarTitleText: 'CHOICENESS'
+    navigationBarTitleText: 'CHOICENESS',
+    enablePullDownRefresh: true
   }
 }

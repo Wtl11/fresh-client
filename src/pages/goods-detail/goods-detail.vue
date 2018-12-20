@@ -48,7 +48,7 @@
       <div class="goods-info-bootom" v-if="userImgList.length > 0">
         <div class="info-bootom-list" v-for="(item, index) in userImgList" :key="index">
           <div class="info-user">
-            <img v-if="imageUrl" :src="item.url ? item.url : imageUrl + '/yx-image/choiceness/default_avatar@2x.png'" class="detail-img"  mode="widthFix">
+            <img v-if="imageUrl" :src="item.head_image_url ? item.head_image_url : imageUrl + '/yx-image/choiceness/default_avatar@2x.png'" class="detail-img"  mode="widthFix">
           </div>
           <div class="info-name">{{item.name}}</div>
         </div>
@@ -339,8 +339,10 @@
           total: goodsList.shop_price * number,
           deliverAt: this.deliverAt
         }
+        console.log(goodsList)
+        console.log(orderInfo)
         this.setOrderInfo(orderInfo)
-        wx.redirectTo({url: `/pages/submit-order`})
+        // wx.navigateTo({url: `/pages/submit-order`})
       },
       _kanTimePlay() {
         clearInterval(this.timer)
@@ -406,7 +408,10 @@
   .share-goods
     padding: 32.8vw 5.3vw 17vw
     box-sizing: border-box
-    position: relative
+    position: fixed
+    width: 100vw
+    height: 100vh
+    right: -100%
     .share-bg
       position: absolute
       left: 0
@@ -487,6 +492,7 @@
     background: $color-background
     padding-bottom: 55px
     box-sizing: border-box
+    overflow-x: hidden
   .banner-box
     width: 100vw
     height: 100vw
@@ -710,6 +716,7 @@
       font-size: $font-size-13
       color: $color-text-sub
       font-family: $font-family-regular
+      line-height: 19.5px
       margin-bottom: 1px
   .fixed-btn
     position: fixed

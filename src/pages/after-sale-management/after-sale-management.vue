@@ -226,6 +226,7 @@
         arr = arr.map((item) => {
           item.btn_text = item.status_str === '审核中' ? '取消申请' : '已申请'
           item.isShowBtn = item.status_str === '审核中'
+          item.text = '申请时间'
           return item
         })
         return arr
