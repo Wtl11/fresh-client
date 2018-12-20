@@ -8,7 +8,7 @@ export default {
    * @returns {*}
    */
   getFormId(data, loading = false) {
-    const url = `/social-shopping/api/wap/collect-formid`
+    const url = `/api/wap/collect-formid`
     return request.post(url, data, loading)
   }
 }

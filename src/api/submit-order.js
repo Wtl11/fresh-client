@@ -8,7 +8,7 @@ export default {
    * @returns {*}
    */
   submitOrder(data, loading = true) {
-    const url = `/social-shopping/api/wap/create-order`
+    const url = `/api/wap/create-order`
     return request.post(url, data, loading)
   },
   /**
@@ -18,7 +18,7 @@ export default {
    * @returns {*}
    */
   saveMobile(mobile, loading = false) {
-    const url = `/social-shopping/api/wap/customer-save-mobile`
+    const url = `/api/wap/customer-save-mobile`
     return request.post(url, {mobile}, loading)
   },
   /**
@@ -28,7 +28,7 @@ export default {
    * @returns {*}
    */
   rePayment(id, loading = true) {
-    const url = `/social-shopping/api/wap/go-pay/${id}`
+    const url = `/api/wap/go-pay/${id}`
     return request.get(url, loading)
   }
 }

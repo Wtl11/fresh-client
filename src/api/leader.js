@@ -11,7 +11,7 @@ export default {
    * @returns {*}
    */
   loginLeader(data, loading) {
-    const url = `/social-shopping/api/wap/shop-manager-login`
+    const url = `/api/wap/shop-manager-login`
     return request.post(url, data, loading)
   },
   /**
@@ -21,7 +21,7 @@ export default {
    * @returns {*}
    */
   messageBind(data, loading) {
-    const url = `/social-shopping/api/wap/message-bind`
+    const url = `/api/wap/message-bind`
     return request.post(url, data, loading)
   },
   /**
@@ -31,7 +31,7 @@ export default {
    * @returns {*}
    */
   leaderDetail(loading = false) {
-    const url = `/social-shopping/api/wap/shop-manager/shop-manager-detail`
+    const url = `/api/wap/shop-manager/shop-manager-detail`
     return request.get(url, {}, loading)
   },
   /**
@@ -41,7 +41,7 @@ export default {
    * @returns {*}
    */
   saveLeader(data, loading = true) {
-    const url = `/social-shopping/api/wap/shop-manager/shop-manager-update`
+    const url = `/api/wap/shop-manager/shop-manager-update`
     return request.post(url, data, loading)
   },
   /**
@@ -51,7 +51,7 @@ export default {
    * @returns {*}
    */
   recommendGoods(loading = false) {
-    const url = `/social-shopping/api/wap/goods/shop-shelf-hot-goods`
+    const url = `/api/wap/goods/shop-shelf-hot-goods`
     return request.get(url, {}, loading)
   },
   /**
@@ -61,7 +61,7 @@ export default {
    * @returns {*}
    */
   leaderOrderTotal(loading = false) {
-    const url = `/social-shopping/api/wap/shop-manager/shop-manager-statistics`
+    const url = `/api/wap/shop-manager/shop-manager-statistics`
     return request.get(url, {}, loading)
   },
   /**
@@ -71,7 +71,7 @@ export default {
    * @returns {*}
    */
   deliveryList(loading = true) {
-    const url = `/social-shopping/api/wap/shop-manager/store-delivery-list`
+    const url = `/api/wap/shop-manager/store-delivery-list`
     return request.get(url, {}, loading)
   },
   /**
@@ -81,7 +81,7 @@ export default {
    * @returns {*}
    */
   afterManagement(data, loading = true) {
-    const url = `/social-shopping/api/wap/order-details`
+    const url = `/api/wap/order-details`
     return request.get(url, data, loading)
   },
   /**
@@ -91,7 +91,7 @@ export default {
    * @returns {*}
    */
   applicationRecordList(data, loading = true) {
-    const url = `/social-shopping/api/wap/after-sale-orders`
+    const url = `/api/wap/after-sale-orders`
     return request.get(url, data, loading)
   },
   /**
@@ -101,7 +101,7 @@ export default {
    * @returns {*}
    */
   consumerOrder(data, loading = true) {
-    const url = `/social-shopping/api/wap/shop-order`
+    const url = `/api/wap/shop-order`
     return request.get(url, data, loading)
   },
   /**
@@ -111,7 +111,7 @@ export default {
    * @returns {*}
    */
   cancelApply(data, loading = true) {
-    const url = `/social-shopping/api/wap/cancel-apply`
+    const url = `/api/wap/cancel-apply`
     return request.post(url, data, loading)
   },
   /**
@@ -121,7 +121,7 @@ export default {
    * @returns {*}
    */
   applyAfterSale(data, loading = true) {
-    const url = `/social-shopping/api/wap/apply-after-sale`
+    const url = `/api/wap/apply-after-sale`
     return request.post(url, data, loading)
   },
   /**
@@ -131,7 +131,7 @@ export default {
    * @returns {*}
    */
   groupOrder(id, loading = true) {
-    const url = `/social-shopping/api/wap/order/${id}`
+    const url = `/api/wap/order/${id}`
     return request.get(url, {}, loading)
   },
   /**
@@ -141,7 +141,7 @@ export default {
    * @returns {*}
    */
   delivery(data, loading = false) {
-    const url = `/social-shopping/api/wap/delivery`
+    const url = `/api/wap/delivery`
     return request.post(url, data, loading)
   },
   /**
@@ -151,7 +151,7 @@ export default {
    * @returns {*}
    */
   deliveryOrder(data, loading = false) {
-    const url = `/social-shopping/api/wap/delivery-orders`
+    const url = `/api/wap/delivery-orders`
     return request.get(url, data, loading)
   },
   /**
@@ -161,7 +161,7 @@ export default {
    * @returns {*}
    */
   deliveryConfirm(id, loading = false) {
-    const url = `/social-shopping/api/wap/shop-manager/store-delivery-confirm/${id}`
+    const url = `/api/wap/shop-manager/store-delivery-confirm/${id}`
     return request.put(url, {}, loading)
   },
   /**
@@ -171,7 +171,7 @@ export default {
    * @returns {*}
    */
   remindDelivery(data, loading = false) {
-    const url = `/social-shopping/api/wap/remind-delivery`
+    const url = `/api/wap/remind-delivery`
     return request.post(url, data, loading)
   }
 }
