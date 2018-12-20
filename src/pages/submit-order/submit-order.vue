@@ -94,8 +94,11 @@
           error: this._payback
         })
       },
-      _payback(id) {
-        wx.redirectTo({url: `/pages/order-detail?id=${id}&&type=0`})
+      _payback(res, id) {
+        console.log(res)
+        setTimeout(() => {
+          wx.redirectTo({url: `/pages/order-detail?id=${id}&&type=0`})
+        }, 1000)
       },
       _setMobile() {
         this.$wechat.getStorage('userInfo')

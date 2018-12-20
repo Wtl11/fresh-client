@@ -53,8 +53,8 @@ export const actions = {
           package: payRes.package,
           signType,
           paySign,
-          success: success(this.orderId),
-          error: error(this.orderId),
+          success: success(res, this.orderId),
+          error: error(res, this.orderId),
           complete
         })
       })
