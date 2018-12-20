@@ -27,7 +27,8 @@
     },
     data() {
       return {
-        codeMsg: null
+        codeMsg: null,
+        formId: 0
       }
     },
     async onLoad() {
@@ -55,7 +56,11 @@
         }
         wx.setStorageSync('token', res.data.access_token)
         wx.setStorageSync('userInfo', res.data.customer_info)
+        API.Form.getFormId({form_ids: [this.formId]})
         this._goNextPage()
+      },
+      getFormId(e) {
+        this.formId = e.mp.detail.formId
       }
     }
   }
