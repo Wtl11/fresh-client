@@ -247,10 +247,14 @@
       getTabList() {
         API.Choiceness.getGoodsTag().then((res) => {
           if (res.error === this.$ERR_OK) {
-            this.tabList = res.data
-            this.shelfId = res.shelf_id
-            this.sheTag_id = res.data[0].id
-            this.getGoodsList()
+            if (res.data.length === 0) {
+              this.goodsMore = true
+            } else {
+              this.tabList = res.data
+              this.shelfId = res.shelf_id
+              this.sheTag_id = res.data[0].id
+              this.getGoodsList()
+            }
           } else {
             // this.$wechat.showToast(res.message)
             this.goodsMore = true
@@ -271,6 +275,7 @@
             this.goodsList = res.data
             this._isUpList(res)
           } else {
+            this.goodsMore = true
             this.$wechat.showToast(res.message)
           }
         })

@@ -716,6 +716,7 @@
       font-size: $font-size-13
       color: $color-text-sub
       font-family: $font-family-regular
+      line-height: 19.5px
       margin-bottom: 1px
   .fixed-btn
     position: fixed
