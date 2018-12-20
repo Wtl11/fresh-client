@@ -339,8 +339,10 @@
           total: goodsList.shop_price * number,
           deliverAt: this.deliverAt
         }
+        console.log(goodsList)
+        console.log(orderInfo)
         this.setOrderInfo(orderInfo)
-        wx.redirectTo({url: `/pages/submit-order`})
+        // wx.navigateTo({url: `/pages/submit-order`})
       },
       _kanTimePlay() {
         clearInterval(this.timer)

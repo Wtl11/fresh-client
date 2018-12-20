@@ -164,7 +164,7 @@
         }
       }
     },
-    async onShow() {
+    async onLoad() {
       this.getPlantList()
       this.getTabList()
       this.setCartCount()
@@ -186,17 +186,6 @@
       ...cartMethods,
       _setPraiseIndex(e) {
         this.praiseIndex = e.target.current
-      },
-      selectIndex(index) {
-        this.tabIdx = index
-      },
-      initClientRect() {
-        let that = this
-        let query = wx.createSelectorQuery()
-        query.select('#selTab').boundingClientRect()
-        query.exec(function (res) {
-          that.menuTop = res[0].top
-        })
       },
       linkGroup() {
         this.$refs.groupComponents.showLink()
@@ -312,10 +301,13 @@
         } else if (this.tabIndex < index && (index - this.tabIndex) <= 3) {
           number = index
         }
+        console.log(id)
         this.viewToItem = `item${number}`
         console.log(this.viewToItem)
         this.tabIndex = index
         this.move = e.target.offsetLeft
+        this.sheTag_id = id
+        this.getGoodsList()
       },
       addShoppingCart(item) {
         API.Choiceness.addShopCart({sku_id: item.shop_sku_id}).then((res) => {
