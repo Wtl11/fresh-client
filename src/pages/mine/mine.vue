@@ -154,7 +154,6 @@
       },
       _cancelQrCodeBox() {
         // this.isShow = false
-        // this.$emit('close')
         let modalAnimation = wx.createAnimation({
           duration: 300,
           timingFunction: 'linear',
