@@ -332,9 +332,12 @@
       async _changeTab(index, id, e) {
         let number = index * 1 === 0 ? 1 : index
         if (this.tabIndex > index) {
-          number--
+          if (index <= 3) {
+            number = 0
+          } else {
+            number = index
+          }
         } else if (this.tabIndex < index) {
-          console.log(index, 'index')
           if (index <= 3) {
             number = 0
           } else {
@@ -757,7 +760,7 @@
       text-align: center
       display: inline-block
       position: relative
-      transition: all 0.3s
+      /*transition: all 0.3s*/
       min-width: 70px
       box-sizing: border-box
       transform-origin: 50%
@@ -770,7 +773,7 @@
     left: 0
     width: 70px
     background: $color-main
-    transition: left 0.3s
+    /*transition: left 0.3s*/
     height: 33px
     border-radius: 8px 8px 0px 0px
   .add-box-right
