@@ -21,7 +21,7 @@
       NavigationBar
     },
     onLoad(e) {
-      this.url = `${this.$outLink}/banner?url=${e.url}`
+      this.url = e.url
     }
   }
 </script>
