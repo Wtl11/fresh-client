@@ -124,7 +124,7 @@
     background-image: linear-gradient(0deg, #ABE300 0%, #73C200 89%)
     .banner
       width: 100vw
-      height: 170px
+      height: 45.34vw
       position: absolute
       left: 0
       z-index: 3
