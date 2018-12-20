@@ -79,16 +79,18 @@
                 <div class="lineation">{{item.original_price}}元</div>
               </div>
             </div>
-            <div class="add-box-right" v-if="item.usable_stock > 0">
-              <div class="add-goods-btn" @click.stop="addShoppingCart(item)">
-                <div class="add-icon">
-                  <div class="add1"></div>
-                  <div class="add2"></div>
+            <form action="" report-submit @submit="$getFormId" @click.stop="addShoppingCart(item)">
+              <button class="add-box-right" v-if="item.usable_stock * 1 > 0"  open-type="getUserInfo"  formType="submit">
+                <div class="add-goods-btn">
+                  <div class="add-icon">
+                    <div class="add1"></div>
+                    <div class="add2"></div>
+                  </div>
+                  <div class="add-text">购物车</div>
                 </div>
-                <div class="add-text">购物车</div>
-              </div>
-            </div>
-            <div class="add-box-right" v-else>
+              </button>
+            </form>
+            <div class="add-box-right" v-if="item.usable_stock * 1 <= 0" @click.stop>
               <div class="add-goods-btn add-goods-btn-active">
                 <div class="add-text">已抢完</div>
               </div>
@@ -160,8 +162,6 @@
       let syncRes = wx.getSystemInfoSync()
       this.statusBarHeight = syncRes.statusBarHeight || 20
       this.curShopId = wx.getStorageSync('shopId')
-      console.log(this.curShopId)
-      console.log(this.statusBarHeight)
       this.getPlantList()
       this.getTabList()
       this.setCartCount()
@@ -173,7 +173,6 @@
         return
       }
       this.curShopId = shopId
-      console.log(this.curShopId)
       this.tabIndex = 0
       this.move = 0
       this.getPlantList()
@@ -195,13 +194,21 @@
     },
     async onPullDownRefresh() {
       this.getPlantList()
-      this.getGoodsList()
+      if (this.tabList1.length === 0) {
+        this.tabIndex = 0
+        this.move = 0
+        this.getTabList()
+      } else {
+        this.getGoodsList()
+      }
       await this._groupInfo(true)
       wx.stopPullDownRefresh()
     },
     onShareAppMessage(res) {
       return {
-        path: `/pages/choiceness?shopId=${this.curShopId}`, // 商品详情
+        title: '服务只有更好，没有最好；满意只有起点，没有终点。',
+        path: `/pages/choiceness?shopId=${this.curShopId}`,
+        imageUrl: this.imageUrl + '/yx-image/choiceness/pic-friand_share@2x.png',
         success: (res) => {
         },
         fail: (res) => {
@@ -323,7 +330,6 @@
         })
       },
       async _changeTab(index, id, e) {
-        console.log(this.tabIndex, index)
         let number = index * 1 === 0 ? 1 : index
         if (this.tabIndex > index) {
           number--
@@ -332,9 +338,7 @@
         } else if (this.tabIndex < index && (index - this.tabIndex) <= 3) {
           number = index
         }
-        console.log(id)
         this.viewToItem = `item${number}`
-        console.log(this.viewToItem)
         this.tabIndex = index
         this.move = e.target.offsetLeft
         this.sheTag_id = id
@@ -764,5 +768,7 @@
     transition: all 0.3s
     height: 33px
     border-radius: 8px 8px 0px 0px
-
+  .add-box-right
+    &:after
+      border: none
 </style>
