@@ -135,7 +135,6 @@
     },
     onShareAppMessage() {
       let shopId = wx.getStorageSync('shopId')
-      console.log(`/pages/goods-detail?id=${this.goodsMsg.id}&shopId=${shopId}`)
       return {
         title: this.goodsMsg.name,
         path: `/pages/goods-detail?id=${this.goodsMsg.id}&shopId=${shopId}`, // 商品详情
@@ -150,11 +149,12 @@
     },
     onLoad(e) {
       this.goodsId = e.id
+    },
+    onShow() {
       this.getGoodsDetailData()
       this._groupInfo()
       this.getUserImgList()
-      console.log(this.shareImg)
-      // this.getQrCode()
+      this.getQrCode()
     },
     methods: {
       ...orderMethods,
@@ -342,7 +342,7 @@
         console.log(goodsList)
         console.log(orderInfo)
         this.setOrderInfo(orderInfo)
-        // wx.navigateTo({url: `/pages/submit-order`})
+        wx.navigateTo({url: `/pages/submit-order`})
       },
       _kanTimePlay() {
         clearInterval(this.timer)
@@ -389,7 +389,6 @@
           if (res.error === this.$ERR_OK) {
             this.shareImg = res.data.image_url
           } else {
-            this.$wechat.showToast(res.message)
           }
         })
       }
@@ -433,12 +432,12 @@
         border-top-left-radius: 10px
         border-top-right-radius: 10px
     .share-bottom
-      padding: 10px 15px 30px
+      padding: 15px 15px 30px
       position: relative
     .wem-img
       position: absolute
       right: 15px
-      bottom: 30px
+      bottom: 15px
       width: 90px
       height: 90px
       display: block
@@ -446,12 +445,12 @@
       font-size: $font-size-16
       color: #1f1f1f
       font-family: $font-family-medium
-      margin-bottom: 8px
+      margin-bottom: 5px
     .share-sub-title
       font-size: $font-size-14
       color: $color-text-sub
       font-family: $font-family-regular
-      margin-bottom: 5px
+      margin-bottom: 16px
     .share-group-box
       font-size: $font-size-14
       color: $color-money
@@ -460,6 +459,7 @@
       height: 20px
       text-align: center
       line-height: 20px
+      margin-bottom: -5px
     .price-box
       layout(row)
       align-items: flex-end

@@ -160,8 +160,6 @@
       let syncRes = wx.getSystemInfoSync()
       this.statusBarHeight = syncRes.statusBarHeight || 20
       this.curShopId = wx.getStorageSync('shopId')
-      console.log(this.curShopId)
-      console.log(this.statusBarHeight)
       this.getPlantList()
       this.getTabList()
       this.setCartCount()
@@ -173,7 +171,6 @@
         return
       }
       this.curShopId = shopId
-      console.log(this.curShopId)
       this.tabIndex = 0
       this.move = 0
       this.getPlantList()
@@ -195,13 +192,20 @@
     },
     async onPullDownRefresh() {
       this.getPlantList()
-      this.getGoodsList()
+      if (this.tabList1.length === 0) {
+        this.tabIndex = 0
+        this.move = 0
+        this.getTabList()
+      } else {
+        this.getGoodsList()
+      }
       await this._groupInfo(true)
       wx.stopPullDownRefresh()
     },
     onShareAppMessage(res) {
       return {
-        path: `/pages/choiceness?shopId=${this.curShopId}`, // 商品详情
+        title: '服务只有更好，没有最好；满意只有起点，没有终点。',
+        path: `/pages/choiceness?shopId=${this.curShopId}`,
         success: (res) => {
         },
         fail: (res) => {
@@ -323,7 +327,6 @@
         })
       },
       async _changeTab(index, id, e) {
-        console.log(this.tabIndex, index)
         let number = index * 1 === 0 ? 1 : index
         if (this.tabIndex > index) {
           number--
@@ -332,9 +335,7 @@
         } else if (this.tabIndex < index && (index - this.tabIndex) <= 3) {
           number = index
         }
-        console.log(id)
         this.viewToItem = `item${number}`
-        console.log(this.viewToItem)
         this.tabIndex = index
         this.move = e.target.offsetLeft
         this.sheTag_id = id
