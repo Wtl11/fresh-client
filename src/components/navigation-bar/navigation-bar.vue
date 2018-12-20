@@ -2,9 +2,11 @@
   <div>
     <div class="head-item" :style="headStyleData">
       <div class="status-bar" :style="{height: statusBarHeight + 'px'}"></div>
-      <div class="head-content" :style="{color: titleColor}">{{currentTitle}}</div>
-      <div class="head-arrow" v-if="showArrow" @click="goBackUrl">
-        <img v-if="imageUrl" :src="imageUrl + arrowUrl" class="head-arrow-img">
+      <div class="head-content" :style="{color: titleColor}">
+        {{currentTitle}}
+        <div class="head-arrow" v-if="showArrow" @click="goBackUrl">
+          <img v-if="imageUrl" :src="imageUrl + arrowUrl" class="head-arrow-img">
+        </div>
       </div>
     </div>
     <div v-if="!translucent" :style="{height: statusBarHeight + 44 + 'px'}"></div>
@@ -123,9 +125,9 @@
         }
         let pages = getCurrentPages()
         if (+pages.length === 1) {
-          wx.switchTab({ url: DEFAULT_PAGE })
+          wx.switchTab({url: DEFAULT_PAGE})
         } else {
-          wx.navigateBack({ delta: 1 })
+          wx.navigateBack({delta: 1})
         }
       }
     },
@@ -153,10 +155,10 @@
 
     .head-arrow
       position: absolute
-      width: 50px
-      height: 100%
       left: 0
       bottom: 0
+      height: 100%
+      width: 40px
       display: flex
       align-items: center
 
@@ -168,12 +170,13 @@
         padding: 12px 20px
 
       .head-arrow-img
-        display :block
+        display: block
         margin-left: 5px
         width: 18px
         height: @width
 
     .head-content
+      position: relative
       text-align: center
       line-height: 44px
       height: 44px
