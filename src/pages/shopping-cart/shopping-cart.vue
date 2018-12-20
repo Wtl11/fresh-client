@@ -4,7 +4,8 @@
     <div class="shop-list">
       <div class="shop-item" :class="{'shop-item-opcta' : item.num <= 0}" v-for="(item, index) in goodsList" :key="index">
         <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && !item.checked && item.num > 0" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt="" />
-        <img class="sel-box" v-if="imageUrl && item.num <= 0" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt="" />
+        <!--<img class="sel-box" v-if="imageUrl && item.num <= 0" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt="" />-->
+        <div class="sel-box sel-clr-box" v-if="imageUrl && item.num <= 0"></div>
         <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && item.checked && item.num > 0" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt="" />
         <div class="goods-image">
           <img class="goods-img" mode="aspectFill" :src="item.goods_cover_image" alt="">
@@ -28,7 +29,7 @@
             <div class="right">
               <div class="number-box">
                 <div class="minus" @click.stop="subNum(index, item.num, item.id)">-</div>
-                <div class="num">{{item.num ? item.num : 1}}</div>
+                <div class="num">{{item.num}}</div>
                 <div class="add" @click.stop="addNum(index, item.num, item.buy_limit, item.id)">+</div>
               </div>
             </div>
@@ -49,7 +50,7 @@
       </div>
     </div>
     <!--没有商品-->
-    <div class="without" v-if="goodsList.length <= 0">
+    <div class="without" v-if="isShowCart">
       <div class="without-img"><img class="img" v-if="imageUrl" :src="imageUrl+'/yx-image/cart/pic-gwc@2x.png'" alt=""></div>
       <div class="txt">购物车没有商品哦!</div>
       <div class="txt">赶快去挑选吧</div>
@@ -75,6 +76,7 @@
         msg: '确定删除该商品吗?',
         delIndex: 0,
         goodsList: [],
+        isShowCart: false,
         deleteInfo: {
           delIndex: null,
           cartId: null
@@ -84,7 +86,6 @@
     },
     async onShow() {
       await this._getShopCart()
-      this.setCartCount()
     },
     computed: {
       checkedGoods() {
@@ -92,7 +93,9 @@
       },
       totalPrice() {
         return this.checkedGoods.reduce((total, current) => {
-          return (total * 100 + (current.shop_price * 1) * current.num * 100) / 100
+          let money = (total * 1) + (current.shop_price * current.num)
+          money = money.toFixed(2)
+          return money
         }, 0)
       },
       allChecked() {
@@ -106,7 +109,9 @@
         let res = await API.Cart.shopCart(loading)
         this.$wechat.hideLoading()
         if (res.error !== this.$ERR_OK) {
+          this.isShowCart = true
           this.$wechat.showToast(res.message)
+          return
         }
         res.data.forEach((item) => {
           let usableStock = item.usable_stock * 1
@@ -115,7 +120,9 @@
           item.num > 0 ? item.checked = true : item.checked = false
         })
         this.goodsList = res.data
+        this.goodsList.length > 0 ? this.isShowCart = false : this.isShowCart = true
         this.deliverAt = res.shelf_delivery_at
+        this.setCartCount()
       },
       addNum(i, num, limit, id) {
         num++
@@ -232,6 +239,11 @@
         height: 5.34vw
         line-height: 5.34vw
         letter-spacing: 0.3px
+      .sel-clr-box
+        width: 20px
+        height: 20px
+        background: $color-white
+        border: 1.5px solid #B7B7B7
     .payment-content
       layout(row)
       align-items: center
@@ -279,7 +291,7 @@
           top: 50%
           width: 15.7vw
           color: #fff
-          font-family: $font-family-regular
+          font-family: $font-family-medium
           font-size: $font-size-12
           text-align: center
           line-height: 15.7vw

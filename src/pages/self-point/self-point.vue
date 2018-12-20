@@ -7,7 +7,7 @@
         <div class="point">
           <!--<img class="icon" v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-address_sy@2x.png'" alt="" >-->
           <img v-if="imageUrl" mode="aspectFill" :src="imageUrl+'/yx-image/mine/icon-address_sy@2x.png'" alt="" class="icon">
-          <div v-if="groupInfo !== ''" class="txt">{{groupInfo.province + groupInfo.city + groupInfo.district + groupInfo.address}}</div>
+          <div v-if="groupInfo !== ''" class="txt">{{groupInfo.social_name}}</div>
         </div>
       </div>
       <div class="selt-point-history"><div class="name">其他自提点</div></div>
@@ -137,8 +137,10 @@
         width: 100%
         height: 100%
     .curren
+      position: absolute
       padding: 3.2vw
-      padding-top: 18px
+      bottom: 36px
+      z-index: 9
       .sub
         font-family: $font-family-regular
         font-size: $font-size-14
@@ -156,7 +158,10 @@
           font-size: $font-size-16
           color: $color-white
           line-height: 16px
+          width: 86vw
+          no-wrap()
   .self-point-top
+    height: 48vw
     padding-top: 29.6vw
   .selt-point-history
     padding-right: 0px 12px
@@ -198,7 +203,7 @@
           border-radius: 50%
         .info
           width: 69.6vw
-          .colonel,.group
+          .colonel
             font-family: $font-family-medium
             font-size: $font-size-15
             height: 15px
@@ -208,8 +213,7 @@
           .group
             font-family: $font-family-medium
             font-size: $font-size-15
-            no-wrap()
-            height: 15px
+            line-height: 20px
             padding-bottom: 15px
             color: $color-sub
           .address

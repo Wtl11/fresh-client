@@ -12,5 +12,13 @@ export default {
   getWechatMobile(data, loading = false) {
     let url = '/social-shopping/api/wap/customer-wechat-mobile'
     return request.post(url, data, loading)
+  },
+  getOrderCount(loading = false) {
+    let url = '/social-shopping/api/wap/customer-order-group-count'
+    return request.get(url, loading)
+  },
+  getAfterOrderCount(loading = false) {
+    let url = '/social-shopping/api/wap/customer-after-sale-orders-count'
+    return request.get(url, loading)
   }
 }

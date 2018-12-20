@@ -5,10 +5,10 @@
       <div class="backdrop"><img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/bg-ddxq@2x.png'" alt="" class="backdrop-img"></div>
       <div class="content">
         <div class="status">
-          <div class="icon" v-if="orderMsg.status * 1 === 2" v><img v-if="imageUrl" class="icon-img" :src="imageUrl+'/yx-image/cart/icon-finish_xq@2x.png'" alt=""></div>
-          <div class="icon" v-if="orderMsg.status * 1 === 3"><img v-if="imageUrl" class="icon-img" :src="imageUrl+'/yx-image/cart/icon_close_xq@2x.png'" alt=""></div>
-          <div class="icon" v-if="orderMsg.status * 1 === 1"><img v-if="imageUrl" class="icon-img" :src="imageUrl+'/yx-image/cart/icon-delivery_xq@2x.png'" alt=""></div>
-          <div class="icon" v-if="orderMsg.status * 1 === 0"><img v-if="imageUrl" class="icon-img" :src="imageUrl+'/yx-image/cart/icon-payment_xq@2x.png'" alt=""></div>
+          <div class="icon" v-if="orderType*1 === 0 && orderMsg.status * 1 === 2" v><img v-if="imageUrl" class="icon-img" :src="imageUrl+'/yx-image/cart/icon-finish_xq@2x.png'" alt=""></div>
+          <div class="icon" v-if="orderType*1 === 0 && orderMsg.status * 1 === 3"><img v-if="imageUrl" class="icon-img" :src="imageUrl+'/yx-image/cart/icon_close_xq@2x.png'" alt=""></div>
+          <div class="icon" v-if="orderType*1 === 0 && orderMsg.status * 1 === 1"><img v-if="imageUrl" class="icon-img" :src="imageUrl+'/yx-image/cart/icon-delivery_xq@2x.png'" alt=""></div>
+          <div class="icon" v-if="orderType*1 === 0 && orderMsg.status * 1 === 0"><img v-if="imageUrl" class="icon-img" :src="imageUrl+'/yx-image/cart/icon-payment_xq@2x.png'" alt=""></div>
           <div class="icon" v-if="orderType * 1 === 1"><img v-if="imageUrl" class="icon-img" :src="imageUrl+'/yx-image/cart/icon_refund_xq@2x.png'" alt=""></div>
           <div class="statu-txt">{{orderType * 1 !== 1 ? orderMsg.status_text : saleText}}</div>
         </div>
@@ -115,9 +115,6 @@
         this.getAfterGoodsDetailData()
       }
       this._groupInfo()
-    },
-    onShow() {
-      this.getGoodsDetailData()
     },
     computed: {
       ...oauthComputed
