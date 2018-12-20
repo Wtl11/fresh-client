@@ -333,11 +333,15 @@
         let number = index * 1 === 0 ? 1 : index
         if (this.tabIndex > index) {
           number--
-        } else if (this.tabIndex < index && (index - this.tabIndex) >= 3) {
-          number++
-        } else if (this.tabIndex < index && (index - this.tabIndex) <= 3) {
-          number = index
+        } else if (this.tabIndex < index) {
+          console.log(index, 'index')
+          if (index <= 3) {
+            number = 0
+          } else {
+            number = index
+          }
         }
+        console.log(number)
         this.viewToItem = `item${number}`
         this.tabIndex = index
         this.move = e.target.offsetLeft

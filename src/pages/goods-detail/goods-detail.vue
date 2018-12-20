@@ -344,6 +344,7 @@
         let goodsList = this.goodsMsg.shop_skus[0]
         goodsList.sku_id = goodsList.id
         goodsList.num = number
+        goodsList.goods_units = this.goodsMsg.goods_units
         let orderInfo = {
           goodsList: new Array(goodsList),
           total: goodsList.shop_price * number,
