@@ -354,10 +354,10 @@
       addShoppingCart(item) {
         API.Choiceness.addShopCart({sku_id: item.shop_sku_id}).then((res) => {
           if (res.error === this.$ERR_OK) {
-            this.$wechat.showToast('加入购物车成功')
+            this.$wechat.showToast('加入购物车成功', 1000, false)
             this.setCartCount()
           } else {
-            this.$wechat.showToast(res.message)
+            this.$wechat.showToast(res.message, 1000, false)
           }
         })
       },
