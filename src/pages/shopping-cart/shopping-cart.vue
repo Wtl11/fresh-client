@@ -281,7 +281,7 @@
           top: 50%
           width: 15.7vw
           color: #fff
-          font-family: $font-family-regular
+          font-family: $font-family-medium
           font-size: $font-size-12
           text-align: center
           line-height: 15.7vw
