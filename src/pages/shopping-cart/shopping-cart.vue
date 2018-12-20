@@ -4,7 +4,8 @@
     <div class="shop-list">
       <div class="shop-item" :class="{'shop-item-opcta' : item.num <= 0}" v-for="(item, index) in goodsList" :key="index">
         <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && !item.checked && item.num > 0" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt="" />
-        <img class="sel-box" v-if="imageUrl && item.num <= 0" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt="" />
+        <!--<img class="sel-box" v-if="imageUrl && item.num <= 0" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt="" />-->
+        <div class="sel-box sel-clr-box" v-if="imageUrl && item.num <= 0"></div>
         <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && item.checked && item.num > 0" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt="" />
         <div class="goods-image">
           <img class="goods-img" mode="aspectFill" :src="item.goods_cover_image" alt="">
@@ -49,7 +50,7 @@
       </div>
     </div>
     <!--没有商品-->
-    <div class="without" v-if="goodsList.length <= 0">
+    <div class="without" v-if="isShowCart">
       <div class="without-img"><img class="img" v-if="imageUrl" :src="imageUrl+'/yx-image/cart/pic-gwc@2x.png'" alt=""></div>
       <div class="txt">购物车没有商品哦!</div>
       <div class="txt">赶快去挑选吧</div>
@@ -75,6 +76,7 @@
         msg: '确定删除该商品吗?',
         delIndex: 0,
         goodsList: [],
+        isShowCart: false,
         deleteInfo: {
           delIndex: null,
           cartId: null
@@ -107,7 +109,9 @@
         let res = await API.Cart.shopCart(loading)
         this.$wechat.hideLoading()
         if (res.error !== this.$ERR_OK) {
+          this.isShowCart = true
           this.$wechat.showToast(res.message)
+          return
         }
         res.data.forEach((item) => {
           let usableStock = item.usable_stock * 1
@@ -116,6 +120,7 @@
           item.num > 0 ? item.checked = true : item.checked = false
         })
         this.goodsList = res.data
+        this.goodsList.length > 0 ? this.isShowCart = false : this.isShowCart = true
         this.deliverAt = res.shelf_delivery_at
         this.setCartCount()
       },
@@ -234,6 +239,11 @@
         height: 5.34vw
         line-height: 5.34vw
         letter-spacing: 0.3px
+      .sel-clr-box
+        width: 20px
+        height: 20px
+        background: $color-white
+        border: 1.5px solid #B7B7B7
     .payment-content
       layout(row)
       align-items: center
