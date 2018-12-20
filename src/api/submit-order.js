@@ -20,5 +20,15 @@ export default {
   saveMobile(mobile, loading = false) {
     const url = `/social-shopping/api/wap/customer-save-mobile`
     return request.post(url, {mobile}, loading)
+  },
+  /**
+   * 重新支付
+   * @param id
+   * @param loading
+   * @returns {*}
+   */
+  rePayment(id, loading = true) {
+    const url = `/social-shopping/api/wap/go-pay/${id}`
+    return request.get(url, loading)
   }
 }
