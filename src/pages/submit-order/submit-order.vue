@@ -90,10 +90,11 @@
         this.$wechat.setStorage('userInfo', this.userInfo)
         await this.submitOrder({
           orderInfo,
-          complete: this._payComplete
+          success: this._payback,
+          error: this._payback
         })
       },
-      _payComplete(id) {
+      _payback(id) {
         wx.redirectTo({url: `/pages/order-detail?id=${id}&&type=0`})
       },
       _setMobile() {

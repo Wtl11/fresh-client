@@ -137,8 +137,6 @@
         width: 100%
         height: 100%
     .curren
-      position: absolute
-      z-index: 9
       padding: 3.2vw
       padding-top: 18px
       .sub
