@@ -45,7 +45,7 @@
             <div class="txt">空空如也</div>
           </div>
         </scroll-view>
-        <scroll-view class="order-box" :style="{'height': scrollHeight + 'px'}" scroll-y>
+        <scroll-view class="order-box" :style="{'height': scrollHeight + 'px'}" scroll-y @scrolltolower="_getMoreList">
           <navigator :url="'/pages/group-order-detail?id=' + order.order_id" :hover-stop-propagation="true" hover-class="none" class="order-item" v-for="(order, idx) in yesterdayList" :key="idx">
             <div class="order-header">
               <div class="order-num">{{order.code}}</div>
@@ -76,7 +76,7 @@
             <div class="txt">空空如也</div>
           </div>
         </scroll-view>
-        <scroll-view class="order-box" :style="{'height': scrollHeight + 'px'}" scroll-y>
+        <scroll-view class="order-box" :style="{'height': scrollHeight + 'px'}" scroll-y @scrolltolower="_getMoreList">
           <navigator :url="'/pages/group-order-detail?id=' + order.order_id" :hover-stop-propagation="true" hover-class="none" class="order-item" v-for="(order, idx) in list" :key="idx">
             <div class="order-header">
               <div class="order-num">{{order.code}}</div>
