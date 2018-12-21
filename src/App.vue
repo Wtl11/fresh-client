@@ -1,11 +1,19 @@
 <script>
   import {oauthMethods} from '@state/helpers'
+  import {getParams} from '@utils/common'
 
   export default {
     created() {
     },
     onShow(options) {
-      let storyShopId = wx.getStorageSync('shopId') || 1
+      let storyShopId = 0
+      if (options.query.scene) {
+        let sceneMsg = decodeURIComponent(options.query.scene)
+        const params = getParams(sceneMsg)
+        storyShopId = params.shopId || 1
+      } else {
+        storyShopId = wx.getStorageSync('shopId') || 1
+      }
       let shopId = options.query.shopId || +storyShopId
       wx.setStorageSync('shopId', shopId)
       let token = wx.getStorageSync('token')
