@@ -22,8 +22,8 @@
         <div class="addr" v-if="orderType * 1 === 1">{{address.social_name}}</div>
         <div class="warp">
           <div class="design">团长</div>
-          <div class="name">{{address.shop_name}}</div>
-          <div class="phone">{{address.shop_mobile}}</div>
+          <div class="icon-number"><span class="name">{{address.shop_name}}</span><span
+            class="text">{{address.shop_mobile}}</span></div>
         </div>
       </div>
       <div class="bot" v-if="orderType * 1 !== 1">提货人：{{address.mobile}}</div>
@@ -390,19 +390,20 @@
         text-align: center
         color: $color-main
         border-radius: 2px
+        position: relative
+        padding: 2px 0 1.5px
         font-size: $font-size-12
-        height: 15px
         box-sizing: border-box
-        line-height: 15px
-      .phone
-        font-family: $font-family-regular
-        font-size: $font-size-15
-        color: $color-text-sub
-      .name
-        font-family: $font-family-regular
-        font-size: $font-size-15
-        padding: 0 5px 0 10px
-        color: $color-text-sub
+      .icon-number
+        .name
+          font-family: $font-family-regular
+          font-size: $font-size-15
+          padding: 0 5px 0 10px
+          color: $color-text-sub
+        .text
+          font-family: $font-family-regular
+          font-size: $font-size-15
+          color: $color-text-sub
   .goods-item
     height: 105px
     width: 100vw
@@ -543,6 +544,7 @@
         border-1px(#b7b7b7, 10px)
         text-align: center
         line-height: 20px
+        box-sizing: border-box
         font-family: $font-family-regular
         font-size: $font-size-12
         color: $color-text-main
@@ -601,6 +603,7 @@
         color: $color-text-main
         background: $color-white
         border: 0.5px solid $color-text-assist
+        box-sizing: border-box
   .service
     width: 100vw
     padding-top: 15px
