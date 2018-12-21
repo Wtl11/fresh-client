@@ -337,9 +337,11 @@
             height: 16px
             letter-spacing: 0.3px
           .del
-            width: 14px
-            height: 15.5px
-            line-height: 15.5px
+            width: 28px
+            height: 31px
+            layout(row)
+            align-items: center
+            justify-content: center
             .del-img
               width: 14px
               height: 15.5px
