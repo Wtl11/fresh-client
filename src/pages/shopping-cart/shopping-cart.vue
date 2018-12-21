@@ -76,7 +76,7 @@
         msg: '确定删除该商品吗?',
         delIndex: 0,
         goodsList: [],
-        isShowCart: true,
+        isShowCart: false,
         deleteInfo: {
           delIndex: null,
           cartId: null
