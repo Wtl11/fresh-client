@@ -327,6 +327,8 @@
               .icon
                 width: 11px
                 height: 11px
+                min-width :11px
+                min-height :11px
                 margin-right: 3.5px
               .text
                 no-wrap()
