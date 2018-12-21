@@ -50,6 +50,8 @@
         shopList: [],
         statusBarHeight: 20,
         groupInfo: '',
+        page: 1,
+        shopMore: false,
         changedShop: {}
       }
     },
@@ -62,6 +64,9 @@
       await this._getShopList()
       this._setShopId()
       await this._groupInfo()
+    },
+    onReachBottom() {
+      this.getMoreShopList()
     },
     computed: {
       ...oauthComputed
@@ -96,16 +101,40 @@
         wx.switchTab({url: '/pages/choiceness'})
       },
       _getShopList() {
-        API.Mine.getShopList()
+        this.shopMore = false
+        let data = { page: this.page, limit: 10 }
+        API.Mine.getShopList(data)
           .then((res) => {
             this.$wechat.hideLoading()
             if (res.error !== this.$ERR_OK) {
               return
             }
             this.shopList = res.data
+            this._isUpList(res)
           }).catch(() => {
             this.$wechat.hideLoading()
           })
+      },
+      getMoreShopList() {
+        if (this.shopMore) {
+          return
+        }
+        let data = { page: this.page, limit: 10 }
+        API.Mine.getShopList(data).then((res) => {
+          this.$wechat.hideLoading()
+          if (res.error === this.$ERR_OK) {
+            this.shopList = this.shopList.concat(res.data)
+            this._isUpList(res)
+          } else {
+            this.$wechat.showToast(res.message)
+          }
+        })
+      },
+      _isUpList(res) {
+        this.page++
+        if (this.shopList.length >= res.meta.total * 1) {
+          this.shopMore = true
+        }
       }
     }
   }
@@ -208,7 +237,7 @@
             font-size: $font-size-15
             height: 15px
             no-wrap()
-            padding-bottom: 4px
+            padding-bottom: 8px
             padding-top: 4px
             color: $color-sub
           .group

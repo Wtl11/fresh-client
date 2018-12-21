@@ -5,9 +5,9 @@ export default {
     let url = '/api/wap/shop-detail'
     return request.get(url, null, loading)
   },
-  getShopList(loading = true) {
+  getShopList(data, loading = true) {
     let url = '/api/wap/shop-list'
-    return request.get(url, null, loading)
+    return request.get(url, data, loading)
   },
   getWechatMobile(data, loading = false) {
     let url = '/api/wap/customer-wechat-mobile'

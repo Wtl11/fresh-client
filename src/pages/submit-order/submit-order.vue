@@ -184,8 +184,9 @@
           font-family: $font-family-regular
           border-1px($color-main, 2px)
           width: 30px
-          height: 15px
-          line-height: 15px
+          position: relative
+          padding: 2px 0 1.5px
+          box-sizing: border-box
           margin-right: 8px
         .icon-number
           font-size: $font-size-15

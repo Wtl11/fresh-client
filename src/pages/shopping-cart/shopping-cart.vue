@@ -7,22 +7,22 @@
         <!--<img class="sel-box" v-if="imageUrl && item.num <= 0" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt="" />-->
         <div class="sel-box sel-clr-box" v-if="imageUrl && item.num <= 0"></div>
         <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && item.checked && item.num > 0" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt="" />
-        <div class="goods-image">
+        <div class="goods-image" @click.stop="jumpGoodsDetail(item)">
           <img class="goods-img" mode="aspectFill" :src="item.goods_cover_image" alt="">
           <div class="robbed" v-if="item.num <= 0">已抢完</div>
         </div>
         <div class="good-info">
-          <div class="top">
+          <div class="top"  @click.stop="jumpGoodsDetail(item)">
             <div class="title">{{item.name}}</div>
             <div class="del" @click.stop="delGoodsInfo(index, item.id)">
               <img class="del-img" v-if="imageUrl" :src="imageUrl + '/yx-image/cart/icon_delete@2x.png'" alt="">
             </div>
           </div>
           <div class="bot">
-            <div class="left">
+            <div class="left" @click.stop="jumpGoodsDetail(item)">
               <div class="spec" v-if="item.goods_units">规格：{{item.goods_units}}</div>
               <div class="remain">
-                <div class="txt"  v-if="item.is_urgency">仅剩{{item.usable_stock}}件</div>
+                <div class="txt"  v-if="item.is_urgency">仅剩{{item.usable_stock}}{{item.goods_units}}</div>
               </div>
               <div class="price" v-if="item.shop_price"><span class="num">{{item.shop_price}}</span>元</div>
             </div>
@@ -81,6 +81,7 @@
           delIndex: null,
           cartId: null
         },
+        isShowNum: true,
         deliverAt: ''
       }
     },
@@ -126,26 +127,34 @@
       },
       addNum(i, num, limit, id) {
         num++
-        this.editGoodsNum(i, id, num)
+        if (this.isShowNum) {
+          this.editGoodsNum(i, id, num)
+        }
       },
       subNum(i, num, id) {
         if (num > 1) {
           num--
-          this.goodsList[i].num = num
-          this.editGoodsNum(i, id, num)
+          if (this.isShowNum) { this.editGoodsNum(i, id, num) }
         } else {
           this.delGoodsInfo(i, id)
         }
       },
       // 商品数量
       async editGoodsNum(i, id, num) {
+        this.isShowNum = false
         let res = await API.Cart.editCartGoodsNum(id, num)
+        this.isShowNum = true
         if (res.error !== this.$ERR_OK) {
           this.$wechat.showToast(res.message)
           return
         }
         this.goodsList[i].num = num
         this.setCartCount()
+      },
+      jumpGoodsDetail(item) {
+        wx.navigateTo({
+          url: `/pages/goods-detail?id=${item.sku_id}`
+        })
       },
       // 点击删除按钮
       delGoodsInfo(delIndex, cartId) {
@@ -328,9 +337,11 @@
             height: 16px
             letter-spacing: 0.3px
           .del
-            width: 14px
-            height: 15.5px
-            line-height: 15.5px
+            width: 28px
+            height: 31px
+            layout(row)
+            align-items: center
+            justify-content: center
             .del-img
               width: 14px
               height: 15.5px
@@ -352,6 +363,7 @@
               height: 24px
               background: $color-white
               border-1px()
+              box-sizing: border-box
               .add
                 width: 24px
                 height: 24px
