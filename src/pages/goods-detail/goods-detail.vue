@@ -60,7 +60,7 @@
     <div class="send-box">
       <div class="send-title">发货须知</div>
       <div class="send-sub-title">当天下午23:00前下单，当天发货次日送达；</div>
-      <div class="send-sub-title">当天下午23:00后下单，次日发货；</div>
+      <div class="send-sub-title">当天下午23:00后下单，次日发货。</div>
     </div>
     <div class="fixed-btn">
       <div class="hlep-btn">
