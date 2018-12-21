@@ -172,7 +172,6 @@
           })
       },
       _paySuccess(res) {
-        console.log(res)
         this.orderMsg.status = 1
         this.orderMsg.status_text = '待提货'
       },

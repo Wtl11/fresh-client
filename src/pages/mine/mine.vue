@@ -191,7 +191,6 @@
       _getOrderCount() {
         API.Mine.getOrderCount()
           .then((res) => {
-            console.log(res)
             this.$wechat.hideLoading()
             if (res.error !== this.$ERR_OK) {
               return
@@ -209,7 +208,6 @@
       _getAfterOrderCount() {
         API.Mine.getAfterOrderCount()
           .then((res) => {
-            console.log(res)
             this.$wechat.hideLoading()
             if (res.error !== this.$ERR_OK) {
               return

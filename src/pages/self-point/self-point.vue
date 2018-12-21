@@ -58,7 +58,6 @@
     created() {
       let res = wx.getSystemInfoSync()
       this.statusBarHeight = res.statusBarHeight || 20
-      console.log(this.statusBarHeight)
     },
     async onShow() {
       await this._getShopList()
