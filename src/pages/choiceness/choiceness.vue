@@ -65,7 +65,7 @@
             <div class="title">{{item.name}}</div>
             <div class="text-sub" v-if="item.describe">{{item.describe}}</div>
             <div class="text-sales-box">
-              <div class="text-sales">已售{{item.sale_count}}{{item.goods_units}}</div>
+              <div class="text-sales">已售{{item.sale_count}}件</div>
             </div>
           </div>
           <div class="add-box">
@@ -80,7 +80,7 @@
               </div>
             </div>
             <form action="" report-submit @submit="$getFormId" @click.stop="addShoppingCart(item)">
-              <button class="add-box-right" v-if="item.usable_stock * 1 > 0"  open-type="getUserInfo"  formType="submit">
+              <button class="add-box-right" v-if="item.usable_stock * 1 > 0" open-type="getUserInfo" formType="submit">
                 <div class="add-goods-btn">
                   <div class="add-icon">
                     <div class="add1"></div>
@@ -496,8 +496,10 @@
         display: block
     .choiceness-top-bgimg
       height: 35.2vw
+
   .choiceness-top-x
     padding-top: 25vw
+
   .banner-box
     margin: 0 3.2vw
     box-sizing: border-box
@@ -696,6 +698,7 @@
 
           .add-goods-btn-active
             background: #b7b7b7
+
   .foot-ties
     layout(row)
     justify-content: center
@@ -715,6 +718,7 @@
       color: rgba(152, 152, 159, 0.30)
       text-align: justify
       line-height: 1
+
   .noting
     text-align: center
     margin-top: 50px
@@ -730,6 +734,7 @@
       font-family: $font-family-regular
       font-size: $font-size-14
       color: $color-text-sub
+
   .txt
     height: 100px
 
@@ -754,29 +759,31 @@
       height: 100%
       line-height: 33px
       white-space: nowrap
-      padding: 0 7px
-      font-family: $font-family-medium
+      padding: 0 10px
+      font-family: $font-family-regular
       font-size: $font-size-14
       color: $color-text-main
       text-align: center
       display: inline-block
       position: relative
       /*transition: all 0.3s*/
-      min-width: 70px
+      min-width: 76px
       box-sizing: border-box
       transform-origin: 50%
     .item-active
+      font-family: $font-family-medium
       color: $color-white
 
   .under-line
     position: absolute
     bootom: 0
     left: 0
-    width: 70px
+    width: 76px
     background: $color-main
     /*transition: left 0.3s*/
     height: 33px
     border-radius: 8px 8px 0px 0px
+
   .add-box-right
     &:after
       border: none

@@ -8,7 +8,7 @@
         <img :src="leaderDetail.head_image_url" class="reg-header">
         <div class="reg-msg">
           <div class="reg-name">{{leaderDetail.nickname}}</div>
-          <div class="reg-address">{{address}}</div>
+          <div class="reg-address">{{leaderDetail.social_name}}</div>
         </div>
       </div>
       <navigator url="/pages/regimental-info" hover-class="none" class="reg-tip">
