@@ -98,8 +98,8 @@
       font-family: $font-family-medium
       text-align: center
       line-height: 22px
-      border-radius: 50%
-      width: 22px
+      border-radius: 11px
+      min-width: 22px
       height: 22px
     .name
       line-height: 1.2

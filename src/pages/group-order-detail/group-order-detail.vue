@@ -4,7 +4,7 @@
     <div class="order-status">
       <img :src="imageUrl + '/yx-image/group/bg-ddxq@2x.png'" v-if="imageUrl" class="order-status-bg">
       <div class="order-content">
-        <img :src="imageUrl + '/yx-image/group/icon_waiting@2x.png'" v-if="imageUrl" class="order-status-icon">
+        <img :src="orderDetail.status === 2 ? imageUrl + '/yx-image/cart/icon-delivery_xq@2x.png' : imageUrl + '/yx-image/group/icon_waiting@2x.png'" v-if="imageUrl" class="order-status-icon">
         <p class="order-status-text">{{orderDetail.status_text}}</p>
       </div>
       <p class="order-num">提货单号: {{orderDetail.code}}</p>

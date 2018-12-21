@@ -319,9 +319,11 @@
             background: $color-white
             box-shadow: 0 3px 8px 0 rgba(17, 17, 17, 0.12)
             border-radius: 3px
+            width: 156px
             .item-wrapper
               layout(row)
               align-items: center
+              flex-wrap: nowrap
               &:last-child
                 margin-top: 7.5px
               .icon
@@ -329,6 +331,7 @@
                 height: 11px
                 margin-right: 3.5px
               .text
+                no-wrap()
                 font-size: $font-size-12
                 color: $color-text-sub
           .maker-triangle
@@ -429,6 +432,7 @@
           color: $color-sub
         &:last-child
           margin-left: 20px
+
   .mine-model
     position: fixed
     top: 0

@@ -9,7 +9,7 @@
       <div class="txt">空空如也</div>
     </div>
     <div class="bulk-pickup">
-      <p class="bulk-pickup-text">共{{orderCount.length}}笔订单，{{goodsCount}}件商品</p>
+      <p class="bulk-pickup-text">共{{productList.length}}笔订单，{{goodsCount}}件商品</p>
       <p class="bulk-pickup-btn" @click="_showDialog">批量提货</p>
     </div>
     <dialog-model ref="dialog" @confirm="_confirmDelivery"></dialog-model>
