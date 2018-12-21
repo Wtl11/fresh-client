@@ -20,6 +20,7 @@ const AppPlugin = {
     }
     Vue.prototype.$ERR_OK = ERR_OK
     Vue.prototype.$imageUrl = baseURL.image
+    Vue.prototype.$outLink = baseURL.outLink
     Vue.prototype.$wechat = wechat
     Vue.prototype.$wx = wx
     Vue.prototype.$cos = cos

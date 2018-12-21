@@ -8,7 +8,7 @@ export default {
    * @returns {*}
    */
   shopCart(loading) {
-    const url = `/social-shopping/api/wap/cart`
+    const url = `/api/wap/cart`
     return request.get(url, null, loading)
   },
   /**
@@ -18,7 +18,7 @@ export default {
    * @returns {*}
    */
   delCartGoods(id, loading) {
-    const url = `/social-shopping/api/wap/cart/${id}`
+    const url = `/api/wap/cart/${id}`
     return request.delete(url, null, loading)
   },
   /**
@@ -31,16 +31,16 @@ export default {
     let data = {
       num
     }
-    const url = `/social-shopping/api/wap/cart/${id}`
+    const url = `/api/wap/cart/${id}`
     return request.put(url, data, loading)
   },
   getCarsss(data, loading = true) {
-    const url = `/social-shopping/api/wap/create-order`
+    const url = `/api/wap/create-order`
     return request.post(url, data, loading)
   },
   // 购物车数量
   shopCartNumber(data = null, loading = false) {
-    const url = `/social-shopping/api/wap/cart-count`
+    const url = `/api/wap/cart-count`
     return request.get(url, data, loading)
   }
 }

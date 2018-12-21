@@ -21,7 +21,6 @@
       NavigationBar
     },
     onLoad(e) {
-      console.log(e.url)
       this.url = e.url
     }
   }

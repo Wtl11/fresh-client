@@ -344,6 +344,7 @@
         let goodsList = this.goodsMsg.shop_skus[0]
         goodsList.sku_id = goodsList.id
         goodsList.num = number
+        goodsList.goods_units = this.goodsMsg.goods_units
         let orderInfo = {
           goodsList: new Array(goodsList),
           total: goodsList.shop_price * number,
@@ -476,11 +477,13 @@
         color: $color-money
         font-family: $font-family-medium
         line-height: 1
+        margin-right: 1px
       .share-price-icon
         font-size: $font-size-17
         color: $color-money
         font-family: $font-family-medium
         line-height: 1
+        margin-right: 1px
         padding-bottom: 2px
       .share-price-line
         font-size: $font-size-17
@@ -758,15 +761,15 @@
             position: absolute
             top: -5px
             right: -7px
-            min-width: 14px
+            min-width: 16px
             text-align: center
-            height: 14px
-            line-height: 12px
+            height: 16px
+            line-height: 14px
             padding: 0 3px
             box-sizing: border-box
             font-family: $font-family-medium
             color: $color-white
-            font-size: $font-size-11
+            font-size: $font-size-10
             border: 1px solid $color-white
             background: #FF3B39
             border-radius: 50%

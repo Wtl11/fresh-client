@@ -19,7 +19,7 @@
               <div class="name-box">
                 <div class="name-text">{{groupInfo.name}}</div>
                 <div class="address-box">
-                  <div class="address-icon">
+                  <div class="address-icon" v-if="groupInfo.social_name">
                     <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/icon-address_small@2x.png'">
                   </div>
                   <div class="address-text">{{groupInfo.social_name}}</div>
@@ -28,7 +28,7 @@
             </div>
             <div class="right-info" @click="linkGroup">联系团长</div>
           </div>
-          <div class="info-box-bottom">公告：{{groupInfo.notice}}</div>
+          <div class="info-box-bottom" v-if="groupInfo.notice">公告：{{groupInfo.notice}}</div>
         </div>
       </div>
     </div>
@@ -332,12 +332,19 @@
       async _changeTab(index, id, e) {
         let number = index * 1 === 0 ? 1 : index
         if (this.tabIndex > index) {
-          number--
-        } else if (this.tabIndex < index && (index - this.tabIndex) >= 3) {
-          number++
-        } else if (this.tabIndex < index && (index - this.tabIndex) <= 3) {
-          number = index
+          if (index <= 3) {
+            number = 0
+          } else {
+            number = index
+          }
+        } else if (this.tabIndex < index) {
+          if (index <= 3) {
+            number = 0
+          } else {
+            number = index
+          }
         }
+        console.log(number)
         this.viewToItem = `item${number}`
         this.tabIndex = index
         this.move = e.target.offsetLeft
@@ -347,10 +354,10 @@
       addShoppingCart(item) {
         API.Choiceness.addShopCart({sku_id: item.shop_sku_id}).then((res) => {
           if (res.error === this.$ERR_OK) {
-            this.$wechat.showToast('加入购物车成功')
+            this.$wechat.showToast('加入购物车成功', 1000, false)
             this.setCartCount()
           } else {
-            this.$wechat.showToast(res.message)
+            this.$wechat.showToast(res.message, 1000, false)
           }
         })
       },
@@ -379,7 +386,7 @@
 
   .choiceness-top
     position: relative
-    padding-top: 17vw
+    padding-top: 18vw
     margin-bottom: 11px
     .group-info
       padding: 0 3.2vw
@@ -470,9 +477,10 @@
           text-align: left
           width: 100%
           margin-top: 9px
-          max-height: 25px
+          max-height: 32px
           overflow: hidden
           font-size: $font-size-12
+          line-height: $font-size-16
           font-family: $font-family-regular
           color: $color-text-sub
 
@@ -486,7 +494,7 @@
         width: 100%
         height: 100%
         display: block
-    .choiceness-bgimg
+    .choiceness-top-bgimg
       height: 35.2vw
   .choiceness-top-x
     padding-top: 25vw
@@ -753,7 +761,7 @@
       text-align: center
       display: inline-block
       position: relative
-      transition: all 0.3s
+      /*transition: all 0.3s*/
       min-width: 70px
       box-sizing: border-box
       transform-origin: 50%
@@ -766,7 +774,7 @@
     left: 0
     width: 70px
     background: $color-main
-    transition: left 0.3s
+    /*transition: left 0.3s*/
     height: 33px
     border-radius: 8px 8px 0px 0px
   .add-box-right

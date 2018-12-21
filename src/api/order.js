@@ -8,7 +8,7 @@ export default {
    * @returns {*}
    */
   getOrderListData(status = '', page = 1, limit = 10, loading = false) {
-    let url = '/social-shopping/api/wap/customer-order'
+    let url = '/api/wap/customer-order'
     let data = {
       status,
       page,
@@ -23,7 +23,7 @@ export default {
    * @returns {*}
    */
   getOrderDetailData(id, loading = false) {
-    let url = `/social-shopping/api/wap/order/${id}`
+    let url = `/api/wap/order/${id}`
     return request.get(url, null, loading)
   },
   /**
@@ -33,7 +33,7 @@ export default {
    * @returns {*}
    */
   colseOrder(id, loading = false) {
-    let url = `/social-shopping/api/wap/cancel-order/${id}`
+    let url = `/api/wap/cancel-order/${id}`
     return request.get(url, null, loading)
   },
   /**
@@ -43,7 +43,7 @@ export default {
    * @returns {*}
    */
   getSaleOrder(page = 1, limit = 10, loading = false) {
-    let url = `/social-shopping/api/wap/customer-after-sale-orders`
+    let url = `/api/wap/customer-after-sale-orders`
     let data = {
       page,
       limit
@@ -57,7 +57,7 @@ export default {
    * @returns {*}
    */
   reqSaleOrder(id, loading = false) {
-    let url = `/social-shopping/api/wap/apply-after-sale`
+    let url = `/api/wap/apply-after-sale`
     let data = {
       id
     }
@@ -70,7 +70,7 @@ export default {
    * @returns {*}
    */
   reqSaleOrderDetail(id, data, loading = false) {
-    let url = `/social-shopping/api/wap/customer-after-sale-orders/${id}`
+    let url = `/api/wap/customer-after-sale-orders/${id}`
     return request.get(url, data, loading)
   }
 }
