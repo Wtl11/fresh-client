@@ -320,7 +320,6 @@
         this.$wx.saveImageToPhotosAlbum({
           filePath: pic,
           success: () => {
-            this.$wechat.previewImage({ urls: [pic] })
           },
           fail: () => {
             // 拒绝授权重新调起授权

@@ -164,10 +164,10 @@
       this.curShopId = wx.getStorageSync('shopId')
       this.getPlantList()
       this.getTabList()
-      this.setCartCount()
       await this._groupInfo(true)
     },
     async onShow() {
+      this.setCartCount()
       let shopId = wx.getStorageSync('shopId')
       if (this.curShopId * 1 === shopId) {
         return
