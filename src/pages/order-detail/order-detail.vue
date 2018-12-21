@@ -395,6 +395,7 @@
         font-size: $font-size-12
         box-sizing: border-box
       .icon-number
+        line-height: 25px
         .name
           font-family: $font-family-regular
           font-size: $font-size-15
