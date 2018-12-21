@@ -29,6 +29,6 @@ export default {
    */
   rePayment(id, loading = true) {
     const url = `/api/wap/go-pay/${id}`
-    return request.get(url, loading)
+    return request.get(url, null, loading)
   }
 }
