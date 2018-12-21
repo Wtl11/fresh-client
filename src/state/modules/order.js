@@ -55,7 +55,9 @@ export const actions = {
           paySign,
           success (res) {
             console.log(orderId)
-            wx.redirectTo({url: `/pages/order-detail?id=${orderId}&&type=0`})
+            setTimeout(() => {
+              wx.redirectTo({url: `/pages/pay-result?orderId=${orderId}&&type=0`})
+            }, 1500)
           },
           fail (res) {
             console.log(orderId)

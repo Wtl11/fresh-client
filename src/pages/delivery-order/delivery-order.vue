@@ -45,7 +45,7 @@
     <div class="bulk-pickup" v-if="!showMore">
       <p class="bulk-pickup-text">商品共计:</p>
       <p class="bulk-pickup-num">{{orderList[tabIndex].num}}件</p>
-      <p class="bulk-pickup-btn" v-if="orderList[tabIndex].status === 2" @click="_openDialog">确认提货</p>
+      <p class="bulk-pickup-btn" v-if="orderList[tabIndex].status === 2" @click="_openDialog">确认收货</p>
     </div>
     <dialog-model ref="dialog" @confirm="_confirm"></dialog-model>
   </div>
@@ -106,7 +106,7 @@
       _openDialog() {
         this.$refs.dialog.show({msg: '确定已清点所有商品？'})
       },
-      // 确认提货
+      // 确认收货
       async _confirm() {
         let res = await API.Leader.deliveryConfirm(this.orderList[this.tabIndex].id)
         this.$wechat.showToast(res.message)
