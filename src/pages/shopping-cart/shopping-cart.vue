@@ -22,7 +22,7 @@
             <div class="left" @click.stop="jumpGoodsDetail(item)">
               <div class="spec" v-if="item.goods_units">规格：{{item.goods_units}}</div>
               <div class="remain">
-                <div class="txt"  v-if="item.is_urgency">仅剩{{item.usable_stock}}件</div>
+                <div class="txt"  v-if="item.is_urgency">仅剩{{item.usable_stock}}{{item.goods_units}}</div>
               </div>
               <div class="price" v-if="item.shop_price"><span class="num">{{item.shop_price}}</span>元</div>
             </div>
