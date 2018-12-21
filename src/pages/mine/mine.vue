@@ -16,7 +16,7 @@
       <div class="order-item" v-for="(item, index) in orderNav" :key="index" @click="jumpOrder(item)">
         <div class="icon"><img class="icon-img" v-if="imageUrl" :src="imageUrl+item.icon_url" alt=""></div>
         <div class="txt">{{item.name}}</div>
-        <div class="mark" v-if="(index === 0 || index === 1) && item.count > 0">{{item.count > 99 ? 99 : item.count}}</div>
+        <div class="mark" v-if="(index === 0 || index === 1 || index === 3) && item.count > 0">{{item.count > 99 ? 99 : item.count}}</div>
       </div>
       <div class="arr-order">
         <img class="eor-img" v-if="imageUrl" :src="imageUrl+'/yx-image/cart/mydivision@2x.png'" alt="">
@@ -154,6 +154,7 @@
       },
       _cancelQrCodeBox() {
         // this.isShow = false
+        // this.$emit('close')
         let modalAnimation = wx.createAnimation({
           duration: 300,
           timingFunction: 'linear',
@@ -203,6 +204,17 @@
                 this.orderNav[1].count = item.count
               }
             })
+          })
+      },
+      _getAfterOrderCount() {
+        API.Mine.getAfterOrderCount()
+          .then((res) => {
+            console.log(res)
+            this.$wechat.hideLoading()
+            if (res.error !== this.$ERR_OK) {
+              return
+            }
+            this.orderNav[3].count = res.data.count
           })
       },
       _getShopDetail() {

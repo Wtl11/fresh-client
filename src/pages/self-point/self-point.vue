@@ -208,7 +208,8 @@
             font-size: $font-size-15
             height: 15px
             no-wrap()
-            padding-bottom: 11px
+            padding-bottom: 4px
+            padding-top: 4px
             color: $color-sub
           .group
             font-family: $font-family-medium
