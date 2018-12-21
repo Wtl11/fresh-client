@@ -344,7 +344,6 @@
             number = index
           }
         }
-        console.log(number)
         this.viewToItem = `item${number}`
         this.tabIndex = index
         this.move = e.target.offsetLeft
