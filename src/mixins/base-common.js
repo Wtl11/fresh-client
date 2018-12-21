@@ -65,7 +65,6 @@ export default {
     $getFormId(e) {
       let formId = e.mp.detail.formId
       API.Form.getFormId({form_ids: [formId]})
-      console.log(111)
     }
   }
 }

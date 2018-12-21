@@ -95,7 +95,6 @@
         })
       },
       _payback(res, id) {
-        console.log(res)
       },
       _setMobile() {
         this.$wechat.getStorage('userInfo')

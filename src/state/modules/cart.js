@@ -43,7 +43,6 @@ export const actions = {
           wx.removeTabBarBadge({index: 1})
         }
         commit('SET_CART_COUNT', count)
-        console.log(count)
         wechat.setStorage('cart.count', count)
       })
   }

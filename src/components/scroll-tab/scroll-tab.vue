@@ -117,7 +117,6 @@
         this.scrollMove = 0
       },
       _getLeft(e) {
-        // console.log(e.target)
       },
       getWidth(index, id, e, run = true) {
         this.allWidth = 0
@@ -140,9 +139,7 @@
         } else if (this.tabIndex < index) {
           number++
         }
-        console.log(this.tabIndex, index)
         this.viewToItem = `item${number}`
-        console.log(e.target.offsetLeft)
         this.tabIndex = index
         this.move = e.target.offsetLeft
         this.$emit('changeTab', id)
@@ -164,7 +161,6 @@
           return
         }
         this.scrollMove = w
-        // console.log(this.scrollMove)
       }
     }
   }

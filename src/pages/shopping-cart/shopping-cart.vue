@@ -170,6 +170,9 @@
         this.$wechat.showToast(res.message)
         this.goodsList.splice(this.deleteInfo.delIndex, 1)
         this.setCartCount()
+        if (!this.goodsList.length) {
+          this.isShowCart = true
+        }
       },
       toggelCheck(i) {
         this.goodsList[i].checked = !this.goodsList[i].checked
