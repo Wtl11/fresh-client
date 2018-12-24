@@ -203,13 +203,17 @@
         if (res.error !== this.$ERR_OK) {
           this.$wechat.showToast(res.message)
         }
-        this.groupInfo = res.data
+        // this.groupInfo = res.data
       },
       getGoodsDetailData() {
         API.Order.getOrderDetailData(this.orderId).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.orderMsg = res.data
             this.address = res.data.address
+            this.groupInfo = {
+              wx_account: this.address.wx_account,
+              mobile: this.address.shop_mobile
+            }
             if (this.orderMsg.status * 1 === 0) {
               this.getActiveEndTime(this.orderMsg.remind_timestamp)
             }
@@ -245,6 +249,10 @@
               image_url: res.data.image_url,
               num: res.data.num,
               price: res.data.price
+            }
+            this.groupInfo = {
+              wx_account: res.data.wx_account,
+              mobile: res.data.shop_mobile
             }
             this.orderMsg.goods = [goodsData]
           } else {
