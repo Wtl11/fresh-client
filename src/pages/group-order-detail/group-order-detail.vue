@@ -36,7 +36,7 @@
           <div class="goods-num-box">x<span class="goods-num">{{item.num}}</span></div>
         </div>
         <div class="btn-box" v-if="!item.delivery_status">
-          <div class="goods-btn" v-if="orderDetail.status === 1 && orderDetail.delivery_status === 3" @click="_showDialog('', item.order_detail_id)">确认提货</div>
+          <div class="goods-btn" v-if="orderDetail.status === 1 && orderDetail.delivery_status === 3 && item.after_sale_status === 0" @click="_showDialog('', item.order_detail_id)">确认提货</div>
         </div>
       </div>
     </div>

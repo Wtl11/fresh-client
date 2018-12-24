@@ -112,6 +112,7 @@
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import AddNumber from '@components/add-number/add-number'
   import LinkGroup from '@components/link-group/link-group'
+  import {getParams} from '@utils/common'
   import WePaint from '@components/we-paint/we-paint'
   import API from '@api'
   const PAGE_NAME = 'GOODS_DETAIL'
@@ -144,6 +145,7 @@
     },
     onShareAppMessage() {
       let shopId = wx.getStorageSync('shopId')
+      console.log(`/pages/goods-detail?id=${this.goodsMsg.id}&shopId=${shopId}`)
       return {
         title: this.goodsMsg.name,
         path: `/pages/goods-detail?id=${this.goodsMsg.id}&shopId=${shopId}`, // 商品详情
@@ -156,8 +158,16 @@
         }
       }
     },
-    onLoad(e) {
-      this.goodsId = e.id
+    onLoad(options) {
+      console.log(this.goodsId, '111111')
+      if (options.scene) {
+        let scene = decodeURIComponent(options.scene)
+        let params = getParams(scene)
+        this.goodsId = params.id
+        console.log(params, '1111')
+      } else {
+        this.goodsId = options.id
+      }
     },
     onShow() {
       this.getGoodsDetailData()
@@ -393,7 +403,10 @@
         return times
       },
       getQrCode() {
-        API.Choiceness.createQrCodeApi({path: `pages/goods-detail`}).then((res) => {
+        let shopId = wx.getStorageSync('shopId')
+        let path = `pages/goods-detail?id=${this.goodsId}&shopId=${shopId}`
+        console.log(path, '1111')
+        API.Choiceness.createQrCodeApi({path}).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.shareImg = res.data.image_url
           } else {
