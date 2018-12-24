@@ -114,7 +114,6 @@
       } else {
         this.getAfterGoodsDetailData()
       }
-      this._groupInfo()
     },
     computed: {
       ...oauthComputed
@@ -196,14 +195,6 @@
             })
           }
         })
-      },
-      async _groupInfo() {
-        let res = await API.Choiceness.getGroupInfo()
-        this.$wechat.hideLoading()
-        if (res.error !== this.$ERR_OK) {
-          this.$wechat.showToast(res.message)
-        }
-        // this.groupInfo = res.data
       },
       getGoodsDetailData() {
         API.Order.getOrderDetailData(this.orderId).then((res) => {
