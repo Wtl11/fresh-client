@@ -254,7 +254,7 @@
       .sel-clr-box
         width: 20px
         height: 20px
-        background: $color-white
+        background: $color-background
         border: 1.5px solid #B7B7B7
     .payment-content
       layout(row)
