@@ -301,7 +301,7 @@
             font-family: $font-family-regular
             color: $color-text-main
             margin-left: 14.5px
-            width: 60%
+            width: 80%
           .login-input-small
             width: 50%
           .text-color
