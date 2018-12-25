@@ -18,7 +18,7 @@
     </div>
     <div class="addr-info">
       <div class="top">
-        <div class="addr" v-if="orderType * 1 !== 1">提货地址： {{address.shop_address}}</div>
+        <div class="addr" v-if="orderType * 1 !== 1">提货地址：{{address.shop_address}}</div>
         <div class="addr" v-if="orderType * 1 === 1">{{address.social_name}}</div>
         <div class="warp">
           <div class="design">团长</div>
@@ -369,15 +369,15 @@
       line-height: 50px
       border-top-1px($color-line)
     .top
-      height: 74px
       box-sizing: border-box
       padding:3.2vw 0
     .addr
       font-family: $font-family-medium
       font-size: $font-size-15
-      no-wrap()
       padding-bottom: 10px
       color: #000000
+      word-break:break-all
+      padding-right: 3.2vw
     .warp
       layout(row)
       align-items: center

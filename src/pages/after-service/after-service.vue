@@ -221,6 +221,8 @@
               color: $color-sub
               letter-spacing: 0.3px
               line-height: 14px
+              width: 56vw
+              no-wrap()
             .guige
               font-family: $font-family-regular
               font-size: $font-size-14
