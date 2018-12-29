@@ -366,7 +366,6 @@
       getGoodsDetailData() {
         API.Choiceness.getGoodsDetail(this.goodsId).then((res) => {
           if (res.error === this.$ERR_OK) {
-            res.data.describe = '阿三的票房卡萨丁帕金斯的爬山的就怕啥的爱丽丝到达帕金斯的破夹袄山坡大家偶怕谁阿斯顿卡斯珀的击破爱神的箭阿三啊实打实大苏打似的卡里阿斯的炮击岸上的'
             this.goodsMsg = res.data
             this.showOpen = this.goodsMsg.describe.length > this.describeNum
             this.deliverAt = res.data.shelf_delivery_at
