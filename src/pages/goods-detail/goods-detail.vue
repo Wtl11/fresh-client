@@ -41,7 +41,7 @@
           <div class="title">{{goodsMsg.name}}</div>
           <div class="stock-number">库存{{goodsMsg.usable_stock}}{{goodsMsg.goods_units}}</div>
         </div>
-        <div class="info-bottom">
+        <div class="info-bottom" :style="{height: describeHeight + 'px'}">
           <span class="sub-title">{{goodDescribe}}</span>
           <span class="open" v-if="showOpen" @click="showMoreDescribe">
             <img v-if="imageUrl" :src="imageUrl + '/yx-image/wallet/icon-open@3x.png'" alt="">
@@ -120,12 +120,14 @@
   import API from '@api'
   const PAGE_NAME = 'GOODS_DETAIL'
   const TYPEBTN = [{url: '/yx-image/goods/icon-homepage@2x.png', text: '首页', type: 0}, {url: '/yx-image/goods/icon-service@2x.png', text: '客服', type: 1}, {url: '/yx-image/goods/icon-shopcart@2x.png', text: '购物车', type: 2}]
+  const DESCRIBE_HEIGHT = 21
 
   export default {
     name: PAGE_NAME,
     data() {
       return {
         describeNum: 0,
+        describeHeight: DESCRIBE_HEIGHT,
         goodDescribe: '',
         activityTime: {
           day: '00',
@@ -187,11 +189,15 @@
       _setDescriptionNum() {
         let res = this.$wx.getSystemInfoSync()
         let usableWidth = res.windowWidth - 24
-        let num = Math.floor(usableWidth / 14) * 2 - 3
-        this.describeNum = num
+        this.describeLineNum = Math.floor(usableWidth / 14)
+        this.describeNum = this.describeLineNum * 2 - 3
       },
       _handleDescribe() {
         let describe = this.goodsMsg.describe || ''
+        let line = Math.ceil(describe.length / this.describeLineNum)
+        if (line >= 2) {
+          this.describeHeight = this.showOpen ? DESCRIBE_HEIGHT * 2 : DESCRIBE_HEIGHT * line
+        }
         this.goodDescribe = this.showOpen ? describe.slice(0, this.describeNum) + '…' : describe
       },
       showMoreDescribe() {
@@ -360,6 +366,7 @@
       getGoodsDetailData() {
         API.Choiceness.getGoodsDetail(this.goodsId).then((res) => {
           if (res.error === this.$ERR_OK) {
+            res.data.describe = '阿三的票房卡萨丁帕金斯的爬山的就怕啥的爱丽丝到达帕金斯的破夹袄山坡大家偶怕谁阿斯顿卡斯珀的击破爱神的箭阿三啊实打实大苏打似的卡里阿斯的炮击岸上的'
             this.goodsMsg = res.data
             this.showOpen = this.goodsMsg.describe.length > this.describeNum
             this.deliverAt = res.data.shelf_delivery_at
@@ -698,6 +705,7 @@
         text-align: right
     .info-bottom
       position: relative
+      transition: all .3s
       .sub-title
         font-size: $font-size-14
         color: $color-text-sub
