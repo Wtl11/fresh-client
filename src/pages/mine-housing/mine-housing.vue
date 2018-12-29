@@ -4,57 +4,45 @@
     <div class="hose-img-box">
       <img :src="imageUrl + '/yx-image/group/pic-banner4@2x.png'" v-if="imageUrl" class="hose-img">
     </div>
-    <div class="hose-tab">
-      <div class="hose-box">
-        <div :class="{'hose-tab-item-active': navIdx === index}" class="hose-tab-item" v-for="(item, index) in nav" :key="index" @click="_setNav(index, $event)">{{item}}</div>
-        <div class="line" :style="{'left': navLeft + 'px'}"></div>
-      </div>
-    </div>
     <div class="big-box">
       <div class="hose-content" :style="{'transform': ' translateX('+ -(navIdx * width) +'px)'}">
-        <!--申请-->
-        <div class="hoseApply">
-          <div class="qr-code-box">
-            <img :src="imageUrl + '/yx-image/group/pic-frame@2x.png'" v-if="imageUrl" class="qr-code-bg" mode="aspectFill">
-            <img :src="imageUrl + '/yx-image/login/wx-qr-code.jpg'" v-if="imageUrl" class="qr-code-img">
-          </div>
-          <div class="code-tip">保存图片后，微信扫码添加</div>
-          <div class="btn" @click="_downQrCodeImg">保存到手机</div>
-        </div>
         <!--登录-->
         <div class="hoseLogin">
-          <div class="login-item">
-            <img :src="imageUrl + '/yx-image/group/icon-phone@2x.png'" v-if="imageUrl" class="login-item-icon">
-            <div class="liner"></div>
-            <input type="number" class="login-input" placeholder="请输入申请团长的手机号" :maxlength="11" placeholder-class="text-color" v-model="phoneNum">
+          <div class="login-item border-bottom-1px">
+            <img :src="imageUrl + '/yx-image/wallet/icon-phone@2x.png'" v-if="imageUrl" class="login-item-icon">
+            <input type="number" class="login-input" placeholder="请输入手机号" :maxlength="11" placeholder-class="text-color" v-model="phoneNum">
           </div>
-          <div class="login-item">
-            <img :src="imageUrl + '/yx-image/group/icon-code  @2x.png'" v-if="imageUrl" class="login-item-icon">
-            <div class="liner"></div>
+          <div class="login-item border-bottom-1px">
+            <img :src="imageUrl + '/yx-image/wallet/icon-code@2x.png'" v-if="imageUrl" class="login-item-icon">
             <input type="number" class="login-input login-input-small" placeholder="请输入验证码" :maxlength="6" placeholder-class="text-color" v-model="code">
             <span class="get-code" :class="{'get-code-disable': !isSet}" @click="setCode">{{codeText}}</span>
           </div>
-          <div class="btn" @click="_login">登录</div>
+          <div class="btn" @click="_login">团长登录</div>
         </div>
       </div>
     </div>
-
+    <div class="apply-btn">
+      <span class="content" @click="applyLeader">
+        <span class="underline">我要申请团长</span>
+        >
+      </span>
+    </div>
+    <reminder-modal ref="reminderModal"></reminder-modal>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
+  import ReminderModal from './reminder-modal/reminder-modal'
   import API from '@api'
 
   const PAGE_NAME = 'MINE_HOUSING'
-  const NAV = ['申请团长', '团长登录']
   const NAV_WIDTH = 140
   let REGPHONE = /^(13[0-9]|14[0-9]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/
   export default {
     name: PAGE_NAME,
     data() {
       return {
-        nav: NAV,
         navIdx: 0,
         navLeft: 50,
         width: 0,
@@ -73,6 +61,11 @@
       })
     },
     methods: {
+      applyLeader() {
+        this.$wx.navigateTo({
+          url: '/pages/apply-leader'
+        })
+      },
       // 保存二维码
       _downQrCodeImg() {
         wx.downloadFile({
@@ -146,6 +139,10 @@
         }
         let res = await API.Leader.loginLeader({mobile: this.phoneNum, auth_code: this.code})
         this.$wechat.hideLoading()
+        if (res.error !== this.$ERR_OK && res.code === 13002) {
+          this.$refs.reminderModal.show()
+          return
+        }
         this.$wechat.showToast(res.message)
         if (res.error === this.$ERR_OK) {
           wx.setStorageSync('isLeader', true)
@@ -162,7 +159,8 @@
       }
     },
     components: {
-      NavigationBar
+      NavigationBar,
+      ReminderModal
     }
   }
 </script>
@@ -278,8 +276,7 @@
         width: 100vw
         .login-item
           width: 84vw
-          margin: 15px auto
-          background: $color-background
+          margin: 0 auto
           display: flex
           align-items: center
           height: 50px
@@ -327,9 +324,9 @@
             border-1px($color-line, 15px)
             col-center()
         .btn
-          margin: 92.5px auto 0
-          width: 195.5px
+          width: 84vw
           height: 45px
+          margin: 32.25px auto 0
           line-height: 45px
           background: $color-main
           color: $color-white
@@ -341,4 +338,14 @@
           &:active
             background: #9DD44C
             color: #E1F2C9
+  .apply-btn
+    position: fixed
+    bottom: 37px
+    width: 100%
+    text-align: center
+    .content
+      font-size: $font-size-15
+      color: $color-text-sub
+      .underline
+        text-decoration: underline
 </style>

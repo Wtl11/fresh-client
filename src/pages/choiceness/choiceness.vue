@@ -29,6 +29,12 @@
             <div class="right-info" @click="linkGroup">联系团长</div>
           </div>
           <div class="info-box-bottom" v-if="groupInfo.notice">公告：{{groupInfo.notice}}</div>
+          <div class="carousel-wrapper" v-if="buyUsers.length > 0" :class="{'show': showBuyUser}">
+            <div class="avatar-wrapper">
+              <img :src="buyUsers[showUserIndex].head_image_url" alt="">
+            </div>
+            <div class="content">{{buyUsers[showUserIndex].nickname}} 刚刚购买了一单</div>
+          </div>
         </div>
       </div>
     </div>
@@ -155,7 +161,10 @@
         move: 0,
         tabIndex: 0,
         viewToItem: 'item0',
-        curShopId: 1
+        curShopId: 1,
+        showBuyUser: false,
+        buyUsers: [],
+        showUserIndex: 0
       }
     },
     async onLoad() {
@@ -168,6 +177,7 @@
     },
     async onShow() {
       this.setCartCount()
+      this._getBuyUsers()
       let shopId = wx.getStorageSync('shopId')
       if (this.curShopId * 1 === shopId) {
         return
@@ -179,6 +189,12 @@
       this.getTabList()
       this.setCartCount()
       await this._groupInfo(false)
+    },
+    onHide() {
+      this.carouselTimer && clearTimeout(this.carouselTimer)
+      this.showCarouselTimer && clearTimeout(this.showCarouselTimer)
+      this.showUserIndex = 0
+      this.showBuyUser = false
     },
     onPageScroll(scroll) {
       if (scroll.scrollTop >= this.menuTop - 84) {
@@ -217,6 +233,32 @@
     },
     methods: {
       ...cartMethods,
+      _getBuyUsers() {
+        API.Choiceness.getUserImg({limit: 20}).then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            this.$wechat.showToast(res.message)
+            return
+          }
+          this.buyUsers = res.data
+          this._handleBuyUserCarousel()
+        })
+      },
+      _handleBuyUserCarousel() {
+        this.showCarouselTimer = setTimeout(() => {
+          this.showBuyUser = true
+        }, 1000)
+        this.carouselTimer = setTimeout(() => {
+          this.showBuyUser = false
+          if (this.showUserIndex + 1 >= this.buyUsers.length) {
+            clearTimeout(this.carouselTimer)
+            return
+          }
+          setTimeout(() => {
+            this.showUserIndex += 1
+            this._handleBuyUserCarousel()
+          }, 300)
+        }, 5000)
+      },
       _setPraiseIndex(e) {
         this.praiseIndex = e.target.current
       },
@@ -483,6 +525,36 @@
           font-family: $font-family-regular
           color: $color-text-sub
 
+        .carousel-wrapper
+          position: absolute
+          left: 0
+          bottom: -28px
+          layout(row)
+          max-width: 100%
+          align-items: center
+          height: 24px
+          padding: 0 9.5px 0 3px
+          background: rgba(0, 0, 0, .5)
+          border-radius: 36px
+          transition: opacity .3s
+          opacity: 0
+          &.show
+            opacity: 1
+          .avatar-wrapper
+            width: 20px
+            height: 20px
+            margin-right: 3px
+            border-radius: 50%
+            overflow: hidden
+            img
+              width: 100%
+              height: 100%
+          .content
+            flex: 1
+            overflow: hidden
+            font-size: $font-size-12
+            color: $color-white
+            no-wrap()
     .choiceness-bgimg
       width: 100%
       height: 23.5vw

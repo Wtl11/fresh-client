@@ -65,6 +65,8 @@ function checkCode(res) {
       case 10000: // 无团长权限code,跳转团长登录页面
         wx.reLaunch({url: '/pages/login'})
         break
+      case 13002: // 冻结
+        return res.data
     }
     throw requestException(res)
   }

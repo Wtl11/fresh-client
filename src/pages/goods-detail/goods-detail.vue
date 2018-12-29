@@ -12,6 +12,7 @@
           </swiper-item>
         </block>
       </swiper>
+      <div class="sales-number">已售{{goodsMsg.sale_count}}{{goodsMsg.goods_units}}</div>
     </div>
     <div class="group-price">
       <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/bg-details@2x.png'"  mode="aspectFill" class="group-bg">
@@ -36,13 +37,15 @@
     </div>
     <div class="goods-info">
       <div class="goods-info-top">
-        <div class="info-top-left">
+        <div class="info-top">
           <div class="title">{{goodsMsg.name}}</div>
-          <div class="sub-title">{{goodsMsg.describe}}</div>
-        </div>
-        <div class="info-top-right">
-          <div class="sales-number">已售{{goodsMsg.sale_count}}{{goodsMsg.goods_units}}</div>
           <div class="stock-number">库存{{goodsMsg.usable_stock}}{{goodsMsg.goods_units}}</div>
+        </div>
+        <div class="info-bottom">
+          <span class="sub-title">{{goodDescribe}}</span>
+          <span class="open" v-if="showOpen" @click="showMoreDescribe">
+            <img v-if="imageUrl" :src="imageUrl + '/yx-image/wallet/icon-open@3x.png'" alt="">
+          </span>
         </div>
       </div>
       <div class="goods-info-bootom" v-if="userImgList.length > 0">
@@ -122,6 +125,8 @@
     name: PAGE_NAME,
     data() {
       return {
+        describeNum: 0,
+        goodDescribe: '',
         activityTime: {
           day: '00',
           hour: '00',
@@ -137,7 +142,8 @@
         userImgList: [],
         deliverAt: '',
         shareImg: '',
-        shopCrile: 0
+        shopCrile: 0,
+        showOpen: false
       }
     },
     computed: {
@@ -159,15 +165,14 @@
       }
     },
     onLoad(options) {
-      console.log(this.goodsId, '111111')
       if (options.scene) {
         let scene = decodeURIComponent(options.scene)
         let params = getParams(scene)
         this.goodsId = params.id
-        console.log(params, '1111')
       } else {
         this.goodsId = options.id
       }
+      this._setDescriptionNum()
     },
     onShow() {
       this.getGoodsDetailData()
@@ -179,6 +184,20 @@
     methods: {
       ...orderMethods,
       ...cartMethods,
+      _setDescriptionNum() {
+        let res = this.$wx.getSystemInfoSync()
+        let usableWidth = res.windowWidth - 24
+        let num = Math.floor(usableWidth / 14) * 2 - 3
+        this.describeNum = num
+      },
+      _handleDescribe() {
+        let describe = this.goodsMsg.describe || ''
+        this.goodDescribe = this.showOpen ? describe.slice(0, this.describeNum) + '…' : describe
+      },
+      showMoreDescribe() {
+        this.showOpen = false
+        this._handleDescribe()
+      },
       async _groupInfo() {
         let res = await API.Choiceness.getGroupInfo()
         this.$wechat.hideLoading()
@@ -342,8 +361,10 @@
         API.Choiceness.getGoodsDetail(this.goodsId).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.goodsMsg = res.data
+            this.showOpen = this.goodsMsg.describe.length > this.describeNum
             this.deliverAt = res.data.shelf_delivery_at
             this._kanTimePlay()
+            this._handleDescribe()
           } else {
             this.$wechat.showToast(res.message)
           }
@@ -534,6 +555,19 @@
           all-center()
           height: 63px
           width: 63px
+    .sales-number
+      position: absolute
+      left: 12px
+      bottom: 12px
+      font-size: $font-size-12
+      color: #fff
+      font-family: $font-family-regular
+      border-radius: 8px
+      background: $color-text-sub
+      padding: 0 5px
+      height: 16px
+      line-height: 16px
+      margin-bottom: 8px
   .page-box
     position: absolute
     right: 15px
@@ -645,41 +679,41 @@
     margin-bottom: 11px
   .goods-info-top
     padding: 17px 0
-    layout(row)
-    align-items: center
-    justify-content: space-between
-    .title
-      width: 220px
-      font-size: $font-size-16
-      color: #1F1F1F
-      line-height: 1
-      min-height: 18px
-      font-family: $font-family-medium
-      margin-bottom: 9px
-      no-wrap()
-    .sub-title
-      width: 200px
-      font-size: $font-size-14
-      color: $color-text-sub
-      line-height: 1
-      min-height: 16px
-      font-family: $font-family-regular
-      no-wrap()
-    .sales-number
-      font-size: $font-size-12
-      color: #fff
-      font-family: $font-family-regular
-      border-radius: 8px
-      background: rgba(128,128,128,.5)
-      padding: 0 5px
-      height: 16px
-      line-height: 16px
-      margin-bottom: 8px
-    .stock-number
-      font-size: $font-size-12
-      color: $color-text-sub
-      font-family: $font-family-regular
-      text-align: right
+    .info-top
+      layout(row)
+      justify-content: space-between
+      .title
+        width: 220px
+        font-size: $font-size-16
+        color: #1F1F1F
+        line-height: 1
+        min-height: 18px
+        font-family: $font-family-medium
+        margin-bottom: 9px
+        no-wrap()
+      .stock-number
+        font-size: $font-size-12
+        color: $color-text-sub
+        font-family: $font-family-regular
+        text-align: right
+    .info-bottom
+      position: relative
+      .sub-title
+        font-size: $font-size-14
+        color: $color-text-sub
+        line-height: 1.4
+        font-family: $font-family-regular
+      .open
+        position: absolute
+        right: -3px
+        bottom: -3px
+        display: block
+        width: 12.5px
+        height: 12.5px
+        padding: 10px
+        img
+          width: 12.5px
+          height: 12.5px
   .goods-info-bootom
     border-top-1px(#E6E6E6)
     height: 45px

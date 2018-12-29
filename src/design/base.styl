@@ -6,7 +6,7 @@ page
 view, text
   line-height: 1
   font-family: 'PingFangSC-Regular'
-  color: $color-text
+  color: $color-text-main
 
 .border-top-1px, .border-right-1px, .border-bottom-1px, .border-left-1px
   position: relative
@@ -18,7 +18,7 @@ view, text
 
 .border-top-1px
   &:before
-    border-top: 1px solid $color-row-line
+    border-top: 1px solid $color-line
     left: 0
     top: 0
     width: 100%
@@ -26,7 +26,7 @@ view, text
 
 .border-right-1px
   &:after
-    border-right: 1px solid $color-col-line
+    border-right: 1px solid $color-line
     top: 0
     right: 0
     height: 100%
@@ -34,7 +34,7 @@ view, text
 
 .border-bottom-1px
   &:after
-    border-bottom: 1px solid $color-row-line
+    border-bottom: 1px solid $color-line
     left: 0
     bottom: 0
     width: 100%
@@ -42,7 +42,7 @@ view, text
 
 .border-left-1px
   &:before
-    border-left: 1px solid $color-col-line
+    border-left: 1px solid $color-line
     top: 0
     left: 0
     height: 100%
