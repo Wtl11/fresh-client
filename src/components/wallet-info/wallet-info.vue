@@ -12,8 +12,9 @@
         </div>
       </div>
       <div class="info-money-box">
-        <div class="money-number">+5.00</div>
+        <div class="money-number money-subtract">+5.00</div>
         <div class="money-balance">余额 ￥1000.00</div>
+        <div class="withdraw"></div>
       </div>
     </div>
   </div>
@@ -92,10 +93,10 @@
         color: $color-money
         font-family: $font-family-medium
         margin-bottom: 8px
+      .money-subtract
+        color: $color-text-main
       .money-balance
-        font-size: $font-size-14
+        font-size: $font-size-11
         color: $color-text-assist
         font-family: $font-family-regular
-  .z
-    width: 1px
 </style>
