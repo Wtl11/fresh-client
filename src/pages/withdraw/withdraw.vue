@@ -9,7 +9,7 @@
       <div class="money-title">提现金额</div>
       <div class="money-input-box">
         <div class="money-icon">¥</div>
-        <input type="digit">
+        <input type="digit" class="money-input">
       </div>
       <div class="money-can-withdraw">
         <span>可提现金额</span>
@@ -92,6 +92,14 @@
       font-size: 40px
       font-family: $font-family-medium
       color: $color-text-main
+    .money-input
+      font-size: 40px
+      font-family: $font-family-medium
+      color: $color-text-main
+      width: 80%
+      height: 40px
+      padding-left: 10px
+      line-height: 40px
   .money-can-withdraw
     font-size: $font-size-14
     font-family: $font-family-regular

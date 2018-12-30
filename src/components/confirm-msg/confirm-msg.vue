@@ -20,6 +20,12 @@
       <div class="coninfo">{{msg}}</div>
       <!--<div class="msg">{{msg}}</div>-->
     </section>
+    <section class="content income-content" v-else-if="useType==='income'" :animation="modalAnimation"  @click.stop="cancel">
+      <div class="income-title">亲爱的团长：</div>
+      <div class="income-msg">为保障您享有合法的收益权利，在以下两种场景，该订单产生的收益由待入账自动转入已入账中。</div>
+      <div class="income-assist">*待入账不包括已退款订单产生的收益。</div>
+      <img v-if="imageUrl" mode="widthFix" :src="imageUrl + '/yx-image/wallet/pic-flow@2x.png'" alt="" class="income-img">
+    </section>
     <section class="content" v-else :animation="modalAnimation">
       <div class="title item">{{title}}</div>
       <div class="coninfo show">{{msg}}</div>
@@ -204,4 +210,25 @@
         &:first-child
           border-right-1px(#E0E2E5)
           color: #1F1F1F
+    .income-content
+      padding: 25px 20px
+      .income-title
+        font-size: $font-size-16
+        font-family: $font-family-medium
+        color: $color-text-main
+        margin-bottom: 20px
+      .income-msg
+        font-size: $font-size-14
+        font-family: $font-family-regular
+        color: $color-text-main
+        margin-bottom: 10px
+        padding-right: 10px
+      .income-assist
+        font-size: $font-size-12
+        font-family: $font-family-regular
+        color: $color-text-assist
+        margin-bottom: 15px
+      .income-img
+        width: 100%
+        display: block
 </style>

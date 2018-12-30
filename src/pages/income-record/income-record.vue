@@ -12,8 +12,8 @@
       </div>
     </div>
     <div class="income-money-box">
-      <div class="income-number">￥2000.00</div>
-      <div class="income-icon">
+      <div class="income-number" @click="openQuestion">￥2000.00</div>
+      <div class="income-icon" @click="openQuestion">
         <img class="jump-question" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/wallet/icon-question@2x.png'">
       </div>
     </div>
@@ -27,12 +27,14 @@
         </div>
       </div>
     </div>
+    <confirm-msg ref="colseModel" useType="income"></confirm-msg>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import WalletInfo from '@components/wallet-info/wallet-info'
+  import ConfirmMsg from '@components/confirm-msg/confirm-msg'
 
   const PAGE_NAME = 'INCOME_RECORD'
   const NAVLIST = [{text: '已入账', stats: 0}, {text: '待入账', stats: 1}]
@@ -47,11 +49,17 @@
     },
     components: {
       NavigationBar,
+      ConfirmMsg,
       WalletInfo
+    },
+    onShow() {
     },
     methods: {
       clickNav(item) {
         this.navIndex = item.stats
+      },
+      openQuestion() {
+        this.$refs.colseModel.show()
       }
     }
   }
