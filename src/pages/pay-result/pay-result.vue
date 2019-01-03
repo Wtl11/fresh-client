@@ -6,14 +6,12 @@
         <img v-if="imageUrl && allReady" :src="imageUrl + '/yx-image/choiceness/icon-pay_success@2x.png'" class="success-icon back">
         <img v-if="imageUrl && !allReady" :src="imageUrl + '/yx-image/choiceness/icon-in_payment@2x.png'" class="success-icon front">
       </div>
-      <div class="result-text-box">{{allReady ? '支付成功' : '支付中···'}}</div>
+      <div class="result-text-box">{{allReady ? '订单支付成功' : '支付中···'}}</div>
     </div>
     <div class="jump-btn-box">
+      <button class="jump-goods" open-type="share"  formType="submit" :class="allReady ? '' : 'jump-goods-show'">提醒团长接单</button>
       <form action="" report-submit @submit="$getFormId">
-        <button class="jump-goods"  open-type="getUserInfo"  formType="submit"  @click="jumpGoods">继续购物</button>
-      </form>
-      <form action="" report-submit @submit="$getFormId">
-        <button class="jump-goods jump-order"  open-type="getUserInfo"  formType="submit"  @click="jumpDetail">查看订单</button>
+        <button class="jump-goods jump-order"  open-type="getUserInfo"  formType="submit"  @click="jumpGoods">继续购物</button>
       </form>
     </div>
   </div>
@@ -42,6 +40,22 @@
         this.allReady = true
       }, 1700)
     },
+    onShareAppMessage() {
+      let shopId = wx.getStorageSync('shopId')
+      let userInfo = wx.getStorageSync('userInfo').nickname
+      console.log(shopId)
+      return {
+        title: `团长，我是“${userInfo}”，刚在店里买了商品↓，请接单！`,
+        path: `/pages/order-detail?id=${this.orderId}&type=0&&shareType=1&shopId=${shopId}`,
+        imageUrl: `${this.imageUrl}/yx-image/order/pic-share_order@2x.png`,
+        success: (res) => {
+          // 转发成功
+        },
+        fail: (res) => {
+          // 转发失败
+        }
+      }
+    },
     onUnload() {
       this.allReady = false
     },
@@ -53,7 +67,7 @@
       jumpDetail() {
         if (!this.allReady) return
         wx.navigateTo({
-          url: `/pages/order-detail?id=${this.orderId}&&type=0`
+          url: `/pages/order-detail?id=${this.orderId}&&type=0&&shareType=1`
         })
       }
     }
@@ -110,6 +124,8 @@
     font-size: $font-size-16
     &:after
       border: none
+  .jump-goods-show
+    background: rgba(115,194,0, .5)
   .jump-order
     background: $color-white
     font-family: $font-family-medium

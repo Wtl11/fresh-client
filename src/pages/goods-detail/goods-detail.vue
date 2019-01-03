@@ -159,12 +159,10 @@
       }
     },
     onLoad(options) {
-      console.log(this.goodsId, '111111')
       if (options.scene) {
         let scene = decodeURIComponent(options.scene)
         let params = getParams(scene)
         this.goodsId = params.id
-        console.log(params, '1111')
       } else {
         this.goodsId = options.id
       }
