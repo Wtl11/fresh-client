@@ -18,7 +18,7 @@
         <div class="time-text">较前7日</div>
         <div class="time-number">20%</div>
         <div class="time-img">
-          <img src="" alt="" class="icon-img"  v-if="imageUrl" :src="imageUrl + '/yx-image/wallet/icon-decline@2x.png'">
+          <!--<img src="" alt="" class="icon-img"  v-if="imageUrl" :src="imageUrl + '/yx-image/wallet/icon-decline@2x.png'">-->
         </div>
       </div>
       <div class="data-list-box">
@@ -29,7 +29,7 @@
             <div class="percentage">
               <div class="percentage-text">20%</div>
               <div class="percentage-img">
-                <img src="" alt="" class="icon-img"  v-if="imageUrl" :src="imageUrl + '/yx-image/wallet/icon-decline@2x.png'">
+                <!--<img src="" alt="" class="icon-img"  v-if="imageUrl" :src="imageUrl + '/yx-image/wallet/icon-decline@2x.png'">-->
               </div>
             </div>
           </li>
@@ -43,30 +43,95 @@
           <img src="" alt="" class="icon-img"  v-if="imageUrl" :src="imageUrl + '/yx-image/wallet/icon-question@2x.png'">
         </div>
       </div>
+      <line-echarts :dataLine="dataLine" v-if="navIndex === 0"></line-echarts>
+      <line-echarts :dataLine="dataLine" v-if="navIndex === 1"></line-echarts>
     </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
+  import lineEcharts from '@components/line-echarts/line-echarts'
+  import * as echarts from '@/static/ec-canvas/echarts'
 
   const PAGE_NAME = 'DATA_OVERVIEW'
   const NAVLIST = [{text: '昨日', stats: 0}, {text: '近7日', stats: 1}, {text: '近30日', stats: 2}, {text: '近90日', stats: 3}]
-
+  var Chart = null
+  var dataList = []
+  var k = 0
   export default {
     name: PAGE_NAME,
     data() {
       return {
         navIndex: 0,
-        navList: NAVLIST
+        ecBra: {
+          lazyLoad: true
+        },
+        navList: NAVLIST,
+        dataLine: [1, 2, 3, 4, 5, 6]
       }
     },
     components: {
-      NavigationBar
+      NavigationBar,
+      lineEcharts
+    },
+    onLoad() {
+      this.echartsComponent = this.$mp.page.selectComponent('#echartsId')
+      console.log(this.echartsComponent)
+    },
+    onShow() {
     },
     methods: {
       clickNav(item) {
-        this.navIndex = item.stats
+        this.dataLine = [7, 6, 9, 2, 5, 6]
+        this.navIndex = item.stats * 1
+        this.$forceUpdate()
+      },
+      getData() {
+        if (k % 2) {
+          dataList = [1, 2, 3, 4, 5, 6]
+        } else {
+          dataList = [7, 6, 9, 2, 5, 6]
+        }
+        k++
+        if (!Chart) {
+          this.init_echarts()
+        } else {
+          this.setTOption(Chart)
+        }
+      },
+      init_echarts() {
+        this.echartsComponent.init((canvas, width, height) => {
+          // 初始化图表
+          Chart = echarts.init(canvas, null, {
+            width: width,
+            height: height
+          })
+          // Chart.setOption(this.getOption());
+          this.setTOption(Chart)
+          return Chart
+        })
+      },
+      setTOption(Chart) {
+        Chart.clear()
+        console.log(Chart)
+        Chart.setOption(this.getOption())
+      },
+      getOption() {
+        var option = {
+          xAxis: {
+            type: 'category',
+            data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+          },
+          yAxis: {
+            type: 'value'
+          },
+          series: [{
+            data: dataList,
+            type: 'line'
+          }]
+        }
+        return option
       }
     }
   }
