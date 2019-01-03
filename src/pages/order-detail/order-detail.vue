@@ -42,7 +42,8 @@
             class="text">{{address.shop_mobile}}</span></div>
         </div>
       </div>
-      <div class="bot" v-if="orderType * 1 !== 1">提货人：{{address.mobile}}</div>
+      <div class="bot" v-if="orderType * 1 !== 1 && shareType * 1 !== 1">提货人：{{address.mobile}}</div>
+      <div class="bot" v-if="orderType * 1 !== 1 && shareType * 1 === 1">提货人：{{address.nickname}}</div>
     </div>
     <div class="gary-box"></div>
     <div class="order-list">
