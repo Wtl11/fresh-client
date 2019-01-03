@@ -16,11 +16,11 @@
           <div class="icon"><img v-if="imageUrl" class="icon-img" :src="imageUrl+'/yx-image/cart/icon_refund_xq@2x.png'" alt=""></div>
           <div class="statu-txt">已下单</div>
         </div>
-        <div class="extract" v-if="orderType * 1 !== 1 && orderMsg.status === 2">提货单号: {{orderMsg.code}}</div>
-        <div class="extract" v-if="orderType * 1 !== 1 && orderMsg.status === 1">提货单号: {{orderMsg.code}}</div>
+        <div class="extract" v-if="orderType * 1 !== 1 && orderMsg.status === 2 && shareType * 1 !== 1">提货单号: {{orderMsg.code}}</div>
+        <div class="extract" v-if="orderType * 1 !== 1 && orderMsg.status === 1 && shareType * 1 !== 1">提货单号: {{orderMsg.code}}</div>
       </div>
     </div>
-    <div class="order-share-box">
+    <div class="order-share-box" v-if="shareType * 1 === 1">
       <div class="order-share-title">还有这些小伙伴也购买了下面的商品</div>
       <div class="share-list-box" :class="showMoreImg ? 'share-list-more' : ''">
         <div class="share-img-box" v-for="(item, index) in shareImgList" v-bind:key="index">
