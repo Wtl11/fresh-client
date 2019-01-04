@@ -48,7 +48,7 @@
     <div class="gary-box"></div>
     <div class="order-list">
       <div class="order-item">
-        <div class="goods-item" v-for="(item, index) in orderMsg.goods" :key="index">
+        <div class="goods-item" v-for="(item, index) in orderMsg.goods" :key="index"  @click="jumpGoodsDetail(item)">
           <div class="goods-info-box">
             <img class="goods-img" mode="aspectFill" :src="item.image_url" alt="">
             <div class="goods-info">
@@ -58,12 +58,12 @@
               </div>
               <div class="tit share-tit" v-if="shareType * 1 === 1">
                 <div class="name">{{item.goods_name}}</div>
-                <div class="share-tit-btn" @click="jumpGoodsDetail(item)">立即抢购</div>
+                <div class="share-tit-btn">立即抢购</div>
               </div>
               <div class="guige">规格：{{item.goods_units}}</div>
               <div class="price" v-if="shareType * 1 !== 1">
                 <div class="amout"><span class="num">{{item.price}}</span>元</div>
-                <div class="refund" @click="isRefund(item)" v-if="(orderMsg.status * 1 === 1 || orderMsg.status * 1 === 2) && item.after_sale_status * 1 === 0">退款</div>
+                <div class="refund" @click.stop="isRefund(item)" v-if="(orderMsg.status * 1 === 1 || orderMsg.status * 1 === 2) && item.after_sale_status * 1 === 0">退款</div>
                 <div class="refund-text" v-if="item.after_sale_status * 1 === 1 || item.after_sale_status * 1 === 2">{{item.after_sale_status_text}}</div>
               </div>
               <div class="price" v-if="shareType * 1 === 1">
@@ -347,6 +347,7 @@
         }, 1000)
       },
       jumpGoodsDetail(item) {
+        if (this.shareType * 1 !== 1) return
         wx.navigateTo({
           url: `/pages/goods-detail?id=${item.goods_id}&shopId=${this.shopId}`
         })

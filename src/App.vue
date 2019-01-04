@@ -21,10 +21,10 @@
         let query = ''
         for (let key in options.query) {
           // 获取页面请求参数
-          query += `${key}=${options.query[key]}`
+          query += `${key}=${options.query[key]}&`
         }
         if (options.path !== 'pages/lost' && options.path !== 'pages/error' && options.path !== 'pages/login') {
-          wx.setStorageSync('targetPage', `${options.path}${query ? '?' : ''}${query}`)
+          wx.setStorageSync('targetPage', `${options.path}${query ? '?' : ''}${query.slice(0, -1)}`)
         }
         wx.reLaunch({url: '/pages/login'})
       }
