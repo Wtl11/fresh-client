@@ -142,28 +142,31 @@
       this.shopId = e.shopId
       console.log(this.shareType)
       if (this.orderType * 1 === 0) {
-        if (this.shareType * 1 === 1) {
-          API.Order.getOrderDetailData(this.orderId, {get_avatar: true}).then((res) => {
-            if (res.error === this.$ERR_OK) {
-              this.orderMsg = res.data
-              this.address = res.data.address
-              this.shareImgList = res.data.avatar_images
-              this.groupInfo = {
-                wx_account: this.address.wx_account,
-                mobile: this.address.shop_mobile
-              }
-              if (this.orderMsg.status * 1 === 0) {
-                this.getActiveEndTime(this.orderMsg.remind_timestamp)
-              }
-            } else {
-              this.$wechat.showToast(res.message)
-            }
-          })
-        } else {
+        if (this.shareType * 1 !== 1) {
           this.getGoodsDetailData()
         }
       } else {
         this.getAfterGoodsDetailData()
+      }
+    },
+    onShow() {
+      if (this.shareType * 1 === 1) {
+        API.Order.getOrderDetailData(this.orderId, {get_avatar: true}).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.orderMsg = res.data
+            this.address = res.data.address
+            this.shareImgList = res.data.avatar_images
+            this.groupInfo = {
+              wx_account: this.address.wx_account,
+              mobile: this.address.shop_mobile
+            }
+            if (this.orderMsg.status * 1 === 0) {
+              this.getActiveEndTime(this.orderMsg.remind_timestamp)
+            }
+          } else {
+            this.$wechat.showToast(res.message)
+          }
+        })
       }
     },
     computed: {

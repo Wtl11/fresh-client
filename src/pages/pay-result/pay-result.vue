@@ -118,7 +118,7 @@
     line-height: 45px
     border-radius: 25px
     background: $color-main
-    font-family: $font-family-medium
+    font-family: $font-family-regular
     color: $color-white
     width: 271px
     margin: 0 auto 20px
@@ -129,8 +129,8 @@
     background: rgba(115,194,0, .5)
   .jump-order
     background: $color-white
-    font-family: $font-family-medium
-    color: #000
+    font-family: $font-family-regular
+    color: $color-text-sub
     border-1px(#b7b7b7, 25px)
   .z
     width: 100%
