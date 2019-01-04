@@ -1,7 +1,7 @@
 <template>
   <div class="withdraw">
     <navigation-bar title="提现"></navigation-bar>
-    <div class="withdraw-jump">
+    <div class="withdraw-jump" @click="jumpBankcard">
       <div class="withdraw-text">添加银行卡</div>
       <img class="jump-arrows" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/cart/icon-pressed@2x.png'">
     </div>
@@ -43,6 +43,11 @@
     },
     components: {
       NavigationBar
+    },
+    methods: {
+      jumpBankcard() {
+        wx.navigateTo({url: `/pages/bank-card`})
+      }
     }
   }
 </script>

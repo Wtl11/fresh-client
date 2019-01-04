@@ -11,19 +11,29 @@
         </div>
       </div>
     </div>
-    <div class="income-money-box">
-      <div class="income-number" @click="openQuestion">￥2000.00</div>
-      <div class="income-icon" @click="openQuestion">
-        <img class="jump-question" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/wallet/icon-question@2x.png'">
-      </div>
-    </div>
     <div class="big-box">
       <div class="income-big-box"  :style="{'transform': ' translateX('+ -(navIndex * 100) +'vw)'}">
         <div class="await-income">
-          <wallet-info></wallet-info>
+          <div class="income-money-box">
+            <div class="income-number" @click="openQuestion">￥2000.00</div>
+            <div class="income-icon" @click="openQuestion">
+              <img class="jump-question" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/wallet/icon-question@2x.png'">
+            </div>
+          </div>
+          <div class="income-item">
+            <wallet-info></wallet-info>
+          </div>
         </div>
         <div class="await-income">
-          <wallet-info></wallet-info>
+          <div class="income-money-box">
+            <div class="income-number" @click="openQuestion">￥2000.00</div>
+            <div class="income-icon" @click="openQuestion">
+              <img class="jump-question" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/wallet/icon-question@2x.png'">
+            </div>
+          </div>
+          <div class="income-item">
+            <wallet-info></wallet-info>
+          </div>
         </div>
       </div>
     </div>
@@ -136,8 +146,10 @@
       transition: all 0.3s
       .await-income
         width: 100vw
-        padding-left: 15px
         box-sizing: border-box
+        .income-item
+          padding-left: 15px
+          box-sizing: border-box
   .z
     width: 1px
 </style>

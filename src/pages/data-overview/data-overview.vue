@@ -51,7 +51,6 @@
 
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
-  import lineEcharts from '@components/line-echarts/line-echarts'
   import * as echarts from '@/static/ec-canvas/echarts'
 
   const PAGE_NAME = 'DATA_OVERVIEW'
@@ -72,8 +71,7 @@
       }
     },
     components: {
-      NavigationBar,
-      lineEcharts
+      NavigationBar
     },
     onLoad() {
       this.echartsComponent = this.$mp.page.selectComponent('#echartsId')
