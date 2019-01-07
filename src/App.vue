@@ -10,9 +10,9 @@
       if (options.query.scene) {
         let sceneMsg = decodeURIComponent(options.query.scene)
         const params = getParams(sceneMsg)
-        storyShopId = params.shopId || 1
+        storyShopId = params.shopId || 7
       } else {
-        storyShopId = wx.getStorageSync('shopId') || 1
+        storyShopId = wx.getStorageSync('shopId') || 7
       }
       let shopId = options.query.shopId || +storyShopId
       wx.setStorageSync('shopId', shopId)

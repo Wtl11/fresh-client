@@ -12,7 +12,7 @@ const NETPAGE = `/pages/error`
 // 请求拦截器
 fly.interceptors.request.use((request) => {
   request.headers['Authorization'] = wx.getStorageSync('token') // todo
-  request.headers['Current-Shop'] = wx.getStorageSync('shopId') || 1 // todo 测试专用记得删除
+  request.headers['Current-Shop'] = wx.getStorageSync('shopId') || 7 // todo 测试专用记得删除
   request.headers['Current-Corp'] = 1 // todo 测试专用记得删除
   return request
 })
