@@ -12,7 +12,7 @@
       </div>
     </div>
     <div class="big-box">
-      <div class="income-big-box"  :style="{'transform': ' translateX('+ -(navIndex * 100) +'vw)'}">
+      <div class="income-big-box" :style="{'transform': ' translateX('+ -(navIndex * 100) +'vw)'}">
         <div class="await-income">
           <div class="income-money-box">
             <div class="income-number" @click="openQuestion" v-if="incomeInfo.income_money">￥{{incomeInfo.income_money}}</div>

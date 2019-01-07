@@ -9,37 +9,145 @@
         <div class="line" :style="'transform: translate(' + tabIdx*100 + '%,0)'"><div class="lines"></div></div>
       </div>
     </div>
-    <div class="order-list" v-if="orderList.length > 0">
-      <div class="order-item" v-for="(item, index) in orderList" :key="index" @click="jumpDetail(item)">
-        <div class="top">
-          <div class="group-name">{{item.social_name}}</div>
-          <div class="status">{{item.status_text}}</div>
-        </div>
-        <div class="center">
-          <div class="goods-list">
-            <div class="goods-img-list">
-              <img v-for="(items, indx) in item.goods" :key="indx" v-if="indx < 4" class="goods-img" mode="aspectFill" :src="items.image_url" alt="">
-              <div class="img-item" v-if="item.goods.length > 4">
-                <div class="circle"></div>
-                <div class="circle"></div>
-                <div class="circle"></div>
+    <div class="big-box">
+      <div class="order-big-box" :style="{'transform': ' translateX('+ -(tabIdx * 100) +'vw)'}">
+        <div class="order-item-list">
+          <div class="order-list" v-if="list0.length > 0">
+            <div class="order-item" v-for="(item, index) in list0" :key="index" @click="jumpDetail(item)">
+              <div class="top">
+                <div class="group-name">{{item.social_name}}</div>
+                <div class="status">{{item.status_text}}</div>
+              </div>
+              <div class="center">
+                <div class="goods-list">
+                  <div class="goods-img-list">
+                    <img v-for="(items, indx) in item.goods" :key="indx" v-if="indx < 4" class="goods-img" mode="aspectFill" :src="items.image_url" alt="">
+                    <div class="img-item" v-if="item.goods.length > 4">
+                      <div class="circle"></div>
+                      <div class="circle"></div>
+                      <div class="circle"></div>
+                    </div>
+                  </div>
+                  <div class="arr-warp">
+                    <div class="all-number">共{{item.goods.length}}件</div>
+                    <div class="arrlow"><img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="arr"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="bot">
+                <div class="time">{{item.created_at}}</div>
+                <div class="payment"><span class="actual">实付：</span><span class="sum">{{item.total}}</span><span class="principal">元</span></div>
               </div>
             </div>
-            <div class="arr-warp">
-              <div class="all-number">共{{item.goods.length}}件</div>
-              <div class="arrlow"><img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="arr"></div>
-            </div>
+          </div>
+          <div class="noting" v-if="list0.length === 0 && more0">
+            <div class="notingimg"><img class="img" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'" alt=""></div>
+            <div class="txt">空空如也</div>
           </div>
         </div>
-        <div class="bot">
-          <div class="time">{{item.created_at}}</div>
-          <div class="payment"><span class="actual">实付：</span><span class="sum">{{item.total}}</span><span class="principal">元</span></div>
+        <div class="order-item-list">
+          <div class="order-list" v-if="list1.length > 0">
+            <div class="order-item" v-for="(item, index) in list1" :key="index" @click="jumpDetail(item)">
+              <div class="top">
+                <div class="group-name">{{item.social_name}}</div>
+                <div class="status">{{item.status_text}}</div>
+              </div>
+              <div class="center">
+                <div class="goods-list">
+                  <div class="goods-img-list">
+                    <img v-for="(items, indx) in item.goods" :key="indx" v-if="indx < 4" class="goods-img" mode="aspectFill" :src="items.image_url" alt="">
+                    <div class="img-item" v-if="item.goods.length > 4">
+                      <div class="circle"></div>
+                      <div class="circle"></div>
+                      <div class="circle"></div>
+                    </div>
+                  </div>
+                  <div class="arr-warp">
+                    <div class="all-number">共{{item.goods.length}}件</div>
+                    <div class="arrlow"><img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="arr"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="bot">
+                <div class="time">{{item.created_at}}</div>
+                <div class="payment"><span class="actual">实付：</span><span class="sum">{{item.total}}</span><span class="principal">元</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="noting" v-if="list1.length === 0 && more1">
+            <div class="notingimg"><img class="img" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'" alt=""></div>
+            <div class="txt">空空如也</div>
+          </div>
+        </div>
+        <div class="order-item-list">
+          <div class="order-list" v-if="list2.length > 0">
+            <div class="order-item" v-for="(item, index) in list2" :key="index" @click="jumpDetail(item)">
+              <div class="top">
+                <div class="group-name">{{item.social_name}}</div>
+                <div class="status">{{item.status_text}}</div>
+              </div>
+              <div class="center">
+                <div class="goods-list">
+                  <div class="goods-img-list">
+                    <img v-for="(items, indx) in item.goods" :key="indx" v-if="indx < 4" class="goods-img" mode="aspectFill" :src="items.image_url" alt="">
+                    <div class="img-item" v-if="item.goods.length > 4">
+                      <div class="circle"></div>
+                      <div class="circle"></div>
+                      <div class="circle"></div>
+                    </div>
+                  </div>
+                  <div class="arr-warp">
+                    <div class="all-number">共{{item.goods.length}}件</div>
+                    <div class="arrlow"><img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="arr"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="bot">
+                <div class="time">{{item.created_at}}</div>
+                <div class="payment"><span class="actual">实付：</span><span class="sum">{{item.total}}</span><span class="principal">元</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="noting" v-if="list2.length === 0 && more2">
+            <div class="notingimg"><img class="img" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'" alt=""></div>
+            <div class="txt">空空如也</div>
+          </div>
+        </div>
+        <div class="order-item-list">
+          <div class="order-list" v-if="list3.length > 0">
+            <div class="order-item" v-for="(item, index) in list3" :key="index" @click="jumpDetail(item)">
+              <div class="top">
+                <div class="group-name">{{item.social_name}}</div>
+                <div class="status">{{item.status_text}}</div>
+              </div>
+              <div class="center">
+                <div class="goods-list">
+                  <div class="goods-img-list">
+                    <img v-for="(items, indx) in item.goods" :key="indx" v-if="indx < 4" class="goods-img" mode="aspectFill" :src="items.image_url" alt="">
+                    <div class="img-item" v-if="item.goods.length > 4">
+                      <div class="circle"></div>
+                      <div class="circle"></div>
+                      <div class="circle"></div>
+                    </div>
+                  </div>
+                  <div class="arr-warp">
+                    <div class="all-number">共{{item.goods.length}}件</div>
+                    <div class="arrlow"><img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="arr"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="bot">
+                <div class="time">{{item.created_at}}</div>
+                <div class="payment"><span class="actual">实付：</span><span class="sum">{{item.total}}</span><span class="principal">元</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="noting" v-if="list3.length === 0 && more3">
+            <div class="notingimg"><img class="img" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'" alt=""></div>
+            <div class="txt">空空如也</div>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="noting" v-if="orderList.length === 0">
-      <div class="notingimg"><img class="img" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'" alt=""></div>
-      <div class="txt">空空如也</div>
     </div>
   </div>
 
@@ -49,7 +157,6 @@
   import WePaint from '@components/we-paint/we-paint'
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import API from '@api'
-  import {oauthComputed} from '@state/helpers'
 
   const NAVLIST = [{id: 1, name: '全部', status: ''}, {id: 2, name: '待付款', status: 0}, {id: 3, name: '待提货', status: 1}, {id: 4, name: '已完成', status: 2}]
 
@@ -60,14 +167,24 @@
     },
     data() {
       return {
-        testSrc: '',
         navList: NAVLIST,
         orderList: [],
-        orderLists: [],
         tabIdx: 0,
         status: '',
         orderPage: 1,
-        orderMore: false
+        orderMore: false,
+        page0: 1,
+        list0: [],
+        more0: false,
+        page1: 1,
+        list1: [],
+        more1: false,
+        page2: 1,
+        list2: [],
+        more2: false,
+        page3: 1,
+        list3: [],
+        more3: false
       }
     },
     onLoad(e) {
@@ -76,51 +193,78 @@
       // this.getOrderList()
     },
     onShow() {
-      this.getOrderList()
+      this.getOrderList(this.tabIdx)
     },
     onReachBottom() {
-      this.getMoreOrderList()
-    },
-    computed: {
-      ...oauthComputed
-      // ...mapGetters(['role'])
+      this.getMoreOrderList(this.tabIdx)
     },
     methods: {
-      getOrderList() {
-        this.orderPage = 1
-        this.orderMore = false
-        API.Order.getOrderListData(this.status, this.orderPage).then((res) => {
+      getOrderList(tabIdx) {
+        this['page' + tabIdx] = 1
+        this['more' + tabIdx] = false
+        console.log(this.page0, this.more0)
+        let status
+        switch (tabIdx * 1) {
+          case 0:
+            status = ''
+            break
+          case 1:
+            status = 0
+            break
+          case 2:
+            status = 1
+            break
+          case 3:
+            status = 2
+            break
+        }
+        API.Order.getOrderListData(status, this['page' + tabIdx]).then((res) => {
           if (res.error === this.$ERR_OK) {
-            this.orderList = res.data
-            this._isUpList(res)
+            this['list' + tabIdx] = res.data
+            this._isMoreList(tabIdx, res)
           } else {
             this.$wechat.showToast(res.message)
           }
         })
       },
-      getMoreOrderList() {
-        if (this.orderMore) {
+      getMoreOrderList(tabIdx) {
+        if (this['more' + tabIdx]) {
           return
         }
-        API.Order.getOrderListData(this.status, this.orderPage).then((res) => {
+        let status
+        switch (tabIdx * 1) {
+          case 0:
+            status = ''
+            break
+          case 1:
+            status = 0
+            break
+          case 2:
+            status = 1
+            break
+          case 3:
+            status = 2
+            break
+        }
+        API.Order.getOrderListData(status, this['page' + tabIdx]).then((res) => {
           if (res.error === this.$ERR_OK) {
-            this.orderList = this.orderList.concat(res.data)
-            this._isUpList(res)
+            this['list' + tabIdx] = this['list' + tabIdx].concat(res.data)
+            this._isMoreList(tabIdx, res)
           } else {
             this.$wechat.showToast(res.message)
           }
         })
       },
-      _isUpList(res) {
-        this.orderPage++
-        if (this.orderList.length >= res.meta.total * 1) {
-          this.orderMore = true
+      _isMoreList(tabIdx, res) {
+        this['page' + tabIdx]++
+        if (this['list' + tabIdx].length >= res.meta.total * 1) {
+          this['more' + tabIdx] = true
         }
       },
       selectIndex(item, index) {
         this.status = item.status
         this.tabIdx = index
-        this.getOrderList()
+        this.getOrderList(this.tabIdx)
       },
       jumpDetail(item) {
         wx.navigateTo({
@@ -328,5 +472,15 @@
       color: $color-text-sub
   .txt
     height: 100px
-
+  .big-box
+    width: 100vw
+    overflow: hidden
+    .order-big-box
+      width: 400vw
+      display: flex
+      transform: translateX(0)
+      transition: all 0.3s
+      .order-item-list
+        width: 100vw
+        box-sizing: border-box
 </style>
