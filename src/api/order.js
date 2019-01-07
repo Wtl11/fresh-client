@@ -22,9 +22,9 @@ export default {
    * @param loading
    * @returns {*}
    */
-  getOrderDetailData(id, loading = false) {
+  getOrderDetailData(id, data, loading = false) {
     let url = `/api/wap/order/${id}`
-    return request.get(url, null, loading)
+    return request.get(url, data, loading)
   },
   /**
    * 关闭订单

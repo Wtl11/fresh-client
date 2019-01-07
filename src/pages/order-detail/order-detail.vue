@@ -4,16 +4,32 @@
     <div class="order-banner">
       <div class="backdrop"><img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/bg-ddxq@2x.png'" alt="" class="backdrop-img"></div>
       <div class="content">
-        <div class="status">
-          <div class="icon" v-if="orderType*1 === 0 && orderMsg.status * 1 === 2" v><img v-if="imageUrl" class="icon-img" :src="imageUrl+'/yx-image/cart/icon-finish_xq@2x.png'" alt=""></div>
+        <div class="status" v-if="shareType * 1 !== 1">
+          <div class="icon" v-if="orderType*1 === 0 && orderMsg.status * 1 === 2"><img v-if="imageUrl" class="icon-img" :src="imageUrl+'/yx-image/cart/icon-finish_xq@2x.png'" alt=""></div>
           <div class="icon" v-if="orderType*1 === 0 && orderMsg.status * 1 === 3"><img v-if="imageUrl" class="icon-img" :src="imageUrl+'/yx-image/cart/icon_close_xq@2x.png'" alt=""></div>
           <div class="icon" v-if="orderType*1 === 0 && orderMsg.status * 1 === 1"><img v-if="imageUrl" class="icon-img" :src="imageUrl+'/yx-image/cart/icon-delivery_xq@2x.png'" alt=""></div>
           <div class="icon" v-if="orderType*1 === 0 && orderMsg.status * 1 === 0"><img v-if="imageUrl" class="icon-img" :src="imageUrl+'/yx-image/cart/icon-payment_xq@2x.png'" alt=""></div>
           <div class="icon" v-if="orderType * 1 === 1"><img v-if="imageUrl" class="icon-img" :src="imageUrl+'/yx-image/cart/icon_refund_xq@2x.png'" alt=""></div>
           <div class="statu-txt">{{orderType * 1 !== 1 ? orderMsg.status_text : saleText}}</div>
         </div>
-        <div class="extract" v-if="orderType * 1 !== 1 && orderMsg.status === 2">提货单号: {{orderMsg.code}}</div>
-        <div class="extract" v-if="orderType * 1 !== 1 && orderMsg.status === 1">提货单号: {{orderMsg.code}}</div>
+        <div class="status" v-if="shareType * 1 === 1">
+          <div class="icon"><img v-if="imageUrl" class="icon-img" :src="imageUrl+'/yx-image/cart/icon_refund_xq@2x.png'" alt=""></div>
+          <div class="statu-txt">已下单</div>
+        </div>
+        <div class="extract" v-if="orderType * 1 !== 1 && orderMsg.status === 2 && shareType * 1 !== 1">提货单号: {{orderMsg.code}}</div>
+        <div class="extract" v-if="orderType * 1 !== 1 && orderMsg.status === 1 && shareType * 1 !== 1">提货单号: {{orderMsg.code}}</div>
+      </div>
+    </div>
+    <div class="order-share-box" v-if="shareType * 1 === 1">
+      <div class="order-share-title">还有这些小伙伴也购买了下面的商品</div>
+      <div class="share-list-box" :class="showMoreImg ? 'share-list-more' : ''">
+        <div class="share-img-box" v-for="(item, index) in shareImgList" v-bind:key="index">
+          <img :src="item.head_image_url" alt="">
+        </div>
+      </div>
+      <div class="share-show" v-if="!showMoreImg && shareImgList.length > 7" @click="showImgMore">
+        <div class="share-text">展开更多</div>
+        <img v-if="imageUrl" class="share-img" :src="imageUrl+'/yx-image/order/icon-drop_down  @2x.png'" alt="">
       </div>
     </div>
     <div class="addr-info">
@@ -26,24 +42,33 @@
             class="text">{{address.shop_mobile}}</span></div>
         </div>
       </div>
-      <div class="bot" v-if="orderType * 1 !== 1">提货人：{{address.mobile}}</div>
+      <div class="bot" v-if="orderType * 1 !== 1 && shareType * 1 !== 1">提货人：{{address.mobile}}</div>
+      <div class="bot" v-if="orderType * 1 !== 1 && shareType * 1 === 1">提货人：{{address.nickname}}</div>
     </div>
     <div class="gary-box"></div>
     <div class="order-list">
       <div class="order-item">
-        <div class="goods-item" v-for="(item, index) in orderMsg.goods" :key="index">
+        <div class="goods-item" v-for="(item, index) in orderMsg.goods" :key="index"  @click="jumpGoodsDetail(item)">
           <div class="goods-info-box">
             <img class="goods-img" mode="aspectFill" :src="item.image_url" alt="">
             <div class="goods-info">
-              <div class="tit">
+              <div class="tit" v-if="shareType * 1 !== 1">
                 <div class="name">{{item.goods_name}}</div>
                 <div class="quantity">x<span class="num">{{item.num}}</span></div>
               </div>
+              <div class="tit share-tit" v-if="shareType * 1 === 1">
+                <div class="name">{{item.goods_name}}</div>
+                <div class="share-tit-btn">立即抢购</div>
+              </div>
               <div class="guige">规格：{{item.goods_units}}</div>
-              <div class="price">
+              <div class="price" v-if="shareType * 1 !== 1">
                 <div class="amout"><span class="num">{{item.price}}</span>元</div>
-                <div class="refund" @click="isRefund(item)" v-if="(orderMsg.status * 1 === 1 || orderMsg.status * 1 === 2) && item.after_sale_status * 1 === 0">退款</div>
+                <div class="refund" @click.stop="isRefund(item)" v-if="(orderMsg.status * 1 === 1 || orderMsg.status * 1 === 2) && item.after_sale_status * 1 === 0">退款</div>
                 <div class="refund-text" v-if="item.after_sale_status * 1 === 1 || item.after_sale_status * 1 === 2">{{item.after_sale_status_text}}</div>
+              </div>
+              <div class="price" v-if="shareType * 1 === 1">
+                <div class="amout"><span class="num">{{item.price}}</span>元</div>
+                <div class="quantity">x<span class="num">{{item.num}}</span></div>
               </div>
             </div>
           </div>
@@ -60,14 +85,14 @@
       <div class="o-item" v-if="orderType * 1 === 1">退款方式：{{orderMsg.refund_method}}</div>
       <div class="order-iden">
         <div class="txt">订单编号：{{orderMsg.order_sn}}</div>
-        <div class="copy-btn" @click.stop="clipOrderId">复制</div>
+        <div class="copy-btn" @click.stop="clipOrderId"  v-if="shareType * 1 !== 1">复制</div>
       </div>
       <div class="order-time">{{orderType * 1 === 1 ? '申请时间' : '下单时间'}}：{{orderMsg.created_at}}</div>
     </div>
-    <div class="service">
+    <div class="service"  v-if="shareType * 1 !== 1">
       <div class="service-btn" @click.stop="showGroupList">联系团长</div>
     </div>
-    <div class="order-fixed" v-if="orderMsg.status * 1 === 0">
+    <div class="order-fixed" v-if="orderMsg.status * 1 === 0 && shareType * 1 !== 1">
       <div class="order-bottom-left">
         <div>请在</div><div class="color-time">{{payTime}}</div><div>内付款</div>
       </div>
@@ -103,16 +128,45 @@
         orderType: 0,
         modelMsg: '确定退款吗？',
         curItem: '',
-        saleText: ''
+        saleText: '',
+        shareType: 0,
+        shareImgList: [],
+        showMoreImg: false,
+        shopId: ''
       }
     },
     onLoad(e) {
       this.orderId = e.id
       this.orderType = e.type
+      this.shareType = e.shareType
+      this.shopId = e.shopId
+      console.log(this.shareType)
       if (this.orderType * 1 === 0) {
-        this.getGoodsDetailData()
+        if (this.shareType * 1 !== 1) {
+          this.getGoodsDetailData()
+        }
       } else {
         this.getAfterGoodsDetailData()
+      }
+    },
+    onShow() {
+      if (this.shareType * 1 === 1) {
+        API.Order.getOrderDetailData(this.orderId, {get_avatar: true}).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.orderMsg = res.data
+            this.address = res.data.address
+            this.shareImgList = res.data.avatar_images
+            this.groupInfo = {
+              wx_account: this.address.wx_account,
+              mobile: this.address.shop_mobile
+            }
+            if (this.orderMsg.status * 1 === 0) {
+              this.getActiveEndTime(this.orderMsg.remind_timestamp)
+            }
+          } else {
+            this.$wechat.showToast(res.message)
+          }
+        })
       }
     },
     computed: {
@@ -291,6 +345,15 @@
             clearInterval(this.timer)
           }
         }, 1000)
+      },
+      jumpGoodsDetail(item) {
+        if (this.shareType * 1 !== 1) return
+        wx.navigateTo({
+          url: `/pages/goods-detail?id=${item.goods_id}&shopId=${this.shopId}`
+        })
+      },
+      showImgMore() {
+        this.showMoreImg = true
       }
     },
     components: {
@@ -453,6 +516,18 @@
             font-family: $font-family-regular
             font-size: $font-size-16
             color: $color-sub
+      .share-tit
+        .name
+          width: 47.7vw
+        .share-tit-btn
+          font-size: $font-size-14
+          color: $color-main
+          border-1px($color-main, 11.5px)
+          font-family: $font-family-regular
+          height: 22px
+          line-height: 22px
+          width: 75px
+          text-align: center
       .guige
         font-family: $font-family-regular
         font-size: $font-size-14
@@ -487,6 +562,60 @@
             font-family: $font-family-regular
             color: $color-sub
             font-size: $font-size-16
+        .quantity
+          font-family: $font-family-regular
+          font-size: $font-size-12
+          color: #1F1F1F
+          .num
+            font-family: $font-family-regular
+            font-size: $font-size-16
+            color: $color-sub
+  .order-share-box
+    padding: 15px 3.2vw
+    background: #fff
+    margin-bottom: 11px
+    box-sizing: border-box
+    .order-share-title
+      font-family: $font-family-regular
+      font-size: $font-size-14
+      color: $color-text-main
+    .share-list-box
+      layout(row)
+      align-items: center
+      height: 13.8vw
+      overflow: hidden
+      .share-img-box
+        margin-top: 3.2vw
+        margin-right: 3.2vw
+        width: 10.6vw
+        height: 10.6vw
+        border-radius: 50%
+        img
+          width: 100%
+          height: 100%
+          display: block
+          background: $color-main
+          border-radius: 50%
+      .share-img-box:nth-of-type(7n)
+        margin-right: 0
+    .share-list-more
+      overflow: auto
+      height: auto
+      padding-bottom: 5px
+    .share-show
+      layout(row)
+      align-items: center
+      justify-content: center
+      margin-top: 16px
+      .share-text
+        font-family: $font-family-medium
+        font-size: $font-size-10
+        color: #CBD1CD
+        margin-right: 3px
+      .share-img
+        width: 11px
+        height: 11px
+        display: block
   .order-list
     background: $color-white
   .actual-amount
