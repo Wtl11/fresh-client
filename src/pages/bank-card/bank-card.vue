@@ -19,13 +19,14 @@
       </div>
     </div>
     <div class="ro-bank-card-btn-box">
-      <div class="ro-bank-card-btn">保存</div>
+      <div class="ro-bank-card-btn" @click="_bankCards">保存</div>
     </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
+  import API from '@api'
 
   const PAGE_NAME = 'BANK_CARD'
 
@@ -33,19 +34,98 @@
     name: PAGE_NAME,
     data() {
       return {
+        cardNum: '',
+        cardName: '',
         bank: '选择开户银行',
         bankList: [],
         id: null,
-        bankIdx: 0
+        bankIdx: 0,
+        submitLock: false
       }
     },
     components: {
       NavigationBar
     },
+    onLoad(options) {
+      this.bank = '选择开户银行'
+      this.submitLock = false
+      this.bankIdx = 0
+      this.cardNum = ''
+      this.cardName = ''
+      this.id = options.id
+      this.getBankList()
+      if (!this.id) {
+        return
+      }
+      this.getBankCardDetail()
+    },
     methods: {
+      getCode (e) {
+        this.cardNum = e.target.value.replace(/\s/g, '').replace(/(.{4})/g, '$1 ').trim()
+      },
       getBank (e) {
         let index = e.target.value * 1
         this.bank = this.bankList[index].name
+      },
+      async _bankCards () {
+        if (!this.cardName) {
+          this.$wechat.showToast('持卡人不能为空')
+          return
+        }
+        if (!this.cardNum) {
+          this.$wechat.showToast('银行卡号不能为空')
+          return
+        }
+        if (this.bank === '选择开户银行') {
+          this.$wechat.showToast('开户行不能为空')
+          return
+        }
+        let data = {
+          user_name: this.cardName,
+          bank: this.bank,
+          withdrawal_card: this.cardNum
+        }
+        if (this.submitLock) {
+          return
+        }
+        this.submitLock = true
+        setTimeout(() => {
+          this.submitLock = false
+        }, 3000)
+        let res = {}
+        if (this.id) {
+          res = await API.Wallet.putBankList(this.id, data)
+        } else {
+          res = await API.Wallet.addBankList(data)
+        }
+        if (res.error === this.$ERR_OK) {
+          this.$wechat.showToast('绑定成功')
+          setTimeout(() => {
+            wx.navigateBack()
+          }, 1500)
+        } else {
+          this.$refs.toast.show(res.message)
+        }
+      },
+      getBankList() {
+        API.Wallet.getAllBankList().then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.bankList = res.data
+          } else {
+            this.$wechat.showToast(res.message)
+          }
+        })
+      },
+      getBankCardDetail() {
+        API.Wallet.getBankDetail(this.id).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.cardNum = res.data.withdrawal_card
+            this.bank = res.data.bank
+            this.cardName = res.data.user_name
+          } else {
+            this.$wechat.showToast(res.message)
+          }
+        })
       }
     }
   }
@@ -112,7 +192,6 @@
       font-family: $font-family-regular
       font-size: $font-size-16
       color: $color-white
-      box-shadow: 0 4px 16px 0 rgba(249, 76, 95, 0.30)
     .ro-bank-card-disable
       opacity: 0.5
 </style>

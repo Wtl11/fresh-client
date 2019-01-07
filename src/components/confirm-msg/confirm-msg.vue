@@ -1,5 +1,5 @@
 <template>
-  <article class="confirm-msg" v-if="isShow" :animation="maskAnimation">
+  <article class="confirm-msg" v-if="isShow" :animation="maskAnimation" @click="cancelIncome">
     <!--<div class="mask"  ></div>-->
     <section class="content" v-if="useType==='single'" :animation="modalAnimation">
       <div class="msg">{{msg}}</div>
@@ -20,7 +20,7 @@
       <div class="coninfo">{{msg}}</div>
       <!--<div class="msg">{{msg}}</div>-->
     </section>
-    <section class="content income-content" v-else-if="useType==='income'" :animation="modalAnimation"  @click.stop="cancel">
+    <section class="content income-content" v-else-if="useType==='income'" :animation="modalAnimation"  @click.stop>
       <div class="income-title">亲爱的团长：</div>
       <div class="income-msg">为保障您享有合法的收益权利，在以下两种场景，该订单产生的收益由待入账自动转入已入账中。</div>
       <div class="income-assist">*待入账不包括已退款订单产生的收益。</div>
@@ -96,6 +96,33 @@
         this.$emit('confirm')
       },
       cancel () {
+        // this.isShow = false
+        // this.$emit('close')
+        let modalAnimation = wx.createAnimation({
+          duration: 300,
+          timingFunction: 'linear',
+          delay: 0
+        })
+        let maskAnimation = wx.createAnimation({
+          duration: 300,
+          timingFunction: 'linear',
+          delay: 0
+        })
+        maskAnimation.opacity(0).step()
+        modalAnimation.scale(0.3).step()
+        this.maskAnimation = maskAnimation.export()
+        this.modalAnimation = modalAnimation.export()
+        setTimeout(() => {
+          maskAnimation.opacity(1).step()
+          modalAnimation.scale(1).step()
+          this.maskAnimation = maskAnimation.export()
+          this.modalAnimation = modalAnimation.export()
+          this.isShow = false
+        }, 300)
+        this.$emit('cancel')
+      },
+      cancelIncome () {
+        if (this.useType !== 'income') return
         // this.isShow = false
         // this.$emit('close')
         let modalAnimation = wx.createAnimation({

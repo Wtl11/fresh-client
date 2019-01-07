@@ -17,7 +17,7 @@
             <div class="jump-money" v-if="walletInfo.income_money">{{walletInfo.income_money}}</div>
             <img class="jump-arrows" mode="aspectFill" v-if="imageUrl && walletInfo.income_money" :src="imageUrl + '/yx-image/cart/icon-pressed@2x.png'">
           </div>
-          <div class="wallet-main-text" @click="jumpWithdraw">
+          <div class="wallet-main-text" @click="jumpExpend">
             <div class="jump-text" v-if="walletInfo.outgo_money">支出:￥</div>
             <div class="jump-money" v-if="walletInfo.outgo_money">{{walletInfo.outgo_money}}</div>
             <img class="jump-arrows" mode="aspectFill" v-if="imageUrl && walletInfo.outgo_money" :src="imageUrl + '/yx-image/cart/icon-pressed@2x.png'">
@@ -72,6 +72,9 @@
       },
       jumpIncome() {
         wx.navigateTo({url: `/pages/income-record`})
+      },
+      jumpExpend() {
+        wx.navigateTo({url: `/pages/expend-record`})
       },
       getWalletMoney() {
         API.Wallet.getShopMoney().then((res) => {
