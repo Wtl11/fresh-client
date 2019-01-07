@@ -5,14 +5,21 @@
       <div class="backdrop"><img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/bg-ddxq@2x.png'" alt="" class="backdrop-img"></div>
       <div class="content">
         <div class="status">
-          <div class="icon" v-if="orderMsg.status * 1 === 2"><img v-if="imageUrl" class="icon-img" :src="imageUrl+'/yx-image/cart/icon-finish_xq@2x.png'" alt=""></div>
-          <div class="icon" v-if="orderMsg.status * 1 === 3"><img v-if="imageUrl" class="icon-img" :src="imageUrl+'/yx-image/cart/icon_close_xq@2x.png'" alt=""></div>
-          <div class="icon" v-if="orderMsg.status * 1 === 1"><img v-if="imageUrl" class="icon-img" :src="imageUrl+'/yx-image/cart/icon-delivery_xq@2x.png'" alt=""></div>
-          <div class="icon" v-if="orderMsg.status * 1 === 0"><img v-if="imageUrl" class="icon-img" :src="imageUrl+'/yx-image/cart/icon-payment_xq@2x.png'" alt=""></div>
-          <div class="statu-txt">{{orderMsg.status_text}}</div>
+          <div class="icon"><img v-if="imageUrl" class="icon-img" :src="imageUrl+'/yx-image/cart/icon_refund_xq@2x.png'" alt=""></div>
+          <div class="statu-txt">已下单</div>
         </div>
-        <div class="extract" v-if="orderMsg.status === 2">提货单号: {{orderMsg.code}}</div>
-        <div class="extract" v-if="orderMsg.status === 1">提货单号: {{orderMsg.code}}</div>
+      </div>
+    </div>
+    <div class="order-share-box">
+      <div class="order-share-title">还有这些小伙伴也购买了下面的商品</div>
+      <div class="share-list-box" :class="showMoreImg ? 'share-list-more' : ''">
+        <div class="share-img-box" v-for="(item, index) in shareImgList" v-bind:key="index">
+          <img :src="item.head_image_url" alt="">
+        </div>
+      </div>
+      <div class="share-show" v-if="!showMoreImg && shareImgList.length > 7" @click="showImgMore">
+        <div class="share-text">展开更多</div>
+        <img v-if="imageUrl" class="share-img" :src="imageUrl+'/yx-image/order/icon-drop_down  @2x.png'" alt="">
       </div>
     </div>
     <div class="addr-info">
@@ -24,24 +31,23 @@
             class="text">{{address.shop_mobile}}</span></div>
         </div>
       </div>
-      <div class="bot">提货人：{{address.mobile}}</div>
+      <div class="bot">提货人：{{address.nickname}}</div>
     </div>
     <div class="gary-box"></div>
     <div class="order-list">
       <div class="order-item">
-        <div class="goods-item" v-for="(item, index) in orderMsg.goods" :key="index">
+        <div class="goods-item" v-for="(item, index) in orderMsg.goods" :key="index"  @click="jumpGoodsDetail(item)">
           <div class="goods-info-box">
             <img class="goods-img" mode="aspectFill" :src="item.image_url" alt="">
             <div class="goods-info">
-              <div class="tit">
+              <div class="tit share-tit">
                 <div class="name">{{item.goods_name}}</div>
-                <div class="quantity">x<span class="num">{{item.num}}</span></div>
+                <div class="share-tit-btn">立即抢购</div>
               </div>
               <div class="guige">规格：{{item.goods_units}}</div>
               <div class="price">
                 <div class="amout"><span class="num">{{item.price}}</span>元</div>
-                <div class="refund" @click.stop="isRefund(item)" v-if="(orderMsg.status * 1 === 1 || orderMsg.status * 1 === 2) && item.after_sale_status * 1 === 0 && item.can_after_sale * 1 === 1">退款</div>
-                <div class="refund-text" v-if="item.after_sale_status * 1 === 1 || item.after_sale_status * 1 === 2 && item.can_after_sale * 1 === 1">{{item.after_sale_status_text}}</div>
+                <div class="quantity">x<span class="num">{{item.num}}</span></div>
               </div>
             </div>
           </div>
@@ -56,205 +62,57 @@
     <div class="oinfo">
       <div class="order-iden">
         <div class="txt">订单编号：{{orderMsg.order_sn}}</div>
-        <div class="copy-btn" @click.stop="clipOrderId">复制</div>
       </div>
       <div class="order-time">下单时间：{{orderMsg.created_at}}</div>
     </div>
-    <div class="service">
-      <div class="service-btn" @click.stop="showGroupList">联系团长</div>
-    </div>
-    <div class="order-fixed" v-if="orderMsg.status * 1 === 0">
-      <div class="order-bottom-left">
-        <div>请在</div><div class="color-time">{{payTime}}</div><div>内付款</div>
-      </div>
-      <div class="order-bottom-right">
-        <div class="refund close" @click="closeOrder">取消</div>
-        <div class="refund" @click="goPay">去付款</div>
-      </div>
-    </div>
-    <confirm-msg ref="refundModel" useType="double" :msg="modelMsg" @confirm="confirm"></confirm-msg>
-    <confirm-msg ref="colseModel" useType="close"></confirm-msg>
-    <link-group ref="groupList" :wechatInfo="groupInfo"></link-group>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-  import LinkGroup from '@components/link-group/link-group'
   import NavigationBar from '@components/navigation-bar/navigation-bar'
-  import ConfirmMsg from '@components/confirm-msg/confirm-msg'
   import API from '@api'
-  import {oauthComputed, orderMethods} from '@state/helpers'
 
   export default {
     data() {
       return {
         orderId: '',
         orderMsg: {},
-        groupInfo: {},
         address: {},
-        payTime: '',
-        timeEnd: false,
-        confirmtype: 0,
-        orderType: 0,
-        modelMsg: '确定退款吗？',
-        curItem: '',
-        saleText: '',
-        shareType: 0
+        shareImgList: [],
+        showMoreImg: false,
+        shopId: ''
       }
     },
     onLoad(e) {
       this.orderId = e.id
-      this.getGoodsDetailData()
+      this.shopId = e.shopId
     },
-    computed: {
-      ...oauthComputed
+    onShow() {
+      this.getShareOrderDate()
     },
     methods: {
-      ...orderMethods,
-      closeOrder() {
-        this.modelMsg = '确定取消该订单？'
-        this.confirmtype = 0
-        this.$refs.refundModel.show()
-      },
-      confirm() {
-        if (this.confirmtype === 0) {
-          API.Order.colseOrder(this.orderId).then((res) => {
-            if (res.error === this.$ERR_OK) {
-              this.$wechat.showToast('取消订单成功')
-              this.getGoodsDetailData()
-            } else {
-              this.$wechat.showToast(res.message)
-            }
-          })
-        } else {
-          API.Order.reqSaleOrder(this.curItem.order_detail_id).then((res) => {
-            if (res.error === this.$ERR_OK) {
-              this.$wechat.showToast('申请退款售后成功')
-              this.getGoodsDetailData()
-            } else {
-              this.$wechat.showToast(res.message)
-            }
-          })
-        }
-      },
-      showGroupList() {
-        this.$refs.groupList.showLink()
-      },
-      goPay() {
-        API.SubmitOrder.rePayment(this.orderId)
-          .then(res => {
-            this.$wechat.hideLoading()
-            if (res.error !== this.$ERR_OK) {
-              this.$wechat.showToast(res.message)
-              return
-            }
-            let payRes = res.data
-            const {timestamp, nonceStr, signType, paySign} = payRes
-            this.orderId = res.data.order_id
-            wx.requestPayment({
-              timeStamp: timestamp,
-              nonceStr,
-              package: payRes.package,
-              signType,
-              paySign,
-              success: this._paySuccess
-            })
-          })
-      },
-      _paySuccess(res) {
-        this.orderMsg.status = 1
-        this.orderMsg.status_text = '待提货'
-      },
-      isRefund(item) {
-        this.curItem = item
-        if (item.is_time_out * 1 === 0) {
-          this.modelMsg = '确定退款吗？'
-          this.confirmtype = 1
-          this.$refs.refundModel.show()
-        } else {
-          this.$refs.colseModel.show()
-        }
-      },
-      clipOrderId() {
-        let that = this
-        that.$wx.setClipboardData({
-          data: this.orderMsg.order_sn,
-          success: function(res) {
-            that.$wx.getClipboardData({
-              success: function(res) {}
-            })
-          }
+      jumpGoodsDetail(item) {
+        wx.navigateTo({
+          url: `/pages/goods-detail?id=${item.goods_id}&shopId=${this.shopId}`
         })
       },
-      getGoodsDetailData() {
-        API.Order.getOrderDetailData(this.orderId).then((res) => {
+      showImgMore() {
+        this.showMoreImg = true
+      },
+      getShareOrderDate() {
+        API.Order.getOrderDetailData(this.orderId, {get_avatar: true}).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.orderMsg = res.data
             this.address = res.data.address
-            this.groupInfo = {
-              wx_account: this.address.wx_account,
-              mobile: this.address.shop_mobile
-            }
-            if (this.orderMsg.status * 1 === 0) {
-              this.getActiveEndTime(this.orderMsg.remind_timestamp)
-            }
+            this.shareImgList = res.data.avatar_images
           } else {
             this.$wechat.showToast(res.message)
           }
         })
-      },
-      _groupTimeCheckoutNoDay(time) {
-        // let nowSecond = parseInt(Date.now() / 1000)
-        // let differ = time * 1 - nowSecond
-        let differ = time * 1
-        let hour = Math.floor(differ / (60 * 60))
-        hour = hour >= 10 ? hour : '0' + hour
-        let minute = Math.floor(differ / 60) - (hour * 60)
-        minute = minute >= 10 ? minute : '0' + minute
-        let second = Math.floor(differ) - (hour * 60 * 60) - (minute * 60)
-        second = second >= 10 ? second : '0' + second
-        let times
-        if (differ > 0) {
-          times = {
-            hour,
-            minute,
-            second
-          }
-          this.timeEnd = false
-        } else {
-          times = {
-            hour: '00',
-            minute: '00',
-            second: '00'
-          }
-          this.timeEnd = true
-        }
-        return times
-      },
-      getActiveEndTime(time) {
-        clearInterval(this.timer)
-        this.end_time = time
-        this.timer = setInterval(() => {
-          if (this.end_time > 0) {
-            this.end_time--
-          }
-          let endTime = this._groupTimeCheckoutNoDay(this.end_time)
-          this.payTime = `${endTime.minute}:${endTime.second}`
-          if (this.timeEnd) {
-            clearInterval(this.timer)
-          }
-        }, 1000)
-      },
-      jumpGoodsDetail(item) {
-        wx.navigateTo({
-          url: `/pages/goods-detail?id=${item.goods_id}`
-        })
       }
     },
     components: {
-      NavigationBar,
-      LinkGroup,
-      ConfirmMsg
+      NavigationBar
     }
   }
 </script>
@@ -307,10 +165,10 @@
           .icon
             width: 31px
             height: 31px
-           .icon-img
-             width: 100%
-             display: block
-             height: 100%
+          .icon-img
+            width: 100%
+            display: block
+            height: 100%
         .extract
           font-family: $font-family-medium
           font-size: $font-size-16
@@ -465,6 +323,52 @@
             font-family: $font-family-regular
             font-size: $font-size-16
             color: $color-sub
+  .order-share-box
+    padding: 15px 3.2vw
+    background: #fff
+    margin-bottom: 11px
+    box-sizing: border-box
+    .order-share-title
+      font-family: $font-family-regular
+      font-size: $font-size-14
+      color: $color-text-main
+    .share-list-box
+      layout(row)
+      align-items: center
+      height: 13.8vw
+      overflow: hidden
+      .share-img-box
+        margin-top: 3.2vw
+        margin-right: 3.2vw
+        width: 10.6vw
+        height: 10.6vw
+        border-radius: 50%
+        img
+          width: 100%
+          height: 100%
+          display: block
+          background: $color-main
+          border-radius: 50%
+      .share-img-box:nth-of-type(7n)
+        margin-right: 0
+    .share-list-more
+      overflow: auto
+      height: auto
+      padding-bottom: 5px
+    .share-show
+      layout(row)
+      align-items: center
+      justify-content: center
+      margin-top: 16px
+      .share-text
+        font-family: $font-family-medium
+        font-size: $font-size-10
+        color: #CBD1CD
+        margin-right: 3px
+      .share-img
+        width: 11px
+        height: 11px
+        display: block
   .order-list
     background: $color-white
   .actual-amount
@@ -492,6 +396,20 @@
     min-height: 80px
     background: $color-white
     padding: 16px 3.2vw
+    .o-item
+      padding-bottom: 16px
+      font-family: $font-family-regular
+      font-size: $font-size-14
+      color: #000000
+      line-height: 14px
+      .price
+        font-family: $font-family-medium
+        font-size: $font-size-14
+        color: $color-money
+        .num
+          font-family: $font-family-medium
+          font-size: $font-size-16
+          color: $color-money
     .order-iden
       layout(row)
       align-items: center

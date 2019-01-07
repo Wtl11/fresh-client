@@ -37,7 +37,6 @@
         </div>
       </div>
     </div>
-
     <div class="noting" v-if="orderList.length === 0">
       <div class="notingimg"><img class="img" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'" alt=""></div>
       <div class="txt">空空如也</div>

@@ -44,10 +44,10 @@
       let shopId = wx.getStorageSync('shopId')
       let userInfo = wx.getStorageSync('userInfo').nickname
       console.log(shopId)
-      console.log(`id=${this.orderId}&type=0&&shareType=1&shopId=${shopId}`)
+      console.log(`id=${this.orderId}&shopId=${shopId}`)
       return {
         title: `团长，我是“${userInfo}”，刚在店里买了商品↓，请接单！`,
-        path: `/pages/order-detail?id=${this.orderId}&type=0&&shareType=1&shopId=${shopId}`,
+        path: `/pages/share-detail?id=${this.orderId}&shopId=${shopId}`,
         imageUrl: `${this.imageUrl}/yx-image/order/pic-share_order@2x.png`,
         success: (res) => {
           // 转发成功
@@ -68,7 +68,7 @@
       jumpDetail() {
         if (!this.allReady) return
         wx.navigateTo({
-          url: `/pages/order-detail?id=${this.orderId}&&type=0&&shareType=1`
+          url: `/pages/share-detail?id=${this.orderId}&&type=0&&shareType=1`
         })
       }
     }
