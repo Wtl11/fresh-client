@@ -3,7 +3,7 @@
     <navigation-bar title="数据统计"></navigation-bar>
     <div class="income-nav">
       <div class="income-nav-box">
-        <div class="item-nav" v-for="(item, index) in navList" v-bind:key="index" @click="clickNav(item)" :class="{'item-nav-active': navIndex === index}">{{item.text}}</div>
+        <div class="item-nav" v-for="(item, index) in navList" v-bind:key="index" @click="clickNav(item, index)" :class="{'item-nav-active': navIndex === index}">{{item.text}}</div>
         <div class="nav-line-box">
           <div class="nav-line" :style="{'transform': ' translateX('+ (navIndex * 100) +'%)'}">
             <div class="line"></div>
@@ -43,93 +43,362 @@
           <img src="" alt="" class="icon-img"  v-if="imageUrl" :src="imageUrl + '/yx-image/wallet/icon-question@2x.png'">
         </div>
       </div>
-      <line-echarts :dataLine="dataLine" v-if="navIndex === 0"></line-echarts>
-      <line-echarts :dataLine="dataLine" v-if="navIndex === 1"></line-echarts>
+      <div class="ec-box" v-if="showLine">
+        <ec-canvas class="canvas" id="chart-dom-line" canvas-id="chart-line" :ec="ec"></ec-canvas>
+      </div>
+    </div>
+    <div class="charts-box">
+      <div class="charts-title">
+        <div class="text">访客数</div>
+        <div class="icon">
+          <img src="" alt="" class="icon-img"  v-if="imageUrl" :src="imageUrl + '/yx-image/wallet/icon-question@2x.png'">
+        </div>
+      </div>
+      <div class="ec-box" v-if="showLine">
+        <ec-canvas class="canvas" id="customer-dom-line" canvas-id="customer-line" :ec="line"></ec-canvas>
+      </div>
+    </div>
+    <div class="charts-box">
+      <div class="charts-title">
+        <div class="text">支付客户数</div>
+        <div class="icon">
+          <img src="" alt="" class="icon-img"  v-if="imageUrl" :src="imageUrl + '/yx-image/wallet/icon-question@2x.png'">
+        </div>
+      </div>
+      <div class="ec-box" v-if="showLine">
+        <ec-canvas class="canvas" id="chart-dom-pie" canvas-id="chart-pie" :ec="pie"></ec-canvas>
+      </div>
     </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
-  import * as echarts from '@/static/ec-canvas/echarts'
+  import LineEcharts from '@components/line-echarts/line-echarts'
 
   const PAGE_NAME = 'DATA_OVERVIEW'
   const NAVLIST = [{text: '昨日', stats: 0}, {text: '近7日', stats: 1}, {text: '近30日', stats: 2}, {text: '近90日', stats: 3}]
-  var Chart = null
-  var dataList = []
-  var k = 0
   export default {
     name: PAGE_NAME,
     data() {
       return {
         navIndex: 0,
-        ecBra: {
-          lazyLoad: true
+        ec: {
+          options: {
+            tooltip: {
+              trigger: 'axis',
+              position: ['50%', '50%'],
+              formatter: '佣金收益{c0}元',
+              axisPointer: {
+                lineStyle: {
+                  color: '#ccc',
+                  width: 0.5
+                }
+              },
+              padding: [10, 10, 10, 10]
+            },
+            grid: {
+              left: '15',
+              right: '0',
+              bottom: '15',
+              top: '27',
+              containLabel: true
+            },
+            xAxis: {
+              type: 'category',
+              axisLabel: {
+                color: '#B7B7B7',
+                fontSize: 9,
+                align: 'center'
+              },
+              axisTick: {
+                show: false
+              },
+              axisLine: {
+                lineStyle: {
+                  color: 'rgba(108,123,138,0.08)',
+                  width: 0.5
+                }
+              },
+              data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+            },
+            yAxis: {
+              axisTick: {
+                show: false
+              },
+              axisLine: {
+                show: false
+              },
+              axisLabel: {
+                color: '#B7B7B7',
+                fontSize: 9,
+                align: 'center'
+              },
+              splitLine: {
+                lineStyle: {
+                  color: 'rgba(108,123,138,0.08)',
+                  width: 0.5
+                }
+              },
+              type: 'value'
+            },
+            series: [{
+              data: [1, 2, 3, 4, 5, 6, 6],
+              type: 'line',
+              color: {
+                type: 'linear',
+                x: 0,
+                y: 0,
+                x2: 1,
+                y2: 0,
+                colorStops: [
+                  {
+                    offset: 0, color: '#00EAFF'
+                  },
+                  {
+                    offset: 1, color: '#21CDD3'
+                  }
+                ]
+              },
+              itemStyle: {
+                normal: {
+                  shadowBlur: 30,
+                  shadowColor: 'rgba(255,255,255,1)',
+                  shadowOffsetX: -5,
+                  shadowOffsetY: 5
+
+                }
+              },
+              areaStyle: {
+                color: {
+                  type: 'linear',
+                  x: 0,
+                  x2: 0,
+                  y: 0,
+                  y2: 1,
+                  colorStops: [{
+                    offset: 0, color: 'rgba(26,212,221, 0.5)'
+                  }, {
+                    offset: 1, color: 'rgba(255,255,255, 0)'
+                  }],
+                  globalCoord: false
+                }
+              }
+            }]
+          }
+        },
+        line: {
+          options: {
+            tooltip: {
+              trigger: 'axis',
+              position: ['50%', '50%'],
+              formatter: '佣金收益{c0}元',
+              axisPointer: {
+                lineStyle: {
+                  color: '#ccc',
+                  width: 0.5
+                }
+              },
+              padding: [10, 10, 10, 10]
+            },
+            grid: {
+              left: '15',
+              right: '0',
+              bottom: '15',
+              top: '27',
+              containLabel: true
+            },
+            xAxis: {
+              type: 'category',
+              axisLabel: {
+                color: '#B7B7B7',
+                fontSize: 9,
+                align: 'center'
+              },
+              axisTick: {
+                show: false
+              },
+              axisLine: {
+                lineStyle: {
+                  color: 'rgba(108,123,138,0.08)',
+                  width: 0.5
+                }
+              },
+              data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+            },
+            yAxis: {
+              axisTick: {
+                show: false
+              },
+              axisLine: {
+                show: false
+              },
+              axisLabel: {
+                color: '#B7B7B7',
+                fontSize: 9,
+                align: 'center'
+              },
+              splitLine: {
+                lineStyle: {
+                  color: 'rgba(108,123,138,0.08)',
+                  width: 0.5
+                }
+              },
+              type: 'value'
+            },
+            series: [{
+              data: [1, 2, 3, 4, 5, 6, 6],
+              type: 'line',
+              color: {
+                type: 'linear',
+                x: 0,
+                y: 0,
+                x2: 1,
+                y2: 0,
+                colorStops: [
+                  {
+                    offset: 0, color: '#00EAFF'
+                  },
+                  {
+                    offset: 1, color: '#21CDD3'
+                  }
+                ]
+              },
+              itemStyle: {
+                normal: {
+                  shadowBlur: 30,
+                  shadowColor: 'rgba(255,255,255,1)',
+                  shadowOffsetX: -5,
+                  shadowOffsetY: 5
+
+                }
+              }
+            }, {
+              data: [22, 33, 31, 14, 5, 6, 16],
+              type: 'line',
+              color: {
+                type: 'linear',
+                x: 0,
+                y: 0,
+                x2: 1,
+                y2: 0,
+                colorStops: [
+                  {
+                    offset: 0, color: '#FF8B77'
+                  },
+                  {
+                    offset: 1, color: '#FE6AAC'
+                  }
+                ]
+              },
+              itemStyle: {
+                normal: {
+                  shadowBlur: 30,
+                  shadowColor: 'rgba(255,255,255,1)',
+                  shadowOffsetX: -5,
+                  shadowOffsetY: 5
+
+                }
+              }
+            }]
+          }
+        },
+        pie: {
+          options: {
+            tooltip: {
+              trigger: 'item',
+              formatter: '{b}'
+            },
+            series: [
+              {
+                name: '支付客户数',
+                type: 'pie',
+                radius: ['50%', '80%'],
+                label: {
+                  normal: {
+                    show: false,
+                    position: 'center'
+                  }
+                },
+                labelLine: {
+                  normal: {
+                    show: false
+                  }
+                },
+                data: [
+                  {value: 135, name: '复购客户'},
+                  {value: 300, name: '首次消费客户'}
+                ],
+                color: [
+                  {
+                    type: 'linear',
+                    x: 0,
+                    y: 0,
+                    x2: 1,
+                    y2: 0,
+                    colorStops: [
+                      {
+                        offset: 0, color: '#00EAFF'
+                      },
+                      {
+                        offset: 1, color: '#21CDD3'
+                      }
+                    ]
+                  },
+                  {
+                    type: 'linear',
+                    x: 0,
+                    y: 0,
+                    x2: 1,
+                    y2: 0,
+                    colorStops: [
+                      {
+                        offset: 0, color: '#FF8B77'
+                      },
+                      {
+                        offset: 1, color: '#FE6AAC'
+                      }
+                    ]
+                  }
+                ],
+                itemStyle: {
+                  emphasis: {
+                    shadowBlur: 10,
+                    shadowOffsetX: 0,
+                    shadowColor: 'rgba(255, 255, 255, 0.1)'
+                  }
+                }
+              }
+            ]
+          }
         },
         navList: NAVLIST,
-        dataLine: [1, 2, 3, 4, 5, 6]
+        dataLine: [1, 2, 3, 4, 5, 6, 6],
+        showLine: true
       }
     },
     components: {
-      NavigationBar
-    },
-    onLoad() {
-      this.echartsComponent = this.$mp.page.selectComponent('#echartsId')
-      console.log(this.echartsComponent)
-    },
-    onShow() {
+      NavigationBar,
+      LineEcharts
     },
     methods: {
-      clickNav(item) {
-        this.dataLine = [7, 6, 9, 2, 5, 6]
-        this.navIndex = item.stats * 1
-        this.$forceUpdate()
-      },
-      getData() {
-        if (k % 2) {
-          dataList = [1, 2, 3, 4, 5, 6]
-        } else {
-          dataList = [7, 6, 9, 2, 5, 6]
+      clickNav(item, index) {
+        if (this.navIndex === index) return
+        if (index * 1 === 0) {
+          this.dataLine = [2, 3, 5, 2, 5, 10, 10]
+        } else if (index * 1 === 1) {
+          this.dataLine = [7, 6, 9, 2, 5, 6, 6]
+        } else if (index * 1 === 2) {
+          this.dataLine = [2, 3, 9, 2, 5, 6, 6]
+        } else if (index * 1 === 3) {
+          this.dataLine = [11, 22, 9, 2, 5, 3, 3]
         }
-        k++
-        if (!Chart) {
-          this.init_echarts()
-        } else {
-          this.setTOption(Chart)
-        }
-      },
-      init_echarts() {
-        this.echartsComponent.init((canvas, width, height) => {
-          // 初始化图表
-          Chart = echarts.init(canvas, null, {
-            width: width,
-            height: height
-          })
-          // Chart.setOption(this.getOption());
-          this.setTOption(Chart)
-          return Chart
-        })
-      },
-      setTOption(Chart) {
-        Chart.clear()
-        console.log(Chart)
-        Chart.setOption(this.getOption())
-      },
-      getOption() {
-        var option = {
-          xAxis: {
-            type: 'category',
-            data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-          },
-          yAxis: {
-            type: 'value'
-          },
-          series: [{
-            data: dataList,
-            type: 'line'
-          }]
-        }
-        return option
+        this.ec.options.series[0].data = this.dataLine
+        this.showLine = false
+        setTimeout(() => {
+          this.showLine = true
+        }, 100)
+        this.navIndex = index * 1
       }
     }
   }
@@ -142,6 +411,7 @@
     width: 100%
     min-height: 100vh
     background: $color-background
+    padding-bottom: 20px
   .income-nav
     height: 40px
     padding: 0 20px
@@ -277,6 +547,15 @@
           width: 100%
           height: 100%
           display: block
-  .w
-    width: 1px
+  .ec-box
+    height: 200px
+    .ec-null
+      line-height: 200px
+      text-align: center
+      font-family: $font-family-light
+      font-size: $font-size-small
+      color: #959DBD
+    ec-canvas
+      width: 100%
+      height: 100%
 </style>
