@@ -71,7 +71,7 @@
         </span>
       </div>
       <div class="reg-goods-box">
-        <div @click="_checkShop" class="reg-goods-item" v-for="(item,index) in goodsList" :key="index">
+        <div class="reg-goods-item" v-for="(item,index) in goodsList" :key="index">
           <img :src="item.goods_cover_image" class="reg-goods-img" mode="aspectFill">
           <div class="reg-goods-content">
             <div class="reg-goods-title">{{item.name}}</div>
@@ -194,9 +194,6 @@
         }
         this.goodsList = res.data
         this.isNoGoods = !this.goodsList.length
-      },
-      _checkShop() {
-        wx.setStorageSync('shopId', this.detail.shop_id)
       }
     },
     components: {
