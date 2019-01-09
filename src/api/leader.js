@@ -173,5 +173,15 @@ export default {
   remindDelivery(data, loading = false) {
     const url = `/api/wap/remind-delivery`
     return request.post(url, data, loading)
+  },
+  /**
+   * 获取预售清单
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  getPresellGoods(data, loading = false) {
+    const url = '/api/wap/goods/shop-shelf-presell-goods'
+    return request.get(url, data, loading)
   }
 }

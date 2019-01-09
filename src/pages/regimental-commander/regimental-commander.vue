@@ -54,24 +54,25 @@
           <p class="reg-manager-text">扫一扫</p>
         </div>
         <div class="reg-manager-item" @click="_inDevelopment">
-          <img :src="imageUrl + '/yx-image/group/icon-soon@2x.png'" v-if="imageUrl" class="reg-manager-icon">
+          <img :src="imageUrl + '/yx-image/group/icon-moeny_box@2x.png'" v-if="imageUrl" class="reg-manager-icon">
           <p class="reg-manager-text">团长钱包</p>
         </div>
         <div class="reg-manager-item">
-          <div class="reg-manager-icon"></div>
-          <p class="reg-manager-text"></p>
+          <img :src="imageUrl + '/yx-image/group/iocn-report_forms@2x.png'" v-if="imageUrl" class="reg-manager-icon">
+          <p class="reg-manager-text">数据统计</p>
         </div>
       </div>
     </div>
     <!--商品模块-->
     <div class="reg-goods">
       <div class="rag-goods-tab">
-        <span :class="{'rag-goods-tab-item-active': navIndex === index}" class="rag-goods-tab-item" v-for="(item, index) in nav" :key="index" @click="_setNav(index, item)">
+        <span :class="{'rag-goods-tab-item-active': navIndex === index}" class="rag-goods-tab-item" v-for="(item, index) in nav" :key="index" @click="_setNav(index)">
           {{item.title}}
         </span>
       </div>
-      <div class="reg-goods-box">
-        <div @click="_checkShop" class="reg-goods-item" v-for="(item,index) in goodsList" :key="index">
+      <!--TODO-->
+      <div class="reg-goods-box" v-if="navIndex === 1">
+        <div class="reg-goods-item" v-for="(item,index) in goodsList" :key="index">
           <img :src="item.goods_cover_image" class="reg-goods-img" mode="aspectFill">
           <div class="reg-goods-content">
             <div class="reg-goods-title">{{item.name}}</div>
@@ -80,11 +81,20 @@
             <span class="reg-goods-del-money">{{item.original_price}}元</span>
           </div>
           <div class="ability">
+            <div class="copy-btn">一键复制</div>
             <button class="share" open-type="share" :data-goodsItem="item">
               <img :src="imageUrl + '/yx-image/group/icon-share@2x.png'" v-if="imageUrl" class="share-icon">
             </button>
-            <p class="scale-count">销量{{item.sale_count}}</p>
           </div>
+        </div>
+      </div>
+      <div class="presell-wrapper" v-if="navIndex === 0 && preSell.shelf_title">
+        <div class="title-wrapper border-bottom-1px">
+          <p class="title">{{preSell.shelf_title}}</p>
+          <div class="copy-btn" @click="copyPreSell">一键复制</div>
+        </div>
+        <div class="content-wrapper" v-if="preSell.shelf_content_list">
+          <div v-for="(item, index) in preSell.shelf_content_list" :key="index" class="content">{{item}}</div>
         </div>
       </div>
       <div class="noting" v-if="isNoGoods">
@@ -101,19 +111,20 @@
   import API from '@api'
 
   const PAGE_NAME = 'REGIMENTAL_COMMANDER'
-  const Nav = [{title: '商品推荐', status: 2}, {title: '素材推荐', status: 3}]
+  const Nav = [{title: '预售清单', status: 2}, {title: '商品推荐', status: 3}]
   export default {
     name: PAGE_NAME,
     data() {
       return {
         nav: Nav,
-        navIndex: 0,
+        navIndex: 1,
         isLoading: true,
         leaderDetail: {},
         orderTotal: {},
         goodsList: [],
         adaptation: {height: 195, marginTop: 64.5, hoseMarginTop: 164},
-        isNoGoods: false
+        isNoGoods: false,
+        preSell: {}
       }
     },
     onShareAppMessage(res) {
@@ -122,13 +133,7 @@
       return {
         title: goodsItem.name,
         path: `/pages/goods-detail?id=${goodsItem.id}&shopId=${shopId}`, // 商品详情
-        imageUrl: goodsItem.thumb_image || goodsItem.goods_cover_image,
-        success: (res) => {
-          // 转发成功
-        },
-        fail: (res) => {
-          // 转发失败
-        }
+        imageUrl: goodsItem.thumb_image || goodsItem.goods_cover_image
       }
     },
     async onLoad() {
@@ -141,7 +146,8 @@
       await Promise.all([
         this._getLeaderDetail(),
         this._leaderOrderTotal(),
-        this._getRecommendGoods()
+        this._getRecommendGoods(),
+        this._getPresellGoods()
       ])
       this.$wechat.hideLoading()
       this.isLoading = false
@@ -163,11 +169,20 @@
       _inDevelopment() {
         this.$wechat.showToast('功能正在努力研发中')
       },
-      _setNav(index, item) {
-        if (index === 0) {
+      _setNav(index) {
+        this.navIndex = index
+      },
+      copyPreSell() {
+        this.$wechat.setClipboardData(this.preSell.shelf_content)
+      },
+      async _getPresellGoods() {
+        let res = await API.Leader.getPresellGoods()
+        if (res.error !== this.$ERR_OK) {
+          this.$wechat.showToast(res.message)
           return
         }
-        this._inDevelopment()
+        this.preSell = res.data
+        this.isNoGoods = !this.preSell.shelf_content
       },
       async _getLeaderDetail() {
         let res = await API.Leader.leaderDetail()
@@ -194,9 +209,6 @@
         }
         this.goodsList = res.data
         this.isNoGoods = !this.goodsList.length
-      },
-      _checkShop() {
-        wx.setStorageSync('shopId', this.detail.shop_id)
       }
     },
     components: {
@@ -392,6 +404,37 @@
         background: $color-main
         color: $color-white
 
+    .presell-wrapper
+      .title-wrapper
+        display: flex
+        align-items: center
+        justify-content: space-between
+        height: 40px
+        margin-left: 15px
+        .title
+          font-family: $font-family-medium
+          font-size: $font-size-14
+          color: $color-text-main
+        .copy-btn
+          border-radius: 23px
+          padding: 5px 8px
+          border-1px($color-main, 23px)
+          font-size: $font-size-14
+          color: $color-main
+      .content-wrapper
+        padding-top: 11.5px
+        padding-left: 15px
+        padding-bottom: 20px
+        background: url("./pic-line_bg@2x.png")
+        background-size: 100%
+        .content
+          margin-bottom: 15px
+          font-size: $font-size-14
+          color: #616161
+          &:first-child
+            margin-bottom: 10px
+          &:nth-child(2)
+            margin-bottom: 20px
   .reg-goods-item
     margin-bottom: 9.5px
     display: flex
@@ -450,12 +493,14 @@
       .reg-goods-content
         border-none()
     .ability
+      top: 0px
       bottom: 10px
       right: 0
       position: absolute
       display: flex
       flex-direction: column
       align-items: flex-end
+      justify-content: space-between
       .share
         width: 30px
         background: transparent
@@ -468,6 +513,12 @@
         color: #808080
         font-family: $font-family-regular
         font-size: $font-size-11
+      .copy-btn
+        border-radius: 23px
+        padding: 5px 8px
+        border-1px($color-main, 23px)
+        font-size: $font-size-14
+        color: $color-main
 
   .end
     line-height: 1
