@@ -136,7 +136,7 @@
   import API from '@api'
 
   const PAGE_NAME = 'DATA_OVERVIEW'
-  const NAVLIST = [{text: '昨日', stats: 0}, {text: '近7日', stats: 1}, {text: '近30日', stats: 2}, {text: '近90日', stats: 3}]
+  const NAVLIST = [{text: '昨日', stats: 'yesterday'}, {text: '近7日', stats: 'week'}, {text: '近30日', stats: 'month'}, {text: '近90日', stats: 'season'}]
   export default {
     name: PAGE_NAME,
     data() {
@@ -477,9 +477,9 @@
             tooltip: {
               trigger: 'axis',
               position: ['40%', '0%'],
+              formatter: '笔单价{c0}元',
               axisPointer: {
                 lineStyle: {
-                  type: 'cross',
                   color: '#ccc',
                   width: 0.5
                 }
@@ -702,6 +702,12 @@
     methods: {
       clickNav(item, index) {
         if (this.navIndex === index) return
+        this.getCommissionData(item.stats)
+        this.getCommissionLine(item.stats)
+        this.getCustomerLine(item.stats)
+        this.getMeanLine(item.stats)
+        this.getCustomerPie(item.stats)
+        this.getOrderLine(item.stats)
         this.navIndex = index * 1
       },
       showMsg(index) {

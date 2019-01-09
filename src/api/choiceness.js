@@ -45,5 +45,10 @@ export default {
   createQrCodeApi(data, loading = false) {
     const url = `/api/create-qrcode`
     return request.post(url, data, loading)
+  },
+  // 活动标签列表
+  copyGoodsDetail(id, data, loading = false) {
+    const url = `/api/wap/goods/shop-shelf-goods/${id}`
+    return request.get(url, data, loading)
   }
 }
