@@ -1,23 +1,23 @@
 <template>
   <div class="withdraw">
     <navigation-bar title="提现"></navigation-bar>
-    <div class="withdraw-jump">
-      <div class="withdraw-text">添加银行卡</div>
+    <div class="withdraw-jump" @click="jumpBankcard">
+      <div class="withdraw-text"  :class="addBank === '添加银行卡' ? 'withdraw-text-place' : ''">{{addBank}}</div>
       <img class="jump-arrows" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/cart/icon-pressed@2x.png'">
     </div>
     <div class="withdraw-money">
       <div class="money-title">提现金额</div>
       <div class="money-input-box">
         <div class="money-icon">¥</div>
-        <input type="digit" class="money-input">
+        <input type="digit" class="money-input" v-model="drawMoney">
       </div>
       <div class="money-can-withdraw">
-        <span>可提现金额</span>
-        <span class="money-number">¥300.00</span>
+        <span v-if="walletInfo.remaining">可提现金额</span>
+        <span class="money-number" v-if="walletInfo.remaining">¥{{walletInfo.remaining}}</span>
       </div>
     </div>
     <div class="withdraw-btn-box">
-      <div class="withdraw-btn">提现</div>
+      <div class="withdraw-btn"  @click="submitMoney">提现</div>
     </div>
     <ul class="withdraw-rule">
       <li class="rule-item" v-for="(item, index) in ruleList" v-bind:key="index">
@@ -30,6 +30,7 @@
 
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
+  import API from '@api'
 
   const PAGE_NAME = 'WITHDRAW'
   const RULELIST = [{text: '团长每日可提现3次，单笔限额10000元'}, {text: '微信按提现金额0.1%收取手续费，最低1元'}, {text: '提交成功后，预计1-3个工作日内到账'}]
@@ -38,11 +39,83 @@
     name: PAGE_NAME,
     data() {
       return {
-        ruleList: RULELIST
+        ruleList: RULELIST,
+        bankList: [],
+        addBank: '添加银行卡',
+        addBankId: null,
+        walletInfo: {},
+        drawMoney: '',
+        submitLock: false
       }
     },
     components: {
       NavigationBar
+    },
+    onShow() {
+      this.getWalletMoney()
+      this.getBankList()
+    },
+    methods: {
+      getBankList() {
+        API.Wallet.getBankList().then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.bankList = res.data
+            if (this.bankList.length !== 0) {
+              this.addBank = this.bankList[0].bank
+              this.addBankId = this.bankList[0].id
+            }
+          } else {
+            this.$wechat.showToast(res.message)
+          }
+        })
+      },
+      getWalletMoney() {
+        API.Wallet.getShopMoney().then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.walletInfo = res.data
+          } else {
+            this.$wechat.showToast(res.message)
+          }
+        })
+      },
+      submitMoney () {
+        if (!this.addBankId) {
+          this.$wechat.showToast('请绑定银行卡')
+          return
+        }
+        if (this.drawMoney === '') {
+          this.$wechat.showToast('请输入提现金额')
+          return
+        }
+        if (this.drawMoney * 1 > this.walletInfo.remaining * 1) {
+          this.$wechat.showToast('账户余额不足')
+          return
+        }
+        if (this.submitLock) {
+          return
+        }
+        this.submitLock = true
+        setTimeout(() => {
+          this.submitLock = false
+        }, 3000)
+        API.Wallet.postWithdraw({money: this.drawMoney}).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.$wechat.showToast('提现申请成功')
+            setTimeout(() => {
+              wx.navigateBack()
+            }, 2000)
+          } else {
+            this.$wechat.showToast(res.message)
+          }
+        })
+      },
+      jumpBankcard() {
+        if (!this.addBankId) {
+          wx.navigateTo({url: `/pages/bank-card`})
+        } else {
+          wx.navigateTo({url: `/pages/bank-card?id=${this.addBankId}`})
+        }
+      }
     }
   }
 </script>
@@ -66,6 +139,8 @@
     .withdraw-text
       font-size: $font-size-14
       font-family: $font-family-regular
+      color: $color-text-main
+    .withdraw-text-place
       color: $color-text-assist
     .jump-arrows
       display: block
@@ -104,6 +179,7 @@
     font-size: $font-size-14
     font-family: $font-family-regular
     color: $color-text-assist
+    min-height: $font-size-14
     .money-number
       color: $color-text-main
       margin-left: 5px
@@ -129,8 +205,8 @@
       align-items: center
       margin-bottom: 5px
       .icon
-        width: 5px
-        height: 5px
+        width: 4px
+        height: 4px
         background: $color-text-assist
         border-radius: 50%
         margin-right: 5px

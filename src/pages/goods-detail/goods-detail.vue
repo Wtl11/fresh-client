@@ -153,7 +153,6 @@
     },
     onShareAppMessage() {
       let shopId = wx.getStorageSync('shopId')
-      console.log(`/pages/goods-detail?id=${this.goodsMsg.id}&shopId=${shopId}`)
       return {
         title: this.goodsMsg.name,
         path: `/pages/goods-detail?id=${this.goodsMsg.id}&shopId=${shopId}`, // 商品详情

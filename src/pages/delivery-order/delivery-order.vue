@@ -11,8 +11,8 @@
         {{tabIndex === index ? item.month_day : item.day}}
       </div>
     </div>
-    <div class="big-box">
-      <div class="order-big-box" :style="{'transform': ' translateX('+ -(tabIndex * width) +'px)'}">
+    <div class="big-box" v-if="!showMore">
+      <div class="order-big-box" :style="{'transform': ' translateX('+ -(tabIndex * width) +'px)',width: width * orderList.length + 'px'}">
         <!--售后申请-->
         <div class="order-box" v-for="(item, index) in orderList" :key="index">
           <div class="order-status">
@@ -86,12 +86,14 @@
         if (this.tabIndex === index) {
           return
         }
-        this.tabIndex = index
         let query = wx.createSelectorQuery()
         query.selectAll('.item').boundingClientRect()
         query.selectAll('.item-active').boundingClientRect()
         query.exec((res) => {
-          this.move = index === 0 ? e.target.offsetLeft + (res[1][0].width - 30) / 2 : e.target.offsetLeft - res[0][index].width / 2 + (res[1][0].width - 30) / 2 - 6
+          let difference = (res[1][0].width - res[0][index].width) / 2
+          difference = this.tabIndex < index ? difference - 6 : -difference - 7
+          this.tabIndex = index
+          this.move = index === 0 ? e.target.offsetLeft + (res[1][0].width - 30) / 2 : e.target.offsetLeft - difference - res[0][index].width / 2 + (res[1][0].width - 30) / 2
         })
       },
       async _getDelivery() {
@@ -154,7 +156,7 @@
       line-height: 40px
       font-size: 15px
       white-space: nowrap
-      width: 16vw
+      width: 14vw
       box-sizing border-box
       text-align: center
       display: inline-block
@@ -163,7 +165,7 @@
       transition: all 0.3s
       transform-origin: center, center
     .item-active
-      width: 25.8vw
+      width: 24.8vw
       box-sizing: border-box
       font-size: $font-size-16
       font-family: $font-family-medium

@@ -46,7 +46,6 @@
 
 <script type="text/ecmascript-6">
   import WePaint from '@components/we-paint/we-paint'
-  // import { mapGetters } from 'vuex'
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import API from '@api'
   import {oauthComputed} from '@state/helpers'
@@ -111,9 +110,8 @@
       },
       toOrderDetail(item) {
         wx.navigateTo({
-          url: `/pages/order-detail?id=${item.id}&&type=1`
+          url: `/pages/after-order?id=${item.id}`
         })
-        // this.$router.push('/pages/oeder-detail')
       }
     }
   }

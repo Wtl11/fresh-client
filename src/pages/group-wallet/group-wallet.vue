@@ -3,31 +3,37 @@
     <navigation-bar title="团长钱包"></navigation-bar>
     <div class="wallet-top">
       <img class="bgimg-url" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/wallet/icon-money_bg@2x.png'">
-      <div class="wallet-box">
+      <div class="wallet-box" v-if="walletInfo.remaining">
         <div class="wallet-box-left">
           <div class="wallet-box-left-name">钱包余额(元)</div>
-          <div class="wallet-box-left-number">2859.00</div>
+          <div class="wallet-box-left-number">{{walletInfo.remaining}}</div>
         </div>
-        <div class="wallet-box-right">提现</div>
+        <div class="wallet-box-right" @click="jumpWithdraw">提现</div>
       </div>
       <div class="wallet-bottom">
         <div class="wallet-bottom-main">
-          <div class="wallet-main-text">
-            <div class="jump-text">收入:￥</div>
-            <div class="jump-money">200.00</div>
-            <img class="jump-arrows" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/cart/icon-pressed@2x.png'">
+          <div class="wallet-main-text" @click="jumpIncome">
+            <div class="jump-text" v-if="walletInfo.income_money">收入:￥</div>
+            <div class="jump-money" v-if="walletInfo.income_money">{{walletInfo.income_money}}</div>
+            <img class="jump-arrows" mode="aspectFill" v-if="imageUrl && walletInfo.income_money" :src="imageUrl + '/yx-image/cart/icon-pressed@2x.png'">
           </div>
-          <div class="wallet-main-text">
-            <div class="jump-text">收入:￥</div>
-            <div class="jump-money">200.00</div>
-            <img class="jump-arrows" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/cart/icon-pressed@2x.png'">
+          <div class="wallet-main-text" @click="jumpExpend">
+            <div class="jump-text" v-if="walletInfo.outgo_money">支出:￥</div>
+            <div class="jump-money" v-if="walletInfo.outgo_money">{{walletInfo.outgo_money}}</div>
+            <img class="jump-arrows" mode="aspectFill" v-if="imageUrl && walletInfo.outgo_money" :src="imageUrl + '/yx-image/cart/icon-pressed@2x.png'">
           </div>
           <div class="wallet-line"></div>
         </div>
       </div>
     </div>
     <div class="wallet-list">
-      <wallet-info></wallet-info>
+      <div class="item-list" v-for="(item, index) in walletList" v-bind:key="index">
+        <wallet-info :wechatInfo="item"></wallet-info>
+      </div>
+    </div>
+    <div class="noting" v-if="walletMore && walletList.length === 0">
+      <div class="notingimg"><img class="img" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'" alt=""></div>
+      <div class="txt">空空如也</div>
     </div>
   </div>
 </template>
@@ -35,6 +41,7 @@
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import WalletInfo from '@components/wallet-info/wallet-info'
+  import API from '@api'
 
   const PAGE_NAME = 'GROUP_WALLET'
 
@@ -42,12 +49,86 @@
     name: PAGE_NAME,
     data() {
       return {
-
+        walletInfo: {},
+        walletPage: 1,
+        walletList: [],
+        walletMore: false
       }
     },
     components: {
       NavigationBar,
       WalletInfo
+    },
+    onShow() {
+      this.getWalletMoney()
+      this.getNewWalletList()
+    },
+    onReachBottom() {
+      this.getMoreWalletList()
+    },
+    methods: {
+      jumpWithdraw() {
+        wx.navigateTo({url: `/pages/withdraw`})
+      },
+      jumpIncome() {
+        wx.navigateTo({url: `/pages/income-record`})
+      },
+      jumpExpend() {
+        wx.navigateTo({url: `/pages/expend-record`})
+      },
+      getWalletMoney() {
+        API.Wallet.getShopMoney().then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.walletInfo = res.data
+          } else {
+            this.$wechat.showToast(res.message)
+          }
+          console.log(res)
+        })
+      },
+      getNewWalletList() {
+        this.walletPage = 1
+        this.walletMore = false
+        let data = {
+          bill_type: 0,
+          page: this.walletPage,
+          limit: 10
+        }
+        API.Wallet.getShopBillList(data).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.walletList = res.data
+            this._isUpList(res)
+          } else {
+            this.$wechat.showToast(res.message)
+          }
+          console.log(res)
+        })
+      },
+      getMoreWalletList() {
+        if (this.walletMore) {
+          return
+        }
+        let data = {
+          bill_type: 0,
+          page: this.walletPage,
+          limit: 10
+        }
+        API.Wallet.getShopBillList(data).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.walletList = this.walletList.concat(res.data)
+            this._isUpList(res)
+          } else {
+            this.$wechat.showToast(res.message)
+          }
+          console.log(res)
+        })
+      },
+      _isUpList(res) {
+        this.walletPage++
+        if (this.walletList.length >= res.meta.total * 1) {
+          this.walletMore = true
+        }
+      }
     }
   }
 </script>
@@ -144,4 +225,20 @@
   .wallet-list
     padding-left: 15px
     box-sizing: border-box
+  .noting
+    text-align: center
+    margin-top: 50px
+    .notingimg
+      width: 116px
+      height: 110px
+      margin: 0 auto 15px
+      .img
+        display: block
+        width: 100%
+        height: 100%
+    .txt
+      font-family: $font-family-regular
+      font-size: $font-size-14
+      color: $color-text-sub
+
 </style>

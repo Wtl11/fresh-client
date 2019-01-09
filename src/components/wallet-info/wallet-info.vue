@@ -1,19 +1,20 @@
 <template>
   <div class="wallet-info">
     <div class="info-left">
-      <img class="info-left-img">
+      <img class="info-left-img" :src="wechatInfo.head_image_url" v-if="wechatInfo.customer_id * 1 !== 0">
+      <img class="info-left-img" src="" v-if="wechatInfo.customer_id * 1 === 0">
     </div>
     <div class="info-right">
       <div class="info-text-box">
-        <div class="info-text-title">张三丰购买了 40斤新鲜柠檬</div>
+        <div class="info-text-title">{{wechatInfo.title}}</div>
         <div class="info-text-bottom">
-          <div class="label-btn label-btn-active">佣金返还</div>
-          <div class="info-time">2018-06-05 10:22:50</div>
+          <div class="label-btn " :class="{'label-btn-active': wechatInfo.type === 30, 'label-btn-active': wechatInfo.type === 31}">{{wechatInfo.type_str}}</div>
+          <div class="info-time">{{wechatInfo.created_at}}</div>
         </div>
       </div>
       <div class="info-money-box">
-        <div class="money-number money-subtract">+5.00</div>
-        <div class="money-balance">余额 ￥1000.00</div>
+        <div class="money-number" :class="{'money-subtract': wechatInfo.type === 30, 'money-subtract': wechatInfo.type === 31}">{{wechatInfo.total}}</div>
+        <div class="money-balance">余额 ￥{{wechatInfo.after_remaining}}</div>
         <div class="withdraw"></div>
       </div>
     </div>
@@ -25,6 +26,12 @@
 
   export default {
     name: COMPONENT_NAME,
+    props: {
+      wechatInfo: {
+        type: Object,
+        default: {}
+      }
+    },
     data() {
       return {
 
@@ -63,7 +70,7 @@
         font-size: $font-size-14
         font-family: $font-family-regular
         color: $color-text-main
-        width: 190px
+        width: 170px
         margin-bottom: 8px
         no-wrap()
       .info-text-bottom
@@ -74,8 +81,9 @@
           color: #616161
           font-family: $font-family-regular
           height: 14px
-          line-height: 14.5px
+          line-height: 15px
           padding: 0 5px
+          border-radius: 8.5px
           border-1px(#616161, 8.5px)
           margin-right: 5px
         .label-btn-active
@@ -90,11 +98,11 @@
         text-align: right
       .money-number
         font-size: $font-size-16
-        color: $color-money
+        color: $color-text-main
         font-family: $font-family-medium
         margin-bottom: 8px
       .money-subtract
-        color: $color-text-main
+        color: $color-money
       .money-balance
         font-size: $font-size-11
         color: $color-text-assist
