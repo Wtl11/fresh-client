@@ -53,14 +53,14 @@
           <img :src="imageUrl + '/yx-image/group/icon-scan@2x.png'" v-if="imageUrl" class="reg-manager-icon">
           <p class="reg-manager-text">扫一扫</p>
         </div>
-        <div class="reg-manager-item" @click="_inDevelopment">
+        <navigator url="/pages/group-wallet" hover-class="none" class="reg-manager-item">
           <img :src="imageUrl + '/yx-image/group/icon-moeny_box@2x.png'" v-if="imageUrl" class="reg-manager-icon">
           <p class="reg-manager-text">团长钱包</p>
-        </div>
-        <div class="reg-manager-item">
+        </navigator>
+        <navigator url="/pages/data-overview" hover-class="none" class="reg-manager-item">
           <img :src="imageUrl + '/yx-image/group/iocn-report_forms@2x.png'" v-if="imageUrl" class="reg-manager-icon">
           <p class="reg-manager-text">数据统计</p>
-        </div>
+        </navigator>
       </div>
     </div>
     <!--商品模块-->
@@ -72,7 +72,7 @@
       </div>
       <!--TODO-->
       <div class="reg-goods-box" v-if="navIndex === 1">
-        <div class="reg-goods-item" v-for="(item,index) in goodsList" :key="index">
+        <navigator :url="'/pages/copy-detail?id=' + item.id" class="reg-goods-item" v-for="(item,index) in goodsList" :key="index">
           <img :src="item.goods_cover_image" class="reg-goods-img" mode="aspectFill">
           <div class="reg-goods-content">
             <div class="reg-goods-title">{{item.name}}</div>
@@ -86,7 +86,7 @@
               <img :src="imageUrl + '/yx-image/group/icon-share@2x.png'" v-if="imageUrl" class="share-icon">
             </button>
           </div>
-        </div>
+        </navigator>
       </div>
       <div class="presell-wrapper" v-if="navIndex === 0 && preSell.shelf_title">
         <div class="title-wrapper border-bottom-1px">

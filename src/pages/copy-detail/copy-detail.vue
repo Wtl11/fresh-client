@@ -43,7 +43,6 @@
     },
     onLoad(options) {
       this.goodsId = options.id
-      console.log(this.goodsId)
       this.getGoodsDetail()
     },
     onShareAppMessage() {
@@ -74,24 +73,34 @@
             })
           }
         })
-        // this.$wx.saveImageToPhotosAlbum({
-        //   filePath: '',
-        //   success: () => {
-        //   },
-        //   fail: () => {
-        //     // 拒绝授权重新调起授权
-        //     this.active = 1
-        //     this.$wx.openSetting()
-        //   }
-        // })
+        this.goodsImgList.map((item) => {
+          let that = this
+          this.$wx.downloadFile({
+            url: item.image_url, // 仅为示例，并非真实的资源
+            success(res) {
+              if (res.statusCode === 200) {
+                that.$wx.saveImageToPhotosAlbum({
+                  filePath: res.tempFilePath,
+                  success: () => {
+                  },
+                  fail: () => {
+                    // 拒绝授权重新调起授权
+                    this.active = 1
+                    this.$wx.openSetting()
+                  }
+                })
+              }
+            }
+          })
+        })
       },
       getGoodsDetail() {
         API.Choiceness.copyGoodsDetail(this.goodsId, {is_presell_goods: 1}).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.goodsMsg = res.data
             console.log(this.goodsMsg)
-            this.goodsImgList.push(...res.data.goods_banner_images)
-            this.goodsImgList.push(...res.data.goods_detail_images)
+            this.goodsImgList = this.goodsImgList.concat(res.data.goods_banner_images)
+            this.goodsImgList = this.goodsImgList.concat(res.data.goods_detail_images)
           } else {
             this.$wechat.showToast(res.message)
           }

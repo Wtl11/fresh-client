@@ -2,7 +2,7 @@
   <div class="wallet-info">
     <div class="info-left">
       <img class="info-left-img" :src="wechatInfo.head_image_url" v-if="wechatInfo.customer_id * 1 !== 0">
-      <img class="info-left-img" src="" v-if="wechatInfo.customer_id * 1 === 0">
+      <img class="info-left-img" src="" v-if="wechatInfo.customer_id * 1 === 0 && imageUrl" :src="imageUrl + '/yx-image/wallet/pic-platform_head@2x.png'">
     </div>
     <div class="info-right">
       <div class="info-text-box">

@@ -131,7 +131,6 @@
 
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
-  import LineEcharts from '@components/line-echarts/line-echarts'
   import ConfirmMsg from '@components/confirm-msg/confirm-msg'
   import API from '@api'
 
@@ -477,8 +476,8 @@
             tooltip: {
               trigger: 'axis',
               position: ['40%', '0%'],
-              formatter: '笔单价{c0}元',
               axisPointer: {
+                type: 'cross',
                 lineStyle: {
                   color: '#ccc',
                   width: 0.5
@@ -671,7 +670,7 @@
           }
         },
         navList: NAVLIST,
-        dataLine: [1, 2, 3, 4, 5, 6, 6],
+        dataLine: [],
         consume: {},
         orderPrice: {},
         commission: {},
@@ -682,13 +681,12 @@
         showMeanLine: false,
         showPie: false,
         showOrderLine: false,
-        orderDiff: 1,
+        orderDiff: 7,
         msg: ''
       }
     },
     components: {
       NavigationBar,
-      LineEcharts,
       ConfirmMsg
     },
     onLoad() {
@@ -782,18 +780,10 @@
       getMeanLine(time) {
         API.Data.getMeanCustomer({time: time, start_time: '', end_time: ''}).then((res) => {
           if (res.error === this.$ERR_OK) {
-            console.log(res.data)
-            this.orderDiff = res.data.diff
-            this.showMenLine = false
-            let arr = []
-            let date = []
-            date.push(res.data.before.at)
-            date.push(res.data.current.at)
-            arr.push(res.data.before.count)
-            arr.push(res.data.current.count)
-            this.meanLine.options.series[0].data = arr
+            let date = this._infoDate(res.data)
+            let arr = this._infoData(res.data)
+            this.meanLine.options.series[0].data = arr.value
             this.meanLine.options.xAxis.data = date
-            console.log(arr, date)
             setTimeout(() => {
               this.showMeanLine = true
             }, 100)
