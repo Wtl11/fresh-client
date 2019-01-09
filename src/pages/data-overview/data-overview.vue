@@ -477,7 +477,6 @@
               trigger: 'axis',
               position: ['40%', '0%'],
               axisPointer: {
-                type: 'cross',
                 lineStyle: {
                   color: '#ccc',
                   width: 0.5
