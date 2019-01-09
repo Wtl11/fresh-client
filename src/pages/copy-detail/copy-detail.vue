@@ -47,10 +47,9 @@
       this.getGoodsDetail()
     },
     onShareAppMessage() {
-      let shopId = wx.getStorageSync('shopId')
       return {
         title: this.goodsMsg.name,
-        path: `/pages/goods-detail?id=${this.goodsId}&shopId=${shopId}`, // 商品详情
+        path: `/pages/goods-detail?id=${this.goodsId}&shopId=${this.goodsMsg.shop_id}`, // 商品详情
         imageUrl: this.goodsMsg.thumb_image || this.goodsMsg.goods_cover_image,
         success: (res) => {
           // 转发成功
