@@ -80,12 +80,12 @@
             <span class="reg-goods-money">{{item.shop_price}}<span class="reg-goods-small">元</span></span>
             <span class="reg-goods-del-money">{{item.original_price}}元</span>
           </div>
-          <div class="ability">
-            <div class="copy-btn">一键复制</div>
-            <button class="share" :data-goodsItem="item" @click.stop="_shareGoods(item)">
-              <img :src="imageUrl + '/yx-image/group/icon-share@2x.png'" v-if="imageUrl" class="share-icon">
-            </button>
-          </div>
+          <!--<div class="ability">-->
+          <!--<div class="copy-btn">一键复制</div>-->
+          <!--<button class="share" :data-goodsItem="item" @click.stop="_shareGoods(item)">-->
+          <!--<img :src="imageUrl + '/yx-image/group/icon-share@2x.png'" v-if="imageUrl" class="share-icon">-->
+          <!--</button>-->
+          <!--</div>-->
         </navigator>
       </div>
       <div class="presell-wrapper" v-if="navIndex === 0 && preSell.shelf_title">
@@ -423,7 +423,8 @@
         align-items: center
         justify-content: space-between
         height: 40px
-        margin-left: 15px
+        text-indent: 15px
+        margin-bottom: 4px
         .title
           font-family: $font-family-medium
           font-size: $font-size-14
@@ -441,9 +442,10 @@
         background: url("./pic-line_bg@2x.png")
         background-size: 100%
         .content
-          margin-bottom: 15px
+          margin-bottom: 25px
           font-size: $font-size-14
           color: #616161
+          line-height: 18px
           &:first-child
             margin-bottom: 10px
           &:nth-child(2)
@@ -467,7 +469,7 @@
       margin-left: 10px
       width: 75%
       .reg-goods-title
-        width: 64%
+        width: 100%
         margin-top: 3px
         font-size: $font-size-16
         font-family: $font-family-medium
