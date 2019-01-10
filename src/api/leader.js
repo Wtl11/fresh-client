@@ -183,5 +183,15 @@ export default {
   getPresellGoods(data, loading = false) {
     const url = '/api/wap/goods/shop-shelf-presell-goods'
     return request.get(url, data, loading)
+  },
+  /**
+   * 店铺商品小程序卡片
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  goodsThumb(data, loading = false) {
+    const url = '/api/wap/goods/shop-shelf-goods-thumb'
+    return request.get(url, data, loading)
   }
 }

@@ -1,13 +1,13 @@
 <template>
   <div class="link-group">
-    <div scroll-y class="link-box" v-show="linkShow" @touchmove.prevent=""  @click.stop="hideLink"></div>
+    <div scroll-y class="link-box" v-show="linkShow" @touchmove.prevent="" @click.stop="hideLink"></div>
     <div class="link-bottom" :class="linkShow ? 'show' : ''">
       <div v-if="linkType === 1" class="link-tab link-tab-border" @click.stop="clipWechat">
         复制微信号：{{wechatInfo.wx_account}}
       </div>
       <div v-if="linkType === 1" class="link-tab" @click.stop="callPhone">呼叫：{{wechatInfo.mobile}}</div>
-      <button open-type="share" v-if="linkType === 2" class="link-tab link-tab-border"  @click.stop="hideLink">发送给朋友</button>
-      <div v-if="linkType === 2" class="link-tab" @click.stop="saveImg">生成卡片保存分享</div>
+      <button open-type="share" v-if="linkType === 2" class="link-tab link-tab-border" @click.stop="hideLink">发送给朋友</button>
+      <div v-if="linkType === 2 && isSharePoster" class="link-tab" @click.stop="saveImg">生成卡片保存分享</div>
       <div class="line"></div>
       <div class="link-tab" @click.stop="hideLink">取消</div>
     </div>
@@ -30,6 +30,10 @@
       linkType: {
         type: Number,
         default: 1
+      },
+      isSharePoster: {
+        type: Boolean, // 是否展示生成海报
+        default: true
       }
     },
     data() {

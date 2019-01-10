@@ -72,7 +72,7 @@
       </div>
       <!--TODO-->
       <div class="reg-goods-box" v-if="navIndex === 1">
-        <navigator :url="'/pages/copy-detail?id=' + item.id" class="reg-goods-item" v-for="(item,index) in goodsList" :key="index">
+        <navigator :url="'/pages/copy-detail?id=' + item.id" hover-class="none" class="reg-goods-item" v-for="(item,index) in goodsList" :key="index">
           <img :src="item.goods_cover_image" class="reg-goods-img" mode="aspectFill">
           <div class="reg-goods-content">
             <div class="reg-goods-title">{{item.name}}</div>
@@ -82,7 +82,7 @@
           </div>
           <div class="ability">
             <div class="copy-btn">一键复制</div>
-            <button class="share" open-type="share" :data-goodsItem="item">
+            <button class="share" :data-goodsItem="item" @click.stop="_shareGoods(item)">
               <img :src="imageUrl + '/yx-image/group/icon-share@2x.png'" v-if="imageUrl" class="share-icon">
             </button>
           </div>
@@ -103,37 +103,43 @@
       </div>
     </div>
     <div class="end" v-if="!isNoGoods">— 到底了—</div>
+    <link-group ref="shareList" :linkType="2" :isSharePoster="false"></link-group>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import API from '@api'
+  import LinkGroup from '@components/link-group/link-group'
 
   const PAGE_NAME = 'REGIMENTAL_COMMANDER'
   const Nav = [{title: '预售清单', status: 2}, {title: '商品推荐', status: 3}]
   export default {
     name: PAGE_NAME,
+    components: {
+      LinkGroup,
+      NavigationBar
+    },
     data() {
       return {
         nav: Nav,
-        navIndex: 1,
+        navIndex: 0,
         isLoading: true,
         leaderDetail: {},
         orderTotal: {},
         goodsList: [],
         adaptation: {height: 195, marginTop: 64.5, hoseMarginTop: 164},
         isNoGoods: false,
-        preSell: {}
+        preSell: {},
+        goodsItem: {}
       }
     },
     onShareAppMessage(res) {
-      let goodsItem = res.target.dataset.goodsitem
       let shopId = wx.getStorageSync('shopId')
       return {
-        title: goodsItem.name,
-        path: `/pages/goods-detail?id=${goodsItem.id}&shopId=${shopId}`, // 商品详情
-        imageUrl: goodsItem.thumb_image || goodsItem.goods_cover_image
+        title: this.goodsItem.name,
+        path: `/pages/goods-detail?id=${this.goodsItem.id}&shopId=${shopId}`, // 商品详情
+        imageUrl: this.goodsItem.thumb_image || this.goodsItem.thumb_image
       }
     },
     async onLoad() {
@@ -146,7 +152,6 @@
       await Promise.all([
         this._getLeaderDetail(),
         this._leaderOrderTotal(),
-        this._getRecommendGoods(),
         this._getPresellGoods()
       ])
       this.$wechat.hideLoading()
@@ -158,6 +163,13 @@
       }
     },
     methods: {
+      async _shareGoods(item) {
+        this.goodsItem = item
+        let res = await API.Leader.goodsThumb({id: item.id})
+        this.$refs.shareList.showLink()
+        this.goodsItem.thumb_image = res.error === this.$ERR_OK ? res.data.thumb_image : {}
+        console.log(res)
+      },
       _scanCode() {
         wx.scanCode({
           success(res) {
@@ -169,7 +181,8 @@
       _inDevelopment() {
         this.$wechat.showToast('功能正在努力研发中')
       },
-      _setNav(index) {
+      async _setNav(index) {
+        await this._getRecommendGoods()
         this.navIndex = index
       },
       copyPreSell() {
@@ -201,6 +214,9 @@
         this.orderTotal = res.data
       },
       async _getRecommendGoods() {
+        if (this.goodsList.length) {
+          return
+        }
         let res = await API.Leader.recommendGoods()
         if (res.error !== this.$ERR_OK) {
           this.$wechat.showToast(res.message)
@@ -210,9 +226,6 @@
         this.goodsList = res.data
         this.isNoGoods = !this.goodsList.length
       }
-    },
-    components: {
-      NavigationBar
     }
   }
 </script>
@@ -435,6 +448,7 @@
             margin-bottom: 10px
           &:nth-child(2)
             margin-bottom: 20px
+
   .reg-goods-item
     margin-bottom: 9.5px
     display: flex
@@ -453,7 +467,7 @@
       margin-left: 10px
       width: 75%
       .reg-goods-title
-        width: 100%
+        width: 64%
         margin-top: 3px
         font-size: $font-size-16
         font-family: $font-family-medium
