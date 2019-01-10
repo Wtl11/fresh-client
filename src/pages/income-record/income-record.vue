@@ -36,7 +36,7 @@
             </div>
           </div>
           <div class="income-item" v-for="(item, index) in awaitIncomeList" v-bind:key="index">
-            <wallet-info :wechatInfo="item"></wallet-info>
+            <wallet-info :wechatInfo="item" :wechatType="2"></wallet-info>
           </div>
           <div class="noting" v-if="awaitIncomeMore && awaitIncomeList.length === 0">
             <div class="notingimg"><img class="img" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'" alt=""></div>

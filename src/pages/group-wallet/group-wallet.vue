@@ -228,6 +228,7 @@
   .noting
     text-align: center
     margin-top: 50px
+    padding-top: 50px
     .notingimg
       width: 116px
       height: 110px

@@ -99,7 +99,10 @@
           if (res.error === this.$ERR_OK) {
             this.goodsMsg = res.data
             console.log(this.goodsMsg)
-            this.goodsImgList = this.goodsImgList.concat(res.data.goods_banner_images)
+            let data = {
+              image_url: this.goodsMsg.goods_cover_image
+            }
+            this.goodsImgList.push(data)
             this.goodsImgList = this.goodsImgList.concat(res.data.goods_detail_images)
           } else {
             this.$wechat.showToast(res.message)
