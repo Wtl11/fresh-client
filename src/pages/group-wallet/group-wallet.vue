@@ -214,7 +214,7 @@
             display: block
             width: 7.5px
             height: 12.5px
-            margin-left: 4px
+            margin-left: 5px
         .wallet-line
           position: absolute
           left: 50%

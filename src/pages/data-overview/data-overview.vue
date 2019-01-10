@@ -394,7 +394,7 @@
               type: 'value'
             },
             series: [{
-              data: [1, 2, 3, 4, 5, 6, 6],
+              data: [],
               type: 'line',
               lineStyle: {
                 normal: {
@@ -688,6 +688,7 @@
             let arr = this._infoData(res.data)
             this.meanLine.options.series[0].data = arr.value
             this.meanLine.options.xAxis.data = date
+            this.showMeanLine = false
             setTimeout(() => {
               this.showMeanLine = true
             }, 100)
