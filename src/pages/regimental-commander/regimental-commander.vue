@@ -71,7 +71,7 @@
         </span>
       </div>
       <!--TODO-->
-      <div class="reg-goods-box" v-if="navIndex === 1">
+      <srcoll-view scroll-y class="reg-goods-box" v-if="navIndex === 1" @scroll="_getMore">
         <navigator :url="'/pages/copy-detail?id=' + item.id" hover-class="none" class="reg-goods-item" v-for="(item,index) in goodsList" :key="index">
           <img :src="item.goods_cover_image" class="reg-goods-img" mode="aspectFill">
           <div class="reg-goods-content">
@@ -87,7 +87,7 @@
           <!--</button>-->
           <!--</div>-->
         </navigator>
-      </div>
+      </srcoll-view>
       <div class="presell-wrapper" v-if="navIndex === 0 && preSell.shelf_title">
         <div class="title-wrapper border-bottom-1px">
           <p class="title">{{preSell.shelf_title}}</p>
@@ -131,7 +131,9 @@
         adaptation: {height: 195, marginTop: 64.5, hoseMarginTop: 164},
         isNoGoods: false,
         preSell: {},
-        goodsItem: {}
+        goodsItem: {},
+        page: 1,
+        length: 1
       }
     },
     onShareAppMessage(res) {
@@ -182,7 +184,9 @@
         this.$wechat.showToast('功能正在努力研发中')
       },
       async _setNav(index) {
-        await this._getRecommendGoods()
+        if (index === 1 && !this.goodsList.length) {
+          await this._getRecommendGoods()
+        }
         this.navIndex = index
       },
       copyPreSell() {
@@ -213,17 +217,26 @@
         }
         this.orderTotal = res.data
       },
+      async _getMore() {
+        this.page++
+        await this._getRecommendGoods()
+      },
       async _getRecommendGoods() {
-        if (this.goodsList.length) {
+        if (this.page > this.length) {
           return
         }
-        let res = await API.Leader.recommendGoods()
+        let res = await API.Leader.recommendGoods({page: this.page})
         if (res.error !== this.$ERR_OK) {
           this.$wechat.showToast(res.message)
           this.isNoGoods = true
           return
         }
-        this.goodsList = res.data
+        this.length = res.meta.last_page
+        if (this.page === 1) {
+          this.goodsList = res.data
+        } else {
+          this.goodsList = this.goodsList.concat(res.data)
+        }
         this.isNoGoods = !this.goodsList.length
       }
     }
@@ -389,6 +402,8 @@
     background: $color-white
     margin: 12px auto
     padding: 25px 10px 30px
+    .reg-goods-box
+      height: 880px
     .rag-goods-tab
       width: 176px
       margin: 0 auto
