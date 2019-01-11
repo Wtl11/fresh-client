@@ -321,6 +321,7 @@
           .get-code-disable
             background: #F8FAF7
             color: #B7B7B7
+            border-radius: 15px
             border-1px($color-line, 15px)
             col-center()
         .btn

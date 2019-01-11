@@ -438,12 +438,12 @@
         align-items: center
         justify-content: space-between
         height: 40px
-        text-indent: 15px
         margin-bottom: 4px
         .title
           font-family: $font-family-medium
           font-size: $font-size-14
           color: $color-text-main
+          text-indent: 15px
         .copy-btn
           border-radius: 23px
           padding: 5px 8px
