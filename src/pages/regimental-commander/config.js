@@ -6,6 +6,7 @@ page.$mount()
 
 export default {
   config: {
-    navigationBarTitleText: '团长信息'
+    navigationBarTitleText: '团长信息',
+    onReachBottomDistance: 100
   }
 }
