@@ -71,7 +71,7 @@
         </span>
       </div>
       <!--TODO-->
-      <srcoll-view scroll-y class="reg-goods-box" v-if="navIndex === 1" @scroll="_getMore">
+      <div class="reg-goods-box" v-if="navIndex === 1">
         <navigator :url="'/pages/copy-detail?id=' + item.id" hover-class="none" class="reg-goods-item" v-for="(item,index) in goodsList" :key="index">
           <img :src="item.goods_cover_image" class="reg-goods-img" mode="aspectFill">
           <div class="reg-goods-content">
@@ -87,7 +87,7 @@
           <!--</button>-->
           <!--</div>-->
         </navigator>
-      </srcoll-view>
+      </div>
       <div class="presell-wrapper" v-if="navIndex === 0 && preSell.shelf_title">
         <div class="title-wrapper border-bottom-1px">
           <p class="title">{{preSell.shelf_title}}</p>
@@ -143,6 +143,13 @@
         path: `/pages/goods-detail?id=${this.goodsItem.id}&shopId=${shopId}`, // 商品详情
         imageUrl: this.goodsItem.thumb_image || this.goodsItem.thumb_image
       }
+    },
+    async onReachBottom() {
+      if (this.navIndex === 0) {
+        return
+      }
+      this.page++
+      await this._getRecommendGoods()
     },
     async onShow() {
       let res = this.$wx.getSystemInfoSync()
@@ -216,10 +223,6 @@
           return
         }
         this.orderTotal = res.data
-      },
-      async _getMore() {
-        this.page++
-        await this._getRecommendGoods()
       },
       async _getRecommendGoods() {
         if (this.page > this.length) {
@@ -402,8 +405,6 @@
     background: $color-white
     margin: 12px auto
     padding: 25px 10px 30px
-    .reg-goods-box
-      height: 880px
     .rag-goods-tab
       width: 176px
       margin: 0 auto
