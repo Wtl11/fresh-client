@@ -50,9 +50,9 @@ export default {
    * @param loading
    * @returns {*}
    */
-  recommendGoods(loading = false) {
+  recommendGoods(data, loading = false) {
     const url = `/api/wap/goods/shop-shelf-hot-goods`
-    return request.get(url, {}, loading)
+    return request.get(url, data, loading)
   },
   /**
    * 获取团长统计信息
