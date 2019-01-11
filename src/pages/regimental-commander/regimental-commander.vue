@@ -113,7 +113,7 @@
   import LinkGroup from '@components/link-group/link-group'
 
   const PAGE_NAME = 'REGIMENTAL_COMMANDER'
-  const Nav = [{title: '预售清单', status: 2}, {title: '商品推荐', status: 3}]
+  const Nav = [{title: '预售清单', status: 2}, {title: '商品资料', status: 3}]
   export default {
     name: PAGE_NAME,
     components: {
@@ -152,6 +152,9 @@
       await this._getRecommendGoods()
     },
     async onShow() {
+      this.page = 1
+      this.goodsList = []
+      this.navIndex = 0
       let res = this.$wx.getSystemInfoSync()
       let statusBarHeight = res.statusBarHeight - 20 || 0
       for (let key in this.adaptation) {
