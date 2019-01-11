@@ -144,7 +144,7 @@
         imageUrl: this.goodsItem.thumb_image || this.goodsItem.thumb_image
       }
     },
-    async onLoad() {
+    async onShow() {
       let res = this.$wx.getSystemInfoSync()
       let statusBarHeight = res.statusBarHeight - 20 || 0
       for (let key in this.adaptation) {
