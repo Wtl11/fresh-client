@@ -1,6 +1,6 @@
 <template>
   <div class="data-overview">
-    <navigation-bar title="数据统计"></navigation-bar>
+    <navigation-bar title="数据统计" :exceedHeightFn="false"></navigation-bar>
     <div class="income-nav">
       <div class="income-nav-box">
         <div class="item-nav" v-for="(item, index) in navList" v-bind:key="index" @click="clickNav(item, index)" :class="{'item-nav-active': navIndex === index}">{{item.text}}</div>
@@ -144,7 +144,7 @@
         commissionLine: {
           options: {
             tooltip: {
-              trigger: 'item',
+              trigger: 'axis',
               position: ['40%', '0%'],
               formatter: '佣金收益{c0}元',
               axisPointer: {
@@ -240,7 +240,7 @@
         orderLine: {
           options: {
             tooltip: {
-              trigger: 'item',
+              trigger: 'axis',
               position: ['40%', '0%'],
               formatter: '笔单价{c0}元',
               axisPointer: {
@@ -336,7 +336,7 @@
         meanLine: {
           options: {
             tooltip: {
-              trigger: 'item',
+              trigger: 'axis',
               position: ['40%', '0%'],
               formatter: '平均下单数{c}',
               axisPointer: {

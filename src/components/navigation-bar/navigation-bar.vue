@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="head-item" :style="headStyleData">
+    <div class="head-item" :style="headStyleData" :class="showTitle ? '' : 'showNavigation'">
       <div class="status-bar" :style="{height: statusBarHeight + 'px'}"></div>
       <div class="head-content" :style="{color: titleColor}">
         {{currentTitle}}
@@ -69,17 +69,27 @@
       hasTranslucentHeight: {
         type: Number,
         default: 100
+      },
+      exceedHeightFn: {
+        type: Boolean,
+        default: true
+      },
+      exceedHeight: {
+        type: Number,
+        default: 100
       }
     },
     onPageScroll(e) {
       this._diyHeadNavigation(e)
+      this._exceedHeadShow(e)
     },
     data() {
       return {
         statusBarHeight: 20,
         translucentTitle: this.title,
         headStyleData: this.headStyle,
-        titleColorData: this.titleColor
+        titleColorData: this.titleColor,
+        showTitle: true
       }
     },
     created() {
@@ -128,6 +138,15 @@
           wx.switchTab({url: DEFAULT_PAGE})
         } else {
           wx.navigateBack({delta: 1})
+        }
+      },
+      _exceedHeadShow(e) {
+        if (this.exceedHeightFn) return
+        // 沉浸式滚动时的效果
+        if (e.scrollTop >= this.exceedHeight) {
+          this.showTitle = false
+        } else {
+          this.showTitle = true
         }
       }
     },
@@ -183,4 +202,6 @@
       font-size: 18px
       font-family: PingFangSC-Medium
       color: #000000
+  .showNavigation
+    opacity: 0
 </style>

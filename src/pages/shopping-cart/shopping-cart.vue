@@ -276,7 +276,7 @@
         color: $color-white
   .shop-list
     background: $color-white
-    margin-bottom: 60px
+    padding-bottom: 60px
     .shop-item
       layout(row)
       align-items: center

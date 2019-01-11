@@ -289,7 +289,7 @@
           })
         } else {
           wx.navigateTo({
-            url: `/pages/out-html?url=${item.content.url}`
+            url: `${item.content.url}`
           })
         }
       },

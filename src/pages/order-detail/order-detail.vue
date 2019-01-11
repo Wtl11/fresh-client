@@ -333,6 +333,7 @@
       font-size: $font-size-15
       padding-bottom: 10px
       color: #000000
+      line-height: 1.3
       word-break:break-all
       padding-right: 3.2vw
     .warp

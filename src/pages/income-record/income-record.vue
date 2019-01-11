@@ -13,7 +13,7 @@
     </div>
     <div class="big-box">
       <div class="income-big-box" :style="{'transform': ' translateX('+ -(navIndex * 100) +'vw)'}">
-        <div class="await-income">
+        <div class="await-income" :class="navIndex * 1 === 0 ? '' : 'income-item-active'">
           <div class="income-money-box">
             <div class="income-number" @click="openQuestion" v-if="incomeInfo.income_money">￥{{incomeInfo.income_money}}</div>
             <div class="income-icon" @click="openQuestion" v-if="incomeInfo.income_money">
@@ -28,7 +28,7 @@
             <div class="txt">空空如也</div>
           </div>
         </div>
-        <div class="await-income">
+        <div class="await-income" :class="navIndex * 1 === 1 ? '' : 'income-item-active'">
           <div class="income-money-box">
             <div class="income-number" @click="openQuestion" v-if="incomeInfo.wait_income_money">￥{{incomeInfo.wait_income_money}}</div>
             <div class="income-icon" @click="openQuestion" v-if="incomeInfo.wait_income_money">
@@ -280,5 +280,6 @@
       font-family: $font-family-regular
       font-size: $font-size-14
       color: $color-text-sub
-
+  .income-item-active
+    height: 70vh
 </style>
