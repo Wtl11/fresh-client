@@ -50,5 +50,10 @@ export default {
   copyGoodsDetail(id, data, loading = false) {
     const url = `/api/wap/goods/shop-shelf-goods/${id}`
     return request.get(url, data, loading)
+  },
+  // 获得默认店铺信息
+  getDefaultShopInfo(data, loading = false) {
+    const url = `/api/default/shop-info`
+    return request.get(url, data, loading)
   }
 }

@@ -19,6 +19,11 @@
     data() {
       return {}
     },
+    onLoad(e) {
+      if (e.shopId) {
+        wx.setStorageSync('shopId', wx.getStorageSync('defaultShopId'))
+      }
+    },
     components: {
       NavigationBar
     }

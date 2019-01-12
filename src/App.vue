@@ -1,18 +1,23 @@
 <script>
   import {oauthMethods} from '@state/helpers'
   import {getParams} from '@utils/common'
+  import API from '@api'
 
   export default {
-    created() {
+    async created() {
+      let res = await API.Choiceness.getDefaultShopInfo()
+      if (res.data.id) {
+        wx.setStorageSync('defaultShopId', res.data.id)
+      }
     },
     onShow(options) {
       let storyShopId = 0
       if (options.query.scene) {
         let sceneMsg = decodeURIComponent(options.query.scene)
         const params = getParams(sceneMsg)
-        storyShopId = params.shopId || 7
+        storyShopId = params.shopId || wx.getStorageSync('defaultShopId')
       } else {
-        storyShopId = wx.getStorageSync('shopId') || 7
+        storyShopId = wx.getStorageSync('shopId') || wx.getStorageSync('defaultShopId')
       }
       let shopId = options.query.shopId || +storyShopId
       wx.setStorageSync('shopId', shopId)

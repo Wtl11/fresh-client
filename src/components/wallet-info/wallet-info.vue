@@ -73,6 +73,7 @@
       box-sizing: border-box
       .info-text-title
         font-size: $font-size-14
+        min-height: $font-size-16
         font-family: $font-family-regular
         color: $color-text-main
         width: 170px

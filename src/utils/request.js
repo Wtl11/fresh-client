@@ -12,7 +12,7 @@ const NETPAGE = `/pages/error`
 // 请求拦截器
 fly.interceptors.request.use((request) => {
   request.headers['Authorization'] = wx.getStorageSync('token') // todo
-  request.headers['Current-Shop'] = wx.getStorageSync('shopId') || 7 // todo 测试专用记得删除
+  request.headers['Current-Shop'] = wx.getStorageSync('shopId')
   request.headers['Current-Corp'] = 1 // todo 测试专用记得删除
   return request
 })
@@ -60,7 +60,6 @@ function checkCode(res) {
     console.warn(res.data.message)
     switch (res.data.code) {
       case 13001: // 无团长权限code,跳转团长登录页面
-      case 13003: // 无团长权限code,跳转团长登录页面
         wx.redirectTo({url: '/pages/mine-housing'})
         break
       case 10003: // 活动过期，跳转活动失效页面
@@ -70,8 +69,10 @@ function checkCode(res) {
         wx.reLaunch({url: '/pages/login'})
         break
       case 13002: // 冻结
-        wx.redirectTo({url: '/pages/lost'})
+        wx.redirectTo({url: '/pages/lost?shopId=1'})
         break
+      case 13003:
+        return res.data
     }
     throw requestException(res)
   }

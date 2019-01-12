@@ -139,7 +139,7 @@
         }
         let res = await API.Leader.loginLeader({mobile: this.phoneNum, auth_code: this.code})
         this.$wechat.hideLoading()
-        if (res.error !== this.$ERR_OK && res.code === 13002) {
+        if (res.error === this.$ERR_OK && res.code === 13003) {
           this.$refs.reminderModal.show()
           return
         }
