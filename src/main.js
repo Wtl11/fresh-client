@@ -1,9 +1,14 @@
-import '../static/sdk/ald-stat'
+// 只有生产环境才引入阿拉丁数据统计
+if (process.env.NODE_ENV === 'production') {
+  require('../static/sdk/ald-stat')
+}
+/* eslint-disable */
 import Vue from 'vue'
 import store from '@state/store'
 import App from './App'
 import '@utils/env-clear'
 import '@utils/app-plugins'
+console.log(process.env)
 
 Vue.config.productionTip = false
 App.mpType = 'app'
