@@ -8,7 +8,6 @@ import store from '@state/store'
 import App from './App'
 import '@utils/env-clear'
 import '@utils/app-plugins'
-console.log(process.env)
 
 Vue.config.productionTip = false
 App.mpType = 'app'
