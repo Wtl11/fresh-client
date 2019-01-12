@@ -11,7 +11,7 @@
     </div>
     <div class="big-box">
       <div class="order-big-box" :style="{'transform': ' translateX('+ -(tabIdx * 100) +'vw)'}">
-        <div class="order-item-list" :class="tabIdx === 0 ? '' : 'order-item-list-active'">
+        <div class="order-item-list" :class="tabIdx * 1 === 0 ? '' : 'order-item-list-active'">
           <div class="order-list" v-if="list0.length > 0">
             <div class="order-item" v-for="(item, index) in list0" :key="index" @click="jumpDetail(item)">
               <div class="top">
@@ -45,7 +45,7 @@
             <div class="txt">空空如也</div>
           </div>
         </div>
-        <div class="order-item-list" :class="tabIdx === 1 ? '' : 'order-item-list-active'">
+        <div class="order-item-list" :class="tabIdx * 1 === 1 ? '' : 'order-item-list-active'">
           <div class="order-list" v-if="list1.length > 0">
             <div class="order-item" v-for="(item, index) in list1" :key="index" @click="jumpDetail(item)">
               <div class="top">
@@ -79,7 +79,7 @@
             <div class="txt">空空如也</div>
           </div>
         </div>
-        <div class="order-item-list" :class="tabIdx === 2 ? '' : 'order-item-list-active'">
+        <div class="order-item-list" :class="tabIdx * 1 === 2 ? '' : 'order-item-list-active'">
           <div class="order-list" v-if="list2.length > 0">
             <div class="order-item" v-for="(item, index) in list2" :key="index" @click="jumpDetail(item)">
               <div class="top">
@@ -113,7 +113,7 @@
             <div class="txt">空空如也</div>
           </div>
         </div>
-        <div class="order-item-list" :class="tabIdx === 3 ? '' : 'order-item-list-active'">
+        <div class="order-item-list" :class="tabIdx * 1 === 3 ? '' : 'order-item-list-active'">
           <div class="order-list" v-if="list3.length > 0">
             <div class="order-item" v-for="(item, index) in list3" :key="index" @click="jumpDetail(item)">
               <div class="top">
@@ -190,7 +190,6 @@
     onLoad(e) {
       this.status = e.id
       this.tabIdx = e.index
-      // this.getOrderList()
     },
     onShow() {
       this.getOrderList(this.tabIdx)
@@ -202,7 +201,6 @@
       getOrderList(tabIdx) {
         this['page' + tabIdx] = 1
         this['more' + tabIdx] = false
-        console.log(this.page0, this.more0)
         let status
         switch (tabIdx * 1) {
           case 0:

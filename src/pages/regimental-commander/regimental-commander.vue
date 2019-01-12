@@ -72,7 +72,7 @@
       </div>
       <!--TODO-->
       <div class="reg-goods-box" v-if="navIndex === 1">
-        <navigator :url="'/pages/copy-detail?id=' + item.id" class="reg-goods-item" v-for="(item,index) in goodsList" :key="index">
+        <navigator :url="'/pages/copy-detail?id=' + item.id" hover-class="none" class="reg-goods-item" v-for="(item,index) in goodsList" :key="index">
           <img :src="item.goods_cover_image" class="reg-goods-img" mode="aspectFill">
           <div class="reg-goods-content">
             <div class="reg-goods-title">{{item.name}}</div>
@@ -80,12 +80,12 @@
             <span class="reg-goods-money">{{item.shop_price}}<span class="reg-goods-small">元</span></span>
             <span class="reg-goods-del-money">{{item.original_price}}元</span>
           </div>
-          <div class="ability">
-            <div class="copy-btn">一键复制</div>
-            <button class="share" open-type="share" :data-goodsItem="item">
-              <img :src="imageUrl + '/yx-image/group/icon-share@2x.png'" v-if="imageUrl" class="share-icon">
-            </button>
-          </div>
+          <!--<div class="ability">-->
+          <!--<div class="copy-btn">一键复制</div>-->
+          <!--<button class="share" :data-goodsItem="item" @click.stop="_shareGoods(item)">-->
+          <!--<img :src="imageUrl + '/yx-image/group/icon-share@2x.png'" v-if="imageUrl" class="share-icon">-->
+          <!--</button>-->
+          <!--</div>-->
         </navigator>
       </div>
       <div class="presell-wrapper" v-if="navIndex === 0 && preSell.shelf_title">
@@ -103,40 +103,58 @@
       </div>
     </div>
     <div class="end" v-if="!isNoGoods">— 到底了—</div>
+    <link-group ref="shareList" :linkType="2" :isSharePoster="false"></link-group>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import API from '@api'
+  import LinkGroup from '@components/link-group/link-group'
 
   const PAGE_NAME = 'REGIMENTAL_COMMANDER'
-  const Nav = [{title: '预售清单', status: 2}, {title: '商品推荐', status: 3}]
+  const Nav = [{title: '预售清单', status: 2}, {title: '商品资料', status: 3}]
   export default {
     name: PAGE_NAME,
+    components: {
+      LinkGroup,
+      NavigationBar
+    },
     data() {
       return {
         nav: Nav,
-        navIndex: 1,
+        navIndex: 0,
         isLoading: true,
         leaderDetail: {},
         orderTotal: {},
         goodsList: [],
         adaptation: {height: 195, marginTop: 64.5, hoseMarginTop: 164},
         isNoGoods: false,
-        preSell: {}
+        preSell: {},
+        goodsItem: {},
+        page: 1,
+        length: 1
       }
     },
     onShareAppMessage(res) {
-      let goodsItem = res.target.dataset.goodsitem
       let shopId = wx.getStorageSync('shopId')
       return {
-        title: goodsItem.name,
-        path: `/pages/goods-detail?id=${goodsItem.id}&shopId=${shopId}`, // 商品详情
-        imageUrl: goodsItem.thumb_image || goodsItem.goods_cover_image
+        title: this.goodsItem.name,
+        path: `/pages/goods-detail?id=${this.goodsItem.id}&shopId=${shopId}`, // 商品详情
+        imageUrl: this.goodsItem.thumb_image || this.goodsItem.thumb_image
       }
     },
-    async onLoad() {
+    async onReachBottom() {
+      if (this.navIndex === 0) {
+        return
+      }
+      this.page++
+      await this._getRecommendGoods()
+    },
+    async onShow() {
+      this.page = 1
+      this.goodsList = []
+      this.navIndex = 0
       let res = this.$wx.getSystemInfoSync()
       let statusBarHeight = res.statusBarHeight - 20 || 0
       for (let key in this.adaptation) {
@@ -146,7 +164,6 @@
       await Promise.all([
         this._getLeaderDetail(),
         this._leaderOrderTotal(),
-        this._getRecommendGoods(),
         this._getPresellGoods()
       ])
       this.$wechat.hideLoading()
@@ -158,6 +175,13 @@
       }
     },
     methods: {
+      async _shareGoods(item) {
+        this.goodsItem = item
+        let res = await API.Leader.goodsThumb({id: item.id})
+        this.$refs.shareList.showLink()
+        this.goodsItem.thumb_image = res.error === this.$ERR_OK ? res.data.thumb_image : {}
+        console.log(res)
+      },
       _scanCode() {
         wx.scanCode({
           success(res) {
@@ -169,7 +193,10 @@
       _inDevelopment() {
         this.$wechat.showToast('功能正在努力研发中')
       },
-      _setNav(index) {
+      async _setNav(index) {
+        if (index === 1 && !this.goodsList.length) {
+          await this._getRecommendGoods()
+        }
         this.navIndex = index
       },
       copyPreSell() {
@@ -201,18 +228,23 @@
         this.orderTotal = res.data
       },
       async _getRecommendGoods() {
-        let res = await API.Leader.recommendGoods()
+        if (this.page > this.length) {
+          return
+        }
+        let res = await API.Leader.recommendGoods({page: this.page})
         if (res.error !== this.$ERR_OK) {
           this.$wechat.showToast(res.message)
           this.isNoGoods = true
           return
         }
-        this.goodsList = res.data
+        this.length = res.meta.last_page
+        if (this.page === 1) {
+          this.goodsList = res.data
+        } else {
+          this.goodsList = this.goodsList.concat(res.data)
+        }
         this.isNoGoods = !this.goodsList.length
       }
-    },
-    components: {
-      NavigationBar
     }
   }
 </script>
@@ -410,11 +442,12 @@
         align-items: center
         justify-content: space-between
         height: 40px
-        margin-left: 15px
+        margin-bottom: 4px
         .title
           font-family: $font-family-medium
           font-size: $font-size-14
           color: $color-text-main
+          text-indent: 15px
         .copy-btn
           border-radius: 23px
           padding: 5px 8px
@@ -428,13 +461,15 @@
         background: url("./pic-line_bg@2x.png")
         background-size: 100%
         .content
-          margin-bottom: 15px
+          margin-bottom: 25px
           font-size: $font-size-14
           color: #616161
+          line-height: 18px
           &:first-child
             margin-bottom: 10px
           &:nth-child(2)
             margin-bottom: 20px
+
   .reg-goods-item
     margin-bottom: 9.5px
     display: flex

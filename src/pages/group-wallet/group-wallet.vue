@@ -214,7 +214,7 @@
             display: block
             width: 7.5px
             height: 12.5px
-            margin-left: 4px
+            margin-left: 5px
         .wallet-line
           position: absolute
           left: 50%
@@ -228,6 +228,7 @@
   .noting
     text-align: center
     margin-top: 50px
+    padding-top: 50px
     .notingimg
       width: 116px
       height: 110px

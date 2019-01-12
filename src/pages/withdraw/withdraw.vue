@@ -61,7 +61,10 @@
           if (res.error === this.$ERR_OK) {
             this.bankList = res.data
             if (this.bankList.length !== 0) {
-              this.addBank = this.bankList[0].bank
+              console.log(this.bankList[0].withdrawal_card, this.bankList[0].user_name)
+              let number = this.bankList[0].withdrawal_card.substr(-3)
+              let name = `${this.bankList[0].user_name}-${this.bankList[0].bank}(${number})`
+              this.addBank = name
               this.addBankId = this.bankList[0].id
             }
           } else {

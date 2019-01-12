@@ -1,6 +1,6 @@
 <template>
   <div class="data-overview">
-    <navigation-bar title="数据统计"></navigation-bar>
+    <navigation-bar title="数据统计" :exceedHeightFn="false"></navigation-bar>
     <div class="income-nav">
       <div class="income-nav-box">
         <div class="item-nav" v-for="(item, index) in navList" v-bind:key="index" @click="clickNav(item, index)" :class="{'item-nav-active': navIndex === index}">{{item.text}}</div>
@@ -67,7 +67,7 @@
           <img src="" alt="" class="icon-img"  v-if="imageUrl" :src="imageUrl + '/yx-image/wallet/icon-question@2x.png'">
         </div>
       </div>
-      <div class="ec-box" v-if="showCommissionLine">
+      <div class="ec-box" v-if="showCommissionLine" :class="showOpacity ? 'ec-none' : ''">
         <ec-canvas class="canvas" id="chart-dom-line" canvas-id="chart-line" :ec="commissionLine"></ec-canvas>
       </div>
     </div>
@@ -78,7 +78,7 @@
           <img src="" alt="" class="icon-img"  v-if="imageUrl" :src="imageUrl + '/yx-image/wallet/icon-question@2x.png'">
         </div>
       </div>
-      <div class="ec-box" v-if="showLine">
+      <div class="ec-box" v-if="showLine" :class="showOpacity ? 'ec-none' : ''">
         <ec-canvas class="canvas" id="customer-dom-line" canvas-id="customer-line" :ec="line"></ec-canvas>
       </div>
     </div>
@@ -99,7 +99,7 @@
           <div class="text">首次消费客户</div>
         </div>
       </div>
-      <div class="ec-box" v-if="showPie">
+      <div class="ec-box" v-if="showPie" :class="showOpacity ? 'ec-none' : ''">
         <ec-canvas class="canvas" id="chart-dom-pie" canvas-id="chart-pie" :ec="pie"></ec-canvas>
       </div>
     </div>
@@ -110,7 +110,7 @@
           <img src="" alt="" class="icon-img"  v-if="imageUrl" :src="imageUrl + '/yx-image/wallet/icon-question@2x.png'">
         </div>
       </div>
-      <div class="ec-box" v-if="showMeanLine">
+      <div class="ec-box" v-if="showMeanLine" :class="showOpacity ? 'ec-none' : ''">
         <ec-canvas class="canvas" id="order-dom-line" canvas-id="order-line" :ec="meanLine"></ec-canvas>
       </div>
     </div>
@@ -121,11 +121,11 @@
           <img src="" alt="" class="icon-img"  v-if="imageUrl" :src="imageUrl + '/yx-image/wallet/icon-question@2x.png'">
         </div>
       </div>
-      <div class="ec-box" v-if="showOrderLine">
+      <div class="ec-box" v-if="showOrderLine" :class="showOpacity ? 'ec-none' : ''">
         <ec-canvas class="canvas" id="order-dom-line" canvas-id="order-line" :ec="orderLine"></ec-canvas>
       </div>
     </div>
-    <confirm-msg ref="colseModel" useType="close" :msg="msg" title=""></confirm-msg>
+    <confirm-msg ref="colseModel" useType="close" :msg="msg" title="" @cancel="cancelMsg"></confirm-msg>
   </div>
 </template>
 
@@ -144,7 +144,7 @@
         commissionLine: {
           options: {
             tooltip: {
-              trigger: 'item',
+              trigger: 'axis',
               position: ['40%', '0%'],
               formatter: '佣金收益{c0}元',
               axisPointer: {
@@ -209,21 +209,7 @@
                   width: 3
                 }
               },
-              color: {
-                type: 'linear',
-                x: 0,
-                y: 0,
-                x2: 1,
-                y2: 0,
-                colorStops: [
-                  {
-                    offset: 0, color: '#00EAFF'
-                  },
-                  {
-                    offset: 1, color: '#21CDD3'
-                  }
-                ]
-              },
+              color: '#00EAFF',
               symbolSize: 7,
               itemStyle: {
                 normal: {
@@ -254,7 +240,7 @@
         orderLine: {
           options: {
             tooltip: {
-              trigger: 'item',
+              trigger: 'axis',
               position: ['40%', '0%'],
               formatter: '笔单价{c0}元',
               axisPointer: {
@@ -288,7 +274,7 @@
                   width: 0.5
                 }
               },
-              data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+              data: []
             },
             yAxis: {
               minInterval: 1,
@@ -319,21 +305,7 @@
                   width: 3
                 }
               },
-              color: {
-                type: 'linear',
-                x: 0,
-                y: 0,
-                x2: 1,
-                y2: 0,
-                colorStops: [
-                  {
-                    offset: 0, color: '#00EAFF'
-                  },
-                  {
-                    offset: 1, color: '#21CDD3'
-                  }
-                ]
-              },
+              color: '#00EAFF',
               symbolSize: 7,
               itemStyle: {
                 normal: {
@@ -364,7 +336,7 @@
         meanLine: {
           options: {
             tooltip: {
-              trigger: 'item',
+              trigger: 'axis',
               position: ['40%', '0%'],
               formatter: '平均下单数{c}',
               axisPointer: {
@@ -398,7 +370,7 @@
                   width: 0.5
                 }
               },
-              data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+              data: []
             },
             yAxis: {
               minInterval: 1,
@@ -422,28 +394,14 @@
               type: 'value'
             },
             series: [{
-              data: [1, 2, 3, 4, 5, 6, 6],
+              data: [],
               type: 'line',
               lineStyle: {
                 normal: {
                   width: 3
                 }
               },
-              color: {
-                type: 'linear',
-                x: 0,
-                y: 0,
-                x2: 1,
-                y2: 0,
-                colorStops: [
-                  {
-                    offset: 0, color: '#00EAFF'
-                  },
-                  {
-                    offset: 1, color: '#21CDD3'
-                  }
-                ]
-              },
+              color: '#00EAFF',
               symbolSize: 7,
               itemStyle: {
                 normal: {
@@ -531,24 +489,10 @@
               type: 'value'
             },
             series: [{
-              data: [1, 2, 3, 4, 5, 6, 6],
+              data: [],
               name: '访客数',
               type: 'line',
-              color: {
-                type: 'linear',
-                x: 0,
-                y: 0,
-                x2: 1,
-                y2: 0,
-                colorStops: [
-                  {
-                    offset: 0, color: '#00EAFF'
-                  },
-                  {
-                    offset: 1, color: '#21CDD3'
-                  }
-                ]
-              },
+              color: '#00EAFF',
               lineStyle: {
                 normal: {
                   width: 3
@@ -564,24 +508,10 @@
                 }
               }
             }, {
-              data: [22, 33, 31, 14, 5, 6, 16],
+              data: [],
               name: '新访客数',
               type: 'line',
-              color: {
-                type: 'linear',
-                x: 0,
-                y: 0,
-                x2: 1,
-                y2: 0,
-                colorStops: [
-                  {
-                    offset: 0, color: '#FF8B77'
-                  },
-                  {
-                    offset: 1, color: '#FE6AAC'
-                  }
-                ]
-              },
+              color: '#FF8B77',
               lineStyle: {
                 normal: {
                   width: 3
@@ -609,7 +539,7 @@
               {
                 name: '支付客户数',
                 type: 'pie',
-                radius: ['50%', '65%'],
+                // radius: ['50%', '65%'],
                 label: {
                   normal: {
                     show: false,
@@ -625,38 +555,7 @@
                   {value: 135, name: '复购客户'},
                   {value: 300, name: '首次消费客户'}
                 ],
-                color: [
-                  {
-                    type: 'linear',
-                    x: 0,
-                    y: 0,
-                    x2: 1,
-                    y2: 0,
-                    colorStops: [
-                      {
-                        offset: 0, color: '#00EAFF'
-                      },
-                      {
-                        offset: 1, color: '#21CDD3'
-                      }
-                    ]
-                  },
-                  {
-                    type: 'linear',
-                    x: 0,
-                    y: 0,
-                    x2: 1,
-                    y2: 0,
-                    colorStops: [
-                      {
-                        offset: 0, color: '#FF8B77'
-                      },
-                      {
-                        offset: 1, color: '#FE6AAC'
-                      }
-                    ]
-                  }
-                ],
+                color: ['#00EAFF', '#FF8B77'],
                 itemStyle: {
                   emphasis: {
                     shadowBlur: 10,
@@ -681,7 +580,8 @@
         showPie: false,
         showOrderLine: false,
         orderDiff: 7,
-        msg: ''
+        msg: '',
+        showOpacity: false
       }
     },
     components: {
@@ -708,26 +608,31 @@
         this.navIndex = index * 1
       },
       showMsg(index) {
-        switch (index * 1) {
+        switch (index * 1 + 10) {
           case 0:
             this.msg = '佣金收益=交易金额*佣金比例，包含待入账和已入账的佣金'
             this.$refs.colseModel.show()
+            this.showOpacity = true
             break
           case 1:
             this.msg = '访客数即进入商城的客户人数，包含新访客和老访客人数'
             this.$refs.colseModel.show()
+            this.showOpacity = true
             break
           case 2:
             this.msg = '消费客户数即购买了商品的客户人数，包含首次消费客户和复购客户人数'
             this.$refs.colseModel.show()
+            this.showOpacity = true
             break
           case 3:
             this.msg = '每7日平均下单数即消费客户每周平均购买次数，数据越高说明客户黏性越大'
             this.$refs.colseModel.show()
+            this.showOpacity = true
             break
           case 4:
             this.msg = '客单价即消费客户购买一次商品的金额'
             this.$refs.colseModel.show()
+            this.showOpacity = true
             break
         }
       },
@@ -783,6 +688,7 @@
             let arr = this._infoData(res.data)
             this.meanLine.options.series[0].data = arr.value
             this.meanLine.options.xAxis.data = date
+            this.showMeanLine = false
             setTimeout(() => {
               this.showMeanLine = true
             }, 100)
@@ -850,6 +756,9 @@
           }
         })
         return arr
+      },
+      cancelMsg() {
+        this.showOpacity = false
       }
     }
   }
@@ -990,6 +899,7 @@
         color: $color-text-main
         margin-right: 5px
       .icon
+        display: none
         width: 13px
         height: 13px
         img
@@ -1028,4 +938,6 @@
     ec-canvas
       width: 100%
       height: 100%
+  .ec-none
+    opacity: 0
 </style>

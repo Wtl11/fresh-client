@@ -21,10 +21,13 @@
       <!--<div class="msg">{{msg}}</div>-->
     </section>
     <section class="content income-content" v-else-if="useType==='income'" :animation="modalAnimation"  @click.stop>
+      <div class="income-colse" @click="cancelIncome">
+        <img v-if="imageUrl" :src="imageUrl + '/yx-image/wallet/icon-del@2x.png'" alt="">
+      </div>
       <div class="income-title">亲爱的团长：</div>
       <div class="income-msg">为保障您享有合法的收益权利，在以下两种场景，该订单产生的收益由待入账自动转入已入账中。</div>
-      <div class="income-assist">*待入账不包括已退款订单产生的收益。</div>
-      <img v-if="imageUrl" mode="widthFix" :src="imageUrl + '/yx-image/wallet/pic-flow@2x.png'" alt="" class="income-img">
+      <img v-if="imageUrl" mode="widthFix" :src="imageUrl + '/yx-image/wallet/pic-account_entry1@2x.png'" alt="" class="income-img income-img-bottom">
+      <img v-if="imageUrl" mode="widthFix" :src="imageUrl + '/yx-image/wallet/Rectangle@2x.png'" alt="" class="income-img">
     </section>
     <section class="content" v-else :animation="modalAnimation">
       <div class="title item">{{title}}</div>
@@ -239,15 +242,27 @@
           color: #1F1F1F
     .income-content
       padding: 25px 20px
+      position: relative
+      .income-colse
+        position: absolute
+        width: 13px
+        height: 13px
+        top: 15px
+        right: 15px
+        img
+          width: 100%
+          height: 100%
+          display: block
       .income-title
         font-size: $font-size-16
         font-family: $font-family-medium
         color: $color-text-main
-        margin-bottom: 20px
+        margin-bottom: 15px
       .income-msg
         font-size: $font-size-14
         font-family: $font-family-regular
         color: $color-text-main
+        line-height: 22px
         margin-bottom: 10px
         padding-right: 10px
       .income-assist
@@ -258,4 +273,6 @@
       .income-img
         width: 100%
         display: block
+      .income-img-bottom
+        margin-bottom: 10px
 </style>

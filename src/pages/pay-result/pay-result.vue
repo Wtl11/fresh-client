@@ -47,7 +47,7 @@
       console.log(`id=${this.orderId}&shopId=${shopId}`)
       return {
         title: `团长，我是“${userInfo}”，刚在店里买了商品↓，请接单！`,
-        path: `/pages/share-detail?id=${this.orderId}&shopId=${shopId}`,
+        path: `/pages/share-order?id=${this.orderId}&shopId=${shopId}`,
         imageUrl: `${this.imageUrl}/yx-image/order/pic-share_order@2x.png`,
         success: (res) => {
           // 转发成功

@@ -221,6 +221,7 @@
     min-height: 100vh
     background: $color-background
     position: relative
+    padding-bottom: 60px
   .payment
     position: fixed
     width: 100%
@@ -276,7 +277,6 @@
         color: $color-white
   .shop-list
     background: $color-white
-    margin-bottom: 60px
     .shop-item
       layout(row)
       align-items: center

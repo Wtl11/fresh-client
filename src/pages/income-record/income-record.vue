@@ -13,7 +13,7 @@
     </div>
     <div class="big-box">
       <div class="income-big-box" :style="{'transform': ' translateX('+ -(navIndex * 100) +'vw)'}">
-        <div class="await-income">
+        <div class="await-income" :class="navIndex * 1 === 0 ? '' : 'income-item-active'">
           <div class="income-money-box">
             <div class="income-number" @click="openQuestion" v-if="incomeInfo.income_money">￥{{incomeInfo.income_money}}</div>
             <div class="income-icon" @click="openQuestion" v-if="incomeInfo.income_money">
@@ -28,7 +28,7 @@
             <div class="txt">空空如也</div>
           </div>
         </div>
-        <div class="await-income">
+        <div class="await-income" :class="navIndex * 1 === 1 ? '' : 'income-item-active'">
           <div class="income-money-box">
             <div class="income-number" @click="openQuestion" v-if="incomeInfo.wait_income_money">￥{{incomeInfo.wait_income_money}}</div>
             <div class="income-icon" @click="openQuestion" v-if="incomeInfo.wait_income_money">
@@ -36,7 +36,7 @@
             </div>
           </div>
           <div class="income-item" v-for="(item, index) in awaitIncomeList" v-bind:key="index">
-            <wallet-info :wechatInfo="item"></wallet-info>
+            <wallet-info :wechatInfo="item" :wechatType="2"></wallet-info>
           </div>
           <div class="noting" v-if="awaitIncomeMore && awaitIncomeList.length === 0">
             <div class="notingimg"><img class="img" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'" alt=""></div>
@@ -280,5 +280,6 @@
       font-family: $font-family-regular
       font-size: $font-size-14
       color: $color-text-sub
-
+  .income-item-active
+    height: 70vh
 </style>
