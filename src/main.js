@@ -1,3 +1,4 @@
+import '../static/sdk/ald-stat'
 import Vue from 'vue'
 import store from '@state/store'
 import App from './App'
