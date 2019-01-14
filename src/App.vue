@@ -6,12 +6,14 @@
   export default {
     async created() {
       let res = await API.Choiceness.getDefaultShopInfo()
-      if (res.data.id) {
+      if (res.error === 0) {
         wx.setStorageSync('defaultShopId', res.data.id)
+      } else {
+        wx.setStorageSync('defaultShopId', 7)
       }
     },
     onShow(options) {
-      let storyShopId = 0
+      let storyShopId = 7
       if (options.query.scene) {
         let sceneMsg = decodeURIComponent(options.query.scene)
         const params = getParams(sceneMsg)
