@@ -93,7 +93,7 @@
         if (this.orderMore) {
           return
         }
-        API.Order.getSaleOrder(this.orderPage = 1).then((res) => {
+        API.Order.getSaleOrder(this.orderPage).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.orderLists = this.orderLists.concat(res.data)
             this._isUpList(res)

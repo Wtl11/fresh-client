@@ -126,6 +126,9 @@
             if (res.error !== this.$ERR_OK) {
               return
             }
+            if (res.data.mobile.length === 0) {
+              return
+            }
             this.mobile = res.data.mobile ? res.data.mobile : ''
             this.userInfo.mobile = this.mobile
             this.$wechat.setStorage('userInfo', this.userInfo)

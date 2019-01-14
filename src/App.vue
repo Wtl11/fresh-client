@@ -12,13 +12,21 @@
         wx.setStorageSync('defaultShopId', 7)
       }
     },
-    onShow(options) {
+    async onShow(options) {
       let storyShopId = 7
       if (options.query.scene) {
         let sceneMsg = decodeURIComponent(options.query.scene)
         const params = getParams(sceneMsg)
         storyShopId = params.shopId || wx.getStorageSync('defaultShopId')
       } else {
+        if (!wx.getStorageSync('shopId') && !wx.getStorageSync('defaultShopId')) {
+          let res = await API.Choiceness.getDefaultShopInfo()
+          if (res.error === 0) {
+            wx.setStorageSync('defaultShopId', res.data.id)
+          } else {
+            wx.setStorageSync('defaultShopId', 7)
+          }
+        }
         storyShopId = wx.getStorageSync('shopId') || wx.getStorageSync('defaultShopId')
       }
       let shopId = options.query.shopId || +storyShopId
