@@ -1,8 +1,5 @@
 // 只有生产环境才引入阿拉丁数据统计
-if (process.env.NODE_ENV === 'production') {
-  require('../static/sdk/ald-stat')
-}
-/* eslint-disable */
+import '../static/sdk/ald-stat'
 import Vue from 'vue'
 import store from '@state/store'
 import App from './App'
