@@ -1,6 +1,6 @@
 <template>
   <div class="goods-detail">
-    <navigation-bar :title="goodsMsg.name" :showArrow="true" :translucent="true" hasTranslucentHeight="150"></navigation-bar>
+    <navigation-bar ref="navigationBar" :title="msgTitle" :showArrow="true" :translucent="true"></navigation-bar>
     <div class="banner-box">
       <div class="banner-share" @click="showShare">
         <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/icon-share3@2x.png'"  mode="aspectFill">
@@ -145,7 +145,8 @@
         deliverAt: '',
         shareImg: '',
         shopCrile: 0,
-        showOpen: false
+        showOpen: false,
+        msgTitle: ''
       }
     },
     computed: {
@@ -181,6 +182,10 @@
       this.getUserImgList()
       this.setCartCount()
       this.getQrCode()
+    },
+    onUnload() {
+      clearInterval(this.timer)
+      this.$refs.navigationBar._initHeadStyle()
     },
     methods: {
       ...orderMethods,
@@ -368,6 +373,7 @@
             this.goodsMsg = res.data
             this.showOpen = this.goodsMsg.describe.length > this.describeNum
             this.deliverAt = res.data.shelf_delivery_at
+            this.msgTitle = this.goodsMsg.name
             this._kanTimePlay()
             this._handleDescribe()
           } else {

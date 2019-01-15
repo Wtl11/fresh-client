@@ -50,7 +50,7 @@
         qrCodeImage: ''
       }
     },
-    created() {
+    onLoad() {
       this.qrCodeImage = this.imageUrl + '/yx-image/login/wx-qr-code.jpg'
     },
     methods: {
