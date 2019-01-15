@@ -706,7 +706,7 @@
               color: $color-money
               height: 13px
               line-height: 13px
-              margin-bottom: 2px
+              margin-bottom: 5px
               border-radius: 10px
               background: rgba(255, 131, 0, 0.10)
               border-1px(#FF8300, 10px)

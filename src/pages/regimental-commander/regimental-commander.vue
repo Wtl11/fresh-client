@@ -152,9 +152,9 @@
       await this._getRecommendGoods()
     },
     async onShow() {
+      this.adaptation = {height: 195, marginTop: 64.5, hoseMarginTop: 164}
       this.page = 1
       this.goodsList = []
-      this.navIndex = 0
       let res = this.$wx.getSystemInfoSync()
       let statusBarHeight = res.statusBarHeight - 20 || 0
       for (let key in this.adaptation) {
@@ -166,6 +166,9 @@
         this._leaderOrderTotal(),
         this._getPresellGoods()
       ])
+      if (this.navIndex === 1) {
+        this._getRecommendGoods()
+      }
       this.$wechat.hideLoading()
       this.isLoading = false
     },
@@ -491,6 +494,7 @@
         width: 100%
         margin-top: 3px
         font-size: $font-size-16
+        height: $font-size-18
         font-family: $font-family-medium
         color: $color-text-main
         no-wrap()

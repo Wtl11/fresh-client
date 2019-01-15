@@ -1,6 +1,6 @@
 <template>
   <div class="goods-detail">
-    <navigation-bar :title="goodsMsg.name" :showArrow="true" :translucent="true"></navigation-bar>
+    <navigation-bar :title="goodsMsg.name" :showArrow="true" :translucent="true" hasTranslucentHeight="150"></navigation-bar>
     <div class="banner-box">
       <div class="banner-share" @click="showShare">
         <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/icon-share3@2x.png'"  mode="aspectFill">
