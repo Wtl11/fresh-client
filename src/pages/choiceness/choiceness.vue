@@ -210,13 +210,9 @@
     },
     async onPullDownRefresh() {
       this.getPlantList()
-      if (this.tabList1.length === 0) {
-        this.tabIndex = 0
-        this.move = 0
-        this.getTabList()
-      } else {
-        this.getGoodsList()
-      }
+      this.tabIndex = 0
+      this.move = 0
+      this.getTabList()
       await this._groupInfo(true)
       wx.stopPullDownRefresh()
     },

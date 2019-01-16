@@ -51,7 +51,7 @@
       <div class="goods-info-bootom" v-if="userImgList.length > 0">
         <div class="info-bootom-list" v-for="(item, index) in userImgList" :key="index">
           <div class="info-user">
-            <img v-if="imageUrl" :src="item.head_image_url ? item.head_image_url : imageUrl + '/yx-image/choiceness/default_avatar@2x.png'" class="detail-img"  mode="widthFix">
+            <img v-if="imageUrl" :src="item.head_image_url ? item.head_image_url : imageUrl + '/yx-image/choiceness/default_avatar@2x.png'" class="detail-img"  mode="aspectFill">
           </div>
           <div class="info-name">{{item.nickname}}</div>
         </div>
