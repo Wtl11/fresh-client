@@ -179,7 +179,7 @@
       this.setCartCount()
       this._getBuyUsers()
       let shopId = wx.getStorageSync('shopId')
-      if (this.curShopId * 1 === shopId) {
+      if (this.curShopId * 1 === shopId * 1) {
         return
       }
       this.curShopId = shopId
@@ -202,8 +202,6 @@
       } else {
         this.menuFixed = false
       }
-      // if (this.menuFixed === (scroll.scrollTop > this.menuTop)) return
-      // this.menuFixed = scroll.scrollTop > this.menuTop
     },
     onReachBottom() {
       this.getMoreGoodsList()
@@ -301,7 +299,6 @@
               this.getGoodsList()
             }
           } else {
-            // this.$wechat.showToast(res.message)
             this.goodsMore = true
           }
         })
