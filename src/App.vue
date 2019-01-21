@@ -31,18 +31,16 @@
       }
       let shopId = options.query.shopId || +storyShopId
       wx.setStorageSync('shopId', shopId)
-      let token = wx.getStorageSync('token')
-      if (!token) {
-        let query = ''
-        for (let key in options.query) {
-          // 获取页面请求参数
-          query += `${key}=${options.query[key]}&`
-        }
-        if (options.path !== 'pages/lost' && options.path !== 'pages/error' && options.path !== 'pages/login') {
-          wx.setStorageSync('targetPage', `${options.path}${query ? '?' : ''}${query.slice(0, -1)}`)
-        }
-        wx.reLaunch({url: '/pages/login'})
+      // let token = wx.getStorageSync('token')
+      let query = ''
+      for (let key in options.query) {
+        // 获取页面请求参数
+        query += `${key}=${options.query[key]}&`
       }
+      if (options.path !== 'pages/lost' && options.path !== 'pages/error' && options.path !== 'pages/login') {
+        wx.setStorageSync('targetPage', `${options.path}${query ? '?' : ''}${query.slice(0, -1)}`)
+      }
+      // wx.reLaunch({url: '/pages/login'})
       // todo
       // this.update('')
     },

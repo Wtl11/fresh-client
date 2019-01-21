@@ -393,6 +393,9 @@
         this.getGoodsList()
       },
       addShoppingCart(item) {
+        if (!this.$isLogin()) {
+          return
+        }
         API.Choiceness.addShopCart({sku_id: item.shop_sku_id}).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.$wechat.showToast('加入购物车成功', 1000, false)

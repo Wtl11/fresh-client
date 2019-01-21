@@ -65,6 +65,14 @@ export default {
     $getFormId(e) {
       let formId = e.mp.detail.formId
       API.Form.getFormId({form_ids: [formId]})
+    },
+    // 判断是否跳转授权登录页面
+    $isLogin() {
+      let token = wx.getStorageSync('token')
+      if (token) {
+        wx.reLaunch({url: '/pages/login'})
+        return false
+      }
     }
   }
 }

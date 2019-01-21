@@ -102,6 +102,9 @@
         modalAnimation: ''
       }
     },
+    onTabItemTap() {
+      this.$isLogin()
+    },
     async onLoad() {
       let storageUserInfo = await this.$wechat.getStorage('userInfo')
       this.userInfo = storageUserInfo.data

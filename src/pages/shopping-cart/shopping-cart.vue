@@ -85,6 +85,9 @@
         deliverAt: ''
       }
     },
+    onTabItemTap() {
+      this.$isLogin()
+    },
     async onShow() {
       await this._getShopCart()
     },

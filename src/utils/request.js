@@ -65,7 +65,7 @@ function checkCode(res) {
       case 10003: // 活动过期，跳转活动失效页面
         wx.redirectTo({url: '/pages/goods-end'})
         break
-      case 10000: // 无团长权限code,跳转团长登录页面
+      case 10000: // 登录状态失效时跳转
         wx.reLaunch({url: '/pages/login'})
         break
       case 13002: // 冻结
