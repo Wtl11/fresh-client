@@ -19,6 +19,7 @@ var OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
 
 const env = process.env.BUILD_ENV === 'production' ? require('../config/prod.env') :
   process.env.BUILD_ENV === 'test' ? require('../config/test.env') : require('../config/dev.env')
+env.VERSION = process.env.VERSION
 
 module.exports = merge(baseWebpackConfig, {
   module: {

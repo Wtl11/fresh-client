@@ -105,7 +105,7 @@
     </div>
     <div class="charts-box">
       <div class="charts-title" @click="showMsg(3)">
-        <div class="text">每{{orderDiff}}日平均下单数</div>
+        <div class="text">每日平均下单数</div>
         <div class="icon">
           <img src="" alt="" class="icon-img"  v-if="imageUrl" :src="imageUrl + '/yx-image/wallet/icon-question@2x.png'">
         </div>

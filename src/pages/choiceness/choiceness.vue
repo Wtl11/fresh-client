@@ -179,7 +179,7 @@
       this.setCartCount()
       this._getBuyUsers()
       let shopId = wx.getStorageSync('shopId')
-      if (this.curShopId * 1 === shopId) {
+      if (this.curShopId * 1 === shopId * 1) {
         return
       }
       this.curShopId = shopId
@@ -202,21 +202,15 @@
       } else {
         this.menuFixed = false
       }
-      // if (this.menuFixed === (scroll.scrollTop > this.menuTop)) return
-      // this.menuFixed = scroll.scrollTop > this.menuTop
     },
     onReachBottom() {
       this.getMoreGoodsList()
     },
     async onPullDownRefresh() {
       this.getPlantList()
-      if (this.tabList1.length === 0) {
-        this.tabIndex = 0
-        this.move = 0
-        this.getTabList()
-      } else {
-        this.getGoodsList()
-      }
+      this.tabIndex = 0
+      this.move = 0
+      this.getTabList()
       await this._groupInfo(true)
       wx.stopPullDownRefresh()
     },
@@ -305,7 +299,6 @@
               this.getGoodsList()
             }
           } else {
-            // this.$wechat.showToast(res.message)
             this.goodsMore = true
           }
         })
@@ -709,7 +702,7 @@
               color: $color-money
               height: 13px
               line-height: 13px
-              margin-bottom: 2px
+              margin-bottom: 5px
               border-radius: 10px
               background: rgba(255, 131, 0, 0.10)
               border-1px(#FF8300, 10px)

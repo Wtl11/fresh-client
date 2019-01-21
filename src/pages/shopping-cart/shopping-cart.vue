@@ -316,8 +316,8 @@
           margin-top: -7.85vw
         .goods-img
           display: block
-          width: 24vw
-          height: 24vw
+          width: 85px
+          height: 85px
           border-radius: 2px
       .good-info
         flex: 1
