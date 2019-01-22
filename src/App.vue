@@ -2,18 +2,28 @@
   import {oauthMethods} from '@state/helpers'
   import {getParams} from '@utils/common'
   import API from '@api'
+  import {ERR_OK, baseURL} from '@utils/config'
 
   export default {
-    async created() {
-      let res = await API.Choiceness.getDefaultShopInfo()
-      if (res.error === 0) {
-        wx.setStorageSync('defaultShopId', res.data.id)
-      } else {
-        wx.setStorageSync('defaultShopId', 7)
+    data() {
+      return {
+        codeMsg: ''
       }
     },
+    async created() {
+      let res = await API.Choiceness.getDefaultShopInfo()
+      let id = res.error === ERR_OK ? res.data.id : baseURL.defaultId
+      wx.setStorageSync('defaultShopId', id)
+      this.codeMsg = await this.$wechat.login()
+      let tokenJson = await API.Login.getToken({code: this.codeMsg.code}, false)
+      if (tokenJson.code === ERR_OK) {
+        wx.setStorageSync('token', tokenJson.data.access_token)
+        wx.setStorageSync('userInfo', tokenJson.data.customer_info)
+      }
+      //  判断是否可以静默登录
+    },
     async onShow(options) {
-      let storyShopId = 7
+      let storyShopId = baseURL.defaultId
       if (options.query.scene) {
         let sceneMsg = decodeURIComponent(options.query.scene)
         const params = getParams(sceneMsg)
@@ -24,7 +34,7 @@
           if (res.error === 0) {
             wx.setStorageSync('defaultShopId', res.data.id)
           } else {
-            wx.setStorageSync('defaultShopId', 7)
+            wx.setStorageSync('defaultShopId', baseURL.defaultId)
           }
         }
         storyShopId = wx.getStorageSync('shopId') || wx.getStorageSync('defaultShopId')

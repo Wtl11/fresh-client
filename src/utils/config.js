@@ -6,21 +6,24 @@ const DEV = {
   api: 'http://social-shopping-api.jerryf.cn/social-shopping',
   image: 'https://img.jerryf.cn/defaults',
   upload: 'http://social-shopping-api.jerryf.cn/social-shopping',
-  outLink: 'https://fresh-h5.jkweixin.net' // 外部h5链接
+  outLink: 'https://fresh-h5.jkweixin.net', // 外部h5链接
+  defaultId: 1
 }
 
 const TEST = {
   api: 'https://social-shopping-api.jkweixin.net/social-shopping',
   image: 'https://img.jkweixin.net/defaults',
   upload: 'https://social-shopping-api.jkweixin.net/social-shopping',
-  outLink: 'https://fresh-h5.jkweixin.net'
+  outLink: 'https://fresh-h5.jkweixin.net',
+  defaultId: 1
 }
 
 const PROD = {
   api: 'https://social-shopping-api.jkweixin.com/social-shopping' + version,
   image: 'https://img.jkweixin.com/defaults',
   upload: 'https://social-shopping-api.jkweixin.com/social-shopping' + version,
-  outLink: 'https://fresh-h5.jkweixin.com'
+  outLink: 'https://fresh-h5.jkweixin.com',
+  defaultId: 7
 }
 export const baseURL = env === 'production' ? PROD : env === 'test' ? TEST : DEV
 

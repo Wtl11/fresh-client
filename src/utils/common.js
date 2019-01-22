@@ -1,3 +1,6 @@
+import API from '@api'
+import * as wechat from './wechat'
+
 /* 深度拷贝 */
 export function objDeepCopy(source) {
   let sourceCopy = source instanceof Array ? [] : {}
@@ -84,7 +87,7 @@ export function resolveQrCode(scene) {
 }
 
 // 解析永久二维码参数
-export function getParams (scene) {
+export function getParams(scene) {
   if (!scene) {
     return {}
   }
@@ -94,4 +97,18 @@ export function getParams (scene) {
     params[strs[i].split('=')[0]] = unescape(strs[i].split('=')[1])
   }
   return params
+}
+
+// 静默授权
+export async function silentAuthorization() {
+  let codeJson = await wechat.login()
+  let tokenJson = await API.Login.getToken({code: codeJson.code}, false)
+  if (tokenJson.code === 0) {
+    wx.setStorageSync('token', tokenJson.data.access_token)
+    wx.setStorageSync('userInfo', tokenJson.data.customer_info)
+  }
+  // 凭证失效时重新调起接口请求获取登录
+  /* eslint-disable no-undef */
+  await getCurrentPages()[getCurrentPages().length - 1].onLoad()
+  await getCurrentPages()[getCurrentPages().length - 1].onShow()
 }
