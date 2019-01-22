@@ -18,6 +18,7 @@
   import API from '@api'
   import app from '@src/main'
 
+  const ald = getApp()
   const PAGE_NAME = 'LOGIN'
   const TAB_BAR = app.config.tabBar.list
   export default {
@@ -48,6 +49,7 @@
       },
       async _login(e) {
         if (e.mp.detail.errMsg !== 'getUserInfo:ok') return
+        ald.aldstat.sendEvent('授权登录')
         let data = {code: this.codeMsg.code, iv: e.target.iv, encryptedData: e.target.encryptedData}
         let res = await API.Login.getToken(data)
         this.$wechat.hideLoading()
