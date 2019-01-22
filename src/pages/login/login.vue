@@ -18,7 +18,6 @@
   import API from '@api'
   import app from '@src/main'
   // const ald = getApp()
-
   const PAGE_NAME = 'LOGIN'
   const TAB_BAR = app.config.tabBar.list
   export default {

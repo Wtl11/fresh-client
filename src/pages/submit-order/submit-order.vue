@@ -54,6 +54,7 @@
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import API from '@api'
 
+  const ald = getApp()
   const PAGE_NAME = 'SUBMIT_ORDER'
 
   export default {
@@ -70,6 +71,7 @@
       ...orderComputed
     },
     async onShow() {
+      ald.aldstat.sendEvent('去支付')
       this._getCode()
       this._setMobile()
       this._getShopDetail()

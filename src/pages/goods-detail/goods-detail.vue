@@ -122,6 +122,7 @@
   const PAGE_NAME = 'GOODS_DETAIL'
   const TYPEBTN = [{url: '/yx-image/goods/icon-homepage@2x.png', text: '首页', type: 0}, {url: '/yx-image/goods/icon-service@2x.png', text: '客服', type: 1}, {url: '/yx-image/goods/icon-shopcart@2x.png', text: '购物车', type: 2}]
   const DESCRIBE_HEIGHT = 21
+  const ald = getApp()
 
   export default {
     name: PAGE_NAME,
@@ -168,6 +169,7 @@
       }
     },
     onLoad(options) {
+      ald.aldstat.sendEvent('商品详情')
       if (options.scene) {
         let scene = decodeURIComponent(options.scene)
         let params = getParams(scene)
@@ -264,6 +266,7 @@
         if (!this.$isLogin()) {
           return
         }
+        ald.aldstat.sendEvent('立即购买')
         if (this.goodsMsg.buy_count >= this.goodsMsg.buy_limit) {
           this.$wechat.showToast(`该商品限购${this.goodsMsg.buy_limit}件，您不能在购买了`)
         } else {

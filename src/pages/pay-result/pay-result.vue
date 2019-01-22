@@ -19,7 +19,7 @@
 
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
-
+  const ald = getApp()
   const PAGE_NAME = 'PAY_RESULT'
 
   export default {
@@ -34,6 +34,7 @@
       NavigationBar
     },
     onLoad(e) {
+      ald.aldstat.sendEvent('支付成功页')
       this.orderId = e.orderId
       clearTimeout(this.timer)
       this.timer = setTimeout(() => {
