@@ -86,7 +86,7 @@
               </div>
             </div>
             <form action="" report-submit @submit="$getFormId" @click.stop="addShoppingCart(item)">
-              <button class="add-box-right" v-if="item.usable_stock * 1 > 0" open-type="getUserInfo" formType="submit">
+              <button class="add-box-right" v-if="item.usable_stock * 1 > 0" formType="submit">
                 <div class="add-goods-btn">
                   <div class="add-icon">
                     <div class="add1"></div>
