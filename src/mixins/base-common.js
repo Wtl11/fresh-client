@@ -19,10 +19,17 @@ export default {
   },
   methods: {
     _saveCurrentPage() {
+      let url = this.$getUrl()
       // 记录页面栈
-      let url = this.$root.$mp.page.route
+      if (url.includes('pages/lost') || url.includes('pages/error')) {
+        return
+      }
+      this.$wx.setStorageSync('errorUrl', url)
+    },
+    $getUrl(path = '', query = '') {
+      let url = path || this.$root.$mp.page.route
       let status = this.$checkIsTabPage(url)
-      let query = this.$root.$mp.query
+      query = query || this.$root.$mp.query
       if (!status) {
         let string = ''
         for (let value in query) {
@@ -30,10 +37,7 @@ export default {
         }
         url = string ? `${url}?${string.slice(1)}` : url
       }
-      if (url.includes('pages/lost') || url.includes('pages/error')) {
-        return
-      }
-      this.$wx.setStorageSync('errorUrl', url)
+      return url
     },
     _clearWatcher() {
       // 清除mpvue的wathcers
@@ -55,7 +59,7 @@ export default {
       }
     },
     $checkIsTabPage(path) {
-      const TAB_REG = /(pages\/guide)|(pages\/shop)|(pages\/dynamic)|(pages\/mine)/
+      const TAB_REG = /(pages\/choiceness)|(pages\/shopping-cart)|(pages\/mine)/
       return TAB_REG.test(path)
     },
     $openSetting() {
@@ -68,11 +72,14 @@ export default {
     },
     // 判断是否跳转授权登录页面
     $isLogin() {
+      let url = this.$getUrl()
       let token = wx.getStorageSync('token')
-      if (token) {
+      if (!token) {
         wx.reLaunch({url: '/pages/login'})
+        wx.setStorageSync('targetPage', url)
         return false
       }
+      return true
     }
   }
 }

@@ -3,19 +3,19 @@
     <navigation-bar ref="navigationBar" :title="msgTitle" :showArrow="true" :translucent="true"></navigation-bar>
     <div class="banner-box">
       <div class="banner-share" @click="showShare">
-        <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/icon-share3@2x.png'"  mode="aspectFill">
+        <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/icon-share3@2x.png'" mode="aspectFill">
       </div>
       <swiper class="banner" @change="bannerChange" interval="5000">
         <block v-for="(item, index) in goodsMsg.goods_banner_images" :key="index">
           <swiper-item class="banner-item">
-            <img v-if="item.image_url" :src="item.image_url" class="item-img"  mode="aspectFill">
+            <img v-if="item.image_url" :src="item.image_url" class="item-img" mode="aspectFill">
           </swiper-item>
         </block>
       </swiper>
       <div class="sales-number">已售{{goodsMsg.sale_count}}{{goodsMsg.goods_units}}</div>
     </div>
     <div class="group-price">
-      <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/bg-details@2x.png'"  mode="aspectFill" class="group-bg">
+      <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/bg-details@2x.png'" mode="aspectFill" class="group-bg">
       <div class="group-main-box">
         <div class="main-box-left">
           <div class="left-price">{{goodsMsg.shop_price}}</div>
@@ -51,7 +51,7 @@
       <div class="goods-info-bootom" v-if="userImgList.length > 0">
         <div class="info-bootom-list" v-for="(item, index) in userImgList" :key="index">
           <div class="info-user">
-            <img v-if="imageUrl" :src="item.head_image_url ? item.head_image_url : imageUrl + '/yx-image/choiceness/default_avatar@2x.png'" class="detail-img"  mode="aspectFill">
+            <img v-if="imageUrl" :src="item.head_image_url ? item.head_image_url : imageUrl + '/yx-image/choiceness/default_avatar@2x.png'" class="detail-img" mode="aspectFill">
           </div>
           <div class="info-name">{{item.nickname}}</div>
         </div>
@@ -59,7 +59,7 @@
       </div>
     </div>
     <div class="detail-title">商品详情</div>
-    <img v-for="(item, index) in goodsMsg.goods_detail_images" v-if="item.image_url" :src="item.image_url" class="detail-img"  mode="widthFix" :key="index">
+    <img v-for="(item, index) in goodsMsg.goods_detail_images" v-if="item.image_url" :src="item.image_url" class="detail-img" mode="widthFix" :key="index">
     <div class="send-box">
       <div class="send-title">发货须知</div>
       <div class="send-sub-title">当天下午23:00前下单，当天发货次日送达；</div>
@@ -69,17 +69,17 @@
       <div class="hlep-btn">
         <div class="hlep-btn-box" v-for="(item, index) in typeBtn" :key="index" @click.stop="switchItem(item)">
           <div class="hlep-top">
-            <img v-if="imageUrl" :src="imageUrl + item.url" class="detail-img"  mode="widthFix">
+            <img v-if="imageUrl" :src="imageUrl + item.url" class="detail-img" mode="widthFix">
             <div class="hlep-number" v-if="index * 1 === 2 && count * 1 >= 1">{{count * 1 > 99 ? 99 : count}}</div>
           </div>
           <div class="hlep-bottom">{{item.text}}</div>
         </div>
       </div>
       <form action="" report-submit @submit="$getFormId">
-        <button v-if="goodsMsg.usable_stock * 1 !== 0" class="goods-btn"  open-type="getUserInfo"  formType="submit" @click="addShoppingCart">加入购物车</button>
+        <button v-if="goodsMsg.usable_stock * 1 !== 0" class="goods-btn" open-type="getUserInfo" formType="submit" @click="addShoppingCart">加入购物车</button>
       </form>
       <form action="" report-submit @submit="$getFormId">
-        <button v-if="goodsMsg.usable_stock * 1 !== 0" class="goods-btn goods-btn-active"open-type="getUserInfo"  formType="submit"  @click="instantlyBuy">立即购买</button>
+        <button v-if="goodsMsg.usable_stock * 1 !== 0" class="goods-btn goods-btn-active" open-type="getUserInfo" formType="submit" @click="instantlyBuy">立即购买</button>
       </form>
       <div v-if="goodsMsg.usable_stock * 1 === 0" class="goods-btn goods-btn-assint">已抢完</div>
     </div>
@@ -88,11 +88,11 @@
     <link-group ref="shareList" :linkType="2" @saveImg="_action"></link-group>
     <we-paint ref="wePaint" @drawDone="_drawDone"></we-paint>
     <div class="share-goods">
-      <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-sharegoods@2x.png'" class="share-bg"  mode="aspectFill">
+      <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-sharegoods@2x.png'" class="share-bg" mode="aspectFill">
       <div class="share-box">
-        <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/5@1x.png'" class="share-img"  mode="aspectFill">
+        <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/5@1x.png'" class="share-img" mode="aspectFill">
         <div class="share-bottom">
-          <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/5@1x.png'" class="wem-img"  mode="aspectFill">
+          <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/5@1x.png'" class="wem-img" mode="aspectFill">
           <div class="share-title">智利J级车厘子250g</div>
           <div class="share-sub-title">智利J级车厘子250g</div>
           <div class="share-group-box">团购价</div>
@@ -111,13 +111,14 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import { orderMethods, cartMethods, cartComputed } from '@state/helpers'
+  import {orderMethods, cartMethods, cartComputed} from '@state/helpers'
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import AddNumber from '@components/add-number/add-number'
   import LinkGroup from '@components/link-group/link-group'
   import {getParams} from '@utils/common'
   import WePaint from '@components/we-paint/we-paint'
   import API from '@api'
+
   const PAGE_NAME = 'GOODS_DETAIL'
   const TYPEBTN = [{url: '/yx-image/goods/icon-homepage@2x.png', text: '首页', type: 0}, {url: '/yx-image/goods/icon-service@2x.png', text: '客服', type: 1}, {url: '/yx-image/goods/icon-shopcart@2x.png', text: '购物车', type: 2}]
   const DESCRIBE_HEIGHT = 21
@@ -231,13 +232,15 @@
       switchItem(item) {
         switch (item.type) {
           case 0:
-            wx.switchTab({ url: '/pages/choiceness' })
+            wx.switchTab({url: '/pages/choiceness'})
             break
           case 1:
             this.$refs.groupList.showLink()
             break
           case 2:
-            wx.switchTab({ url: '/pages/shopping-cart' })
+            if (this.$isLogin()) {
+              wx.switchTab({url: '/pages/shopping-cart'})
+            }
             break
         }
       },
@@ -245,6 +248,9 @@
         this.$refs.shareList.showLink()
       },
       addShoppingCart() {
+        if (!this.$isLogin()) {
+          return
+        }
         API.Choiceness.addShopCart({sku_id: this.goodsMsg.shop_skus[0].id}).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.$wechat.showToast('加入购物车成功')
@@ -255,6 +261,9 @@
         })
       },
       instantlyBuy() {
+        if (!this.$isLogin()) {
+          return
+        }
         if (this.goodsMsg.buy_count >= this.goodsMsg.buy_limit) {
           this.$wechat.showToast(`该商品限购${this.goodsMsg.buy_limit}件，您不能在购买了`)
         } else {
@@ -475,12 +484,12 @@
     .share-box
       border-radius: 10px
       background: #fff
-      box-shadow: 0 2px 11px 0 rgba(0,0,0,0.10)
+      box-shadow: 0 2px 11px 0 rgba(0, 0, 0, 0.10)
       z-index: 11
       position: relative
       .share-img
         display: block
-        width:  89.4vw
+        width: 89.4vw
         height: 89.4vw
         border-top-left-radius: 10px
         border-top-right-radius: 10px
@@ -541,6 +550,7 @@
           width: 100%
           background: #888
           col-center()
+
   .goods-detail
     width: 100%
     min-height: 100vh
@@ -548,6 +558,7 @@
     padding-bottom: 55px
     box-sizing: border-box
     overflow-x: hidden
+
   .banner-box
     width: 100vw
     height: 100vw
@@ -579,6 +590,7 @@
       height: 16px
       line-height: 16px
       margin-bottom: 8px
+
   .page-box
     position: absolute
     right: 15px
@@ -609,6 +621,7 @@
       height: 100%
       display: block
       border-radius: 50%
+
   .group-price
     width: 100%
     height: 50px
@@ -664,7 +677,7 @@
         .time-text
           font-size: $font-size-14
           font-family: $font-family-regular
-          color: rgba(255,255,255,.8)
+          color: rgba(255, 255, 255, .8)
           margin-right: 5px
         .time-box
           font-size: $font-size-13
@@ -681,6 +694,7 @@
           font-family: $font-family-regular
           color: #fff
           margin: 0 4px 3px 3px
+
   .goods-info
     background: #fff
     padding: 0 12px
@@ -688,6 +702,7 @@
     width: 100%
     background: #fff
     margin-bottom: 11px
+
   .goods-info-top
     padding: 17px 0
     .info-top
@@ -726,6 +741,7 @@
         img
           width: 12.5px
           height: 12.5px
+
   .goods-info-bootom
     border-top-1px(#E6E6E6)
     height: 45px
@@ -753,10 +769,12 @@
       font-family: $font-family-regular
       max-width: 35px
       no-wrap()
+
   .info-bootom-text
     font-size: $font-size-12
     color: $color-text-sub
     font-family: $font-family-regular
+
   .detail-title
     font-size: $font-size-16
     color: $color-text-main
@@ -767,10 +785,12 @@
     height: 50px
     line-height: 50px
     letter-spacing: 0.8px
+
   .detail-img
     display: block
     width: 100%
     height: auto
+
   .send-box
     padding: 17px 0 25px 12px
     box-sizing: border-box
@@ -787,6 +807,7 @@
       font-family: $font-family-regular
       line-height: 19.5px
       margin-bottom: 1px
+
   .fixed-btn
     position: fixed
     left: 0

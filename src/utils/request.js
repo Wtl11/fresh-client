@@ -66,6 +66,9 @@ function checkCode(res) {
         wx.redirectTo({url: '/pages/goods-end'})
         break
       case 10000: // 登录状态失效时跳转
+        /* eslint-disable no-undef */
+        // getCurrentPages()[getCurrentPages().length - 1].onLoad()
+        // getCurrentPages()[getCurrentPages().length - 1].onShow()
         wx.reLaunch({url: '/pages/login'})
         break
       case 13002: // 冻结

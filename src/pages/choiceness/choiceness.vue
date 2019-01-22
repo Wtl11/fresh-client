@@ -124,7 +124,7 @@
   import ScrollTab from '@components/scroll-tab/scroll-tab'
   import API from '@api'
   import {cartMethods} from '@state/helpers'
-
+  // const ald = getApp()
   const PAGE_NAME = 'CHOICENESS'
   export default {
     name: PAGE_NAME,

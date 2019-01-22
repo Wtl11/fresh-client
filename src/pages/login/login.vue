@@ -17,6 +17,7 @@
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import API from '@api'
   import app from '@src/main'
+  // const ald = getApp()
 
   const PAGE_NAME = 'LOGIN'
   const TAB_BAR = app.config.tabBar.list
@@ -32,6 +33,7 @@
       }
     },
     async onLoad() {
+      this.$getUrl(this.$root.$mp.appOptions.path, this.$root.$mp.appOptions.query)
       this.codeMsg = await this.$wechat.login()
     },
     methods: {
@@ -41,13 +43,14 @@
           let isTab = TAB_BAR.findIndex((item) => targetPage.includes(item.pagePath))
           // tab页面记录参数
           isTab !== -1 ? wx.switchTab({url: '/' + targetPage}) : wx.redirectTo({url: '/' + targetPage})
-          wx.setStorageSync('targetPage', '')
+          // wx.setStorageSync('targetPage', '')
           return
         }
         wx.switchTab({url: '/' + TAB_BAR[0].pagePath})
       },
       async _login(e) {
         if (e.mp.detail.errMsg !== 'getUserInfo:ok') return
+        // ald.aldstat.sendEvent('授权登录')
         let data = {code: this.codeMsg.code, iv: e.target.iv, encryptedData: e.target.encryptedData}
         let res = await API.Login.getToken(data)
         this.$wechat.hideLoading()
