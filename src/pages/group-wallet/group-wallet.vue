@@ -83,7 +83,6 @@
           } else {
             this.$wechat.showToast(res.message)
           }
-          console.log(res)
         })
       },
       getNewWalletList() {
@@ -101,7 +100,6 @@
           } else {
             this.$wechat.showToast(res.message)
           }
-          console.log(res)
         })
       },
       getMoreWalletList() {
@@ -120,7 +118,6 @@
           } else {
             this.$wechat.showToast(res.message)
           }
-          console.log(res)
         })
       },
       _isUpList(res) {

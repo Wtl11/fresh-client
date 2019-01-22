@@ -98,7 +98,6 @@
         API.Choiceness.copyGoodsDetail(this.goodsId, {is_presell_goods: 1}).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.goodsMsg = res.data
-            console.log(this.goodsMsg)
             let data = {
               image_url: this.goodsMsg.goods_cover_image
             }

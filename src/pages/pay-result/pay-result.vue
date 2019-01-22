@@ -44,8 +44,6 @@
     onShareAppMessage() {
       let shopId = wx.getStorageSync('shopId')
       let userInfo = wx.getStorageSync('userInfo').nickname
-      console.log(shopId)
-      console.log(`id=${this.orderId}&shopId=${shopId}`)
       return {
         title: `团长，我是“${userInfo}”，刚在店里买了商品↓，请接单！`,
         path: `/pages/share-order?id=${this.orderId}&shopId=${shopId}`,

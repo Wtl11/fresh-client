@@ -183,7 +183,6 @@
         let res = await API.Leader.goodsThumb({id: item.id})
         this.$refs.shareList.showLink()
         this.goodsItem.thumb_image = res.error === this.$ERR_OK ? res.data.thumb_image : {}
-        console.log(res)
       },
       _scanCode() {
         wx.scanCode({

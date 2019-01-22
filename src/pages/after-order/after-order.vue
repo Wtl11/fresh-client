@@ -94,7 +94,6 @@
       getAfterGoodsDetailData() {
         API.Order.reqSaleOrderDetail(this.orderId).then((res) => {
           if (res.error === this.$ERR_OK) {
-            console.log(res.data)
             this.orderMsg = res.data
             switch (res.data.after_sale_status * 1) {
               case 0 :

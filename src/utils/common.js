@@ -99,16 +99,17 @@ export function getParams(scene) {
   return params
 }
 
-// 静默授权
+// 凭证失效时重新调起接口请求获取登录
 export async function silentAuthorization() {
   let codeJson = await wechat.login()
   let tokenJson = await API.Login.getToken({code: codeJson.code}, false)
   if (tokenJson.code === 0) {
     wx.setStorageSync('token', tokenJson.data.access_token)
     wx.setStorageSync('userInfo', tokenJson.data.customer_info)
+    /* eslint-disable no-undef */
+    await getCurrentPages()[getCurrentPages().length - 1].onLoad()
+    await getCurrentPages()[getCurrentPages().length - 1].onShow()
+  } else {
+    wx.reLaunch({url: '/pages/login'})
   }
-  // 凭证失效时重新调起接口请求获取登录
-  /* eslint-disable no-undef */
-  await getCurrentPages()[getCurrentPages().length - 1].onLoad()
-  await getCurrentPages()[getCurrentPages().length - 1].onShow()
 }
