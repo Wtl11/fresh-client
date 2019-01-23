@@ -109,7 +109,7 @@ export async function silentAuthorization() {
     /* eslint-disable no-undef */
     await getCurrentPages()[getCurrentPages().length - 1].onLoad()
     await getCurrentPages()[getCurrentPages().length - 1].onShow()
-  } else {
-    wx.reLaunch({url: '/pages/login'})
+    return
   }
+  wx.reLaunch({url: '/pages/login'})
 }

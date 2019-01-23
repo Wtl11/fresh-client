@@ -5,7 +5,7 @@ import {silentAuthorization} from './common'
 import wx from './wx'
 
 const fly = new Fly()
-// let ErrorNum = 0
+let ErrorNum = 0
 // 公共请求头
 const COMMON_HEADER = {}
 const NETPAGE = `/pages/error`
@@ -13,7 +13,7 @@ const NETPAGE = `/pages/error`
 // 请求拦截器
 fly.interceptors.request.use((request) => {
   request.headers['Authorization'] = wx.getStorageSync('token') // todo
-  request.headers['Current-Shop'] = wx.getStorageSync('shopId')
+  request.headers['Current-Shop'] = wx.getStorageSync('shopId') || baseURL.defaultId
   request.headers['Current-Corp'] = 1 // todo 测试专用记得删除
   return request
 })
@@ -68,7 +68,12 @@ async function checkCode(res) {
         wx.redirectTo({url: '/pages/goods-end'})
         break
       case 10000: // 登录状态失效时跳转
-        await silentAuthorization()
+        console.log(ErrorNum)
+        if (ErrorNum <= 0) {
+          await silentAuthorization()
+          ErrorNum = -1
+        }
+        ErrorNum++
         // wx.reLaunch({url: '/pages/login'})
         break
       case 13002: // 冻结

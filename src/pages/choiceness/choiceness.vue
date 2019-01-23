@@ -266,6 +266,7 @@
         if (res.error !== this.$ERR_OK) {
           this.$wechat.showToast(res.message)
         }
+        console.log(res.data)
         this.groupInfo = res.data
       },
       getPlantList() {

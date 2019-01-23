@@ -75,9 +75,9 @@
   import {oauthComputed} from '@state/helpers'
 
   const ORRDER_NAV_LIST = [
-    {icon_url: '/yx-image/cart/icon-payment@2x.png', name: '待付款', id: 0, index: 1, count: 1},
+    {icon_url: '/yx-image/cart/icon-payment@2x.png', name: '待付款', id: 0, index: 1, count: 0},
     {icon_url: '/yx-image/cart/icon-delivery@2x.png', name: '待提货', id: 1, index: 2, count: 0},
-    {icon_url: '/yx-image/cart/icon-finish@2x.png', name: '已完成', id: 2, index: 3, count: 2},
+    {icon_url: '/yx-image/cart/icon-finish@2x.png', name: '已完成', id: 2, index: 3, count: 0},
     {icon_url: '/yx-image/cart/icon-aftersales@2x.png', name: '售后', id: 4, count: 0},
     {icon_url: '/yx-image/cart/icon-order@2x.png', name: '全部', id: '', index: 0, count: 0}
   ]
