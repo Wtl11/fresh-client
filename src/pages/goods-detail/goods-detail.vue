@@ -76,10 +76,10 @@
         </div>
       </div>
       <form action="" report-submit @submit="$getFormId">
-        <button v-if="goodsMsg.usable_stock * 1 !== 0" class="goods-btn" open-type="getUserInfo" formType="submit" @click="addShoppingCart">加入购物车</button>
+        <button v-if="goodsMsg.usable_stock * 1 !== 0" class="goods-btn" formType="submit" @click="addShoppingCart">加入购物车</button>
       </form>
       <form action="" report-submit @submit="$getFormId">
-        <button v-if="goodsMsg.usable_stock * 1 !== 0" class="goods-btn goods-btn-active" open-type="getUserInfo" formType="submit" @click="instantlyBuy">立即购买</button>
+        <button v-if="goodsMsg.usable_stock * 1 !== 0" class="goods-btn goods-btn-active" formType="submit" @click="instantlyBuy">立即购买</button>
       </form>
       <div v-if="goodsMsg.usable_stock * 1 === 0" class="goods-btn goods-btn-assint">已抢完</div>
     </div>
