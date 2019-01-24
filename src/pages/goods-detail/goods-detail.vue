@@ -2,9 +2,6 @@
   <div class="goods-detail">
     <navigation-bar ref="navigationBar" :title="msgTitle" :showArrow="true" :translucent="true"></navigation-bar>
     <div class="banner-box">
-      <div class="banner-share" @click="showShare">
-        <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/icon-share3@2x.png'" mode="aspectFill">
-      </div>
       <swiper class="banner" @change="bannerChange" interval="5000">
         <block v-for="(item, index) in goodsMsg.goods_banner_images" :key="index">
           <swiper-item class="banner-item">
@@ -12,29 +9,43 @@
           </swiper-item>
         </block>
       </swiper>
-      <div class="sales-number">已售{{goodsMsg.sale_count}}{{goodsMsg.goods_units}}</div>
-    </div>
-    <div class="group-price">
-      <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/bg-details@2x.png'" mode="aspectFill" class="group-bg">
-      <div class="group-main-box">
-        <div class="main-box-left">
-          <div class="left-price">{{goodsMsg.shop_price}}</div>
-          <div class="left-price-text">元</div>
-          <div class="small-box">
-            <div class="line-price">{{goodsMsg.original_price}}元</div>
-            <div class="line-price-text">团购价</div>
+      <div class="banner-title-box">
+        <div class="banner-title-main">
+          <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-spxq_bg@2x.png'" mode="aspectFill" class="banner-title-bg">
+          <div class="banner-main-box">
+            <div class="banner-main-left">
+              <div class="left-price">{{goodsMsg.shop_price}}</div>
+              <div class="left-price-text">元</div>
+              <div class="left-price-line">
+                <div class="line-price-top">
+                  <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-qgj@2x.png'" class="text-img" mode="aspectFill">
+                  <div class="text">抢购价</div>
+                </div>
+                <div class="line-price-box">{{goodsMsg.original_price}}元</div>
+              </div>
+            </div>
+            <div class="banner-main-right">
+              <div class="time-text">距结束</div>
+              <div class="time-all-box">{{activityTime.hour}}:{{activityTime.minute}}:{{activityTime.second}}</div>
+            </div>
           </div>
-        </div>
-        <div class="main-box-right">
-          <div class="time-text">距结束</div>
-          <div class="time-box">{{activityTime.hour}}</div>
-          <div class="time-line">:</div>
-          <div class="time-box">{{activityTime.minute}}</div>
-          <div class="time-line">:</div>
-          <div class="time-box">{{activityTime.second}}</div>
         </div>
       </div>
     </div>
+    <div class="detail-info-box">
+      <div class="info-box">
+        <div class="title">{{goodsMsg.name}}</div>
+        <div class="info-sub">
+          <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/icon-fast@2x.png'" mode="aspectFill" class="info-sub-img">
+          <div class="sub-text">现在下单，预计(01月11日)可自提</div>
+        </div>
+        <div class="info-stock">已售<span class="stock-number">{{goodsMsg.sale_count}}</span>{{goodsMsg.goods_units}}，剩余<span class="stock-number">{{goodsMsg.usable_stock}}</span>{{goodsMsg.goods_units}}</div>
+      </div>
+      <div class="banner-share" @click="showShare">
+        <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/icon-share3@2x.png'" mode="aspectFill">
+      </div>
+    </div>
+    <div class="safeguard-box"></div>
     <div class="goods-info">
       <div class="goods-info-top">
         <div class="info-top">
@@ -579,20 +590,126 @@
           all-center()
           height: 63px
           width: 63px
-    .sales-number
-      position: absolute
-      left: 12px
-      bottom: 12px
-      font-size: $font-size-12
-      color: #fff
-      font-family: $font-family-regular
-      border-radius: 8px
-      background: $color-text-sub
-      padding: 0 5px
-      height: 16px
-      line-height: 16px
-      margin-bottom: 8px
+  .banner-title-box
+    padding: 0 12px
+    box-sizing: border-box
+    position: absolute
+    left: 0
+    bottom: -1px
+    width: 100%
+    .banner-title-main
+      padding-bottom: 13vw
+      width: 100%
+      position: relative
+      .banner-title-bg
+        position: absolute
+        left: 0
+        bottom: 0
+        width: 100%
+        height: 100%
+      .banner-main-box
+        position: absolute
+        left: 0
+        bottom: 0
+        width: 100%
+        height: 100%
+        padding: 0 19px 0 10px
+        box-sizing: border-box
+        layout(row)
+        align-items: center
+        justify-content: space-between
+        .banner-main-left
+          layout(row)
+          align-items: center
+          .left-price
+            font-size: 30px
+            font-family: 'PingFang-SC-Bold'
+            color: $color-white
+          .left-price-text
+            font-size: 22px
+            font-family: $font-family-medium
+            color: $color-white
+            margin-right: 6px
+          .line-price-top
+            height: 11px
+            width: 36.5px
+            position: relative
+            .text-img
+              width: 100%
+              height: 100%
+              display: block
+              position: absolute
+              left: 0
+              bottom: 0
+            .text
+              height: 11px
+              font-size: 9px
+              color: $color-money
+              line-height: 11px
+              font-family: $font-family-regular
+              text-align: center
+              position: relative
+              z-index: 11
+          .line-price-box
+            font-size: $font-size-12
+            font-family: $font-family-regular
+            text-decoration: line-through
+            line-height: 1
+            color: #fff
+            margin-top: 2px
 
+        .banner-main-right
+          text-align: center
+          .time-text
+            font-size: $font-size-13
+            color: $color-text-main
+            font-family: $font-family-regular
+            margin-bottom: 4px
+          .time-all-box
+            font-size: $font-size-13
+            color: $color-text-main
+            font-family: $font-family-regular
+  .detail-info-box
+    padding: 0 12px
+    box-sizing: border-box
+    position: relative
+    .info-box
+      background: $color-white
+      width: 100%
+      border-bottom-left-radius: 8px
+      border-bottom-right-radius: 8px
+      padding: 15px 10px 23px
+      box-sizing: border-box
+      margin-bottom: 10px
+      box-shadow: 0 6px 20px 0 rgba(17,17,17,0.06)
+      .title
+        width: 100%
+        font-size: $font-size-17
+        color: #1F1F1F
+        line-height: 1
+        min-height: 18px
+        font-family: $font-family-medium
+        margin-bottom: 15px
+        no-wrap()
+      .info-sub
+        layout(row)
+        align-items: center
+        margin-bottom: 16px
+        .info-sub-img
+          width: 14.5px
+          height: 15.5px
+          display: block
+          margin-right: 5px
+        .sub-text
+          color: #9B9B9B
+          font-size: $font-size-14
+          font-family: $font-family-regular
+    .info-stock
+      font-size: $font-size-14
+      color: #9e9e9e
+      font-family: $font-family-regular
+      .stock-number
+        color: $color-money
   .page-box
     position: absolute
     right: 15px
@@ -613,89 +730,16 @@
 
   .banner-share
     position: absolute
-    width: 40px
-    height: 40px
-    right: 16.5px
-    bottom: 15.5px
+    width: 55px
+    height: 55px
+    right: 23px
+    bottom: 13px
     z-index: 22
     img
       width: 100%
       height: 100%
       display: block
       border-radius: 50%
-
-  .group-price
-    width: 100%
-    height: 50px
-    position: relative
-    padding: 0 12px
-    box-sizing: border-box
-    .group-bg
-      position: absolute
-      left: 0
-      top: 0
-      width: 100%
-      height: 100%
-      display: block
-    .group-main-box
-      layout(row)
-      align-items: center
-      justify-content: space-between
-      position: relative
-      height: 100%
-      width: 100%
-      z-index: 11
-      .main-box-left
-        layout(row)
-        align-items: center
-        .left-price
-          font-size: 28px
-          font-family: $font-family-medium
-          color: #fff
-        .left-price-text
-          font-size: $font-size-22
-          font-family: $font-family-medium
-          color: #fff
-          margin-right: 8px
-        .line-price
-          font-size: $font-size-10
-          font-family: $font-family-regular
-          text-decoration: line-through
-          line-height: 1
-          color: #fff
-          margin-bottom: 2px
-        .line-price-text
-          font-size: $font-size-10
-          font-family: $font-family-regular
-          line-height: 13px
-          padding-left: 2px
-          padding-right: 1px
-          color: #fff
-          height: 13px
-          border-1px(#FFFFFF, 2px)
-      .main-box-right
-        layout(row)
-        align-items: center
-        .time-text
-          font-size: $font-size-14
-          font-family: $font-family-regular
-          color: rgba(255, 255, 255, .8)
-          margin-right: 5px
-        .time-box
-          font-size: $font-size-13
-          font-family: $font-family-medium
-          background: $color-white
-          width: 20px
-          text-align: center
-          line-height: 22px
-          height: 20px
-          border-radius: 3px
-          color: $color-main
-        .time-line
-          font-size: $font-size-12
-          font-family: $font-family-regular
-          color: #fff
-          margin: 0 4px 3px 3px
 
   .goods-info
     background: #fff

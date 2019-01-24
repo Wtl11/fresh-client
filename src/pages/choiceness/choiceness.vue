@@ -1,61 +1,51 @@
 <template>
   <div class="choiceness">
-    <navigation-bar :title="title" :showArrow="false" :translucent="true"></navigation-bar>
-    <div class="choiceness-top" :class="statusBarHeight * 1 === 20 ? '' : 'choiceness-top-x'">
-      <div class="choiceness-bgimg" v-if="statusBarHeight * 1 === 20">
-        <img class="bgimg-url" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-bg@2x.png'">
-      </div>
-      <div class="choiceness-top-bgimg choiceness-bgimg" v-else>
-        <img class="bgimg-url" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-top-bg@2x.png'">
-      </div>
-      <div class="group-info">
-        <div class="info-box">
-          <div class="info-shop-name">赞播优鲜</div>
-          <div class="info-box-top">
-            <div class="left-info">
-              <div class="left-info-user">
-                <img mode="aspectFill" v-if="imageUrl" :src="groupInfo.head_image_url">
-              </div>
-              <div class="name-box">
-                <div class="name-text">{{groupInfo.name}}</div>
-                <div class="address-box">
-                  <div class="address-icon" v-if="groupInfo.social_name">
-                    <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/icon-address_small@2x.png'">
-                  </div>
-                  <div class="address-text">{{groupInfo.social_name}}</div>
-                </div>
-              </div>
-            </div>
-            <div class="right-info" @click="linkGroup">联系团长</div>
-          </div>
-          <div class="info-box-bottom" v-if="groupInfo.notice">公告：{{groupInfo.notice}}</div>
-          <div class="carousel-wrapper" v-if="buyUsers.length > 0" :class="{'show': showBuyUser}">
-            <div class="avatar-wrapper">
-              <img :src="buyUsers[showUserIndex].head_image_url" alt="">
-            </div>
-            <div class="content">{{buyUsers[showUserIndex].nickname}} 刚刚购买了一单</div>
-          </div>
+    <navigation-bar :title="title" :showArrow="false"></navigation-bar>
+    <div class="community-box">
+      <div class="community-main">
+        <div class="community-img">
+          <img :src="groupInfo.head_image_url">
         </div>
+        <div class="community-text">{{groupInfo.social_name}}</div>
+        <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/icon-pitch@2x.png'" class="community-down">
+      </div>
+      <div class="carousel-wrapper" v-if="buyUsers.length > 0" :class="{'show': showBuyUser}">
+        <div class="avatar-wrapper">
+          <img :src="buyUsers[showUserIndex].head_image_url" alt="">
+        </div>
+        <div class="content">{{buyUsers[showUserIndex].nickname}} 刚刚购买了一单</div>
       </div>
     </div>
     <div class="banner-box" v-if="plantingList.length !== 0">
-      <swiper class="banner" :current="praiseIndex" autoplay interval="5000" circular @change="_setPraiseIndex">
+      <swiper class="banner" :current="praiseIndex" autoplay interval="5000" display-multiple-items="1" previous-margin="7.5px" next-margin="17.5px" circular @change="_setPraiseIndex">
         <block v-for="(item,index) in plantingList" :key="index">
-          <swiper-item class="banner-item">
+          <swiper-item class="banner-item"  :class="{'current-banner-active': praiseIndex === index}">
             <img class="item-img" mode="aspectFill" v-if="item.image_url" :src="item.image_url" @click="jumpDetail(item)">
           </swiper-item>
         </block>
       </swiper>
-      <div class="dots">
-        <div class="dots-item" :class="{'dots-item-active': praiseIndex === idx}" v-for="(item,idx) in plantingList" :key="idx" v-if="plantingList.length > 1"></div>
+    </div>
+    <div class="nav-list">
+      <div class="nav-item" v-for="(item, index) in [0, 1, 2, 3, 4, 5 , 6, 7, 8, 9]">
+        <div class="nav-top-box"></div>
+        <div class="nav-top-text">时令水果</div>
       </div>
     </div>
-    <scroll-view class="scroll-view2" v-if="tabList1.length" id="scrollView" :scroll-into-view="viewToItem" scroll-x scroll-with-animation>
-      <div class="under-line" :style="{left: move + 'px', width: arrWidth[tabIndex] + 'px' }"></div>
-      <div v-for="(item, index) in tabList1" :class="tabIndex === index ? 'item-active'  : ''" :key="index" class="item" :id="'item'+index" @click="_changeTab(index, item.id, $event)">
-        {{item.name}}
+    <div class="nav-list-border"></div>
+    <!--<scroll-view class="scroll-view2" v-if="tabList1.length" id="scrollView" :scroll-into-view="viewToItem" scroll-x scroll-with-animation>-->
+      <!--<div class="under-line" :style="{left: move + 'px', width: arrWidth[tabIndex] + 'px' }"></div>-->
+      <!--<div v-for="(item, index) in tabList1" :class="tabIndex === index ? 'item-active'  : ''" :key="index" class="item" :id="'item'+index" @click="_changeTab(index, item.id, $event)">-->
+        <!--{{item.name}}-->
+      <!--</div>-->
+    <!--</scroll-view>-->
+    <div class="goods-title-box">
+      <div class="goods-title-main">
+        <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/icon-clock@2x.png'" class="goods-title-img">
+        <div class="goods-title-text">今日抢购</div>
+        <div class="goods-title-icon"></div>
+        <div class="goods-title-sub">今日下单 次日提货</div>
       </div>
-    </scroll-view>
+    </div>
     <div class="goods-box">
       <div class="goods-list" v-for="(item, index) in goodsList" :key="index" @click="jumpGoodsDetail(item)">
         <div class="goods-left">
@@ -272,6 +262,9 @@
         API.Choiceness.getPlanting().then((res) => {
           if (res.error === this.$ERR_OK) {
             this.plantingList = res.data
+            this.plantingList.push(...res.data)
+            this.plantingList.push(...res.data)
+            this.plantingList.push(...res.data)
           } else {
             this.$wechat.showToast(res.message)
           }
@@ -421,163 +414,71 @@
     min-height: 100vh
     background: #fff
     overflow-x: hidden
-
-  .choiceness-top
-    position: relative
-    padding-top: 18vw
-    margin-bottom: 11px
-    .group-info
-      padding: 0 3.2vw
-      box-sizing: border-box
-      position: relative
-      z-index: 11
-      .info-box
-        layout()
-        justify-content: center
-        height: 100px
-        background: #fff
-        border-radius: 6px
-        box-shadow: 0 3px 10px 0 rgba(17, 17, 17, 0.06)
-        padding: 0 2.7vw
-        box-sizing: border-box
-        position: relative
-        .info-shop-name
-          position: absolute
-          left: 0
-          color: #fff
-          font-family: 'PingFang-SC-Heavy'
-          font-size: $font-size-22
-          top: -9.3vw
-          z-index: 11
-        .info-box-top
-          layout(row)
-          align-items: center
+  .community-box
+    layout(row)
+    justify-content: space-between
+    align-items: center
+    padding: 0 12px
+    box-sizing: border-box
+    margin-bottom: 8px
+    .community-main
+      layout(row)
+      align-items: center
+      .community-img
+        width: 28px
+        height: 28px
+        margin-right: 8px
+        img
           width: 100%
-          justify-content: space-between
-          padding-bottom: 8px
-          border-bottom-1px(#E6E6E6)
-          .left-info
-            layout(row)
-            flex: 1
-            overflow: hidden
-            align-items: center
-            .left-info-user
-              width: 13.3vw
-              height: 13.3vw
-              margin-right: 9px
-              border-radius: 50%
-              img
-                width: 100%
-                height: 100%
-                display: block
-                border-radius: 50%
-                background: #ff
-            .name-box
-              flex: 1
-              overflow: hidden
-            .name-text
-              height: $font-size-16
-              font-size: $font-size-16
-              font-family: $font-family-medium
-              color: $color-text-main
-              margin-bottom: 8.5px
-              flex: 1
-              no-wrap()
-            .address-box
-              layout(row)
-              align-items: center
-              width: 100%
-              overflow: hidden
-              .address-icon
-                width: 11px
-                height: 11px
-                margin-right: 3px
-                img
-                  display: block
-                  width: 100%
-                  height: 100%
-              .address-text
-                font-size: $font-size-13
-                font-family: $font-family-regular
-                color: $color-text-sub
-                flex: 1
-                no-wrap()
-          .right-info
-            width: 20vw
-            height: 28px
-            line-height: 28px
-            font-size: $font-size-14
-            font-family: $font-family-regular
-            color: $color-main
-            border-1px($color-main, 15px)
-            text-align: center
-        .info-box-bottom
-          text-align: left
-          width: 100%
-          margin-top: 9px
-          max-height: 32px
-          overflow: hidden
-          font-size: $font-size-12
-          line-height: $font-size-16
-          font-family: $font-family-regular
-          color: $color-text-sub
-
-        .carousel-wrapper
-          position: absolute
-          left: 0
-          bottom: -28px
-          layout(row)
-          max-width: 100%
-          align-items: center
-          height: 24px
-          padding: 0 9.5px 0 3px
-          background: rgba(0, 0, 0, .5)
-          border-radius: 36px
-          transition: opacity .3s
-          opacity: 0
-          &.show
-            opacity: 1
-          .avatar-wrapper
-            width: 20px
-            height: 20px
-            margin-right: 3px
-            border-radius: 50%
-            overflow: hidden
-            img
-              width: 100%
-              height: 100%
-          .content
-            flex: 1
-            overflow: hidden
-            font-size: $font-size-12
-            color: $color-white
-            no-wrap()
-    .choiceness-bgimg
-      width: 100%
-      height: 23.5vw
-      position: absolute
-      left: 0
-      top: 0
-      .bgimg-url
+          height: 100%
+          display: block
+          border-radius: 50%
+      .community-text
+        color: $color-text-main
+        font-size: $font-size-16
+        font-family: $font-family-medium
+        margin-right: 5px
+      .community-down
+        width: 9px
+        height: 6px
+        display: block
+  .carousel-wrapper
+    layout(row)
+    max-width: 100%
+    align-items: center
+    height: 24px
+    padding: 0 9.5px 0 3px
+    background: rgba(0, 0, 0, .5)
+    border-radius: 36px
+    transition: opacity .3s
+    opacity: 0
+    &.show
+      opacity: 1
+    .avatar-wrapper
+      width: 20px
+      height: 20px
+      margin-right: 3px
+      border-radius: 50%
+      overflow: hidden
+      img
         width: 100%
         height: 100%
-        display: block
-    .choiceness-top-bgimg
-      height: 35.2vw
+    .content
+      flex: 1
+      overflow: hidden
+      font-size: $font-size-12
+      color: $color-white
+      no-wrap()
 
-  .choiceness-top-x
-    padding-top: 25vw
 
   .banner-box
-    margin: 0 3.2vw
+    height: 40vw
     box-sizing: border-box
     position: relative
-    height: 40vw
     border-radius: 6px !important
     overflow: hidden !important
-    /*margin-bottom: 13px*/
     .banner
-      width: 100%
+      width: 100vw
       height: 100%
       border-radius: 6px !important
       transform: translateY(0)
@@ -589,38 +490,66 @@
         border-radius: 6px !important
         transform: translateY(0)
         overflow: hidden !important
+        layout(row)
+        align-items: center
         .item-img
           width: 100%
-          height: 100%
+          height: 95%
           display: block
           border-radius: 6px !important
           transform: translateY(0)
           overflow: hidden !important
-    .dots
-      position: absolute
-      bottom: 12px
-      row-center()
-      display: flex
-      .dots-item
-        width: 3px
-        height: 3px
-        border-radius: 3px
-        margin: 0 2.5px
-        background: #fff
-        transition: all .0 .3s
-      .dots-item-active
-        width: 10px
-        background: #fff
-
-  .topnav
-    position: fixed
-    width: 100vw
-    padding: 0 3.2vw
-    top: 64px
-    left: 0
+          margin-left: 10px
+      .current-banner-active
+        .item-img
+          width: 100%
+          height: 100%
+  .nav-list
+    layout(row)
+    align-items: center
+    padding-bottom: 23px
+    .nav-item
+      width: 20%
+      margin-top: 15px
+      .nav-top-box
+        width: 52px
+        height: 52px
+        margin: 0 auto 5px
+      .nav-top-text
+        font-size: $font-size-12
+        font-family: $font-family-regular
+        color: #333
+        text-align: center
+  .nav-list-border
+    height: 10px
+    background: $color-background
+  .goods-title-box
+    padding-left: 12px
     box-sizing: border-box
-    z-index: 99
-
+    .goods-title-main
+      layout(row)
+      border-bottom-1px($color-line)
+      align-items: center
+      height: 45px
+      .goods-title-img
+        width: 16px
+        height: 16px
+        display: block
+        margin-right: 5px
+      .goods-title-text
+        font-size: $font-size-16
+        color: $color-text-main
+        font-family: $font-family-medium
+      .goods-title-icon
+        width: 4px
+        height: 4px
+        background: $color-money
+        margin: 0 5px
+        border-radius: 50%
+      .goods-title-sub
+        font-size: $font-size-13
+        color: $color-text-sub
+        font-family: $font-family-regular
   .goods-box
     padding: 0 3.2vw
     box-sizing: border-box
@@ -703,10 +632,8 @@
               color: $color-money
               height: 13px
               line-height: 13px
-              margin-bottom: 5px
+              margin-bottom: 3px
               border-radius: 10px
-              background: rgba(255, 131, 0, 0.10)
-              border-1px(#FF8300, 10px)
               padding: 0 5px
           .price-box
             layout(row)
