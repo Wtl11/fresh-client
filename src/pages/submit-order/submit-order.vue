@@ -4,13 +4,13 @@
     <div class="order-title">请在{{deliverAt}}到货后，到团长代理点自提</div>
     <div class="order-info">
       <div class="order-info-top">
-        <div class="info-address">
-          提货地址：{{groupInfo.province}}{{groupInfo.city}}{{groupInfo.district}}{{groupInfo.address}}
-        </div>
         <div class="info-phone">
           <div class="icon-text">团长</div>
           <div class="icon-number"><span class="name">{{groupInfo.name}}</span><span
-            class="txt">{{groupInfo.mobile}}</span></div>
+            class="txt">{{groupInfo.social_name}}</span></div>
+        </div>
+        <div class="info-address">
+          提货地址：{{groupInfo.province}}{{groupInfo.city}}{{groupInfo.district}}{{groupInfo.address}}
         </div>
       </div>
       <div class="order-info-bottom">
@@ -23,6 +23,7 @@
         </form>
       </div>
     </div>
+    <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-colour@2x.png'" class="order-line">
     <div class="order-list">
       <div class="list-item" v-for="(item, index) in goodsList" :key="index">
         <div class="item-left-img"><img class="img" :src="item.goods_cover_image" alt=""></div>
@@ -166,41 +167,42 @@
     box-sizing: border-box
     padding-left: 3.2vw
     background: #fff
-    margin-bottom: 11px
     .order-info-top
-      padding: 16px 3.2vw 16px 0
+      padding: 15px 3.2vw 15px 0
       box-sizing: border-box
       border-bottom-1px(#e6e6e6)
       .info-address
         font-size: 15px
         color: #000000
-        font-family: $font-family-medium
-        line-height: 18px
-        min-height: 18px
-        margin-bottom: 12px
+        font-family: $font-family-regular
+        line-height: 20px
+        min-height: 20px
       .info-phone
         layout(row)
         align-items: center
+        margin-bottom: 10px
         .icon-text
           font-size: $font-size-12
-          color: $color-main
+          background: $color-main
+          color: $color-white
           text-align: center
           font-family: $font-family-regular
-          border-1px($color-main, 2px)
           width: 30px
           position: relative
-          padding: 2px 0 1.5px
+          height: 15px
+          line-height: 15px
           box-sizing: border-box
-          margin-right: 8px
+          margin-right: 10px
+          border-radius: 2px
         .icon-number
           font-size: $font-size-15
           color: $color-text-sub
           font-family: $font-family-regular
           .name
             font-size: $font-size-15
-            color: $color-text-sub
+            color: $color-text-main
             font-family: $font-family-regular
-            margin-right: 8px
+            margin-right: 10px
           .txt
             font-size: $font-size-15
             color: $color-text-sub
@@ -233,11 +235,10 @@
           .mobile-content
             width: 34vw
             box-sizing: border-box
-            font-size: $font-size-13
+            font-size: $font-size-15
             height: 20px
             line-height: 20px
-            box-sizing: border-box
-            padding: 0px 2px
+            padding: 0 2px
       .wechat-btn
         font-size: $font-size-12
         color: $color-main
@@ -248,6 +249,11 @@
         text-align: center
         border-1px($color-main, 15px)
 
+  .order-line
+    display: block
+    height: 3px
+    width: 100%
+    margin-bottom: 11px
   .order-list
     background: #fff
     padding-left: 3.2vw
