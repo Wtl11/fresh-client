@@ -262,9 +262,9 @@
         API.Choiceness.getPlanting().then((res) => {
           if (res.error === this.$ERR_OK) {
             this.plantingList = res.data
-            this.plantingList.push(...res.data)
-            this.plantingList.push(...res.data)
-            this.plantingList.push(...res.data)
+            // this.plantingList.push(...res.data)
+            // this.plantingList.push(...res.data)
+            // this.plantingList.push(...res.data)
           } else {
             this.$wechat.showToast(res.message)
           }
