@@ -12,14 +12,31 @@
         <img class="ecode-img" v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-code@2x.png'" @click="createQrCode">
       </div>
     </div>
-    <div class="order-nav">
-      <div class="order-item" v-for="(item, index) in orderNav" :key="index" @click="jumpOrder(item)">
-        <div class="icon"><img class="icon-img" v-if="imageUrl" :src="imageUrl+item.icon_url" alt=""></div>
-        <div class="txt">{{item.name}}</div>
-        <div class="mark" v-if="(index === 0 || index === 1 || index === 3) && item.count > 0">{{item.count > 99 ? 99 : item.count}}</div>
+    <div class="order-nav-box">
+      <div class="order-nav">
+        <div class="order-item" v-for="(item, index) in orderNav" :key="index" @click="jumpOrder(item)">
+          <div class="icon"><img class="icon-img" v-if="imageUrl" :src="imageUrl+item.icon_url" alt=""></div>
+          <div class="txt">{{item.name}}</div>
+          <div class="mark" v-if="(index === 0 || index === 1 || index === 3) && item.count > 0">{{item.count > 99 ? 99 : item.count}}</div>
+        </div>
+        <div class="arr-order">
+          <img class="eor-img" v-if="imageUrl" :src="imageUrl+'/yx-image/cart/mydivision@2x.png'" alt="">
+        </div>
       </div>
-      <div class="arr-order">
-        <img class="eor-img" v-if="imageUrl" :src="imageUrl+'/yx-image/cart/mydivision@2x.png'" alt="">
+      <div class="order-banner-box">
+        <div class="banner-box">
+          <swiper class="banner" autoplay interval="5000" vertical="true" circular @change="_setPraiseIndex">
+            <block>
+              <swiper-item class="banner-item">
+                <img class="banner-item-img" v-if="imageUrl" :src="imageUrl+'/yx-image/choiceness/5@1x.png'">
+                <div class="banner-text-box">
+                  <div class="banner-text-status">待提货</div>
+                  <div class="banner-text-time">预计13号可到自提点提货</div>
+                </div>
+              </swiper-item>
+            </block>
+          </swiper>
+        </div>
       </div>
     </div>
     <div class="self-addr">
@@ -341,7 +358,7 @@
             width: 16px
             height: 9px
     .group
-      padding: 0px 3.46vw 0px 3.2vw
+      padding: 0 3.46vw 0 3.2vw
     .mine-top
       width: 100vw
       height: 60px
@@ -379,12 +396,8 @@
           width: 9.33vw
           height: 9.33vw
     .order-nav
-      width: 93.6vw
+      width: 100%
       height: 93.5px
-      margin: 30px auto 0
-      background: $color-white
-      box-shadow: 0 3px 10px 0 rgba(17, 17, 17, 0.06)
-      border-radius: 6px
       position: relative
       layout(row)
       .arr-order
@@ -436,6 +449,55 @@
         &:last-child
           margin-left: 20px
 
+  .order-nav-box
+    box-shadow: 0 3px 10px 0 rgba(17, 17, 17, 0.06)
+    border-radius: 6px
+    margin: 30px auto 0
+    width: 93.6vw
+    background: $color-white
+    overflow: hidden
+    .order-banner-box
+      padding: 0 10px
+      box-sizing: border-box
+      width: 100%
+      height: 60px
+      .banner-box
+        height: 60px
+        width: 100%
+        box-sizing: border-box
+        position: relative
+        border-radius: 6px !important
+        overflow: hidden !important
+        border-top-1px($color-line)
+        .banner
+          width: 100%
+          height: 100%
+          border-radius: 6px !important
+          transform: translateY(0)
+          overflow: hidden !important
+          .banner-item
+            width: 100%
+            height: 100%
+            position: relative
+            border-radius: 6px !important
+            transform: translateY(0)
+            overflow: hidden !important
+            layout(row)
+            align-items: center
+            .banner-item-img
+              width: 44px
+              height: 44px
+              display: block
+              margin-right: 10px
+            .banner-text-status
+              font-size: $font-size-14
+              color: $color-main
+              font-family: $font-family-regular
+              margin-bottom: 5px
+            .banner-text-time
+              font-size: $font-size-12
+              color: $color-text-sub
+              font-family: $font-family-regular
   .mine-model
     position: fixed
     top: 0
