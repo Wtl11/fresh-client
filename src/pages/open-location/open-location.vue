@@ -1,11 +1,11 @@
 <template>
   <div class="lost">
-    <navigation-bar title="选择自提点" :showArrow="false"></navigation-bar>
+    <navigation-bar title="选择自提点"></navigation-bar>
     <div class="img-box">
       <img :src="imageUrl + '/yx-image/order/pic-address@2x.png'" v-if="imageUrl" class="error-img">
       <p class="text">亲，我们未获得您的位置信息</p>
     </div>
-    <navigator class="btn" open-type="switchTab" url="/pages/choiceness">开启定位</navigator>
+    <button class="btn" open-type="openSetting" @click="openLocation">开启定位</button>
     <navigator class="btn select-btn" open-type="switchTab" url="/pages/choiceness">手动选择自提点</navigator>
   </div>
 </template>
@@ -23,6 +23,33 @@
     onLoad(e) {
       if (e.shopId) {
         wx.setStorageSync('shopId', wx.getStorageSync('defaultShopId'))
+      }
+    },
+    onShow() {
+      wx.getSetting({
+        success: (data) => {
+          if (data.authSetting['scope.userLocation']) {
+          }
+          console.log(data)
+        }
+      })
+    },
+    methods: {
+      openLocation() {
+        console.log(111)
+        wx.getLocation({
+          success(res) {
+            console.log(res)
+          },
+          fail(res) {
+            wx.openSetting({
+              success(res1) {
+                console.log(res1)
+              }
+            })
+            console.log(res)
+          }
+        })
       }
     },
     components: {

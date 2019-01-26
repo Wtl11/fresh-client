@@ -1,14 +1,137 @@
 <template>
   <div class="classify">
     <navigation-bar title="分类"></navigation-bar>
-    <scroll-view class="scroll-view2" v-if="tabList1.length" id="scrollView" :scroll-into-view="viewToItem" scroll-x scroll-with-animation>
+    <scroll-view class="scroll-view2" :class="statusBarHeight * 1 === 20 ? '' : 'scroll-view-top'" v-if="tabList1.length" id="scrollView" :scroll-into-view="viewToItem" scroll-x scroll-with-animation>
       <div class="under-line" :style="{left: move + 'px', width: arrWidth[tabIndex] + 'px' }"></div>
       <div v-for="(item, index) in tabList1" :class="tabIndex === index ? 'item-active'  : ''" :key="index" class="item" :id="'item'+index" @click="_changeTab(index, item.id, $event)">
       {{item.name}}
+        <div class="item-under-line">
+          <div class="line"></div>
+        </div>
       </div>
     </scroll-view>
     <div class="goods-list">
-      <div class="goods-item-box">
+      <div class="goods-item-box" @click="setTab">
+        <div class="classify-box">
+          <div class="classify-box-top">
+            <img v-if="imageUrl" :src="imageUrl + '/yx-image/goods/pic-label2@2x.png'" alt="" class="top-label">
+          </div>
+          <div class="classify-box-bottom">
+            <div class="title">超值特惠 4斤新鲜柠檬4斤新鲜柠檬</div>
+            <div class="classify-price-box">
+              <div class="price-left">
+                <div class="price-number">10.8</div>
+                <div class="price-money">元</div>
+                <div class="price-line">12元</div>
+              </div>
+              <div class="price-right">
+                <img v-if="imageUrl" :src="imageUrl + '/yx-image/goods/icon-shopcart2@2x.png'" alt="" class="price-right-img">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="goods-item-box" @click="setTab">
+        <div class="classify-box">
+          <div class="classify-box-top">
+            <img v-if="imageUrl" :src="imageUrl + '/yx-image/goods/pic-label2@2x.png'" alt="" class="top-label">
+          </div>
+          <div class="classify-box-bottom">
+            <div class="title">超值特惠 4斤新鲜柠檬4斤新鲜柠檬</div>
+            <div class="classify-price-box">
+              <div class="price-left">
+                <div class="price-number">10.8</div>
+                <div class="price-money">元</div>
+                <div class="price-line">12元</div>
+              </div>
+              <div class="price-right">
+                <img v-if="imageUrl" :src="imageUrl + '/yx-image/goods/icon-shopcart2@2x.png'" alt="" class="price-right-img">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="goods-item-box" @click="setTab">
+        <div class="classify-box">
+          <div class="classify-box-top">
+            <img v-if="imageUrl" :src="imageUrl + '/yx-image/goods/pic-label2@2x.png'" alt="" class="top-label">
+          </div>
+          <div class="classify-box-bottom">
+            <div class="title">超值特惠 4斤新鲜柠檬4斤新鲜柠檬</div>
+            <div class="classify-price-box">
+              <div class="price-left">
+                <div class="price-number">10.8</div>
+                <div class="price-money">元</div>
+                <div class="price-line">12元</div>
+              </div>
+              <div class="price-right">
+                <img v-if="imageUrl" :src="imageUrl + '/yx-image/goods/icon-shopcart2@2x.png'" alt="" class="price-right-img">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="goods-item-box" @click="setTab">
+        <div class="classify-box">
+          <div class="classify-box-top">
+            <img v-if="imageUrl" :src="imageUrl + '/yx-image/goods/pic-label2@2x.png'" alt="" class="top-label">
+          </div>
+          <div class="classify-box-bottom">
+            <div class="title">超值特惠 4斤新鲜柠檬4斤新鲜柠檬</div>
+            <div class="classify-price-box">
+              <div class="price-left">
+                <div class="price-number">10.8</div>
+                <div class="price-money">元</div>
+                <div class="price-line">12元</div>
+              </div>
+              <div class="price-right">
+                <img v-if="imageUrl" :src="imageUrl + '/yx-image/goods/icon-shopcart2@2x.png'" alt="" class="price-right-img">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="goods-item-box" @click="setTab">
+        <div class="classify-box">
+          <div class="classify-box-top">
+            <img v-if="imageUrl" :src="imageUrl + '/yx-image/goods/pic-label2@2x.png'" alt="" class="top-label">
+          </div>
+          <div class="classify-box-bottom">
+            <div class="title">超值特惠 4斤新鲜柠檬4斤新鲜柠檬</div>
+            <div class="classify-price-box">
+              <div class="price-left">
+                <div class="price-number">10.8</div>
+                <div class="price-money">元</div>
+                <div class="price-line">12元</div>
+              </div>
+              <div class="price-right">
+                <img v-if="imageUrl" :src="imageUrl + '/yx-image/goods/icon-shopcart2@2x.png'" alt="" class="price-right-img">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="goods-item-box" @click="setTab">
+        <div class="classify-box">
+          <div class="classify-box-top">
+            <img v-if="imageUrl" :src="imageUrl + '/yx-image/goods/pic-label2@2x.png'" alt="" class="top-label">
+          </div>
+          <div class="classify-box-bottom">
+            <div class="title">超值特惠 4斤新鲜柠檬4斤新鲜柠檬</div>
+            <div class="classify-price-box">
+              <div class="price-left">
+                <div class="price-number">10.8</div>
+                <div class="price-money">元</div>
+                <div class="price-line">12元</div>
+              </div>
+              <div class="price-right">
+                <img v-if="imageUrl" :src="imageUrl + '/yx-image/goods/icon-shopcart2@2x.png'" alt="" class="price-right-img">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="goods-item-box" @click="setTab">
         <div class="classify-box">
           <div class="classify-box-top">
             <img v-if="imageUrl" :src="imageUrl + '/yx-image/goods/pic-label2@2x.png'" alt="" class="top-label">
@@ -52,17 +175,22 @@
     },
     data() {
       return {
-        tabList: [{name: '日常用品'}, {name: '日常用品'}, {name: '日常用品'}, {name: '日常用品'}, {name: '日常用品'}, {name: '日常用品'}, {name: '日常用品'}, {name: '日常用品'}, {name: '日常用品'}],
+        tabList: [],
         tabList1: [{name: '日常用品'}, {name: '日常用品'}, {name: '日常用品'}, {name: '日常用品'}, {name: '日常用品'}, {name: '日常用品'}, {name: '日常用品'}, {name: '日常用品'}, {name: '日常用品'}],
         arrWidth: [],
         width: 0,
         move: 0,
         tabIndex: 0,
-        viewToItem: 'item0'
+        viewToItem: 'item0',
+        statusBarHeight: 20
       }
     },
     components: {
       NavigationBar
+    },
+    onLoad() {
+      let syncRes = wx.getSystemInfoSync()
+      this.statusBarHeight = syncRes.statusBarHeight || 20
     },
     methods: {
       getWidth(index, id, e) {
@@ -75,6 +203,9 @@
             return item.width
           })
         })
+      },
+      setTab() {
+        this.tabList = [{name: '日常用品'}, {name: '日常用品'}, {name: '日常用品'}, {name: '日常用品'}, {name: '日常用品'}, {name: '日常用品'}, {name: '日常用品'}, {name: '日常用品'}, {name: '日常用品'}]
       },
       async _changeTab(index, id, e) {
         let number = index * 1 === 0 ? 1 : index
@@ -111,10 +242,11 @@
   .goods-list
     layout(row)
     align-items: center
+    padding-top: 45px
     .goods-item-box
       width: 50%
       box-sizing: border-box
-      margin-bottom: 2px
+      margin-bottom: 3px
       .classify-box
         background: #fff
         .classify-box-top
@@ -173,7 +305,10 @@
       padding-left: 2px
   .scroll-view2
     display: block
-    margin: 0 auto 5px
+    position: fixed
+    z-index: 111
+    top: 64px
+    left: 0
     height: 40px
     width: 100vw
     background: $color-white
@@ -181,7 +316,6 @@
     white-space: nowrap
     box-sizing: border-box
     transform: translateX(0)
-    position: relative
     transition: all 0.3s
     ::-webkit-scrollbar
       width: 0
@@ -205,15 +339,27 @@
     .item-active
       font-family: $font-family-medium
       font-size: $font-size-16
+      .item-under-line
+        position: absolute
+        width: 100%
+        height: 3px
+        left: 0
+        bottom: 0
+        .line
+          width: 30px
+          height: 3px
+          background: $color-main
+          margin: 0 auto
+          border-radius: 3px
 
   .under-line
     position: absolute
     bootom: 0
     left: 0
-    width: 76px
+    width: 81px
     background: $color-main
     /*transition: left 0.3s*/
-    height: 33px
     border-radius: 8px 8px 0px 0px
-
+  .scroll-view-top
+    top: 84px
 </style>
