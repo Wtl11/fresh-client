@@ -12,12 +12,11 @@
     </div>
     <div class="order-share-box">
       <div class="order-share-title">还有这些小伙伴也购买了下面的商品</div>
-      <div class="share-list-box" :class="showMoreImg ? 'share-list-more' : ''">
+      <div class="share-list-box">
         <img class="share-img-box" v-for="(item, index) in shareImgList" v-bind:key="index" :src="item.head_image_url" alt="">
-      </div>
-      <div class="share-show" v-if="!showMoreImg && shareImgList.length > 7" @click="showImgMore">
-        <div class="share-text">展开更多</div>
-        <img v-if="imageUrl" class="share-img" :src="imageUrl+'/yx-image/order/icon-drop_down  @2x.png'" alt="">
+        <div class="image-item" v-if="userImgList.length > 13 && showMoreImg" @click="showMoreBtn">
+          <div class="image-item-text">更多</div>
+        </div>
       </div>
     </div>
     <div class="address-info">
@@ -78,8 +77,9 @@
         orderMsg: {},
         address: {},
         shareImgList: [],
-        showMoreImg: false,
-        shopId: ''
+        showMoreImg: true,
+        shopId: '',
+        userImgList: []
       }
     },
     onLoad(e) {
@@ -103,11 +103,16 @@
           if (res.error === this.$ERR_OK) {
             this.orderMsg = res.data
             this.address = res.data.address
-            this.shareImgList = res.data.avatar_images
+            this.userImgList = res.data.avatar_images
+            this.shareImgList = this.userImgList.slice(0, 13)
           } else {
             this.$wechat.showToast(res.message)
           }
         })
+      },
+      showMoreBtn() {
+        this.shareImgList = this.userImgList
+        this.showMoreImg = false
       }
     },
     components: {
@@ -346,6 +351,17 @@
         height: 10.6vw
         border-radius: 50%
         background: $color-main
+      .image-item-text
+        width: 10.66vw
+        height: 10.66vw
+        border-radius: 50%
+        display: block
+        font-size: $font-size-10
+        color: #9b9b9b
+        font-family: $font-family-regular
+        text-align: center
+        line-height: 10.66vw
+        background: #F4F4F4
       .share-img-box:nth-of-type(7n)
         margin-right: 0
     .share-list-more

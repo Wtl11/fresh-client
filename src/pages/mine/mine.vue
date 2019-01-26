@@ -23,15 +23,15 @@
           <img class="eor-img" v-if="imageUrl" :src="imageUrl+'/yx-image/cart/mydivision@2x.png'" alt="">
         </div>
       </div>
-      <div class="order-banner-box">
+      <div class="order-banner-box" v-if="lastOrderList.length !== 0">
         <div class="banner-box">
           <swiper class="banner" autoplay interval="5000" vertical="true" circular @change="_setPraiseIndex">
-            <block>
+            <block v-for="(item, index) in lastOrderList" :key="index" @click="jumpOrderDetail(item)">
               <swiper-item class="banner-item">
-                <img class="banner-item-img" v-if="imageUrl" :src="imageUrl+'/yx-image/choiceness/5@1x.png'">
+                <img class="banner-item-img" v-if="item.image_url" :src="item.image_url">
                 <div class="banner-text-box">
-                  <div class="banner-text-status">待提货</div>
-                  <div class="banner-text-time">预计13号可到自提点提货</div>
+                  <div class="banner-text-status">{{item.status_str}}</div>
+                  <div class="banner-text-time">{{item.text}}</div>
                 </div>
               </swiper-item>
             </block>
@@ -116,7 +116,8 @@
         testSrc: '',
         showModal: false,
         maskAnimation: '',
-        modalAnimation: ''
+        modalAnimation: '',
+        lastOrderList: []
       }
     },
     onTabItemTap() {
@@ -215,7 +216,8 @@
             if (res.error !== this.$ERR_OK) {
               return
             }
-            res.data.forEach((item, index) => {
+            this.lastOrderList = res.data.last_orders
+            res.data.status_count.forEach((item, index) => {
               if (item.status === 0) {
                 this.orderNav[0].count = item.count
               }
@@ -259,6 +261,11 @@
             url: `/pages/order-list?id=${item.id}&&index=${item.index}`
           })
         }
+      },
+      jumpOrderDetail(item) {
+        wx.navigateTo({
+          url: `/pages/order-detail?id=${item.order_id}`
+        })
       }
     },
     components: {

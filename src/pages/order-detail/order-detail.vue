@@ -36,13 +36,13 @@
             <div class="goods-info">
               <div class="tit">
                 <div class="name">{{item.goods_name}}</div>
-                <div class="quantity">x<span class="num">{{item.num}}</span></div>
+                <div class="refund" @click.stop="isRefund(item)" v-if="(orderMsg.status * 1 === 1 || orderMsg.status * 1 === 2) && item.after_sale_status * 1 === 0 && item.can_after_sale * 1 === 1">退款</div>
+                <div class="refund-text" v-if="item.after_sale_status * 1 === 1 || item.after_sale_status * 1 === 2 && item.can_after_sale * 1 === 1">{{item.after_sale_status_text}}</div>
               </div>
               <div class="guige">规格：{{item.goods_units}}</div>
               <div class="price">
                 <div class="amout"><span class="num">{{item.price}}</span>元</div>
-                <div class="refund" @click.stop="isRefund(item)" v-if="(orderMsg.status * 1 === 1 || orderMsg.status * 1 === 2) && item.after_sale_status * 1 === 0 && item.can_after_sale * 1 === 1">退款</div>
-                <div class="refund-text" v-if="item.after_sale_status * 1 === 1 || item.after_sale_status * 1 === 2 && item.can_after_sale * 1 === 1">{{item.after_sale_status_text}}</div>
+                <div class="quantity">x<span class="num">{{item.num}}</span></div>
               </div>
             </div>
           </div>
@@ -402,7 +402,7 @@
         height: 16px
         justify-content: space-between
         .name
-          width: 61.2vw
+          width: 51.2vw
           font-family: $font-family-medium
           font-size: $font-size-14
           color: $color-sub
@@ -439,38 +439,38 @@
         layout(row)
         align-items: center
         justify-content: space-between
-        .refund
-          width: 65px
-          height: 25px
-          line-height: 25px
+      .refund
+        width: 65px
+        height: 25px
+        line-height: 25px
+        font-family: $font-family-regular
+        font-size: $font-size-12
+        color: #000000
+        text-align: center
+        background: $color-white
+        border-1px($color-text-assist, 15px)
+      .refund-text
+        height: 25px
+        line-height: 25px
+        font-family: $font-family-regular
+        font-size: $font-size-14
+        color: $color-money
+      .amout
+        font-family: $font-family-regular
+        font-size: $font-size-11
+        color: #1F1F1F
+        .num
           font-family: $font-family-regular
-          font-size: $font-size-12
-          color: #000000
-          text-align: center
-          background: $color-white
-          border-1px($color-text-assist, 15px)
-        .refund-text
-          height: 25px
-          line-height: 25px
+          color: $color-sub
+          font-size: $font-size-16
+      .quantity
+        font-family: $font-family-regular
+        font-size: $font-size-12
+        color: #1F1F1F
+        .num
           font-family: $font-family-regular
-          font-size: $font-size-14
-          color: $color-money
-        .amout
-          font-family: $font-family-regular
-          font-size: $font-size-11
-          color: #1F1F1F
-          .num
-            font-family: $font-family-regular
-            color: $color-sub
-            font-size: $font-size-16
-        .quantity
-          font-family: $font-family-regular
-          font-size: $font-size-12
-          color: #1F1F1F
-          .num
-            font-family: $font-family-regular
-            font-size: $font-size-16
-            color: $color-sub
+          font-size: $font-size-16
+          color: $color-sub
   .order-list
     background: $color-white
   .actual-amount

@@ -266,7 +266,7 @@
       },
       jumpDetail(item) {
         wx.navigateTo({
-          url: `/pages/order-detail?id=${item.order_id}&&type=0`
+          url: `/pages/order-detail?id=${item.order_id}`
         })
       }
     }

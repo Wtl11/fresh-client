@@ -10,7 +10,7 @@
         </block>
       </swiper>
       <div class="banner-title-box">
-        <div class="banner-title-main">
+        <div class="banner-title-main" v-if="goodsMsg.is_activity * 1 !== 0">
           <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-spxq_bg@2x.png'" mode="aspectFill" class="banner-title-bg">
           <div class="banner-main-box">
             <div class="banner-main-left">
@@ -30,6 +30,13 @@
             </div>
           </div>
         </div>
+        <div class="banner-title-type" v-if="goodsMsg.is_activity * 1 === 0">
+          <div class="left-price">{{goodsMsg.shop_price}}</div>
+          <div class="left-price-text">
+            <div class="price-text">元</div>
+            <div class="line-price-text">{{goodsMsg.original_price}}元</div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="detail-info-box">
@@ -37,7 +44,7 @@
         <div class="title">{{goodsMsg.name}}</div>
         <div class="info-sub">
           <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/icon-fast@2x.png'" mode="aspectFill" class="info-sub-img">
-          <div class="sub-text">现在下单，预计(01月11日)可自提</div>
+          <div class="sub-text">现在下单，预计({{goodsMsg.shelf_delivery_at}})可自提</div>
         </div>
         <div class="info-stock">已售<span class="stock-number">{{goodsMsg.sale_count}}</span>{{goodsMsg.goods_units}}，剩余<span class="stock-number">{{goodsMsg.usable_stock}}</span>{{goodsMsg.goods_units}}</div>
       </div>
@@ -52,31 +59,15 @@
     <div class="buy-record" v-if="userImgList.length > 0">
       <div class="record-title">
         <div class="record-text-main">购买记录</div>
-        <div class="record-text-sub">已有233人购买，商品共销售433份</div>
+        <div class="record-text-sub">已有{{userImgData.buy_people_num}}人购买，商品共销售{{userImgData.shop_sale_count}}份</div>
       </div>
       <div class="record-image-box">
-        <div class="image-item"></div>
-        <div class="image-item"></div>
-        <div class="image-item"></div>
-        <div class="image-item"></div>
-        <div class="image-item"></div>
-        <div class="image-item"></div>
-        <div class="image-item"></div>
-        <div class="image-item"></div>
-        <div class="image-item"></div>
-        <div class="image-item"></div>
-        <div class="image-item"></div>
-        <div class="image-item"></div>
-        <div class="image-item"></div>
-        <div class="image-item"></div>
-        <div class="image-item"></div>
-        <div class="image-item"></div>
-        <div class="image-item"></div>
-        <div class="image-item"></div>
-        <div class="image-item"></div>
-        <div class="image-item"></div>
-        <div class="image-item"></div>
-        <div class="image-item"></div>
+        <div class="image-item" v-for="(item, index) in bigUserImgList" :key="index">
+          <img v-if="item.head_image_url" :src="item.head_image_url" mode="aspectFill" class="image-item-img">
+        </div>
+        <div class="image-item" v-if="userImgList.length > 13 && showMoreImg" @click="showMoreBtn">
+          <div class="image-item-text">更多</div>
+        </div>
       </div>
     </div>
     <div class="detail-title">
@@ -177,11 +168,14 @@
         timeEnd: false,
         groupInfo: {},
         userImgList: [],
+        bigUserImgList: [],
         deliverAt: '',
         shareImg: '',
         shopCrile: 0,
         showOpen: false,
-        msgTitle: ''
+        msgTitle: '',
+        userImgData: {},
+        showMoreImg: true
       }
     },
     computed: {
@@ -256,6 +250,8 @@
         API.Choiceness.getUserImg({id: this.goodsId, limit: 3}).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.userImgList = res.data
+            this.bigUserImgList = this.userImgList.slice(0, 13)
+            this.userImgData = res
           } else {
             this.$wechat.showToast(res.message)
           }
@@ -488,6 +484,10 @@
           } else {
           }
         })
+      },
+      showMoreBtn() {
+        this.bigUserImgList = this.userImgList
+        this.showMoreImg = false
       }
     },
     components: {
@@ -694,6 +694,34 @@
             font-size: $font-size-13
             color: $color-text-main
             font-family: $font-family-regular
+    .banner-title-type
+      height: 13vw
+      background: #FFF2E9
+      width: 100%
+      border-top-left-radius: 8px
+      border-top-right-radius: 8px
+      layout(row)
+      align-items: center
+      padding-left: 10px
+      box-sizing: border-box
+      .left-price
+        color: #FF7113
+        font-size: 30px
+        font-family: PingFang-SC-Bold
+      .left-price-text
+        layout(row)
+        align-items: flex-end
+        .price-text
+          color: #FF7012
+          font-size: 22px
+          font-family: $font-family-medium
+          margin-right: 5px
+        .line-price-text
+          font-size: $font-size-14
+          font-family: $font-family-regular
+          text-decoration: line-through
+          line-height: 1
+          color: #A0A0A0
   .detail-info-box
     padding: 0 12px
     box-sizing: border-box
@@ -787,10 +815,25 @@
       .image-item
         width: 10.66vw
         height: 10.66vw
-        background: #333
         border-radius: 50%
         margin-right: 2.23vw
         margin-top: 2.2vw
+        .image-item-img
+          width: 10.66vw
+          height: 10.66vw
+          border-radius: 50%
+          display: block
+        .image-item-text
+          width: 10.66vw
+          height: 10.66vw
+          border-radius: 50%
+          display: block
+          font-size: $font-size-10
+          color: #9b9b9b
+          font-family: $font-family-regular
+          text-align: center
+          line-height: 10.66vw
+          background: #F4F4F4
       .image-item:nth-of-type(7n)
         margin-right: 0
   .page-box
@@ -926,5 +969,5 @@
     .goods-btn-assint
       color: #fff
       background: $color-text-assist
-      width: 60vw
+      width: 70vw
 </style>

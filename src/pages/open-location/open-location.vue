@@ -6,7 +6,7 @@
       <p class="text">亲，我们未获得您的位置信息</p>
     </div>
     <button class="btn" open-type="openSetting" @click="openLocation">开启定位</button>
-    <navigator class="btn select-btn" open-type="switchTab" url="/pages/choiceness">手动选择自提点</navigator>
+    <navigator class="btn select-btn" url="/pages/self-point">手动选择自提点</navigator>
   </div>
 </template>
 
@@ -20,34 +20,32 @@
     data() {
       return {}
     },
-    onLoad(e) {
-      if (e.shopId) {
-        wx.setStorageSync('shopId', wx.getStorageSync('defaultShopId'))
-      }
-    },
+    onLoad() {},
     onShow() {
       wx.getSetting({
         success: (data) => {
           if (data.authSetting['scope.userLocation']) {
+            wx.getLocation({
+              success(res) {
+                wx.setStorageSync('locationData', res)
+                wx.setStorageSync('locationShow', 1)
+              }
+            })
+            wx.switchTab({
+              url: `/pages/choiceness`
+            })
           }
-          console.log(data)
         }
       })
     },
     methods: {
       openLocation() {
-        console.log(111)
         wx.getLocation({
           success(res) {
             console.log(res)
           },
           fail(res) {
-            wx.openSetting({
-              success(res1) {
-                console.log(res1)
-              }
-            })
-            console.log(res)
+            wx.openSetting({})
           }
         })
       }

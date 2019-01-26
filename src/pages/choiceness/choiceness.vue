@@ -6,99 +6,108 @@
         <div class="community-img">
           <img :src="groupInfo.head_image_url">
         </div>
-        <div class="community-text">{{groupInfo.social_name}}</div>
-        <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/icon-pitch@2x.png'" class="community-down">
+        <div class="community-text" v-if="locationStatus * 1 === 1 || locationStatus * 1 === 2">{{groupInfo.social_name}}</div>
+        <div class="community-text" v-else>定位中</div>
+        <img v-if="imageUrl && locationStatus * 1 === 1 || locationStatus * 1 === 2" :src="imageUrl + '/yx-image/choiceness/icon-pitch@2x.png'" class="community-down">
       </div>
-      <div class="carousel-wrapper" v-if="buyUsers.length > 0" :class="{'show': showBuyUser}">
+      <div class="carousel-wrapper" v-if="buyUsers.length > 0 && (locationStatus * 1 === 1 || locationStatus * 1 === 2)" :class="{'show': showBuyUser}">
         <div class="avatar-wrapper">
           <img :src="buyUsers[showUserIndex].head_image_url" alt="">
         </div>
         <div class="content">{{buyUsers[showUserIndex].nickname}} 刚刚购买了一单</div>
       </div>
     </div>
-    <div class="banner-box" v-if="plantingList.length !== 0">
-      <swiper class="banner" :current="praiseIndex" autoplay interval="5000" display-multiple-items="1" previous-margin="7.5px" next-margin="17.5px" circular @change="_setPraiseIndex">
-        <block v-for="(item,index) in plantingList" :key="index">
-          <swiper-item class="banner-item"  :class="{'current-banner-active': praiseIndex === index}">
-            <img class="item-img" mode="aspectFill" v-if="item.image_url" :src="item.image_url" @click="jumpDetail(item)">
-          </swiper-item>
-        </block>
-      </swiper>
-    </div>
-    <div class="nav-list">
-      <div class="nav-item" v-for="(item, index) in [0, 1, 2, 3, 4, 5 , 6, 7, 8, 9]">
-        <div class="nav-top-box"></div>
-        <div class="nav-top-text">时令水果</div>
+    <div class="modules-box" v-for="(bigItem, bigIndex) in modulesList" :key="bigIndex" v-if="locationStatus * 1 === 1 || locationStatus * 1 === 2">
+      <!--轮播图-->
+      <div class="banner-box" v-if="bigItem.module_name === 'bannar'">
+        <swiper class="banner" :current="praiseIndex"  interval="5000" display-multiple-items="1" previous-margin="7.5px" next-margin="17.5px" circular @change="_setPraiseIndex">
+          <block v-for="(item,index) in bigItem.content_data.list" :key="index">
+            <swiper-item class="banner-item"  :class="{'current-banner-active': praiseIndex === index}">
+              <img class="item-img" mode="aspectFill" v-if="item.image_url" :src="item.image_url" @click="jumpDetail(item)">
+            </swiper-item>
+          </block>
+        </swiper>
       </div>
-    </div>
-    <div class="nav-list-border"></div>
-    <div class="goods-title-box">
-      <div class="goods-title-main">
-        <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/icon-clock@2x.png'" class="goods-title-img">
-        <div class="goods-title-text">今日抢购</div>
-        <div class="goods-title-icon"></div>
-        <div class="goods-title-sub">今日下单 次日提货</div>
+      <!--导航-->
+      <div class="nav-list" v-if="bigItem.module_name === 'navigation'">
+        <div class="nav-item" v-for="(navItem, navIndex) in bigItem.content_data.list" :key="navIndex">
+          <img v-if="navItem.image_url" :src="navItem.image_url" alt="" class="nav-top-box" mode="aspectFill">
+          <div class="nav-top-text">{{navItem.title}}</div>
+        </div>
       </div>
-    </div>
-    <div class="goods-box">
-      <div class="goods-list" v-for="(item, index) in goodsList" :key="index" @click="jumpGoodsDetail(item)">
-        <div class="goods-left">
-          <div class="goods-left-img">
-            <img class="item-img" mode="aspectFill" v-if="item.goods_cover_image" :src="item.goods_cover_image">
-          </div>
-          <div class="goods-left-icon">
-            <img class="item-img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/icon-label@2x.png'">
+      <!--今日抢购-->
+      <div class="goods-all-box" v-if="bigItem.module_name === 'activity'">
+        <div class="nav-list-border"></div>
+        <div class="goods-title-box">
+          <div class="goods-title-main">
+            <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/icon-clock@2x.png'" class="goods-title-img">
+            <div class="goods-title-text">今日抢购</div>
+            <div class="goods-title-icon"></div>
+            <div class="goods-title-sub">今日下单 次日提货</div>
           </div>
         </div>
-        <div class="goods-right">
-          <div class="goods-right-top">
-            <div class="title">{{item.name}}</div>
-            <div class="text-sub" v-if="item.describe">{{item.describe}}</div>
-            <div class="text-sales-box">
-              <div class="text-sales">已售{{item.sale_count}}件</div>
-            </div>
-          </div>
-          <div class="add-box">
-            <div class="add-box-left">
-              <section class="left">
-                <div class="text-group">团购价</div>
-              </section>
-              <div class="price-box">
-                <div class="money">{{item.shop_price}}</div>
-                <div class="unit">元</div>
-                <div class="lineation">{{item.original_price}}元</div>
+        <div class="goods-box">
+          <div class="goods-list" v-for="(item, index) in goodsList" :key="index" @click="jumpGoodsDetail(item)">
+            <div class="goods-left">
+              <div class="goods-left-img">
+                <img class="item-img" mode="aspectFill" v-if="item.goods_cover_image" :src="item.goods_cover_image">
+              </div>
+              <div class="goods-left-icon">
+                <img class="item-img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/icon-label@2x.png'">
               </div>
             </div>
-            <form action="" report-submit @submit="$getFormId" @click.stop="addShoppingCart(item)">
-              <button class="add-box-right" v-if="item.usable_stock * 1 > 0" formType="submit">
-                <div class="add-goods-btn">
-                  <div class="add-icon">
-                    <div class="add1"></div>
-                    <div class="add2"></div>
-                  </div>
-                  <div class="add-text">购物车</div>
+            <div class="goods-right">
+              <div class="goods-right-top">
+                <div class="title">{{item.name}}</div>
+                <div class="text-sub" v-if="item.describe">{{item.describe}}</div>
+                <div class="text-sales-box">
+                  <div class="text-sales">已售{{item.sale_count}}件</div>
                 </div>
-              </button>
-            </form>
-            <div class="add-box-right" v-if="item.usable_stock * 1 <= 0" @click.stop>
-              <div class="add-goods-btn add-goods-btn-active">
-                <div class="add-text">已抢完</div>
+              </div>
+              <div class="add-box">
+                <div class="add-box-left">
+                  <section class="left">
+                    <div class="text-group">团购价</div>
+                  </section>
+                  <div class="price-box">
+                    <div class="money">{{item.shop_price}}</div>
+                    <div class="unit">元</div>
+                    <div class="lineation">{{item.original_price}}元</div>
+                  </div>
+                </div>
+                <form action="" report-submit @submit="$getFormId" @click.stop="addShoppingCart(item)">
+                  <button class="add-box-right" v-if="item.usable_stock * 1 > 0" formType="submit">
+                    <div class="add-goods-btn">
+                      <div class="add-icon">
+                        <div class="add1"></div>
+                        <div class="add2"></div>
+                      </div>
+                      <div class="add-text">购物车</div>
+                    </div>
+                  </button>
+                </form>
+                <div class="add-box-right" v-if="item.usable_stock * 1 <= 0" @click.stop>
+                  <div class="add-goods-btn add-goods-btn-active">
+                    <div class="add-text">已抢完</div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
+        <div class="foot-ties" v-if="goodsMore && goodsList.length !== 0">
+          <div class="left lines"></div>
+          <div class="center">已经到底了</div>
+          <div class="bot lines"></div>
+        </div>
+        <div class="noting" v-if="goodsMore && goodsList.length === 0">
+          <div class="notingimg"><img class="img" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'" alt=""></div>
+          <div class="txt">活动即将开始，敬请期待</div>
+        </div>
       </div>
-    </div>
-    <div class="foot-ties" v-if="goodsMore && goodsList.length !== 0">
-      <div class="left lines"></div>
-      <div class="center">已经到底了</div>
-      <div class="bot lines"></div>
-    </div>
-    <div class="noting" v-if="goodsMore && goodsList.length === 0">
-      <div class="notingimg"><img class="img" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'" alt=""></div>
-      <div class="txt">空空如也</div>
     </div>
     <link-group ref="groupComponents" :wechatInfo="groupInfo"></link-group>
+    <confirm-msg ref="refundModel" title="您的位置距该提货点超过1km" msg="建议您切换自提点" sureString="马上切换" @confirm="confirm" @cancel="cancel"></confirm-msg>
   </div>
 </template>
 
@@ -106,23 +115,13 @@
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import LinkGroup from '@components/link-group/link-group'
   import ScrollTab from '@components/scroll-tab/scroll-tab'
+  import ConfirmMsg from '@components/confirm-msg/confirm-msg'
   import API from '@api'
   import {cartMethods} from '@state/helpers'
   const ald = getApp()
   const PAGE_NAME = 'CHOICENESS'
   export default {
     name: PAGE_NAME,
-    watch: {
-      tabList(news) {
-        this.tabList1 = news
-        setTimeout(() => {
-          this.getWidth('', '', '', false)
-        }, 100)
-      },
-      infoTabIndex(newVal) {
-        this.tabIndex = newVal
-      }
-    },
     data() {
       return {
         praiseIndex: 0,
@@ -133,11 +132,10 @@
         groupInfo: {},
         plantingList: [],
         tabList: [],
-        tabList1: [],
         shelfId: 0,
         goodsList: [],
         goodsMore: false,
-        goodsPage: 1,
+        goodsPage: 2,
         title: '赞播优鲜',
         arrWidth: [],
         width: 0,
@@ -147,27 +145,47 @@
         curShopId: 1,
         showBuyUser: false,
         buyUsers: [],
-        showUserIndex: 0
+        showUserIndex: 0,
+        modulesList: [],
+        locationStatus: 2,
+        goodsListData: null
       }
     },
     async onLoad() {
       this.curShopId = wx.getStorageSync('shopId')
-      this.getPlantList()
-      this.getTabList()
       await this._groupInfo(true)
+      await this._getIndexModule()
+      console.log(wx.getStorageSync('locationShow'), '222')
+      let that = this
+      if (wx.getStorageSync('locationShow') * 1 === 3 || wx.getStorageSync('locationShow') * 1 === 2) return
       wx.getLocation({
         success(res) {
           console.log(res)
+          wx.setStorageSync('locationData', res)
+          wx.setStorageSync('locationShow', 1)
+          that.locationStatus = 1
+          that.getLocationData()
         },
         fail(res) {
           wx.navigateTo({
             url: `/pages/open-location`
           })
+          wx.setStorageSync('locationShow', 3)
           console.log(res)
         }
       })
     },
     async onShow() {
+      this.locationStatus = wx.getStorageSync('locationShow')
+      console.log(wx.getStorageSync('locationShow'), '11111')
+      if (this.locationStatus * 1 === 3) {
+        wx.navigateTo({
+          url: `/pages/open-location`
+        })
+      }
+      if (this.locationStatus * 1 === 1) {
+        this.getLocationData()
+      }
       ald.aldstat.sendEvent('首页')
       this.setCartCount()
       this._getBuyUsers()
@@ -178,8 +196,6 @@
       this.curShopId = shopId
       this.tabIndex = 0
       this.move = 0
-      this.getPlantList()
-      this.getTabList()
       this.setCartCount()
       await this._groupInfo(false)
     },
@@ -200,16 +216,15 @@
       this.getMoreGoodsList()
     },
     async onPullDownRefresh() {
-      this.getPlantList()
       this.tabIndex = 0
       this.move = 0
-      this.getTabList()
       await this._groupInfo(true)
       wx.stopPullDownRefresh()
     },
     onShareAppMessage(res) {
       return {
-        title: '服务只有更好，没有最好；满意只有起点，没有终点。',
+        title: `${this.groupInfo.social_name}
+        次日达、直采直销，点击下单↓`,
         path: `/pages/choiceness?shopId=${this.curShopId}`,
         imageUrl: this.imageUrl + '/yx-image/choiceness/pic-friand_share@2x.png',
         success: (res) => {
@@ -228,6 +243,19 @@
           }
           this.buyUsers = res.data
           this._handleBuyUserCarousel()
+        })
+      },
+      getLocationData() {
+        let data = wx.getStorageSync('locationData')
+        API.Choiceness.getLocationDistance({longitude: data.longitude, latitude: data.latitude}).then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            return
+          }
+          console.log(res.data)
+          let msgStatus = wx.getStorageSync('msgStatus')
+          if (msgStatus !== 4 && res.data.distance > 1000) {
+            this.$refs.refundModel.show()
+          }
         })
       },
       _handleBuyUserCarousel() {
@@ -260,71 +288,27 @@
         }
         this.groupInfo = res.data
       },
-      getPlantList() {
-        API.Choiceness.getPlanting().then((res) => {
-          if (res.error === this.$ERR_OK) {
-            this.plantingList = res.data
-            // this.plantingList.push(...res.data)
-            // this.plantingList.push(...res.data)
-            // this.plantingList.push(...res.data)
-          } else {
-            this.$wechat.showToast(res.message)
-          }
-        })
-      },
       jumpDetail(item) {
         if (item.type === 'mini_goods') {
           wx.navigateTo({
-            url: `/pages/goods-detail?id=${item.content.id}`
+            url: `/pages/goods-detail?id=${item.other_id}`
+          })
+        } else if (item.type === 'goods_cate') {
+          wx.navigateTo({
+            url: `/pages/classify?id=${item.other_id}`
           })
         } else {
           wx.navigateTo({
-            url: `${item.content.url}`
+            url: `${item.url}`
           })
         }
-      },
-      getTabList() {
-        API.Choiceness.getGoodsTag().then((res) => {
-          if (res.error === this.$ERR_OK) {
-            if (res.data.length === 0) {
-              this.goodsMore = true
-            } else {
-              this.tabList = res.data
-              this.shelfId = res.shelf_id
-              this.sheTag_id = res.data[0].id
-              this.getGoodsList()
-            }
-          } else {
-            this.goodsMore = true
-          }
-        })
-      },
-      getGoodsList() {
-        this.goodsPage = 1
-        this.goodsMore = false
-        let data = {
-          shelf_tag_id: this.sheTag_id,
-          shelf_id: this.shelfId,
-          page: this.goodsPage,
-          limit: 10
-        }
-        API.Choiceness.getGoodsShelfList(data).then((res) => {
-          if (res.error === this.$ERR_OK) {
-            this.goodsList = res.data
-            this._isUpList(res)
-          } else {
-            this.goodsMore = true
-            this.$wechat.showToast(res.message)
-          }
-        })
       },
       getMoreGoodsList() {
         if (this.goodsMore) {
           return
         }
         let data = {
-          shelf_tag_id: this.sheTag_id,
-          shelf_id: this.shelfId,
+          shelf_id: this.goodsListData.id,
           page: this.goodsPage,
           limit: 10
         }
@@ -398,11 +382,39 @@
         if (id * 1 === this.sheTag_id) return
         this.sheTag_id = id
         this.getGoodsList()
+      },
+      async _getIndexModule() {
+        let res = await API.Choiceness.getModulesInfo({page_name: 'index'})
+        if (res.error !== this.$ERR_OK) {
+          this.$wechat.showToast(res.message)
+          return
+        }
+        this.modulesList = res.data.modules
+        this.modulesList.forEach((item) => {
+          if (item.module_name === 'activity') {
+            this.goodsList = item.content_data.list
+            this.goodsListData = item
+            if (this.goodsList.length === 0) {
+              this.goodsMore = true
+            }
+          }
+        })
+        console.log(this.modulesList)
+      },
+      cancel() {
+        wx.setStorageSync('msgStatus', 4)
+      },
+      confirm() {
+        wx.setStorageSync('msgStatus', 4)
+        wx.navigateTo({
+          url: `/pages/self-point`
+        })
       }
     },
     components: {
       LinkGroup,
       NavigationBar,
+      ConfirmMsg,
       ScrollTab
     }
   }
@@ -517,6 +529,8 @@
         width: 52px
         height: 52px
         margin: 0 auto 5px
+        display: block
+        border-radius: 50%
       .nav-top-text
         font-size: $font-size-12
         font-family: $font-family-regular

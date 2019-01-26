@@ -9,7 +9,7 @@
             <img v-if="imageUrl" mode="aspectFill" :src="imageUrl+'/yx-image/mine/icon-address_sy@2x.png'" alt="" class="icon">
             <div v-if="groupInfo !== ''" class="txt">{{groupInfo.social_name}}</div>
           </div>
-          <div class="point-right">距离您322252m</div>
+          <div class="point-right" v-if="currentDistance">距离您{{currentDistance}}</div>
         </div>
       </div>
       <div class="selt-point-history"><div class="name">其他自提点</div></div>
@@ -21,7 +21,7 @@
           <div class="info">
             <div class="colonel">
               <div class="colonel-left">团长：{{item.name}}</div>
-              <div class="colonel-right">距离您322252m</div>
+              <div class="colonel-right" v-if="item.distance">距离您{{item.distance}}</div>
             </div>
             <div class="group">社区：{{item.social_name}}</div>
             <div class="address">提货地址：{{item.province + item.city + item.district + item.address}}</div>
@@ -57,7 +57,8 @@
         groupInfo: '',
         page: 1,
         shopMore: false,
-        changedShop: {}
+        changedShop: {},
+        currentDistance: ''
       }
     },
     created() {
@@ -90,6 +91,7 @@
           this.$wechat.showToast(res.message)
         }
         this.groupInfo = res.data
+        console.log(this.group)
       },
       showChangeShop(shop) {
         if (this.currentShopId === shop.id) {
@@ -98,6 +100,9 @@
         }
         this.changedShop = shop
         this.$refs.dialogModal.show()
+        if (wx.getStorageSync('locationShow') * 1 === 3) {
+          wx.setStorageSync('locationShow', 2)
+        }
       },
       changeShop() {
         let shopId = this.changedShop.id
@@ -106,7 +111,8 @@
       },
       _getShopList() {
         this.shopMore = false
-        let data = { page: this.page, limit: 10 }
+        let locationData = wx.getStorageSync('locationData')
+        let data = { page: this.page, limit: 10, longitude: locationData.longitude || 0, latitude: locationData.latitude || 0 }
         API.Mine.getShopList(data)
           .then((res) => {
             this.$wechat.hideLoading()
@@ -114,6 +120,11 @@
               return
             }
             this.shopList = res.data
+            this.shopList.forEach((item) => {
+              if (this.currentShopId === item.id) {
+                this.currentDistance = item.distance
+              }
+            })
             this._isUpList(res)
           }).catch(() => {
             this.$wechat.hideLoading()
@@ -129,6 +140,11 @@
           if (res.error === this.$ERR_OK) {
             this.shopList = this.shopList.concat(res.data)
             this._isUpList(res)
+            this.shopList.forEach((item) => {
+              if (this.currentShopId === item.id) {
+                this.currentDistance = item.distance
+              }
+            })
           } else {
             this.$wechat.showToast(res.message)
           }
@@ -259,7 +275,7 @@
               padding-bottom: 8px
               padding-top: 4px
               color: $color-sub
-              width: 43vw
+              width: 35vw
             .colonel-right
               font-family: $font-family-regular
               font-size: $font-size-14

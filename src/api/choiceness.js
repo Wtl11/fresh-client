@@ -55,5 +55,30 @@ export default {
   getDefaultShopInfo(data, loading = false) {
     const url = `/api/default/shop-info`
     return request.get(url, data, loading)
+  },
+  // 获得页面模块
+  getModulesInfo(data, loading = false) {
+    const url = `/api/wap/cms/page-index`
+    return request.get(url, data, loading)
+  },
+  // 获得模块数据
+  getModulesData(data, loading = false) {
+    const url = `/api/wap/cms/module-data`
+    return request.get(url, data, loading)
+  },
+  // 当前位置离自提点距离查询
+  getLocationDistance(data, loading = false) {
+    const url = `/api/wap/shop-distance`
+    return request.get(url, data, loading)
+  },
+  // 商品系统分类列表
+  getClassifyCategory(data, loading = false) {
+    const url = `/api/wap/goods/goods-category`
+    return request.get(url, data, loading)
+  },
+  // 商品系统商品列表列表
+  getClassifyList(data, loading = false) {
+    const url = `/api/wap/goods/goods`
+    return request.get(url, data, loading)
   }
 }
