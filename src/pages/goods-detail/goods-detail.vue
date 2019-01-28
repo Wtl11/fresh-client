@@ -10,7 +10,7 @@
         </block>
       </swiper>
       <div class="banner-title-box">
-        <div class="banner-title-main" v-if="goodsMsg.is_activity * 1 !== 0">
+        <div class="banner-title-main" v-if="goodsMsg.is_activity * 1 === 1">
           <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-spxq_bg@2x.png'" mode="aspectFill" class="banner-title-bg">
           <div class="banner-main-box">
             <div class="banner-main-left">

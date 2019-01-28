@@ -7,7 +7,7 @@
           <img :src="groupInfo.head_image_url">
         </div>
         <div class="community-text" v-if="locationStatus * 1 === 1 || locationStatus * 1 === 2">{{groupInfo.social_name}}</div>
-        <div class="community-text" v-else>定位中</div>
+        <div class="community-text" v-else>定位中...</div>
         <img v-if="imageUrl && locationStatus * 1 === 1 || locationStatus * 1 === 2" :src="imageUrl + '/yx-image/choiceness/icon-pitch@2x.png'" class="community-down">
       </div>
       <div class="carousel-wrapper" v-if="buyUsers.length > 0 && (locationStatus * 1 === 1 || locationStatus * 1 === 2)" :class="{'show': showBuyUser}">
@@ -30,7 +30,7 @@
       </div>
       <!--导航-->
       <div class="nav-list" v-if="bigItem.module_name === 'navigation'">
-        <div class="nav-item" v-for="(navItem, navIndex) in bigItem.content_data.list" :key="navIndex">
+        <div class="nav-item" v-for="(navItem, navIndex) in bigItem.content_data.list" :key="navIndex" @click="jumpNavType(navItem)">
           <img v-if="navItem.image_url" :src="navItem.image_url" alt="" class="nav-top-box" mode="aspectFill">
           <div class="nav-top-text">{{navItem.title}}</div>
         </div>
@@ -409,6 +409,22 @@
         wx.navigateTo({
           url: `/pages/self-point`
         })
+      },
+      jumpNavType(item) {
+        console.log(item)
+        if (item.type === 'mini_goods') {
+          wx.navigateTo({
+            url: `/pages/goods-detail?id=${item.id}`
+          })
+        } else if (item.type === 'goods_cate') {
+          wx.navigateTo({
+            url: `/pages/classify?id=${item.other_id}`
+          })
+        } else {
+          wx.navigateTo({
+            url: `${item.url}`
+          })
+        }
       }
     },
     components: {

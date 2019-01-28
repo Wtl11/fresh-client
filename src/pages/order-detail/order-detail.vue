@@ -30,7 +30,7 @@
     <div class="gary-box"></div>
     <div class="order-list">
       <div class="order-item">
-        <div class="goods-item" v-for="(item, index) in orderMsg.goods" :key="index">
+        <div class="goods-item" v-for="(item, index) in orderMsg.goods" :key="index" @click="jumpGoodsDetail(item)">
           <div class="goods-info-box">
             <img class="goods-img" mode="aspectFill" :src="item.image_url" alt="">
             <div class="goods-info">
