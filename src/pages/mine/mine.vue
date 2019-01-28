@@ -263,7 +263,6 @@
         }
       },
       jumpOrderDetail(item) {
-        console.log(item)
         wx.navigateTo({
           url: `/pages/order-detail?id=${item.id}`
         })

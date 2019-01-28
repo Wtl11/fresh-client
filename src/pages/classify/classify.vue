@@ -140,7 +140,6 @@
               this.tabIndex = index
             }
           })
-          console.log(res.data)
         })
       },
       getCategoryList(id) {
@@ -156,7 +155,6 @@
             scrollTop: 0,
             duration: 0
           })
-          console.log(res.data)
         })
       },
       getMoreCategoryList(id) {
@@ -169,7 +167,6 @@
           }
           this.classifyList = this.classifyList.concat(res.data)
           this._isUpList(res)
-          console.log(res.data)
         })
       },
       _isUpList(res) {

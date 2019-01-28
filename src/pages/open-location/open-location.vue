@@ -42,7 +42,6 @@
       openLocation() {
         wx.getLocation({
           success(res) {
-            console.log(res)
           },
           fail(res) {
             wx.openSetting({})

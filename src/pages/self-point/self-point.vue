@@ -91,7 +91,6 @@
           this.$wechat.showToast(res.message)
         }
         this.groupInfo = res.data
-        console.log(this.group)
       },
       showChangeShop(shop) {
         if (this.currentShopId === shop.id) {

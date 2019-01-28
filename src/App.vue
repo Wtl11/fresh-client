@@ -14,7 +14,6 @@
       let res = await API.Choiceness.getDefaultShopInfo()
       let id = res.error === ERR_OK ? res.data.id : baseURL.defaultId
       wx.setStorageSync('defaultShopId', id)
-      console.log('defaultShopId', id)
       this.codeMsg = await this.$wechat.login()
       let tokenJson = await API.Login.getToken({code: this.codeMsg.code}, false)
       if (tokenJson.code === ERR_OK) {

@@ -155,12 +155,10 @@
       this.curShopId = wx.getStorageSync('shopId')
       await this._groupInfo(true)
       await this._getIndexModule()
-      console.log(wx.getStorageSync('locationShow'), '222')
       let that = this
       if (wx.getStorageSync('locationShow') * 1 === 3 || wx.getStorageSync('locationShow') * 1 === 2) return
       wx.getLocation({
         success(res) {
-          console.log(res)
           wx.setStorageSync('locationData', res)
           wx.setStorageSync('locationShow', 1)
           that.locationStatus = 1
@@ -171,7 +169,6 @@
             url: `/pages/open-location`
           })
           wx.setStorageSync('locationShow', 3)
-          console.log(res)
         }
       })
     },
@@ -251,7 +248,6 @@
           if (res.error !== this.$ERR_OK) {
             return
           }
-          console.log(res.data)
           let msgStatus = wx.getStorageSync('msgStatus')
           if (msgStatus !== 4 && res.data.distance > 1000) {
             this.$refs.refundModel.show()
@@ -399,7 +395,6 @@
             }
           }
         })
-        console.log(this.modulesList)
       },
       cancel() {
         wx.setStorageSync('msgStatus', 4)
@@ -411,7 +406,6 @@
         })
       },
       jumpNavType(item) {
-        console.log(item)
         if (item.type === 'mini_goods') {
           wx.navigateTo({
             url: `/pages/goods-detail?id=${item.id}`
