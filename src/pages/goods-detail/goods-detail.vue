@@ -10,7 +10,7 @@
         </block>
       </swiper>
       <div class="banner-title-box">
-        <div class="banner-title-main">
+        <div class="banner-title-main" v-if="goodsMsg.is_activity * 1 === 1">
           <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-spxq_bg@2x.png'" mode="aspectFill" class="banner-title-bg">
           <div class="banner-main-box">
             <div class="banner-main-left">
@@ -30,6 +30,13 @@
             </div>
           </div>
         </div>
+        <div class="banner-title-type" v-if="goodsMsg.is_activity * 1 === 0">
+          <div class="left-price">{{goodsMsg.shop_price}}</div>
+          <div class="left-price-text">
+            <div class="price-text">元</div>
+            <div class="line-price-text">{{goodsMsg.original_price}}元</div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="detail-info-box">
@@ -37,60 +44,64 @@
         <div class="title">{{goodsMsg.name}}</div>
         <div class="info-sub">
           <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/icon-fast@2x.png'" mode="aspectFill" class="info-sub-img">
-          <div class="sub-text">现在下单，预计(01月11日)可自提</div>
+          <div class="sub-text">现在下单，预计({{goodsMsg.shelf_delivery_at}})可自提</div>
         </div>
         <div class="info-stock">已售<span class="stock-number">{{goodsMsg.sale_count}}</span>{{goodsMsg.goods_units}}，剩余<span class="stock-number">{{goodsMsg.usable_stock}}</span>{{goodsMsg.goods_units}}</div>
       </div>
-      <div class="banner-share" @click="showShare">
-        <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/icon-share3@2x.png'" mode="aspectFill">
+      <img v-if="imageUrl" :src="imageUrl + '/yx-image/goods/icon-share2@2x.png'" mode="aspectFill" class="banner-share" @click="showShare">
+    </div>
+    <div class="safeguard-box">
+      <div class="safeguard-item" v-for="(item, index) in safeList" v-bind:key="index">
+        <img v-if="imageUrl" :src="imageUrl + item.url" mode="aspectFill" class="icon">
+        <div class="text">{{item.text}}</div>
       </div>
     </div>
-    <div class="safeguard-box"></div>
-    <div class="goods-info">
-      <div class="goods-info-top">
-        <div class="info-top">
-          <div class="title">{{goodsMsg.name}}</div>
-          <div class="stock-number">库存{{goodsMsg.usable_stock}}{{goodsMsg.goods_units}}</div>
-        </div>
-        <div class="info-bottom" :style="{height: describeHeight + 'px'}">
-          <span class="sub-title">{{goodDescribe}}</span>
-          <span class="open" v-if="showOpen" @click="showMoreDescribe">
-            <img v-if="imageUrl" :src="imageUrl + '/yx-image/wallet/icon-open@3x.png'" alt="">
-          </span>
-        </div>
+    <div class="buy-record" v-if="userImgList.length > 0">
+      <div class="record-title">
+        <div class="record-text-main">购买记录</div>
+        <div class="record-text-sub">已有{{userImgData.buy_people_num}}人购买，商品共销售{{userImgData.shop_sale_count}}份</div>
       </div>
-      <div class="goods-info-bootom" v-if="userImgList.length > 0">
-        <div class="info-bootom-list" v-for="(item, index) in userImgList" :key="index">
-          <div class="info-user">
-            <img v-if="imageUrl" :src="item.head_image_url ? item.head_image_url : imageUrl + '/yx-image/choiceness/default_avatar@2x.png'" class="detail-img" mode="aspectFill">
-          </div>
-          <div class="info-name">{{item.nickname}}</div>
+      <div class="record-image-box">
+        <div class="image-item" v-for="(item, index) in bigUserImgList" :key="index">
+          <img v-if="item.head_image_url" :src="item.head_image_url" mode="aspectFill" class="image-item-img">
         </div>
-        <div class="info-bootom-text"><span v-if="userImgList.length >= 3">等</span>刚刚购买了此商品</div>
+        <div class="image-item" v-if="userImgList.length > 13 && showMoreImg" @click="showMoreBtn">
+          <div class="image-item-text">更多</div>
+        </div>
       </div>
     </div>
-    <div class="detail-title">商品详情</div>
+    <div class="detail-title">
+      <img v-if="imageUrl" :src="imageUrl + '/yx-image/goods/pic-tital_spxq@2x.png'" mode="widthFix" class="detail-title-img">
+    </div>
     <img v-for="(item, index) in goodsMsg.goods_detail_images" v-if="item.image_url" :src="item.image_url" class="detail-img" mode="widthFix" :key="index">
     <div class="send-box">
-      <div class="send-title">发货须知</div>
-      <div class="send-sub-title">当天下午23:00前下单，当天发货次日送达；</div>
-      <div class="send-sub-title">当天下午23:00后下单，次日发货。</div>
+      <img v-if="imageUrl" :src="imageUrl + '/yx-image/goods/pic-logo@2x.png'" mode="widthFix" class="send-box-img">
+      <div class="send-title">服务说明</div>
+      <div class="send-item-list">
+        <span class="list-title">• 发货须知：</span><span class="list-sub">当天下午23:00前下单，当天发货次日达；当天下午23:00后下单，次日发货。</span>
+      </div>
+      <div class="send-item-list">
+        <span class="list-title">• 划线价格：</span><span class="list-sub">指商品的厂商指导价、价签价格或该商品的曾经展示过的价格</span><span class="list-line">并非原价</span><span class="list-sub">，仅供参考。</span>
+      </div>
+      <div class="send-item-list">
+        <span class="list-title">• 未划线价格：</span><span class="list-sub">指商品的实时价格，不因表述的差异改变性质。具体成交价根据商品参加活动发生变化，</span><span class="list-line">最终以订单结算页价格为准</span>。
+      </div>
     </div>
     <div class="fixed-btn">
       <div class="hlep-btn">
         <div class="hlep-btn-box" v-for="(item, index) in typeBtn" :key="index" @click.stop="switchItem(item)">
           <div class="hlep-top">
             <img v-if="imageUrl" :src="imageUrl + item.url" class="detail-img" mode="widthFix">
-            <div class="hlep-number" v-if="index * 1 === 2 && count * 1 >= 1">{{count * 1 > 99 ? 99 : count}}</div>
+            <div class="hlep-number" v-if="index * 1 === 1 && count * 1 >= 1">{{count * 1 > 99 ? 99 : count}}</div>
           </div>
           <div class="hlep-bottom">{{item.text}}</div>
         </div>
       </div>
       <form action="" report-submit @submit="$getFormId">
-        <button v-if="goodsMsg.usable_stock * 1 !== 0" class="goods-btn" open-type="getUserInfo" formType="submit" @click="addShoppingCart">加入购物车</button>
+        <button v-if="goodsMsg.usable_stock * 1 !== 0" class="goods-btn" formType="submit" @click="addShoppingCart">加入购物车</button>
       </form>
       <form action="" report-submit @submit="$getFormId">
-        <button v-if="goodsMsg.usable_stock * 1 !== 0" class="goods-btn goods-btn-active" open-type="getUserInfo" formType="submit" @click="instantlyBuy">立即购买</button>
+        <button v-if="goodsMsg.usable_stock * 1 !== 0" class="goods-btn goods-btn-active" formType="submit" @click="instantlyBuy">立即购买</button>
       </form>
       <div v-if="goodsMsg.usable_stock * 1 === 0" class="goods-btn goods-btn-assint">已抢完</div>
     </div>
@@ -131,7 +142,8 @@
   import API from '@api'
 
   const PAGE_NAME = 'GOODS_DETAIL'
-  const TYPEBTN = [{url: '/yx-image/goods/icon-homepage@2x.png', text: '首页', type: 0}, {url: '/yx-image/goods/icon-service@2x.png', text: '客服', type: 1}, {url: '/yx-image/goods/icon-shopcart@2x.png', text: '购物车', type: 2}]
+  const TYPEBTN = [{url: '/yx-image/goods/icon-homepage@2x.png', text: '首页', type: 0}, {url: '/yx-image/goods/icon-shopcart@2x.png', text: '购物车', type: 2}]
+  const SAFELIST = [{url: '/yx-image/choiceness/icon-lightning@2x.png', text: '次日达', type: 0}, {url: '/yx-image/choiceness/icon-ok@2x.png', text: '100%售后', type: 1}, {url: '/yx-image/choiceness/icon-ok@2x.png', text: '直采直销', type: 2}]
   const DESCRIBE_HEIGHT = 21
   const ald = getApp()
 
@@ -150,16 +162,20 @@
         },
         currentNum: 0,
         typeBtn: TYPEBTN,
+        safeList: SAFELIST,
         goodsId: 0,
         goodsMsg: {},
         timeEnd: false,
         groupInfo: {},
         userImgList: [],
+        bigUserImgList: [],
         deliverAt: '',
         shareImg: '',
         shopCrile: 0,
         showOpen: false,
-        msgTitle: ''
+        msgTitle: '',
+        userImgData: {},
+        showMoreImg: true
       }
     },
     computed: {
@@ -234,6 +250,8 @@
         API.Choiceness.getUserImg({id: this.goodsId, limit: 3}).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.userImgList = res.data
+            this.bigUserImgList = this.userImgList.slice(0, 13)
+            this.userImgData = res
           } else {
             this.$wechat.showToast(res.message)
           }
@@ -466,6 +484,10 @@
           } else {
           }
         })
+      },
+      showMoreBtn() {
+        this.bigUserImgList = this.userImgList
+        this.showMoreImg = false
       }
     },
     components: {
@@ -571,7 +593,10 @@
     padding-bottom: 55px
     box-sizing: border-box
     overflow-x: hidden
-
+  .detail-title-img
+    width: 38vw
+    margin: 20px auto
+    display: block
   .banner-box
     width: 100vw
     height: 100vw
@@ -669,6 +694,34 @@
             font-size: $font-size-13
             color: $color-text-main
             font-family: $font-family-regular
+    .banner-title-type
+      height: 13vw
+      background: #FFF2E9
+      width: 100%
+      border-top-left-radius: 8px
+      border-top-right-radius: 8px
+      layout(row)
+      align-items: center
+      padding-left: 10px
+      box-sizing: border-box
+      .left-price
+        color: #FF7113
+        font-size: 30px
+        font-family: PingFang-SC-Bold
+      .left-price-text
+        layout(row)
+        align-items: flex-end
+        .price-text
+          color: #FF7012
+          font-size: 22px
+          font-family: $font-family-medium
+          margin-right: 5px
+        .line-price-text
+          font-size: $font-size-14
+          font-family: $font-family-regular
+          text-decoration: line-through
+          line-height: 1
+          color: #A0A0A0
   .detail-info-box
     padding: 0 12px
     box-sizing: border-box
@@ -710,6 +763,79 @@
       font-family: $font-family-regular
       .stock-number
         color: $color-money
+  .safeguard-box
+    padding-left: 10px
+    height: 60px
+    background: $color-white
+    border-radius: 8px
+    box-sizing: border-box
+    margin: 0 12px 10px
+    box-shadow: 0 2px 15px 0 rgba(17,17,17,0.06)
+    layout(row)
+    align-items: center
+    .safeguard-item
+      margin-right: 30px
+      layout(row)
+      align-items: center
+      .icon
+        width: 14px
+        height: 14px
+        margin-right: 5px
+        display: block
+      .text
+        font-family: $font-family-regular
+        font-size: $font-size-14
+        color: $color-text-main
+  .buy-record
+    padding-left: 10px
+    background: $color-white
+    border-radius: 8px
+    box-sizing: border-box
+    margin: 0 12px 10px
+    box-shadow: 0 2px 15px 0 rgba(17,17,17,0.06)
+    .record-title
+      layout(row)
+      align-items: center
+      height: 45px
+      border-bottom-1px($color-line)
+      .record-text-main
+        font-family: $font-family-medium
+        font-size: $font-size-16
+        color: $color-text-main
+        margin-right: 5px
+      .record-text-sub
+        font-family: $font-family-regular
+        font-size: $font-size-14
+        color: #9B9B9B
+    .record-image-box
+      padding-bottom: 23px
+      padding-top: 1.7vw
+      box-sizing: border-box
+      layout(row)
+      .image-item
+        width: 10.66vw
+        height: 10.66vw
+        border-radius: 50%
+        margin-right: 2.23vw
+        margin-top: 2.2vw
+        .image-item-img
+          width: 10.66vw
+          height: 10.66vw
+          border-radius: 50%
+          display: block
+        .image-item-text
+          width: 10.66vw
+          height: 10.66vw
+          border-radius: 50%
+          display: block
+          font-size: $font-size-10
+          color: #9b9b9b
+          font-family: $font-family-regular
+          text-align: center
+          line-height: 10.66vw
+          background: #F4F4F4
+      .image-item:nth-of-type(7n)
+        margin-right: 0
   .page-box
     position: absolute
     right: 15px
@@ -730,129 +856,52 @@
 
   .banner-share
     position: absolute
-    width: 55px
-    height: 55px
-    right: 23px
-    bottom: 13px
+    width: 36px
+    height: 36px
+    right: 29px
+    bottom: 26px
     z-index: 22
-    img
-      width: 100%
-      height: 100%
+    display: block
+    border-radius: 50%
+
+  .send-box
+    padding: 20px 20px 28px 18px
+    background: $color-white
+    border-radius: 8px
+    box-sizing: border-box
+    margin: 10px 12px 10px
+    box-shadow: 0 2px 15px 0 rgba(17,17,17,0.06)
+    .send-box-img
+      width: 32vw
       display: block
-      border-radius: 50%
-
-  .goods-info
-    background: #fff
-    padding: 0 12px
-    box-sizing: border-box
-    width: 100%
-    background: #fff
-    margin-bottom: 11px
-
-  .goods-info-top
-    padding: 17px 0
-    .info-top
-      layout(row)
-      justify-content: space-between
-      .title
-        width: 220px
-        font-size: $font-size-16
-        color: #1F1F1F
-        line-height: 1
-        min-height: 18px
-        font-family: $font-family-medium
-        margin-bottom: 9px
-        no-wrap()
-      .stock-number
-        font-size: $font-size-12
-        color: $color-text-sub
-        font-family: $font-family-regular
-        text-align: right
-    .info-bottom
-      position: relative
-      transition: all .3s
-      .sub-title
-        font-size: $font-size-14
-        color: $color-text-sub
-        line-height: 1.4
-        font-family: $font-family-regular
-      .open
-        position: absolute
-        right: -3px
-        bottom: -3px
-        display: block
-        width: 12.5px
-        height: 12.5px
-        padding: 10px
-        img
-          width: 12.5px
-          height: 12.5px
-
-  .goods-info-bootom
-    border-top-1px(#E6E6E6)
-    height: 45px
-    layout(row)
-    align-items: center
-    .info-bootom-list
-      layout(row)
-      align-items: center
-      padding-right: 5px
-    .info-user
-      layout(row)
-      align-items: center
-      width: 25px
-      height: 25px
-      margin-right: 3px
-      img
-        width: 25px
-        height: 25px
-        display: block
-        border-radius: 50%
-        background: #fff
-    .info-name
-      font-size: $font-size-12
-      color: $color-text-sub
+      margin: 0 auto 20px
+    .send-title
+      font-family: $font-family-medium
+      color: $color-text-main
+      font-size: $font-size-14
+      margin-bottom: 15px
+  .send-item-list
+    text-align: justify
+    margin-bottom: 19px
+    .list-title
       font-family: $font-family-regular
-      max-width: 35px
-      no-wrap()
-
-  .info-bootom-text
-    font-size: $font-size-12
-    color: $color-text-sub
-    font-family: $font-family-regular
-
-  .detail-title
-    font-size: $font-size-16
-    color: $color-text-main
-    font-family: $font-family-medium
-    padding-left: 12px
-    box-sizing: border-box
-    background: #fff
-    height: 50px
-    line-height: 50px
-    letter-spacing: 0.8px
-
+      color: $color-text-main
+      font-size: $font-size-13
+    .list-sub
+      font-family: $font-family-regular
+      color: $color-text-sub
+      font-size: $font-size-13
+    .list-line
+      font-family: $font-family-regular
+      color: #000
+      text-decoration: underline
+      font-size: $font-size-13
+  .send-item-list:last-child
+    margin-bottom: 0
   .detail-img
     display: block
     width: 100%
     height: auto
-
-  .send-box
-    padding: 17px 0 25px 12px
-    box-sizing: border-box
-    background: #fff
-    .send-title
-      font-size: $font-size-16
-      color: $color-text-main
-      line-height: 18px
-      font-family: $font-family-medium
-      margin-bottom: 12px
-    .send-sub-title
-      font-size: $font-size-13
-      color: $color-text-sub
-      font-family: $font-family-regular
-      line-height: 19.5px
-      margin-bottom: 1px
 
   .fixed-btn
     position: fixed
@@ -864,12 +913,12 @@
     layout(row)
     z-index: 111
     .hlep-btn
-      width: 40vw
+      width: 30vw
       height: 55px
       layout(row)
       border-top-1px(#E6E6E6)
       .hlep-btn-box
-        width: 33.33%
+        width: 50%
         layout()
         justify-content: center
         align-items: center
@@ -878,7 +927,7 @@
           height: 20px
           margin-bottom: 8px
           position: relative
-          img
+          .detail-img
             width: 100%
             height: 100%
             display: block
@@ -904,7 +953,7 @@
           color: $color-text-main
           line-height: 1
     .goods-btn
-      width: 30vw
+      width: 35vw
       line-height: 55px
       height: 55px
       text-align: center
@@ -920,5 +969,5 @@
     .goods-btn-assint
       color: #fff
       background: $color-text-assist
-      width: 60vw
+      width: 70vw
 </style>

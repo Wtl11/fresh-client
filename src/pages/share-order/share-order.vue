@@ -12,27 +12,25 @@
     </div>
     <div class="order-share-box">
       <div class="order-share-title">还有这些小伙伴也购买了下面的商品</div>
-      <div class="share-list-box" :class="showMoreImg ? 'share-list-more' : ''">
-        <div class="share-img-box" v-for="(item, index) in shareImgList" v-bind:key="index">
-          <img :src="item.head_image_url" alt="">
+      <div class="share-list-box">
+        <img class="share-img-box" v-for="(item, index) in shareImgList" v-bind:key="index" :src="item.head_image_url" alt="">
+        <div class="image-item" v-if="userImgList.length > 13 && showMoreImg" @click="showMoreBtn">
+          <div class="image-item-text">更多</div>
         </div>
       </div>
-      <div class="share-show" v-if="!showMoreImg && shareImgList.length > 7" @click="showImgMore">
-        <div class="share-text">展开更多</div>
-        <img v-if="imageUrl" class="share-img" :src="imageUrl+'/yx-image/order/icon-drop_down  @2x.png'" alt="">
-      </div>
     </div>
-    <div class="addr-info">
+    <div class="address-info">
       <div class="top">
-        <div class="addr">提货地址：{{address.shop_address}}</div>
         <div class="warp">
           <div class="design">团长</div>
           <div class="icon-number"><span class="name">{{address.shop_name}}</span><span
             class="text">{{address.shop_mobile}}</span></div>
         </div>
+        <div class="address-text">提货地址：{{address.shop_address}}</div>
       </div>
       <div class="bot">提货人：{{address.nickname}}</div>
     </div>
+    <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-colour@2x.png'" class="order-line">
     <div class="gary-box"></div>
     <div class="order-list">
       <div class="order-item">
@@ -79,8 +77,9 @@
         orderMsg: {},
         address: {},
         shareImgList: [],
-        showMoreImg: false,
-        shopId: ''
+        showMoreImg: true,
+        shopId: '',
+        userImgList: []
       }
     },
     onLoad(e) {
@@ -104,11 +103,16 @@
           if (res.error === this.$ERR_OK) {
             this.orderMsg = res.data
             this.address = res.data.address
-            this.shareImgList = res.data.avatar_images
+            this.userImgList = res.data.avatar_images
+            this.shareImgList = this.userImgList.slice(0, 13)
           } else {
             this.$wechat.showToast(res.message)
           }
         })
+      },
+      showMoreBtn() {
+        this.shareImgList = this.userImgList
+        this.showMoreImg = false
       }
     },
     components: {
@@ -173,7 +177,7 @@
           font-family: $font-family-medium
           font-size: $font-size-16
           color: $color-white
-  .addr-info
+  .address-info
     padding-left: 3.2vw
     background: $color-white
     .bot
@@ -186,10 +190,9 @@
     .top
       box-sizing: border-box
       padding:3.2vw 0
-    .addr
+    .address-text
       font-family: $font-family-medium
       font-size: $font-size-15
-      padding-bottom: 10px
       color: #000000
       line-height: 1.3
       word-break:break-all
@@ -198,24 +201,27 @@
       layout(row)
       align-items: center
       color: $color-text-sub
+      padding-bottom: 10px
       .design
-        width: 30px
-        font-family: $font-family-regular
-        border-1px($color-main)
-        text-align: center
-        color: $color-main
-        border-radius: 2px
-        position: relative
-        padding: 2px 0 1.5px
         font-size: $font-size-12
+        background: $color-main
+        color: $color-white
+        text-align: center
+        font-family: $font-family-regular
+        width: 30px
+        position: relative
+        height: 15px
+        line-height: 15px
         box-sizing: border-box
+        margin-right: 10px
+        border-radius: 2px
       .icon-number
         line-height: 25px
         .name
-          font-family: $font-family-regular
           font-size: $font-size-15
-          padding: 0 5px 0 10px
-          color: $color-text-sub
+          color: $color-text-main
+          font-family: $font-family-regular
+          margin-right: 10px
         .text
           font-family: $font-family-regular
           font-size: $font-size-15
@@ -344,12 +350,18 @@
         width: 10.6vw
         height: 10.6vw
         border-radius: 50%
-        img
-          width: 100%
-          height: 100%
-          display: block
-          background: $color-main
-          border-radius: 50%
+        background: $color-main
+      .image-item-text
+        width: 10.66vw
+        height: 10.66vw
+        border-radius: 50%
+        display: block
+        font-size: $font-size-10
+        color: #9b9b9b
+        font-family: $font-family-regular
+        text-align: center
+        line-height: 10.66vw
+        background: #F4F4F4
       .share-img-box:nth-of-type(7n)
         margin-right: 0
     .share-list-more
@@ -414,6 +426,7 @@
     .order-iden
       layout(row)
       align-items: center
+      justify-content: space-between
       .txt
         font-family: $font-family-regular
         font-size: $font-size-14
@@ -507,4 +520,8 @@
     width: 100vw
     height: 10px
     background: $color-background
+  .order-line
+    display: block
+    height: 3px
+    width: 100%
 </style>

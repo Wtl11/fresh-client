@@ -15,33 +15,34 @@
         <div class="extract" v-if="orderMsg.status === 1">提货单号: {{orderMsg.code}}</div>
       </div>
     </div>
-    <div class="addr-info">
+    <div class="address-info">
       <div class="top">
-        <div class="addr">提货地址：{{address.shop_address}}</div>
         <div class="warp">
           <div class="design">团长</div>
           <div class="icon-number"><span class="name">{{address.shop_name}}</span><span
-            class="text">{{address.shop_mobile}}</span></div>
+            class="text">{{address.social_name}}</span></div>
         </div>
+        <div class="address-text">提货地址：{{address.shop_address}}</div>
       </div>
       <div class="bot">提货人：{{address.mobile}}</div>
     </div>
+    <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-colour@2x.png'" class="order-line">
     <div class="gary-box"></div>
     <div class="order-list">
       <div class="order-item">
-        <div class="goods-item" v-for="(item, index) in orderMsg.goods" :key="index">
+        <div class="goods-item" v-for="(item, index) in orderMsg.goods" :key="index" @click="jumpGoodsDetail(item)">
           <div class="goods-info-box">
             <img class="goods-img" mode="aspectFill" :src="item.image_url" alt="">
             <div class="goods-info">
               <div class="tit">
                 <div class="name">{{item.goods_name}}</div>
-                <div class="quantity">x<span class="num">{{item.num}}</span></div>
+                <div class="refund" @click.stop="isRefund(item)" v-if="(orderMsg.status * 1 === 1 || orderMsg.status * 1 === 2) && item.after_sale_status * 1 === 0 && item.can_after_sale * 1 === 1">退款</div>
+                <div class="refund-text" v-if="item.after_sale_status * 1 === 1 || item.after_sale_status * 1 === 2 && item.can_after_sale * 1 === 1">{{item.after_sale_status_text}}</div>
               </div>
               <div class="guige">规格：{{item.goods_units}}</div>
               <div class="price">
                 <div class="amout"><span class="num">{{item.price}}</span>元</div>
-                <div class="refund" @click.stop="isRefund(item)" v-if="(orderMsg.status * 1 === 1 || orderMsg.status * 1 === 2) && item.after_sale_status * 1 === 0 && item.can_after_sale * 1 === 1">退款</div>
-                <div class="refund-text" v-if="item.after_sale_status * 1 === 1 || item.after_sale_status * 1 === 2 && item.can_after_sale * 1 === 1">{{item.after_sale_status_text}}</div>
+                <div class="quantity">x<span class="num">{{item.num}}</span></div>
               </div>
             </div>
           </div>
@@ -60,9 +61,11 @@
       </div>
       <div class="order-time">下单时间：{{orderMsg.created_at}}</div>
     </div>
-    <div class="service">
-      <div class="service-btn" @click.stop="showGroupList">联系团长</div>
+    <div class="service" @click.stop="showGroupList">
+      <img v-if="imageUrl" :src="imageUrl + '/yx-image/goods/icon-service@2x.png'" mode="widthFix" class="service-img">
+      <div class="service-btn">联系团长</div>
     </div>
+    <div class="service-line-box"></div>
     <div class="order-fixed" v-if="orderMsg.status * 1 === 0">
       <div class="order-bottom-left">
         <div>请在</div><div class="color-time">{{payTime}}</div><div>内付款</div>
@@ -315,7 +318,7 @@
           font-family: $font-family-medium
           font-size: $font-size-16
           color: $color-white
-  .addr-info
+  .address-info
     padding-left: 3.2vw
     background: $color-white
     .bot
@@ -328,10 +331,9 @@
     .top
       box-sizing: border-box
       padding:3.2vw 0
-    .addr
+    .address-text
       font-family: $font-family-medium
       font-size: $font-size-15
-      padding-bottom: 10px
       color: #000000
       line-height: 1.3
       word-break:break-all
@@ -340,24 +342,27 @@
       layout(row)
       align-items: center
       color: $color-text-sub
+      padding-bottom: 10px
       .design
-        width: 30px
-        font-family: $font-family-regular
-        border-1px($color-main)
-        text-align: center
-        color: $color-main
-        border-radius: 2px
-        position: relative
-        padding: 2px 0 1.5px
         font-size: $font-size-12
+        background: $color-main
+        color: $color-white
+        text-align: center
+        font-family: $font-family-regular
+        width: 30px
+        position: relative
+        height: 15px
+        line-height: 15px
         box-sizing: border-box
+        margin-right: 10px
+        border-radius: 2px
       .icon-number
         line-height: 25px
         .name
-          font-family: $font-family-regular
           font-size: $font-size-15
-          padding: 0 5px 0 10px
-          color: $color-text-sub
+          color: $color-text-main
+          font-family: $font-family-regular
+          margin-right: 10px
         .text
           font-family: $font-family-regular
           font-size: $font-size-15
@@ -397,7 +402,7 @@
         height: 16px
         justify-content: space-between
         .name
-          width: 61.2vw
+          width: 51.2vw
           font-family: $font-family-medium
           font-size: $font-size-14
           color: $color-sub
@@ -434,38 +439,38 @@
         layout(row)
         align-items: center
         justify-content: space-between
-        .refund
-          width: 65px
-          height: 25px
-          line-height: 25px
+      .refund
+        width: 65px
+        height: 25px
+        line-height: 25px
+        font-family: $font-family-regular
+        font-size: $font-size-12
+        color: #000000
+        text-align: center
+        background: $color-white
+        border-1px($color-text-assist, 15px)
+      .refund-text
+        height: 25px
+        line-height: 25px
+        font-family: $font-family-regular
+        font-size: $font-size-14
+        color: $color-money
+      .amout
+        font-family: $font-family-regular
+        font-size: $font-size-11
+        color: #1F1F1F
+        .num
           font-family: $font-family-regular
-          font-size: $font-size-12
-          color: #000000
-          text-align: center
-          background: $color-white
-          border-1px($color-text-assist, 15px)
-        .refund-text
-          height: 25px
-          line-height: 25px
+          color: $color-sub
+          font-size: $font-size-16
+      .quantity
+        font-family: $font-family-regular
+        font-size: $font-size-12
+        color: #1F1F1F
+        .num
           font-family: $font-family-regular
-          font-size: $font-size-14
-          color: $color-money
-        .amout
-          font-family: $font-family-regular
-          font-size: $font-size-11
-          color: #1F1F1F
-          .num
-            font-family: $font-family-regular
-            color: $color-sub
-            font-size: $font-size-16
-        .quantity
-          font-family: $font-family-regular
-          font-size: $font-size-12
-          color: #1F1F1F
-          .num
-            font-family: $font-family-regular
-            font-size: $font-size-16
-            color: $color-sub
+          font-size: $font-size-16
+          color: $color-sub
   .order-list
     background: $color-white
   .actual-amount
@@ -568,23 +573,31 @@
         background: $color-white
         border: 0.5px solid $color-text-assist
         box-sizing: border-box
+  .order-line
+    display: block
+    height: 3px
+    width: 100%
   .service
-    width: 100vw
-    padding-top: 15px
-    padding-bottom: 65px
+    width: 100%
+    margin-top: 15px
+    height: 50px
     layout(row)
     justify-content: center
     align-items: center
-    background-color: $color-background
+    background: $color-white
     .service-btn
-      width: 106px
-      height: 34px
-      text-align: center
-      line-height: 34px
-      border-1px($color-text-assist, 17px)
       font-family: $font-family-regular
       font-size: $font-size-15
       color: #000000
+    .service-img
+      width: 17.5px
+      height: 15px
+      display: block
+      margin-right: 6px
+  .service-line-box
+    background: $color-background
+    height: 55px
+    width: 100%
   .gary-box
     width: 100vw
     height: 10px

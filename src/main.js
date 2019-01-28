@@ -27,6 +27,11 @@ export default {
       navigationBarTextStyle: 'black',
       navigationStyle: 'custom' // 自定义导航栏
     },
+    permission: {
+      'scope.userLocation': {
+        'desc': '当前位置用于定位你附近的自提点'
+      }
+    },
     tabBar: {
       color: '#2c2c2c',
       selectedColor: '#73C200',
