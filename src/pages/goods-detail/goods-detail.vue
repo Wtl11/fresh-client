@@ -91,7 +91,7 @@
       <div class="hlep-btn">
         <div class="hlep-btn-box" v-for="(item, index) in typeBtn" :key="index" @click.stop="switchItem(item)">
           <div class="hlep-top">
-            <img v-if="imageUrl" :src="imageUrl + item.url" class="detail-img" mode="widthFix">
+            <img v-if="imageUrl" :src="imageUrl + item.url" class="detail-img" mode="aspectFill">
             <div class="hlep-number" v-if="index * 1 === 1 && count * 1 >= 1">{{count * 1 > 99 ? 99 : count}}</div>
           </div>
           <div class="hlep-bottom">{{item.text}}</div>
@@ -196,6 +196,9 @@
       }
     },
     onLoad(options) {
+      if (options.shopId) {
+        wx.setStorageSync('shopId', options.shopId)
+      }
       ald.aldstat.sendEvent('商品详情')
       if (options.scene) {
         let scene = decodeURIComponent(options.scene)
@@ -296,6 +299,10 @@
           return
         }
         ald.aldstat.sendEvent('立即购买')
+        if (this.goodsMsg.buy_limit * 1 === -1) {
+          this.$refs.addNumber.showLink()
+          return
+        }
         if (this.goodsMsg.buy_count >= this.goodsMsg.buy_limit) {
           this.$wechat.showToast(`该商品限购${this.goodsMsg.buy_limit}件，您不能在购买了`)
         } else {
@@ -409,6 +416,7 @@
         })
       },
       getGoodsDetailData() {
+        console.log(wx.getStorageSync('shopId'))
         API.Choiceness.getGoodsDetail(this.goodsId).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.goodsMsg = res.data
@@ -427,9 +435,10 @@
         goodsList.sku_id = goodsList.id
         goodsList.num = number
         goodsList.goods_units = this.goodsMsg.goods_units
+        const total = (goodsList.shop_price * number).toFixed(2)
         let orderInfo = {
           goodsList: new Array(goodsList),
-          total: goodsList.shop_price * number,
+          total: total,
           deliverAt: this.deliverAt
         }
         this.setOrderInfo(orderInfo)

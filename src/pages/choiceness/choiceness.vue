@@ -2,35 +2,43 @@
   <div class="choiceness">
     <navigation-bar :title="title" :showArrow="false"></navigation-bar>
     <div class="community-box">
-      <div class="community-main">
+      <div class="community-main" @click="jumpSelfPoint">
         <div class="community-img">
-          <img :src="groupInfo.head_image_url">
+          <img v-if="locationStatus * 1 === 1 || locationStatus * 1 === 2" :src="groupInfo.head_image_url">
         </div>
-        <div class="community-text" v-if="locationStatus * 1 === 1 || locationStatus * 1 === 2">{{groupInfo.social_name}}</div>
+        <div class="community-text" v-if="locationStatus * 1 === 1 || locationStatus * 1 === 2">
+          {{groupInfo.social_name}}
+        </div>
         <div class="community-text" v-else>定位中...</div>
-        <img v-if="imageUrl && locationStatus * 1 === 1 || locationStatus * 1 === 2" :src="imageUrl + '/yx-image/choiceness/icon-pitch@2x.png'" class="community-down">
+        <img v-if="imageUrl && locationStatus * 1 === 1 || locationStatus * 1 === 2"
+             :src="imageUrl + '/yx-image/choiceness/icon-pitch@2x.png'" class="community-down">
       </div>
-      <div class="carousel-wrapper" v-if="buyUsers.length > 0 && (locationStatus * 1 === 1 || locationStatus * 1 === 2)" :class="{'show': showBuyUser}">
+      <div class="carousel-wrapper" v-if="buyUsers.length > 0 && (locationStatus * 1 === 1 || locationStatus * 1 === 2)"
+           :class="{'show': showBuyUser}">
         <div class="avatar-wrapper">
           <img :src="buyUsers[showUserIndex].head_image_url" alt="">
         </div>
-        <div class="content">{{buyUsers[showUserIndex].nickname}} 刚刚购买了一单</div>
+        <div class="content">刚购买了{{buyUsers[showUserIndex].goods_name}}</div>
       </div>
     </div>
-    <div class="modules-box" v-for="(bigItem, bigIndex) in modulesList" :key="bigIndex" v-if="locationStatus * 1 === 1 || locationStatus * 1 === 2">
+    <div class="modules-box" v-for="(bigItem, bigIndex) in modulesList" :key="bigIndex"
+         v-if="locationStatus * 1 === 1 || locationStatus * 1 === 2">
       <!--轮播图-->
-      <div class="banner-box" v-if="bigItem.module_name === 'bannar'">
-        <swiper class="banner" :current="praiseIndex"  interval="5000" display-multiple-items="1" previous-margin="7.5px" next-margin="17.5px" circular @change="_setPraiseIndex">
+      <div class="banner-box" v-if="bigItem.module_name === 'bannar' && bigItem.content_data.length !== 0">
+        <swiper class="banner" :current="praiseIndex" autoplay interval="5000" display-multiple-items="1" previous-margin="7.5px"
+                next-margin="17.5px" circular @change="_setPraiseIndex">
           <block v-for="(item,index) in bigItem.content_data.list" :key="index">
-            <swiper-item class="banner-item"  :class="{'current-banner-active': praiseIndex === index}">
-              <img class="item-img" mode="aspectFill" v-if="item.image_url" :src="item.image_url" @click="jumpDetail(item)">
+            <swiper-item class="banner-item" :class="{'current-banner-active': praiseIndex === index}">
+              <img class="item-img" mode="aspectFill" v-if="item.image_url" :src="item.image_url"
+                   @click="jumpDetail(item)">
             </swiper-item>
           </block>
         </swiper>
       </div>
       <!--导航-->
-      <div class="nav-list" v-if="bigItem.module_name === 'navigation'">
-        <div class="nav-item" v-for="(navItem, navIndex) in bigItem.content_data.list" :key="navIndex" @click="jumpNavType(navItem)">
+      <div class="nav-list" v-if="bigItem.module_name === 'navigation' && bigItem.content_data.length !== 0">
+        <div class="nav-item" v-for="(navItem, navIndex) in bigItem.content_data.list" :key="navIndex"
+             @click="jumpNavType(navItem)">
           <img v-if="navItem.image_url" :src="navItem.image_url" alt="" class="nav-top-box" mode="aspectFill">
           <div class="nav-top-text">{{navItem.title}}</div>
         </div>
@@ -49,12 +57,9 @@
         <div class="goods-box">
           <div class="goods-list" v-for="(item, index) in goodsList" :key="index" @click="jumpGoodsDetail(item)">
             <div class="goods-left">
-              <div class="goods-left-img">
-                <img class="item-img" mode="aspectFill" v-if="item.goods_cover_image" :src="item.goods_cover_image">
-              </div>
-              <div class="goods-left-icon">
-                <img class="item-img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/icon-label@2x.png'">
-              </div>
+              <img class="goods-left-img" mode="aspectFill" v-if="item.goods_cover_image" :src="item.goods_cover_image">
+              <img class="goods-left-icon" mode="aspectFill" v-if="imageUrl"
+                   :src="imageUrl + '/yx-image/choiceness/icon-label@2x.png'">
             </div>
             <div class="goods-right">
               <div class="goods-right-top">
@@ -107,7 +112,8 @@
       </div>
     </div>
     <link-group ref="groupComponents" :wechatInfo="groupInfo"></link-group>
-    <confirm-msg ref="refundModel" title="您的位置距该提货点超过1km" msg="建议您切换自提点" sureString="马上切换" @confirm="confirm" @cancel="cancel"></confirm-msg>
+    <confirm-msg ref="refundModel" title="您的位置距该提货点超过1km" msg="建议您切换自提点" sureString="马上切换" @confirm="confirm"
+                 @cancel="cancel"></confirm-msg>
   </div>
 </template>
 
@@ -118,6 +124,7 @@
   import ConfirmMsg from '@components/confirm-msg/confirm-msg'
   import API from '@api'
   import {cartMethods} from '@state/helpers'
+
   const ald = getApp()
   const PAGE_NAME = 'CHOICENESS'
   export default {
@@ -152,29 +159,30 @@
       }
     },
     async onLoad() {
+      await this._groupInfo(false)
+      await this._getIndexModule(false)
       this.curShopId = wx.getStorageSync('shopId')
-      await this._groupInfo(true)
-      await this._getIndexModule()
-      let that = this
-      if (wx.getStorageSync('locationShow') * 1 === 3 || wx.getStorageSync('locationShow') * 1 === 2) return
-      wx.getLocation({
-        success(res) {
-          wx.setStorageSync('locationData', res)
-          wx.setStorageSync('locationShow', 1)
-          that.locationStatus = 1
-          that.getLocationData()
-        },
-        fail(res) {
-          wx.navigateTo({
-            url: `/pages/open-location`
-          })
-          wx.setStorageSync('locationShow', 3)
-        }
-      })
+      if (wx.getStorageSync('locationShow') * 1 === 3 || wx.getStorageSync('locationShow') * 1 === 2) {
+      } else {
+        let that = this
+        wx.getLocation({
+          async success(res) {
+            wx.setStorageSync('locationData', res)
+            wx.setStorageSync('locationShow', 1)
+            that.locationStatus = 1
+            that.getLocationData()
+          },
+          fail(res) {
+            wx.setStorageSync('locationShow', 3)
+            wx.navigateTo({
+              url: `/pages/open-location`
+            })
+          }
+        })
+      }
     },
     async onShow() {
       this.locationStatus = wx.getStorageSync('locationShow')
-      console.log(wx.getStorageSync('locationShow'), '11111')
       if (this.locationStatus * 1 === 3) {
         wx.navigateTo({
           url: `/pages/open-location`
@@ -184,17 +192,15 @@
         this.getLocationData()
       }
       ald.aldstat.sendEvent('首页')
-      this.setCartCount()
       this._getBuyUsers()
       let shopId = wx.getStorageSync('shopId')
-      if (this.curShopId * 1 === shopId * 1) {
-        return
+      if (this.curShopId * 1 !== shopId * 1) {
+        await this._groupInfo(false)
+        await this._getIndexModule(false)
+        this.curShopId = shopId
       }
-      this.curShopId = shopId
-      this.tabIndex = 0
-      this.move = 0
+      if (!wx.getStorageSync('token')) return
       this.setCartCount()
-      await this._groupInfo(false)
     },
     onHide() {
       this.carouselTimer && clearTimeout(this.carouselTimer)
@@ -213,17 +219,17 @@
       this.getMoreGoodsList()
     },
     async onPullDownRefresh() {
-      this.tabIndex = 0
-      this.move = 0
       await this._groupInfo(true)
+      await this._getIndexModule(false)
+      if (!wx.getStorageSync('token')) return
+      this.setCartCount()
       wx.stopPullDownRefresh()
     },
     onShareAppMessage(res) {
       return {
-        title: `${this.groupInfo.social_name}
-        次日达、直采直销，点击下单↓`,
+        title: `${this.groupInfo.social_name}次日达、直采直销，点击下单↓`,
         path: `/pages/choiceness?shopId=${this.curShopId}`,
-        imageUrl: this.imageUrl + '/yx-image/choiceness/pic-friand_share@2x.png',
+        imageUrl: this.imageUrl + '/yx-image/choiceness/pic-zbyx@2x.png',
         success: (res) => {
         },
         fail: (res) => {
@@ -293,9 +299,13 @@
           wx.navigateTo({
             url: `/pages/classify?id=${item.other_id}`
           })
-        } else {
+        } else if (item.type === 'mini_link') {
           wx.navigateTo({
             url: `${item.url}`
+          })
+        } else {
+          wx.navigateTo({
+            url: `/pages/out-html?url=${item.url}`
           })
         }
       },
@@ -304,7 +314,7 @@
           return
         }
         let data = {
-          shelf_id: this.goodsListData.id,
+          shelf_id: this.goodsListData.content_data.other_id,
           page: this.goodsPage,
           limit: 10
         }
@@ -328,38 +338,6 @@
         wx.navigateTo({
           url: `/pages/goods-detail?id=${item.id}`
         })
-      },
-      getWidth(index, id, e) {
-        this.allWidth = 0
-        let query = wx.createSelectorQuery()
-        query.selectAll('.item').boundingClientRect()
-        query.exec((res) => {
-          this.arrWidth = res[0].map((item, index) => {
-            this.allWidth += item.width
-            return item.width
-          })
-        })
-      },
-      async _changeTab(index, id, e) {
-        let number = index * 1 === 0 ? 1 : index
-        if (this.tabIndex > index) {
-          if (index <= 3) {
-            number = 0
-          } else {
-            number = index
-          }
-        } else if (this.tabIndex < index) {
-          if (index <= 3) {
-            number = 0
-          } else {
-            number = index
-          }
-        }
-        this.viewToItem = `item${number}`
-        this.tabIndex = index
-        this.move = e.target.offsetLeft
-        this.sheTag_id = id
-        this.getGoodsList()
       },
       addShoppingCart(item) {
         if (!this.$isLogin()) {
@@ -390,6 +368,7 @@
           if (item.module_name === 'activity') {
             this.goodsList = item.content_data.list
             this.goodsListData = item
+            this.goodsPage = 2
             if (this.goodsList.length === 0) {
               this.goodsMore = true
             }
@@ -408,17 +387,26 @@
       jumpNavType(item) {
         if (item.type === 'mini_goods') {
           wx.navigateTo({
-            url: `/pages/goods-detail?id=${item.id}`
+            url: `/pages/goods-detail?id=${item.other_id}`
           })
         } else if (item.type === 'goods_cate') {
           wx.navigateTo({
             url: `/pages/classify?id=${item.other_id}`
           })
-        } else {
+        } else if (item.type === 'mini_link') {
           wx.navigateTo({
             url: `${item.url}`
           })
+        } else {
+          wx.navigateTo({
+            url: `/pages/out-html?url=${item.url}`
+          })
         }
+      },
+      jumpSelfPoint() {
+        wx.navigateTo({
+          url: `/pages/self-point`
+        })
       }
     },
     components: {
@@ -438,6 +426,7 @@
     min-height: 100vh
     background: #fff
     overflow-x: hidden
+
   .community-box
     layout(row)
     justify-content: space-between
@@ -461,11 +450,14 @@
         color: $color-text-main
         font-size: $font-size-16
         font-family: $font-family-medium
+        max-width: 40vw
+        no-wrap()
         margin-right: 5px
       .community-down
         width: 9px
         height: 6px
         display: block
+
   .carousel-wrapper
     layout(row)
     max-width: 100%
@@ -492,8 +484,8 @@
       overflow: hidden
       font-size: $font-size-12
       color: $color-white
+      max-width: 22vw
       no-wrap()
-
 
   .banner-box
     height: 40vw
@@ -528,6 +520,7 @@
         .item-img
           width: 100%
           height: 100%
+
   .nav-list
     layout(row)
     align-items: center
@@ -546,9 +539,11 @@
         font-family: $font-family-regular
         color: #333
         text-align: center
+
   .nav-list-border
     height: 10px
     background: $color-background
+
   .goods-title-box
     padding-left: 12px
     box-sizing: border-box
@@ -576,6 +571,7 @@
         font-size: $font-size-13
         color: $color-text-sub
         font-family: $font-family-regular
+
   .goods-box
     padding: 0 3.2vw
     box-sizing: border-box
@@ -585,30 +581,22 @@
       border-bottom-1px(#e6e6e6)
       align-items: center
       .goods-left
-        margin-left: 5px
         position: relative
-        width: 32vw
-        height: 32vw
+        width: 29.33vw
+        height: 29.33vw
         margin-right: 12px
         .goods-left-img
           width: 100%
           height: 100%
           border-radius: 3px
-          img
-            width: 100%
-            height: 100%
-            border-radius: 3px
-            display: block
+          display: block
         .goods-left-icon
           width: 32px
           height: 32px
           position: absolute
           left: -5px
           top: -5px
-          img
-            display: block
-            width: 100%
-            height: 100%
+          display: block
       .goods-right
         flex: 1
         overflow: hidden

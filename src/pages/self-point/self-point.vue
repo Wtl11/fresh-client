@@ -17,7 +17,7 @@
     <div class="history-list">
       <div class="history-item" v-for="(item, index) in shopList" :key="index" @click="showChangeShop(item)">
         <div class="left">
-          <img class="avatar" mode="aspectFill" :src="item.head_image_url" alt="">
+          <img class="avatar" v-if="imageUrl" mode="aspectFill" :src="item.head_image_url || imageUrl+'/yx-image/order/icon-colonel_head@2x.png'" alt="">
           <div class="info">
             <div class="colonel">
               <div class="colonel-left">团长：{{item.name}}</div>
@@ -61,12 +61,12 @@
         currentDistance: ''
       }
     },
-    created() {
+    async onLoad() {
       let res = wx.getSystemInfoSync()
       this.statusBarHeight = res.statusBarHeight || 20
+      await this._getShopList()
     },
     async onShow() {
-      await this._getShopList()
       this._setShopId()
       await this._groupInfo()
     },
@@ -110,6 +110,7 @@
       },
       _getShopList() {
         this.shopMore = false
+        this.page = 1
         let locationData = wx.getStorageSync('locationData')
         let data = { page: this.page, limit: 10, longitude: locationData.longitude || 0, latitude: locationData.latitude || 0 }
         API.Mine.getShopList(data)
@@ -133,7 +134,8 @@
         if (this.shopMore) {
           return
         }
-        let data = { page: this.page, limit: 10 }
+        let locationData = wx.getStorageSync('locationData')
+        let data = { page: this.page, limit: 10, longitude: locationData.longitude || 0, latitude: locationData.latitude || 0 }
         API.Mine.getShopList(data).then((res) => {
           this.$wechat.hideLoading()
           if (res.error === this.$ERR_OK) {

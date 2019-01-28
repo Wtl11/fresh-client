@@ -169,14 +169,13 @@
         this.orderMsg.status_text = '待提货'
       },
       isRefund(item) {
-        this.curItem = item
-        if (item.is_time_out * 1 === 0) {
-          this.modelMsg = '确定退款吗？'
-          this.confirmtype = 1
-          this.$refs.refundModel.show()
-        } else {
-          this.$refs.colseModel.show()
-        }
+        this.$refs.colseModel.show()
+        // this.curItem = item
+        // if (item.is_time_out * 1 === 0) {
+        //   this.modelMsg = '确定退款吗？'
+        //   this.confirmtype = 1
+        //   this.$refs.refundModel.show()
+        // }
       },
       clipOrderId() {
         let that = this

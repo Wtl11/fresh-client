@@ -11,7 +11,7 @@
     <div class="jump-btn-box">
       <button class="jump-goods" open-type="share"  formType="submit" :class="allReady ? '' : 'jump-goods-show'">提醒团长接单</button>
       <form action="" report-submit @submit="$getFormId">
-        <button class="jump-goods jump-order"  open-type="getUserInfo"  formType="submit"  @click="jumpGoods">继续购物</button>
+        <button class="jump-goods jump-order" formType="submit"  @click="jumpGoods">继续购物</button>
       </form>
     </div>
   </div>

@@ -78,7 +78,7 @@
           this.showOrderNum = false
         }
         let number = this.msgDetail.buy_limit - this.msgDetail.buy_count
-        if (this.orderNum >= number) {
+        if (this.orderNum >= number && this.msgDetail.buy_limit * 1 !== -1) {
           this.$wechat.showToast(`该商品限购${this.msgDetail.buy_limit}件，您不能再购买了`)
           return
         }

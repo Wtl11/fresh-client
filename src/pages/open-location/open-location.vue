@@ -29,10 +29,10 @@
               success(res) {
                 wx.setStorageSync('locationData', res)
                 wx.setStorageSync('locationShow', 1)
+                wx.switchTab({
+                  url: `/pages/choiceness`
+                })
               }
-            })
-            wx.switchTab({
-              url: `/pages/choiceness`
             })
           }
         }

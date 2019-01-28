@@ -14,8 +14,8 @@
       <div class="top">
         <div class="warp">
           <div class="design">团长</div>
-          <div class="icon-number"><span class="name">{{address.shop_name}}</span><span
-            class="text">{{address.social_name}}</span></div>
+          <div class="icon-number"><span class="name">{{orderMsg.shop_name}}</span><span
+            class="text">{{orderMsg.social_name}}</span></div>
         </div>
         <div class="address-text">提货地址：{{orderMsg.social_name}}</div>
       </div>
