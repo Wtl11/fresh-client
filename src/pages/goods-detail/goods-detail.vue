@@ -73,7 +73,9 @@
     <div class="detail-title">
       <img v-if="imageUrl" :src="imageUrl + '/yx-image/goods/pic-tital_spxq@2x.png'" mode="widthFix" class="detail-title-img">
     </div>
-    <img v-for="(item, index) in goodsMsg.goods_detail_images" v-if="item.image_url" :src="item.image_url" class="detail-img" mode="widthFix" :key="index">
+    <div class="detail-img-box">
+      <img v-for="(item, index) in goodsMsg.goods_detail_images" v-if="item.image_url" :src="item.image_url" class="detail-img" mode="widthFix" :key="index">
+    </div>
     <div class="send-box">
       <img v-if="imageUrl" :src="imageUrl + '/yx-image/goods/pic-logo@2x.png'" mode="widthFix" class="send-box-img">
       <div class="send-title">服务说明</div>
@@ -594,7 +596,9 @@
           width: 100%
           background: #888
           col-center()
-
+  .detail-img-box
+    padding: 0 12px
+    box-sizing: border-box
   .goods-detail
     width: 100%
     min-height: 100vh
@@ -749,7 +753,7 @@
         font-size: $font-size-17
         color: #1F1F1F
         line-height: 1
-        min-height: 18px
+        min-height: 19px
         font-family: $font-family-medium
         margin-bottom: 15px
         no-wrap()
@@ -892,6 +896,7 @@
   .send-item-list
     text-align: justify
     margin-bottom: 19px
+    line-height: 19px
     .list-title
       font-family: $font-family-regular
       color: $color-text-main

@@ -138,6 +138,11 @@
           res.data.forEach((item, index) => {
             if (item.id * 1 === this.classifyId * 1) {
               this.tabIndex = index
+              if (index > 3) {
+                this.viewToItem = `item${index}`
+              } else {
+                this.viewToItem = `item0`
+              }
             }
           })
         })
@@ -301,7 +306,7 @@
       display: inline-block
       position: relative
       /*transition: all 0.3s*/
-      min-width: 76px
+      min-width: 66px
       box-sizing: border-box
       transform-origin: 50%
     .item-active

@@ -15,10 +15,12 @@
       let id = res.error === ERR_OK ? res.data.id : baseURL.defaultId
       wx.setStorageSync('defaultShopId', id)
       this.codeMsg = await this.$wechat.login()
-      let tokenJson = await API.Login.getToken({code: this.codeMsg.code}, false)
-      if (tokenJson.code === ERR_OK) {
-        wx.setStorageSync('token', tokenJson.data.access_token)
-        wx.setStorageSync('userInfo', tokenJson.data.customer_info)
+      if (!wx.getStorageSyn('token')) {
+        let tokenJson = await API.Login.getToken({code: this.codeMsg.code}, false)
+        if (tokenJson.code === ERR_OK) {
+          wx.setStorageSync('token', tokenJson.data.access_token)
+          wx.setStorageSync('userInfo', tokenJson.data.customer_info)
+        }
       }
       //  判断是否可以静默登录
     },

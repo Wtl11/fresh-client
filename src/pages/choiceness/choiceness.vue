@@ -602,7 +602,7 @@
         overflow: hidden
         layout()
         justify-content: space-between
-        min-height: 32vw
+        min-height: 29.33vw
         .title
           padding-top: 3px
           font-size: $font-size-16
@@ -648,7 +648,6 @@
               line-height: 13px
               margin-bottom: 3px
               border-radius: 10px
-              padding: 0 5px
           .price-box
             layout(row)
             align-items: flex-end

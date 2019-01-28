@@ -331,7 +331,7 @@
       box-sizing: border-box
       padding:3.2vw 0
     .address-text
-      font-family: $font-family-medium
+      font-family: $font-family-regular
       font-size: $font-size-15
       color: #000000
       line-height: 1.3

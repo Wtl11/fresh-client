@@ -496,6 +496,7 @@
               height: 44px
               display: block
               margin-right: 10px
+              border-radius: 3px
             .banner-text-status
               font-size: $font-size-14
               color: $color-main
