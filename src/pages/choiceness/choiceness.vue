@@ -18,7 +18,7 @@
         <div class="avatar-wrapper">
           <img :src="buyUsers[showUserIndex].head_image_url" alt="">
         </div>
-        <div class="content">刚购买了{{buyUsers[showUserIndex].goods_name}}</div>
+        <div class="content">买了{{buyUsers[showUserIndex].goods_name}}</div>
       </div>
     </div>
     <div class="modules-box" v-for="(bigItem, bigIndex) in modulesList" :key="bigIndex"
@@ -482,7 +482,7 @@
     .content
       flex: 1
       overflow: hidden
-      font-size: $font-size-12
+      font-size: $font-size-10
       color: $color-white
       max-width: 22vw
       no-wrap()

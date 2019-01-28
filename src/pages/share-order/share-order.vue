@@ -181,7 +181,7 @@
     padding-left: 3.2vw
     background: $color-white
     .bot
-      font-family: $font-family-medium
+      font-family: $font-family-regular
       font-size: $font-size-15
       color: #000000
       height: 50px
@@ -280,13 +280,14 @@
         .name
           width: 47.7vw
         .share-tit-btn
-          font-size: $font-size-14
-          color: $color-main
-          border-1px($color-main, 11.5px)
+          font-size: $font-size-12
+          color: $color-white
+          background: $color-main
+          border-radius: 30px
           font-family: $font-family-regular
           height: 22px
           line-height: 22px
-          width: 75px
+          width: 68px
           text-align: center
       .guige
         font-family: $font-family-regular

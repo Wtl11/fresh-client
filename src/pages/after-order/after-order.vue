@@ -192,7 +192,7 @@
     padding-left: 3.2vw
     background: $color-white
     .bot
-      font-family: $font-family-medium
+      font-family: $font-family-regular
       font-size: $font-size-15
       color: #000000
       height: 50px

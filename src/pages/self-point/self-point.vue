@@ -93,15 +93,16 @@
         this.groupInfo = res.data
       },
       showChangeShop(shop) {
-        if (this.currentShopId === shop.id) {
-          this.$wechat.showToast('您已在当前自提点')
-          return
-        }
+        // if (this.currentShopId === shop.id) {
+        //   this.$wechat.showToast('您已在当前自提点')
+        //   return
+        // }
         this.changedShop = shop
-        this.$refs.dialogModal.show()
+        // this.$refs.dialogModal.show()
         if (wx.getStorageSync('locationShow') * 1 === 3) {
           wx.setStorageSync('locationShow', 2)
         }
+        this.changeShop()
       },
       changeShop() {
         let shopId = this.changedShop.id

@@ -24,7 +24,7 @@
         </div>
         <div class="address-text">提货地址：{{address.shop_address}}</div>
       </div>
-      <div class="bot">提货人：{{address.mobile}}</div>
+      <div class="bot">提货人手机号：{{address.mobile}}</div>
     </div>
     <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-colour@2x.png'" class="order-line">
     <div class="gary-box"></div>
@@ -321,7 +321,7 @@
     padding-left: 3.2vw
     background: $color-white
     .bot
-      font-family: $font-family-medium
+      font-family: $font-family-regular
       font-size: $font-size-15
       color: #000000
       height: 50px
