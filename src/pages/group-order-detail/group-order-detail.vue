@@ -23,7 +23,7 @@
         <p class="customer-phone">提货人手机：{{orderDetail.address.mobile}}</p>
         <img :src="imageUrl + '/yx-image/group/icon-phone-green@2x.png'" v-if="imageUrl" class="phone-icon" @click="_callPhone(orderDetail.address.mobile)">
       </div>
-      <img :src="imageUrl + '/yx-image/choiceness/pic-colour@2x.png'" mode="aspectFill" class="group-border">
+      <img :src="imageUrl + '/yx-image/choiceness/pic-colour@2x.png'" v-if="imageUrl" mode="aspectFill" class="group-border">
     </div>
     <!--商品-->
     <div class="goods">
