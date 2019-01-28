@@ -26,8 +26,8 @@
       <div class="order-banner-box" v-if="lastOrderList.length !== 0">
         <div class="banner-box">
           <swiper class="banner" autoplay interval="5000" vertical="true" circular @change="_setPraiseIndex">
-            <block v-for="(item, index) in lastOrderList" :key="index" @click="jumpOrderDetail(item)">
-              <swiper-item class="banner-item">
+            <block v-for="(item, index) in lastOrderList" :key="index">
+              <swiper-item class="banner-item" @click="jumpOrderDetail(item)">
                 <img class="banner-item-img" v-if="item.image_url" :src="item.image_url">
                 <div class="banner-text-box">
                   <div class="banner-text-status">{{item.status_str}}</div>
@@ -263,8 +263,9 @@
         }
       },
       jumpOrderDetail(item) {
+        console.log(item)
         wx.navigateTo({
-          url: `/pages/order-detail?id=${item.order_id}`
+          url: `/pages/order-detail?id=${item.id}`
         })
       }
     },
