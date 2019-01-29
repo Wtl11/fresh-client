@@ -30,7 +30,7 @@
     <div class="gary-box"></div>
     <div class="order-list">
       <div class="order-item">
-        <div class="goods-item" v-for="(item, index) in orderMsg.goods" :key="index" @click="jumpGoodsDetail(item)">
+        <div class="goods-item" v-for="(item, index) in orderMsg.goods" :key="index">
           <div class="goods-info-box">
             <img class="goods-img" mode="aspectFill" :src="item.image_url" alt="">
             <div class="goods-info">
@@ -350,8 +350,7 @@
         font-family: $font-family-regular
         width: 30px
         position: relative
-        height: 15px
-        line-height: 15px
+        padding: 2px 0
         box-sizing: border-box
         margin-right: 10px
         border-radius: 2px
@@ -360,7 +359,7 @@
         .name
           font-size: $font-size-15
           color: $color-text-main
-          font-family: $font-family-regular
+          font-family: $font-family-medium
           margin-right: 10px
         .text
           font-family: $font-family-regular

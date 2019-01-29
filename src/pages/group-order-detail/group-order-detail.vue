@@ -221,7 +221,7 @@
       border-bottom-1px($color-line)
     .group-address
       line-height: 21px
-      font-family: $font-family-medium
+      font-family: $font-family-regular
       color: #000000
       margin-top: 10px
     .customer-msg
@@ -239,7 +239,7 @@
         background: $color-main
       .group-name, .group-phone
         margin-left: 10px
-        font-family: $font-family-regular
+        font-family: $font-family-medium
         line-height: 1.2
       .group-social-name
         font-size: $font-size-13

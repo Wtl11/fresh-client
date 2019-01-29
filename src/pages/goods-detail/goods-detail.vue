@@ -9,6 +9,9 @@
           </swiper-item>
         </block>
       </swiper>
+      <div class="banner-number" v-if="goodsBanner.length !== 0">
+        <div class="banner-number-box">{{currentNum}}/{{goodsBanner.length}}</div>
+      </div>
       <div class="banner-title-box">
         <div class="banner-title-main" v-if="goodsMsg.is_activity * 1 === 1">
           <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-spxq_bg@2x.png'" mode="aspectFill" class="banner-title-bg">
@@ -46,7 +49,7 @@
           <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/icon-fast@2x.png'" mode="aspectFill" class="info-sub-img">
           <div class="sub-text">现在下单，预计({{goodsMsg.shelf_delivery_at}})可自提</div>
         </div>
-        <div class="info-stock">已售<span class="stock-number">{{goodsMsg.sale_count}}</span>{{goodsMsg.goods_units}}，剩余<span class="stock-number">{{goodsMsg.usable_stock}}</span>{{goodsMsg.goods_units}}</div>
+        <div class="info-stock">已售<span class="stock-number">{{goodsMsg.sale_count}}</span>{{goodsMsg.goods_units}}<span v-if="goodsMsg.is_activity * 1 === 1">，剩余<span class="stock-number">{{goodsMsg.usable_stock}}</span>{{goodsMsg.goods_units}}</span></div>
       </div>
       <img v-if="imageUrl" :src="imageUrl + '/yx-image/goods/icon-share2@2x.png'" mode="aspectFill" class="banner-share" @click="showShare">
     </div>
@@ -162,7 +165,7 @@
           minute: '00',
           second: '00'
         },
-        currentNum: 0,
+        currentNum: 1,
         typeBtn: TYPEBTN,
         safeList: SAFELIST,
         goodsId: 0,
@@ -171,6 +174,7 @@
         groupInfo: {},
         userImgList: [],
         bigUserImgList: [],
+        goodsBanner: [],
         deliverAt: '',
         shareImg: '',
         shopCrile: 0,
@@ -220,6 +224,7 @@
     },
     onUnload() {
       clearInterval(this.timer)
+      this.goodsBanner = []
       this.$refs.navigationBar._initHeadStyle()
     },
     methods: {
@@ -252,7 +257,7 @@
         this.groupInfo = res.data
       },
       getUserImgList() {
-        API.Choiceness.getUserImg({id: this.goodsId, limit: 3}).then((res) => {
+        API.Choiceness.getUserImg({id: this.goodsId, limit: 200}).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.userImgList = res.data
             this.bigUserImgList = this.userImgList.slice(0, 13)
@@ -418,10 +423,10 @@
         })
       },
       getGoodsDetailData() {
-        console.log(wx.getStorageSync('shopId'))
         API.Choiceness.getGoodsDetail(this.goodsId).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.goodsMsg = res.data
+            this.goodsBanner = res.data.goods_banner_images
             this.showOpen = this.goodsMsg.describe.length > this.describeNum
             this.deliverAt = res.data.shelf_delivery_at
             this.msgTitle = this.goodsMsg.name
@@ -599,6 +604,9 @@
   .detail-img-box
     padding: 0 12px
     box-sizing: border-box
+    border-radius: 8px
+    overflow: hidden
+    box-shadow: 0 2px 15px 0 rgba(17,17,17,0.06)
   .goods-detail
     width: 100%
     min-height: 100vh
@@ -628,6 +636,22 @@
           all-center()
           height: 63px
           width: 63px
+    .banner-number
+      position: absolute
+      bottom: 13.3vw
+      left: 0
+      layout(row)
+      align-items: center
+      justify-content: center
+      width: 100%
+      .banner-number-box
+        display: inline-block
+        font-size: $font-size-12
+        background: rgba(0, 0, 0, .5)
+        color: $color-white
+        box-sizing: border-box
+        padding: 3px 8px 4px
+        border-radius: 20px
   .banner-title-box
     padding: 0 12px
     box-sizing: border-box

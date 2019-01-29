@@ -66,7 +66,7 @@
     </div>
     <div class="self-addr group" @click="_goMyHosing">
       <div class="self-top">
-        <div class="subtitle">我的小区</div>
+        <div class="subtitle">{{isLeader ? '小区管理' : '我的小区'}}</div>
         <div class="switch-btn">
           <img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="arrow-img">
         </div>
@@ -117,7 +117,8 @@
         showModal: false,
         maskAnimation: '',
         modalAnimation: '',
-        lastOrderList: []
+        lastOrderList: [],
+        isLeader: false
       }
     },
     onTabItemTap() {
@@ -128,6 +129,7 @@
       this.userInfo = storageUserInfo.data
     },
     onShow() {
+      this.isLeader = wx.getStorageSync('isLeader')
       this._getShopDetail()
       this._getOrderCount()
     },
@@ -174,8 +176,6 @@
         }, 200)
       },
       _cancelQrCodeBox() {
-        // this.isShow = false
-        // this.$emit('close')
         let modalAnimation = wx.createAnimation({
           duration: 300,
           timingFunction: 'linear',

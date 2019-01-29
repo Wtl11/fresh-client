@@ -69,6 +69,9 @@
     async onShow() {
       this._setShopId()
       await this._groupInfo()
+      if (wx.getStorageSync('locationShow') * 1) {
+        this.getLocationData()
+      }
     },
     onReachBottom() {
       this.getMoreShopList()
@@ -83,6 +86,15 @@
           .then(res => {
             this.currentShopId = res.data
           })
+      },
+      getLocationData() {
+        let data = wx.getStorageSync('locationData')
+        API.Choiceness.getLocationDistance({longitude: data.longitude, latitude: data.latitude}).then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            return
+          }
+          this.currentDistance = res.data.distance_text
+        })
       },
       async _groupInfo() {
         let res = await API.Choiceness.getGroupInfo()
@@ -121,11 +133,6 @@
               return
             }
             this.shopList = res.data
-            this.shopList.forEach((item) => {
-              if (this.currentShopId === item.id) {
-                this.currentDistance = item.distance
-              }
-            })
             this._isUpList(res)
           }).catch(() => {
             this.$wechat.hideLoading()
@@ -142,11 +149,6 @@
           if (res.error === this.$ERR_OK) {
             this.shopList = this.shopList.concat(res.data)
             this._isUpList(res)
-            this.shopList.forEach((item) => {
-              if (this.currentShopId === item.id) {
-                this.currentDistance = item.distance
-              }
-            })
           } else {
             this.$wechat.showToast(res.message)
           }

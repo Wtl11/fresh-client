@@ -227,7 +227,7 @@
     },
     onShareAppMessage(res) {
       return {
-        title: `${this.groupInfo.social_name}次日达、直采直销，点击下单↓`,
+        title: `${this.groupInfo.social_name},次日达、直采直销，点击下单↓`,
         path: `/pages/choiceness?shopId=${this.curShopId}`,
         imageUrl: this.imageUrl + '/yx-image/choiceness/pic-zbyx@2x.png',
         success: (res) => {
@@ -483,8 +483,9 @@
       flex: 1
       overflow: hidden
       font-size: $font-size-10
+      line-height: 24px
       color: $color-white
-      max-width: 22vw
+      max-width: 24vw
       no-wrap()
 
   .banner-box

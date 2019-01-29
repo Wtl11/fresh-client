@@ -17,7 +17,7 @@
           <div class="icon-number"><span class="name">{{orderMsg.shop_name}}</span><span
             class="text">{{orderMsg.social_name}}</span></div>
         </div>
-        <div class="address-text">提货地址：{{orderMsg.social_name}}</div>
+        <div class="address-text">提货地址：{{orderMsg.shop_address}}</div>
       </div>
     </div>
     <div class="gary-box"></div>
@@ -221,8 +221,7 @@
         font-family: $font-family-regular
         width: 30px
         position: relative
-        height: 15px
-        line-height: 15px
+        padding: 2px 0
         box-sizing: border-box
         margin-right: 10px
         border-radius: 2px
@@ -231,7 +230,7 @@
         .name
           font-size: $font-size-15
           color: $color-text-main
-          font-family: $font-family-regular
+          font-family: $font-family-medium
           margin-right: 10px
         .text
           font-family: $font-family-regular

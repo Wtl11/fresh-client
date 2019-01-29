@@ -179,7 +179,7 @@
           color: $color-white
   .address-info
     padding-left: 3.2vw
-    background: $color-white
+    background: #fff
     .bot
       font-family: $font-family-regular
       font-size: $font-size-15
@@ -210,8 +210,7 @@
         font-family: $font-family-regular
         width: 30px
         position: relative
-        height: 15px
-        line-height: 15px
+        padding: 2px 0
         box-sizing: border-box
         margin-right: 10px
         border-radius: 2px
@@ -220,7 +219,7 @@
         .name
           font-size: $font-size-15
           color: $color-text-main
-          font-family: $font-family-regular
+          font-family: $font-family-medium
           margin-right: 10px
         .text
           font-family: $font-family-regular
@@ -343,8 +342,6 @@
     .share-list-box
       layout(row)
       align-items: center
-      height: 13.8vw
-      overflow: hidden
       .share-img-box
         margin-top: 3.2vw
         margin-right: 3.2vw
