@@ -11,17 +11,19 @@
     </div>
     <div class="group">
       <div class="group-address-box">
-        <div class="group-address">提货地址：{{orderDetail.address.shop_address}}</div>
         <div class="customer-msg">
           <p class="group-tip">团长</p>
           <p class="group-name">{{orderDetail.address.shop_name}}</p>
-          <p class="group-phone">{{orderDetail.address.shop_mobile}}</p>
+          <p class="group-social-name">{{orderDetail.address.social_name ? '(' + orderDetail.address.social_name + ')' : ''}}</p>
+          <!--<p class="group-phone">{{orderDetail.address.shop_mobile}}</p>-->
         </div>
+        <div class="group-address">提货地址：{{orderDetail.address.shop_address}}</div>
       </div>
       <div class="customer">
-        <p class="customer-phone">提货人: {{orderDetail.address.mobile}}</p>
+        <p class="customer-phone">提货人手机：{{orderDetail.address.mobile}}</p>
         <img :src="imageUrl + '/yx-image/group/icon-phone-green@2x.png'" v-if="imageUrl" class="phone-icon" @click="_callPhone(orderDetail.address.mobile)">
       </div>
+      <img :src="imageUrl + '/yx-image/choiceness/pic-colour@2x.png'" v-if="imageUrl" mode="aspectFill" class="group-border">
     </div>
     <!--商品-->
     <div class="goods">
@@ -189,6 +191,8 @@
         height: @width
       .order-status-text
         margin-left: 2px
+        color: $color-white
+        font-family: $font-family-medium
         transform: translateY(-2px)
     .order-num
       color: $color-white
@@ -199,41 +203,53 @@
 
   .group
     font-family: $font-family-regular
-    font-size: 15px
+    font-size: $font-size-15
     background: $color-white
     padding: 16px 0px 0 12px
     box-sizing: border-box
+    position: relative
+    overflow: hidden
+    .group-border
+      width: 100vw
+      height: 3px
+      left: 0
+      bottom: 0
+      position: absolute
     .group-address-box
-      padding: 0 12px 16px 0px
+      padding: 0 12px 14.5px 0px
       background: $color-white
       border-bottom-1px($color-line)
     .group-address
-      line-height: 19px
+      line-height: 21px
       font-family: $font-family-medium
       color: #000000
+      margin-top: 10px
     .customer-msg
       align-items: center
-      margin-top: 12px
       display: flex
       color: $color-text-sub
       font-size: 15px
       .group-tip
-        border-1px($color-money, 2px)
+        border-radius: 2px
         font-size: $font-size-12
         width: 30px
-        padding: 1.5px 0
+        padding: 2px 0
         text-align: center
-        border-radius: 2px
-        color: $color-money
+        color: $color-white
+        background: $color-main
       .group-name, .group-phone
-        margin-left: 5px
+        margin-left: 10px
         font-family: $font-family-regular
         line-height: 1.2
+      .group-social-name
+        font-size: $font-size-13
+        color: $color-text-sub
+        margin-left: 10px
       .group-phone
         margin-left: 10px
     .customer
       display: flex
-      height: 49.5px
+      height: 44.5px
       align-items: center
       justify-content: space-between
       box-sizing: border-box
