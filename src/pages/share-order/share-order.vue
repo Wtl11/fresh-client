@@ -14,7 +14,7 @@
       <div class="order-share-title">还有这些小伙伴也购买了下面的商品</div>
       <div class="share-list-box">
         <img class="share-img-box" v-for="(item, index) in shareImgList" v-bind:key="index" :src="item.head_image_url" alt="">
-        <div class="image-item" v-if="userImgList.length > 13 && showMoreImg" @click="showMoreBtn">
+        <div class="image-item" v-if="userImgList.length >= 15 && showMoreImg && shareImgList.length === 13" @click="showMoreBtn">
           <div class="image-item-text">更多</div>
         </div>
       </div>
@@ -104,7 +104,13 @@
             this.orderMsg = res.data
             this.address = res.data.address
             this.userImgList = res.data.avatar_images
-            this.shareImgList = this.userImgList.slice(0, 13)
+            if (this.shareImgList.length === 0) {
+              if (this.userImgList.length === 14) {
+                this.shareImgList = this.userImgList.slice(0, 14)
+              } else {
+                this.shareImgList = this.userImgList.slice(0, 13)
+              }
+            }
           } else {
             this.$wechat.showToast(res.message)
           }

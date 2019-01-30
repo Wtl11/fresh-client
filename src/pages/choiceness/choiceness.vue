@@ -4,13 +4,13 @@
     <div class="community-box">
       <div class="community-main" @click="jumpSelfPoint">
         <div class="community-img">
-          <img v-if="locationStatus * 1 === 1 || locationStatus * 1 === 2" :src="groupInfo.head_image_url || imageUrl+'/yx-image/order/icon-colonel_head@2x.png'"">
+          <img v-if="(locationStatus * 1 === 1 || locationStatus * 1 === 2) && imageUrl" :src="groupInfo.head_image_url || imageUrl+'/yx-image/order/icon-colonel_head@2x.png'"">
         </div>
         <div class="community-text" v-if="locationStatus * 1 === 1 || locationStatus * 1 === 2">
           {{groupInfo.social_name}}
         </div>
         <div class="community-text" v-else>定位中...</div>
-        <img v-if="imageUrl && locationStatus * 1 === 1 || locationStatus * 1 === 2"
+        <img v-if="imageUrl && (locationStatus * 1 === 1 || locationStatus * 1 === 2) && groupInfo.social_name"
              :src="imageUrl + '/yx-image/choiceness/icon-pitch@2x.png'" class="community-down">
       </div>
       <div class="carousel-wrapper" v-if="buyUsers.length > 0 && (locationStatus * 1 === 1 || locationStatus * 1 === 2)"
@@ -48,10 +48,17 @@
         <div class="nav-list-border"></div>
         <div class="goods-title-box">
           <div class="goods-title-main">
-            <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/icon-clock@2x.png'" class="goods-title-img">
+            <div class="goods-box-icon"></div>
             <div class="goods-title-text">今日抢购</div>
-            <div class="goods-title-icon"></div>
             <div class="goods-title-sub">今日下单 次日提货</div>
+            <div class="goods-time-box">
+              <img class="goods-time-box-img" mode="aspectFill" v-if="imageUrl"
+                   :src="imageUrl + '/yx-image/choiceness/pic-today_bg@2x.png'">
+              <div class="goods-text-box">
+                <div class="top-text top-text-bottom">距结束</div>
+                <div class="top-text">{{activityTime.hour}}:{{activityTime.minute}}:{{activityTime.second}}</div>
+              </div>
+            </div>
           </div>
         </div>
         <div class="goods-box">
@@ -149,19 +156,25 @@
         move: 0,
         tabIndex: 0,
         viewToItem: 'item0',
-        curShopId: 1,
+        curShopId: '',
         showBuyUser: false,
         buyUsers: [],
         showUserIndex: 0,
         modulesList: [],
-        locationStatus: 2,
-        goodsListData: null
+        locationStatus: null,
+        goodsListData: null,
+        activityTime: {
+          day: '00',
+          hour: '00',
+          minute: '00',
+          second: '00'
+        }
       }
     },
-    async onLoad() {
-      await this._groupInfo(false)
-      await this._getIndexModule(false)
-      this.curShopId = wx.getStorageSync('shopId')
+    async onLoad(options) {
+      if (options.shopId) {
+        wx.setStorageSync('shopId', options.shopId)
+      }
       if (wx.getStorageSync('locationShow') * 1 === 3 || wx.getStorageSync('locationShow') * 1 === 2) {
       } else {
         let that = this
@@ -182,7 +195,6 @@
       }
     },
     async onShow() {
-      console.log(2222)
       this.locationStatus = wx.getStorageSync('locationShow')
       if (this.locationStatus * 1 === 3) {
         wx.navigateTo({
@@ -237,6 +249,9 @@
         }
       }
     },
+    onUnload() {
+      clearInterval(this.timer)
+    },
     methods: {
       ...cartMethods,
       _getBuyUsers() {
@@ -290,7 +305,6 @@
           this.$wechat.showToast(res.message)
         }
         this.groupInfo = res.data
-        console.log(this.groupInfo, 1111111111)
       },
       jumpDetail(item) {
         if (item.type === 'mini_goods') {
@@ -369,6 +383,7 @@
         this.modulesList.forEach((item) => {
           if (item.module_name === 'activity') {
             this.goodsList = item.content_data.list
+            this._kanTimePlay(item.content_data.last_time)
             this.goodsListData = item
             this.goodsPage = 2
             if (this.goodsList.length === 0) {
@@ -409,6 +424,49 @@
         wx.navigateTo({
           url: `/pages/self-point`
         })
+      },
+      _kanTimePlay(time) {
+        clearInterval(this.timer)
+        this.end_time = time
+        this.timer = setInterval(() => {
+          if (this.end_time > 0) {
+            this.end_time--
+          }
+          this.activityTime = this._groupTimeCheckout(this.end_time)
+          if (this.timeEnd) {
+            clearInterval(this.timer)
+          }
+        }, 1000)
+      },
+      _groupTimeCheckout(time) {
+        let differ = time * 1
+        let day = Math.floor(differ / (60 * 60 * 24))
+        day = day >= 10 ? day : '0' + day
+        let hour = Math.floor(differ / (60 * 60)) - (day * 24)
+        hour = hour >= 10 ? hour : '0' + hour
+        let minute = Math.floor(differ / 60) - (day * 24 * 60) - (hour * 60)
+        minute = minute >= 10 ? minute : '0' + minute
+        let second = Math.floor(differ) - (day * 24 * 60 * 60) - (hour * 60 * 60) - (minute * 60)
+        second = second >= 10 ? second : '0' + second
+        let times
+        if (differ > 0) {
+          times = {
+            day,
+            hour,
+            minute,
+            second
+          }
+          this.timeEnd = false
+        } else {
+          times = {
+            day: '00',
+            hour: '00',
+            minute: '00',
+            second: '00'
+          }
+          this.timeEnd = true
+        }
+        return times
       }
     },
     components: {
@@ -548,22 +606,31 @@
     background: $color-background
 
   .goods-title-box
-    padding-left: 12px
+    padding: 0 5px
     box-sizing: border-box
+    border-bottom-1px($color-line)
+    background: $color-background
     .goods-title-main
       layout(row)
-      border-bottom-1px($color-line)
       align-items: center
       height: 45px
-      .goods-title-img
-        width: 16px
-        height: 16px
-        display: block
-        margin-right: 5px
+      background: $color-white
+      border-top-left-radius: 8px
+      border-top-right-radius: 8px
+      box-sizing: border-box
+      padding-left: 6px
+      overflow: hidden
+      position: relative
+      .goods-box-icon
+        width: 4px
+        height: 14px
+        background: #FF6803
+        margin-right: 6px
       .goods-title-text
         font-size: $font-size-16
         color: $color-text-main
         font-family: $font-family-medium
+        margin-right: 6px
       .goods-title-icon
         width: 4px
         height: 4px
@@ -574,6 +641,37 @@
         font-size: $font-size-13
         color: $color-text-sub
         font-family: $font-family-regular
+      .goods-time-box
+        position: absolute
+        right: 0
+        top: 0
+        height: 45px
+        width: 90px
+        overflow: hidden
+        z-index: 999
+        .goods-time-box-img
+          position: absolute
+          right: 0
+          top: 0
+          display: block
+          height: 45px
+          width: 90px
+        .goods-text-box
+          position: absolute
+          right: 0
+          top: 0
+          height: 45px
+          width: 75px
+          layout()
+          align-items: center
+          justify-content: center
+          .top-text
+            font-size: $font-size-12
+            color: #fff
+            font-family: $font-family-regular
+          .top-text-bottom
+            margin-bottom: 3px
+
 
   .goods-box
     padding: 0 3.2vw

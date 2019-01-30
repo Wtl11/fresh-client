@@ -267,7 +267,6 @@
       .item-left-img
         width: 20vw
         height: 20vw
-        background: #333
         margin-right: 2.6vw
         img
           width: 100%

@@ -44,7 +44,7 @@
     </div>
     <div class="detail-info-box">
       <div class="info-box">
-        <div class="title">{{goodsMsg.name}}</div>
+        <div class="title" :class="goodsMsg.name ? 'has-title' : ''">{{goodsMsg.name}}</div>
         <div class="info-sub">
           <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/icon-fast@2x.png'" mode="aspectFill" class="info-sub-img">
           <div class="sub-text">现在下单，预计({{goodsMsg.shelf_delivery_at}})可自提</div>
@@ -68,7 +68,7 @@
         <div class="image-item" v-for="(item, index) in bigUserImgList" :key="index">
           <img v-if="item.head_image_url" :src="item.head_image_url" mode="aspectFill" class="image-item-img">
         </div>
-        <div class="image-item" v-if="userImgList.length > 13 && showMoreImg" @click="showMoreBtn">
+        <div class="image-item" v-if="userImgList.length >= 15 && showMoreImg && bigUserImgList.length === 13" @click="showMoreBtn">
           <div class="image-item-text">更多</div>
         </div>
       </div>
@@ -202,6 +202,7 @@
       }
     },
     onLoad(options) {
+      console.log(options)
       if (options.shopId) {
         wx.setStorageSync('shopId', options.shopId)
       }
@@ -260,7 +261,13 @@
         API.Choiceness.getUserImg({id: this.goodsId, limit: 200}).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.userImgList = res.data
-            this.bigUserImgList = this.userImgList.slice(0, 13)
+            if (this.bigUserImgList.length === 0) {
+              if (this.userImgList.length === 14) {
+                this.bigUserImgList = this.userImgList.slice(0, 14)
+              } else {
+                this.bigUserImgList = this.userImgList.slice(0, 13)
+              }
+            }
             this.userImgData = res
           } else {
             this.$wechat.showToast(res.message)
@@ -425,11 +432,12 @@
       getGoodsDetailData() {
         API.Choiceness.getGoodsDetail(this.goodsId).then((res) => {
           if (res.error === this.$ERR_OK) {
-            this.goodsMsg = res.data
-            this.goodsBanner = res.data.goods_banner_images
-            this.showOpen = this.goodsMsg.describe.length > this.describeNum
-            this.deliverAt = res.data.shelf_delivery_at
-            this.msgTitle = this.goodsMsg.name
+            let goodDetail = res.data
+            this.goodsMsg = goodDetail
+            this.goodsBanner = goodDetail.goods_banner_images
+            this.showOpen = goodDetail.describe.length > this.describeNum
+            this.deliverAt = goodDetail.shelf_delivery_at
+            this.msgTitle = goodDetail.name
             this._kanTimePlay()
             this._handleDescribe()
           } else {
@@ -602,7 +610,7 @@
           background: #888
           col-center()
   .detail-img-box
-    padding: 0 12px
+    margin: 0 12px
     box-sizing: border-box
     border-radius: 8px
     overflow: hidden
@@ -776,11 +784,12 @@
         width: 100%
         font-size: $font-size-17
         color: #1F1F1F
-        line-height: 1
-        min-height: 19px
+        min-height: 20px
+        line-height: $font-size-20
         font-family: $font-family-medium
         margin-bottom: 15px
-        no-wrap()
+      .has-title
+        no-wrap-plus()
       .info-sub
         layout(row)
         align-items: center

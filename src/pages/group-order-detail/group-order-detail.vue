@@ -308,6 +308,7 @@
               min-height: 15px
               font-size: $font-size-14
               color: $color-text-main
+              color: #ff8300
           .goods-money
             height: 14px
             margin-top: 13px

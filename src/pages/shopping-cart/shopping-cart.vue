@@ -295,8 +295,8 @@
         background: $color-white
       .goods-image
         position: relative
-        width: 90px
-        height: 90px
+        width: 85px
+        height: 85px
         background: #F6F9F4
         .robbed
           opacity: 0.75

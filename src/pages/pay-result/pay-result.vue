@@ -86,8 +86,8 @@
     padding-top: 75px
     transform-style: preserve-3d
     .result-img-box
-      width: 79px
-      height: 79px
+      width: 82px
+      height: 82px
       margin: 0 auto
       position: relative
       transform-style: preserve-3d

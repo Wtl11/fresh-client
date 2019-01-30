@@ -154,13 +154,11 @@
     async onShow() {
       this.adaptation = {height: 195, marginTop: 64.5, hoseMarginTop: 164}
       this.page = 1
-      this.goodsList = []
       let res = this.$wx.getSystemInfoSync()
       let statusBarHeight = res.statusBarHeight - 20 || 0
       for (let key in this.adaptation) {
         this.adaptation[key] += statusBarHeight
       }
-      this.$wechat.showLoading()
       await Promise.all([
         this._getLeaderDetail(),
         this._leaderOrderTotal(),

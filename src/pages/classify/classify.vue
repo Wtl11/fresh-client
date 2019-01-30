@@ -1,7 +1,7 @@
 <template>
   <div class="classify">
     <navigation-bar title="分类"></navigation-bar>
-    <scroll-view class="scroll-view2" :class="statusBarHeight * 1 === 20 ? '' : 'scroll-view-top'" v-if="tabList1.length" id="scrollView" :scroll-into-view="viewToItem" scroll-x>
+    <scroll-view class="scroll-view2" :style="{top: statusBarHeight + 44 + 'px'}" v-if="tabList1.length" id="scrollView" :scroll-into-view="viewToItem" scroll-x>
       <div class="under-line" :style="{left: move + 'px', width: arrWidth[tabIndex] + 'px' }"></div>
       <div v-for="(item, index) in tabList1" :class="tabIndex === index ? 'item-active'  : ''" :key="index" class="item" :id="'item'+index" @click="_changeTab(index, item.id, $event)">
       {{item.name}}
@@ -14,7 +14,7 @@
       <div class="goods-item-box" v-for="(item, index) in classifyList" :key="index" @click="jumpGoodsDetail(item)">
         <div class="classify-box">
           <div class="classify-box-top">
-            <img v-if="imageUrl" :src="imageUrl + '/yx-image/goods/pic-label2@2x.png'" alt="" class="top-label" mode="aspectFill">
+            <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/icon-label2@2x.png'" alt="" class="top-label" mode="aspectFill">
             <img v-if="item.goods_cover_image" :src="item.goods_cover_image" alt="" class="box-top-img" mode="aspectFill">
           </div>
           <div class="classify-box-bottom">
@@ -50,6 +50,7 @@
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import API from '@api'
+  import {cartMethods} from '@state/helpers'
 
   const PAGE_NAME = 'CLASSIFY'
 
@@ -86,8 +87,8 @@
       NavigationBar
     },
     onLoad(options) {
-      let syncRes = wx.getSystemInfoSync()
-      this.statusBarHeight = syncRes.statusBarHeight || 20
+      let res = this.$wx.getSystemInfoSync()
+      this.statusBarHeight = res.statusBarHeight || 20
       this.classifyId = options.id
       this.getCategoryData()
       this.getCategoryList(this.classifyId)
@@ -96,6 +97,7 @@
       this.getMoreCategoryList(this.classifyId)
     },
     methods: {
+      ...cartMethods,
       getWidth(index, id, e) {
         this.allWidth = 0
         let query = wx.createSelectorQuery()
@@ -212,7 +214,8 @@
   .goods-list
     layout(row)
     align-items: center
-    padding-top: 45px
+    padding: 45px 6px 0
+    box-sizing: border-box
     .goods-item-box
       width: 50%
       box-sizing: border-box
@@ -220,28 +223,40 @@
       .classify-box
         background: #fff
         overflow: hidden
+        padding: 10px 10px 15px
+        box-sizing: border-box
+        width: 100%
+        border-radius: 4px
+        box-shadow: 0 6px 20px 0 rgba(17,17,17,0.06)
         .classify-box-top
-          width: 49.73vw
-          height: 49.73vw
+          padding-bottom: 100%
+          height: 0
+          width: 100%
           overflow: hidden
           position: relative
           .top-label
             position: absolute
-            left: 8px
+            left: 0
             top: 0
             display: block
             width: 31.2px
             height: 31.4px
+            z-index: 11
           .box-top-img
+            position: absolute
+            left: 0
+            top: 0
+            z-index: 2
             display: block
             width: 100%
             height: 100%
         .classify-box-bottom
-          padding: 10px 12px 15px 7.5px
+          padding-top: 10px
           .title
             color: $color-text-main
             font-size: $font-size-14
             font-family: $font-family-regular
+            min-height: $font-size-16
             no-wrap()
             margin-bottom: 8.5px
           .classify-price-box
@@ -275,9 +290,9 @@
                 height: 23px
                 display: block
     .goods-item-box:nth-of-type(odd)
-      padding-right: 2px
+      padding-right: 1.5px
     .goods-item-box:nth-of-type(even)
-      padding-left: 2px
+      padding-left: 1.5px
   .scroll-view2
     display: block
     position: fixed
