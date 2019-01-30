@@ -189,8 +189,7 @@
           font-family: $font-family-regular
           width: 30px
           position: relative
-          height: 15px
-          line-height: 15px
+          padding: 2px 0
           box-sizing: border-box
           margin-right: 10px
           border-radius: 2px
@@ -201,7 +200,7 @@
           .name
             font-size: $font-size-15
             color: $color-text-main
-            font-family: $font-family-regular
+            font-family: $font-family-medium
             margin-right: 10px
           .txt
             font-size: $font-size-15

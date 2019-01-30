@@ -89,7 +89,7 @@
       },
       getLocationData() {
         let data = wx.getStorageSync('locationData')
-        API.Choiceness.getLocationDistance({longitude: data.longitude, latitude: data.latitude}).then((res) => {
+        API.Choiceness.getLocationDistance({longitude: data.longitude || 0, latitude: data.latitude || 0}).then((res) => {
           if (res.error !== this.$ERR_OK) {
             return
           }

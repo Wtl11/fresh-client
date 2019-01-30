@@ -4,7 +4,7 @@
     <div class="community-box">
       <div class="community-main" @click="jumpSelfPoint">
         <div class="community-img">
-          <img v-if="locationStatus * 1 === 1 || locationStatus * 1 === 2" :src="groupInfo.head_image_url">
+          <img v-if="locationStatus * 1 === 1 || locationStatus * 1 === 2" :src="groupInfo.head_image_url || imageUrl+'/yx-image/order/icon-colonel_head@2x.png'"">
         </div>
         <div class="community-text" v-if="locationStatus * 1 === 1 || locationStatus * 1 === 2">
           {{groupInfo.social_name}}
@@ -182,6 +182,7 @@
       }
     },
     async onShow() {
+      console.log(2222)
       this.locationStatus = wx.getStorageSync('locationShow')
       if (this.locationStatus * 1 === 3) {
         wx.navigateTo({
@@ -250,7 +251,7 @@
       },
       getLocationData() {
         let data = wx.getStorageSync('locationData')
-        API.Choiceness.getLocationDistance({longitude: data.longitude, latitude: data.latitude}).then((res) => {
+        API.Choiceness.getLocationDistance({longitude: data.longitude || 0, latitude: data.latitude || 0}).then((res) => {
           if (res.error !== this.$ERR_OK) {
             return
           }
@@ -289,6 +290,7 @@
           this.$wechat.showToast(res.message)
         }
         this.groupInfo = res.data
+        console.log(this.groupInfo, 1111111111)
       },
       jumpDetail(item) {
         if (item.type === 'mini_goods') {

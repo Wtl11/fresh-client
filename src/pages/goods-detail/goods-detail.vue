@@ -62,7 +62,7 @@
     <div class="buy-record" v-if="userImgList.length > 0">
       <div class="record-title">
         <div class="record-text-main">购买记录</div>
-        <div class="record-text-sub">已有{{userImgData.buy_people_num}}人购买，商品共销售{{userImgData.shop_sale_count}}份</div>
+        <div class="record-text-sub">本社区已有{{userImgData.buy_people_num}}人购买，共销售{{userImgData.shop_sale_count}}份</div>
       </div>
       <div class="record-image-box">
         <div class="image-item" v-for="(item, index) in bigUserImgList" :key="index">
@@ -86,7 +86,7 @@
         <span class="list-title">• 发货须知：</span><span class="list-sub">当天下午23:00前下单，当天发货次日达；当天下午23:00后下单，次日发货。</span>
       </div>
       <div class="send-item-list">
-        <span class="list-title">• 划线价格：</span><span class="list-sub">指商品的厂商指导价、价签价格或该商品的曾经展示过的价格</span><span class="list-line">并非原价</span><span class="list-sub">，仅供参考。</span>
+        <span class="list-title">• 划线价格：</span><span class="list-sub">指商品的厂商指导价、价签价格或该商品的曾经展示过的价格，</span><span class="list-line">并非原价</span><span class="list-sub">，仅供参考。</span>
       </div>
       <div class="send-item-list">
         <span class="list-title">• 未划线价格：</span><span class="list-sub">指商品的实时价格，不因表述的差异改变性质。具体成交价根据商品参加活动发生变化，</span><span class="list-line">最终以订单结算页价格为准</span>。

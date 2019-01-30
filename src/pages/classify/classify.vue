@@ -219,9 +219,11 @@
       margin-bottom: 3px
       .classify-box
         background: #fff
+        overflow: hidden
         .classify-box-top
           width: 49.73vw
           height: 49.73vw
+          overflow: hidden
           position: relative
           .top-label
             position: absolute

@@ -14,7 +14,7 @@
         <div class="customer-msg">
           <p class="group-tip">团长</p>
           <p class="group-name">{{orderDetail.address.shop_name}}</p>
-          <p class="group-social-name">{{orderDetail.address.social_name ? '(' + orderDetail.address.social_name + ')' : ''}}</p>
+          <p class="group-social-name">{{orderDetail.address.social_name ?  orderDetail.address.social_name : ''}}</p>
           <!--<p class="group-phone">{{orderDetail.address.shop_mobile}}</p>-->
         </div>
         <div class="group-address">提货地址：{{orderDetail.address.shop_address}}</div>
@@ -31,14 +31,17 @@
         <div class="goods-detail">
           <img :src="item.image_url" class="goods-img" mode="aspectFill">
           <div class="goods-content">
-            <div class="goods-title">{{item.goods_name}}</div>
+            <div class="goods-title">
+              <div class="goods-title-left">{{item.goods_name}}</div>
+              <div class="goods-title-right" v-if="item.after_sale_status * 1 === 2">{{item.after_sale_status_text}}</div>
+            </div>
             <div class="goods-sku">规格：{{item.goods_units}}</div>
             <div class="goods-money">{{item.price}}<span class="small">元</span></div>
           </div>
           <div class="goods-num-box">x<span class="goods-num">{{item.num}}</span></div>
         </div>
         <div class="btn-box" v-if="!item.delivery_status">
-          <div class="goods-btn" v-if="orderDetail.status === 1 && orderDetail.delivery_status === 3 && item.after_sale_status === 0" @click="_showDialog('', item.order_detail_id)">确认提货</div>
+          <div class="goods-btn" v-if="orderDetail.status === 1 && orderDetail.delivery_status === 3 && (item.after_sale_status === 0 || item.after_sale_status === 1)" @click="_showDialog('', item.order_detail_id)">确认提货</div>
         </div>
       </div>
     </div>
@@ -292,10 +295,19 @@
           height: 60px
           font-family: $font-family-regular
           .goods-title
-            min-height: 15px
-            font-size: $font-size-14
-            color: $color-text-main
-            no-wrap()
+            layout(row)
+            align-items: center
+            justify-content: space-between
+            .goods-title-left
+              min-height: 15px
+              font-size: $font-size-14
+              color: $color-text-main
+              no-wrap()
+              width: 50vw
+            .goods-title-right
+              min-height: 15px
+              font-size: $font-size-14
+              color: $color-text-main
           .goods-money
             height: 14px
             margin-top: 13px

@@ -133,6 +133,9 @@
       this._getShopDetail()
       this._getOrderCount()
     },
+    onHide() {
+      this.lastOrderList = []
+    },
     computed: {
       ...oauthComputed
       // ...mapGetters(['role'])
@@ -217,6 +220,7 @@
               return
             }
             this.lastOrderList = res.data.last_orders
+            console.log(this.lastOrderList)
             res.data.status_count.forEach((item, index) => {
               if (item.status === 0) {
                 this.orderNav[0].count = item.count

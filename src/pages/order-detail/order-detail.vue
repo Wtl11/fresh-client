@@ -36,8 +36,8 @@
             <div class="goods-info">
               <div class="tit">
                 <div class="name">{{item.goods_name}}</div>
-                <div class="refund" @click.stop="isRefund(item)" v-if="(orderMsg.status * 1 === 1 || orderMsg.status * 1 === 2) && item.after_sale_status * 1 === 0 && item.can_after_sale * 1 === 1">退款</div>
-                <div class="refund-text" v-if="item.after_sale_status * 1 === 1 || item.after_sale_status * 1 === 2 && item.can_after_sale * 1 === 1">{{item.after_sale_status_text}}</div>
+                <div class="refund" @click.stop="isRefund(item)" v-if="(orderMsg.status * 1 === 1 || orderMsg.status * 1 === 2) && (item.after_sale_status * 1 === 0 || item.after_sale_status * 1 === 1) && item.can_after_sale * 1 === 1">退款</div>
+                <div class="refund-text" v-if="item.after_sale_status * 1 === 2 && item.can_after_sale * 1 === 1">{{item.after_sale_status_text}}</div>
               </div>
               <div class="guige">规格：{{item.goods_units}}</div>
               <div class="price">

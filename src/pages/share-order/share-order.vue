@@ -23,8 +23,8 @@
       <div class="top">
         <div class="warp">
           <div class="design">团长</div>
-          <div class="icon-number"><span class="name">{{address.shop_name}}</span><span
-            class="text">{{address.shop_mobile}}</span></div>
+          <div class="icon-number"><span class="name">{{address.shop_name}}</span>
+            <span class="text">{{address.social_name}}</span></div>
         </div>
         <div class="address-text">提货地址：{{address.shop_address}}</div>
       </div>
@@ -216,6 +216,8 @@
         border-radius: 2px
       .icon-number
         line-height: 25px
+        layout(row)
+        align-items: center
         .name
           font-size: $font-size-15
           color: $color-text-main
@@ -225,6 +227,8 @@
           font-family: $font-family-regular
           font-size: $font-size-15
           color: $color-text-sub
+          no-wrap()
+          width: 55vw
   .goods-item
     height: 105px
     width: 100vw
@@ -354,6 +358,7 @@
         height: 10.66vw
         border-radius: 50%
         display: block
+        margin-top: 3.2vw
         font-size: $font-size-10
         color: #9b9b9b
         font-family: $font-family-regular
