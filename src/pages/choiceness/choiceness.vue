@@ -648,7 +648,7 @@
         height: 45px
         width: 90px
         overflow: hidden
-        z-index: 999
+        z-index: 99
         .goods-time-box-img
           position: absolute
           right: 0
