@@ -26,6 +26,11 @@ export default {
     const url = `/api/wap/goods/shop-shelf-goods/${id}`
     return request.get(url, null, loading)
   },
+  // 活动标签列表
+  getGoodsDetailsThumb(data, loading = false) {
+    const url = `/api/wap/goods/shop-shelf-goods-thumb`
+    return request.get(url, data, loading)
+  },
   // 加入购物车
   addShopCart(data, loading = false) {
     const url = `/api/wap/cart`
