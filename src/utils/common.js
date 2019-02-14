@@ -1,5 +1,6 @@
 import API from '@api'
 import * as wechat from './wechat'
+import {ERR_OK} from '@utils/config'
 
 /* 深度拷贝 */
 export function objDeepCopy(source) {
@@ -103,7 +104,7 @@ export function getParams(scene) {
 export async function silentAuthorization() {
   let codeJson = await wechat.login()
   let tokenJson = await API.Login.getToken({code: codeJson.code}, false)
-  if (tokenJson.code === 0) {
+  if (tokenJson.error === ERR_OK) {
     wx.setStorageSync('token', tokenJson.data.access_token)
     wx.setStorageSync('userInfo', tokenJson.data.customer_info)
     /* eslint-disable no-undef */

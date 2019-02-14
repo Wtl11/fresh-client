@@ -16,10 +16,9 @@ var OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
 // Object.keys(baseWebpackConfig.entry).forEach(function (name) {
 //   baseWebpackConfig.entry[name] = ['./build/dev-client'].concat(baseWebpackConfig.entry[name])
 // })
-
-const env = process.env.BUILD_ENV === 'production' ? require('../config/prod.env') :
-  process.env.BUILD_ENV === 'test' ? require('../config/test.env') : require('../config/dev.env')
-env.VERSION = process.env.VERSION
+var env = process.env.BUILD_ENV
+var versions = process.env.VERSION
+var applications = process.env.APPLICATION
 
 module.exports = merge(baseWebpackConfig, {
   module: {
@@ -40,7 +39,9 @@ module.exports = merge(baseWebpackConfig, {
   },
   plugins: [
     new webpack.DefinePlugin({
-      'process.env': env
+      'process.env': env,
+      'process.applications': applications,
+      'process.versions': versions
     }),
 
     // copy from ./webpack.prod.conf.js

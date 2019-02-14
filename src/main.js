@@ -5,6 +5,7 @@ import store from '@state/store'
 import App from './App'
 import '@utils/env-clear'
 import '@utils/app-plugins'
+import '@utils/saas'
 
 Vue.config.productionTip = false
 App.mpType = 'app'

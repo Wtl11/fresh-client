@@ -17,7 +17,7 @@
       this.codeMsg = await this.$wechat.login()
       if (!wx.getStorageSyn('token')) {
         let tokenJson = await API.Login.getToken({code: this.codeMsg.code}, false)
-        if (tokenJson.code === ERR_OK) {
+        if (tokenJson.error === ERR_OK) {
           wx.setStorageSync('token', tokenJson.data.access_token)
           wx.setStorageSync('userInfo', tokenJson.data.customer_info)
         }

@@ -3,7 +3,7 @@ import {showLoading, hideLoading} from './wechat'
 import {baseURL, TIME_OUT, ERR_OK, ERR_NO} from './config'
 import {silentAuthorization} from './common'
 import wx from './wx'
-
+import {corp} from '@utils/saas'
 const fly = new Fly()
 let ErrorNum = 0
 // 公共请求头
@@ -14,7 +14,7 @@ const NETPAGE = `/pages/error`
 fly.interceptors.request.use((request) => {
   request.headers['Authorization'] = wx.getStorageSync('token') // todo
   request.headers['Current-Shop'] = wx.getStorageSync('shopId') || baseURL.defaultId
-  request.headers['Current-Corp'] = 1 // todo 测试专用记得删除
+  request.headers['Current-Corp'] = corp.currentCorp // todo 测试专用记得删除
   return request
 })
 
@@ -68,7 +68,6 @@ async function checkCode(res) {
         wx.redirectTo({url: '/pages/goods-end'})
         break
       case 10000: // 登录状态失效时跳转
-        console.log(ErrorNum)
         if (ErrorNum <= 0) {
           await silentAuthorization()
           ErrorNum = -1

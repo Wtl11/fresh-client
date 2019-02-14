@@ -2,22 +2,17 @@ require('./check-versions')()
 
 var chalk = require('chalk')
 var config = require('../config')
-var utils = require('./utils')
-
+// var utils = require('./utils')
+var getParams = require('./build.utils')
 if (!process.env.NODE_ENV) {
   process.env.NODE_ENV = JSON.parse(config.dev.env.NODE_ENV)
 }
-
-process.env.BUILD_ENV = process.argv[2]
-
-if (process.env.BUILD_ENV === 'production') {
-  if (!process.argv[3]) {
-    console.log(chalk.red('  Do you know you are building with Production?\n'))
-    console.log(chalk.red('  Please Ask For Backend With The Version NOW! NOW! NOW! NOW!\n'))
-    process.exit(1)
-  }
-}
-process.env.VERSION = utils.initialVersion(process.argv[3] || '')
+var argvs = process.argv.slice(2)
+let params = getParams(argvs)
+console.log(params)
+process.env.BUILD_ENV = params.environments
+process.env.VERSION = params.versions
+process.env.APPLICATION = params.applications
 
 // var opn = require('opn')
 var path = require('path')
@@ -59,7 +54,7 @@ var compiler = webpack(webpackConfig)
 Object.keys(proxyTable).forEach(function (context) {
   var options = proxyTable[context]
   if (typeof options === 'string') {
-    options = { target: options }
+    options = {target: options}
   }
   app.use(proxyMiddleware(options.filter || context, options))
 })
@@ -98,7 +93,7 @@ var readyPromise = new Promise(resolve => {
 module.exports = new Promise((resolve, reject) => {
   portfinder.basePort = port
   portfinder.getPortPromise()
-  .then(newPort => {
+    .then(newPort => {
       if (port !== newPort) {
         console.log(`${port}端口被占用，开启新端口${newPort}`)
       }
@@ -114,7 +109,7 @@ module.exports = new Promise((resolve, reject) => {
           server.close()
         }
       })
-  }).catch(error => {
+    }).catch(error => {
     console.log('没有找到空闲端口，请打开任务管理器杀死进程端口再试', error)
   })
 })

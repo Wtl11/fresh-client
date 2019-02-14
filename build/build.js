@@ -1,20 +1,15 @@
 require('./check-versions')()
 
 var chalk = require('chalk')
-var utils = require('./utils')
+// var utils = require('./utils')
+var getParams = require('./build.utils')
 
-process.env.NODE_ENV = 'production'
-
-process.env.BUILD_ENV = process.argv[2] || 'production'
-if (process.env.BUILD_ENV === 'production') {
-  if (!process.argv[3]) {
-    console.log(chalk.red('  Do you know you are building with Production?\n'))
-    console.log(chalk.red('  Please Ask For Backend With The Version NOW! NOW! NOW! NOW!\n'))
-    process.exit(1)
-  }
-}
-
-process.env.VERSION = utils.initialVersion(process.argv[3] || '')
+var argvs = process.argv.slice(2)
+let params = getParams(argvs)
+process.env.BUILD_ENV = params.environments
+process.env.VERSION = params.versions
+process.env.APPLICATION = params.applications
+console.log(params)
 var ora = require('ora')
 var rm = require('rimraf')
 var path = require('path')
