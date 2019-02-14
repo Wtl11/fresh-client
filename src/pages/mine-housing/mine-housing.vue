@@ -10,11 +10,11 @@
         <div class="hoseLogin">
           <div class="login-item border-bottom-1px">
             <img :src="imageUrl + '/yx-image/wallet/icon-phone@2x.png'" v-if="imageUrl" class="login-item-icon">
-            <input type="number" class="login-input" placeholder="请输入手机号" :maxlength="11" placeholder-class="text-color" v-model="phoneNum">
+            <input type="number" :focus="phoneInput" @focus="phoneFocus" class="login-input" placeholder="请输入手机号" :maxlength="11" placeholder-class="text-color" v-model="phoneNum">
           </div>
           <div class="login-item border-bottom-1px">
             <img :src="imageUrl + '/yx-image/wallet/icon-code@2x.png'" v-if="imageUrl" class="login-item-icon">
-            <input type="number" class="login-input login-input-small" placeholder="请输入验证码" :maxlength="6" placeholder-class="text-color" v-model="code">
+            <input type="number" class="login-input login-input-small" :focus="focusInput" @focus="inputFocus" placeholder="请输入验证码" :maxlength="6" placeholder-class="text-color" v-model="code">
             <span class="get-code" :class="{'get-code-disable': !isSet}" @click="setCode">{{codeText}}</span>
           </div>
           <div class="btn" @click="_login">团长登录</div>
@@ -50,7 +50,9 @@
         phoneNum: '',
         tapCode: true,
         isSet: true,
-        code: ''
+        code: '',
+        phoneInput: false,
+        focusInput: false
       }
     },
     onLoad() {
@@ -137,6 +139,10 @@
           this.$wechat.showToast('请输入正确验证码')
           return
         }
+        setTimeout(() => {
+          this.focusInput = false
+          this.phoneInput = false
+        }, 50)
         let res = await API.Leader.loginLeader({mobile: this.phoneNum, auth_code: this.code})
         this.$wechat.hideLoading()
         if (res.error === this.$ERR_OK && res.code === 13003) {
@@ -156,6 +162,14 @@
       },
       _getScroll(e) {
         this._setNav(e.target.current)
+      },
+      phoneFocus() {
+        this.phoneInput = true
+        this.focusInput = false
+      },
+      inputFocus() {
+        this.focusInput = true
+        this.phoneInput = false
       }
     },
     components: {

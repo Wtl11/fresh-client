@@ -5,7 +5,8 @@
       <swiper class="banner" @change="bannerChange" interval="5000">
         <block v-for="(item, index) in goodsMsg.goods_banner_images" :key="index">
           <swiper-item class="banner-item">
-            <img v-if="item.image_url" :src="item.image_url" class="item-img" mode="aspectFill">
+            <img :src="item.image_url + '?' + goodsMsg.image_view" class="item-img item-img-one" mode="aspectFill">
+            <img :src="item.image_url" class="item-img item-img-two" mode="aspectFill">
           </swiper-item>
         </block>
       </swiper>
@@ -77,7 +78,7 @@
       <img v-if="imageUrl" :src="imageUrl + '/yx-image/goods/pic-tital_spxq@2x.png'" mode="widthFix" class="detail-title-img">
     </div>
     <div class="detail-img-box">
-      <img v-for="(item, index) in goodsMsg.goods_detail_images" v-if="item.image_url" :src="item.image_url" class="detail-img" mode="widthFix" :key="index">
+      <img v-for="(item, index) in goodsMsg.goods_detail_images" v-if="item.image_url" :src="item.image_url" lazy-load="true" class="detail-img" mode="widthFix" :key="index">
     </div>
     <div class="send-box">
       <img v-if="imageUrl" :src="imageUrl + '/yx-image/goods/pic-logo@2x.png'" mode="widthFix" class="send-box-img">
@@ -181,7 +182,8 @@
         showOpen: false,
         msgTitle: '',
         userImgData: {},
-        showMoreImg: true
+        showMoreImg: true,
+        thumb_image: ''
       }
     },
     computed: {
@@ -192,7 +194,7 @@
       return {
         title: this.goodsMsg.name,
         path: `/pages/goods-detail?id=${this.goodsMsg.id}&shopId=${shopId}`, // 商品详情
-        imageUrl: this.goodsMsg.thumb_image || this.goodsMsg.goods_cover_image,
+        imageUrl: this.thumb_image || this.goodsMsg.goods_cover_image,
         success: (res) => {
           // 转发成功
         },
@@ -202,7 +204,6 @@
       }
     },
     onLoad(options) {
-      console.log(options)
       if (options.shopId) {
         wx.setStorageSync('shopId', options.shopId)
       }
@@ -218,6 +219,7 @@
     },
     onShow() {
       this.getGoodsDetailData()
+      this.getGoodsDetailDataThumb()
       this._groupInfo()
       this.getUserImgList()
       this.setCartCount()
@@ -251,7 +253,6 @@
       },
       async _groupInfo() {
         let res = await API.Choiceness.getGroupInfo()
-        this.$wechat.hideLoading()
         if (res.error !== this.$ERR_OK) {
           this.$wechat.showToast(res.message)
         }
@@ -430,7 +431,12 @@
         })
       },
       getGoodsDetailData() {
-        API.Choiceness.getGoodsDetail(this.goodsId).then((res) => {
+        let loading = true
+        if (this.goodsBanner.length !== 0) {
+          loading = false
+        }
+        API.Choiceness.getGoodsDetail(this.goodsId, loading).then((res) => {
+          this.$wechat.hideLoading()
           if (res.error === this.$ERR_OK) {
             let goodDetail = res.data
             this.goodsMsg = goodDetail
@@ -442,6 +448,14 @@
             this._handleDescribe()
           } else {
             this.$wechat.showToast(res.message)
+          }
+        })
+      },
+      getGoodsDetailDataThumb() {
+        API.Choiceness.getGoodsDetailsThumb({id: this.goodsId, type: 'shop_shelf_goods'}).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.thumb_image = res.data.thumb_image
+          } else {
           }
         })
       },
@@ -640,6 +654,13 @@
         .item-img
           width: 100%
           height: 100%
+          position: absolute
+          left: 0
+          top: 0
+        .item-img-one
+          z-index: 1
+        .item-img-two
+          z-index: 2
         .play
           all-center()
           height: 63px
