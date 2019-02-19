@@ -109,7 +109,13 @@
     methods: {
       ...orderMethods,
       ...cartMethods,
-      async _getShopCart(loading = true) {
+      async _getShopCart() {
+        let loading = false
+        if (this.goodsList.length === 0) {
+          loading = true
+        } else {
+          loading = false
+        }
         let res = await API.Cart.shopCart(loading)
         this.$wechat.hideLoading()
         if (res.error !== this.$ERR_OK) {
