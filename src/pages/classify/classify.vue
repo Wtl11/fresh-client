@@ -178,7 +178,8 @@
         if (this.classifyMore) {
           return
         }
-        API.Choiceness.getClassifyList({goods_category_id: id, limit: 10, page: this.classifyPage}).then((res) => {
+        API.Choiceness.getClassifyList({goods_category_id: id, limit: 10, page: this.classifyPage}, true).then((res) => {
+          this.$wechat.hideLoading()
           if (res.error !== this.$ERR_OK) {
             return
           }
