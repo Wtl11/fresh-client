@@ -72,13 +72,17 @@
       </div>
       <!--TODO-->
       <div class="order-big-box" :style="{height: detailedHeight + 'px'}">
-        <div class="presell-wrapper order-box" v-if="preSell.shelf_title" :style="{'transform': ' translateX('+ -(navIndex * width) +'px)'}">
-          <div class="title-wrapper border-bottom-1px">
+        <div class="presell-wrapper order-box" :style="{'transform': ' translateX('+ -(navIndex * width) +'px)'}">
+          <div class="title-wrapper border-bottom-1px" v-if="preSell.shelf_title">
             <p class="title">{{preSell.shelf_title}}</p>
             <div class="copy-btn" @click="copyPreSell">一键复制</div>
           </div>
           <div class="content-wrapper" v-if="preSell.shelf_content_list">
             <div v-for="(item, index) in preSell.shelf_content_list" :key="index" class="content">{{item}}</div>
+          </div>
+          <div class="noting" v-if="!preSell.title">
+            <div class="noting-img"><img class="img" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'"></div>
+            <div class="txt">空空如也</div>
           </div>
         </div>
         <div class="reg-goods-box order-box" :style="{'transform': ' translateX('+ -(navIndex * width) +'px)'}">
@@ -97,11 +101,11 @@
             <!--</button>-->
             <!--</div>-->
           </navigator>
+          <div class="noting" v-if="isNoGoods">
+            <div class="noting-img"><img class="img" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'"></div>
+            <div class="txt">空空如也</div>
+          </div>
         </div>
-      </div>
-      <div class="noting" v-if="isNoGoods">
-        <div class="noting-img"><img class="img" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'"></div>
-        <div class="txt">空空如也</div>
       </div>
     </div>
     <div class="end" v-if="!isNoGoods">— 到底了—</div>
@@ -137,7 +141,7 @@
         goodsItem: {},
         page: 1,
         length: 1,
-        detailedHeight: 689.5
+        detailedHeight: 280
       }
     },
     onShareAppMessage(res) {
@@ -203,22 +207,20 @@
         this.$wechat.showToast('功能正在努力研发中')
       },
       async _setNav(index) {
+        if (index === 1 && !this.goodsList.length) {
+          await this._getRecommendGoods()
+        }
         const query = wx.createSelectorQuery()
         switch (index) {
           case 0:
-            query.selectAll('.content-wrapper').boundingClientRect()
+            query.select('.content-wrapper').boundingClientRect()
             query.exec((res) => {
-              this.detailedHeight = res[0][0].height
-              console.log(res[0][0])
+              this.detailedHeight = res[0] ? res[0].height + 40 : 280
             })
             break
           case 1:
-            this.detailedHeight = 90 * this.goodsList.length
+            this.detailedHeight = 99.5 * this.goodsList.length || 280
             break
-        }
-
-        if (index === 1 && !this.goodsList.length) {
-          await this._getRecommendGoods()
         }
         this.navIndex = index
       },
@@ -233,6 +235,9 @@
         }
         this.preSell = res.data
         this.isNoGoods = !this.preSell.shelf_content
+        setTimeout(() => {
+          this._setNav(this.navIndex)
+        }, 500)
       },
       async _getLeaderDetail() {
         let res = await API.Leader.leaderDetail()
@@ -285,9 +290,8 @@
     width: 187.2vw
     display: flex
     transform: translateX(0)
-    transition: all 0.3s
     .order-box
-      transition: all 0.3s
+      transition: transform 0.3s
       padding: 0 10px
       box-sizing: border-box
       width: 93.6vw
@@ -441,7 +445,7 @@
     box-sizing: border-box
     background: $color-white
     margin: 12px auto
-    padding: 25px 0 30px
+    padding: 25px 0 0px
     overflow: hidden
     .rag-goods-tab
       width: 176px
