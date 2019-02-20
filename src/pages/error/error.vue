@@ -1,6 +1,6 @@
 <template>
   <div class="error">
-    <navigation-bar title="赞播优鲜" :showArrow="false"></navigation-bar>
+    <navigation-bar :title="shopName" :showArrow="false"></navigation-bar>
     <div class="img-box">
       <img :src="imageUrl + '/yx-image/group/pic-wifi@2x.png'" v-if="imageUrl" class="error-img">
       <p class="text">网络繁忙，稍后再试吧！</p>

@@ -100,14 +100,32 @@ export function getParams(scene) {
   return params
 }
 
+// 解析url
+function getUrl(path = '', query = {}) {
+  let url = path
+  const TAB_REG = /(pages\/choiceness)|(pages\/shopping-cart)|(pages\/mine)/
+  let status = TAB_REG.test(path)
+  if (!status) {
+    let string = ''
+    for (let value in query) {
+      string = `&${value}=${query[value]}`
+    }
+    url = string ? `${url}?${string.slice(1)}` : url
+  }
+  return url
+}
+
 // 凭证失效时重新调起接口请求获取登录
 export async function silentAuthorization() {
+  /* eslint-disable no-undef */
+  let el = await getCurrentPages()[getCurrentPages().length - 1]
+  let url = getUrl(el.route, el.options)
+  wx.setStorageSync('targetPage', url)
   let codeJson = await wechat.login()
   let tokenJson = await API.Login.getToken({code: codeJson.code}, false)
   if (tokenJson.error === ERR_OK) {
     wx.setStorageSync('token', tokenJson.data.access_token)
     wx.setStorageSync('userInfo', tokenJson.data.customer_info)
-    /* eslint-disable no-undef */
     await getCurrentPages()[getCurrentPages().length - 1].onLoad()
     await getCurrentPages()[getCurrentPages().length - 1].onShow()
     return
