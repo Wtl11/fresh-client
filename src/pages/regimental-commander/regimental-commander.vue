@@ -81,7 +81,9 @@
             <div v-for="(item, index) in preSell.shelf_content_list" :key="index" class="content">{{item}}</div>
           </div>
           <div class="noting" v-if="!preSell.title">
-            <div class="noting-img"><img class="img" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'"></div>
+            <div class="noting-img">
+              <img class="img" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'" v-if="imageUrl">
+            </div>
             <div class="txt">空空如也</div>
           </div>
         </div>
@@ -94,15 +96,11 @@
               <span class="reg-goods-money">{{item.shop_price}}<span class="reg-goods-small">元</span></span>
               <span class="reg-goods-del-money">{{item.original_price}}元</span>
             </div>
-            <!--<div class="ability">-->
-            <!--<div class="copy-btn">一键复制</div>-->
-            <!--<button class="share" :data-goodsItem="item" @click.stop="_shareGoods(item)">-->
-            <!--<img :src="imageUrl + '/yx-image/group/icon-share@2x.png'" v-if="imageUrl" class="share-icon">-->
-            <!--</button>-->
-            <!--</div>-->
           </navigator>
           <div class="noting" v-if="isNoGoods">
-            <div class="noting-img"><img class="img" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'"></div>
+            <div class="noting-img">
+              <img class="img" v-if="imageUrl" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'">
+            </div>
             <div class="txt">空空如也</div>
           </div>
         </div>

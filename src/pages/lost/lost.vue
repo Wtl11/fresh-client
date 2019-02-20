@@ -1,6 +1,6 @@
 <template>
   <div class="lost">
-    <navigation-bar title="赞播优鲜" :showArrow="false"></navigation-bar>
+    <navigation-bar :title="shopName" :showArrow="false"></navigation-bar>
     <div class="img-box">
       <img :src="imageUrl + '/yx-image/group/pic-miss@2x.png'" v-if="imageUrl" class="error-img">
       <p class="text">抱歉！您访问的页面丢失啦</p>

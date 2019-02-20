@@ -1,6 +1,6 @@
 <template>
   <div class="loading">
-    <navigation-bar title="赞播优鲜" :showArrow="false"></navigation-bar>
+    <navigation-bar :title="shopName" :showArrow="false"></navigation-bar>
     <div class="loading-box" :style="{height: height + 'px'}">
       <loading-model></loading-model>
     </div>

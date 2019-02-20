@@ -1,6 +1,6 @@
 <template>
   <div class="goods-end">
-    <navigation-bar title="赞播优鲜" :showArrow="false"></navigation-bar>
+    <navigation-bar :title="shopName" :showArrow="false"></navigation-bar>
     <div class="goods-end-box">
       <img v-if="imageUrl" class="goods-end-img" :src="imageUrl+'/yx-image/order/pic-end@2x.png'" alt="">
       <div class="goods-end-text">活动已结束</div>

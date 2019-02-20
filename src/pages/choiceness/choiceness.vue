@@ -1,6 +1,6 @@
 <template>
   <div class="choiceness">
-    <navigation-bar :title="title" :showArrow="false"></navigation-bar>
+    <navigation-bar :title="shopName" :showArrow="false"></navigation-bar>
     <div class="community-box">
       <div class="community-main" @click="jumpSelfPoint">
         <div class="community-img">
@@ -234,6 +234,8 @@
     async onPullDownRefresh() {
       await this._groupInfo(true)
       await this._getIndexModule(false)
+      this.goodsPage = 2
+      this.goodsMore = false
       if (!wx.getStorageSync('token')) return
       this.setCartCount()
       wx.stopPullDownRefresh()

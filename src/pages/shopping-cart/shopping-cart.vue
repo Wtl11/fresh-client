@@ -3,16 +3,16 @@
     <navigation-bar title="购物车" :showArrow="false" :translucent="false"></navigation-bar>
     <div class="shop-list">
       <div class="shop-item" :class="{'shop-item-opcta' : item.num <= 0}" v-for="(item, index) in goodsList" :key="index">
-        <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && !item.checked && item.num > 0" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt="" />
+        <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && !item.checked && item.num > 0" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt=""/>
         <!--<img class="sel-box" v-if="imageUrl && item.num <= 0" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt="" />-->
         <div class="sel-box sel-clr-box" v-if="imageUrl && item.num <= 0"></div>
-        <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && item.checked && item.num > 0" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt="" />
+        <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && item.checked && item.num > 0" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
         <div class="goods-image" @click.stop="jumpGoodsDetail(item)">
           <img class="goods-img" mode="aspectFill" :src="item.goods_cover_image" alt="">
           <div class="robbed" v-if="item.num <= 0">已抢完</div>
         </div>
         <div class="good-info">
-          <div class="top"  @click.stop="jumpGoodsDetail(item)">
+          <div class="top" @click.stop="jumpGoodsDetail(item)">
             <div class="title">{{item.name}}</div>
             <div class="del" @click.stop="delGoodsInfo(index, item.id)">
               <img class="del-img" v-if="imageUrl" :src="imageUrl + '/yx-image/cart/icon_delete@2x.png'" alt="">
@@ -22,7 +22,7 @@
             <div class="left" @click.stop="jumpGoodsDetail(item)">
               <div class="spec" v-if="item.goods_units">规格：{{item.goods_units}}</div>
               <div class="remain">
-                <div class="txt"  v-if="item.is_urgency">仅剩{{item.usable_stock}}件</div>
+                <div class="txt" v-if="item.is_urgency">仅剩{{item.usable_stock}}件</div>
               </div>
               <div class="price" v-if="item.shop_price"><span class="num">{{item.shop_price}}</span>元</div>
             </div>
@@ -40,8 +40,8 @@
     <!--结算-->
     <div class="payment" v-if="goodsList.length > 0">
       <div class="check-all" @click.stop="toggleCheckAll">
-        <img class="sel-box" v-if="imageUrl && allChecked" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt="" />
-        <img class="sel-box" v-if="imageUrl && !allChecked" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt="" />
+        <img class="sel-box" v-if="imageUrl && allChecked" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
+        <img class="sel-box" v-if="imageUrl && !allChecked" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt=""/>
         <div class="txt">全选</div>
       </div>
       <div class="payment-content">
@@ -89,6 +89,7 @@
       this.$isLogin()
     },
     async onShow() {
+      if (!wx.getStorageSync('token')) return
       await this._getShopCart()
     },
     computed: {
@@ -143,7 +144,9 @@
       subNum(i, num, id) {
         if (num > 1) {
           num--
-          if (this.isShowNum) { this.editGoodsNum(i, id, num) }
+          if (this.isShowNum) {
+            this.editGoodsNum(i, id, num)
+          }
         } else {
           this.delGoodsInfo(i, id)
         }
@@ -231,6 +234,7 @@
     background: $color-background
     position: relative
     padding-bottom: 60px
+
   .payment
     position: fixed
     width: 100%
@@ -284,6 +288,7 @@
         font-family: $font-family-medium
         line-height: 34px
         color: $color-white
+
   .shop-list
     background: $color-white
     .shop-item
@@ -438,6 +443,7 @@
             opacity: .5
         .bot
           opacity: .6
+
   .without
     widht: 100vw
     margin-top: 146px
@@ -469,6 +475,7 @@
       background: #73C200
       border-1px(#73C200, 16px)
       border-radius: 16px
+
   .test
     background: #fff
 
