@@ -1,5 +1,6 @@
 // 不需要自动重置data数据的页
 import API from '@api'
+import {corp} from '@utils/saas'
 
 const unResetPage = []
 
@@ -7,17 +8,22 @@ export default {
   data() {
     return {
       formId: [],
-      imageUrl: this.$imageUrl
+      imageUrl: this.$imageUrl,
+      shopName: ''
     }
   },
   onLoad() {
     this._saveCurrentPage()
+    this._getShopName()
   },
   onUnload() {
     this._resetData()
     // this._clearWatcher()
   },
   methods: {
+    _getShopName() {
+      this.shopName = corp.shopName
+    },
     _saveCurrentPage() {
       let url = this.$getUrl()
       // 记录页面栈
@@ -67,6 +73,9 @@ export default {
     },
     // 手机formId
     $getFormId(e) {
+      if (!this.$isLogin()) {
+        return
+      }
       let formId = e.mp.detail.formId
       API.Form.getFormId({form_ids: [formId]})
     },

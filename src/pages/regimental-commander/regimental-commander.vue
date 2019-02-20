@@ -71,35 +71,39 @@
         </span>
       </div>
       <!--TODO-->
-      <div class="reg-goods-box" v-if="navIndex === 1">
-        <navigator :url="'/pages/copy-detail?id=' + item.id" hover-class="none" class="reg-goods-item" v-for="(item,index) in goodsList" :key="index">
-          <img :src="item.goods_cover_image" class="reg-goods-img" mode="aspectFill">
-          <div class="reg-goods-content">
-            <div class="reg-goods-title">{{item.name}}</div>
-            <div class="reg-goods-tip">团购价</div>
-            <span class="reg-goods-money">{{item.shop_price}}<span class="reg-goods-small">元</span></span>
-            <span class="reg-goods-del-money">{{item.original_price}}元</span>
+      <div class="order-big-box" :style="{height: detailedHeight + 'px'}">
+        <div class="presell-wrapper order-box" :style="{'transform': ' translateX('+ -(navIndex * width) +'px)'}">
+          <div class="title-wrapper border-bottom-1px" v-if="preSell.shelf_title">
+            <p class="title">{{preSell.shelf_title}}</p>
+            <div class="copy-btn" @click="copyPreSell">一键复制</div>
           </div>
-          <!--<div class="ability">-->
-          <!--<div class="copy-btn">一键复制</div>-->
-          <!--<button class="share" :data-goodsItem="item" @click.stop="_shareGoods(item)">-->
-          <!--<img :src="imageUrl + '/yx-image/group/icon-share@2x.png'" v-if="imageUrl" class="share-icon">-->
-          <!--</button>-->
-          <!--</div>-->
-        </navigator>
-      </div>
-      <div class="presell-wrapper" v-if="navIndex === 0 && preSell.shelf_title">
-        <div class="title-wrapper border-bottom-1px">
-          <p class="title">{{preSell.shelf_title}}</p>
-          <div class="copy-btn" @click="copyPreSell">一键复制</div>
+          <div class="content-wrapper" v-if="preSell.shelf_content_list">
+            <div v-for="(item, index) in preSell.shelf_content_list" :key="index" class="content">{{item}}</div>
+          </div>
+          <div class="noting" v-if="!preSell.title">
+            <div class="noting-img">
+              <img class="img" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'" v-if="imageUrl">
+            </div>
+            <div class="txt">空空如也</div>
+          </div>
         </div>
-        <div class="content-wrapper" v-if="preSell.shelf_content_list">
-          <div v-for="(item, index) in preSell.shelf_content_list" :key="index" class="content">{{item}}</div>
+        <div class="reg-goods-box order-box" :style="{'transform': ' translateX('+ -(navIndex * width) +'px)'}">
+          <navigator :url="'/pages/copy-detail?id=' + item.id" hover-class="none" class="reg-goods-item" v-for="(item,index) in goodsList" :key="index">
+            <img :src="item.goods_cover_image" class="reg-goods-img" mode="aspectFill">
+            <div class="reg-goods-content">
+              <div class="reg-goods-title">{{item.name}}</div>
+              <div class="reg-goods-tip">团购价</div>
+              <span class="reg-goods-money">{{item.shop_price}}<span class="reg-goods-small">元</span></span>
+              <span class="reg-goods-del-money">{{item.original_price}}元</span>
+            </div>
+          </navigator>
+          <div class="noting" v-if="isNoGoods">
+            <div class="noting-img">
+              <img class="img" v-if="imageUrl" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'">
+            </div>
+            <div class="txt">空空如也</div>
+          </div>
         </div>
-      </div>
-      <div class="noting" v-if="isNoGoods">
-        <div class="noting-img"><img class="img" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'"></div>
-        <div class="txt">空空如也</div>
       </div>
     </div>
     <div class="end" v-if="!isNoGoods">— 到底了—</div>
@@ -123,6 +127,7 @@
     data() {
       return {
         nav: Nav,
+        width: 0,
         navIndex: 0,
         isLoading: true,
         leaderDetail: {},
@@ -133,7 +138,8 @@
         preSell: {},
         goodsItem: {},
         page: 1,
-        length: 1
+        length: 1,
+        detailedHeight: 280
       }
     },
     onShareAppMessage(res) {
@@ -152,6 +158,11 @@
       await this._getRecommendGoods()
     },
     async onShow() {
+      this.$wx.getSystemInfo({
+        success: (res) => {
+          this.width = res.screenWidth * 0.936
+        }
+      })
       this.adaptation = {height: 195, marginTop: 64.5, hoseMarginTop: 164}
       this.page = 1
       let res = this.$wx.getSystemInfoSync()
@@ -197,6 +208,18 @@
         if (index === 1 && !this.goodsList.length) {
           await this._getRecommendGoods()
         }
+        const query = wx.createSelectorQuery()
+        switch (index) {
+          case 0:
+            query.select('.content-wrapper').boundingClientRect()
+            query.exec((res) => {
+              this.detailedHeight = res[0] ? res[0].height + 40 : 280
+            })
+            break
+          case 1:
+            this.detailedHeight = 99.5 * this.goodsList.length || 280
+            break
+        }
         this.navIndex = index
       },
       copyPreSell() {
@@ -210,6 +233,9 @@
         }
         this.preSell = res.data
         this.isNoGoods = !this.preSell.shelf_content
+        setTimeout(() => {
+          this._setNav(this.navIndex)
+        }, 500)
       },
       async _getLeaderDetail() {
         let res = await API.Leader.leaderDetail()
@@ -257,6 +283,16 @@
     padding: 0
     &:after
       border: none
+
+  .order-big-box
+    width: 187.2vw
+    display: flex
+    transform: translateX(0)
+    .order-box
+      transition: transform 0.3s
+      padding: 0 10px
+      box-sizing: border-box
+      width: 93.6vw
 
   .regimental-commander
     word-break: break-all
@@ -407,7 +443,8 @@
     box-sizing: border-box
     background: $color-white
     margin: 12px auto
-    padding: 25px 10px 30px
+    padding: 25px 0 0px
+    overflow: hidden
     .rag-goods-tab
       width: 176px
       margin: 0 auto
