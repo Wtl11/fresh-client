@@ -234,8 +234,6 @@
     async onPullDownRefresh() {
       await this._groupInfo(true)
       await this._getIndexModule(false)
-      this.goodsPage = 2
-      this.goodsMore = false
       if (!wx.getStorageSync('token')) return
       this.setCartCount()
       wx.stopPullDownRefresh()
@@ -388,6 +386,7 @@
             this._kanTimePlay(item.content_data.last_time)
             this.goodsListData = item
             this.goodsPage = 2
+            this.goodsMore = false
             if (this.goodsList.length === 0) {
               this.goodsMore = true
             }
