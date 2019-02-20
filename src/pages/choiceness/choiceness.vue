@@ -207,6 +207,11 @@
       ald.aldstat.sendEvent('首页')
       this._getBuyUsers()
       let shopId = wx.getStorageSync('shopId')
+      if (!shopId) {
+        let res = await API.Choiceness.getDefaultShopInfo()
+        wx.setStorageSync('shopId', res.data.id)
+        shopId = res.data.id
+      }
       if (this.curShopId * 1 !== shopId * 1) {
         await this._groupInfo(false)
         await this._getIndexModule(false)
