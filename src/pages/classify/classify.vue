@@ -10,6 +10,9 @@
         </div>
       </div>
     </scroll-view>
+    <div class="big-box">
+      <div class="classify-big-box"  :style="{'transform': ' translateX('+ -(tabIndex * 100) +'vw)', width:  (tabList1.length * 100) +'vw'}"></div>
+    </div>
     <div class="goods-list">
       <div class="goods-item-box" v-for="(item, index) in classifyList" :key="index" @click="jumpGoodsDetail(item)">
         <div class="classify-box">
@@ -211,6 +214,15 @@
     width: 100%
     min-height: 100vh
     background: $color-background
+  .big-box
+    width: 100vw
+    overflow: hidden
+    .classify-big-box
+      width: 100vw
+      height: 220px
+      display: flex
+      transform: translateX(0)
+      transition: all 0.3s
   .goods-list
     layout(row)
     align-items: center
