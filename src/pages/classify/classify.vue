@@ -11,41 +11,44 @@
       </div>
     </scroll-view>
     <div class="big-box">
-      <div class="classify-big-box"  :style="{'transform': ' translateX('+ -(tabIndex * 100) +'vw)', width:  (tabList1.length * 100) +'vw'}"></div>
-    </div>
-    <div class="goods-list">
-      <div class="goods-item-box" v-for="(item, index) in classifyList" :key="index" @click="jumpGoodsDetail(item)">
-        <div class="classify-box">
-          <div class="classify-box-top">
-            <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/icon-label2@2x.png'" alt="" class="top-label" mode="aspectFill">
-            <img v-if="item.goods_cover_image" :src="item.goods_cover_image" alt="" class="box-top-img" mode="aspectFill">
-          </div>
-          <div class="classify-box-bottom">
-            <div class="title">{{item.name}}</div>
-            <div class="classify-price-box">
-              <div class="price-left">
-                <div class="price-number">{{item.shop_price}}</div>
-                <div class="price-money">元</div>
-                <div class="price-line">{{item.original_price}}元</div>
+      <div class="classify-big-box"  :style="{'transform': ' translateX('+ -(tabIndex * 100) +'vw)', width:  (tabList1.length * 100) +'vw'}">
+        <div class="goods-list-box" v-for="(tabItem, tabInx) in tabList1" :key="tabInx" :class="tabIndex * 1 === tabInx ? '' : 'order-item-list-active'">
+          <div class="goods-list">
+            <div class="goods-item-box" v-for="(item, index) in classifyList[tabInx]" :key="index" @click="jumpGoodsDetail(item)">
+              <div class="classify-box">
+                <div class="classify-box-top">
+                  <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/icon-label2@2x.png'" alt="" class="top-label" mode="aspectFill">
+                  <img v-if="item.goods_cover_image" :src="item.goods_cover_image" alt="" class="box-top-img" mode="aspectFill">
+                </div>
+                <div class="classify-box-bottom">
+                  <div class="title">{{item.name}}</div>
+                  <div class="classify-price-box">
+                    <div class="price-left">
+                      <div class="price-number">{{item.shop_price}}</div>
+                      <div class="price-money">元</div>
+                      <div class="price-line">{{item.original_price}}元</div>
+                    </div>
+                    <form action="" report-submit @submit="$getFormId" @click.stop="addShoppingCart(item)">
+                      <button class="price-right" formType="submit">
+                        <img v-if="imageUrl" :src="imageUrl + '/yx-image/goods/icon-shopcart2@2x.png'" alt="" class="price-right-img">
+                      </button>
+                    </form>
+                  </div>
+                </div>
               </div>
-              <form action="" report-submit @submit="$getFormId" @click.stop="addShoppingCart(item)">
-                <button class="price-right" formType="submit">
-                  <img v-if="imageUrl" :src="imageUrl + '/yx-image/goods/icon-shopcart2@2x.png'" alt="" class="price-right-img">
-                </button>
-              </form>
             </div>
+          </div>
+          <div class="foot-ties" v-if="classifyMore && classifyList[tabInx].length !== 0">
+            <div class="left lines"></div>
+            <div class="center">再拉也没有了</div>
+            <div class="bot lines"></div>
+          </div>
+          <div class="noting" v-if="classifyMore && classifyList[tabInx].length === 0">
+            <div class="notingimg"><img class="img" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'" alt=""></div>
+            <div class="txt">空空如也</div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="foot-ties" v-if="classifyMore && classifyList.length !== 0">
-      <div class="left lines"></div>
-      <div class="center">再拉也没有了</div>
-      <div class="bot lines"></div>
-    </div>
-    <div class="noting" v-if="classifyMore && classifyList.length === 0">
-      <div class="notingimg"><img class="img" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'" alt=""></div>
-      <div class="txt">空空如也</div>
     </div>
   </div>
 </template>
@@ -94,10 +97,9 @@
       this.statusBarHeight = res.statusBarHeight || 20
       this.classifyId = options.id
       this.getCategoryData()
-      this.getCategoryList(this.classifyId)
     },
     onReachBottom() {
-      this.getMoreCategoryList(this.classifyId)
+      this.getMoreCategoryList(this.classifyId, this.tabIndex)
     },
     methods: {
       ...cartMethods,
@@ -132,7 +134,7 @@
         this.tabIndex = index
         this.move = e.target.offsetLeft
         this.classifyId = id
-        this.getCategoryList(this.classifyId)
+        this.getCategoryList(this.classifyId, index)
       },
       getCategoryData() {
         API.Choiceness.getClassifyCategory().then((res) => {
@@ -140,6 +142,10 @@
             return
           }
           this.tabList1 = res.data
+          let length = res.data.length
+          for (var i = 0; i < length; i++) {
+            this.classifyList.push([])
+          }
           res.data.forEach((item, index) => {
             if (item.id * 1 === this.classifyId * 1) {
               this.tabIndex = index
@@ -150,16 +156,17 @@
               }
             }
           })
+          this.getCategoryList(this.classifyId, this.tabIndex)
         })
       },
-      getCategoryList(id) {
+      getCategoryList(id, index) {
         this.classifyPage = 1
         this.classifyMore = false
         API.Choiceness.getClassifyList({goods_category_id: id, limit: 10, page: this.classifyPage}).then((res) => {
           if (res.error !== this.$ERR_OK) {
             return
           }
-          this.classifyList = res.data
+          this.classifyList[index] = res.data
           this._isUpList(res)
           wx.pageScrollTo({
             scrollTop: 0,
@@ -175,13 +182,13 @@
           if (res.error !== this.$ERR_OK) {
             return
           }
-          this.classifyList = this.classifyList.concat(res.data)
+          this.classifyList[this.tabIndex] = this.classifyList[this.tabIndex].concat(res.data)
           this._isUpList(res)
         })
       },
       _isUpList(res) {
         this.classifyPage++
-        if (this.classifyList.length >= res.meta.total * 1) {
+        if (this.classifyList[this.tabIndex].length >= res.meta.total * 1) {
           this.classifyMore = true
         }
       },
@@ -219,10 +226,12 @@
     overflow: hidden
     .classify-big-box
       width: 100vw
-      height: 220px
       display: flex
       transform: translateX(0)
       transition: all 0.3s
+  .goods-list-box
+    width: 100vw
+    min-height: 50vh
   .goods-list
     layout(row)
     align-items: center
@@ -403,6 +412,8 @@
   .txt
     height: 100px
 
+  .order-item-list-active
+    height: 70vh
   .price-right
     &:after
       border: none
