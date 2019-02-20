@@ -234,6 +234,8 @@
     async onPullDownRefresh() {
       await this._groupInfo(true)
       await this._getIndexModule(false)
+      this.goodsPage = 2
+      this.goodsMore = false
       if (!wx.getStorageSync('token')) return
       this.setCartCount()
       wx.stopPullDownRefresh()
