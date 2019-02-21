@@ -518,6 +518,7 @@
         color: $color-text-main
         font-size: $font-size-16
         font-family: $font-family-medium
+        min-height: $font-size-18
         max-width: 40vw
         no-wrap()
         margin-right: 5px
