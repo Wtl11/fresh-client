@@ -123,8 +123,8 @@
         isLeader: false
       }
     },
-    onTabItemTap() {
-      this.$isLogin()
+    async onTabItemTap() {
+      await this.$isLogin()
     },
     async onShow() {
       if (!wx.getStorageSync('token')) return
@@ -357,8 +357,8 @@
               .icon
                 width: 11px
                 height: 11px
-                min-width :11px
-                min-height :11px
+                min-width: 11px
+                min-height: 11px
                 margin-right: 3.5px
               .text
                 no-wrap()
@@ -460,7 +460,7 @@
           margin-left: 20px
 
   .order-nav-box
-    box-shadow: 0 4px 30px 0 rgba(17,17,17,0.06)
+    box-shadow: 0 4px 30px 0 rgba(17, 17, 17, 0.06)
     border-radius: 6px
     margin: 30px auto 0
     width: 93.6vw
@@ -513,6 +513,7 @@
               font-size: $font-size-12
               color: $color-text-sub
               font-family: $font-family-regular
+
   .mine-model
     position: fixed
     top: 0

@@ -85,8 +85,8 @@
         deliverAt: ''
       }
     },
-    onTabItemTap() {
-      this.$isLogin()
+    async onTabItemTap() {
+      await this.$isLogin()
     },
     async onShow() {
       if (!wx.getStorageSync('token')) return

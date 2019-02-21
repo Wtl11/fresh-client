@@ -680,7 +680,6 @@
           .top-text-bottom
             margin-bottom: 3px
 
-
   .goods-box
     padding: 0 3.2vw
     box-sizing: border-box

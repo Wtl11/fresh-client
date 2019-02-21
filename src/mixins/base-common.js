@@ -80,10 +80,20 @@ export default {
       API.Form.getFormId({form_ids: [formId]})
     },
     // 判断是否跳转授权登录页面
-    $isLogin() {
+    async $isLogin() {
       let url = this.$getUrl()
       let token = wx.getStorageSync('token')
       if (!token) {
+        let codeMsg = await this.$wechat.login()
+        let tokenJson = await API.Login.getToken({code: codeMsg.code}, false)
+        if (tokenJson.error === this.$ERR_OK) {
+          wx.setStorageSync('token', tokenJson.data.access_token)
+          wx.setStorageSync('userInfo', tokenJson.data.customer_info)
+          /* eslint-disable no-undef */
+          await getCurrentPages()[getCurrentPages().length - 1].onLoad()
+          await getCurrentPages()[getCurrentPages().length - 1].onShow()
+          return true
+        }
         wx.reLaunch({url: '/pages/login'})
         wx.setStorageSync('targetPage', url)
         return false
