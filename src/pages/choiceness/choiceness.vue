@@ -25,7 +25,7 @@
          v-if="locationStatus * 1 === 1 || locationStatus * 1 === 2">
       <!--轮播图-->
       <div class="banner-box" v-if="bigItem.module_name === 'bannar' && bigItem.content_data.length !== 0">
-        <swiper class="banner" :current="praiseIndex" autoplay interval="5000" display-multiple-items="1" previous-margin="7.5px"
+        <swiper class="banner" autoplay interval="5000" display-multiple-items="1" previous-margin="7.5px"
                 next-margin="17.5px" circular @change="_setPraiseIndex">
           <block v-for="(item,index) in bigItem.content_data.list" :key="index">
             <swiper-item class="banner-item" :class="{'current-banner-active': praiseIndex === index}">
@@ -241,9 +241,9 @@
       await this._getIndexModule(false)
       this.goodsPage = 2
       this.goodsMore = false
+      wx.stopPullDownRefresh()
       if (!wx.getStorageSync('token')) return
       this.setCartCount()
-      wx.stopPullDownRefresh()
     },
     onShareAppMessage(res) {
       return {
