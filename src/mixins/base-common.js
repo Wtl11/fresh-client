@@ -9,7 +9,8 @@ export default {
     return {
       formId: [],
       imageUrl: this.$imageUrl,
-      shopName: ''
+      shopName: '',
+      corpName: corp.shopSaas
     }
   },
   onLoad() {

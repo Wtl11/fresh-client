@@ -82,6 +82,7 @@
         <div class="erm-text">向团长出示二维码提货</div>
       </div>
     </div>
+    <navigation-bottom currentType="mine"></navigation-bottom>
   </div>
 </template>
 
@@ -89,6 +90,7 @@
   import WePaint from '@components/we-paint/we-paint'
   // import { mapGetters } from 'vuex'
   import NavigationBar from '@components/navigation-bar/navigation-bar'
+  import NavigationBottom from '@components/navigation-bottom/navigation-bottom'
   import QrcodeMsg from '@components/qrcode-msg/qrcode-msg'
   import API from '@api'
   import {oauthComputed} from '@state/helpers'
@@ -274,7 +276,8 @@
     components: {
       WePaint,
       QrcodeMsg,
-      NavigationBar
+      NavigationBar,
+      NavigationBottom
     }
   }
 </script>

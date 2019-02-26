@@ -57,6 +57,7 @@
       <div class="btn" @click.stop="toChoicenessPage">去逛逛</div>
     </div>
     <confirm-msg ref="msg" :msg="msg" useType="double" @confirm="deleteCartGood"></confirm-msg>
+    <navigation-bottom currentType="cart"></navigation-bottom>
   </div>
 
 </template>
@@ -64,6 +65,7 @@
 <script type="text/ecmascript-6">
   import WePaint from '@components/we-paint/we-paint'
   import NavigationBar from '@components/navigation-bar/navigation-bar'
+  import NavigationBottom from '@components/navigation-bottom/navigation-bottom'
   import ConfirmMsg from '@components/confirm-msg/confirm-msg'
   import API from '@api'
   import {orderMethods, cartMethods} from '@state/helpers'
@@ -221,7 +223,8 @@
     components: {
       WePaint,
       ConfirmMsg,
-      NavigationBar
+      NavigationBar,
+      NavigationBottom
     }
   }
 </script>

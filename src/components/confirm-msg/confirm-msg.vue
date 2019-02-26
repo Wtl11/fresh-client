@@ -4,14 +4,14 @@
     <section class="content" v-if="useType==='single'" :animation="modalAnimation">
       <div class="msg">{{msg}}</div>
       <div class="btn-group">
-        <div class="btn confirm" @tap="confirm">知道了</div>
+        <div class="btn confirm" @tap="confirm" :class="'corp-' + corpName + '-text'">知道了</div>
       </div>
     </section>
     <section class="content" v-else-if="useType==='double'" :animation="modalAnimation">
       <div class="msg">{{msg}}</div>
       <div class="btn-group">
         <div class="btn cancel" @tap="cancel">取消</div>
-        <div class="btn confirm" @tap="confirm">{{sureString}}</div>
+        <div class="btn confirm" @tap="confirm" :class="'corp-' + corpName + '-text'">{{sureString}}</div>
       </div>
     </section>
     <section class="content" v-else-if="useType==='close'" :animation="modalAnimation">
@@ -34,7 +34,7 @@
       <div class="coninfo show">{{msg}}</div>
       <div class="btn-group">
         <div class="btn cancel" @tap="cancel">取消</div>
-        <div class="btn confirm" @tap="confirm">{{sureString}}</div>
+        <div class="btn confirm" :class="'corp-' + corpName + '-text'" @tap="confirm">{{sureString}}</div>
       </div>
     </section>
   </article>
@@ -236,7 +236,6 @@
         box-sizing: border-box
         font-family: $font-family-regular
         font-size: $font-size-16
-        color: $color-main
         &:first-child
           border-right-1px(#E0E2E5)
           color: #1F1F1F

@@ -38,6 +38,7 @@ export default {
       selectedColor: '#73C200',
       backgroundColor: '#ffffff',
       borderStyle: 'black',
+      custom: true,
       list: [
         {
           pagePath: 'pages/choiceness',

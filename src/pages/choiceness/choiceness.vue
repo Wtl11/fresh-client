@@ -48,15 +48,17 @@
         <div class="nav-list-border"></div>
         <div class="goods-title-box">
           <div class="goods-title-main">
-            <div class="goods-box-icon"></div>
+            <div class="goods-box-icon" :class="'corp-' + corpName + '-label'"></div>
             <div class="goods-title-text">今日抢购</div>
             <div class="goods-title-sub">今日下单 次日提货</div>
             <div class="goods-time-box">
-              <img class="goods-time-box-img" mode="aspectFill" v-if="imageUrl"
+              <img class="goods-time-box-img" mode="aspectFill" v-if="imageUrl && corpName === 'platform'"
                    :src="imageUrl + '/yx-image/choiceness/pic-today_bg@2x.png'">
+              <img class="goods-time-box-img" mode="aspectFill" v-if="imageUrl && corpName === 'retuan'"
+                   :src="imageUrl + '/yx-image/retuan/pic-today_bg@2x.png'">
               <div class="goods-text-box">
-                <div class="top-text top-text-bottom">距结束</div>
-                <div class="top-text">{{activityTime.hour}}:{{activityTime.minute}}:{{activityTime.second}}</div>
+                <div class="top-text top-text-bottom" :class="'corp-' + corpName + '-time'">距结束</div>
+                <div class="top-text"  :class="'corp-' + corpName + '-time'">{{activityTime.hour}}:{{activityTime.minute}}:{{activityTime.second}}</div>
               </div>
             </div>
           </div>
@@ -65,8 +67,10 @@
           <div class="goods-list" v-for="(item, index) in goodsList" :key="index" @click="jumpGoodsDetail(item)">
             <div class="goods-left">
               <img class="goods-left-img" mode="aspectFill" v-if="item.goods_cover_image" :src="item.goods_cover_image">
-              <img class="goods-left-icon" mode="aspectFill" v-if="imageUrl"
+              <img class="goods-left-icon" mode="aspectFill" v-if="imageUrl && corpName === 'platform'"
                    :src="imageUrl + '/yx-image/choiceness/icon-label@2x.png'">
+              <img class="goods-left-icon" mode="aspectFill" v-if="imageUrl && corpName === 'retuan'"
+                   :src="imageUrl + '/yx-image/retuan/icon-label@2x.png'">
             </div>
             <div class="goods-right">
               <div class="goods-right-top">
@@ -79,17 +83,17 @@
               <div class="add-box">
                 <div class="add-box-left">
                   <section class="left">
-                    <div class="text-group">团购价</div>
+                    <div class="text-group" :class="'corp-' + corpName + '-money'">团购价</div>
                   </section>
                   <div class="price-box">
-                    <div class="money">{{item.shop_price}}</div>
-                    <div class="unit">元</div>
+                    <div class="money" :class="'corp-' + corpName + '-money'">{{item.shop_price}}</div>
+                    <div class="unit" :class="'corp-' + corpName + '-money'">元</div>
                     <div class="lineation">{{item.original_price}}元</div>
                   </div>
                 </div>
                 <form action="" report-submit @submit="$getFormId" @click.stop="addShoppingCart(item)">
                   <button class="add-box-right" v-if="item.usable_stock * 1 > 0" formType="submit">
-                    <div class="add-goods-btn">
+                    <div class="add-goods-btn" :class="'corp-' + corpName + '-bg'">
                       <div class="add-icon">
                         <div class="add1"></div>
                         <div class="add2"></div>
@@ -118,6 +122,7 @@
         </div>
       </div>
     </div>
+    <navigation-bottom currentType="index"></navigation-bottom>
     <link-group ref="groupComponents" :wechatInfo="groupInfo"></link-group>
     <confirm-msg ref="refundModel" title="您的位置距该提货点超过1km" msg="建议您切换自提点" sureString="马上切换" @confirm="confirm"
                  @cancel="cancel"></confirm-msg>
@@ -126,6 +131,7 @@
 
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
+  import NavigationBottom from '@components/navigation-bottom/navigation-bottom'
   import LinkGroup from '@components/link-group/link-group'
   import ScrollTab from '@components/scroll-tab/scroll-tab'
   import ConfirmMsg from '@components/confirm-msg/confirm-msg'
@@ -172,6 +178,7 @@
       }
     },
     async onLoad(options) {
+      console.log(this.retuan)
       if (options.shopId) {
         wx.setStorageSync('shopId', options.shopId)
       }
@@ -246,10 +253,23 @@
       this.setCartCount()
     },
     onShareAppMessage(res) {
+      console.log(res)
+      let imgUrl = '/yx-image/choiceness/pic-zbyx@2x.png'
+      switch (this.corpName) {
+        case 'platform':
+          imgUrl = '/yx-image/choiceness/pic-zbyx@2x.png'
+          break
+        case 'retuan':
+          imgUrl = '/yx-image/retuan/pic-zbyx@2x.png'
+          break
+        default:
+          imgUrl = '/yx-image/choiceness/pic-zbyx@2x.png'
+          break
+      }
       return {
         title: `${this.groupInfo.social_name},次日达、直采直销，点击下单↓`,
         path: `/pages/choiceness?shopId=${this.curShopId}`,
-        imageUrl: this.imageUrl + '/yx-image/choiceness/pic-zbyx@2x.png',
+        imageUrl: this.imageUrl + imgUrl,
         success: (res) => {
         },
         fail: (res) => {
@@ -480,6 +500,7 @@
     components: {
       LinkGroup,
       NavigationBar,
+      NavigationBottom,
       ConfirmMsg,
       ScrollTab
     }
@@ -590,6 +611,7 @@
         .item-img
           width: 100%
           height: 100%
+          transition: all .5s
 
   .nav-list
     layout(row)
@@ -633,7 +655,6 @@
       .goods-box-icon
         width: 4px
         height: 14px
-        background: #FF6803
         margin-right: 6px
       .goods-title-text
         font-size: $font-size-16
@@ -676,7 +697,6 @@
           justify-content: center
           .top-text
             font-size: $font-size-12
-            color: #fff
             font-family: $font-family-regular
           .top-text-bottom
             margin-bottom: 3px
@@ -752,7 +772,6 @@
             .text-group
               font-size: $font-size-10
               font-family: $font-family-regular
-              color: $color-money
               height: 13px
               line-height: 13px
               margin-bottom: 3px
@@ -762,12 +781,10 @@
             align-items: flex-end
             .money
               font-family: $font-family-medium
-              color: $color-money
               font-size: $font-size-20
               line-height: 1
             .unit
               font-family: $font-family-medium
-              color: $color-money
               font-size: $font-size-12
               line-height: 1
               margin-right: 2px
@@ -783,7 +800,6 @@
             layout(row)
             width: 75px
             height: 28px
-            background: $color-main
             justify-content: center
             align-items: center
             border-radius: 14px

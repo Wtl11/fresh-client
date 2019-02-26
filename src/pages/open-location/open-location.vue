@@ -5,7 +5,7 @@
       <img :src="imageUrl + '/yx-image/order/pic-address@2x.png'" v-if="imageUrl" class="error-img">
       <p class="text">亲，我们未获得您的位置信息</p>
     </div>
-    <button class="btn" open-type="openSetting" @click="openLocation">开启定位</button>
+    <button class="btn" open-type="openSetting" @click="openLocation" :class="'corp-' + corpName + '-bg'">开启定位</button>
     <navigator class="btn select-btn" url="/pages/self-point">手动选择自提点</navigator>
   </div>
 </template>
@@ -84,14 +84,10 @@
     height: 45px
     line-height: 45px
     text-align: center
-    background: $color-main
     border-radius: 50px
     color: $color-white
     font-size: $font-size-16
     margin: 50px auto 0
-    &:active
-      color: #E1F2C9
-      background: #9DD44C
   .select-btn
     background: $color-white
     border-1px($color-text-assist, 50px)

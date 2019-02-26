@@ -98,7 +98,7 @@
         <div class="hlep-btn-box" v-for="(item, index) in typeBtn" :key="index" @click.stop="switchItem(item)">
           <div class="hlep-top">
             <img v-if="imageUrl" :src="imageUrl + item.url" class="detail-img" mode="aspectFill">
-            <div class="hlep-number" v-if="index * 1 === 1 && count * 1 >= 1">{{count * 1 > 99 ? 99 : count}}</div>
+            <div class="help-number" v-if="index * 1 === 1 && count * 1 >= 1">{{count * 1 > 99 ? 99 : count}}</div>
           </div>
           <div class="hlep-bottom">{{item.text}}</div>
         </div>
@@ -999,7 +999,7 @@
             width: 100%
             height: 100%
             display: block
-          .hlep-number
+          .help-number
             position: absolute
             top: -5px
             right: -7px
