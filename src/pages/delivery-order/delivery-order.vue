@@ -6,7 +6,7 @@
       <div class="txt">空空如也</div>
     </div>
     <div class="scroll-view2" id="scrollView" v-if="!showMore">
-      <div class="under-line" :style="{left: move + 'px'}"></div>
+      <div class="under-line" :style="{left: move + 'px'}" :class="'corp-' + corpName + '-bg'"></div>
       <div v-for="(item, index) in orderList" :class="tabIndex === index ? 'item-active' : ''" :key="index" class="item" @click="_setTab(index, item,$event)">
         {{tabIndex === index ? item.month_day : item.day}}
       </div>
@@ -17,7 +17,7 @@
         <div class="order-box" v-for="(item, index) in orderList" :key="index">
           <div class="order-status">
             <p class="order-text">配送单号：{{item.order_sn}}</p>
-            <p class="order-status-str">{{item.status_str}}</p>
+            <p class="order-status-str" :class="'corp-' + corpName + '-money'">{{item.status_str}}</p>
           </div>
           <div class="goods-header">
             <p class="goods-text">商品信息</p>
@@ -44,8 +44,8 @@
     </div>
     <div class="bulk-pickup" v-if="!showMore">
       <p class="bulk-pickup-text">商品共计:</p>
-      <p class="bulk-pickup-num">{{orderList[tabIndex].num}}件</p>
-      <p class="bulk-pickup-btn" v-if="orderList[tabIndex].status === 2" @click="_openDialog">确认收货</p>
+      <p class="bulk-pickup-num" :class="'corp-' + corpName + '-money'">{{orderList[tabIndex].num}}件</p>
+      <p class="bulk-pickup-btn" :class="'corp-' + corpName + '-bg'" v-if="orderList[tabIndex].status === 2" @click="_openDialog">确认收货</p>
     </div>
     <dialog-model ref="dialog" @confirm="_confirm"></dialog-model>
   </div>
@@ -177,7 +177,6 @@
     left: 20px
     height: 3px
     width: 30px
-    background: $color-main
     transition: all 0.3s
 
   .big-box
@@ -204,8 +203,6 @@
     height: 45px
     .order-text
       color: $color-text-main
-    .order-status-str
-      color: $color-money
 
   .goods-header
     background: $color-white
@@ -285,11 +282,9 @@
     padding: 0 12px
     .bulk-pickup-num
       font-family: $font-family-medium
-      color: $color-money
       margin-left: 5px
     .bulk-pickup-btn
       border-radius: 15px
-      background: $color-main
       margin-left: 15px
       padding: 0 12px
       line-height: 30px

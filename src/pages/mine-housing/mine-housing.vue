@@ -2,7 +2,8 @@
   <div class="mine-housing">
     <navigation-bar title="我的小区"></navigation-bar>
     <div class="hose-img-box">
-      <img :src="imageUrl + '/yx-image/group/pic-banner4@2x.png'" v-if="imageUrl" class="hose-img">
+      <img :src="imageUrl + '/yx-image/group/pic-banner4@2x.png'" v-if="imageUrl && corpName === 'platform'" class="hose-img">
+      <img :src="imageUrl + '/yx-image/retuan/pic-colonel_topbg@2x.png'" v-if="imageUrl && corpName === 'retuan'" class="hose-img">
     </div>
     <div class="big-box">
       <div class="hose-content" :style="{'transform': ' translateX('+ -(navIdx * width) +'px)'}">
@@ -15,9 +16,11 @@
           <div class="login-item border-bottom-1px">
             <img :src="imageUrl + '/yx-image/wallet/icon-code@2x.png'" v-if="imageUrl" class="login-item-icon">
             <input type="number" class="login-input login-input-small" :focus="focusInput" @focus="inputFocus" placeholder="请输入验证码" :maxlength="6" placeholder-class="text-color" v-model="code">
-            <span class="get-code" :class="{'get-code-disable': !isSet}" @click="setCode">{{codeText}}</span>
+            <span class="get-code" :class="[!isSet ? 'get-code-disable' : '', 'corp-' + corpName + '-goods-btn']" @click="setCode">{{codeText}}</span>
           </div>
-          <div class="btn" @click="_login">团长登录</div>
+          <div class="lost">
+            <div class="btn" :class="'corp-' + corpName + '-bg'" @click="_login">团长登录</div>
+          </div>
         </div>
       </div>
     </div>
@@ -273,7 +276,6 @@
           width: 195.5px
           height: 45px
           line-height: 45px
-          background: $color-main
           color: $color-white
           font-size: $font-size-16
           font-family: $font-family-regular
@@ -320,7 +322,6 @@
             color: #808080
           .get-code
             min-width: 80px
-            border-1px($color-main, 15px)
             col-center()
             right: 10px
             font-size: $font-size-13
@@ -330,7 +331,6 @@
             height: 30px
             text-align: center
             line-height: 30px
-            color: $color-main
             box-sizing: border-box
           .get-code-disable
             background: #F8FAF7
@@ -343,16 +343,12 @@
           height: 45px
           margin: 32.25px auto 0
           line-height: 45px
-          background: $color-main
           color: $color-white
           font-size: $font-size-16
           font-family: $font-family-regular
           text-align: center
           transition: all 0.2s
           border-radius: 22.5px
-          &:active
-            background: #9DD44C
-            color: #E1F2C9
   .apply-btn
     position: fixed
     bottom: 37px

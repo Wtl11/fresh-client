@@ -16,8 +16,8 @@
         <span class="money-number" v-if="walletInfo.remaining">¥{{walletInfo.remaining}}</span>
       </div>
     </div>
-    <div class="withdraw-btn-box">
-      <div class="withdraw-btn"  @click="submitMoney">提现</div>
+    <div class="withdraw-btn-box lost">
+      <div class="withdraw-btn" :class="'corp-' + corpName + '-bg'"  @click="submitMoney">提现</div>
     </div>
     <ul class="withdraw-rule">
       <li class="rule-item" v-for="(item, index) in ruleList" v-bind:key="index">
@@ -194,7 +194,6 @@
       height: 45px
       line-height: 45px
       text-align: center
-      background: $color-main
       border-radius: 22.5px
       font-size: $font-size-16
       font-family: $font-family-medium

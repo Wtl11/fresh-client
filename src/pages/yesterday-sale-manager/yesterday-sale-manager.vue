@@ -7,7 +7,7 @@
         <input type="text" class="search" placeholder="提供单号，手机号，微信昵称，搜索" placeholder-class="search-pal" v-model="keyword" @input="_search"/>
       </div>
       <div class="rag-goods-tab">
-        <span :class="{'rag-goods-tab-item-active': navIndex === index}" class="rag-goods-tab-item" v-for="(item, index) in nav" :key="index" @click="_setNav(index, item)">
+        <span :class="[navIndex === index ? 'rag-goods-tab-item-active' : '',navIndex === index ? 'corp-' + corpName + '-bg' : '', 'corp-' + corpName + '-tab']" class="rag-goods-tab-item" v-for="(item, index) in nav" :key="index" @click="_setNav(index, item)">
           {{item.title}}
         </span>
       </div>
@@ -21,7 +21,7 @@
               <div class="order-num">{{order.code}}</div>
               <div class="name">{{order.address.nickname}}</div>
               <div class="phone">{{order.address.mobile}}</div>
-              <div class="order-status">{{order.status_text}}</div>
+              <div class="order-status" :class="'corp-' + corpName + '-money'">{{order.status_text}}</div>
             </div>
             <div class="goods-more">
               <div class="goods-box">
@@ -51,7 +51,7 @@
               <div class="order-num">{{order.code}}</div>
               <div class="name">{{order.address.nickname}}</div>
               <div class="phone">{{order.address.mobile}}</div>
-              <div class="order-status">{{order.status_text}}</div>
+              <div class="order-status" :class="'corp-' + corpName + '-money'">{{order.status_text}}</div>
             </div>
             <div class="goods-more">
               <div class="goods-box">
@@ -82,7 +82,7 @@
               <div class="order-num">{{order.code}}</div>
               <div class="name">{{order.address.nickname}}</div>
               <div class="phone">{{order.address.mobile}}</div>
-              <div class="order-status">{{order.status_text}}</div>
+              <div class="order-status" :class="'corp-' + corpName + '-money'">{{order.status_text}}</div>
             </div>
             <div class="goods-more">
               <div class="goods-box">
@@ -261,19 +261,16 @@
         text-align: center
         line-height: 31px
         height: 33px
-        color: $color-main
-        border: 1px solid $color-main
         transition: all 0.4s
         box-sizing: border-box
         &:first-child
           border-right: none
-          border-radius: 50px 0px 0px 50px
+          border-radius: 50px 0 0 50px
         &:last-child
           border-left: none
-          border-radius: 0px 50px 50px 0px
+          border-radius: 0 50px 50px 0
       .rag-goods-tab-item-active
         transform-origin: 50%
-        background: $color-main
         color: $color-white
 
   .big-box
@@ -327,7 +324,6 @@
         col-center()
         right: 12px
         font-size: $font-size-14
-        color: $color-money
         font-family: $font-family-medium
     .order-footer
       border-top-1px($color-line)

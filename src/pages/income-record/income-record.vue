@@ -6,7 +6,7 @@
         <div class="item-nav" v-for="(item, index) in navList" v-bind:key="index" @click="clickNav(item)" :class="{'item-nav-active': navIndex === index}">{{item.text}}</div>
         <div class="nav-line-box">
           <div class="nav-line" :style="{'transform': ' translateX('+ (navIndex * 100) +'%)'}">
-            <div class="line"></div>
+            <div class="line" :class="'corp-' + corpName + '-bg'"></div>
           </div>
         </div>
       </div>
@@ -16,8 +16,9 @@
         <div class="await-income" :class="navIndex * 1 === 0 ? '' : 'income-item-active'">
           <div class="income-money-box">
             <div class="income-number" @click="openQuestion" v-if="incomeInfo.income_money">￥{{incomeInfo.income_money}}</div>
-            <div class="income-icon" @click="openQuestion" v-if="incomeInfo.income_money">
+            <div class="income-icon" v-if="incomeInfo.income_money">
               <img class="jump-question" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/wallet/icon-question@2x.png'">
+              <div class="income-icon-btn" @click="openQuestion"></div>
             </div>
           </div>
           <div class="income-item" v-for="(item, index) in incomeList" v-bind:key="index">
@@ -31,8 +32,9 @@
         <div class="await-income" :class="navIndex * 1 === 1 ? '' : 'income-item-active'">
           <div class="income-money-box">
             <div class="income-number" @click="openQuestion" v-if="incomeInfo.wait_income_money">￥{{incomeInfo.wait_income_money}}</div>
-            <div class="income-icon" @click="openQuestion" v-if="incomeInfo.wait_income_money">
+            <div class="income-icon" v-if="incomeInfo.wait_income_money">
               <img class="jump-question" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/wallet/icon-question@2x.png'">
+              <div class="income-icon-btn" @click="openQuestion"></div>
             </div>
           </div>
           <div class="income-item" v-for="(item, index) in awaitIncomeList" v-bind:key="index">
@@ -231,7 +233,6 @@
           .line
             width: 30px
             height: 100%
-            background: $color-main
             border-radius: 1.5px
             margin: auto
   .income-money-box
@@ -280,6 +281,14 @@
       font-family: $font-family-regular
       font-size: $font-size-14
       color: $color-text-sub
+  .income-icon
+    position: relative
+    .income-icon-btn
+      position: absolute
+      width: 50px
+      height: 50px
+      left: -20px
+      top: -20px
   .income-item-active
     height: 70vh
 </style>

@@ -4,7 +4,7 @@
     <div class="goods-end-box">
       <img v-if="imageUrl" class="goods-end-img" :src="imageUrl+'/yx-image/order/pic-end@2x.png'" alt="">
       <div class="goods-end-text">活动已结束</div>
-      <div class="goods-go-index" @click="goBack">返回首页</div>
+      <div class="goods-go-index" :class="'corp-' + corpName + '-bg'" @click="goBack">返回首页</div>
     </div>
   </div>
 </template>
@@ -55,7 +55,6 @@
       margin: 42px auto 0
       font-size: $font-size-14
       font-family: $font-family-regular
-      background: $color-main
       text-align: center
       border-radius: 50px
   .goods-end

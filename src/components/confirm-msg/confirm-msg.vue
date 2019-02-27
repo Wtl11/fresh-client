@@ -26,8 +26,9 @@
       </div>
       <div class="income-title">亲爱的团长：</div>
       <div class="income-msg">为保障您享有合法的收益权利，在以下两种场景，该订单产生的收益由待入账自动转入已入账中。</div>
-      <img v-if="imageUrl" mode="widthFix" :src="imageUrl + '/yx-image/wallet/pic-account_entry1@2x.png'" alt="" class="income-img income-img-bottom">
-      <img v-if="imageUrl" mode="widthFix" :src="imageUrl + '/yx-image/wallet/Rectangle@2x.png'" alt="" class="income-img">
+      <img v-if="imageUrl && corpName === 'platform'" mode="widthFix" :src="imageUrl + '/yx-image/wallet/pic-account_entry1@2x.png'" alt="" class="income-img income-img-bottom">
+      <img v-if="imageUrl && corpName === 'platform'" mode="widthFix" :src="imageUrl + '/yx-image/wallet/Rectangle@2x.png'" alt="" class="income-img">
+      <img v-if="imageUrl && corpName === 'retuan'" mode="widthFix" :src="imageUrl + '/yx-image/retuan/pic-flow@2x.png'" alt="" class="income-img">
     </section>
     <section class="content" v-else :animation="modalAnimation">
       <div class="title item">{{title}}</div>

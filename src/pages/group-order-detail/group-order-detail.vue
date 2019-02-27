@@ -2,9 +2,11 @@
   <div class="group-order-detail">
     <navigation-bar title="订单详情"></navigation-bar>
     <div class="order-status">
-      <img :src="imageUrl + '/yx-image/group/bg-ddxq@2x.png'" v-if="imageUrl" class="order-status-bg">
+      <img :src="imageUrl + '/yx-image/group/bg-ddxq@2x.png'" v-if="imageUrl && corpName === 'platform'" class="order-status-bg">
+      <img :src="imageUrl + '/yx-image/retuan/bg-ddxq@2x.png'" v-if="imageUrl && corpName === 'retuan'" class="order-status-bg">
       <div class="order-content">
-        <img :src="orderDetail.status === 2 ? imageUrl + '/yx-image/cart/icon-delivery_xq@2x.png' : imageUrl + '/yx-image/group/icon_waiting@2x.png'" v-if="imageUrl" class="order-status-icon">
+        <img :src="orderDetail.status === 2 ? imageUrl + '/yx-image/cart/icon-delivery_xq@2x.png' : imageUrl + '/yx-image/group/icon_waiting@2x.png'" v-if="imageUrl && corpName === 'platform'" class="order-status-icon">
+        <img :src="orderDetail.status === 2 ? imageUrl + '/yx-image/retuan/icon-delivery_xq@2x.png' : imageUrl + '/yx-image/retuan/icon_waiting@2x.png'" v-if="imageUrl && corpName === 'retuan'" class="order-status-icon">
         <p class="order-status-text">{{orderDetail.status_text}}</p>
       </div>
       <p class="order-num">提货单号: {{orderDetail.code}}</p>
@@ -12,7 +14,7 @@
     <div class="group">
       <div class="group-address-box">
         <div class="customer-msg">
-          <p class="group-tip">团长</p>
+          <p class="group-tip" :class="'corp-' + corpName + '-bg'">团长</p>
           <p class="group-name">{{orderDetail.address.shop_name}}</p>
           <p class="group-social-name">{{orderDetail.address.social_name ?  orderDetail.address.social_name : ''}}</p>
           <!--<p class="group-phone">{{orderDetail.address.shop_mobile}}</p>-->
@@ -21,7 +23,8 @@
       </div>
       <div class="customer">
         <p class="customer-phone">提货人手机：{{orderDetail.address.mobile}}</p>
-        <img :src="imageUrl + '/yx-image/group/icon-phone-green@2x.png'" v-if="imageUrl" class="phone-icon" @click="_callPhone(orderDetail.address.mobile)">
+        <img :src="imageUrl + '/yx-image/group/icon-phone-green@2x.png'" v-if="imageUrl && corpName === 'platform'" class="phone-icon" @click="_callPhone(orderDetail.address.mobile)">
+        <img :src="imageUrl + '/yx-image/retuan/icon-telephone_xq@2x.png'" v-if="imageUrl && corpName === 'retuan'" class="phone-icon" @click="_callPhone(orderDetail.address.mobile)">
       </div>
       <img :src="imageUrl + '/yx-image/choiceness/pic-colour@2x.png'" v-if="imageUrl" mode="aspectFill" class="group-border">
     </div>
@@ -41,7 +44,7 @@
           <div class="goods-num-box">x<span class="goods-num">{{item.num}}</span></div>
         </div>
         <div class="btn-box" v-if="!item.delivery_status">
-          <div class="goods-btn" v-if="orderDetail.status === 1 && orderDetail.delivery_status === 3 && (item.after_sale_status === 0 || item.after_sale_status === 1)" @click="_showDialog('', item.order_detail_id)">确认提货</div>
+          <div class="goods-btn" :class="'corp-' + corpName + '-goods-btn'" v-if="orderDetail.status === 1 && orderDetail.delivery_status === 3 && (item.after_sale_status === 0 || item.after_sale_status === 1)" @click="_showDialog('', item.order_detail_id)">确认提货</div>
         </div>
       </div>
     </div>
@@ -49,7 +52,7 @@
     <div class="order-msg">
       <div class="order-price">
         <p class="price-title">实付金额</p>
-        <p class="price-money">¥{{orderDetail.total}}</p>
+        <p  :class="'corp-' + corpName + '-money'">¥{{orderDetail.total}}</p>
       </div>
       <div class="order-detail">
         <div class="order-sn">订单编号: {{orderDetail.order_sn}} <span class="copy" @click="_copyOrderSn(orderDetail.order_sn)">复制</span></div>
@@ -57,11 +60,11 @@
       </div>
     </div>
     <!---->
-    <div class="order-btn-box" v-if="orderDetail.status === 1 && orderDetail.delivery_status === 3">
+    <div class="order-btn-box lost" v-if="orderDetail.status === 1 && orderDetail.delivery_status === 3">
       <form action="" report-submit @submit="$getFormId">
         <button class="order-btn order-dark" :class="{'order-disable': orderDetail.remind_status}" formType="submit" @click="_remind">{{orderDetail.remind_status ? '已提醒' : '提醒收货'}}</button>
         <!--<button class="order-btn order-dark" open-type="share">分享订单</button>-->
-        <button class="order-btn order-main" @click="_showDialog('all')">确认提货</button>
+        <button class="order-btn order-main" :class="'corp-' + corpName + '-bg'" @click="_showDialog('all')">确认提货</button>
       </form>
     </div>
     <dialog-model ref="dialog" @confirm="_confirmDelivery"></dialog-model>
@@ -239,7 +242,6 @@
         padding: 2px 0
         text-align: center
         color: $color-white
-        background: $color-main
       .group-name, .group-phone
         margin-left: 10px
         font-family: $font-family-medium
@@ -338,8 +340,6 @@
       .goods-btn
         text-align: center
         box-sizing: border-box
-        border-1px($color-main, 15px)
-        color: $color-main
         font-size: $font-size-12
         font-family: $font-family-regular
         line-height: 25px
@@ -361,8 +361,6 @@
       justify-content: space-between
       .price-title
         color: $color-text-main
-      .price-money
-        color: $color-money
     .order-detail
       font-size: $font-size-14
       font-family: $font-family-regular
@@ -407,10 +405,6 @@
       border-1px($color-text-assist, 15px)
     .order-main
       color: $color-white
-      background: $color-main
-      &:active
-        background: #9DD44C
-        color: #E1F2C9
     .order-disable
       border-none()
       color: $color-text-assist

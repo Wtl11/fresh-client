@@ -17,7 +17,7 @@
         <textarea type="text" :class="{'regimental-text-ios': isIos}" maxlength="28" class="regimental-text" placeholder="请添加注意事项" placeholder-class="text-color" v-model="leaderDetail.notice"></textarea>
       </div>
     </div>
-    <div :class="{'btn-disable': !leaderDetail.notice}" class="btn" @click="_saveLeader">保存</div>
+    <div :class="[!leaderDetail.notice ? 'corp-' + corpName + '-btn-disable' : '', 'corp-' + corpName + '-bg']" class="btn" @click="_saveLeader">保存</div>
   </div>
 </template>
 
@@ -147,7 +147,6 @@
     bottom: 19px
     width: 92vw
     left: 4vw
-    background: $color-main
     text-align: center
     height: 45px
     font-size: $font-size-16
@@ -156,11 +155,5 @@
     border-radius: 22.5px
     color: $color-white
     transition: all 0.2s
-    &:active
-      background: #9DD44C
-      color: #E1F2C9
 
-  .btn-disable
-    background: #D5ECB3 !important
-    color: $color-white !important
 </style>

@@ -7,7 +7,7 @@
         <input type="text" class="search" placeholder="提供单号，手机号，微信昵称，搜索" :placeholder-style="'color: #B7B7B7,font-family:PingFangSC-Regular'" v-model="keyword" @input="_search"/>
       </div>
       <div class="rag-goods-tab">
-        <span :class="{'rag-goods-tab-item-active': navIndex === index}" class="rag-goods-tab-item" v-for="(item, index) in nav" :key="index" @click="_setNav(index, item)">
+        <span :class="[navIndex === index ? 'rag-goods-tab-item-active' : '',navIndex === index ? 'corp-' + corpName + '-bg' : '', 'corp-' + corpName + '-tab']" class="rag-goods-tab-item" v-for="(item, index) in nav" :key="index" @click="_setNav(index, item)">
           {{item.title}}
         </span>
       </div>
@@ -282,19 +282,16 @@
         text-align: center
         line-height: 31px
         height: 33px
-        color: $color-main
-        border: 1px solid $color-main
         transition: all 0.4s
         box-sizing: border-box
         &:first-child
           border-right: none
-          border-radius: 50px 0px 0px 50px
+          border-radius: 50px 0 0 50px
         &:last-child
           border-left: none
-          border-radius: 0px 50px 50px 0px
+          border-radius: 0 50px 50px 0
       .rag-goods-tab-item-active
         transform-origin: 50%
-        background: $color-main
         color: $color-white
 
   .big-box

@@ -32,7 +32,7 @@
                     <form action="" report-submit @submit="$getFormId" @click.stop="addShoppingCart(item)">
                       <button class="price-right" formType="submit">
                         <img v-if="imageUrl && corpName === 'platform'" :src="imageUrl + '/yx-image/goods/icon-shopcart2@2x.png'" alt="" class="price-right-img">
-                        <!--<img v-if="imageUrl && corpName === 'platform'" :src="imageUrl + '/yx-image/retuan/icon-shopcart2@2x.png'" alt="" class="price-right-img">-->
+                        <img v-if="imageUrl && corpName === 'retuan'" :src="imageUrl + '/yx-image/retuan/icon-shopcart2@2x.png'" alt="" class="price-right-img">
                       </button>
                     </form>
                   </div>

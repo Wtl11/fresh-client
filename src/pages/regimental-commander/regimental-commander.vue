@@ -3,7 +3,8 @@
     <navigation-bar :translucent="true" title="我的小区"></navigation-bar>
     <!--头部信息-->
     <div class="reg-img-box" :style="{'padding-top': adaptation.marginTop + 'px', height: adaptation.height + 'px'}">
-      <img class="reg-img" :src="imageUrl + '/yx-image/group/group-bg@2x.png'" v-if="imageUrl">
+      <img class="reg-img" :src="imageUrl + '/yx-image/group/group-bg@2x.png'" v-if="imageUrl && corpName === 'platform'">
+      <img class="reg-img" :src="imageUrl + '/yx-image/retuan/pic-mycell@2x.png'" v-if="imageUrl && corpName === 'retuan'">
       <div class="reg-info">
         <img :src="leaderDetail.head_image_url" class="reg-header">
         <div class="reg-msg">
@@ -18,7 +19,8 @@
     </div>
     <!--收入信息-->
     <div class="reg-home" :style="{'margin-top': adaptation.hoseMarginTop + 'px'}">
-      <img :src="imageUrl + '/yx-image/group/pic-shop@2x.png'" v-if="imageUrl" class="reg-shop-icon">
+      <img :src="imageUrl + '/yx-image/group/pic-shop@2x.png'" v-if="imageUrl && corpName === 'platform'" class="reg-shop-icon">
+      <img :src="imageUrl + '/yx-image/retuan/pic-shop@2x.png'" v-if="imageUrl && corpName === 'retuan'" class="reg-shop-icon">
       <div class="order-item">
         <div class="reg-order-title">今日收入(元)</div>
         <div class="reg-order-money">{{orderTotal.today_income}}</div>
@@ -36,29 +38,35 @@
     <div class="reg-manager">
       <div class="reg-manager-box">
         <navigator url="/pages/yesterday-sale-manager" hover-class="none" class="reg-manager-item">
-          <img :src="imageUrl + '/yx-image/group/icon-order@2x.png'" v-if="imageUrl" class="reg-manager-icon">
+          <img :src="imageUrl + '/yx-image/group/icon-order@2x.png'" v-if="imageUrl && corpName === 'platform'" class="reg-manager-icon">
+          <img :src="imageUrl + '/yx-image/retuan/icon-order@2x.png'" v-if="imageUrl && corpName === 'retuan'" class="reg-manager-icon">
           <p class="reg-manager-text">消费者订单</p>
         </navigator>
         <navigator url="/pages/after-sale-management" hover-class="none" class="reg-manager-item">
-          <img :src="imageUrl + '/yx-image/group/icon-sale@2x.png'" v-if="imageUrl" class="reg-manager-icon">
+          <img :src="imageUrl + '/yx-image/group/icon-sale@2x.png'" v-if="imageUrl && corpName === 'platform'" class="reg-manager-icon">
+          <img :src="imageUrl + '/yx-image/retuan/icon-sale@2x.png'" v-if="imageUrl && corpName === 'retuan'" class="reg-manager-icon">
           <p class="reg-manager-text">售后管理</p>
         </navigator>
         <navigator url="/pages/delivery-order" hover-class="none" class="reg-manager-item">
-          <img :src="imageUrl + '/yx-image/group/icon-delivery@2x.png'" v-if="imageUrl" class="reg-manager-icon">
+          <img :src="imageUrl + '/yx-image/group/icon-delivery@2x.png'" v-if="imageUrl && corpName === 'platform'" class="reg-manager-icon">
+          <img :src="imageUrl + '/yx-image/retuan/icon-delivery2@2x.png'" v-if="imageUrl && corpName === 'retuan'" class="reg-manager-icon">
           <p class="reg-manager-text">配送收货</p>
         </navigator>
       </div>
       <div class="reg-manager-box">
         <div class="reg-manager-item" @click="_scanCode">
-          <img :src="imageUrl + '/yx-image/group/icon-scan@2x.png'" v-if="imageUrl" class="reg-manager-icon">
+          <img :src="imageUrl + '/yx-image/group/icon-scan@2x.png'" v-if="imageUrl && corpName === 'platform'" class="reg-manager-icon">
+          <img :src="imageUrl + '/yx-image/retuan/icon-scan@2x.png'" v-if="imageUrl && corpName === 'retuan'" class="reg-manager-icon">
           <p class="reg-manager-text">扫一扫</p>
         </div>
         <navigator url="/pages/group-wallet" hover-class="none" class="reg-manager-item">
-          <img :src="imageUrl + '/yx-image/group/icon-moeny_box@2x.png'" v-if="imageUrl" class="reg-manager-icon">
+          <img :src="imageUrl + '/yx-image/group/icon-moeny_box@2x.png'" v-if="imageUrl && corpName === 'platform'" class="reg-manager-icon">
+          <img :src="imageUrl + '/yx-image/retuan/icon-moeny_box@2x.png'" v-if="imageUrl && corpName === 'retuan'" class="reg-manager-icon">
           <p class="reg-manager-text">团长钱包</p>
         </navigator>
         <navigator url="/pages/data-overview" hover-class="none" class="reg-manager-item">
-          <img :src="imageUrl + '/yx-image/group/iocn-report_forms@2x.png'" v-if="imageUrl" class="reg-manager-icon">
+          <img :src="imageUrl + '/yx-image/group/iocn-report_forms@2x.png'" v-if="imageUrl && corpName === 'platform'" class="reg-manager-icon">
+          <img :src="imageUrl + '/yx-image/retuan/iocn-report_forms@2x.png'" v-if="imageUrl && corpName === 'retuan'" class="reg-manager-icon">
           <p class="reg-manager-text">数据统计</p>
         </navigator>
       </div>
@@ -66,7 +74,7 @@
     <!--商品模块-->
     <div class="reg-goods">
       <div class="rag-goods-tab">
-        <span :class="{'rag-goods-tab-item-active': navIndex === index}" class="rag-goods-tab-item" v-for="(item, index) in nav" :key="index" @click="_setNav(index)">
+        <span :class="[navIndex === index ? 'rag-goods-tab-item-active' : '',navIndex === index ? 'corp-' + corpName + '-bg' : '', 'corp-' + corpName + '-tab']" class="rag-goods-tab-item" v-for="(item, index) in nav" :key="index" @click="_setNav(index)">
           {{item.title}}
         </span>
       </div>
@@ -75,7 +83,7 @@
         <div class="presell-wrapper order-box" :style="{'transform': ' translateX('+ -(navIndex * width) +'px)'}">
           <div class="title-wrapper border-bottom-1px" v-if="preSell.shelf_title">
             <p class="title">{{preSell.shelf_title}}</p>
-            <div class="copy-btn" @click="copyPreSell">一键复制</div>
+            <div class="copy-btn" :class="'corp-' + corpName + '-goods-btn'" @click="copyPreSell">一键复制</div>
           </div>
           <div class="content-wrapper" v-if="preSell.shelf_content_list">
             <div v-for="(item, index) in preSell.shelf_content_list" :key="index" class="content">{{item}}</div>
@@ -92,8 +100,8 @@
             <img :src="item.goods_cover_image" class="reg-goods-img" mode="aspectFill">
             <div class="reg-goods-content">
               <div class="reg-goods-title">{{item.name}}</div>
-              <div class="reg-goods-tip">团购价</div>
-              <span class="reg-goods-money">{{item.shop_price}}<span class="reg-goods-small">元</span></span>
+              <div class="reg-goods-tip" :class="'corp-' + corpName + '-wallet-label'">团购价</div>
+              <span class="reg-goods-money" :class="'corp-' + corpName + '-money'">{{item.shop_price}}<span class="reg-goods-small">元</span></span>
               <span class="reg-goods-del-money">{{item.original_price}}元</span>
             </div>
           </navigator>
@@ -459,18 +467,15 @@
         text-align: center
         line-height: 31px
         height: 33px
-        color: $color-main
-        border: 1px solid $color-main
         transition: all 0.4s
         &:first-child
           border-right: none
-          border-radius: 50px 0px 0px 50px
+          border-radius: 50px 0 0 50px
         &:last-child
           border-left: none
-          border-radius: 0px 50px 50px 0px
+          border-radius: 0 50px 50px 0
       .rag-goods-tab-item-active
         transform-origin: 50%
-        background: $color-main
         color: $color-white
 
     .presell-wrapper
@@ -488,9 +493,7 @@
         .copy-btn
           border-radius: 23px
           padding: 5px 8px
-          border-1px($color-main, 23px)
           font-size: $font-size-14
-          color: $color-main
       .content-wrapper
         padding-top: 11.5px
         padding-left: 15px
@@ -549,7 +552,6 @@
         font-family: $font-family-medium
         font-size: $font-size-20
         margin-top: 6px
-        color: $color-money
         line-height: 1
         .reg-goods-small
           font-size: $font-size-12

@@ -14,7 +14,7 @@
         </div>
         <div class="btn-group">
           <div class="btn cancel" @click="cancel">取消</div>
-          <div class="btn confirm" @click="confirm">{{sureString}}</div>
+          <div class="btn confirm" :class="'corp-' + corpName + '-text'" @click="confirm">{{sureString}}</div>
         </div>
       </section>
     </article>
@@ -162,10 +162,10 @@
           border-radius: 100px
           font-family: $font-family-regular
           font-size: $font-size-16
-          color: $color-text-main
           letter-spacing: 0.6px
+          &.cancel
+            color: $color-text-main
           &.confirm
-            color: $color-main
             border-left-1px($color-line)
             background: $color-F94C5F
             border-radius: 100px

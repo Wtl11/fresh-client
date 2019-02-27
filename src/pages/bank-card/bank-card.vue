@@ -18,8 +18,8 @@
         <img class="ro-bank-card-icon" v-if="imageUrl" :src="imageUrl + '/ws-image/icon-pressed@2x.png'">
       </div>
     </div>
-    <div class="ro-bank-card-btn-box">
-      <div class="ro-bank-card-btn" @click="_bankCards">保存</div>
+    <div class="ro-bank-card-btn-box lost">
+      <div class="ro-bank-card-btn" :class="'corp-' + corpName + '-bg'" @click="_bankCards">保存</div>
     </div>
   </div>
 </template>
@@ -184,7 +184,6 @@
     .ro-bank-card-btn
       width: 92vw
       height: 43px
-      background: $color-main
       margin: 20px auto
       border-radius: 50px
       line-height: 43px

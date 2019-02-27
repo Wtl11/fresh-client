@@ -6,7 +6,7 @@
         <div class="item-nav" v-for="(item, index) in navList" v-bind:key="index" @click="clickNav(item, index)" :class="{'item-nav-active': navIndex === index}">{{item.text}}</div>
         <div class="nav-line-box">
           <div class="nav-line" :style="{'transform': ' translateX('+ (navIndex * 100) +'%)'}">
-            <div class="line"></div>
+            <div class="line" :class="'corp-' + corpName + '-bg'"></div>
           </div>
         </div>
       </div>
@@ -808,7 +808,6 @@
           .line
             width: 30px
             height: 100%
-            background: $color-main
             border-radius: 1.5px
             margin: auto
   .data-box

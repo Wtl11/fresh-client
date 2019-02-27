@@ -10,7 +10,7 @@
     </div>
     <div class="bulk-pickup">
       <p class="bulk-pickup-text">共{{productList.length}}笔订单，{{goodsCount}}件商品</p>
-      <p class="bulk-pickup-btn" @click="_showDialog">批量提货</p>
+      <p class="bulk-pickup-btn" :class="'corp-' + corpName + '-bg'" @click="_showDialog">批量提货</p>
     </div>
     <dialog-model ref="dialog" @confirm="_confirmDelivery"></dialog-model>
   </div>
@@ -134,7 +134,6 @@
     padding: 0 12px
     .bulk-pickup-btn
       border-radius: 15px
-      background: $color-main
       margin-left: 10px
       padding: 0 12px
       line-height: 30px

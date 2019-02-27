@@ -10,17 +10,21 @@
     <div class="copy-sub">强烈推荐：{{goodsMsg.describe}}</div>
     <img v-for="(item, index) in goodsImgList" v-if="item.image_url" :src="item.image_url" class="detail-img"  mode="widthFix" :key="index">
     <div class="fixed-box">
-      <div class="fixed-btn-box fixed-btn-line" @click="clipOrderId">
-        <div class="icon">
-          <img src="" alt="" class="icon-img"  v-if="imageUrl" :src="imageUrl + '/yx-image/wallet/icon-copy@2x.png'">
+      <div class="fixed-btn-box " @click="clipOrderId">
+        <div class="fixed-btn-small-box fixed-btn-small-box-bg">
+          <div class="icon">
+            <img src="" alt="" class="icon-img"  v-if="imageUrl" :src="imageUrl + '/yx-image/retuan/icon-copy@2x.png'">
+          </div>
+          <div class="text">一键复制</div>
         </div>
-        <div class="text">一键复制</div>
       </div>
       <button open-type="share" class="fixed-btn-box fixed-btn-share">
+        <span class="fixed-btn-small-box"  :class="'corp-' + corpName + '-bg'">
         <div class="icon">
-          <img src="" alt="" class="icon-img"  v-if="imageUrl" :src="imageUrl + '/yx-image/wallet/icon-share_goods@2x.png'">
+          <img src="" alt="" class="icon-img"  v-if="imageUrl" :src="imageUrl + '/yx-image/retuan/icon-share_goods@2x.png'">
         </div>
         <div class="text">分享到群</div>
+        </span>
       </button>
     </div>
   </div>
@@ -139,18 +143,27 @@
     left: 0
     bottom: 0
     background: $color-white
-    height: 55px
+    height: 60px
     .fixed-btn-box
       width: 50%
       height: 100%
       layout(row)
       align-items: center
       justify-content: center
+      .fixed-btn-small-box
+        width: 90%
+        height: 40px
+        layout(row)
+        align-items: center
+        justify-content: center
+        border-radius: 40px
+      .fixed-btn-small-box-bg
+        background: #FFC712
       .text
         margin-left: 6.5px
         font-family: $font-family-regular
         font-size: $font-size-14
-        color: #111
+        color: #fff
       .icon
         width: 18px
         height: 18px

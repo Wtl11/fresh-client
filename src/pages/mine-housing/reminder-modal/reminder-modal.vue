@@ -7,7 +7,7 @@
           <div>该账号被冻结，请联系客服处理</div>
           <div class="action-wrapper">
             <div>客服微信：weixin0021</div>
-            <div class="copy-btn" @click="copy">复制</div>
+            <div class="copy-btn" :class="'corp-' + corpName + '-goods-btn'" @click="copy">复制</div>
           </div>
         </div>
         <img :src="imageUrl + '/yx-image/group/icon-del@2x.png'" v-if="imageUrl" class="close" @click="cancel">
@@ -129,7 +129,5 @@
             margin-left: 10px
             padding: 5.5px 17px
             font-size: $font-size-13
-            color: $color-main
-            border-1px($color-main, 30px)
 
 </style>

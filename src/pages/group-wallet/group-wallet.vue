@@ -2,7 +2,8 @@
   <div class="group-wallet">
     <navigation-bar title="团长钱包"></navigation-bar>
     <div class="wallet-top">
-      <img class="bgimg-url" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/wallet/icon-money_bg@2x.png'">
+      <img class="bgimg-url" mode="aspectFill" v-if="imageUrl && corpName === 'platform'" :src="imageUrl + '/yx-image/wallet/icon-money_bg@2x.png'">
+      <img class="bgimg-url" mode="aspectFill" v-if="imageUrl && corpName === 'retuan'" :src="imageUrl + '/yx-image/retuan/icon-money_bg@2x.png'">
       <div class="wallet-box" v-if="walletInfo.remaining">
         <div class="wallet-box-left">
           <div class="wallet-box-left-name">钱包余额(元)</div>

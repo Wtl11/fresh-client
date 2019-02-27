@@ -27,14 +27,14 @@
       </div>
       <!--审核-->
       <div class="examine" v-if="isShowExamine">
-        <p class="examine-text">{{item.status_str}}</p>
+        <p :class="'corp-' + corpName + '-money'">{{item.status_str}}</p>
         <p class="liner"></p>
         <p class="examine-content">{{item.status_describe}}</p>
       </div>
       <div class="order-footer">
         <div class="time">{{item.text || '下单时间'}}：{{item.created_at}}</div>
         <!--item.btn_text格式化功能按钮-->
-        <div class="footer-btn" :class="{'footer-btn-disable': item.disable}" @click="_dealOrder(index, item)" v-if="item.isShowBtn">{{item.btn_text}}</div>
+        <div class="footer-btn" :class="[item.disable ? 'footer-btn-disable' : '' , 'corp-' + corpName + '-tab']" @click="_dealOrder(index, item)" v-if="item.isShowBtn">{{item.btn_text}}</div>
       </div>
     </div>
   </div>
@@ -174,8 +174,6 @@
     font-family: $font-family-regular
     background: #FAFAFA
     height: 32px
-    .examine-text
-      color: $color-money
     .liner
       width: 1px
       height: 13px
@@ -198,11 +196,9 @@
       color: $color-text-sub
     .footer-btn
       font-size: $font-size-12
-      color: $color-main
       box-sizing: border-box
       height: 25px
       line-height: 25px
-      border: 1px solid $color-main
       border-radius: 15px
       min-width: 70px
       text-align: center

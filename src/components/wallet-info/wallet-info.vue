@@ -8,12 +8,12 @@
       <div class="info-text-box">
         <div class="info-text-title">{{wechatInfo.title}}</div>
         <div class="info-text-bottom">
-          <div class="label-btn " :class="{'label-btn-active': wechatInfo.type === 30, 'label-btn-active': wechatInfo.type === 31}">{{wechatInfo.type_str}}</div>
+          <div class="label-btn " :class="[wechatInfo.type === 30 ? 'corp-' + corpName + '-wallet-label' : '', wechatInfo.type === 31 ? 'corp-' + corpName + '-wallet-label': '']">{{wechatInfo.type_str}}</div>
           <div class="info-time">{{wechatInfo.created_at}}</div>
         </div>
       </div>
       <div class="info-money-box">
-        <div class="money-number" :class="{'money-subtract': wechatInfo.type === 30, 'money-subtract': wechatInfo.type === 31}">{{wechatInfo.total}}</div>
+        <div class="money-number" :class="[wechatInfo.type === 30 ? 'corp-' + corpName + '-money' : '', wechatInfo.type === 31 ? 'corp-' + corpName + '-money': '']">{{wechatInfo.total}}</div>
         <div class="money-balance" v-if="wechatType * 1 === 1">余额 ￥{{wechatInfo.after_remaining}}</div>
         <div class="money-balance" v-if="wechatType * 1 === 2">{{wechatInfo.status_str}}</div>
         <div class="withdraw"></div>
@@ -92,19 +92,15 @@
           border-radius: 8.5px
           border-1px(#616161, 8.5px)
           margin-right: 5px
-        .label-btn-active
-          color: $color-money
-          background: rgba(255,131,0,0.16)
-          border-1px($color-money, 8.5px)
         .info-time
           font-size: $font-size-11
           color: $color-text-assist
           font-family: $font-family-regular
       .info-money-box
         text-align: right
+        color: $color-text-main
       .money-number
         font-size: $font-size-16
-        color: $color-text-main
         font-family: $font-family-medium
         margin-bottom: 8px
       .money-subtract
