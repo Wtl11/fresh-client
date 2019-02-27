@@ -2,7 +2,8 @@
   <div class="choiceness">
     <navigation-bar :title="shopName" :showArrow="false"></navigation-bar>
     <div class="community-box">
-      <div class="community-main" @click="jumpSelfPoint">
+      <div class="community-main">
+      <!--<div class="community-main" @click="jumpSelfPoint">-->
         <div class="community-img">
           <img v-if="(locationStatus * 1 === 1 || locationStatus * 1 === 2) && imageUrl" :src="groupInfo.head_image_url || imageUrl+'/yx-image/order/icon-colonel_head@2x.png'"">
         </div>
@@ -10,8 +11,8 @@
           {{groupInfo.social_name}}
         </div>
         <div class="community-text" v-else>定位中...</div>
-        <img v-if="imageUrl && (locationStatus * 1 === 1 || locationStatus * 1 === 2) && groupInfo.social_name"
-             :src="imageUrl + '/yx-image/choiceness/icon-pitch@2x.png'" class="community-down">
+        <!--<img v-if="imageUrl && (locationStatus * 1 === 1 || locationStatus * 1 === 2) && groupInfo.social_name"-->
+             <!--:src="imageUrl + '/yx-image/choiceness/icon-pitch@2x.png'" class="community-down">-->
       </div>
       <div class="carousel-wrapper" v-if="buyUsers.length > 0 && (locationStatus * 1 === 1 || locationStatus * 1 === 2)"
            :class="{'show': showBuyUser}">
@@ -279,7 +280,7 @@
           }
           let msgStatus = wx.getStorageSync('msgStatus')
           if (msgStatus !== 4 && res.data.distance > 1000) {
-            this.$refs.refundModel.show()
+            // this.$refs.refundModel.show()
           }
         })
       },
