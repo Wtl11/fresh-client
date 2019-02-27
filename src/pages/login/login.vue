@@ -3,8 +3,8 @@
     <navigation-bar title="登录" :showArrow="false"></navigation-bar>
     <div class="login-img-box">
       <img :src="imageUrl + '/yx-image/login/login.png'" v-if="imageUrl" class="login-img">
-      <form action="" report-submit>
-        <button class="login-btn" @getuserinfo="_login" open-type="getUserInfo" formType="submit">
+      <form class="lost" action="" report-submit>
+        <button class="login-btn" :class="'corp-' + corpName + '-bg'" @getuserinfo="_login" open-type="getUserInfo" formType="submit">
           <img :src="imageUrl + '/yx-image/login/icon-wechat@2x.png'" v-if="imageUrl" class="wx-logo">
           <span class="title">微信授权登录</span>
         </button>
@@ -91,12 +91,8 @@
       align-items: center
       width: 300px
       height: 45px
-      background: $color-main
       border-radius: 22.5px
       transition: all 0.3s
-      &:active
-        background: #9DD44C
-        color: #E1F2C9
       .wx-logo
         width: 20px
         height: 20px

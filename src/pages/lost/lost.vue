@@ -5,7 +5,7 @@
       <img :src="imageUrl + '/yx-image/group/pic-miss@2x.png'" v-if="imageUrl" class="error-img">
       <p class="text">抱歉！您访问的页面丢失啦</p>
     </div>
-    <navigator class="btn" open-type="switchTab" url="/pages/choiceness">返回首页</navigator>
+    <navigator class="btn" :class="'corp-' + corpName + '-bg'" open-type="switchTab" url="/pages/choiceness">返回首页</navigator>
   </div>
 </template>
 
@@ -59,12 +59,8 @@
     height: 32px
     line-height: 32px
     text-align: center
-    background: $color-main
     border-radius: 16px
     color: $color-white
     font-size: $font-size-14
     margin: 30px auto
-    &:active
-      color: #E1F2C9
-      background: #9DD44C
 </style>

@@ -4,12 +4,13 @@
     <div class="result-top">
       <div class="result-img-box" :class="allReady ? 'show' : ''">
         <img v-if="imageUrl && allReady" :src="imageUrl + '/yx-image/choiceness/icon-pay_success@2x.png'" class="success-icon back">
-        <img v-if="imageUrl && !allReady" :src="imageUrl + '/yx-image/choiceness/icon-in_payment@2x.png'" class="success-icon front">
+        <img v-if="imageUrl && !allReady && corpName === 'platform'" :src="imageUrl + '/yx-image/choiceness/icon-in_payment@2x.png'" class="success-icon front">
+        <img v-if="imageUrl && !allReady && corpName === 'retuan'" :src="imageUrl + '/yx-image/retuan/icon-in_payment@2x.png'" class="success-icon front">
       </div>
       <div class="result-text-box">{{allReady ? '订单支付成功' : '支付中···'}}</div>
     </div>
-    <div class="jump-btn-box">
-      <button class="jump-goods" open-type="share"  formType="submit" :class="allReady ? '' : 'jump-goods-show'">提醒团长接单</button>
+    <div class="jump-btn-box lost">
+      <button class="jump-goods" :class="[allReady ? '' : 'jump-goods-show', 'corp-' + corpName + '-bg']" open-type="share"  formType="submit" >提醒团长接单</button>
       <form action="" report-submit @submit="$getFormId">
         <button class="jump-goods jump-order" formType="submit"  @click="jumpGoods">继续购物</button>
       </form>
@@ -118,7 +119,6 @@
     height: 45px
     line-height: 45px
     border-radius: 25px
-    background: $color-main
     font-family: $font-family-regular
     color: $color-white
     width: 271px
@@ -126,8 +126,6 @@
     font-size: $font-size-16
     &:after
       border: none
-  .jump-goods-show
-    background: rgba(115,194,0, .5)
   .jump-order
     background: $color-white
     font-family: $font-family-regular

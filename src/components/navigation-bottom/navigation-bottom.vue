@@ -18,6 +18,26 @@
   const PLATFORM = [
     {
       imgUrl: '/yx-image/retuan/hdpi/icon-select.png',
+      imgUrlActive: '/yx-image/retuan/hdpi/icon-select_press01.png',
+      text: '首页',
+      type: 'index'
+    },
+    {
+      imgUrl: '/yx-image/retuan/hdpi/icon-goodscart.png',
+      imgUrlActive: '/yx-image/retuan/hdpi/icon-goodscat_press01.png',
+      text: '购物车',
+      type: 'cart'
+    },
+    {
+      imgUrl: '/yx-image/retuan/hdpi/icon-my.png',
+      imgUrlActive: '/yx-image/retuan/hdpi/icon-my_press01.png',
+      text: '我的',
+      type: 'mine'
+    }
+  ]
+  const RETUANPLATFORM = [
+    {
+      imgUrl: '/yx-image/retuan/hdpi/icon-select.png',
       imgUrlActive: '/yx-image/retuan/hdpi/icon-select_press.png',
       text: '首页',
       type: 'index'
@@ -49,10 +69,16 @@
       }
     },
     onLoad() {
-      if (this.corpName === 'platform') {
-        this.platformList = PLATFORM
+      switch (this.corpName) {
+        case 'platform':
+          this.platformList = PLATFORM
+          break
+        case 'retuan':
+          this.platformList = RETUANPLATFORM
+          break
+        default:
+          break
       }
-      console.log(this.corpName)
     },
     methods: {
       async jumpNav(item) {

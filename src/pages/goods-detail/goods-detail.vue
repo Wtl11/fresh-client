@@ -35,9 +35,9 @@
           </div>
         </div>
         <div class="banner-title-type" v-if="goodsMsg.is_activity * 1 === 0">
-          <div class="left-price">{{goodsMsg.shop_price}}</div>
+          <div class="left-price" :class="'corp-' + corpName + '-money'">{{goodsMsg.shop_price}}</div>
           <div class="left-price-text">
-            <div class="price-text">元</div>
+            <div class="price-text" :class="'corp-' + corpName + '-money'">元</div>
             <div class="line-price-text">{{goodsMsg.original_price}}元</div>
           </div>
         </div>
@@ -47,12 +47,14 @@
       <div class="info-box">
         <div class="title" :class="goodsMsg.name ? 'has-title' : ''">{{goodsMsg.name}}</div>
         <div class="info-sub">
-          <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/icon-fast@2x.png'" mode="aspectFill" class="info-sub-img">
+          <img v-if="imageUrl && corpName === 'platform'" :src="imageUrl + '/yx-image/choiceness/icon-fast@2x.png'" mode="aspectFill" class="info-sub-img">
+          <img v-if="imageUrl && corpName === 'retuan'" :src="imageUrl + '/yx-image/retuan/icon-fast@2x.png'" mode="aspectFill" class="info-sub-img">
           <div class="sub-text">现在下单，预计({{goodsMsg.shelf_delivery_at}})可自提</div>
         </div>
-        <div class="info-stock">已售<span class="stock-number">{{goodsMsg.sale_count}}</span>{{goodsMsg.goods_units}}<span v-if="goodsMsg.is_activity * 1 === 1">，剩余<span class="stock-number">{{goodsMsg.usable_stock}}</span>{{goodsMsg.goods_units}}</span></div>
+        <div class="info-stock">已售<span :class="'corp-' + corpName + '-money'">{{goodsMsg.sale_count}}</span>{{goodsMsg.goods_units}}<span v-if="goodsMsg.is_activity * 1 === 1">，剩余<span :class="'corp-' + corpName + '-money'">{{goodsMsg.usable_stock}}</span>{{goodsMsg.goods_units}}</span></div>
       </div>
-      <img v-if="imageUrl" :src="imageUrl + '/yx-image/goods/icon-share2@2x.png'" mode="aspectFill" class="banner-share" @click="showShare">
+      <img v-if="imageUrl && corpName === 'platform'" :src="imageUrl + '/yx-image/goods/icon-share2@2x.png'" mode="aspectFill" class="banner-share" @click="showShare">
+      <img v-if="imageUrl && corpName === 'retuan'" :src="imageUrl + '/yx-image/retuan/icon-share2@2x.png'" mode="aspectFill" class="banner-share" @click="showShare">
     </div>
     <div class="safeguard-box">
       <div class="safeguard-item" v-for="(item, index) in safeList" v-bind:key="index">
@@ -81,7 +83,8 @@
       <img v-for="(item, index) in goodsMsg.goods_detail_images" v-if="item.image_url" :src="item.image_url" lazy-load="true" class="detail-img" mode="widthFix" :key="index">
     </div>
     <div class="send-box">
-      <img v-if="imageUrl" :src="imageUrl + '/yx-image/goods/pic-logo@2x.png'" mode="widthFix" class="send-box-img">
+      <img v-if="imageUrl && corpName === 'platform'" :src="imageUrl + '/yx-image/goods/pic-logo@2x.png'" mode="widthFix" class="send-box-img">
+      <img v-if="imageUrl && corpName === 'retuan'" :src="imageUrl + '/yx-image/retuan/pic-platform_head@2x.png'" mode="widthFix" class="send-box-img-retuan">
       <div class="send-title">服务说明</div>
       <div class="send-item-list">
         <span class="list-title">• 发货须知：</span><span class="list-sub">当天下午23:00前下单，当天发货次日达；当天下午23:00后下单，次日发货。</span>
@@ -104,10 +107,10 @@
         </div>
       </div>
       <form action="" report-submit @submit="$getFormId">
-        <button v-if="goodsMsg.usable_stock * 1 !== 0" class="goods-btn" formType="submit" @click="addShoppingCart">加入购物车</button>
+        <button v-if="goodsMsg.usable_stock * 1 !== 0" class="goods-btn goods-btn-active" formType="submit" @click="addShoppingCart">加入购物车</button>
       </form>
-      <form action="" report-submit @submit="$getFormId">
-        <button v-if="goodsMsg.usable_stock * 1 !== 0" class="goods-btn goods-btn-active" formType="submit" @click="instantlyBuy">立即购买</button>
+      <form action="" class="lost" report-submit @submit="$getFormId">
+        <button v-if="goodsMsg.usable_stock * 1 !== 0" class="goods-btn" :class="'corp-' + corpName + '-bg'" formType="submit" @click="instantlyBuy">立即购买</button>
       </form>
       <div v-if="goodsMsg.usable_stock * 1 === 0" class="goods-btn goods-btn-assint">已抢完</div>
     </div>
@@ -150,6 +153,7 @@
   const PAGE_NAME = 'GOODS_DETAIL'
   const TYPEBTN = [{url: '/yx-image/goods/icon-homepage@2x.png', text: '首页', type: 0}, {url: '/yx-image/goods/icon-shopcart@2x.png', text: '购物车', type: 2}]
   const SAFELIST = [{url: '/yx-image/choiceness/icon-lightning@2x.png', text: '次日达', type: 0}, {url: '/yx-image/choiceness/icon-ok@2x.png', text: '100%售后', type: 1}, {url: '/yx-image/choiceness/icon-ok@2x.png', text: '直采直销', type: 2}]
+  const RETUANSAFELIST = [{url: '/yx-image/retuan/icon-lightning@2x.png', text: '次日达', type: 0}, {url: '/yx-image/retuan/icon-ok@2x.png', text: '100%售后', type: 1}, {url: '/yx-image/retuan/icon-ok@2x.png', text: '直采直销', type: 2}]
   const DESCRIBE_HEIGHT = 21
   const ald = getApp()
 
@@ -204,6 +208,11 @@
       }
     },
     onLoad(options) {
+      if (this.corpName === 'platform') {
+        this.safeList = SAFELIST
+      } else if (this.corpName === 'retuan') {
+        this.safeList = RETUANSAFELIST
+      }
       if (options.shopId) {
         wx.setStorageSync('shopId', options.shopId)
       }
@@ -328,6 +337,20 @@
         let name = this.goodsMsg.name.length >= 12 ? this.goodsMsg.name.slice(0, 12) + '...' : this.goodsMsg.name
         let subName = this.goodsMsg.describe.length >= 12 ? this.goodsMsg.describe.slice(0, 12) + '...' : this.goodsMsg.describe
         this.shareImg = this.shareImg || this.imageUrl + '/yx-image/choiceness/5@1x.png'
+        let backGroundImg
+        let moneyColor
+        switch (this.corpName) {
+          case 'platform':
+            backGroundImg = this.imageUrl + '/yx-image/choiceness/pic-sharegoods@2x.png'
+            moneyColor = '#FF8300'
+            break
+          case 'retuan':
+            backGroundImg = this.imageUrl + '/yx-image/retuan/pic-sharegoods@2x.png'
+            moneyColor = '#FC4D1A'
+            break
+          default:
+            break
+        }
         let options = {
           canvasId: 'we-paint',
           multiple: 1,
@@ -344,7 +367,7 @@
               el: '.share-bg', // 背景图
               drawType: 'img',
               mode: 'aspectFill',
-              source: this.imageUrl + '/yx-image/choiceness/pic-sharegoods@2x.png'
+              source: backGroundImg
             },
             {
               el: '.share-box',
@@ -378,21 +401,21 @@
               drawType: 'text-area',
               source: '团购价',
               fontSize: 14,
-              color: '#FF8300'
+              color: moneyColor
             },
             {
               el: '.share-price-number',
               drawType: 'text',
               source: this.goodsMsg.shop_price,
               fontSize: 30,
-              color: '#FF8300'
+              color: moneyColor
             },
             {
               el: '.share-price-icon',
               drawType: 'text',
               source: '元',
               fontSize: 17,
-              color: '#FF8300'
+              color: moneyColor
             },
             {
               el: '.share-price-line',
@@ -771,14 +794,12 @@
       padding-left: 10px
       box-sizing: border-box
       .left-price
-        color: #FF7113
         font-size: 30px
         font-family: PingFang-SC-Bold
       .left-price-text
         layout(row)
         align-items: flex-end
         .price-text
-          color: #FF7012
           font-size: 22px
           font-family: $font-family-medium
           margin-right: 5px
@@ -828,8 +849,6 @@
       font-size: $font-size-14
       color: #9e9e9e
       font-family: $font-family-regular
-      .stock-number
-        color: $color-money
   .safeguard-box
     padding-left: 10px
     height: 60px
@@ -942,6 +961,11 @@
       width: 32vw
       display: block
       margin: 0 auto 20px
+    .send-box-img-retuan
+      width: 50px
+      height: 50px
+      display: block
+      margin: 0 auto 20px
     .send-title
       font-family: $font-family-medium
       color: $color-text-main
@@ -1027,13 +1051,12 @@
       text-align: center
       font-size: $font-size-14
       font-family: $font-family-regular
-      color: $color-text-main
-      background: $color-tag
+      color: #fff
       &:after
         border: none
     .goods-btn-active
-      color: #fff
-      background: $color-main
+      color: $color-text-main
+      background: $color-tag
     .goods-btn-assint
       color: #fff
       background: $color-text-assist

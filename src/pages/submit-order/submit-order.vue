@@ -1,11 +1,11 @@
 <template>
   <div class="submit-order">
     <navigation-bar title="提交订单" :showArrow="true" :translucent="false"></navigation-bar>
-    <div class="order-title">请在{{deliverAt}}到货后，到团长代理点自提</div>
+    <div class="order-title" :class="'corp-' + corpName + '-submit-order'">请在{{deliverAt}}到货后，到团长代理点自提</div>
     <div class="order-info">
       <div class="order-info-top">
         <div class="info-phone">
-          <div class="icon-text">团长</div>
+          <div class="icon-text" :class="'corp-' + corpName + '-bg'">团长</div>
           <div class="icon-number"><span class="name">{{groupInfo.name}}</span><span
             class="txt">{{groupInfo.social_name}}</span></div>
         </div>
@@ -19,7 +19,8 @@
           <div class="mobile"><input class="mobile-content" type="text" v-model="mobile"></div>
         </div>
         <form class="btn-box" report-submit @submit="getFormId">
-          <button class="wechat-btn" formType="submit" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber">使用微信手机号</button>
+          <button class="wechat-btn" v-if="corpName === 'platform'" formType="submit" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber">使用微信手机号</button>
+          <button class="wechat-btn wechat-btn-retuan" v-if="corpName === 'retuan'" formType="submit" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber">使用微信手机号</button>
         </form>
       </div>
     </div>
@@ -44,8 +45,8 @@
       </div>
     </div>
     <div class="fixed-btn">
-      <div class="money">总计 {{total}}元</div>
-      <div class="pay" @click.stop="goPay">去支付</div>
+      <div class="money" :class="'corp-' + corpName + '-money'">总计 {{total}}元</div>
+      <div class="pay" :class="'corp-' + corpName + '-bg'" @click.stop="goPay">去支付</div>
     </div>
   </div>
 </template>
@@ -159,9 +160,7 @@
     box-sizing: border-box
     padding: 0 3.2vw
     font-size: $font-size-13
-    color: $color-money
     font-family: $font-family-regular
-    background: rgba(255, 131, 0, .12)
 
   .order-info
     box-sizing: border-box
@@ -183,7 +182,6 @@
         margin-bottom: 10px
         .icon-text
           font-size: $font-size-12
-          background: $color-main
           color: $color-white
           text-align: center
           font-family: $font-family-regular
@@ -247,6 +245,9 @@
         width: 104px
         text-align: center
         border-1px($color-main, 15px)
+      .wechat-btn-retuan
+        color: #FC4D1A
+        border-1px(#FC4D1A, 15px)
 
   .order-line
     display: block
@@ -336,7 +337,6 @@
     background: #fff
     .money
       font-size: $font-size-16
-      color: $color-money
       font-family: $font-family-medium
     .pay
       font-size: $font-size-16
@@ -347,7 +347,6 @@
       width: 26.7vw
       text-align: center
       border-radius: 17px
-      background: $color-main
 
   .submit-order
     width: 100%

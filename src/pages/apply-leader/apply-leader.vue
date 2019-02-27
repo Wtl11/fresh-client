@@ -2,28 +2,36 @@
   <div class="apply-leader">
     <navigation-bar :translucent="translucent" :title="title"></navigation-bar>
     <div class="pic-wrapper1">
-      <img v-if="imageUrl" :src="imageUrl + '/yx-image/mine/pic-apply_01@2x.jpg'" alt="">
+      <img v-if="imageUrl && corpName === 'platform'" :src="imageUrl + '/yx-image/mine/pic-apply_01@2x.jpg'" alt="">
+      <img v-if="imageUrl && corpName === 'retuan'" :src="imageUrl + '/yx-image/retuan/pic-apply_01@2x.jpg'" alt="">
     </div>
     <div class="pic-wrapper2">
-      <img v-if="imageUrl" :src="imageUrl + '/yx-image/mine/pic-apply_02@2x.jpg'" alt="">
+      <img v-if="imageUrl && corpName === 'platform'" :src="imageUrl + '/yx-image/mine/pic-apply_02@2x.jpg'" alt="">
+      <img v-if="imageUrl && corpName === 'retuan'" :src="imageUrl + '/yx-image/retuan/pic-apply_02@2x.jpg'" alt="">
     </div>
     <div class="pic-wrapper3">
-      <img v-if="imageUrl" :src="imageUrl + '/yx-image/mine/pic-apply_03@2x.jpg'" alt="">
+      <img v-if="imageUrl && corpName === 'platform'" :src="imageUrl + '/yx-image/mine/pic-apply_03@2x.jpg'" alt="">
+      <img v-if="imageUrl && corpName === 'retuan'" :src="imageUrl + '/yx-image/retuan/pic-apply_03@2x.jpg'" alt="">
     </div>
     <div class="pic-wrapper4">
-      <img v-if="imageUrl" :src="imageUrl + '/yx-image/mine/pic-apply_04@2x.jpg'" alt="">
+      <img v-if="imageUrl && corpName === 'platform'" :src="imageUrl + '/yx-image/mine/pic-apply_04@2x.jpg'" alt="">
+      <img v-if="imageUrl && corpName === 'retuan'" :src="imageUrl + '/yx-image/retuan/pic-apply_04@2x.jpg'" alt="">
     </div>
     <div class="pic-wrapper5">
-      <img v-if="imageUrl" :src="imageUrl + '/yx-image/mine/pic-apply_05@2x.jpg'" alt="">
+      <img v-if="imageUrl && corpName === 'platform'" :src="imageUrl + '/yx-image/mine/pic-apply_05@2x.jpg'" alt="">
+      <img v-if="imageUrl && corpName === 'retuan'" :src="imageUrl + '/yx-image/retuan/pic-apply_05@2x.jpg'" alt="">
     </div>
     <div class="pic-wrapper6">
-      <img v-if="imageUrl" :src="imageUrl + '/yx-image/mine/pic-apply_06@2x.jpg'" alt="">
+      <img v-if="imageUrl && corpName === 'platform'" :src="imageUrl + '/yx-image/mine/pic-apply_06@2x.jpg'" alt="">
+      <img v-if="imageUrl && corpName === 'retuan'" :src="imageUrl + '/yx-image/retuan/pic-apply_06@2x.jpg'" alt="">
     </div>
     <div class="pic-wrapper7">
-      <img v-if="imageUrl" :src="imageUrl + '/yx-image/mine/pic-apply_07@2x.jpg'" alt="">
+      <img v-if="imageUrl && corpName === 'platform'" :src="imageUrl + '/yx-image/mine/pic-apply_07@2x.jpg'" alt="">
+      <img v-if="imageUrl && corpName === 'retuan'" :src="imageUrl + '/yx-image/retuan/pic-apply_07@2x.jpg'" alt="">
     </div>
     <div class="pic-wrapper8 action-wrapper">
-      <img v-if="imageUrl" :src="imageUrl + '/yx-image/mine/pic-apply_08@2x.jpg'" alt="">
+      <img v-if="imageUrl && corpName === 'platform'" :src="imageUrl + '/yx-image/mine/pic-apply_08@2x.jpg'" alt="">
+      <img v-if="imageUrl && corpName === 'retuan'" :src="imageUrl + '/yx-image/retuan/pic-apply_08@2x.jpg'" alt="">
       <img class="qr-code" :src="qrCodeImage" alt="">
       <div class="save-wrapper">
         <div class="save-btn" @click="saveImage">保存图片</div>

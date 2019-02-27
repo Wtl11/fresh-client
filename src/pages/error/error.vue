@@ -1,11 +1,11 @@
 <template>
-  <div class="error">
+  <div class="error lost">
     <navigation-bar :title="shopName" :showArrow="false"></navigation-bar>
     <div class="img-box">
       <img :src="imageUrl + '/yx-image/group/pic-wifi@2x.png'" v-if="imageUrl" class="error-img">
       <p class="text">网络繁忙，稍后再试吧！</p>
     </div>
-    <div class="btn" @click="_refresh">刷新</div>
+    <div class="btn" :class="'corp-' + corpName + '-bg'" @click="_refresh">刷新</div>
   </div>
 </template>
 
@@ -71,12 +71,8 @@
     height: 32px
     line-height: 32px
     text-align: center
-    background: $color-main
     border-radius: 16px
     color: $color-white
     font-size: $font-size-14
     margin: 30px auto
-    &:active
-      color: #E1F2C9
-      background: #9DD44C
 </style>

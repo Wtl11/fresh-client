@@ -31,12 +31,12 @@
       <div class="price-box">
         <div class="order-price-box-left">价格</div>
         <div class="order-price-box-right">
-          <div class="number">{{orderTotal}}</div>
-          <div class="icon">元</div>
+          <div class="number" :class="'corp-' + corpName + '-money'">{{orderTotal}}</div>
+          <div class="icon" :class="'corp-' + corpName + '-money'">元</div>
         </div>
       </div>
-      <form action="" report-submit @submit="$getFormId">
-        <button class="subimit-btn" formType="submit"  @click="comfirmNumer">确定</button>
+      <form class="lost" action="" report-submit @submit="$getFormId">
+        <button class="subimit-btn" :class="'corp-' + corpName + '-bg'" formType="submit"  @click="comfirmNumer">确定</button>
       </form>
     </div>
   </div>
@@ -241,18 +241,15 @@
       .number
         font-family: $font-family-medium
         font-size: $font-size-20
-        color: $color-money
         line-height: 1
       .icon
         padding-bottom: 3px
         font-family: $font-family-medium
         font-size: $font-size-12
-        color: $color-money
   .subimit-btn
     width: 100%
     height: 50px
     line-height: 50px
-    background: $color-main
     color: #fff
     border-radius: 50px
     &:after
