@@ -2,13 +2,26 @@
   <div class="wrap">
     <navigation-bar title="订单详情"></navigation-bar>
     <div class="order-banner">
-      <div class="backdrop"><img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/bg-ddxq@2x.png'" alt="" class="backdrop-img"></div>
+      <div class="backdrop"><img v-if="imageUrl && corpName === 'retuan'" :src="imageUrl+'/yx-image/retuan/bg-ddxq@2x.png'" alt="" class="backdrop-img"></div>
+      <div class="backdrop"><img v-if="imageUrl && corpName === 'platform'" :src="imageUrl+'/yx-image/cart/bg-ddxq@2x.png'" alt="" class="backdrop-img"></div>
       <div class="content">
         <div class="status">
-          <div class="icon" v-if="orderMsg.status * 1 === 2"><img v-if="imageUrl" class="icon-img" :src="imageUrl+'/yx-image/cart/icon-finish_xq@2x.png'" alt=""></div>
-          <div class="icon" v-if="orderMsg.status * 1 === 3"><img v-if="imageUrl" class="icon-img" :src="imageUrl+'/yx-image/cart/icon_close_xq@2x.png'" alt=""></div>
-          <div class="icon" v-if="orderMsg.status * 1 === 1"><img v-if="imageUrl" class="icon-img" :src="imageUrl+'/yx-image/cart/icon-delivery_xq@2x.png'" alt=""></div>
-          <div class="icon" v-if="orderMsg.status * 1 === 0"><img v-if="imageUrl" class="icon-img" :src="imageUrl+'/yx-image/cart/icon-payment_xq@2x.png'" alt=""></div>
+          <div class="icon" v-if="orderMsg.status * 1 === 2">
+            <img v-if="imageUrl && corpName === 'retuan'" class="icon-img" :src="imageUrl+'/yx-image/retuan/icon-finish_xq@2x.png'" alt="">
+            <img v-if="imageUrl && corpName === 'platform'" class="icon-img" :src="imageUrl+'/yx-image/cart/icon-finish_xq@2x.png'" alt="">
+          </div>
+          <div class="icon" v-if="orderMsg.status * 1 === 3">
+            <img v-if="imageUrl && corpName === 'retuan'" class="icon-img" :src="imageUrl+'/yx-image/retuan/icon_close_xq@2x.png'" alt="">
+            <img v-if="imageUrl && corpName === 'platform'" class="icon-img" :src="imageUrl+'/yx-image/cart/icon_close_xq@2x.png'" alt="">
+          </div>
+          <div class="icon" v-if="orderMsg.status * 1 === 1">
+            <img v-if="imageUrl && corpName === 'retuan'" class="icon-img" :src="imageUrl+'/yx-image/retuan/icon-delivery_xq@2x.png'" alt="">
+            <img v-if="imageUrl && corpName === 'platform'" class="icon-img" :src="imageUrl+'/yx-image/cart/icon-delivery_xq@2x.png'" alt="">
+          </div>
+          <div class="icon" v-if="orderMsg.status * 1 === 0">
+            <img v-if="imageUrl && corpName === 'retuan'" class="icon-img" :src="imageUrl+'/yx-image/retuan/icon-payment_xq@2x.png'" alt="">
+            <img v-if="imageUrl && corpName === 'platform'" class="icon-img" :src="imageUrl+'/yx-image/cart/icon-payment_xq@2x.png'" alt="">
+          </div>
           <div class="statu-txt">{{orderMsg.status_text}}</div>
         </div>
         <div class="extract" v-if="orderMsg.status === 2">提货单号: {{orderMsg.code}}</div>
@@ -18,7 +31,7 @@
     <div class="address-info">
       <div class="top">
         <div class="warp">
-          <div class="design">团长</div>
+          <div class="design" :class="'corp-' + corpName + '-bg'">团长</div>
           <div class="icon-number"><span class="name">{{address.shop_name}}</span><span
             class="text">{{address.social_name}}</span></div>
         </div>
@@ -37,7 +50,7 @@
               <div class="tit">
                 <div class="name">{{item.goods_name}}</div>
                 <div class="refund" @click.stop="isRefund(item)" v-if="(orderMsg.status * 1 === 1 || orderMsg.status * 1 === 2) && (item.after_sale_status * 1 === 0 || item.after_sale_status * 1 === 1) && item.can_after_sale * 1 === 1">退款</div>
-                <div class="refund-text" v-if="item.after_sale_status * 1 === 2 && item.can_after_sale * 1 === 1">{{item.after_sale_status_text}}</div>
+                <div class="refund-text" :class="'corp-' + corpName + '-money'" v-if="item.after_sale_status * 1 === 2 && item.can_after_sale * 1 === 1">{{item.after_sale_status_text}}</div>
               </div>
               <div class="guige">规格：{{item.goods_units}}</div>
               <div class="price">
@@ -49,7 +62,7 @@
         </div>
         <div class="actual-amount">
           <div class="sub">实付金额</div>
-          <div class="price"><span class="num">{{orderMsg.total}}</span>元</div>
+          <div class="price" :class="'corp-' + corpName + '-money'"><span class="num" :class="'corp-' + corpName + '-money'">{{orderMsg.total}}</span>元</div>
         </div>
       </div>
     </div>
@@ -68,11 +81,11 @@
     <div class="service-line-box"></div>
     <div class="order-fixed" v-if="orderMsg.status * 1 === 0">
       <div class="order-bottom-left">
-        <div>请在</div><div class="color-time">{{payTime}}</div><div>内付款</div>
+        <div>请在</div><div class="color-time" :class="'corp-' + corpName + '-money'">{{payTime}}</div><div>内付款</div>
       </div>
       <div class="order-bottom-right">
         <div class="refund close" @click="closeOrder">取消</div>
-        <div class="refund" @click="goPay">去付款</div>
+        <div class="refund" :class="'corp-' + corpName + '-bg'" @click="goPay">去付款</div>
       </div>
     </div>
     <confirm-msg ref="refundModel" useType="double" :msg="modelMsg" @confirm="confirm"></confirm-msg>
@@ -344,7 +357,6 @@
       padding-bottom: 10px
       .design
         font-size: $font-size-12
-        background: $color-main
         color: $color-white
         text-align: center
         font-family: $font-family-regular
@@ -452,7 +464,6 @@
         line-height: 25px
         font-family: $font-family-regular
         font-size: $font-size-14
-        color: $color-money
       .amout
         font-family: $font-family-regular
         font-size: $font-size-11
@@ -486,11 +497,9 @@
     .price
       font-family: $font-family-medium
       font-size: $font-size-14
-      color: $color-money
       .num
         font-family: $font-family-medium
         font-size: $font-size-16
-        color: $color-money
   .oinfo
     box-sizing: border-box
     min-height: 80px
@@ -542,7 +551,6 @@
       layout(row)
       align-items: center
       .color-time
-        color: #ff8300
         width: 42px
         text-align: center
     .order-bottom-right
@@ -556,8 +564,6 @@
         font-size: $font-size-14
         text-align: center
         color: $color-white
-        background: $color-main
-        border: 0.5px solid $color-main
         border-radius: 15px
         margin-left: 10px
       .close

@@ -5,10 +5,10 @@
       <div class="order-item" v-for="(item, index) in orderLists" :key="index" @click.stop="toOrderDetail(item)">
         <div class="top">
           <div class="group-name">{{item.social_name}}</div>
-          <div class="status" v-if="item.after_sale_status * 1 === 0">退款中</div>
-          <div class="status" v-if="item.after_sale_status * 1 === 1">退款成功</div>
-          <div class="status" v-if="item.after_sale_status * 1 === 2">退款失败</div>
-          <div class="status" v-if="item.after_sale_status * 1 === 3">退款取消</div>
+          <div class="status" :class="'corp-' + corpName + '-money'" v-if="item.after_sale_status * 1 === 0">退款中</div>
+          <div class="status" :class="'corp-' + corpName + '-money'" v-if="item.after_sale_status * 1 === 1">退款成功</div>
+          <div class="status" :class="'corp-' + corpName + '-money'" v-if="item.after_sale_status * 1 === 2">退款失败</div>
+          <div class="status" :class="'corp-' + corpName + '-money'" v-if="item.after_sale_status * 1 === 3">退款取消</div>
         </div>
         <div class="center">
           <div class="goods-item">
@@ -186,7 +186,6 @@
         .status
           font-family: $font-family-regular
           font-size: $font-size-14
-          color: $color-money
       .center
         .goods-item
           height: 104.5px

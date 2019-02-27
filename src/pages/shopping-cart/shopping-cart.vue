@@ -6,7 +6,8 @@
         <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && !item.checked && item.num > 0" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt=""/>
         <!--<img class="sel-box" v-if="imageUrl && item.num <= 0" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt="" />-->
         <div class="sel-box sel-clr-box" v-if="imageUrl && item.num <= 0"></div>
-        <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && item.checked && item.num > 0" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
+        <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && item.checked && item.num > 0 && corpName === 'platform'" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
+        <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && item.checked && item.num > 0 && corpName === 'retuan'" :src="imageUrl+'/yx-image/retuan/icon-pick_gwc@2x.png'" alt=""/>
         <div class="goods-image" @click.stop="jumpGoodsDetail(item)">
           <img class="goods-img" mode="aspectFill" :src="item.goods_cover_image" alt="">
           <div class="robbed" v-if="item.num <= 0">已抢完</div>
@@ -22,9 +23,9 @@
             <div class="left" @click.stop="jumpGoodsDetail(item)">
               <div class="spec" v-if="item.goods_units">规格：{{item.goods_units}}</div>
               <div class="remain">
-                <div class="txt" v-if="item.is_urgency">仅剩{{item.usable_stock}}件</div>
+                <div class="txt" :class="'corp-' + corpName + '-money-text'" v-if="item.is_urgency">仅剩{{item.usable_stock}}件</div>
               </div>
-              <div class="price" v-if="item.shop_price"><span class="num">{{item.shop_price}}</span>元</div>
+              <div class="price" :class="'corp-' + corpName + '-money'" v-if="item.shop_price"><span class="num">{{item.shop_price}}</span>元</div>
             </div>
             <div class="right">
               <div class="number-box">
@@ -40,13 +41,14 @@
     <!--结算-->
     <div class="payment" v-if="goodsList.length > 0">
       <div class="check-all" @click.stop="toggleCheckAll">
-        <img class="sel-box" v-if="imageUrl && allChecked" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
+        <img class="sel-box" v-if="imageUrl && allChecked && corpName === 'platform'" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
+        <img class="sel-box" v-if="imageUrl && allChecked && corpName === 'retuan'" :src="imageUrl+'/yx-image/retuan/icon-pick_gwc@2x.png'" alt=""/>
         <img class="sel-box" v-if="imageUrl && !allChecked" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt=""/>
         <div class="txt">全选</div>
       </div>
       <div class="payment-content">
-        <div class="price">合计 {{totalPrice}}元</div>
-        <div class="pay-btn" @click.stop="submitOrder">去结算</div>
+        <div class="price" :class="'corp-' + corpName + '-money'">合计 {{totalPrice}}元</div>
+        <div class="pay-btn" :class="'corp-' + corpName + '-bg'" @click.stop="submitOrder">去结算</div>
       </div>
     </div>
     <!--没有商品-->
@@ -54,7 +56,7 @@
       <div class="without-img"><img class="img" v-if="imageUrl" :src="imageUrl+'/yx-image/cart/pic-gwc@2x.png'" alt=""></div>
       <div class="txt">购物车没有商品哦!</div>
       <div class="txt">赶快去挑选吧</div>
-      <div class="btn" @click.stop="toChoicenessPage">去逛逛</div>
+      <div class="btn" :class="'corp-' + corpName + '-bg'" @click.stop="toChoicenessPage">去逛逛</div>
     </div>
     <confirm-msg ref="msg" :msg="msg" useType="double" @confirm="deleteCartGood"></confirm-msg>
     <navigation-bottom currentType="cart"></navigation-bottom>
@@ -246,7 +248,7 @@
     left: 0
     padding: 0 3.2vw
     box-sizing: border-box
-    bottom: 0
+    bottom: 49px
     layout(row)
     justify-content: space-between
     align-items: center
@@ -279,10 +281,8 @@
       .price
         font-family: $font-family-medium
         font-size: $font-size-18
-        color: $color-money
       .pay-btn
         margin-left: 8px
-        background: #73C200
         border-radius: 17px
         width: 100px
         height: 34px
@@ -414,7 +414,6 @@
               padding-bottom: 6px
             .remain
               layout(row)
-              color: $color-money
               lin-height: 13px
               height: 13px
               padding-bottom: 7.5px
@@ -422,21 +421,17 @@
                 padding: 0 1.34vw
                 font-family: $font-family-regular
                 font-size: $font-size-10
-                color: $color-money
                 height: 13px
                 line-height: 13px
                 box-sizing: border-box
-                border-1px($color-money, 10px)
                 border-radius: 10px
             .price
               font-family: $font-family-regular
               font-size: $font-size-12
-              color: $color-money
               line-height: 19px
               .num
                 font-family: $font-family-regular
                 font-size: $font-size-18
-                color: $color-money
     .shop-item-opcta
       .sel-box
         opacity: .5
@@ -475,8 +470,6 @@
       color: $color-white
       line-height: 32px
       text-align: center
-      background: #73C200
-      border-1px(#73C200, 16px)
       border-radius: 16px
 
   .test

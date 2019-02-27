@@ -1,7 +1,7 @@
 <template>
   <div class="wrap">
     <navigation-bar title="我的自提点" :showArrow="true" :translucent="true"></navigation-bar>
-    <div class="self-point-banner" :class="statusBarHeight * 1 === 20 ? '' : 'self-point-top'">
+    <div class="self-point-banner" :class="[statusBarHeight * 1 === 20 ? '' : 'self-point-top', 'corp-' + corpName + '-banner-bg']">
       <div class="curren">
         <div class="sub">当前自提点</div>
         <div class="point">
@@ -21,7 +21,7 @@
           <div class="info">
             <div class="colonel">
               <div class="colonel-left">团长：{{item.name}}</div>
-              <div class="colonel-right" v-if="item.distance">距离您{{item.distance}}</div>
+              <div class="colonel-right" :class="'corp-' + corpName + '-point-text'" v-if="item.distance">距离您{{item.distance}}</div>
             </div>
             <div class="group">社区：{{item.social_name}}</div>
             <div class="address">提货地址：{{item.province + item.city + item.district + item.address}}</div>
@@ -177,7 +177,6 @@
     padding-top: 17vw
     position: relative
     height: 45.33vw
-    background-image: linear-gradient(0deg, #ABE300 0%, #73C200 89%)
     .banner
       width: 100vw
       height: 45.33vw
@@ -283,7 +282,6 @@
             .colonel-right
               font-family: $font-family-regular
               font-size: $font-size-14
-              color: #FF8506
           .group
             font-family: $font-family-medium
             font-size: $font-size-15

@@ -6,7 +6,7 @@
         <div class="nav-item" :class="tabIdx * 1 === index ? 'nav-item-active' : ''" v-for="(item, index) in navList" :key="index" @click="selectIndex(item, index)">{{item.name}}</div>
       </div>
       <div class="line-box">
-        <div class="line" :style="'transform: translate(' + tabIdx*100 + '%,0)'"><div class="lines"></div></div>
+        <div class="line" :style="'transform: translate(' + tabIdx*100 + '%,0)'"><div class="lines" :class="'corp-' + corpName + '-bg'"></div></div>
       </div>
     </div>
     <div class="big-box">
@@ -16,7 +16,7 @@
             <div class="order-item" v-for="(item, index) in list0" :key="index" @click="jumpDetail(item)">
               <div class="top">
                 <div class="group-name">{{item.social_name}}</div>
-                <div class="status">{{item.status_text}}</div>
+                <div class="status" :class="'corp-' + corpName + '-money'">{{item.status_text}}</div>
               </div>
               <div class="center">
                 <div class="goods-list">
@@ -50,7 +50,7 @@
             <div class="order-item" v-for="(item, index) in list1" :key="index" @click="jumpDetail(item)">
               <div class="top">
                 <div class="group-name">{{item.social_name}}</div>
-                <div class="status">{{item.status_text}}</div>
+                <div class="status" :class="'corp-' + corpName + '-money'">{{item.status_text}}</div>
               </div>
               <div class="center">
                 <div class="goods-list">
@@ -84,7 +84,7 @@
             <div class="order-item" v-for="(item, index) in list2" :key="index" @click="jumpDetail(item)">
               <div class="top">
                 <div class="group-name">{{item.social_name}}</div>
-                <div class="status">{{item.status_text}}</div>
+                <div class="status" :class="'corp-' + corpName + '-money'">{{item.status_text}}</div>
               </div>
               <div class="center">
                 <div class="goods-list">
@@ -118,7 +118,7 @@
             <div class="order-item" v-for="(item, index) in list3" :key="index" @click="jumpDetail(item)">
               <div class="top">
                 <div class="group-name">{{item.social_name}}</div>
-                <div class="status">{{item.status_text}}</div>
+                <div class="status" :class="'corp-' + corpName + '-money'">{{item.status_text}}</div>
               </div>
               <div class="center">
                 <div class="goods-list">
@@ -300,7 +300,6 @@
           height: 3px
           margin: 0 auto
           border-radius: 1.5px
-          background: $color-main
     .order-nav
       width: 100vw
       height: 40px
@@ -343,7 +342,6 @@
         .status
           font-family: $font-family-regular
           font-size: $font-size-14
-          color: $color-money
       .center
         .goods-item
           height: 104.5px

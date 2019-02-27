@@ -31,7 +31,7 @@
                 <swiper-item class="banner-item" @click="jumpOrderDetail(item)">
                   <img class="banner-item-img" v-if="item.image_url" :src="item.image_url">
                   <div class="banner-text-box">
-                    <div class="banner-text-status">{{item.status_str}}</div>
+                    <div class="banner-text-status" :class="'corp-' + corpName + '-text'">{{item.status_str}}</div>
                     <div class="banner-text-time">{{item.text}}</div>
                   </div>
                 </swiper-item>
@@ -79,7 +79,7 @@
         <div class="erm" @click.stop>
           <img class="erm-img" :src="testSrc">
         </div>
-        <div class="erm-text">向团长出示二维码提货</div>
+        <div class="erm-text" :class="'corp-' + corpName + '-text'">向团长出示二维码提货</div>
       </div>
     </div>
     <navigation-bottom currentType="mine"></navigation-bottom>
@@ -509,7 +509,6 @@
               border-radius: 3px
             .banner-text-status
               font-size: $font-size-14
-              color: $color-main
               font-family: $font-family-regular
               margin-bottom: 10px
             .banner-text-time
@@ -544,7 +543,6 @@
         width: 150px
       .erm-text
         margin-top: 28px
-        color: $color-main
         font-family: $font-family-medium
         letter-spacing: 1px
         font-size: $font-size-16

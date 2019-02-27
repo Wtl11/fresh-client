@@ -55,7 +55,7 @@
       console.log(this.corpName)
     },
     methods: {
-      jumpNav(item) {
+      async jumpNav(item) {
         if (item.type === this.currentType) return
         switch (item.type) {
           case 'index':
@@ -63,9 +63,11 @@
             break
           case 'cart':
             wx.switchTab({url: '/pages/shopping-cart'})
+            await this.$isLogin()
             break
           case 'mine':
             wx.switchTab({url: '/pages/mine'})
+            await this.$isLogin()
             break
           default:
             break

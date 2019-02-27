@@ -2,10 +2,14 @@
   <div class="wrap">
     <navigation-bar title="订单详情"></navigation-bar>
     <div class="order-banner">
-      <div class="backdrop"><img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/bg-ddxq@2x.png'" alt="" class="backdrop-img"></div>
+      <div class="backdrop"><img v-if="imageUrl && corpName === 'retuan'" :src="imageUrl+'/yx-image/retuan/bg-ddxq@2x.png'" alt="" class="backdrop-img"></div>
+      <div class="backdrop"><img v-if="imageUrl && corpName === 'platform'" :src="imageUrl+'/yx-image/cart/bg-ddxq@2x.png'" alt="" class="backdrop-img"></div>
       <div class="content">
         <div class="status">
-          <div class="icon"><img v-if="imageUrl" class="icon-img" :src="imageUrl+'/yx-image/cart/icon_refund_xq@2x.png'" alt=""></div>
+          <div class="icon">
+            <img v-if="imageUrl && corpName === 'retuan'" class="icon-img" :src="imageUrl+'/yx-image/retuan/icon_refund_xq@2x.png'" alt="">
+            <img v-if="imageUrl && corpName === 'platform'" class="icon-img" :src="imageUrl+'/yx-image/cart/icon_refund_xq@2x.png'" alt="">
+          </div>
           <div class="statu-txt">{{saleText}}</div>
         </div>
       </div>
@@ -13,7 +17,7 @@
     <div class="address-info">
       <div class="top">
         <div class="warp">
-          <div class="design">团长</div>
+          <div class="design" :class="'corp-' + corpName + '-bg'">团长</div>
           <div class="icon-number"><span class="name">{{orderMsg.shop_name}}</span><span
             class="text">{{orderMsg.social_name}}</span></div>
         </div>
@@ -41,7 +45,7 @@
       </div>
     </div>
     <div class="oinfo">
-      <div class="o-item">退款金额：<span class="price"><span class="num">{{orderMsg.total}}</span>元</span></div>
+      <div class="o-item">退款金额：<span class="price" :class="'corp-' + corpName + '-money'"><span class="num" :class="'corp-' + corpName + '-money'">{{orderMsg.total}}</span>元</span></div>
       <div class="o-item">退款方式：{{orderMsg.refund_method}}</div>
       <div class="order-iden">
         <div class="txt">订单编号：{{orderMsg.order_sn}}</div>
@@ -215,7 +219,6 @@
       padding-bottom: 10px
       .design
         font-size: $font-size-12
-        background: $color-main
         color: $color-white
         text-align: center
         font-family: $font-family-regular
@@ -356,11 +359,9 @@
       .price
         font-family: $font-family-medium
         font-size: $font-size-14
-        color: $color-money
         .num
           font-family: $font-family-medium
           font-size: $font-size-16
-          color: $color-money
     .order-iden
       layout(row)
       align-items: center

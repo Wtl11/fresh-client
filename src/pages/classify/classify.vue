@@ -6,7 +6,7 @@
       <div v-for="(item, index) in tabList1" :class="tabIndex === index ? 'item-active'  : ''" :key="index" class="item" :id="'item'+index" @click="_changeTab(index, item.id, $event)">
       {{item.name}}
         <div class="item-under-line">
-          <div class="line"></div>
+          <div class="line" :class="'corp-' + corpName + '-bg'"></div>
         </div>
       </div>
     </scroll-view>
@@ -17,20 +17,22 @@
             <div class="goods-item-box" v-for="(item, index) in classifyList[tabInx]" :key="index" @click="jumpGoodsDetail(item)">
               <div class="classify-box">
                 <div class="classify-box-top">
-                  <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/icon-label2@2x.png'" alt="" class="top-label" mode="aspectFill">
+                  <img v-if="imageUrl && corpName === 'platform'" :src="imageUrl + '/yx-image/choiceness/icon-label2@2x.png'" alt="" class="top-label" mode="aspectFill">
+                  <img v-if="imageUrl && corpName === 'retuan'" :src="imageUrl + '/yx-image/retuan/icon-label2@2x.png'" alt="" class="top-label" mode="aspectFill">
                   <img v-if="item.goods_cover_image" :src="item.goods_cover_image" alt="" class="box-top-img" mode="aspectFill">
                 </div>
                 <div class="classify-box-bottom">
                   <div class="title">{{item.name}}</div>
                   <div class="classify-price-box">
                     <div class="price-left">
-                      <div class="price-number">{{item.shop_price}}</div>
-                      <div class="price-money">元</div>
+                      <div class="price-number" :class="'corp-' + corpName + '-money'">{{item.shop_price}}</div>
+                      <div class="price-money" :class="'corp-' + corpName + '-money'">元</div>
                       <div class="price-line">{{item.original_price}}元</div>
                     </div>
                     <form action="" report-submit @submit="$getFormId" @click.stop="addShoppingCart(item)">
                       <button class="price-right" formType="submit">
-                        <img v-if="imageUrl" :src="imageUrl + '/yx-image/goods/icon-shopcart2@2x.png'" alt="" class="price-right-img">
+                        <img v-if="imageUrl && corpName === 'platform'" :src="imageUrl + '/yx-image/goods/icon-shopcart2@2x.png'" alt="" class="price-right-img">
+                        <!--<img v-if="imageUrl && corpName === 'platform'" :src="imageUrl + '/yx-image/retuan/icon-shopcart2@2x.png'" alt="" class="price-right-img">-->
                       </button>
                     </form>
                   </div>
@@ -289,12 +291,10 @@
               layout(row)
               align-items: center
               .price-number
-                color: $color-money
                 font-size: $font-size-18
                 font-family: $font-family-medium
                 margin-right: 2px
               .price-money
-                color: $color-money
                 font-size: $font-size-12
                 font-family: $font-family-medium
                 margin-right: 5px
@@ -360,7 +360,6 @@
         .line
           width: 30px
           height: 3px
-          background: $color-main
           margin: 0 auto
           border-radius: 3px
 
