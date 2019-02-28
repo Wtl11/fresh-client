@@ -278,6 +278,8 @@
           this.goodsList = this.goodsList.concat(res.data)
         }
         this.isNoGoods = !this.goodsList.length
+        this.detailedHeight = 99.5 * this.goodsList.length || 280
+        console.log(this.goodsList)
       }
     }
   }

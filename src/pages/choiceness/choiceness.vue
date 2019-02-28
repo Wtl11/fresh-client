@@ -132,7 +132,6 @@
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import NavigationBottom from '@components/navigation-bottom/navigation-bottom'
   import LinkGroup from '@components/link-group/link-group'
-  import ScrollTab from '@components/scroll-tab/scroll-tab'
   import ConfirmMsg from '@components/confirm-msg/confirm-msg'
   import API from '@api'
   import {cartMethods} from '@state/helpers'
@@ -475,8 +474,7 @@
       LinkGroup,
       NavigationBar,
       NavigationBottom,
-      ConfirmMsg,
-      ScrollTab
+      ConfirmMsg
     }
   }
 </script>
