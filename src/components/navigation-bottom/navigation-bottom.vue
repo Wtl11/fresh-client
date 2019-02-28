@@ -4,7 +4,7 @@
     <div class="navigation-box">
       <div class="nav-list-box"  v-for="(item, index) in platformList" :key="index" @click="jumpNav(item)">
         <div class="nav-top-icon">
-          <div class="help-number" v-if="item.type === 'cart'">5</div>
+          <div class="help-number" v-if="item.type === 'cart' && count * 1 >= 1">{{count * 1 > 99 ? 99 : count}}</div>
           <img class="icon-img" v-if="imageUrl" :src="item.type === currentType ? imageUrl + item.imgUrlActive : imageUrl + item.imgUrl" alt="">
         </div>
         <div class="nav-top-text">{{item.text}}</div>
@@ -14,6 +14,7 @@
 </template>
 
 <script type="text/ecmascript-6">
+  import {cartComputed} from '@state/helpers'
   const COMPONENT_NAME = 'NAVIGATION_BOTTOM'
   const PLATFORM = [
     {
@@ -80,6 +81,9 @@
           break
       }
     },
+    computed: {
+      ...cartComputed
+    },
     methods: {
       async jumpNav(item) {
         if (item.type === this.currentType) return
@@ -135,7 +139,7 @@
         position: relative
         .help-number
           position: absolute
-          top: -5px
+          top: -4px
           right: -7px
           min-width: 16px
           text-align: center
