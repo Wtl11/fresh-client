@@ -59,7 +59,7 @@
       <div class="btn" :class="'corp-' + corpName + '-bg'" @click.stop="toChoicenessPage">去逛逛</div>
     </div>
     <confirm-msg ref="msg" :msg="msg" useType="double" @confirm="deleteCartGood"></confirm-msg>
-    <navigation-bottom currentType="cart"></navigation-bottom>
+    <custom-tab-bar currentType="cart"></custom-tab-bar>
   </div>
 
 </template>
@@ -67,7 +67,7 @@
 <script type="text/ecmascript-6">
   import WePaint from '@components/we-paint/we-paint'
   import NavigationBar from '@components/navigation-bar/navigation-bar'
-  import NavigationBottom from '@components/navigation-bottom/navigation-bottom'
+  import CustomTabBar from '@components/custom-tab-bar/custom-tab-bar'
   import ConfirmMsg from '@components/confirm-msg/confirm-msg'
   import API from '@api'
   import {orderMethods, cartMethods} from '@state/helpers'
@@ -226,7 +226,7 @@
       WePaint,
       ConfirmMsg,
       NavigationBar,
-      NavigationBottom
+      CustomTabBar
     }
   }
 </script>

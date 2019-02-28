@@ -122,7 +122,7 @@
         </div>
       </div>
     </div>
-    <navigation-bottom currentType="index"></navigation-bottom>
+    <custom-tab-bar currentType="index"></custom-tab-bar>
     <link-group ref="groupComponents" :wechatInfo="groupInfo"></link-group>
     <confirm-msg ref="refundModel" title="您的位置距该提货点超过1km" msg="建议您切换自提点" sureString="马上切换" @confirm="confirm" @cancel="cancel"></confirm-msg>
   </div>
@@ -130,7 +130,7 @@
 
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
-  import NavigationBottom from '@components/navigation-bottom/navigation-bottom'
+  import CustomTabBar from '@components/custom-tab-bar/custom-tab-bar'
   import LinkGroup from '@components/link-group/link-group'
   import ConfirmMsg from '@components/confirm-msg/confirm-msg'
   import API from '@api'
@@ -473,7 +473,7 @@
     components: {
       LinkGroup,
       NavigationBar,
-      NavigationBottom,
+      CustomTabBar,
       ConfirmMsg
     }
   }
