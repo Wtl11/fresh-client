@@ -7,6 +7,7 @@ module.exports = {
     index: path.resolve(__dirname, '../dist/example.html'),
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
+    assetsSubDirectoryTabBar: 'custom-tab-bar',
     assetsPublicPath: '/',
     productionSourceMap: false,
     // Gzip off by default as many popular static hosts such as
@@ -27,6 +28,7 @@ module.exports = {
     // 在小程序开发者工具中不需要自动打开浏览器
     autoOpenBrowser: false,
     assetsSubDirectory: 'static',
+    assetsSubDirectoryTabBar: 'custom-tab-bar',
     assetsPublicPath: '/',
     proxyTable: {
 
