@@ -2,7 +2,6 @@
   <div class="classify">
     <navigation-bar title="分类"></navigation-bar>
     <scroll-view class="scroll-view2" :style="{top: statusBarHeight + 44 + 'px'}" v-if="tabList1.length" id="scrollView" :scroll-into-view="viewToItem" scroll-x>
-      <div class="under-line" :style="{left: move + 'px', width: arrWidth[tabIndex] + 'px' }"></div>
       <div v-for="(item, index) in tabList1" :class="tabIndex === index ? 'item-active'  : ''" :key="index" class="item" :id="'item'+index" @click="_changeTab(index, item.id, $event)">
       {{item.name}}
         <div class="item-under-line">
@@ -32,7 +31,7 @@
                     <form action="" report-submit @submit="$getFormId" @click.stop="addShoppingCart(item)">
                       <button class="price-right" formType="submit">
                         <img v-if="imageUrl && corpName === 'platform'" :src="imageUrl + '/yx-image/goods/icon-shopcart2@2x.png'" alt="" class="price-right-img">
-                        <img v-if="imageUrl && corpName === 'retuan'" :src="imageUrl + '/yx-image/retuan/icon-shopcart2@2x.png'" alt="" class="price-right-img">
+                        <img v-if="imageUrl && corpName === 'retuan'" :src="imageUrl + '/yx-image/retuan/icon-shopcart@2x.png'" alt="" class="price-right-img">
                       </button>
                     </form>
                   </div>
@@ -64,22 +63,10 @@
 
   export default {
     name: PAGE_NAME,
-    watch: {
-      tabList(news) {
-        this.tabList1 = news
-        setTimeout(() => {
-          this.getWidth('', '', '', false)
-        }, 100)
-      },
-      infoTabIndex(newVal) {
-        this.tabIndex = newVal
-      }
-    },
     data() {
       return {
         tabList: [],
         tabList1: [],
-        arrWidth: [],
         width: 0,
         move: 0,
         tabIndex: 0,
@@ -105,17 +92,6 @@
     },
     methods: {
       ...cartMethods,
-      getWidth(index, id, e) {
-        this.allWidth = 0
-        let query = wx.createSelectorQuery()
-        query.selectAll('.item').boundingClientRect()
-        query.exec((res) => {
-          this.arrWidth = res[0].map((item, index) => {
-            this.allWidth += item.width
-            return item.width
-          })
-        })
-      },
       async _changeTab(index, id, e) {
         if (this.tabIndex * 1 === index * 1) return
         let number = index * 1 === 0 ? 1 : index
@@ -362,15 +338,6 @@
           height: 3px
           margin: 0 auto
           border-radius: 3px
-
-  .under-line
-    position: absolute
-    bootom: 0
-    left: 0
-    width: 81px
-    background: $color-main
-    /*transition: left 0.3s*/
-    border-radius: 8px 8px 0px 0px
   .scroll-view-top
     top: 84px
   .foot-ties

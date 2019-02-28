@@ -124,8 +124,7 @@
     </div>
     <navigation-bottom currentType="index"></navigation-bottom>
     <link-group ref="groupComponents" :wechatInfo="groupInfo"></link-group>
-    <confirm-msg ref="refundModel" title="您的位置距该提货点超过1km" msg="建议您切换自提点" sureString="马上切换" @confirm="confirm"
-                 @cancel="cancel"></confirm-msg>
+    <confirm-msg ref="refundModel" title="您的位置距该提货点超过1km" msg="建议您切换自提点" sureString="马上切换" @confirm="confirm" @cancel="cancel"></confirm-msg>
   </div>
 </template>
 
@@ -145,23 +144,12 @@
     data() {
       return {
         praiseIndex: 0,
-        selectTab: [],
         tabIdx: 0,
-        menuFixed: false,
-        menuTop: 0,
         groupInfo: {},
-        plantingList: [],
-        tabList: [],
-        shelfId: 0,
         goodsList: [],
         goodsMore: false,
         goodsPage: 2,
         title: '赞播优鲜',
-        arrWidth: [],
-        width: 0,
-        move: 0,
-        tabIndex: 0,
-        viewToItem: 'item0',
         curShopId: '',
         showBuyUser: false,
         buyUsers: [],
@@ -178,7 +166,6 @@
       }
     },
     async onLoad(options) {
-      console.log(this.retuan)
       if (options.shopId) {
         wx.setStorageSync('shopId', options.shopId)
       }
@@ -233,13 +220,6 @@
       this.showUserIndex = 0
       this.showBuyUser = false
     },
-    onPageScroll(scroll) {
-      if (scroll.scrollTop >= this.menuTop - 84) {
-        this.menuFixed = true
-      } else {
-        this.menuFixed = false
-      }
-    },
     onReachBottom() {
       this.getMoreGoodsList()
     },
@@ -253,8 +233,7 @@
       this.setCartCount()
     },
     onShareAppMessage(res) {
-      console.log(res)
-      let imgUrl = '/yx-image/choiceness/pic-zbyx@2x.png'
+      let imgUrl = ''
       switch (this.corpName) {
         case 'platform':
           imgUrl = '/yx-image/choiceness/pic-zbyx@2x.png'
@@ -394,11 +373,6 @@
             this.$wechat.showToast(res.message, 1000, false)
           }
         })
-      },
-      toTap(id) {
-        if (id * 1 === this.sheTag_id) return
-        this.sheTag_id = id
-        this.getGoodsList()
       },
       async _getIndexModule() {
         let res = await API.Choiceness.getModulesInfo({page_name: 'index'})
