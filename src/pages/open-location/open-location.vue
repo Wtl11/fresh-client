@@ -6,7 +6,7 @@
       <p class="text">亲，我们未获得您的位置信息</p>
     </div>
     <button class="btn" open-type="openSetting" @click="openLocation" :class="'corp-' + corpName + '-bg'">开启定位</button>
-    <navigator class="btn select-btn" url="/pages/self-point">手动选择自提点</navigator>
+    <!--<navigator class="btn select-btn" url="/pages/self-point">手动选择自提点</navigator>-->
   </div>
 </template>
 
