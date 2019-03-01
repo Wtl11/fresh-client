@@ -18,17 +18,22 @@ export default {
   },
   // 活动标签列表
   getGoodsShelfList(data, loading = false) {
-    const url = `/api/wap/goods/shop-shelf-goods`
+    const url = `/api/wap/goods/activity-goods`
+    return request.get(url, data, loading)
+  },
+  // 活动详情接口
+  getGoodsDetail(id, data, loading = false) {
+    const url = `/api/wap/goods/goods/${id}`
+    return request.get(url, data, loading)
+  },
+  // 活动商品其他信息
+  getGoodsBuyInfo(id, data, loading = false) {
+    const url = `/api/wap/goods/goods-other-info/${id}`
     return request.get(url, data, loading)
   },
   // 活动标签列表
-  getGoodsDetail(id, loading = false) {
-    const url = `/api/wap/goods/shop-shelf-goods/${id}`
-    return request.get(url, null, loading)
-  },
-  // 活动标签列表
   getGoodsDetailsThumb(data, loading = false) {
-    const url = `/api/wap/goods/shop-shelf-goods-thumb`
+    const url = `/api/wap/goods/goods-thumb`
     return request.get(url, data, loading)
   },
   // 加入购物车
@@ -43,7 +48,7 @@ export default {
   },
   // 活动商品购买用户列表
   getUserImg(data, loading = false) {
-    const url = `/api/wap/goods/shop-shelf-goods-customer`
+    const url = `/api/wap/goods/goods-customer`
     return request.get(url, data, loading)
   },
   // 活动商品购买用户列表
@@ -53,7 +58,7 @@ export default {
   },
   // 活动标签列表
   copyGoodsDetail(id, data, loading = false) {
-    const url = `/api/wap/goods/shop-shelf-goods/${id}`
+    const url = `/api/wap/goods/goods/${id}`
     return request.get(url, data, loading)
   },
   // 获得默认店铺信息

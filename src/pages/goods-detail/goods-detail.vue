@@ -14,11 +14,11 @@
         <div class="banner-number-box">{{currentNum}}/{{goodsBanner.length}}</div>
       </div>
       <div class="banner-title-box">
-        <div class="banner-title-main" v-if="goodsMsg.is_activity * 1 === 1">
+        <div class="banner-title-main" v-if="activityId * 1 > 0">
           <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-spxq_bg@2x.png'" mode="aspectFill" class="banner-title-bg">
           <div class="banner-main-box">
             <div class="banner-main-left">
-              <div class="left-price">{{goodsMsg.shop_price}}</div>
+              <div class="left-price">{{goodsMsg.trade_price}}</div>
               <div class="left-price-text">元</div>
               <div class="left-price-line">
                 <div class="line-price-top">
@@ -34,8 +34,8 @@
             </div>
           </div>
         </div>
-        <div class="banner-title-type" v-if="goodsMsg.is_activity * 1 === 0">
-          <div class="left-price" :class="'corp-' + corpName + '-money'">{{goodsMsg.shop_price}}</div>
+        <div class="banner-title-type" v-if="activityId * 1 === 0">
+          <div class="left-price" :class="'corp-' + corpName + '-money'">{{goodsMsg.trade_price}}</div>
           <div class="left-price-text">
             <div class="price-text" :class="'corp-' + corpName + '-money'">元</div>
             <div class="line-price-text">{{goodsMsg.original_price}}元</div>
@@ -49,9 +49,9 @@
         <div class="info-sub">
           <img v-if="imageUrl && corpName === 'platform'" :src="imageUrl + '/yx-image/choiceness/icon-fast@2x.png'" mode="aspectFill" class="info-sub-img">
           <img v-if="imageUrl && corpName === 'retuan'" :src="imageUrl + '/yx-image/retuan/icon-fast@2x.png'" mode="aspectFill" class="info-sub-img">
-          <div class="sub-text">现在下单，预计({{goodsMsg.shelf_delivery_at}})可自提</div>
+          <div class="sub-text">现在下单，预计({{goodsMsg.delivery_at}})可自提</div>
         </div>
-        <div class="info-stock">已售<span :class="'corp-' + corpName + '-money'">{{goodsMsg.sale_count}}</span>{{goodsMsg.goods_units}}<span v-if="goodsMsg.is_activity * 1 === 1">，剩余<span :class="'corp-' + corpName + '-money'">{{goodsMsg.usable_stock}}</span>{{goodsMsg.goods_units}}</span></div>
+        <div class="info-stock">已售<span :class="'corp-' + corpName + '-money'">{{goodsMsg.sale_count}}</span>{{goodsMsg.goods_units}}<span v-if="activityId * 1 > 0">，剩余<span :class="'corp-' + corpName + '-money'">{{goodsMsg.usable_stock}}</span>{{goodsMsg.goods_units}}</span></div>
       </div>
       <img v-if="imageUrl && corpName === 'platform'" :src="imageUrl + '/yx-image/goods/icon-share2@2x.png'" mode="aspectFill" class="banner-share" @click="showShare">
       <img v-if="imageUrl && corpName === 'retuan'" :src="imageUrl + '/yx-image/retuan/icon-share2@2x.png'" mode="aspectFill" class="banner-share" @click="showShare">
@@ -114,7 +114,7 @@
       </form>
       <div v-if="goodsMsg.usable_stock * 1 === 0" class="goods-btn goods-btn-assint">已抢完</div>
     </div>
-    <add-number ref="addNumber" :msgDetail="goodsMsg" @comfirmNumer="comfirmNumer"></add-number>
+    <add-number ref="addNumber" :msgDetail="goodsMsg" :msgDetailInfo="buyGoodsInfo" @comfirmNumer="comfirmNumer"></add-number>
     <link-group ref="groupList" :wechatInfo="groupInfo"></link-group>
     <link-group ref="shareList" :linkType="2" @saveImg="_action"></link-group>
     <we-paint ref="wePaint" @drawDone="_drawDone"></we-paint>
@@ -128,7 +128,7 @@
           <div class="share-sub-title">智利J级车厘子250g</div>
           <div class="share-group-box">团购价</div>
           <div class="price-box">
-            <div class="share-price-number">{{goodsMsg.shop_price}}</div>
+            <div class="share-price-number">{{goodsMsg.trade_price}}</div>
             <div class="share-price-icon">元</div>
             <div class="share-price-line">
               {{goodsMsg.original_price}}元
@@ -174,6 +174,7 @@
         typeBtn: TYPEBTN,
         safeList: SAFELIST,
         goodsId: 0,
+        activityId: null,
         goodsMsg: {},
         timeEnd: false,
         groupInfo: {},
@@ -187,7 +188,8 @@
         msgTitle: '',
         userImgData: {},
         showMoreImg: true,
-        thumb_image: ''
+        thumb_image: '',
+        buyGoodsInfo: {}
       }
     },
     computed: {
@@ -197,7 +199,7 @@
       let shopId = wx.getStorageSync('shopId')
       return {
         title: this.goodsMsg.name,
-        path: `/pages/goods-detail?id=${this.goodsMsg.id}&shopId=${shopId}`, // 商品详情
+        path: `/pages/goods-detail?id=${this.goodsId}&shopId=${shopId}&activityId=${this.activityId}`, // 商品详情
         imageUrl: this.thumb_image || this.goodsMsg.goods_cover_image,
         success: (res) => {
           // 转发成功
@@ -221,8 +223,10 @@
         let scene = decodeURIComponent(options.scene)
         let params = getParams(scene)
         this.goodsId = params.id
+        this.activityId = params.activityId
       } else {
         this.goodsId = options.id
+        this.activityId = options.activityId
       }
       this._setDescriptionNum()
     },
@@ -232,6 +236,7 @@
       this._groupInfo()
       this.getUserImgList()
       this.setCartCount()
+      this.getGoodsOtherInfo()
       this.getQrCode()
     },
     onUnload() {
@@ -309,7 +314,7 @@
         if (!this.$isLogin()) {
           return
         }
-        API.Choiceness.addShopCart({sku_id: this.goodsMsg.shop_skus[0].id}).then((res) => {
+        API.Choiceness.addShopCart({goods_sku_id: this.goodsMsg.goods_skus[0].goods_sku_id, activity_id: this.activityId}).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.$wechat.showToast('加入购物车成功')
             this.setCartCount()
@@ -323,12 +328,12 @@
           return
         }
         ald.aldstat.sendEvent('立即购买')
-        if (this.goodsMsg.buy_limit * 1 === -1) {
+        if (this.buyGoodsInfo.person_day_buy_limit * 1 === -1) {
           this.$refs.addNumber.showLink()
           return
         }
-        if (this.goodsMsg.buy_count >= this.goodsMsg.buy_limit) {
-          this.$wechat.showToast(`该商品限购${this.goodsMsg.buy_limit}件，您不能在购买了`)
+        if (this.buyGoodsInfo.person_day_buy_count >= this.buyGoodsInfo.person_day_buy_limit) {
+          this.$wechat.showToast(`该商品限购${this.buyGoodsInfo.person_day_buy_limit}件，您不能在购买了`)
         } else {
           this.$refs.addNumber.showLink()
         }
@@ -406,7 +411,7 @@
             {
               el: '.share-price-number',
               drawType: 'text',
-              source: this.goodsMsg.shop_price,
+              source: this.goodsMsg.trade_price,
               fontSize: 30,
               color: moneyColor
             },
@@ -458,14 +463,14 @@
         if (this.goodsBanner.length !== 0) {
           loading = false
         }
-        API.Choiceness.getGoodsDetail(this.goodsId, loading).then((res) => {
+        API.Choiceness.getGoodsDetail(this.goodsId, {activity_id: this.activityId}, loading).then((res) => {
           this.$wechat.hideLoading()
           if (res.error === this.$ERR_OK) {
             let goodDetail = res.data
             this.goodsMsg = goodDetail
             this.goodsBanner = goodDetail.goods_banner_images
             this.showOpen = goodDetail.describe.length > this.describeNum
-            this.deliverAt = goodDetail.shelf_delivery_at
+            this.deliverAt = goodDetail.delivery_at
             this.msgTitle = goodDetail.name
             this._kanTimePlay()
             this._handleDescribe()
@@ -474,8 +479,17 @@
           }
         })
       },
+      getGoodsOtherInfo() {
+        API.Choiceness.getGoodsBuyInfo(this.goodsId, {activity_id: this.activityId}).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.buyGoodsInfo = res.data
+          } else {
+            this.$wechat.showToast(res.message)
+          }
+        })
+      },
       getGoodsDetailDataThumb() {
-        API.Choiceness.getGoodsDetailsThumb({id: this.goodsId, type: 'shop_shelf_goods'}).then((res) => {
+        API.Choiceness.getGoodsDetailsThumb({goods_id: this.goodsId, activity_id: this.activityId}).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.thumb_image = res.data.thumb_image
           } else {
@@ -483,11 +497,11 @@
         })
       },
       comfirmNumer(number) {
-        let goodsList = this.goodsMsg.shop_skus[0]
-        goodsList.sku_id = goodsList.id
+        let goodsList = this.goodsMsg.goods_skus[0]
+        goodsList.sku_id = goodsList.goods_sku_id
         goodsList.num = number
         goodsList.goods_units = this.goodsMsg.goods_units
-        const total = (goodsList.shop_price * number).toFixed(2)
+        const total = (goodsList.trade_price * number).toFixed(2)
         let orderInfo = {
           goodsList: new Array(goodsList),
           total: total,

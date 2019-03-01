@@ -87,7 +87,7 @@
                     <div class="text-group" :class="'corp-' + corpName + '-money'">团购价</div>
                   </section>
                   <div class="price-box">
-                    <div class="money" :class="'corp-' + corpName + '-money'">{{item.shop_price}}</div>
+                    <div class="money" :class="'corp-' + corpName + '-money'">{{item.trade_price}}</div>
                     <div class="unit" :class="'corp-' + corpName + '-money'">元</div>
                     <div class="lineation">{{item.original_price}}元</div>
                   </div>
@@ -315,7 +315,7 @@
       jumpDetail(item) {
         if (item.type === 'mini_goods') {
           wx.navigateTo({
-            url: `/pages/goods-detail?id=${item.other_id}`
+            url: `/pages/goods-detail?id=${item.other_id}&&activityId=${item.activity_id}`
           })
         } else if (item.type === 'goods_cate') {
           wx.navigateTo({
@@ -331,12 +331,36 @@
           })
         }
       },
+      jumpNavType(item) {
+        if (item.type === 'mini_goods') {
+          wx.navigateTo({
+            url: `/pages/goods-detail?id=${item.other_id}&&activityId=${item.activity_id}`
+          })
+        } else if (item.type === 'goods_cate') {
+          wx.navigateTo({
+            url: `/pages/classify?id=${item.other_id}`
+          })
+        } else if (item.type === 'mini_link') {
+          wx.navigateTo({
+            url: `${item.url}`
+          })
+        } else {
+          wx.navigateTo({
+            url: `/pages/out-html?url=${item.url}`
+          })
+        }
+      },
+      jumpGoodsDetail(item) {
+        wx.navigateTo({
+          url: `/pages/goods-detail?id=${item.goods_id}&&activityId=${item.activity_id}`
+        })
+      },
       getMoreGoodsList() {
         if (this.goodsMore) {
           return
         }
         let data = {
-          shelf_id: this.goodsListData.content_data.other_id,
+          activity_id: this.goodsListData.content_data.other_id,
           page: this.goodsPage,
           limit: 10
         }
@@ -356,16 +380,12 @@
           this.goodsMore = true
         }
       },
-      jumpGoodsDetail(item) {
-        wx.navigateTo({
-          url: `/pages/goods-detail?id=${item.id}`
-        })
-      },
       addShoppingCart(item) {
         if (!this.$isLogin()) {
           return
         }
-        API.Choiceness.addShopCart({sku_id: item.shop_sku_id}).then((res) => {
+        console.log(item)
+        API.Choiceness.addShopCart({goods_sku_id: item.goods_sku_id, activity_id: item.activity_id}).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.$wechat.showToast('加入购物车成功', 1000, false)
             this.setCartCount()
@@ -402,25 +422,6 @@
         wx.navigateTo({
           url: `/pages/self-point`
         })
-      },
-      jumpNavType(item) {
-        if (item.type === 'mini_goods') {
-          wx.navigateTo({
-            url: `/pages/goods-detail?id=${item.other_id}`
-          })
-        } else if (item.type === 'goods_cate') {
-          wx.navigateTo({
-            url: `/pages/classify?id=${item.other_id}`
-          })
-        } else if (item.type === 'mini_link') {
-          wx.navigateTo({
-            url: `${item.url}`
-          })
-        } else {
-          wx.navigateTo({
-            url: `/pages/out-html?url=${item.url}`
-          })
-        }
       },
       jumpSelfPoint() {
         wx.navigateTo({

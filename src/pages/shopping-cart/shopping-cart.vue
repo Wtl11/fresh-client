@@ -25,7 +25,7 @@
               <div class="remain">
                 <div class="txt" :class="'corp-' + corpName + '-money-text'" v-if="item.is_urgency">仅剩{{item.usable_stock}}件</div>
               </div>
-              <div class="price" :class="'corp-' + corpName + '-money'" v-if="item.shop_price"><span class="num">{{item.shop_price}}</span>元</div>
+              <div class="price" :class="'corp-' + corpName + '-money'" v-if="item.trade_price"><span class="num">{{item.trade_price}}</span>元</div>
             </div>
             <div class="right">
               <div class="number-box">
@@ -102,7 +102,7 @@
       },
       totalPrice() {
         return this.checkedGoods.reduce((total, current) => {
-          let money = (total * 1) + (current.shop_price * current.num)
+          let money = (total * 1) + (current.trade_price * current.num)
           money = money.toFixed(2)
           return money
         }, 0)
@@ -136,7 +136,7 @@
         })
         this.goodsList = res.data
         this.goodsList.length > 0 ? this.isShowCart = false : this.isShowCart = true
-        this.deliverAt = res.shelf_delivery_at
+        this.deliverAt = res.delivery_at
         this.setCartCount()
       },
       addNum(i, num, limit, id) {
@@ -169,7 +169,7 @@
       },
       jumpGoodsDetail(item) {
         wx.navigateTo({
-          url: `/pages/goods-detail?id=${item.sku_id}`
+          url: `/pages/goods-detail?id=${item.goods_id}&&activityId=${item.activity_id}`
         })
       },
       // 点击删除按钮

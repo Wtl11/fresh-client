@@ -51,7 +51,7 @@ export default {
    * @returns {*}
    */
   recommendGoods(data, loading = false) {
-    const url = `/api/wap/goods/shop-shelf-hot-goods`
+    const url = `/api/wap/goods/hot-goods`
     return request.get(url, data, loading)
   },
   /**
@@ -181,7 +181,7 @@ export default {
    * @returns {*}
    */
   getPresellGoods(data, loading = false) {
-    const url = '/api/wap/goods/shop-shelf-presell-goods'
+    const url = '/api/wap/goods/presell-goods'
     return request.get(url, data, loading)
   },
   /**

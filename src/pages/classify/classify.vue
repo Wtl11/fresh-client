@@ -24,7 +24,7 @@
                   <div class="title">{{item.name}}</div>
                   <div class="classify-price-box">
                     <div class="price-left">
-                      <div class="price-number" :class="'corp-' + corpName + '-money'">{{item.shop_price}}</div>
+                      <div class="price-number" :class="'corp-' + corpName + '-money'">{{item.trade_price}}</div>
                       <div class="price-money" :class="'corp-' + corpName + '-money'">元</div>
                       <div class="price-line">{{item.original_price}}元</div>
                     </div>
@@ -173,14 +173,14 @@
       },
       jumpGoodsDetail(item) {
         wx.navigateTo({
-          url: `/pages/goods-detail?id=${item.id}`
+          url: `/pages/goods-detail?id=${item.goods_id}&&activityId=${item.activity_id}`
         })
       },
       addShoppingCart(item) {
         if (!this.$isLogin()) {
           return
         }
-        API.Choiceness.addShopCart({sku_id: item.shop_sku_id}).then((res) => {
+        API.Choiceness.addShopCart({goods_sku_id: item.goods_sku_id, activity_id: item.activity_id}).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.$wechat.showToast('加入购物车成功', 1000, false)
             this.setCartCount()

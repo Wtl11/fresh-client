@@ -81,12 +81,12 @@
       <!--TODO-->
       <div class="order-big-box" :style="{height: detailedHeight + 'px'}">
         <div class="presell-wrapper order-box" :style="{'transform': ' translateX('+ -(navIndex * width) +'px)'}">
-          <div class="title-wrapper border-bottom-1px" v-if="preSell.shelf_title">
-            <p class="title">{{preSell.shelf_title}}</p>
+          <div class="title-wrapper border-bottom-1px" v-if="preSell.activity_title">
+            <p class="title">{{preSell.activity_title}}</p>
             <div class="copy-btn" :class="'corp-' + corpName + '-goods-btn'" @click="copyPreSell">一键复制</div>
           </div>
-          <div class="content-wrapper" v-if="preSell.shelf_content_list">
-            <div v-for="(item, index) in preSell.shelf_content_list" :key="index" class="content">{{item}}</div>
+          <div class="content-wrapper" v-if="preSell.activity_content_list">
+            <div v-for="(item, index) in preSell.activity_content_list" :key="index" class="content">{{item}}</div>
           </div>
           <div class="noting" v-if="!preSell.title">
             <div class="noting-img">
@@ -96,12 +96,12 @@
           </div>
         </div>
         <div class="reg-goods-box order-box" :style="{'transform': ' translateX('+ -(navIndex * width) +'px)'}">
-          <navigator :url="'/pages/copy-detail?id=' + item.id" hover-class="none" class="reg-goods-item" v-for="(item,index) in goodsList" :key="index">
+          <navigator :url="'/pages/copy-detail?id=' + item.goods_id + '&&activityId=' + item.activity_id" hover-class="none" class="reg-goods-item" v-for="(item,index) in goodsList" :key="index">
             <img :src="item.goods_cover_image" class="reg-goods-img" mode="aspectFill">
             <div class="reg-goods-content">
               <div class="reg-goods-title">{{item.name}}</div>
               <div class="reg-goods-tip" :class="'corp-' + corpName + '-wallet-label'">团购价</div>
-              <span class="reg-goods-money" :class="'corp-' + corpName + '-money'">{{item.shop_price}}<span class="reg-goods-small">元</span></span>
+              <span class="reg-goods-money" :class="'corp-' + corpName + '-money'">{{item.trade_price}}<span class="reg-goods-small">元</span></span>
               <span class="reg-goods-del-money">{{item.original_price}}元</span>
             </div>
           </navigator>
@@ -231,7 +231,7 @@
         this.navIndex = index
       },
       copyPreSell() {
-        this.$wechat.setClipboardData(this.preSell.shelf_content)
+        this.$wechat.setClipboardData(this.preSell.activity_content)
       },
       async _getPresellGoods() {
         let res = await API.Leader.getPresellGoods()
@@ -240,7 +240,7 @@
           return
         }
         this.preSell = res.data
-        this.isNoGoods = !this.preSell.shelf_content
+        this.isNoGoods = !this.preSell.activity_content
         setTimeout(() => {
           this._setNav(this.navIndex)
         }, 500)

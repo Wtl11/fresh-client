@@ -9,7 +9,7 @@
         <div class="goods-info-right">
           <div class="title">{{msgDetail.name}}</div>
           <div class="order-price-box">
-            <div class="price-small">{{msgDetail.shop_price}}</div>
+            <div class="price-small">{{msgDetail.trade_price}}</div>
             <div class="price-icon">元</div>
             <div class="price-line">{{msgDetail.original_price}}元</div>
           </div>
@@ -51,6 +51,10 @@
       msgDetail: {
         type: Object,
         default: ''
+      },
+      msgDetailInfo: {
+        type: Object,
+        default: ''
       }
     },
     data() {
@@ -62,7 +66,7 @@
     },
     computed: {
       orderTotal() {
-        return (this.msgDetail.shop_price * this.orderNum).toFixed(2)
+        return (this.msgDetail.trade_price * this.orderNum).toFixed(2)
       }
     },
     methods: {
@@ -77,9 +81,9 @@
         if (this.orderNum > 0) {
           this.showOrderNum = false
         }
-        let number = this.msgDetail.buy_limit - this.msgDetail.buy_count
-        if (this.orderNum >= number && this.msgDetail.buy_limit * 1 !== -1) {
-          this.$wechat.showToast(`该商品限购${this.msgDetail.buy_limit}件，您不能再购买了`)
+        let number = this.msgDetailInfo.person_day_buy_limit - this.msgDetailInfo.person_day_buy_count
+        if (this.orderNum >= number && this.msgDetailInfo.person_day_buy_limit * 1 !== -1) {
+          this.$wechat.showToast(`该商品限购${this.msgDetailInfo.person_day_buy_limit}件，您不能再购买了`)
           return
         }
         if (this.orderNum >= this.msgDetail.usable_stock) {

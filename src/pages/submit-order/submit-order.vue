@@ -33,7 +33,7 @@
           <div class="sub-title">规格：{{item.goods_units}}</div>
           <div class="price-box">
             <div class="price-left">
-              <div class="number">{{item.shop_price}}</div>
+              <div class="number">{{item.trade_price}}</div>
               <div class="icon">元</div>
             </div>
             <div class="price-right">

@@ -4,8 +4,8 @@
     <div class="copy-top">
       <div class="copy-text">{{goodsMsg.name}}</div>
       <div class="copy-text">市场价：{{goodsMsg.original_price}}元/{{goodsMsg.goods_units}}</div>
-      <div class="copy-text">团购价：{{goodsMsg.shop_price}}元/{{goodsMsg.goods_units}}</div>
-      <div class="copy-text">限量{{goodsMsg.total_stock}}{{goodsMsg.goods_units}}，限购{{goodsMsg.buy_limit}}{{goodsMsg.goods_units}}/人</div>
+      <div class="copy-text">团购价：{{goodsMsg.trade_price}}元/{{goodsMsg.goods_units}}</div>
+      <div class="copy-text">限量{{goodsMsg.total_stock}}{{goodsMsg.goods_units}}，限购{{buyGoodsInfo.person_day_buy_limit}}{{goodsMsg.goods_units}}/人</div>
     </div>
     <div class="copy-sub">强烈推荐：{{goodsMsg.describe}}</div>
     <img v-for="(item, index) in goodsImgList" v-if="item.image_url" :src="item.image_url" class="detail-img"  mode="widthFix" :key="index">
@@ -41,19 +41,25 @@
     data() {
       return {
         goodsId: null,
+        activityId: null,
         goodsMsg: {},
-        goodsImgList: []
+        goodsImgList: [],
+        thumb_image: '',
+        buyGoodsInfo: {}
       }
     },
     onLoad(options) {
       this.goodsId = options.id
+      this.activityId = options.activityId
       this.getGoodsDetail()
+      this.getGoodsOtherInfo()
+      this.getGoodsDetailDataThumb()
     },
     onShareAppMessage() {
       return {
         title: this.goodsMsg.name,
-        path: `/pages/goods-detail?id=${this.goodsId}&shopId=${this.goodsMsg.shop_id}`, // 商品详情
-        imageUrl: this.goodsMsg.thumb_image || this.goodsMsg.goods_cover_image,
+        path: `/pages/goods-detail?id=${this.goodsId}&shopId=${this.goodsMsg.shop_id}&activityId=${this.activityId}`, // 商品详情
+        imageUrl: this.thumb_image || this.goodsMsg.goods_cover_image,
         success: (res) => {
           // 转发成功
         },
@@ -68,8 +74,8 @@
         that.$wx.setClipboardData({
           data: `${this.goodsMsg.name}
 市场价：${this.goodsMsg.original_price}元/${this.goodsMsg.goods_units}
-团购价：${this.goodsMsg.shop_price}元/${this.goodsMsg.goods_units}
-限量${this.goodsMsg.total_stock}${this.goodsMsg.goods_units}，限购${this.goodsMsg.buy_limit}${this.goodsMsg.goods_units}/人
+团购价：${this.goodsMsg.trade_price}元/${this.goodsMsg.goods_units}
+限量${this.goodsMsg.total_stock}${this.goodsMsg.goods_units}，限购${this.buyGoodsInfo.person_day_buy_limit}${this.goodsMsg.goods_units}/人
 强烈推荐：${this.goodsMsg.describe}`,
           success: function(res) {
             that.$wx.getClipboardData({
@@ -99,7 +105,7 @@
         })
       },
       getGoodsDetail() {
-        API.Choiceness.copyGoodsDetail(this.goodsId, {is_presell_goods: 1}).then((res) => {
+        API.Choiceness.copyGoodsDetail(this.goodsId, {is_presell_goods: 1, activity_id: this.activityId}).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.goodsMsg = res.data
             let data = {
@@ -109,6 +115,23 @@
             this.goodsImgList = this.goodsImgList.concat(res.data.goods_detail_images)
           } else {
             this.$wechat.showToast(res.message)
+          }
+        })
+      },
+      getGoodsOtherInfo() {
+        API.Choiceness.getGoodsBuyInfo(this.goodsId, {activity_id: this.activityId}).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.buyGoodsInfo = res.data
+          } else {
+            this.$wechat.showToast(res.message)
+          }
+        })
+      },
+      getGoodsDetailDataThumb() {
+        API.Choiceness.getGoodsDetailsThumb({goods_id: this.goodsId, activity_id: this.activityId}).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.thumb_image = res.data.thumb_image
+          } else {
           }
         })
       }
