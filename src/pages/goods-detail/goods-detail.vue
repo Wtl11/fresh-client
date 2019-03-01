@@ -273,7 +273,7 @@
         this.groupInfo = res.data
       },
       getUserImgList() {
-        API.Choiceness.getUserImg({id: this.goodsId, limit: 200}).then((res) => {
+        API.Choiceness.getUserImg({goods_id: this.goodsId, limit: 200}).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.userImgList = res.data
             if (this.bigUserImgList.length === 0) {
