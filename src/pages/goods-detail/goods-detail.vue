@@ -858,6 +858,7 @@
         font-size: $font-size-14
         color: #808080
         letter-spacing: 0.3px
+        word-break:break-word
       .info-sub
         layout(row)
         align-items: center
