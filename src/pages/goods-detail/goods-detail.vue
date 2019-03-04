@@ -46,7 +46,7 @@
     <div class="detail-info-box">
       <div class="info-box">
         <div class="title" :class="goodsMsg.name ? 'has-title' : ''">{{goodsMsg.name}}</div>
-        <div class="has--sub-title">{{goodsMsg.describe}}</div>
+        <div class="has--sub-title" v-if="goodsMsg.describe">{{goodsMsg.describe}}</div>
         <div class="info-sub">
           <img v-if="imageUrl && corpName === 'platform'" :src="imageUrl + '/yx-image/choiceness/icon-fast@2x.png'" mode="aspectFill" class="info-sub-img">
           <img v-if="imageUrl && corpName === 'retuan'" :src="imageUrl + '/yx-image/retuan/icon-fast@2x.png'" mode="aspectFill" class="info-sub-img">
@@ -853,7 +853,7 @@
       .has-title
         no-wrap-plus()
       .has--sub-title
-        margin: 7px 0 21.5px
+        margin-top: 7px
         font-family: $font-family-regular
         font-size: $font-size-14
         color: #808080
@@ -861,7 +861,7 @@
       .info-sub
         layout(row)
         align-items: center
-        margin-bottom: 16.5px
+        margin: 21.5px 0 16.5px
         .info-sub-img
           width: 14.5px
           height: 15.5px
