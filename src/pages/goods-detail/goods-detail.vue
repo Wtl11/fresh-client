@@ -512,9 +512,9 @@
       },
       _kanTimePlay() {
         clearInterval(this.timer)
-        this.activityTime = this._groupTimeCheckout(this.goodsMsg.shelf_end_at)
+        this.activityTime = this._groupTimeCheckout(this.goodsMsg.activity_end_at)
         this.timer = setInterval(() => {
-          this.activityTime = this._groupTimeCheckout(this.goodsMsg.shelf_end_at)
+          this.activityTime = this._groupTimeCheckout(this.goodsMsg.activity_end_at)
           if (this.timeEnd) {
             clearInterval(this.timer)
           }

@@ -2,7 +2,7 @@
   <div class="choiceness">
     <navigation-bar :title="shopName" :showArrow="false"></navigation-bar>
     <div class="community-box">
-      <div class="community-main">
+      <div class="community-main" @click="jumpSelfPoint">
       <!--<div class="community-main" @click="jumpSelfPoint">-->
         <div class="community-img">
           <img v-if="(locationStatus * 1 === 1 || locationStatus * 1 === 2) && imageUrl" :src="groupInfo.head_image_url || imageUrl+'/yx-image/order/icon-colonel_head@2x.png'"">
@@ -76,15 +76,19 @@
             <div class="goods-right">
               <div class="goods-right-top">
                 <div class="title">{{item.name}}</div>
-                <div class="text-sub" v-if="item.describe">{{item.describe}}</div>
-                <div class="text-sales-box">
-                  <div class="text-sales">已售{{item.sale_count}}件</div>
-                </div>
+                <div class="text-sub" v-if="item.describe" :class="item.describe ? 'has-title' : ''">{{item.describe}}</div>
+                <!--<div class="text-sales-box">-->
+                  <!--<div class="text-sales">已售{{item.sale_count}}件</div>-->
+                <!--</div>-->
               </div>
               <div class="add-box">
                 <div class="add-box-left">
                   <section class="left">
-                    <div class="text-group" :class="'corp-' + corpName + '-money'">团购价</div>
+                    <!--<div class="text-group" :class="'corp-' + corpName + '-money'">团购价</div>-->
+                    <img class="text-group-img" mode="aspectFill" v-if="imageUrl && corpName === 'platform'"
+                         :src="imageUrl + '/yx-image/choiceness/pic-price_bg@2x.png'">
+                    <img class="text-group-img" mode="aspectFill" v-if="imageUrl && corpName === 'retuan'"
+                         :src="imageUrl + '/yx-image/retuan/pic-price_rtbg@2x.png'">
                   </section>
                   <div class="price-box">
                     <div class="money" :class="'corp-' + corpName + '-money'">{{item.trade_price}}</div>
@@ -92,21 +96,24 @@
                     <div class="lineation">{{item.original_price}}元</div>
                   </div>
                 </div>
-                <form action="" report-submit @submit="$getFormId" @click.stop="addShoppingCart(item)">
-                  <button class="add-box-right" v-if="item.usable_stock * 1 > 0" formType="submit">
-                    <div class="add-goods-btn" :class="'corp-' + corpName + '-bg'">
-                      <div class="add-icon">
-                        <div class="add1"></div>
-                        <div class="add2"></div>
+                <div class="right">
+                  <form action="" report-submit @submit="$getFormId" @click.stop="addShoppingCart(item)">
+                    <button class="add-box-right" v-if="item.usable_stock * 1 > 0" formType="submit">
+                      <div class="add-goods-btn" :class="'corp-' + corpName + '-bg'">
+                        <div class="add-icon">
+                          <div class="add1"></div>
+                          <div class="add2"></div>
+                        </div>
+                        <div class="add-text">购物车</div>
                       </div>
-                      <div class="add-text">购物车</div>
+                    </button>
+                  </form>
+                  <div class="add-box-right" v-if="item.usable_stock * 1 <= 0" @click.stop>
+                    <div class="add-goods-btn add-goods-btn-active">
+                      <div class="add-text">已抢完</div>
                     </div>
-                  </button>
-                </form>
-                <div class="add-box-right" v-if="item.usable_stock * 1 <= 0" @click.stop>
-                  <div class="add-goods-btn add-goods-btn-active">
-                    <div class="add-text">已抢完</div>
                   </div>
+                  <div class="add-text-sales">已售{{item.sale_count}}{{item.goods_units}}</div>
                 </div>
               </div>
             </div>
@@ -586,7 +593,6 @@
           width: 100%
           height: 100%
           transition: all .5s
-
   .nav-list
     layout(row)
     align-items: center
@@ -713,17 +719,14 @@
           color: $color-text-main
           line-height: 1
           min-height: $font-size-18
-          margin-bottom: 4px
+          margin-bottom: 2px
           no-wrap()
         .text-sub
-          font-size: $font-size-14
+          font-size: $font-size-13
           font-family: $font-family-regular
           color: $color-text-sub
-          line-height: 1
-          min-height: $font-size-16
+          min-height: $font-size-15
           margin-bottom: 5px
-          no-wrap()
-          padding-right: 10px
           box-sizing: border-box
         .text-sales-box
           layout(row)
@@ -750,6 +753,10 @@
               line-height: 13px
               margin-bottom: 3px
               border-radius: 10px
+            .text-group-img
+              width: 37px
+              height: 17px
+              display: block
           .price-box
             layout(row)
             align-items: flex-end
@@ -845,6 +852,14 @@
   .txt
     height: 100px
 
+  .has-title
+    no-wrap-plus()
+  .add-text-sales
+    font-size: $font-size-10
+    font-family: $font-family-regular
+    color: $color-text-sub
+    margin-top: 1.5px
+    text-align: center
   .add-box-right
     &:after
       border: none
