@@ -46,6 +46,7 @@
     <div class="detail-info-box">
       <div class="info-box">
         <div class="title" :class="goodsMsg.name ? 'has-title' : ''">{{goodsMsg.name}}</div>
+        <div class="has--sub-title" v-if="goodsMsg.describe">{{goodsMsg.describe}}</div>
         <div class="info-sub">
           <img v-if="imageUrl && corpName === 'platform'" :src="imageUrl + '/yx-image/choiceness/icon-fast@2x.png'" mode="aspectFill" class="info-sub-img">
           <img v-if="imageUrl && corpName === 'retuan'" :src="imageUrl + '/yx-image/retuan/icon-fast@2x.png'" mode="aspectFill" class="info-sub-img">
@@ -660,12 +661,14 @@
           width: 100%
           background: #888
           col-center()
+
   .detail-img-box
     margin: 0 12px
     box-sizing: border-box
     border-radius: 8px
     overflow: hidden
-    box-shadow: 0 2px 15px 0 rgba(17,17,17,0.06)
+    box-shadow: 0 2px 15px 0 rgba(17, 17, 17, 0.06)
+
   .goods-detail
     width: 100%
     min-height: 100vh
@@ -673,10 +676,12 @@
     padding-bottom: 55px
     box-sizing: border-box
     overflow-x: hidden
+
   .detail-title-img
     width: 38vw
     margin: 20px auto
     display: block
+
   .banner-box
     width: 100vw
     height: 100vw
@@ -718,6 +723,7 @@
         box-sizing: border-box
         padding: 3px 8px 4px
         border-radius: 20px
+
   .banner-title-box
     padding: 0 12px
     box-sizing: border-box
@@ -823,6 +829,7 @@
           text-decoration: line-through
           line-height: 1
           color: #A0A0A0
+
   .detail-info-box
     padding: 0 12px
     box-sizing: border-box
@@ -835,7 +842,7 @@
       padding: 15px 10px 23px
       box-sizing: border-box
       margin-bottom: 10px
-      box-shadow: 0 6px 20px 0 rgba(17,17,17,0.06)
+      box-shadow: 0 6px 20px 0 rgba(17, 17, 17, 0.06)
       .title
         width: 100%
         font-size: $font-size-17
@@ -843,13 +850,18 @@
         min-height: 20px
         line-height: $font-size-20
         font-family: $font-family-medium
-        margin-bottom: 15px
       .has-title
         no-wrap-plus()
+      .has--sub-title
+        margin-top: 7px
+        font-family: $font-family-regular
+        font-size: $font-size-14
+        color: #808080
+        letter-spacing: 0.3px
       .info-sub
         layout(row)
         align-items: center
-        margin-bottom: 16px
+        margin: 21.5px 0 16.5px
         .info-sub-img
           width: 14.5px
           height: 15.5px
@@ -863,6 +875,7 @@
       font-size: $font-size-14
       color: #9e9e9e
       font-family: $font-family-regular
+
   .safeguard-box
     padding-left: 10px
     height: 60px
@@ -870,7 +883,7 @@
     border-radius: 8px
     box-sizing: border-box
     margin: 0 12px 10px
-    box-shadow: 0 2px 15px 0 rgba(17,17,17,0.06)
+    box-shadow: 0 2px 15px 0 rgba(17, 17, 17, 0.06)
     layout(row)
     align-items: center
     .safeguard-item
@@ -886,13 +899,14 @@
         font-family: $font-family-regular
         font-size: $font-size-14
         color: $color-text-main
+
   .buy-record
     padding-left: 10px
     background: $color-white
     border-radius: 8px
     box-sizing: border-box
     margin: 0 12px 10px
-    box-shadow: 0 2px 15px 0 rgba(17,17,17,0.06)
+    box-shadow: 0 2px 15px 0 rgba(17, 17, 17, 0.06)
     .record-title
       layout(row)
       align-items: center
@@ -936,6 +950,7 @@
           background: #F4F4F4
       .image-item:nth-of-type(7n)
         margin-right: 0
+
   .page-box
     position: absolute
     right: 15px
@@ -970,7 +985,7 @@
     border-radius: 8px
     box-sizing: border-box
     margin: 10px 12px 10px
-    box-shadow: 0 2px 15px 0 rgba(17,17,17,0.06)
+    box-shadow: 0 2px 15px 0 rgba(17, 17, 17, 0.06)
     .send-box-img
       width: 32vw
       display: block
@@ -985,6 +1000,7 @@
       color: $color-text-main
       font-size: $font-size-14
       margin-bottom: 15px
+
   .send-item-list
     text-align: justify
     margin-bottom: 19px
@@ -1002,8 +1018,10 @@
       color: #000
       text-decoration: underline
       font-size: $font-size-13
+
   .send-item-list:last-child
     margin-bottom: 0
+
   .detail-img
     display: block
     width: 100%
