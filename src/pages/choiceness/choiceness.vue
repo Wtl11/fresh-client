@@ -2,7 +2,7 @@
   <div class="choiceness">
     <navigation-bar :title="shopName" :showArrow="false"></navigation-bar>
     <div class="community-box">
-      <div class="community-main" @click="jumpSelfPoint">
+      <div class="community-main">
       <!--<div class="community-main" @click="jumpSelfPoint">-->
         <div class="community-img">
           <img v-if="(locationStatus * 1 === 1 || locationStatus * 1 === 2) && imageUrl" :src="groupInfo.head_image_url || imageUrl+'/yx-image/order/icon-colonel_head@2x.png'"">
@@ -727,6 +727,7 @@
           color: $color-text-sub
           min-height: $font-size-15
           margin-bottom: 5px
+          line-height: $font-size-15
           box-sizing: border-box
         .text-sales-box
           layout(row)
