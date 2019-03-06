@@ -727,7 +727,7 @@
           color: $color-text-sub
           min-height: $font-size-15
           margin-bottom: 5px
-          line-height: $font-size-15
+          line-height: $font-size-16
           box-sizing: border-box
         .text-sales-box
           layout(row)
