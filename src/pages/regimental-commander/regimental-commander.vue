@@ -96,7 +96,7 @@
           </div>
         </div>
         <div class="reg-goods-box order-box" :style="{'transform': ' translateX('+ -(navIndex * width) +'px)'}">
-          <navigator :url="'/pages/copy-detail?id=' + item.goods_id + '&&activityId=' + item.activity_id" hover-class="none" class="reg-goods-item" v-for="(item,index) in goodsList" :key="index">
+          <navigator :url="'/pages/copy-detail?id=' + item.goods_id + '&activityId=' + item.activity_id" hover-class="none" class="reg-goods-item" v-for="(item,index) in goodsList" :key="index">
             <img :src="item.goods_cover_image" class="reg-goods-img" mode="aspectFill">
             <div class="reg-goods-content">
               <div class="reg-goods-title">{{item.name}}</div>
