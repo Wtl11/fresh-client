@@ -25,6 +25,7 @@
       //  判断是否可以静默登录
     },
     async onShow(options) {
+      this.$sendMsg({event_no: 1000})
       let storyShopId = baseURL.defaultId
       if (options.query.scene) {
         let sceneMsg = decodeURIComponent(options.query.scene)
