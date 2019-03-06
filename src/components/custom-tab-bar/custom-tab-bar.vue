@@ -1,20 +1,23 @@
 <template>
   <div class="navigation-bottom">
-    <div class="navigation-top"></div>
+    <div class="navigation-top" :style="{height: (49 + height) + 'px'}"></div>
     <div class="navigation-box">
-      <div class="nav-list-box"  v-for="(item, index) in platformList" :key="index" @click="jumpNav(item)">
+      <div class="nav-list-box" v-for="(item, index) in platformList" :key="index" @click="jumpNav(item)">
         <div class="nav-top-icon">
           <div class="help-number" v-if="item.type === 'cart' && count * 1 >= 1">{{count * 1 > 99 ? 99 : count}}</div>
-          <img class="icon-img" v-if="imageUrl" :src="item.type === currentType ? imageUrl + item.imgUrlActive : imageUrl + item.imgUrl" alt="">
+          <img class="icon-img" v-if="imageUrl"
+               :src="item.type === currentType ? imageUrl + item.imgUrlActive : imageUrl + item.imgUrl" alt="">
         </div>
         <div class="nav-top-text">{{item.text}}</div>
       </div>
+      <div class="navigation-bottom" :style="{height: height + 'px'}"></div>
     </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import {cartComputed} from '@state/helpers'
+
   const COMPONENT_NAME = 'NAVIGATION_BOTTOM'
   const PLATFORM = [
     {
@@ -66,10 +69,14 @@
     },
     data() {
       return {
-        platformList: []
+        platformList: [],
+        height: 0
       }
     },
     onLoad() {
+      let res = this.$wx.getSystemInfoSync()
+      this.height = res.statusBarHeight === 20 ? 0 : 28
+      console.log(this.height, res)
       switch (this.corpName) {
         case 'platform':
           this.platformList = PLATFORM
@@ -112,13 +119,14 @@
 
   .navigation-bottom
     width: 100%
+
   .navigation-top
     width: 100%
     height: 49px
+
   .navigation-box
     border-top-1px(#eee)
     position: fixed
-    height: 49px
     left: 0
     bottom: 0
     width: 100%
@@ -128,7 +136,7 @@
     background: #fff
     .nav-list-box
       flex: 1
-      height: 100%
+      height: 49px
       layout()
       align-items: center
       justify-content: center
@@ -162,6 +170,7 @@
         font-size: $font-size-10
         font-family: $font-family-regular
         color: #222
+
   .z
     width: 1px
 </style>

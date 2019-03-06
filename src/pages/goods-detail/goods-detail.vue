@@ -798,11 +798,12 @@
             font-size: $font-size-13
             color: $color-text-main
             font-family: $font-family-regular
-            margin-bottom: 4px
+            line-height:15px
           .time-all-box
             font-size: $font-size-13
             color: $color-text-main
             font-family: $font-family-regular
+            line-height:15px
     .banner-title-type
       height: 13vw
       background: #FFF2E9

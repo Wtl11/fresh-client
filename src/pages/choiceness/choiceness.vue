@@ -58,7 +58,7 @@
               <img class="goods-time-box-img" mode="aspectFill" v-if="imageUrl && corpName === 'retuan'"
                    :src="imageUrl + '/yx-image/retuan/pic-today_bg@2x.png'">
               <div class="goods-text-box">
-                <div class="top-text top-text-bottom" :class="'corp-' + corpName + '-time'">距结束</div>
+                <div class="top-text" :class="'corp-' + corpName + '-time'">距结束</div>
                 <div class="top-text"  :class="'corp-' + corpName + '-time'">{{activityTime.hour}}:{{activityTime.minute}}:{{activityTime.second}}</div>
               </div>
             </div>
@@ -677,6 +677,7 @@
           justify-content: center
           .top-text
             font-size: $font-size-12
+            line-height: $font-size-14
             font-family: $font-family-regular
           .top-text-bottom
             margin-bottom: 3px

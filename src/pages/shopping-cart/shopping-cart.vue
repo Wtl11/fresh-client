@@ -39,7 +39,7 @@
       </div>
     </div>
     <!--结算-->
-    <div class="payment" v-if="goodsList.length > 0">
+    <div class="payment" :style="{bottom: (49 + height) + 'px'}" v-if="goodsList.length > 0">
       <div class="check-all" @click.stop="toggleCheckAll">
         <img class="sel-box" v-if="imageUrl && allChecked && corpName === 'platform'" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
         <img class="sel-box" v-if="imageUrl && allChecked && corpName === 'retuan'" :src="imageUrl+'/yx-image/retuan/icon-pick_gwc@2x.png'" alt=""/>
@@ -86,11 +86,16 @@
           cartId: null
         },
         isShowNum: true,
-        deliverAt: ''
+        deliverAt: '',
+        height: 0
       }
     },
     async onTabItemTap() {
       await this.$isLogin()
+    },
+    onLoad() {
+      let res = this.$wx.getSystemInfoSync()
+      this.height = res.statusBarHeight === 20 ? 0 : 28
     },
     async onShow() {
       if (!wx.getStorageSync('token')) return
