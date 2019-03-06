@@ -150,14 +150,6 @@
         detailedHeight: 280
       }
     },
-    onShareAppMessage(res) {
-      let shopId = wx.getStorageSync('shopId')
-      return {
-        title: this.goodsItem.name,
-        path: `/pages/goods-detail?id=${this.goodsItem.id}&shopId=${shopId}&activityId=`, // 商品详情
-        imageUrl: this.goodsItem.thumb_image || this.goodsItem.thumb_image
-      }
-    },
     async onReachBottom() {
       if (this.navIndex === 0) {
         return

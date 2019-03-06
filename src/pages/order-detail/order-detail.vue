@@ -259,11 +259,6 @@
             clearInterval(this.timer)
           }
         }, 1000)
-      },
-      jumpGoodsDetail(item) {
-        wx.navigateTo({
-          url: `/pages/goods-detail?id=${item.goods_id}`
-        })
       }
     },
     components: {

@@ -122,11 +122,6 @@
             this.$wechat.showToast(res.message)
           }
         })
-      },
-      jumpGoodsDetail(item) {
-        wx.navigateTo({
-          url: `/pages/goods-detail?id=${item.goods_id}`
-        })
       }
     },
     components: {
