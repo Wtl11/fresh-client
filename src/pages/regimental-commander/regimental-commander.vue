@@ -154,7 +154,7 @@
       let shopId = wx.getStorageSync('shopId')
       return {
         title: this.goodsItem.name,
-        path: `/pages/goods-detail?id=${this.goodsItem.id}&shopId=${shopId}`, // 商品详情
+        path: `/pages/goods-detail?id=${this.goodsItem.id}&shopId=${shopId}&activityId=`, // 商品详情
         imageUrl: this.goodsItem.thumb_image || this.goodsItem.thumb_image
       }
     },

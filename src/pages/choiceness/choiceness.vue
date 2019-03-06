@@ -322,7 +322,7 @@
       jumpDetail(item) {
         if (item.type === 'mini_goods') {
           wx.navigateTo({
-            url: `/pages/goods-detail?id=${item.other_id}&&activityId=${item.activity_id}`
+            url: `/pages/goods-detail?id=${item.other_id}&activityId=${item.activity_id}`
           })
         } else if (item.type === 'goods_cate') {
           wx.navigateTo({
@@ -341,7 +341,7 @@
       jumpNavType(item) {
         if (item.type === 'mini_goods') {
           wx.navigateTo({
-            url: `/pages/goods-detail?id=${item.other_id}&&activityId=${item.activity_id}`
+            url: `/pages/goods-detail?id=${item.other_id}&activityId=${item.activity_id}`
           })
         } else if (item.type === 'goods_cate') {
           wx.navigateTo({
@@ -359,7 +359,7 @@
       },
       jumpGoodsDetail(item) {
         wx.navigateTo({
-          url: `/pages/goods-detail?id=${item.goods_id}&&activityId=${item.activity_id}`
+          url: `/pages/goods-detail?id=${item.goods_id}&activityId=${item.activity_id}`
         })
       },
       getMoreGoodsList() {

@@ -30,6 +30,7 @@
         let sceneMsg = decodeURIComponent(options.query.scene)
         const params = getParams(sceneMsg)
         storyShopId = params.shopId || wx.getStorageSync('defaultShopId')
+        console.warn(params)
       } else {
         if (!wx.getStorageSync('shopId') && !wx.getStorageSync('defaultShopId')) {
           let res = await API.Choiceness.getDefaultShopInfo()

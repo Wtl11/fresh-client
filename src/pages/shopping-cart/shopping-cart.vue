@@ -169,7 +169,7 @@
       },
       jumpGoodsDetail(item) {
         wx.navigateTo({
-          url: `/pages/goods-detail?id=${item.goods_id}&&activityId=${item.activity_id}`
+          url: `/pages/goods-detail?id=${item.goods_id}&activityId=${item.activity_id}`
         })
       },
       // 点击删除按钮
