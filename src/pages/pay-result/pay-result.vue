@@ -37,6 +37,10 @@
     onLoad(e) {
       ald.aldstat.sendEvent('支付成功页')
       this.orderId = e.orderId
+      this.$sendMsg({
+        event_no: 1006,
+        total: e.total
+      })
       clearTimeout(this.timer)
       this.timer = setTimeout(() => {
         this.allReady = true

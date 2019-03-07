@@ -148,6 +148,7 @@
   import AddNumber from '@components/add-number/add-number'
   import LinkGroup from '@components/link-group/link-group'
   import {getParams} from '@utils/common'
+  import {SCENE_SHARE, SCENE_DEFAULT, SCENE_QR_CODE} from '../../utils/contants'
   import WePaint from '@components/we-paint/we-paint'
   import API from '@api'
 
@@ -157,7 +158,11 @@
   const RETUANSAFELIST = [{url: '/yx-image/retuan/icon-lightning@2x.png', text: '次日达', type: 0}, {url: '/yx-image/retuan/icon-ok@2x.png', text: '100%售后', type: 1}, {url: '/yx-image/retuan/icon-ok@2x.png', text: '直采直销', type: 2}]
   const DESCRIBE_HEIGHT = 21
   const ald = getApp()
-
+  const EVENT_NO_CONFIG = {
+    [SCENE_QR_CODE]: 1001,
+    [SCENE_SHARE]: 1002,
+    [SCENE_DEFAULT]: 1003
+  }
   export default {
     name: PAGE_NAME,
     data() {
@@ -190,13 +195,20 @@
         userImgData: {},
         showMoreImg: true,
         thumb_image: '',
-        buyGoodsInfo: {}
+        buyGoodsInfo: {},
+        eventNo: 0,
+        eventCount: 0
       }
     },
     computed: {
       ...cartComputed
     },
     onShareAppMessage() {
+      this.$sendMsg({
+        event_no: 1004,
+        goods_id: this.goodsId,
+        title: this.goodsMsg.name
+      })
       let shopId = wx.getStorageSync('shopId')
       return {
         title: this.goodsMsg.name,
@@ -232,6 +244,7 @@
       this._setDescriptionNum()
     },
     onShow() {
+      this._setEventNo()
       this.getGoodsDetailData()
       this.getGoodsDetailDataThumb()
       this._groupInfo()
@@ -244,10 +257,15 @@
       clearInterval(this.timer)
       this.goodsBanner = []
       this.$refs.navigationBar._initHeadStyle()
+      this.eventCount = 0
     },
     methods: {
       ...orderMethods,
       ...cartMethods,
+      _setEventNo() {
+        let entryAppType = wx.getStorageSync('entryAppType')
+        this.eventNo = EVENT_NO_CONFIG[entryAppType]
+      },
       _setDescriptionNum() {
         let res = this.$wx.getSystemInfoSync()
         let usableWidth = res.windowWidth - 24
@@ -317,6 +335,11 @@
         }
         API.Choiceness.addShopCart({goods_sku_id: this.goodsMsg.goods_skus[0].goods_sku_id, activity_id: this.activityId}).then((res) => {
           if (res.error === this.$ERR_OK) {
+            this.$sendMsg({
+              event_no: 1007,
+              goods_id: this.goodsId,
+              title: this.goodsMsg.name
+            })
             this.$wechat.showToast('加入购物车成功')
             this.setCartCount()
           } else {
@@ -340,6 +363,11 @@
         }
       },
       _action() {
+        this.$sendMsg({
+          event_no: 1005,
+          goods_id: this.goodsId,
+          title: this.goodsMsg.name
+        })
         let name = this.goodsMsg.name.length >= 12 ? this.goodsMsg.name.slice(0, 12) + '...' : this.goodsMsg.name
         let subName = this.goodsMsg.describe.length >= 12 ? this.goodsMsg.describe.slice(0, 12) + '...' : this.goodsMsg.describe
         this.shareImg = this.shareImg || this.imageUrl + '/yx-image/choiceness/5@1x.png'
@@ -475,6 +503,14 @@
             this.msgTitle = goodDetail.name
             this._kanTimePlay()
             this._handleDescribe()
+            if (this.eventCount > -1) {
+              this.eventCount++
+              this.$sendMsg({
+                event_no: this.eventNo,
+                goods_id: this.goodsId,
+                title: this.goodsMsg.name
+              })
+            }
           } else {
             this.$wechat.showToast(res.message)
           }

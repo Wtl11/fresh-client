@@ -1,7 +1,20 @@
 import API from '@api'
 import * as wechat from './wechat'
 import {ERR_OK} from '@utils/config'
+import {SCENE_QR_CODE, SCENE_DEFAULT, SCENE_SHARE} from './contants'
 
+const shareArr = [1007, 1008, 1036, 1044, 1073, 1074]
+const qrCordArr = [1047, 1048, 1049, 1011, 1012, 1013]
+
+// 判定场景值 0普通 1分享 2扫码
+export function entryAppType(options) {
+  if (!options && options.scene) return SCENE_DEFAULT
+  let scene = +options.scene
+  let isShare = shareArr.includes(scene)
+  let isQrcord = qrCordArr.includes(scene)
+  let source = isShare ? SCENE_SHARE : isQrcord ? SCENE_QR_CODE : SCENE_DEFAULT
+  return source
+}
 /* 深度拷贝 */
 export function objDeepCopy(source) {
   let sourceCopy = source instanceof Array ? [] : {}
