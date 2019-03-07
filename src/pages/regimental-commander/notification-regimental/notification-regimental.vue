@@ -1,6 +1,6 @@
 <template>
   <div class="notification-regimental" @click="test">
-    <section class="title-wrapper">
+    <section class="title-wrapper" @click="navHandle">
       <div class="left">
         <img v-if="imageUrl && corpName === 'platform'" :src="imageUrl + '/yx-image/group/icon-leida@2x.png'"  class="icon">
         <img  v-if="imageUrl && corpName === 'retuan'" :src="imageUrl + '/yx-image/retuan/icon-leida@2x.png'" class="icon">
@@ -79,6 +79,9 @@
       }
     },
     methods: {
+      navHandle() {
+        wx.navigateTo({url: '/pages/radar'})
+      },
       test() {
         this._action()
         // let item = {isAction: false}

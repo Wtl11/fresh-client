@@ -10,7 +10,8 @@ export default class Notification {
     this.socket = null
   }
   // todo wss://wss.jkweixin.com:1443/sub ws://192.168.4.228:777/subpub
-  connect({url = 'wss://wss.jkweixin.net/sub', id = 1, prg = 'social_shopping_1'} = {}) {
+  connect({url = 'wss://wss.jkweixin.net/sub', id = 28, prg = 'social_shopping_1'} = {}) {
+    id = wx.getStorageSync('shopId') || id
     this.socket = wx.connectSocket({
       url: `${url}?id=${id}&prg=${prg}`,
       success() {
