@@ -5,7 +5,7 @@
       <div class="community-main">
       <!--<div class="community-main" @click="jumpSelfPoint">-->
         <div class="community-img">
-          <img v-if="(locationStatus * 1 === 1 || locationStatus * 1 === 2) && imageUrl" :src="groupInfo.head_image_url || imageUrl+'/yx-image/order/icon-colonel_head@2x.png'"">
+          <img v-if="(locationStatus * 1 === 1 || locationStatus * 1 === 2) && imageUrl" :src="groupInfo.head_image_url || imageUrl+'/yx-image/order/icon-colonel_head@2x.png'">
         </div>
         <div class="community-text" v-if="locationStatus * 1 === 1 || locationStatus * 1 === 2">
           {{groupInfo.social_name}}
