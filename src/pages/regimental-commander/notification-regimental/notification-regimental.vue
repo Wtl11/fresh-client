@@ -13,28 +13,12 @@
     </section>
     <section class="msg-wrapper" :animation="msgHeightAnimation">
       <article class="wrapper-ul">
-        <!--<div class="wrapper" :animation="firstAnimation">-->
-          <!--<img v-if="imageUrl" mode="aspectFill" :src="imageUrl + '/zd-image/test-img/1@1x.png'" alt="" class="avatar">-->
-          <!--<p class="text">游客<span :class="textColor">提价了订单</span>,金额为<span :class="textColor">{{11}}</span>元</p>-->
-        <!--</div>-->
-        <div class="wrapper one" :animation="oneAnimation">
-          <img v-if="imageUrl" mode="aspectFill" :src="imageUrl + '/yx-image/group/pic-head@2x.png'" alt="" class="avatar">
-          <p class="text">游客<span :class="textColor">提价了订单</span>,金额为<span :class="textColor">{{0}}</span>元</p>
-        </div>
-        <!--<div class="wrapper two" :animation="twoAnimation">-->
-          <!--<img v-if="imageUrl" mode="aspectFill" :src="imageUrl + '/yx-image/group/pic-head@2x.png'" alt="" class="avatar">-->
-          <!--<p class="text">游客<span :class="textColor">提价了订单</span>,金额为<span :class="textColor">{{1}}</span>元</p>-->
-        <!--</div>-->
-        <!--<div class="wrapper three" :animation="threeAnimation">-->
-          <!--<img v-if="imageUrl" mode="aspectFill" :src="imageUrl + '/yx-image/group/pic-head@2x.png'" alt="" class="avatar">-->
-          <!--<p class="text">游客<span :class="textColor">提价了订单</span>,金额为<span :class="textColor">{{2}}</span>元</p>-->
-        <!--</div>-->
-        <!--<block v-for="(item,index) in dataArray" :key="index">-->
-          <!--<div class="wrapper">-->
-            <!--<img v-if="imageUrl" mode="aspectFill" :src="imageUrl + '/zd-image/test-img/1@1x.png'" alt="" class="avatar">-->
-            <!--<p class="text">游客<span :class="textColor">提价了订单</span>,金额为<span :class="textColor">{{index}}</span>元</p>-->
-          <!--</div>-->
-        <!--</block>-->
+        <block v-for="(item, index) in dataArray" :key="index">
+          <div class="wrapper" :animation="!index ? oneAnimation: twoAnimation">
+            <img v-if="imageUrl" mode="aspectFill" :src="imageUrl + '/yx-image/group/pic-head@2x.png'" alt="" class="avatar">
+            <p class="text"><span>{{item.text}}</span><span :class="textColor">提价了订单</span>,金额为<span :class="textColor">{{index}}</span>元</p>
+          </div>
+        </block>
       </article>
     </section>
   </div>
@@ -54,14 +38,15 @@
     },
     data() {
       return {
-        dataArray: new Array(1).fill({isAction: true}),
+        dataArray: new Array(2).fill({}),
         textColor: ``,
-        autoplay: true,
         index: 0,
         msgHeightAnimation: '',
         oneAnimation: '',
+        oneIsOver: false,
         twoAnimation: '',
-        threeAnimation: ''
+        twoIsOver: true,
+        duration: 300
       }
     },
     onLoad() {
@@ -73,102 +58,49 @@
         } catch (e) {
         }
       })
-      if (this.dataArray.length) {
-        this._heightUp()
-        // this._cardShow()
-      }
     },
     methods: {
       navHandle() {
         wx.navigateTo({url: '/pages/radar'})
       },
       test() {
+        setTimeout(() => {
+          this.dataArray[this.index % 2] = {text: ~~(Math.random() * 100) + '游客'}
+        }, this.duration)
+        this.index++
         this._action()
-        // let item = {isAction: false}
-        // this.dataArray.push(item)
-        // this._firstHide()
-        // this._cardShow(this.dataArray[this.dataArray.length - 1])
       },
       _action() {
-        let one = wx.createAnimation()
-        // one.opacity(1).step({
-        //   duration: 200,
-        //   timingFunction: 'ease-out',
-        //   delay: 0
-        // })
-        one.translate3d(0, 0, 0).step({
-          duration: 500,
-          timingFunction: 'ease-out',
-          delay: 200
-        })
-        let two = wx.createAnimation()
-        // two.opacity(0).step({
-        //   duration: 200,
-        //   timingFunction: 'ease-out',
-        //   delay: 0
-        // })
-        two.translate3d(0, 45, 0).step({
-          duration: 500,
-          timingFunction: 'step-end',
-          delay: 200
-        })
-        // let three = wx.createAnimation()
-        // // three.opacity(0).step({
-        // //   duration: 200,
-        // //   timingFunction: 'ease-out',
-        // //   delay: 0
-        // // })
-        // three.translate3d(0, -45, 0).step({
-        //   duration: 500,
-        //   timingFunction: 'step-end',
-        //   delay: 200
-        // })
-        this.oneAnimation = one.export()
-        setTimeout(() => {
-          this.oneAnimation = ''
-        }, 1000)
-        // this.twoAnimation = two.export()
-        // this.threeAnimation = three.export()
-        // this.oneAnimation = ''
-        // this.twoAnimation = ''
-        // this.threeAnimation = ''
-        // setTimeout(() => {
-        //   let flag = this.hideAnimation
-        //   this.hideAnimation = this.showAnimation
-        //   this.showAnimation = flag
-        // }, 1000)
+        this._msgHeightAnimation()
+        this._cardAnimation('oneAnimation', 'oneIsOver')
+        this._cardAnimation('twoAnimation', 'twoIsOver')
       },
-      // _firstHide() {
-      //   let firstAnimation = wx.createAnimation({
-      //     duration: 500,
-      //     timingFunction: 'ease-out',
-      //     delay: 0
-      //   })
-      //   firstAnimation.opacity(0).step()
-      //   firstAnimation.translate3d(0, 45, 0).step()
-      //   this.firstAnimation = firstAnimation
-      // },
-      // _cardShow(item) {
-      //   // console.log(this.dataArray)
-      //   if (item.isAction) return
-      //   item.isAction = true
-      //   let animation = wx.createAnimation()
-      //   animation.opacity(1).step({
-      //     duration: 200,
-      //     timingFunction: 'ease-out',
-      //     delay: 0
-      //   })
-      //   // this.cardAnimation = animation.export()
-      //   animation.translate3d(0, 0, 0).step({
-      //     duration: 500,
-      //     timingFunction: 'ease-out',
-      //     delay: 0
-      //   })
-      //   this.cardAnimation = animation.export()
-      // },
-      _heightUp() {
+      _cardAnimation(key, flag) {
+        const duration = this.duration
+        const animation = wx.createAnimation()
+        if (this[flag]) {
+          animation.translate3d(0, -45, 0).step({
+            duration,
+            timingFunction: 'linear',
+            delay: 0
+          })
+        } else {
+          animation.translate3d(0, 0, 0).step({
+            duration,
+            timingFunction: 'linear',
+            delay: 0
+          })
+        }
+        setTimeout(() => {
+          this[flag] = !this[flag]
+        }, duration)
+        this[key] = animation.export()
+      },
+      _msgHeightAnimation() {
+        if (this.msgHeightAnimation) return
+        const duration = this.duration
         let msgHeightAnimation = wx.createAnimation({
-          duration: 300,
+          duration,
           timingFunction: 'ease-out',
           delay: 0
         })
@@ -198,6 +130,7 @@
         border-radius: 8px;
         height :45px
         position :relative
+        overflow :hidden
         .wrapper
           fill-box(absolute)
           layout(row,block,nowrap)
@@ -205,10 +138,7 @@
           background: #F7F7F7;
           border-radius: 8px;
           padding :10px
-          &.one
-            transform: translate3d(0, -45px, 0)
-          &.two
-            transform: translate3d(0, 0px, 0)
+          transform: translate3d(0, -45px, 0)
           .avatar
             width :25px
             height @width
