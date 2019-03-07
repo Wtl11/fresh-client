@@ -34,6 +34,8 @@
         <div class="reg-order-money">{{orderTotal.today_sale}}</div>
       </div>
     </div>
+    <!--ai消息-->
+    <notification-regimental></notification-regimental>
     <!--功能模块-->
     <div class="reg-manager">
       <div class="reg-manager-box">
@@ -123,6 +125,8 @@
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import API from '@api'
   import LinkGroup from '@components/link-group/link-group'
+  import NotificationRegimental from './notification-regimental/notification-regimental'
+  import Notification from './notification'
 
   const PAGE_NAME = 'REGIMENTAL_COMMANDER'
   const Nav = [{title: '预售清单', status: 2}, {title: '商品资料', status: 3}]
@@ -130,7 +134,8 @@
     name: PAGE_NAME,
     components: {
       LinkGroup,
-      NavigationBar
+      NavigationBar,
+      NotificationRegimental
     },
     data() {
       return {
@@ -158,6 +163,7 @@
       await this._getRecommendGoods()
     },
     async onShow() {
+      Notification.getInstance().connect() // todo 连接
       this.$wx.getSystemInfo({
         success: (res) => {
           this.width = res.screenWidth * 0.936
