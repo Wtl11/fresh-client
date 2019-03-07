@@ -15,6 +15,7 @@ export default class DefaultMsg {
     this.customer_name = userInfo.id ? userInfo.nickname : '游客' // 客户名称
     this.from_customer_id = 0
     this.user_info = {}
+    this.avatar = userInfo.avatar || ''
   }
   static create() {
     return new this()

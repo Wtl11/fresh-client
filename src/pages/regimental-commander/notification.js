@@ -5,11 +5,12 @@ export default class Notification {
     }
     return this.instance
   }
-  static instance = null
+  // static instance = null
   constructor () {
     this.socket = null
   }
-  connect({url = 'wss://wss.jkweixin.com:1443/sub', id = 1000, prg = 'dev'} = {}) {
+  // todo wss://wss.jkweixin.com:1443/sub ws://192.168.4.228:777/subpub
+  connect({url = 'wss://wss.jkweixin.net/sub', id = 1, prg = 'social_shopping_1'} = {}) {
     this.socket = wx.connectSocket({
       url: `${url}?id=${id}&prg=${prg}`,
       success() {

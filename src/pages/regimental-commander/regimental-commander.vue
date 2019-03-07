@@ -35,7 +35,7 @@
       </div>
     </div>
     <!--ai消息-->
-    <notification-regimental></notification-regimental>
+    <notification-regimental :customerCount="customerCount"></notification-regimental>
     <!--功能模块-->
     <div class="reg-manager">
       <div class="reg-manager-box">
@@ -152,7 +152,8 @@
         goodsItem: {},
         page: 1,
         length: 1,
-        detailedHeight: 280
+        detailedHeight: 280,
+        customerCount: 0
       }
     },
     async onReachBottom() {
@@ -163,6 +164,7 @@
       await this._getRecommendGoods()
     },
     async onShow() {
+      this._getCustomerCount()
       Notification.getInstance().connect() // todo 连接
       this.$wx.getSystemInfo({
         success: (res) => {
@@ -193,6 +195,14 @@
       }
     },
     methods: {
+      _getCustomerCount() {
+        API.Notification.getCustomerCount().then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            return
+          }
+          this.customerCount = res.data.customer_count
+        })
+      },
       async _shareGoods(item) {
         this.goodsItem = item
         let res = await API.Leader.goodsThumb({id: item.id})
