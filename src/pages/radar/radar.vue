@@ -245,7 +245,7 @@
             })
             this.recordList = this.recordList.concat(msg)
             this.page++
-            if (this.recordList.length >= +res.meta.total) {
+            if (res.data.length < 20) {
               this.noMore = true
             }
           } else {
