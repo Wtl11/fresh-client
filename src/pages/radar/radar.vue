@@ -9,56 +9,58 @@
           <img v-else :src="imageUrl+'/yx-image/order/icon-colonel_head@2x.png'" class="msgs-left">
           <view class="msgs-right">
             <view class="msgs-container">
-              <view class="msgs-p" v-if="item.event_no * 1 === 10000">
-                <text>{{item.nickname}}第{{item.count_sum}}次</text>
-                <text class="green">查看</text>
+              <view class="msgs-p" v-if="item.event_no * 1 === 1000">
+                <text>{{item.nickname}}</text>
+                <text v-if="item.count_sum * 1 > 0">第{{item.count_sum}}次</text>
+                <text class="green" :class="'corp-' + corpName + '-text'">查看</text>
                 <text>了你的</text>
-                <text class="green">小店</text>
+                <text class="green" :class="'corp-' + corpName + '-text'">小店</text>
               </view>
-              <view class="msgs-p" v-if="item.event_no * 1 === 10001">
+              <view class="msgs-p" v-if="item.event_no * 1 === 1001">
                 <text>{{item.nickname}}通过扫描他人分享的海报</text>
-                <text class="green">查看</text>
+                <text class="green" :class="'corp-' + corpName + '-text'">查看</text>
                 <text>了你的</text>
-                <text class="green">商品</text>
+                <text class="green" :class="'corp-' + corpName + '-text'">{{item.title}}</text>
               </view>
-              <view class="msgs-p" v-if="item.event_no * 1 === 10002">
+              <view class="msgs-p" v-if="item.event_no * 1 === 1002">
                 <text>{{item.nickname}}通过他人分享的链接</text>
-                <text class="green">查看</text>
+                <text class="green" :class="'corp-' + corpName + '-text'">查看</text>
                 <text>了你的</text>
-                <text class="green">商品</text>
+                <text class="green" :class="'corp-' + corpName + '-text'">{{item.title}}</text>
               </view>
-              <view class="msgs-p" v-if="item.event_no * 1 === 10003">
-                <text>{{item.nickname}}第{{item.count_sum}}次</text>
-                <text class="green">查看</text>
+              <view class="msgs-p" v-if="item.event_no * 1 === 1003">
+                <text>{{item.nickname}}</text>
+                <text  v-if="item.count_sum * 1 > 0">第{{item.count_sum}}次</text>
+                <text class="green" :class="'corp-' + corpName + '-text'">查看</text>
                 <text>了你的</text>
-                <text class="green">{{item.name}}</text>
+                <text class="green" :class="'corp-' + corpName + '-text'">{{item.title}}</text>
+                <text>，请把握商机</text>
+              </view>
+              <view class="msgs-p" v-if="item.event_no * 1 === 1004">
+                <text>{{item.nickname}}</text>
+                <text class="green" :class="'corp-' + corpName + '-text'">转发</text>
+                <text>了你的</text>
+                <text class="green" :class="'corp-' + corpName + '-text'">{{item.title}}</text>
                 <text>，你的商品正在裂变</text>
               </view>
-              <view class="msgs-p" v-if="item.event_no * 1 === 10004">
+              <view class="msgs-p" v-if="item.event_no * 1 === 1005">
                 <text>{{item.nickname}}</text>
-                <text class="green">转发</text>
+                <text class="green" :class="'corp-' + corpName + '-text'">保存</text>
                 <text>了你的</text>
-                <text class="green">商品</text>
-                <text>请把握商机</text>
+                <text class="green" :class="'corp-' + corpName + '-text'">{{item.title}}海报</text>
               </view>
-              <view class="msgs-p" v-if="item.event_no * 1 === 10005">
+              <view class="msgs-p" v-if="item.event_no * 1 === 1006">
                 <text>{{item.nickname}}</text>
-                <text class="green">保存</text>
-                <text>了你的</text>
-                <text class="green">{{item.name}}海报</text>
-              </view>
-              <view class="msgs-p" v-if="item.event_no * 1 === 10006">
-                <text>{{item.nickname}}</text>
-                <text class="green">提交</text>
+                <text class="green" :class="'corp-' + corpName + '-text'">提交</text>
                 <text>了</text>
-                <text class="green">订单</text>
-                <text>金额为{{item.money}}元，并完成支付</text>
+                <text class="green" :class="'corp-' + corpName + '-text'">订单</text>
+                <text>，金额为{{item.total}}元，并支付成功</text>
               </view>
-              <view class="msgs-p" v-if="item.event_no * 1 === 10007">
-                <text>{{item.nickname}}把{{item.name}}商品</text>
-                <text class="green">加入</text>
+              <view class="msgs-p" v-if="item.event_no * 1 === 1007">
+                <text>{{item.nickname}}把{{item.title}}商品</text>
+                <text class="green" :class="'corp-' + corpName + '-text'">加入</text>
                 <text>了</text>
-                <text class="green">购物车</text>
+                <text class="green" :class="'corp-' + corpName + '-text'">购物车</text>
               </view>
             </view>
             <!--<img :src="imageUrl + '/ws-image/goods/icon-presed@2x.png'" v-if="imageUrl && false" class="msgs-rt">-->
@@ -78,140 +80,142 @@
   import {actionTimeFormat} from '@utils/common'
   import API from '@api'
 
-  const PAGE_NAME = 'ACTION_RECORD'
+  const PAGE_NAME = 'RADAR'
 
   export default {
     name: PAGE_NAME,
     data() {
       return {
-        recordList: [
+        recordList: [],
+        arr: [
           {
             is_showtime: true,
             time: '2019/03/04 12:00:00',
             count_sum: 2,
             nickname: 'kok',
-            name: '苹果',
-            event_no: 10000
+            title: '苹果',
+            event_no: 1000
           },
           {
             is_showtime: false,
             time: '2019/03/04 12:00:00',
             count_sum: 2,
             nickname: 'kok',
-            name: '苹果',
-            event_no: 10001
+            title: '苹果',
+            event_no: 1001
           },
           {
             is_showtime: false,
             time: '2019/03/04 12:00:00',
             count_sum: 2,
             nickname: 'kok',
-            name: '苹果',
-            event_no: 10002
+            title: '苹果',
+            event_no: 1002
           },
           {
             is_showtime: false,
             time: '2019/03/04 12:00:00',
             count_sum: 2,
             nickname: 'kok',
-            name: '苹果',
-            event_no: 10003
+            title: '苹果',
+            event_no: 1003
           },
           {
             is_showtime: false,
             time: '2019/03/04 12:00:00',
             count_sum: 2,
             nickname: 'kok',
-            name: '苹果',
-            event_no: 10004
+            title: '苹果',
+            event_no: 1004
           },
           {
             is_showtime: false,
             time: '2019/03/04 12:00:00',
             count_sum: 2,
             nickname: 'kok',
-            name: '苹果',
-            event_no: 10005
+            title: '苹果',
+            event_no: 1005
           },
           {
             is_showtime: false,
             time: '2019/03/04 12:00:00',
             count_sum: 2,
             nickname: 'kok',
-            name: '苹果',
-            event_no: 10006
+            title: '苹果',
+            event_no: 1006
           },
           {
             is_showtime: false,
             time: '2019/03/04 12:00:00',
             count_sum: 2,
             nickname: 'kok',
-            name: '苹果',
-            event_no: 10007
+            title: '苹果',
+            event_no: 1007
           },
           {
             is_showtime: false,
             time: '2019/03/04 12:00:00',
             count_sum: 2,
             nickname: 'kok',
-            name: '苹果',
-            event_no: 10000
+            title: '苹果',
+            event_no: 1000
           },
           {
             is_showtime: false,
             time: '2019/03/04 12:00:00',
             count_sum: 2,
             nickname: 'kok',
-            name: '苹果',
-            event_no: 10000
+            title: '苹果',
+            event_no: 1000
           },
           {
             is_showtime: true,
             time: '2019/03/04 12:00:00',
             count_sum: 2,
             nickname: 'kok',
-            name: '苹果',
-            event_no: 10000
+            title: '苹果',
+            event_no: 1000
           },
           {
             is_showtime: false,
             time: '2019/03/04 12:00:00',
             count_sum: 2,
             nickname: 'kok',
-            name: '苹果',
-            event_no: 10000
+            title: '苹果',
+            event_no: 1000
           },
           {
             is_showtime: false,
             time: '2019/03/04 12:00:00',
             count_sum: 2,
             nickname: 'kok',
-            name: '苹果',
-            event_no: 10000
+            title: '苹果',
+            event_no: 1000
           },
           {
             is_showtime: false,
             time: '2019/03/04 12:00:00',
             count_sum: 2,
             nickname: 'kok',
-            name: '苹果',
-            event_no: 10000
+            title: '苹果',
+            event_no: 1000
           },
           {
             is_showtime: false,
             time: '2019/03/04 12:00:00',
             count_sum: 2,
             nickname: 'kok',
-            name: '苹果',
-            event_no: 10000
+            title: '苹果',
+            event_no: 1000
           }
         ],
         page: 1,
-        noMore: false
+        noMore: false,
+        shopId: null
       }
     },
-    onLoad(options) {
-      // this.getList(1)
+    async onLoad(options) {
+      this.getList(1)
     },
     onShow() {
     },
@@ -223,15 +227,12 @@
       wx.stopPullDownRefresh()
     },
     onReachBottom() {
-      // this.getList(this.page)
+      this.getList(this.page)
     },
     methods: {
       getList(page) {
         if (this.noMore) return
         let data = {
-          merchant_id: 0,
-          store_id: 0,
-          shop_id: 0,
           page,
           limit: 20
         }
@@ -247,6 +248,8 @@
             if (this.recordList.length >= +res.meta.total) {
               this.noMore = true
             }
+          } else {
+            this.$wechat.showToast(res.message)
           }
         })
       }

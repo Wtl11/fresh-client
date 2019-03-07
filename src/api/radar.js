@@ -8,7 +8,7 @@ export default {
    * @returns {*}
    */
   getRadarList(data, loading = false) {
-    let url = 'social-shopping/api/wap/ai/action-collect'
-    return request.get(url, data, loading)
+    let url = 'api/wap/ai/action-logs'
+    return request.post(url, data, loading)
   }
 }
