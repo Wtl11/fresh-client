@@ -56,7 +56,7 @@
       this.getGoodsDetailDataThumb()
     },
     onShareAppMessage() {
-      let shopId = wx.getStorageSync('shopId')
+      let shopId = wx.getStorageSync('leaderId') || wx.getStorageSync('shopId')
       return {
         title: this.goodsMsg.name,
         path: `/pages/goods-detail?id=${this.goodsId}&shopId=${shopId}&activityId=${this.activityId}`, // 商品详情

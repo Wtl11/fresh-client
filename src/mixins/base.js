@@ -10,7 +10,7 @@ export default {
         if (res.error !== ERR_OK) {
           console.error(res)
         }
-        console.warn(res)
+        console.warn('发送事件。。。', data)
       }).catch(e => {
         console.error(e)
       })

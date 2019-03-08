@@ -77,4 +77,19 @@ export default class Notification {
       console.error('socket异常，', e)
     })
   }
+  destroy() {
+    if (this.socket) {
+      let self = this
+      this.socket.close({
+        success() {
+          self.isConnect = false
+          console.warn('socket关闭成功！')
+        },
+        fail() {
+          console.warn('socket关闭失败！')
+        }
+      })
+    }
+    this.instance = null
+  }
 }
