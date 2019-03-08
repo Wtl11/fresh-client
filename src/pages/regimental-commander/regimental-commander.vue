@@ -260,6 +260,7 @@
           return
         }
         this.leaderDetail = res.data
+        wx.setStorageSync('leaderShopId', res.data.shop_id)
       },
       async _leaderOrderTotal() {
         let res = await API.Leader.leaderOrderTotal()
@@ -287,7 +288,6 @@
         }
         this.isNoGoods = !this.goodsList.length
         this.detailedHeight = 99.5 * this.goodsList.length || 280
-        console.log(this.goodsList)
       }
     }
   }
