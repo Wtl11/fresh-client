@@ -87,134 +87,15 @@
     data() {
       return {
         recordList: [],
-        arr: [
-          {
-            is_showtime: true,
-            time: '2019/03/04 12:00:00',
-            count_sum: 2,
-            nickname: 'kok',
-            title: '苹果',
-            event_no: 1000
-          },
-          {
-            is_showtime: false,
-            time: '2019/03/04 12:00:00',
-            count_sum: 2,
-            nickname: 'kok',
-            title: '苹果',
-            event_no: 1001
-          },
-          {
-            is_showtime: false,
-            time: '2019/03/04 12:00:00',
-            count_sum: 2,
-            nickname: 'kok',
-            title: '苹果',
-            event_no: 1002
-          },
-          {
-            is_showtime: false,
-            time: '2019/03/04 12:00:00',
-            count_sum: 2,
-            nickname: 'kok',
-            title: '苹果',
-            event_no: 1003
-          },
-          {
-            is_showtime: false,
-            time: '2019/03/04 12:00:00',
-            count_sum: 2,
-            nickname: 'kok',
-            title: '苹果',
-            event_no: 1004
-          },
-          {
-            is_showtime: false,
-            time: '2019/03/04 12:00:00',
-            count_sum: 2,
-            nickname: 'kok',
-            title: '苹果',
-            event_no: 1005
-          },
-          {
-            is_showtime: false,
-            time: '2019/03/04 12:00:00',
-            count_sum: 2,
-            nickname: 'kok',
-            title: '苹果',
-            event_no: 1006
-          },
-          {
-            is_showtime: false,
-            time: '2019/03/04 12:00:00',
-            count_sum: 2,
-            nickname: 'kok',
-            title: '苹果',
-            event_no: 1007
-          },
-          {
-            is_showtime: false,
-            time: '2019/03/04 12:00:00',
-            count_sum: 2,
-            nickname: 'kok',
-            title: '苹果',
-            event_no: 1000
-          },
-          {
-            is_showtime: false,
-            time: '2019/03/04 12:00:00',
-            count_sum: 2,
-            nickname: 'kok',
-            title: '苹果',
-            event_no: 1000
-          },
-          {
-            is_showtime: true,
-            time: '2019/03/04 12:00:00',
-            count_sum: 2,
-            nickname: 'kok',
-            title: '苹果',
-            event_no: 1000
-          },
-          {
-            is_showtime: false,
-            time: '2019/03/04 12:00:00',
-            count_sum: 2,
-            nickname: 'kok',
-            title: '苹果',
-            event_no: 1000
-          },
-          {
-            is_showtime: false,
-            time: '2019/03/04 12:00:00',
-            count_sum: 2,
-            nickname: 'kok',
-            title: '苹果',
-            event_no: 1000
-          },
-          {
-            is_showtime: false,
-            time: '2019/03/04 12:00:00',
-            count_sum: 2,
-            nickname: 'kok',
-            title: '苹果',
-            event_no: 1000
-          },
-          {
-            is_showtime: false,
-            time: '2019/03/04 12:00:00',
-            count_sum: 2,
-            nickname: 'kok',
-            title: '苹果',
-            event_no: 1000
-          }
-        ],
         page: 1,
         noMore: false,
-        shopId: null
+        shopId: null,
+        linderId: null
       }
     },
     async onLoad(options) {
+      let storage = await this.$wechat.getStorage()
+      this.linderId = storage.linderId
       this.getList(1)
     },
     onShow() {
@@ -234,7 +115,8 @@
         if (this.noMore) return
         let data = {
           page,
-          limit: 20
+          limit: 20,
+          linder_id: this.linderId
         }
         API.Radar.getRadarList(data, true).then((res) => {
           this.$wechat.hideLoading()
