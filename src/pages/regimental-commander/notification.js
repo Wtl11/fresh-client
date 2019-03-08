@@ -1,37 +1,80 @@
+import { baseURL } from '@utils/config'
+import { corp } from '@utils/saas'
+
 export default class Notification {
-  static getInstance() {
+  static getInstance () {
     if (!this.instance) {
       this.instance = new Notification()
     }
     return this.instance
   }
-  // static instance = null
+
   constructor () {
     this.socket = null
+    this.url = baseURL.websocket + '/sub'
+    this.prg = `social_shopping_` + corp.currentCorp // 项目
+    this.isConnect = false // 判断是否连接
   }
-  // todo wss://wss.jkweixin.com:1443/sub ws://192.168.4.228:777/subpub
-  connect({url = 'wss://wss.jkweixin.net/sub', id = 28, prg = 'social_shopping_1'} = {}) {
-    id = wx.getStorageSync('shopId') || id
+
+  connect () {
+    if (this.isConnect) return
+    let id = wx.getStorageSync('leaderId')
+    if (!id) {
+      setTimeout(() => {
+        this.connect()
+      }, 500)
+      return
+    }
+    let { url, prg } = this
+    let self = this
     this.socket = wx.connectSocket({
       url: `${url}?id=${id}&prg=${prg}`,
-      success() {
+      success () {
+        self.isConnect = true
         console.warn('连接socket成功...')
+        self._onError()
       },
-      fail() {
+      fail () {
+        self.isConnect = false
+        setTimeout(() => {
+          this.connect()
+        }, 100)
         console.error('连接socket失败!')
       }
     })
   }
-  disconnect() {
+
+  disconnect () {
     return new Promise((resolve, reject) => {
       this.socket.onClose(() => {
+        this.isConnect = false
+        this.connect()
         console.warn('socket断开连接！')
       })
     })
   }
-  on(cb) {
+
+  on (cb) {
+    if (!this.socket || !this.isConnect) {
+      setTimeout(() => {
+        this.on(cb)
+      }, 100)
+      return
+    }
     this.socket.onOpen(() => {
       this.socket.onMessage(cb)
+    })
+  }
+
+  _onError () {
+    if (!this.socket || !this.isConnect) {
+      setTimeout(() => {
+        this._onError()
+      }, 100)
+      return
+    }
+    this.socket.onError((e) => {
+      console.error('socket异常，', e)
     })
   }
 }

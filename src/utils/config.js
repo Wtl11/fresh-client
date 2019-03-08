@@ -7,7 +7,8 @@ const DEV = {
   api: 'http://social-shopping-api.jerryf.cn/social-shopping',
   image: 'https://img.jerryf.cn/defaults',
   upload: 'http://social-shopping-api.jerryf.cn/social-shopping',
-  outLink: 'https://fresh-h5.jkweixin.net', // 外部h5链接
+  outLink: 'wss://fresh-h5.jkweixin.net', // 外部h5链接
+  websocket: 'wss://wss.jerryf.cn/',
   defaultId: corp.defaultId
 }
 // todo
@@ -16,6 +17,7 @@ const TEST = {
   image: 'https://img.jkweixin.net/defaults',
   upload: 'https://social-shopping-api.jkweixin.net/social-shopping',
   outLink: 'https://fresh-h5.jkweixin.net',
+  websocket: 'wss://wss.jkweixin.net',
   defaultId: corp.defaultId
 }
 
@@ -24,6 +26,7 @@ const PROD = {
   image: 'https://img.jkweixin.com/defaults',
   upload: 'https://social-shopping-api.jkweixin.com/social-shopping' + version,
   outLink: 'https://fresh-h5.jkweixin.com',
+  websocket: 'wss://wss.jkweixin.com',
   defaultId: corp.defaultId
 }
 export const baseURL = env === 'production' ? PROD : env === 'test' ? TEST : DEV
