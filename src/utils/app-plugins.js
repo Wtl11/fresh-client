@@ -31,3 +31,7 @@ const AppPlugin = {
 }
 // 使用插件
 Vue.use(AppPlugin)
+wx.onNetworkStatusChange(function (res) {
+  console.error(res.isConnected, '是否有网络连接')
+  console.error(res.networkType)
+})
