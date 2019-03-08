@@ -10,54 +10,54 @@
           <view class="msgs-right">
             <view class="msgs-container">
               <view class="msgs-p" v-if="item.event_no * 1 === 1000">
-                <text>{{item.nickname}}</text>
-                <text v-if="item.count_sum * 1 > 0">第{{item.count_sum}}次</text>
+                <text>{{item.customer_id?item.nickname:'游客'}}</text>
+                <text v-if="item.customer_id">第{{item.count_sum}}次</text>
                 <text class="green" :class="'corp-' + corpName + '-text'">查看</text>
                 <text>了你的</text>
                 <text class="green" :class="'corp-' + corpName + '-text'">小店</text>
               </view>
               <view class="msgs-p" v-if="item.event_no * 1 === 1001">
-                <text>{{item.nickname}}通过扫描他人分享的海报</text>
+                <text>{{item.customer_id?item.nickname:'游客'}}通过扫描他人分享的海报</text>
                 <text class="green" :class="'corp-' + corpName + '-text'">查看</text>
                 <text>了你的</text>
                 <text class="green" :class="'corp-' + corpName + '-text'">{{item.title}}</text>
               </view>
               <view class="msgs-p" v-if="item.event_no * 1 === 1002">
-                <text>{{item.nickname}}通过他人分享的链接</text>
+                <text>{{item.customer_id?item.nickname:'游客'}}通过他人分享的链接</text>
                 <text class="green" :class="'corp-' + corpName + '-text'">查看</text>
                 <text>了你的</text>
                 <text class="green" :class="'corp-' + corpName + '-text'">{{item.title}}</text>
               </view>
               <view class="msgs-p" v-if="item.event_no * 1 === 1003">
-                <text>{{item.nickname}}</text>
-                <text  v-if="item.count_sum * 1 > 0">第{{item.count_sum}}次</text>
+                <text>{{item.customer_id?item.nickname:'游客'}}</text>
+                <text  v-if="item.customer_id">第{{item.count_sum}}次</text>
                 <text class="green" :class="'corp-' + corpName + '-text'">查看</text>
                 <text>了你的</text>
                 <text class="green" :class="'corp-' + corpName + '-text'">{{item.title}}</text>
                 <text>，请把握商机</text>
               </view>
               <view class="msgs-p" v-if="item.event_no * 1 === 1004">
-                <text>{{item.nickname}}</text>
+                <text>{{item.customer_id?item.nickname:'游客'}}</text>
                 <text class="green" :class="'corp-' + corpName + '-text'">转发</text>
                 <text>了你的</text>
                 <text class="green" :class="'corp-' + corpName + '-text'">{{item.title}}</text>
                 <text>，你的商品正在裂变</text>
               </view>
               <view class="msgs-p" v-if="item.event_no * 1 === 1005">
-                <text>{{item.nickname}}</text>
+                <text>{{item.customer_id?item.nickname:'游客'}}</text>
                 <text class="green" :class="'corp-' + corpName + '-text'">保存</text>
                 <text>了你的</text>
                 <text class="green" :class="'corp-' + corpName + '-text'">{{item.title}}海报</text>
               </view>
               <view class="msgs-p" v-if="item.event_no * 1 === 1006">
-                <text>{{item.nickname}}</text>
+                <text>{{item.customer_id?item.nickname:'游客'}}</text>
                 <text class="green" :class="'corp-' + corpName + '-text'">提交</text>
                 <text>了</text>
                 <text class="green" :class="'corp-' + corpName + '-text'">订单</text>
                 <text>，金额为{{item.total}}元，并支付成功</text>
               </view>
               <view class="msgs-p" v-if="item.event_no * 1 === 1007">
-                <text>{{item.nickname}}把{{item.title}}商品</text>
+                <text>{{item.customer_id?item.nickname:'游客'}}把{{item.title}}商品</text>
                 <text class="green" :class="'corp-' + corpName + '-text'">加入</text>
                 <text>了</text>
                 <text class="green" :class="'corp-' + corpName + '-text'">购物车</text>
