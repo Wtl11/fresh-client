@@ -315,6 +315,8 @@
             color: $color-text-main
             margin-left: 14.5px
             width: 80%
+            height: 26px
+            line-height: 26px
           .login-input-small
             width: 50%
           .text-color

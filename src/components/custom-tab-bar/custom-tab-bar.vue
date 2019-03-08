@@ -75,7 +75,7 @@
     },
     onLoad() {
       let res = this.$wx.getSystemInfoSync()
-      this.height = res.statusBarHeight === 20 ? 0 : 28
+      this.height = res.statusBarHeight >= 44 ? 28 : 0
       // console.log(this.height, res)
       switch (this.corpName) {
         case 'platform':
@@ -134,8 +134,9 @@
     align-items: center
     display: flex
     background: #fff
+    z-index: 100
     .nav-list-box
-      flex: 1
+      width: 33.3333vw
       height: 49px
       layout()
       align-items: center
