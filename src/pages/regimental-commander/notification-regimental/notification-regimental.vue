@@ -44,7 +44,6 @@
     data() {
       return {
         dataArray: new Array(2).fill({}),
-        textColor: ``,
         index: 0,
         msgHeightAnimation: '',
         oneAnimation: '',
@@ -57,7 +56,6 @@
       }
     },
     onLoad() {
-      this.textColor = `corp-${this.corpName}-text`
       Notification.getInstance().on(msg => {
         try {
           let data = JSON.parse(msg.data)
@@ -68,20 +66,17 @@
     },
     methods: {
       navHandle() {
-        // wx.navigateTo({url: '/pages/radar'})
+        wx.navigateTo({url: '/pages/radar'})
       },
       _action(data) {
-        this.currentInfo = new EventMsg(data)
-        setTimeout(() => {
-          this.dataArray[this.index % 2] = this.currentInfo
-          console.log(this.currentInfo)
-        }, this.duration)
+        let eventMsg = new EventMsg(data)
+        this.dataArray[this.index % 2] = eventMsg
         this.index++
         this._msgHeightAnimation()
-        this._cardAnimation('oneAnimation', 'oneIsOver')
-        this._cardAnimation('twoAnimation', 'twoIsOver')
+        this._cardAnimation('oneAnimation', 'oneIsOver', eventMsg)
+        this._cardAnimation('twoAnimation', 'twoIsOver', eventMsg)
       },
-      _cardAnimation(key, flag) {
+      _cardAnimation(key, flag, eventMsg) {
         const duration = this.duration
         const animation = wx.createAnimation()
         if (this[flag]) {
@@ -100,6 +95,7 @@
         setTimeout(() => {
           this[flag] = !this[flag]
           this.isShowCard = true
+          flag && (this.currentInfo = eventMsg)
         }, duration)
         this[key] = animation.export()
       },
