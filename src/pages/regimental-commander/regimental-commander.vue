@@ -153,7 +153,8 @@
         page: 1,
         length: 1,
         detailedHeight: 280,
-        customerCount: 0
+        customerCount: 0,
+        isFirstLoad: true
       }
     },
     async onReachBottom() {
@@ -216,6 +217,11 @@
             return
           }
           this.customerCount = res.data.customer_count
+          let msg = res.data.msg || {}
+          if (msg.event_no && this.isFirstLoad) {
+            this.isFirstLoad = false
+            this.$refs.notification && this.$refs.notification._action(msg)
+          }
         })
       },
       async _shareGoods(item) {
