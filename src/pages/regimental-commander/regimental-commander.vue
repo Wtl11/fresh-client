@@ -281,7 +281,8 @@
           return
         }
         this.leaderDetail = res.data
-        wx.setStorageSync('leaderId', res.data.id) // 存储团长id
+        console.warn(res.data, '团餐id==-=-')
+        wx.setStorageSync('leaderId', res.data.shop_id) // 存储团长id
       },
       async _leaderOrderTotal() {
         let res = await API.Leader.leaderOrderTotal()
