@@ -168,7 +168,7 @@
     },
     async onShow() {
       this._getCustomerCount()
-      Notification.getInstance().connect() // todo 连接
+      Notification.getInstance().connect() // 连接
       this.$wx.getSystemInfo({
         success: (res) => {
           this.width = res.screenWidth * 0.936
