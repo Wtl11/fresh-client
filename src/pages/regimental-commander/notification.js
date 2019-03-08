@@ -16,7 +16,7 @@ export default class Notification {
     this.isConnect = false // 判断是否连接
   }
 
-  connect () {
+  connect (cb) {
     if (this.isConnect) return
     let id = wx.getStorageSync('leaderId')
     if (!id) {
@@ -55,7 +55,7 @@ export default class Notification {
   }
 
   on (cb) {
-    if (!this.socket || !this.isConnect) {
+    if (!this.socket) {
       setTimeout(() => {
         this.on(cb)
       }, 100)
@@ -82,11 +82,13 @@ export default class Notification {
       let self = this
       this.socket.close({
         success() {
-          self.isConnect = false
           console.warn('socket关闭成功！')
         },
         fail() {
           console.warn('socket关闭失败！')
+        },
+        complete() {
+          self.isConnect = false
         }
       })
     }

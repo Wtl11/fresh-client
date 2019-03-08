@@ -29,7 +29,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import Notification from '../notification'
+  // import Notification from '../notification'
   import EventMsg from './event-msg'
 
   const COMPONENT_NAME = 'NOTIFICATION_REGIMENTAL'
@@ -56,16 +56,16 @@
         currentInfo: {}
       }
     },
-    onLoad () {
-      Notification.getInstance().on(msg => {
-        try {
-          let data = JSON.parse(msg.data)
-          this._action(data)
-        } catch (e) {
-          console.error(e, '接受数据失败！')
-        }
-      })
-    },
+    // onLoad () {
+    //   Notification.getInstance().on(msg => {
+    //     try {
+    //       let data = JSON.parse(msg.data)
+    //       this._action(data)
+    //     } catch (e) {
+    //       console.error(e, '接受数据失败！')
+    //     }
+    //   })
+    // },
     onUnload () {
       // Object.assign(this.$data, this.$options.data())
       this.msgHeightAnimation = ''

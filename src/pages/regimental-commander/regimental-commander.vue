@@ -35,7 +35,7 @@
       </div>
     </div>
     <!--ai消息-->
-    <notification-regimental :customerCount="customerCount"></notification-regimental>
+    <notification-regimental ref="notification" :customerCount="customerCount"></notification-regimental>
     <!--功能模块-->
     <div class="reg-manager">
       <div class="reg-manager-box">
@@ -169,6 +169,7 @@
     async onShow() {
       this._getCustomerCount()
       Notification.getInstance().connect() // 连接
+      this._onSocketMsg()
       this.$wx.getSystemInfo({
         success: (res) => {
           this.width = res.screenWidth * 0.936
@@ -198,6 +199,17 @@
       }
     },
     methods: {
+      _onSocketMsg() {
+        Notification.getInstance().on((msg) => {
+          console.warn('收到socket信息...', msg)
+          try {
+            let data = JSON.parse(msg.data)
+            this.$refs.notification && this.$refs.notification._action(data)
+          } catch (e) {
+            console.error(e, '接受数据失败！')
+          }
+        })
+      },
       _getCustomerCount() {
         API.Notification.getCustomerCount().then((res) => {
           if (res.error !== this.$ERR_OK) {
