@@ -89,13 +89,10 @@
         recordList: [],
         page: 1,
         noMore: false,
-        shopId: null,
-        linderId: null
+        shopId: null
       }
     },
     async onLoad(options) {
-      let storage = await this.$wechat.getStorage()
-      this.linderId = storage.linderId
       this.getList(1)
     },
     onShow() {
@@ -115,8 +112,7 @@
         if (this.noMore) return
         let data = {
           page,
-          limit: 20,
-          linder_id: this.linderId
+          limit: 20
         }
         API.Radar.getRadarList(data, true).then((res) => {
           this.$wechat.hideLoading()
