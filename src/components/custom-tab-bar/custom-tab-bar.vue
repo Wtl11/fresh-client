@@ -76,7 +76,7 @@
     onLoad() {
       let res = this.$wx.getSystemInfoSync()
       this.height = res.statusBarHeight >= 44 ? 28 : 0
-      console.warn(this.height, res, 'asdasd')
+      // console.warn(this.height, res, 'asdasd')
       switch (this.corpName) {
         case 'platform':
           this.platformList = PLATFORM
