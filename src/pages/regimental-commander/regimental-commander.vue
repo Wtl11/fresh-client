@@ -163,6 +163,9 @@
       this.page++
       await this._getRecommendGoods()
     },
+    onUnload() {
+      Notification.getInstance().destroy()
+    },
     async onShow() {
       this._getCustomerCount()
       Notification.getInstance().connect() // todo 连接

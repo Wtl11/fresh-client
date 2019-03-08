@@ -61,8 +61,12 @@
           let data = JSON.parse(msg.data)
           this._action(data)
         } catch (e) {
+          console.error(e, '接受数据失败！')
         }
       })
+    },
+    onUnload() {
+      Object.assign(this.$data, this.$options.data())
     },
     methods: {
       navHandle() {
