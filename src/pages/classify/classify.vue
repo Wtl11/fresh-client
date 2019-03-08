@@ -10,7 +10,7 @@
       </div>
     </scroll-view>
     <div class="big-box">
-      <div class="classify-big-box"  :style="{'transform': ' translateX('+ -(tabIndex * 100) +'vw)', width:  (tabList1.length * 100) +'vw'}">
+      <div class="classify-big-box"  :style="{'transform': ' translateX('+ -(tabIndex * 100) +'vw)', width:  (tabList1.length * 100) +'vw', transition: boxTransition}">
         <div class="goods-list-box" v-for="(tabItem, tabInx) in tabList1" :key="tabInx" :class="tabIndex * 1 === tabInx ? '' : 'order-item-list-active'">
           <div class="goods-list">
             <div class="goods-item-box" v-for="(item, index) in classifyList[tabInx]" :key="index" @click="jumpGoodsDetail(item)">
@@ -75,7 +75,8 @@
         classifyId: null,
         classifyList: [],
         classifyPage: 1,
-        classifyMore: false
+        classifyMore: false,
+        boxTransition: ''
       }
     },
     components: {
@@ -85,7 +86,7 @@
       let res = this.$wx.getSystemInfoSync()
       this.statusBarHeight = res.statusBarHeight || 20
       this.classifyId = options.id
-      this.getCategoryData()
+      this.getCategoryData(true)
     },
     onReachBottom() {
       this.getMoreCategoryList(this.classifyId, this.tabIndex)
@@ -114,7 +115,7 @@
         this.classifyId = id
         this.getCategoryList(this.classifyId, index)
       },
-      getCategoryData() {
+      getCategoryData(isLoad = false) {
         API.Choiceness.getClassifyCategory().then((res) => {
           if (res.error !== this.$ERR_OK) {
             return
@@ -127,6 +128,11 @@
           res.data.forEach((item, index) => {
             if (item.id * 1 === this.classifyId * 1) {
               this.tabIndex = index
+              if (isLoad) {
+                setTimeout(() => {
+                  this.boxTransition = 'all .3s'
+                }, 50)
+              }
               if (index > 3) {
                 this.viewToItem = `item${index}`
               } else {
@@ -212,11 +218,10 @@
       width: 100vw
       display: flex
       transform: translateX(0)
-      transition: all 0.3s
   .goods-list-box
     width: 100vw
-    min-height: 50vh
   .goods-list
+    width: 100vw
     layout(row)
     align-items: center
     padding: 45px 6px 0
