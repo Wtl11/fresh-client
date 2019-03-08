@@ -178,6 +178,10 @@
           })
       },
       _paySuccess(res) {
+        this.$sendMsg({
+          event_no: 1006,
+          total: this.orderMsg.total
+        })
         this.orderMsg.status = 1
         this.orderMsg.status_text = '待提货'
       },

@@ -5,7 +5,7 @@
       <div class="community-main">
       <!--<div class="community-main" @click="jumpSelfPoint">-->
         <div class="community-img">
-          <img v-if="(locationStatus * 1 === 1 || locationStatus * 1 === 2) && imageUrl" :src="groupInfo.head_image_url || imageUrl+'/yx-image/order/icon-colonel_head@2x.png'"">
+          <img v-if="(locationStatus * 1 === 1 || locationStatus * 1 === 2) && imageUrl" :src="groupInfo.head_image_url || imageUrl+'/yx-image/order/icon-colonel_head@2x.png'">
         </div>
         <div class="community-text" v-if="locationStatus * 1 === 1 || locationStatus * 1 === 2">
           {{groupInfo.social_name}}
@@ -196,6 +196,9 @@
       }
     },
     async onShow() {
+      this.$sendMsg({
+        event_no: 1000
+      })
       this.locationStatus = wx.getStorageSync('locationShow')
       if (this.locationStatus * 1 === 3) {
         wx.navigateTo({
@@ -391,9 +394,13 @@
         if (!this.$isLogin()) {
           return
         }
-        console.log(item)
         API.Choiceness.addShopCart({goods_sku_id: item.goods_sku_id, activity_id: item.activity_id}).then((res) => {
           if (res.error === this.$ERR_OK) {
+            this.$sendMsg({
+              event_no: 1007,
+              goods_id: item.goods_id,
+              title: item.name
+            })
             this.$wechat.showToast('加入购物车成功', 1000, false)
             this.setCartCount()
           } else {

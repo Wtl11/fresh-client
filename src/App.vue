@@ -1,6 +1,6 @@
 <script>
   import {oauthMethods} from '@state/helpers'
-  import {getParams} from '@utils/common'
+  import {getParams, entryAppType} from '@utils/common'
   import API from '@api'
   import {ERR_OK, baseURL} from '@utils/config'
 
@@ -25,12 +25,14 @@
       //  判断是否可以静默登录
     },
     async onShow(options) {
+      this.setScene(options)
       let storyShopId = baseURL.defaultId
       if (options.query.scene) {
         let sceneMsg = decodeURIComponent(options.query.scene)
         const params = getParams(sceneMsg)
+        // console.info(params, 'app')
+        // console.info(sceneMsg, 'app22')
         storyShopId = params.shopId || wx.getStorageSync('defaultShopId')
-        console.warn(params)
       } else {
         if (!wx.getStorageSync('shopId') && !wx.getStorageSync('defaultShopId')) {
           let res = await API.Choiceness.getDefaultShopInfo()
@@ -63,7 +65,11 @@
       })
     },
     methods: {
-      ...oauthMethods
+      ...oauthMethods,
+      setScene(options) {
+        const type = entryAppType(options)
+        wx.setStorageSync('entryAppType', type)
+      }
     }
   }
 </script>

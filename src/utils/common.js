@@ -1,7 +1,20 @@
 import API from '@api'
 import * as wechat from './wechat'
 import {ERR_OK} from '@utils/config'
+import {SCENE_QR_CODE, SCENE_DEFAULT, SCENE_SHARE} from './contants'
 
+const shareArr = [1007, 1008, 1036, 1044, 1073, 1074]
+const qrCordArr = [1047, 1048, 1049, 1011, 1012, 1013]
+
+// 判定场景值 0普通 1分享 2扫码
+export function entryAppType(options) {
+  if (!options && options.scene) return SCENE_DEFAULT
+  let scene = +options.scene
+  let isShare = shareArr.includes(scene)
+  let isQrcord = qrCordArr.includes(scene)
+  let source = isShare ? SCENE_SHARE : isQrcord ? SCENE_QR_CODE : SCENE_DEFAULT
+  return source
+}
 /* 深度拷贝 */
 export function objDeepCopy(source) {
   let sourceCopy = source instanceof Array ? [] : {}
@@ -35,6 +48,35 @@ export function formatTime(date = now) {
   const t2 = [hour, minute, second].map(formatNumber).join(':')
 
   return `${t1} ${t2}`
+}
+
+/* 行为记录时间处理 */
+export function actionTimeFormat(time) {
+  let resTime = new Date(time * 1000)
+  let nowDate = formatDateTime(resTime)
+  let nowTime = formatTime(resTime)
+  let todayTime = new Date()
+  let todayDate = formatDateTime(todayTime)
+  let yesToday = todayTime.setDate(todayTime.getDate() - 1)
+  let yesTodayDateTime = new Date(yesToday)
+  let yesTodayDate = formatDateTime(yesTodayDateTime)
+  nowDate = nowDate.replace(todayDate, '')
+  nowDate = nowDate.replace(yesTodayDate, '昨天').trim()
+  nowTime = nowTime.replace(todayDate, '')
+  nowTime = nowTime.replace(yesTodayDate, '昨天').trim()
+  return {
+    date: nowDate,
+    time: nowTime
+  }
+}
+
+export function formatDateTime(time) {
+  let date = new Date(time)
+  const year = date.getFullYear()
+  const month = date.getMonth() + 1
+  const day = date.getDate()
+
+  return [year, month, day].join('/')
 }
 
 /**
