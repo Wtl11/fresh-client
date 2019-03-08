@@ -15,10 +15,14 @@
       <article class="wrapper-ul">
         <block v-for="(item, index) in dataArray" :key="index">
           <div class="wrapper" :animation="!index ? oneAnimation: twoAnimation">
-            <img v-if="imageUrl" mode="aspectFill" :src="imageUrl + '/yx-image/group/pic-head@2x.png'" alt="" class="avatar">
-            <p class="text"><span>{{item.text}}</span><span :class="textColor">提价了订单</span>,金额为<span :class="textColor">{{index}}</span>元</p>
+            <img v-if="item.image_url" mode="aspectFill" :src="item.image_url" alt="" class="avatar">
+            <p class="text"><span v-for="(child, idx) in item.msg" :key="idx" :class="child.cname">{{child.text}}</span></p>
           </div>
         </block>
+        <div v-if="isShowCard" class="wrapper over">
+          <img v-if="currentInfo.image_url" mode="aspectFill" :src="currentInfo.image_url" alt="" class="avatar">
+          <p class="text"><span v-for="(child, idx) in currentInfo.msg" :key="idx" :class="child.cname">{{child.text}}</span></p>
+        </div>
       </article>
     </section>
   </div>
@@ -26,6 +30,7 @@
 
 <script type="text/ecmascript-6">
   import Notification from '../notification'
+  import EventMsg from './event-msg'
   const COMPONENT_NAME = 'NOTIFICATION_REGIMENTAL'
 
   export default {
@@ -46,7 +51,9 @@
         oneIsOver: false,
         twoAnimation: '',
         twoIsOver: true,
-        duration: 300
+        duration: 300,
+        isShowCard: false,
+        currentInfo: {}
       }
     },
     onLoad() {
@@ -54,23 +61,22 @@
       Notification.getInstance().on(msg => {
         try {
           let data = JSON.parse(msg.data)
-          console.info(data)
+          this._action(data)
         } catch (e) {
         }
       })
     },
     methods: {
       navHandle() {
-        wx.navigateTo({url: '/pages/radar'})
+        // wx.navigateTo({url: '/pages/radar'})
       },
-      test() {
+      _action(data) {
+        this.currentInfo = new EventMsg(data)
         setTimeout(() => {
-          this.dataArray[this.index % 2] = {text: ~~(Math.random() * 100) + '游客'}
+          this.dataArray[this.index % 2] = this.currentInfo
+          console.log(this.currentInfo)
         }, this.duration)
         this.index++
-        this._action()
-      },
-      _action() {
         this._msgHeightAnimation()
         this._cardAnimation('oneAnimation', 'oneIsOver')
         this._cardAnimation('twoAnimation', 'twoIsOver')
@@ -80,7 +86,7 @@
         const animation = wx.createAnimation()
         if (this[flag]) {
           animation.translate3d(0, -45, 0).step({
-            duration,
+            duration: 0,
             timingFunction: 'linear',
             delay: 0
           })
@@ -93,6 +99,7 @@
         }
         setTimeout(() => {
           this[flag] = !this[flag]
+          this.isShowCard = true
         }, duration)
         this[key] = animation.export()
       },
@@ -139,6 +146,10 @@
           border-radius: 8px;
           padding :10px
           transform: translate3d(0, -45px, 0)
+          z-index :2
+          &.over
+            transform: translate3d(0,0,0)
+            z-index :1
           .avatar
             width :25px
             height @width
