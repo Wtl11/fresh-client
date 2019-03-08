@@ -10,7 +10,6 @@ export default {
         if (res.error !== ERR_OK) {
           console.error(res)
         }
-        console.warn(res)
       }).catch(e => {
         console.error(e)
       })
