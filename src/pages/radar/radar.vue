@@ -139,7 +139,7 @@
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
-  @import "~@design"
+ @import "~@designCommon"
   .action-record
     width: 100%
     min-height: 100vh

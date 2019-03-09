@@ -79,7 +79,7 @@
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
-  @import "~@design"
+ @import "~@designCommon"
   .link-box
     position: fixed
     left: 0

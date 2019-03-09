@@ -103,7 +103,7 @@
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
-  @import "~@design"
+ @import "~@designCommon"
 
   .find-product
     padding-bottom: 55px

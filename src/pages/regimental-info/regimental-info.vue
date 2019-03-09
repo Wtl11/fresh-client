@@ -71,7 +71,7 @@
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
-  @import "~@design"
+ @import "~@designCommon"
 
   .regimental-info
     min-height: 100vh

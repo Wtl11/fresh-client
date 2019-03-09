@@ -145,7 +145,7 @@
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
-  @import "~@design"
+ @import "~@designCommon"
   .copy-top
     padding: 15px 12px
     box-sizing: border-box

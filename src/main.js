@@ -6,6 +6,7 @@ import App from './App'
 import '@utils/env-clear'
 import '@utils/app-plugins'
 import '@utils/saas'
+import '@design'
 
 Vue.config.productionTip = false
 App.mpType = 'app'

@@ -43,7 +43,7 @@
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
-  @import "~@design"
+ @import "~@designCommon"
 
   .error
     padding-top: 22.48vh
