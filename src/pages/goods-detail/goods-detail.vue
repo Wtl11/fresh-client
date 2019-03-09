@@ -612,7 +612,7 @@
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
-  @import "~@design"
+ @import "~@designCommon"
   .share-goods
     padding: 32.8vw 5.3vw 17vw
     box-sizing: border-box

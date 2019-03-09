@@ -212,7 +212,7 @@
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
-  @import "~@design"
+ @import "~@designCommon"
 
   .after-sale-management
     height: 100vh

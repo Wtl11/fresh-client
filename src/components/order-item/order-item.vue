@@ -75,7 +75,7 @@
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
-  @import "~@design"
+ @import "~@designCommon"
   .big-order-box
     background: $color-background
 

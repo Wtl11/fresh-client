@@ -47,6 +47,7 @@ module.exports = {
       '@api': resolve('src/api'),
       '@assets': resolve('src/assets'),
       '@design': resolve('src/design/index.styl'),
+      '@designCommon': resolve('src/design/common.styl'),
       '@state': resolve('src/state'),
       '@mixins': resolve('src/mixins'),
       '@pages': resolve('src/pages'),

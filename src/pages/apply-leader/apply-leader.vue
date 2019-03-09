@@ -86,13 +86,14 @@
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
-  @import "~@design"
+ @import "~@designCommon"
 
   .apply-leader
     width: 100%
     img
       width: 100%
       height: 100%
+      display: block
     .pic-wrapper1, .pic-wrapper2
       width: 100%
       height: 64.5333vw

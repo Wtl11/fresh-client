@@ -38,6 +38,22 @@ fill-box($pos = absolute)
   right: 0
   bottom: 0
   left: 0
+border-none()
+  &:before
+    display: none
+  &:after
+    display: none
+// 扩展点击区域
+extend-click($number = -20px)
+  position: relative
+  &:before
+    content: ''
+    position: absolute
+    top: $number
+    left: $number
+    right: $number
+    bottom: $number
+
 border-top-1px($color = $color-line, $style = solid)
   position: relative
   &:before
@@ -105,18 +121,4 @@ border-1px($color = $color-line, $radius = 2px, $style = solid, $size = 1px)
       height: 300%
       border-radius: $radius * 3
       transform: scale(1 / 3) translateZ(0)
-border-none()
-  &:before
-    display: none
-  &:after
-    display: none
-// 扩展点击区域
-extend-click($number = -20px)
-  position: relative
-  &:before
-    content: ''
-    position: absolute
-    top: $number
-    left: $number
-    right: $number
-    bottom: $number
+

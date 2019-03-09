@@ -128,7 +128,7 @@
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
-  @import "~@design"
+ @import "~@designCommon"
   .wrap
     width: 100vw
     background: $color-background

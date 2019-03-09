@@ -90,7 +90,7 @@
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
-  @import "~@design"
+ @import "~@designCommon"
   .confirm-msg
     background-color: rgba(17, 17, 17, 0.8)
     fill-box(fixed)

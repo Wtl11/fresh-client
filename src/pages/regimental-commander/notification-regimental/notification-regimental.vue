@@ -116,7 +116,7 @@
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
-  @import "~@design"
+ @import "~@designCommon"
 
   .notification-regimental
     box-shadow: 0 3px 10px 0 rgba(17, 17, 17, 0.06)

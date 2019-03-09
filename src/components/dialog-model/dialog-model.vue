@@ -112,7 +112,7 @@
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
-  @import "~@design"
+ @import "~@designCommon"
 
   .confirm-msg
     background: rgba(0, 0, 0, 0.60)

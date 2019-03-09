@@ -146,7 +146,7 @@
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
-  @import "~@design"
+ @import "~@designCommon"
   .submit-order
     width: 100%
     min-height: 100vh
