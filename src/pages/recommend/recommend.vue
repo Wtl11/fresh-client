@@ -30,7 +30,7 @@
               </section>
               <section class="button-wrapper">
                 <div class="b-left">{{btnLeftText}}</div>
-                <div class="b-right"><p class="tri"><span class="tri-empty"></span></p><p class="trr"></p> 立即购买</div>
+                <div class="b-right"><p class="tri"></p><p class="trr"></p> 立即购买</div>
               </section>
             </div>
           </article>
@@ -85,17 +85,18 @@
     margin :0 5.333333333333334vw 2.666666666666667vw
 
   .recommend
-    background-image: linear-gradient(180deg, #D1EB92 0%, #A6C829 12%)
-    padding-bottom :2vw
     .content
       position :relative
+      background-image: linear-gradient(180deg, #D1EB92 0%, #A6C829 18%)
+      padding-bottom :2vw
       .header
-        height :73.33333333333333vw
+        height :64vw
+        padding-bottom :4vw
       .banner
         position :absolute
-        top:63.6vw
-        right :0
-        left : 0
+        top:61.6vw
+        right :-1px
+        left : -1px
         height :15.733333333333333vw
         z-index :10
       .logo
@@ -103,8 +104,7 @@
         display :flex
         align-items :center
         justify-content :center
-        position :relative
-        top:-1.3333333333333335vw
+        border-top :10px solid transparent
         .logo-img
           width :45.94666666666667vw
           height :15.893333333333334vw
@@ -174,33 +174,27 @@
                 layout(row,block,nowrap)
                 line-height :7.733333333333333vw
                 text-align :right
+                overflow :hidden
+                background-color :$color-money-main
                 .b-left
                   flex: 1
                   color: $color-money-main
+                  background-color :$color-card-background
                 .b-right
                   width 24.266666666666666vw
-                  background-color :$color-money-main
+                  height :100%
                   color:#fff
                   box-sizing :border-box
-                  border-radius: 0 8vw 8vw 0
                   position :relative
                   padding-right :4vw
                   .tri
                     position absolute
                     top:0
                     left:0
-                    bottom :1px
+                    bottom :0
                     width :1.6vw
                     background :$color-card-background
                     transform :skew(-15deg)
-                    .tri-empty
-                      position absolute
-                      height :1px
-                      width :1.6vw
-                      background :$color-card-background
-                      transform :skew(-15deg)
-                      bottom :0
-                      right :0
                   .trr
                     position :absolute
                     top:0
