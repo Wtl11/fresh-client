@@ -5,9 +5,10 @@ export default class EventMsg {
     this.cname = `corp-${corp.shopSaas}-text`
     this.image_url = obj.image_url || `${baseURL.image}/yx-image/group/pic-head@2x.png`
     this.customer_name = obj.customer_id ? obj.customer_name : '游客'
-    const params = obj.param || {}
-    this.count_sum = obj.customer_id ? '第' + (params.count_sum || 0) + '次' : ''
-    if (obj.event_no === '1000') {
+    const param = obj.param || {}
+    this.count_sum = obj.customer_id ? '第' + (param.count_sum || 0) + '次' : ''
+    this.event_no = obj.event_no + ''
+    if (this.event_no === '1000') {
       this.msg = [
         {
           text: `${this.customer_name}${this.count_sum}`,
@@ -27,7 +28,7 @@ export default class EventMsg {
         }
       ]
     }
-    if (obj.event_no === '1001') {
+    if (this.event_no === '1001') {
       this.msg = [
         {
           text: `${this.customer_name}通过扫描他人分享的海报`,
@@ -47,7 +48,7 @@ export default class EventMsg {
         }
       ]
     }
-    if (obj.event_no === '1002') {
+    if (this.event_no === '1002') {
       this.msg = [
         {
           text: `${this.customer_name}通过他人分享的链接`,
@@ -67,7 +68,7 @@ export default class EventMsg {
         }
       ]
     }
-    if (obj.event_no === '1003') {
+    if (this.event_no === '1003') {
       this.msg = [
         {
           text: `${this.customer_name}${this.count_sum}`,
@@ -91,7 +92,7 @@ export default class EventMsg {
         }
       ]
     }
-    if (obj.event_no === '1004') {
+    if (this.event_no === '1004') {
       this.msg = [
         {
           text: `${this.customer_name}`,
@@ -114,7 +115,7 @@ export default class EventMsg {
         }
       ]
     }
-    if (obj.event_no === '1005') {
+    if (this.event_no === '1005') {
       this.msg = [
         {
           text: `${this.customer_name}`,
@@ -138,7 +139,7 @@ export default class EventMsg {
         }
       ]
     }
-    if (obj.event_no === '1006') {
+    if (this.event_no === '1006') {
       this.msg = [
         {
           text: `${this.customer_name}`,
@@ -162,7 +163,7 @@ export default class EventMsg {
         }
       ]
     }
-    if (obj.event_no === '1007') {
+    if (this.event_no === '1007') {
       this.msg = [
         {
           text: `${this.customer_name}把`,

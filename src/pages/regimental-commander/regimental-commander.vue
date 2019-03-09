@@ -153,7 +153,8 @@
         page: 1,
         length: 1,
         detailedHeight: 280,
-        customerCount: 0
+        customerCount: 0,
+        isFirstLoad: true
       }
     },
     async onReachBottom() {
@@ -216,6 +217,11 @@
             return
           }
           this.customerCount = res.data.customer_count
+          let msg = res.data.msg || {}
+          if (msg.event_no && this.isFirstLoad) {
+            this.isFirstLoad = false
+            this.$refs.notification && this.$refs.notification._action(msg)
+          }
         })
       },
       async _shareGoods(item) {
@@ -275,7 +281,8 @@
           return
         }
         this.leaderDetail = res.data
-        wx.setStorageSync('leaderId', res.data.id) // 存储团长id
+        console.warn(res.data, '团餐id==-=-')
+        wx.setStorageSync('leaderId', res.data.shop_id) // 存储团长id
       },
       async _leaderOrderTotal() {
         let res = await API.Leader.leaderOrderTotal()
