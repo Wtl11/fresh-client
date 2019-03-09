@@ -1,9 +1,9 @@
 <template>
   <div class="recommend">
-    <navigation-bar title="活动标题"></navigation-bar>
+    <navigation-bar :title="navBarTitle" :showArrow="false"></navigation-bar>
     <div class="content">
       <header class="header">
-        <img class="img" mode="aspectFill" v-if="logoUrl" :src="logoUrl" alt="">
+        <img class="img" mode="aspectFill" v-if="activeImage" :src="activeImage" alt="">
       </header>
       <section class="banner">
         <img v-if="imageUrl" :src="imageUrl + '/yx-image/active/pic-shop@2x.png'" class="img">
@@ -17,43 +17,59 @@
           <circle-link v-if="index !== dataArray.length - 1"></circle-link>
           <figure class="goods-img">
             <div class="wrapper">
-              <img class="img" mode="aspectFill" v-if="logoUrl" :src="logoUrl" alt="">
+              <img class="img" mode="aspectFill" v-if="item.goods_cover_image" :src="item.goods_cover_image" alt="">
             </div>
           </figure>
           <article class="goods-info">
-            <p class="title">沙瓢的番茄，更适合炒蛋</p>
+            <p class="title">{{item.name}}</p>
             <div class="button-group">
               <section class="price-wrapper">
-                <p class="number">5.9</p>
+                <p class="number">{{item.trade_price}}</p>
                 <p class="unit">元</p>
-                <p class="origin">20.0元</p>
+                <p class="origin">{{item.original_price}}元</p>
               </section>
-              <section class="button-wrapper">
+              <button class="button-wrapper" :open-type="isAuthor ? '' : 'getUserInfo'" @getuserinfo="buyHandle(item, $event)" @click="buyHandle(item)">
                 <div class="b-left">{{btnLeftText}}</div>
                 <div class="b-right"><p class="tri"></p><p class="trr"></p> 立即购买</div>
-              </section>
+              </button>
             </div>
           </article>
         </li>
       </ul>
     </div>
-    <!--<img v-if="imageUrl" :src="imageUrl + '/yx-image/goods/pic-logo@2x.png'" class="arrow-right">-->
-    <!--<img v-if="imageUrl" :src="imageUrl + '/yx-image/active/pic-shop@2x.png'" class="arrow-right">-->
+    <pay-result ref="pay" :dataInfo="dataInfo"></pay-result>
+    <active-end ref="activeEnd"></active-end>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import CircleLink from './circle-link/circle-link'
+  import PayResult from './pay-result-com/pay-result-com'
+  import ActiveEnd from './active-end/active-end'
+  import API from '@api'
+  import {getParams} from '@utils/common'
 
   const PAGE_NAME = 'RECOMMEND'
 
   export default {
     name: PAGE_NAME,
+    components: {
+      NavigationBar,
+      CircleLink,
+      PayResult,
+      ActiveEnd
+    },
     data() {
       return {
-        logoUrl: 'http://social-shopping-api-1254297111.picgz.myqcloud.com/1/2019/03/07/155196034883157.png',
-        dataArray: new Array(9).fill(1)
+        activeImage: '',
+        dataArray: [],
+        isAuthor: false,
+        marketId: 0,
+        loginCode: '',
+        nowTime: Date.now(),
+        navBarTitle: '活动标题',
+        dataInfo: {}
       }
     },
     computed: {
@@ -62,9 +78,148 @@
         return number > 1 ? `${number}选1` : '优惠'
       }
     },
-    components: {
-      NavigationBar,
-      CircleLink
+    async onLoad(options) {
+      this.loginCode = await this.$wechat.login()
+      this._getMarketId(options)
+      this._authorization()
+      this._getDetail()
+    },
+    async onShow() {
+      if (Date.now() - this.nowTime > 1000 * 60 * 4 && !this.loginCode) {
+        this.nowTime = Date.now()
+        this.loginCode = await this.$wechat.login()
+      }
+    },
+    onPullDownRefresh() {
+      this._getDetail(false)
+    },
+    methods: {
+      buyHandle(item, e) {
+        console.log(this.isAuthor)
+        this.dataInfo = item
+        if (this.isAuthor) {
+          this._pay(item)
+        } else {
+          this._login(e, () => {
+            this._pay(item)
+          })
+        }
+      },
+      // 支付
+      _pay(item) {
+        API.Market.createOrder(item).then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            this.$wechat.showToast(res.message)
+            return
+          }
+          let orderId = res.data.order_id
+          let self = this
+          let {timestamp, nonceStr, payRes, signType, paySign} = res.data
+          console.log(res, '-=-=创建订单')
+          wx.requestPayment({
+            timeStamp: timestamp,
+            nonceStr,
+            package: payRes.package,
+            signType,
+            paySign,
+            success (res) {
+              console.log(res, 'asdsad')
+              self._ref('pay', 'show')
+            },
+            fail (res) {
+              self._closeOrder(orderId)
+              console.error(res, 'asdadadaadas')
+            }
+          })
+        })
+      },
+      _closeOrder(orderId) {
+        API.Market.closeOrder({orderId}, false).then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            console.error(res)
+            return
+          }
+          console.log('关闭订单', res)
+        })
+      },
+      // 获取活动详情
+      _getDetail(loading) {
+        API.Market.getDetail(this, loading).then((res) => {
+          !loading && wx.stopPullDownRefresh()
+          this.$wechat.hideLoading()
+          if (res.error !== this.$ERR_OK) {
+            // this._ref('activeEnd', 'show')
+            this.$wechat.showToast(res.message)
+            return
+          }
+          if ('' + res.data.status !== '1') {
+            this._ref('activeEnd', 'show')
+          }
+          this.navBarTitle = res.data.activity_name
+          this.activeImage = res.data.activity_cover_image
+          this.dataArray = res.data.activity_goods
+        })
+      },
+      // 调用组件的方法
+      _ref(key, method, params) {
+        this.$refs[key] && this.$refs[key][method] && this.$refs[key][method](params)
+      },
+      // 获取活动id
+      _getMarketId(options) {
+        try {
+          const sceneMsg = decodeURIComponent(options.scene)
+          const params = getParams(sceneMsg)
+          this.marketId = +params.marketId || options.marketId
+          params.shopId && wx.setStorageSync('shopId', +params.shopId)
+        } catch (e) {
+          console.error(e)
+        }
+      },
+      // 静默授权
+      async _authorization() {
+        let token = wx.getStorageSync('token')
+        if (token) {
+          this.isAuthor = true
+          return
+        }
+        try {
+          let res = await API.Login.getToken({code: this.loginCode.code}, false)
+          if (res.error !== this.$ERR_OK) {
+            console.error(res)
+            return
+          }
+          this.saveTokenInfo(res.data.access_token, res.data.customer_info)
+        } catch (e) {
+          console.error(e)
+        }
+      },
+      // 登录
+      async _login(e, callback) {
+        console.log(e)
+        if (e.mp.detail.errMsg !== 'getUserInfo:ok') return
+        console.info(e)
+        let data = {code: this.loginCode.code, iv: e.target.iv, encryptedData: e.target.encryptedData}
+        try {
+          let res = await API.Login.getToken(data)
+          this.$wechat.hideLoading()
+          if (res.error !== this.$ERR_OK) {
+            this.$wechat.showToast('登录失败，请重新登录')
+            console.error(res)
+            this.loginCode = await this.$wechat.login()
+            return
+          }
+          this.saveTokenInfo(res.data.access_token, res.data.customer_info)
+          callback && callback()
+        } catch (e) {
+          console.error(e)
+        }
+      },
+      // saveTokenInfo
+      saveTokenInfo(token, userInfo) {
+        token && wx.setStorageSync('token', token)
+        userInfo && wx.setStorageSync('userInfo', userInfo)
+        this.isAuthor = true
+      }
     }
   }
 </script>
@@ -85,6 +240,8 @@
     margin :0 5.333333333333334vw 2.666666666666667vw
 
   .recommend
+    min-height :100vh
+    background-image: linear-gradient(180deg, #D1EB92 0%, #A6C829 18%)
     .content
       position :relative
       background-image: linear-gradient(180deg, #D1EB92 0%, #A6C829 18%)
@@ -163,6 +320,7 @@
                   font-size: 3.733333333333334vw
                   color: #A0A0A0
               .button-wrapper
+                button-reset()
                 box-sizing :border-box
                 height :8vw
                 width :38vw
@@ -180,6 +338,7 @@
                   flex: 1
                   color: $color-money-main
                   background-color :$color-card-background
+                  z-index :3
                 .b-right
                   width 24.266666666666666vw
                   height :100%

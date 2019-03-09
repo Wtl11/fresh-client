@@ -6,6 +6,7 @@ page.$mount()
 
 export default {
   config: {
-    navigationBarTitleText: '活动标题'
+    navigationBarTitleText: '活动标题',
+    enablePullDownRefresh: true
   }
 }
