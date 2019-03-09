@@ -13,7 +13,8 @@
         <circle-link></circle-link>
       </section>
       <ul class="active-wrapper">
-        <li class="panel goods-wrapper">
+        <li v-for="(item, index) in dataArray" :key="index" class="panel goods-wrapper">
+          <circle-link v-if="index !== dataArray.length - 1"></circle-link>
           <figure class="goods-img">
             <div class="wrapper">
               <img class="img" mode="aspectFill" v-if="logoUrl" :src="logoUrl" alt="">
@@ -28,8 +29,8 @@
                 <p class="origin">20.0元</p>
               </section>
               <section class="button-wrapper">
-                <div class="b-left">3选1</div>
-                <div class="b-right">立即购买</div>
+                <div class="b-left">{{btnLeftText}}</div>
+                <div class="b-right"><p class="tri"></p><p class="trr"></p>立即购买</div>
               </section>
             </div>
           </article>
@@ -51,7 +52,14 @@
     name: PAGE_NAME,
     data() {
       return {
-        logoUrl: 'http://social-shopping-api-1254297111.picgz.myqcloud.com/1/2019/03/07/155196034883157.png'
+        logoUrl: 'http://social-shopping-api-1254297111.picgz.myqcloud.com/1/2019/03/07/155196034883157.png',
+        dataArray: new Array(9).fill(1)
+      }
+    },
+    computed: {
+      btnLeftText() {
+        let number = this.dataArray.length
+        return number > 1 ? `${number}选1` : '优惠'
       }
     },
     components: {
@@ -62,43 +70,44 @@
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
+  $color-card-background = #F6FAF1
   @import "~@design"
   .img
     width :100%
     height :100%
   .panel
-    background: #F6FAF1;
-    border-radius: 8px;
+    background: $color-card-background
+    border-radius: 2.1333333333333333vw
     position :relative
-    margin :0 20px 10px
+    margin :0 5.333333333333334vw 2.666666666666667vw
 
   .recommend
-    background-image: linear-gradient(-180deg, #D1EB92 0%, #A6C829 6%);
-    padding-bottom :7.5px
+    background-image: linear-gradient(180deg, #D1EB92 0%, #A6C829 12%);
+    padding-bottom :2vw
     .content
       position :relative
       .header
-        height :270px
+        height :73.33333333333333vw
       .banner
         position :absolute
-        top:231px
+        top:61.6vw
         right :0
         left : 0
-        height :59px
+        height :15.733333333333333vw
         z-index :10
       .logo
-        height :111.5px
+        height :29.733333333333334vw
         display :flex
         align-items :center
         justify-content :center
         position :relative
-        top:-5px
+        top:-1.3333333333333335vw
         .logo-img
-          width :172.3px
-          height :59.6px
+          width :45.94666666666667vw
+          height :15.893333333333334vw
       .active-wrapper
         .goods-wrapper
-          height :425px
+          height :113.33333333333333vw
           .goods-img
             width :100%
             height :0
@@ -107,68 +116,82 @@
             .wrapper
               fill-box(absolute)
               background :$color-white
-              border-radius :8px 8px 0 0
+              border-radius :2.1333333333333333 2.1333333333333333 0 0
               overflow :hidden
           .goods-info
-            padding :0 15px 0 20px
+            padding :0.5333333333333333vw 4vw 0 5.333333333333334vw
             .title
-              padding :14.5px 0 12.5px
+              padding :3.3333333333333335vw 0
               font-family: $font-family-medium
-              font-size: 18px;
-              line-height :16px
+              font-size: 4.8vw
+              line-height :4.266666666666667vw
               color: #343434;
               no-wrap()
             .button-group
-              padding-bottom :17px
               display :flex
-              align-items :center
               .price-wrapper
                 flex: 1
                 overflow :hidden
                 layout(row,block,nowrap)
-                align-items :center
                 .number
+                  position :relative
+                  top: -1.866666666666667vw
                   font-family: $font-family-bold
-                  font-size: 31px;
+                  font-size: 8.266666666666666vw
                   color: #FF8506;
                 .unit
                   position :relative
-                  top: 5px
-                  margin-left :2px
+                  top: 2.666666666666667vw
+                  margin-left :0.5333333333333333vw
                   font-family: $font-family-medium
-                  font-size: 13px;
+                  font-size: 3.4666666666666663vw
                   color: #FF8506;
                 .origin
                   position :relative
-                  top:6px
+                  top:2.666666666666667vw
                   text-decoration :line-through
-                  margin-left :5px
+                  margin-left :1.3333333333333335vw
                   opacity: 0.8;
                   font-family: $font-family-regular
-                  font-size: 14px;
+                  font-size: 3.733333333333334vw
                   color: #A0A0A0;
               .button-wrapper
                 box-sizing :border-box
                 height :30px
-                width :133px
+                width :142.5px
                 border: 1px solid #FF8506;
-                border-radius: 30px
+                border-radius: @height
                 font-family: $font-family-medium
                 font-size: 16px;
                 position :relative
+                layout(row,block,nowrap)
+                line-height :28px
+                text-align :right
                 .b-left
+                  flex: 1
                   color: #FF8506;
-                  display :flex
-                  align-items :center
-                  justify-content :center
-                  width :61px
                 .b-right
-                  position:absolute
-                  right :0
-                  top:0
+                  width 91px
                   background-color :#FF8506
                   color:#fff
-                  width :91px
-                  height :30px
-                  border-radius: 0px 30px 30px 0px;
+                  box-sizing :border-box
+                  border-radius: 0 30px 30px 0
+                  position :relative
+                  padding-right :15px
+                  .tri
+                    position absolute
+                    top:0
+                    left :0
+                    height :100%
+                    width :6px
+                    background :$color-card-background
+                    transform :skew(-15deg)
+                  .trr
+                    position :absolute
+                    top:0
+                    left :0
+                    height :50%
+                    width :6px
+                    background :$color-card-background
+
 </style>
