@@ -1,6 +1,6 @@
 <template>
   <div v-if="isShow" class="pay-result-com">
-    <navigation-bar title="支付成功" :showArrow="false"></navigation-bar>
+    <navigation-bar ref="nav" title="支付成功" :showArrow="false"></navigation-bar>
     <div class="pay-content">
       <div class="icon">
         <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/icon-pay_success@2x.png'" class="img">

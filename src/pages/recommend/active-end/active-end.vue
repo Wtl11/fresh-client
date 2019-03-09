@@ -1,6 +1,6 @@
 <template>
   <div v-if="isShow" class="active-end">
-    <navigation-bar :title="activeName" :showArrow="false"></navigation-bar>
+    <navigation-bar ref="nav" :title="activeName" :showArrow="false"></navigation-bar>
     <div class="goods-end-box">
       <div class="goods-end-img">
         <img v-if="imageUrl" class="img" :src="imageUrl+'/yx-image/order/pic-end@2x.png'" alt="">
@@ -22,7 +22,7 @@
       NavigationBar
     },
     props: {
-      activeName: {
+      navBarTitle: {
         type: String,
         default: ''
       }
@@ -34,7 +34,14 @@
     },
     methods: {
       show() {
-        this.isShow = false
+        this.isShow = true
+        this.$nextTick(() => {
+          this._ref('nav', 'setNavigationBarTitle', this.navBarTitle)
+        })
+      },
+      // 调用组件的方法
+      _ref(key, method, params) {
+        this.$refs[key] && this.$refs[key][method] && this.$refs[key][method](params)
       }
     }
   }

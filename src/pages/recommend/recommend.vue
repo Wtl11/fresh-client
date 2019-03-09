@@ -1,6 +1,6 @@
 <template>
   <div class="recommend">
-    <navigation-bar :title="navBarTitle" :showArrow="false"></navigation-bar>
+    <navigation-bar ref="nav" :title="navBarTitle" :showArrow="false"></navigation-bar>
     <div class="content">
       <header class="header">
         <img class="img" mode="aspectFill" v-if="activeImage" :src="activeImage" alt="">
@@ -38,7 +38,7 @@
       </ul>
     </div>
     <pay-result ref="pay" :dataInfo="dataInfo"></pay-result>
-    <active-end ref="activeEnd"></active-end>
+    <active-end ref="activeEnd" :navBarTitle="navBarTitle"></active-end>
   </div>
 </template>
 
@@ -97,6 +97,7 @@
       buyHandle(item, e) {
         console.log(this.isAuthor)
         this.dataInfo = item
+        this._ref('activeEnd', 'show')
         if (this.isAuthor) {
           this._pay(item)
         } else {
@@ -155,7 +156,9 @@
           if ('' + res.data.status !== '1') {
             this._ref('activeEnd', 'show')
           }
+          // this.navBarTitle = res.data.activity_name
           this.navBarTitle = res.data.activity_name
+          this._ref('nav', 'setNavigationBarTitle', this.navBarTitle)
           this.activeImage = res.data.activity_cover_image
           this.dataArray = res.data.activity_goods
         })
@@ -177,19 +180,21 @@
       },
       // 静默授权
       async _authorization() {
-        let token = wx.getStorageSync('token')
-        if (token) {
-          this.isAuthor = true
-          return
-        }
+        // let token = wx.getStorageSync('token')
+        // if (token) {
+        //   this.isAuthor = true
+        //   return
+        // }
         try {
           let res = await API.Login.getToken({code: this.loginCode.code}, false)
           if (res.error !== this.$ERR_OK) {
             console.error(res)
+            this.loginCode = await this.$wechat.login()
             return
           }
           this.saveTokenInfo(res.data.access_token, res.data.customer_info)
         } catch (e) {
+          this.loginCode = await this.$wechat.login()
           console.error(e)
         }
       },
