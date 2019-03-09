@@ -22,7 +22,7 @@
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
-  @import "~@design"
+  @import "~@designCommon"
 
   .circle-link
     position :absolute

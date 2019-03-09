@@ -30,7 +30,7 @@
               </section>
               <section class="button-wrapper">
                 <div class="b-left">{{btnLeftText}}</div>
-                <div class="b-right"><p class="tri"></p><p class="trr"></p>立即购买</div>
+                <div class="b-right"><p class="tri"><span class="tri-empty"></span></p><p class="trr"></p> 立即购买</div>
               </section>
             </div>
           </article>
@@ -71,10 +71,13 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   $color-card-background = #F6FAF1
-  @import "~@design"
+  $color-money-main = #FF8506
+  @import "~@designCommon"
   .img
     width :100%
     height :100%
+    font-size :0
+    line-height :0
   .panel
     background: $color-card-background
     border-radius: 2.1333333333333333vw
@@ -82,7 +85,7 @@
     margin :0 5.333333333333334vw 2.666666666666667vw
 
   .recommend
-    background-image: linear-gradient(180deg, #D1EB92 0%, #A6C829 12%);
+    background-image: linear-gradient(180deg, #D1EB92 0%, #A6C829 12%)
     padding-bottom :2vw
     .content
       position :relative
@@ -90,7 +93,7 @@
         height :73.33333333333333vw
       .banner
         position :absolute
-        top:61.6vw
+        top:63.6vw
         right :0
         left : 0
         height :15.733333333333333vw
@@ -116,82 +119,94 @@
             .wrapper
               fill-box(absolute)
               background :$color-white
-              border-radius :2.1333333333333333 2.1333333333333333 0 0
+              border-radius :2.1333333333333333vw 2.1333333333333333vw 0 0
               overflow :hidden
+              font-size :0
+              line-height :0
           .goods-info
-            padding :0.5333333333333333vw 4vw 0 5.333333333333334vw
+            padding : 0 4vw 0.5333333333333333vw 5.333333333333334vw
             .title
               padding :3.3333333333333335vw 0
               font-family: $font-family-medium
               font-size: 4.8vw
               line-height :4.266666666666667vw
-              color: #343434;
+              color: #343434
               no-wrap()
             .button-group
               display :flex
+              align-items :center
               .price-wrapper
                 flex: 1
-                overflow :hidden
                 layout(row,block,nowrap)
+                align-items :center
+                height :6.666666666666667vw
+                line-height :1
                 .number
                   position :relative
-                  top: -1.866666666666667vw
-                  font-family: $font-family-bold
+                  font-family: DINAlternate-Bold
                   font-size: 8.266666666666666vw
-                  color: #FF8506;
+                  color: $color-money-main
                 .unit
                   position :relative
-                  top: 2.666666666666667vw
+                  top: 1.6vw
                   margin-left :0.5333333333333333vw
                   font-family: $font-family-medium
                   font-size: 3.4666666666666663vw
-                  color: #FF8506;
+                  color: $color-money-main
                 .origin
                   position :relative
-                  top:2.666666666666667vw
+                  top: 1.866666666666667vw
                   text-decoration :line-through
                   margin-left :1.3333333333333335vw
-                  opacity: 0.8;
+                  opacity: 0.8
                   font-family: $font-family-regular
                   font-size: 3.733333333333334vw
-                  color: #A0A0A0;
+                  color: #A0A0A0
               .button-wrapper
                 box-sizing :border-box
-                height :30px
-                width :142.5px
-                border: 1px solid #FF8506;
+                height :8vw
+                width :38vw
+                border: 1px solid $color-money-main
                 border-radius: @height
                 font-family: $font-family-medium
-                font-size: 16px;
+                font-size: 4.266666666666667vw
                 position :relative
                 layout(row,block,nowrap)
-                line-height :28px
+                line-height :7.733333333333333vw
                 text-align :right
                 .b-left
                   flex: 1
-                  color: #FF8506;
+                  color: $color-money-main
                 .b-right
-                  width 91px
-                  background-color :#FF8506
+                  width 24.266666666666666vw
+                  background-color :$color-money-main
                   color:#fff
                   box-sizing :border-box
-                  border-radius: 0 30px 30px 0
+                  border-radius: 0 8vw 8vw 0
                   position :relative
-                  padding-right :15px
+                  padding-right :4vw
                   .tri
                     position absolute
                     top:0
-                    left :0
-                    height :100%
-                    width :6px
+                    left:0
+                    bottom :1px
+                    width :1.6vw
                     background :$color-card-background
                     transform :skew(-15deg)
+                    .tri-empty
+                      position absolute
+                      height :1px
+                      width :1.6vw
+                      background :$color-card-background
+                      transform :skew(-15deg)
+                      bottom :0
+                      right :0
                   .trr
                     position :absolute
                     top:0
                     left :0
                     height :50%
-                    width :6px
+                    width :1.6vw
                     background :$color-card-background
 
 </style>
