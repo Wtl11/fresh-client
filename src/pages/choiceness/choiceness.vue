@@ -143,6 +143,7 @@
   import ConfirmMsg from '@components/confirm-msg/confirm-msg'
   import API from '@api'
   import {cartMethods} from '@state/helpers'
+  import {getParams} from '@utils/common'
 
   const ald = getApp()
   const PAGE_NAME = 'CHOICENESS'
@@ -173,9 +174,14 @@
       }
     },
     async onLoad(options) {
-      if (options.shopId) {
-        wx.setStorageSync('shopId', options.shopId)
+      if (options.scene) {
+        let scene = decodeURIComponent(options.scene)
+        let params = getParams(scene)
+        this.shopId = params.shopId
+      } else {
+        this.shopId = options.shopId
       }
+      this.shopId && wx.setStorageSync('shopId', this.shopId)
       if (wx.getStorageSync('locationShow') * 1 === 3 || wx.getStorageSync('locationShow') * 1 === 2) {
       } else {
         let that = this

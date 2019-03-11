@@ -197,7 +197,8 @@
         thumb_image: '',
         buyGoodsInfo: {},
         eventNo: 0,
-        eventCount: 0
+        eventCount: 0,
+        shopId: 0
       }
     },
     computed: {
@@ -237,10 +238,13 @@
         let params = getParams(scene)
         this.goodsId = params.id
         this.activityId = params.activityId
+        this.shopId = params.shopId
       } else {
         this.goodsId = options.id
         this.activityId = options.activityId
+        this.shopId = options.shopId
       }
+      this.shopId && wx.setStorageSync('shopId', this.shopId)
       this._setDescriptionNum()
     },
     onShow() {
