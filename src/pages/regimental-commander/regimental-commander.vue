@@ -142,7 +142,6 @@
         nav: Nav,
         width: 0,
         navIndex: 0,
-        isLoading: true,
         leaderDetail: {},
         orderTotal: {},
         goodsList: [],
@@ -183,16 +182,12 @@
       for (let key in this.adaptation) {
         this.adaptation[key] += statusBarHeight
       }
-      await Promise.all([
-        this._getLeaderDetail(),
-        this._leaderOrderTotal(),
-        this._getPresellGoods()
-      ])
+      this._getLeaderDetail()
+      this._leaderOrderTotal()
+      this._getPresellGoods()
       if (this.navIndex === 1) {
         this._getRecommendGoods()
       }
-      this.$wechat.hideLoading()
-      this.isLoading = false
     },
     computed: {
       address() {
@@ -211,8 +206,8 @@
           }
         })
       },
-      _getCustomerCount() {
-        API.Notification.getCustomerCount().then((res) => {
+      _getCustomerCount(loading = false) {
+        API.Notification.getCustomerCount({}, loading).then((res) => {
           if (res.error !== this.$ERR_OK) {
             return
           }
@@ -281,7 +276,6 @@
           return
         }
         this.leaderDetail = res.data
-        console.warn(res.data, '团餐id==-=-')
         wx.setStorageSync('leaderId', res.data.shop_id) // 存储团长id
       },
       async _leaderOrderTotal() {
@@ -310,7 +304,6 @@
         }
         this.isNoGoods = !this.goodsList.length
         this.detailedHeight = 99.5 * this.goodsList.length || 280
-        console.log(this.goodsList)
       }
     }
   }
