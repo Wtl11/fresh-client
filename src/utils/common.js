@@ -161,7 +161,7 @@ function getUrl(path = '', query = {}) {
 export async function silentAuthorization() {
   /* eslint-disable no-undef */
   let el = await getCurrentPages()[getCurrentPages().length - 1]
-  let url = getUrl(el.route, el.options)
+  let url = el && getUrl(el.route, el.options)
   wx.setStorageSync('targetPage', url)
   // 推广页面另外处理
   if (el && el.route === 'pages/recommend') {

@@ -34,7 +34,7 @@ export default {
       this.$wx.setStorageSync('errorUrl', url)
     },
     $getUrl(path = '', query = '') {
-      let url = path || this.$root.$mp.page.route
+      let url = path || (this.$root.$mp.page && this.$root.$mp.page.route)
       let status = this.$checkIsTabPage(url)
       query = query || this.$root.$mp.query
       if (!status) {
