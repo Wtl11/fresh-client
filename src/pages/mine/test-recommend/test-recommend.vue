@@ -26,7 +26,7 @@
     data() {
       return {
         isHide,
-        marketId: 77,
+        marketId: 75,
         shopId: 7,
         dataArray: [
           {

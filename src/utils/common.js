@@ -163,6 +163,10 @@ export async function silentAuthorization() {
   let el = await getCurrentPages()[getCurrentPages().length - 1]
   let url = getUrl(el.route, el.options)
   wx.setStorageSync('targetPage', url)
+  // 推广页面另外处理
+  if (el.route === 'pages/recommend') {
+    return
+  }
   let codeJson = await wechat.login()
   let tokenJson = await API.Login.getToken({code: codeJson.code}, false)
   if (tokenJson.error === ERR_OK) {

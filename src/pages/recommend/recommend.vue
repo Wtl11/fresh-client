@@ -69,37 +69,37 @@
         marketId: 0,
         loginCode: '',
         nowTime: Date.now(),
-        navBarTitle: '活动标题',
-        dataInfo: {}
+        navBarTitle: '',
+        dataInfo: {},
+        isFirstLoad: true
       }
     },
     computed: {
       btnLeftText() {
         let number = this.dataArray.length
-        return number > 1 ? `${number}选1` : '优惠'
+        return number > 1 ? `${number}选1` : '优惠  '
       }
     },
     async onLoad(options) {
-      console.log(options)
       this.loginCode = await this.$wechat.login()
       this._getMarketId(options)
       this._authorization()
       this._getDetail()
     },
     async onShow() {
+      await this._updateParams()
       if (Date.now() - this.nowTime > 1000 * 60 * 4 && !this.loginCode) {
         this.nowTime = Date.now()
         this.loginCode = await this.$wechat.login()
       }
+      this.marketId && this._getDetail(false)
     },
     onPullDownRefresh() {
       this._getDetail(false)
     },
     methods: {
       buyHandle(item, e) {
-        console.log(this.isAuthor)
         this.dataInfo = item
-        // this._ref('activeEnd', 'show')
         if (this.isAuthor) {
           this._pay(item)
         } else {
@@ -108,11 +108,18 @@
           })
         }
       },
+      // 更新页面的参数
+      async _updateParams() {
+        if (!this.marketId) return
+        let el = await getCurrentPages()[getCurrentPages().length - 1]  // eslint-disable-line
+        el && this._getMarketId(el.options)
+      },
       // 支付
       _pay(item) {
         item.marketId = this.marketId
         API.Market.createOrder(item).then((res) => {
           if (res.error !== this.$ERR_OK) {
+            this.$wechat.hideLoading()
             this.$wechat.showToast(res.message)
             return
           }
@@ -126,14 +133,14 @@
             signType,
             paySign,
             success (res) {
-              console.log(res, 'asdsad')
               self._ref('pay', 'show')
             },
             fail (res) {
               self._closeOrder(orderId)
-              console.error(res, 'asdadadaadas')
+              console.error(res, '支付失败!')
             },
             complete() {
+              self._getDetail(false)
               self.$wechat.hideLoading()
             }
           })
@@ -142,10 +149,8 @@
       _closeOrder(orderId) {
         API.Market.closeOrder({orderId}, false).then((res) => {
           if (res.error !== this.$ERR_OK) {
-            console.error(res)
-            return
+            console.error(res, '关闭订单失败!')
           }
-          console.log('关闭订单', res)
         })
       },
       // 获取活动详情
@@ -167,7 +172,7 @@
           this.activeImage = res.data.activity_cover_image
           this.dataArray = res.data.activity_goods
         }).catch(e => {
-          console.error(e)
+          console.error(e, '获取活动信息失败!')
           this._ref('activeEnd', 'show')
         })
       },
@@ -177,6 +182,7 @@
       },
       // 获取活动id
       _getMarketId(options) {
+        if (!options) return
         try {
           const sceneMsg = decodeURIComponent(options.scene)
           const params = getParams(sceneMsg)
@@ -184,48 +190,47 @@
           let shopId = +params.shopId || +options.shopId
           shopId && wx.setStorageSync('shopId', shopId)
         } catch (e) {
-          console.error(e)
+          console.error(e, '获取活动ID失败!')
         }
       },
       // 静默授权
       async _authorization() {
-        // let token = wx.getStorageSync('token')
-        // if (token) {
-        //   this.isAuthor = true
-        //   return
-        // }
+        let res = await API.Market.checkToken()
+        if (res.error === this.$ERR_OK) {
+          this.isAuthor = true
+          return
+        }
         try {
           let res = await API.Login.getToken({code: this.loginCode.code}, false)
           if (res.error !== this.$ERR_OK) {
-            console.error(res)
+            console.error(res, '静默授权失败!')
             this.loginCode = await this.$wechat.login()
             return
           }
           this.saveTokenInfo(res.data.access_token, res.data.customer_info)
         } catch (e) {
           this.loginCode = await this.$wechat.login()
-          console.error(e)
+          console.error(e, '静默授权失败')
         }
       },
       // 登录
       async _login(e, callback) {
-        console.log(e)
         if (e.mp.detail.errMsg !== 'getUserInfo:ok') return
-        console.info(e)
         let data = {code: this.loginCode.code, iv: e.target.iv, encryptedData: e.target.encryptedData}
         try {
           let res = await API.Login.getToken(data)
-          this.$wechat.hideLoading()
           if (res.error !== this.$ERR_OK) {
             this.$wechat.showToast('登录失败，请重新登录')
-            console.error(res)
+            this.$wechat.hideLoading()
+            console.error(res, '登录失败，请重新登录')
             this.loginCode = await this.$wechat.login()
             return
           }
           this.saveTokenInfo(res.data.access_token, res.data.customer_info)
           callback && callback()
         } catch (e) {
-          console.error(e)
+          console.error(e, '登录失败，请重新登录!')
+          this.loginCode = await this.$wechat.login()
         }
       },
       // saveTokenInfo

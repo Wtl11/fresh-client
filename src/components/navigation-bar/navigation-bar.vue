@@ -99,7 +99,6 @@
     },
     methods: {
       setNavigationBarTitle(title) {
-        console.log(title)
         this.translucentTitle = title
       },
       getStatusBarHeight() {
