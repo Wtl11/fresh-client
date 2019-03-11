@@ -7,6 +7,7 @@ page.$mount()
 export default {
   config: {
     navigationBarTitleText: '活动标题',
-    enablePullDownRefresh: true
+    enablePullDownRefresh: true,
+    backgroundTextStyle: 'dark'
   }
 }

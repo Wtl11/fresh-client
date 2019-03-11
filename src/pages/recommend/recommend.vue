@@ -270,6 +270,7 @@
       position :relative
       background :#D1EB92
       min-height :100vh
+      overflow :hidden
       .header
         height :64vw
       .banner
