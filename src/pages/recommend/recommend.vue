@@ -117,8 +117,12 @@
       // 更新页面的参数
       async _updateParams() {
         if (!this.marketId) return
-        let el = await getCurrentPages()[getCurrentPages().length - 1]  // eslint-disable-line
-        el && this._getMarketId(el.options)
+        try {
+          let el = await getCurrentPages()[getCurrentPages().length - 1]  // eslint-disable-line
+          el && this._getMarketId(el.options)
+        } catch (e) {
+          console.error(e, '获取参数异常')
+        }
       },
       // 支付
       _pay(item) {
