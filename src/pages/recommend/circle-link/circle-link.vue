@@ -28,7 +28,7 @@
     position :absolute
     right :0
     left :0
-    bottom :-5.333333333333334vw
+    bottom :-4.333333333333334vw
     padding :0 14.666666666666666vw
     display :flex
     justify-content :space-between
@@ -46,7 +46,7 @@
         width :1.866666666666667vw
         height :@width
         border-radius :100%
-        background :$color-main
+        background :#A6C829
         &.top
           top:0
           margin-top :-0.8vw

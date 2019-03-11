@@ -3,39 +3,44 @@
     <navigation-bar ref="nav" :title="navBarTitle" :showArrow="showArrow"></navigation-bar>
     <div class="content">
       <header class="header">
+        <img class="img" mode="aspectFill" v-if="activeImageThumb" :src="activeImageThumb" alt="">
         <img class="img" mode="aspectFill" v-if="activeImage" :src="activeImage" alt="">
       </header>
       <section class="banner">
         <img v-if="imageUrl" :src="imageUrl + '/yx-image/active/pic-shop@2x.png'" class="img">
       </section>
-      <section class="panel logo">
-        <img v-if="imageUrl" :src="imageUrl + '/yx-image/goods/pic-logo@2x.png'" class="logo-img">
-        <circle-link></circle-link>
-      </section>
-      <ul class="active-wrapper">
-        <li v-for="(item, index) in dataArray" :key="index" class="panel goods-wrapper">
-          <circle-link v-if="index !== dataArray.length - 1"></circle-link>
-          <figure class="goods-img">
-            <div class="wrapper">
-              <img class="img" mode="aspectFill" v-if="item.goods_cover_image" :src="item.goods_cover_image" alt="">
-            </div>
-          </figure>
-          <article class="goods-info">
-            <p class="title">{{item.name}}</p>
-            <div class="button-group">
-              <section class="price-wrapper">
-                <p class="number">{{item.trade_price}}</p>
-                <p class="unit">元</p>
-                <p class="origin">{{item.original_price}}元</p>
-              </section>
-              <button class="button-wrapper" :open-type="isAuthor ? '' : 'getUserInfo'" @getuserinfo="buyHandle(item, $event)" @click="buyHandle(item)">
-                <div class="b-left">{{btnLeftText}}</div>
-                <div class="b-right"><p class="tri"></p><p class="trr"></p> 立即购买</div>
-              </button>
-            </div>
-          </article>
-        </li>
-      </ul>
+      <div class="main-container">
+        <div class="placeholder-box"></div>
+        <section class="panel logo">
+          <img v-if="imageUrl" :src="imageUrl + '/yx-image/goods/pic-logo@2x.png'" class="logo-img">
+          <circle-link></circle-link>
+        </section>
+        <ul class="active-wrapper">
+          <li v-for="(item, index) in dataArray" :key="index" class="panel goods-wrapper">
+            <circle-link v-if="index !== dataArray.length - 1"></circle-link>
+            <figure class="goods-img">
+              <div class="wrapper">
+                <img class="img" mode="aspectFill" v-if="item.goods_cover_thumb_image" :src="item.goods_cover_thumb_image" alt="">
+                <img class="img" mode="aspectFill" :lazy-load="true" v-if="item.goods_cover_image" :src="item.goods_cover_image" alt="">
+              </div>
+            </figure>
+            <article class="goods-info">
+              <p class="title">{{item.name}}</p>
+              <div class="button-group">
+                <section class="price-wrapper">
+                  <p class="number">{{item.trade_price}}</p>
+                  <p class="unit">元</p>
+                  <p class="origin">{{item.original_price}}元</p>
+                </section>
+                <button class="button-wrapper" :open-type="isAuthor ? '' : 'getUserInfo'" @getuserinfo="buyHandle(item, $event)" @click="buyHandle(item)">
+                  <div class="b-left">{{btnLeftText}}</div>
+                  <div class="b-right"><p class="tri"></p><p class="trr"></p> 立即购买</div>
+                </button>
+              </div>
+            </article>
+          </li>
+        </ul>
+      </div>
     </div>
     <pay-result ref="pay" :dataInfo="dataInfo"></pay-result>
     <active-end ref="activeEnd" :navBarTitle="navBarTitle"></active-end>
@@ -63,6 +68,7 @@
     data() {
       return {
         activeImage: '',
+        activeImageThumb: '',
         showArrow: !(process.env === 'production'),
         dataArray: [],
         isAuthor: false,
@@ -169,6 +175,7 @@
           // this.navBarTitle = res.data.activity_name
           this.navBarTitle = res.data.activity_name
           this._ref('nav', 'setNavigationBarTitle', this.navBarTitle)
+          this.activeImageThumb = res.data.goods_cover_thumb_image
           this.activeImage = res.data.activity_cover_image
           this.dataArray = res.data.activity_goods
         }).catch(e => {
@@ -254,20 +261,17 @@
     line-height :0
   .panel
     background: $color-card-background
-    border-radius: 2.1333333333333333vw
+    border-radius: 10px
     position :relative
     margin :0 5.333333333333334vw 2.666666666666667vw
 
   .recommend
-    min-height :100vh
-    background-image: linear-gradient(180deg, #D1EB92 0%, #A6C829 18%)
     .content
       position :relative
-      background-image: linear-gradient(180deg, #D1EB92 0%, #A6C829 18%)
-      padding-bottom :2vw
+      background :#D1EB92
+      min-height :100vh
       .header
         height :64vw
-        padding-bottom :4vw
       .banner
         position :absolute
         top:61.6vw
@@ -275,110 +279,116 @@
         left : -1px
         height :15.733333333333333vw
         z-index :10
-      .logo
-        height :29.733333333333334vw
-        display :flex
-        align-items :center
-        justify-content :center
-        border-top :10px solid transparent
-        .logo-img
-          width :45.94666666666667vw
-          height :15.893333333333334vw
-      .active-wrapper
-        .goods-wrapper
-          height :113.33333333333333vw
-          .goods-img
-            width :100%
-            height :0
-            padding-top :100%
-            position :relative
-            .wrapper
-              fill-box(absolute)
-              background :$color-white
-              border-radius :2.1333333333333333vw 2.1333333333333333vw 0 0
-              overflow :hidden
-              font-size :0
-              line-height :0
-          .goods-info
-            padding : 0 4vw 0.5333333333333333vw 5.333333333333334vw
-            .title
-              padding :3.3333333333333335vw 0
-              font-family: $font-family-medium
-              font-size: 4.8vw
-              line-height :4.266666666666667vw
-              color: #343434
-              no-wrap()
-            .button-group
-              display :flex
-              align-items :center
-              .price-wrapper
-                flex: 1
-                layout(row,block,nowrap)
-                align-items :center
-                height :6.666666666666667vw
-                line-height :1
-                .number
-                  position :relative
-                  font-family: DINAlternate-Bold
-                  font-size: 8.266666666666666vw
-                  color: $color-money-main
-                .unit
-                  position :relative
-                  top: 1.6vw
-                  margin-left :0.5333333333333333vw
-                  font-family: $font-family-medium
-                  font-size: 3.4666666666666663vw
-                  color: $color-money-main
-                .origin
-                  position :relative
-                  top: 1.866666666666667vw
-                  text-decoration :line-through
-                  margin-left :1.3333333333333335vw
-                  opacity: 0.8
-                  font-family: $font-family-regular
-                  font-size: 3.733333333333334vw
-                  color: #A0A0A0
-              .button-wrapper
-                button-reset()
-                box-sizing :border-box
-                height :8vw
-                width :38vw
-                border: 1px solid $color-money-main
-                border-radius: @height
-                font-family: $font-family-medium
-                font-size: 4.266666666666667vw
-                position :relative
-                layout(row,block,nowrap)
-                line-height :7.733333333333333vw
-                text-align :right
+      .main-container
+        background-image: linear-gradient(180deg, #D1EB92 0%, #A6C829 6%)
+        padding-bottom :2vw
+        .placeholder-box
+          height :4vw
+        .logo
+          height :29.733333333333334vw
+          display :flex
+          align-items :center
+          justify-content :center
+          .logo-img
+            width :45.94666666666667vw
+            height :15.893333333333334vw
+        .active-wrapper
+          .goods-wrapper
+            height :113.33333333333333vw
+            box-shadow: 0 6px 20px 0 rgba(17,17,17,0.1)
+            .goods-img
+              width :100%
+              height :0
+              padding-top :100%
+              position :relative
+              .wrapper
+                fill-box(absolute)
+                background :$color-white
+                border-radius :10px 10px 0 0
                 overflow :hidden
-                background-color :$color-money-main
-                .b-left
+                font-size :0
+                line-height :0
+            .goods-info
+              padding : 0 4vw 0.5333333333333333vw 5.333333333333334vw
+              .title
+                padding :3.3333333333333335vw 0
+                font-family: $font-family-medium
+                font-size: 4.8vw
+                line-height :4.266666666666667vw
+                color: #343434
+                no-wrap()
+              .button-group
+                display :flex
+                align-items :center
+                .price-wrapper
                   flex: 1
-                  color: $color-money-main
-                  background-color :$color-card-background
-                  z-index :3
-                .b-right
-                  width 24.266666666666666vw
-                  height :100%
-                  color:#fff
+                  layout(row,block,nowrap)
+                  align-items :center
+                  height :6.666666666666667vw
+                  line-height :1
+                  .number
+                    position :relative
+                    font-family: DINAlternate-Bold
+                    font-size: 8.266666666666666vw
+                    color: $color-money-main
+                  .unit
+                    position :relative
+                    top: 1.6vw
+                    margin-left :0.5333333333333333vw
+                    font-family: $font-family-medium
+                    font-size: 3.4666666666666663vw
+                    color: $color-money-main
+                  .origin
+                    position :relative
+                    top: 1.866666666666667vw
+                    text-decoration :line-through
+                    margin-left :1.3333333333333335vw
+                    opacity: 0.8
+                    font-family: $font-family-regular
+                    font-size: 3.733333333333334vw
+                    color: #A0A0A0
+                .button-wrapper
+                  button-reset()
                   box-sizing :border-box
+                  height :8vw
+                  width :38vw
+                  border: 1px solid $color-money-main
+                  border-radius: @height
+                  font-family: $font-family-medium
+                  font-size: 4.266666666666667vw
                   position :relative
-                  padding-right :4vw
-                  .tri
-                    position absolute
-                    top:0
-                    left:0
-                    bottom :0
-                    width :1.6vw
-                    background :$color-card-background
-                    transform :skew(-15deg)
-                  .trr
-                    position :absolute
-                    top:0
-                    left :0
-                    height :50%
-                    width :1.6vw
-                    background :$color-card-background
+                  layout(row,block,nowrap)
+                  line-height :7.733333333333333vw
+                  text-align :right
+                  overflow :hidden
+                  background-color :$color-money-main
+                  .b-left
+                    flex: 1
+                    color: $color-money-main
+                    background-color :$color-card-background
+                    z-index :3
+                    padding-right :2px
+                  .b-right
+                    width 24.266666666666666vw
+                    height :100%
+                    color:#fff
+                    box-sizing :border-box
+                    position :relative
+                    padding-right :4vw
+                    .tri
+                      position absolute
+                      top:0
+                      left:0
+                      bottom :0
+                      width :1.6vw
+                      background :$color-card-background
+                      transform :skew(-15deg)
+                    .trr
+                      position :absolute
+                      top:0
+                      left :0
+                      height :50%
+                      width :1.6vw
+                      background :$color-card-background
 
 </style>
