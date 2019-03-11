@@ -1,6 +1,6 @@
 <template>
   <div class="recommend">
-    <navigation-bar ref="nav" :title="navBarTitle" :showArrow="false"></navigation-bar>
+    <navigation-bar ref="nav" :title="navBarTitle" :showArrow="showArrow"></navigation-bar>
     <div class="content">
       <header class="header">
         <img class="img" mode="aspectFill" v-if="activeImage" :src="activeImage" alt="">
@@ -63,6 +63,7 @@
     data() {
       return {
         activeImage: '',
+        showArrow: !(process.env === 'production'),
         dataArray: [],
         isAuthor: false,
         marketId: 0,
@@ -79,6 +80,7 @@
       }
     },
     async onLoad(options) {
+      console.log(options)
       this.loginCode = await this.$wechat.login()
       this._getMarketId(options)
       this._authorization()
@@ -97,7 +99,7 @@
       buyHandle(item, e) {
         console.log(this.isAuthor)
         this.dataInfo = item
-        this._ref('activeEnd', 'show')
+        // this._ref('activeEnd', 'show')
         if (this.isAuthor) {
           this._pay(item)
         } else {
@@ -108,6 +110,7 @@
       },
       // 支付
       _pay(item) {
+        item.marketId = this.marketId
         API.Market.createOrder(item).then((res) => {
           if (res.error !== this.$ERR_OK) {
             this.$wechat.showToast(res.message)
@@ -149,7 +152,7 @@
           !loading && wx.stopPullDownRefresh()
           this.$wechat.hideLoading()
           if (res.error !== this.$ERR_OK) {
-            // this._ref('activeEnd', 'show')
+            this._ref('activeEnd', 'show')
             this.$wechat.showToast(res.message)
             return
           }
@@ -161,6 +164,9 @@
           this._ref('nav', 'setNavigationBarTitle', this.navBarTitle)
           this.activeImage = res.data.activity_cover_image
           this.dataArray = res.data.activity_goods
+        }).catch(e => {
+          console.error(e)
+          this._ref('activeEnd', 'show')
         })
       },
       // 调用组件的方法
@@ -172,8 +178,9 @@
         try {
           const sceneMsg = decodeURIComponent(options.scene)
           const params = getParams(sceneMsg)
-          this.marketId = +params.marketId || options.marketId
-          params.shopId && wx.setStorageSync('shopId', +params.shopId)
+          this.marketId = +params.marketId || +options.marketId
+          let shopId = +params.shopId || +options.shopId
+          shopId && wx.setStorageSync('shopId', shopId)
         } catch (e) {
           console.error(e)
         }

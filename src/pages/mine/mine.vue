@@ -83,6 +83,7 @@
       </div>
     </div>
     <custom-tab-bar currentType="mine"></custom-tab-bar>
+    <test-recommend></test-recommend>
   </div>
 </template>
 
@@ -94,6 +95,7 @@
   import QrcodeMsg from '@components/qrcode-msg/qrcode-msg'
   import API from '@api'
   import {oauthComputed} from '@state/helpers'
+  import TestRecommend from './test-recommend/test-recommend'
 
   const ORRDER_NAV_LIST = [
     {icon_url: '/yx-image/cart/icon-payment@2x.png', name: '待付款', id: 0, index: 1, count: 0},
@@ -277,7 +279,8 @@
       WePaint,
       QrcodeMsg,
       NavigationBar,
-      CustomTabBar
+      CustomTabBar,
+      TestRecommend
     }
   }
 </script>

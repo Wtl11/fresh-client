@@ -1,6 +1,6 @@
 <template>
   <div v-if="isShow" class="active-end">
-    <navigation-bar ref="nav" :title="activeName" :showArrow="false"></navigation-bar>
+    <navigation-bar ref="nav" :title="activeName" :showArrow="showArrow"></navigation-bar>
     <div class="goods-end-box">
       <div class="goods-end-img">
         <img v-if="imageUrl" class="img" :src="imageUrl+'/yx-image/order/pic-end@2x.png'" alt="">
@@ -29,6 +29,7 @@
     },
     data() {
       return {
+        showArrow: !(process.env === 'production'),
         isShow: false
       }
     },

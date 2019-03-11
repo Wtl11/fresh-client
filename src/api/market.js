@@ -7,11 +7,17 @@ export default {
     return request.get(url, data, loading)
   },
   createOrder(data, loading) {
+    console.log(data)
     data = {
-      source: 'c_offline',
       goods: {
-        goods_sku_id: data.goods_sku_id
-      }
+        goods_sku_id: data.goods_sku_id,
+        activity_id: data.marketId,
+        num: 1,
+        cart_id: 0
+      },
+      nickname: '',
+      mobile: '',
+      source: 'c_offline'
     }
     let url = '/api/wap/create-order'
     return request.post(url, data, loading)
@@ -19,6 +25,10 @@ export default {
   closeOrder(data, loading) {
     let url = '/api/wap/cancel-order/' + data.orderId
     data = ''
+    return request.get(url, data, loading)
+  },
+  testShare(data, loading) {
+    let url = '/api/wap/cancel-order/'
     return request.get(url, data, loading)
   }
 }
