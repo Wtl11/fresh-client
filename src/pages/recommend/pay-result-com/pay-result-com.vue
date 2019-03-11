@@ -32,6 +32,9 @@
         isShow: false
       }
     },
+    onUnload() {
+      this.isShow = false
+    },
     methods: {
       hide() {
         this.isShow = false

@@ -33,6 +33,9 @@
         isShow: false
       }
     },
+    onUnload() {
+      this.isShow = false
+    },
     methods: {
       show() {
         this.isShow = true

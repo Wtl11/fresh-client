@@ -9,12 +9,14 @@ export default {
   createOrder(data, loading) {
     console.log(data)
     data = {
-      goods: {
-        goods_sku_id: data.goods_sku_id,
-        activity_id: data.marketId,
-        num: 1,
-        cart_id: 0
-      },
+      goods: [
+        {
+          goods_sku_id: data.goods_sku_id,
+          activity_id: data.marketId,
+          num: 1,
+          cart_id: 0
+        }
+      ],
       nickname: '',
       mobile: '',
       source: 'c_offline'

@@ -118,12 +118,11 @@
           }
           let orderId = res.data.order_id
           let self = this
-          let {timestamp, nonceStr, payRes, signType, paySign} = res.data
-          console.log(res, '-=-=创建订单')
+          let {timestamp, nonceStr, signType, paySign} = res.data
           wx.requestPayment({
             timeStamp: timestamp,
             nonceStr,
-            package: payRes.package,
+            package: res.data.package,
             signType,
             paySign,
             success (res) {
@@ -133,6 +132,9 @@
             fail (res) {
               self._closeOrder(orderId)
               console.error(res, 'asdadadaadas')
+            },
+            complete() {
+              self.$wechat.hideLoading()
             }
           })
         })
