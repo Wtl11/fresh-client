@@ -66,7 +66,7 @@
           <img :src="imageUrl + '/yx-image/retuan/icon-moeny_box@2x.png'" v-if="imageUrl && corpName === 'retuan'" class="reg-manager-icon">
           <p class="reg-manager-text">团长钱包</p>
         </navigator>
-        <navigator url="/pages/data-overview" hover-class="none" class="reg-manager-item">
+        <navigator url="/pages/out-html?routeType=data-overview" hover-class="none" class="reg-manager-item">
           <img :src="imageUrl + '/yx-image/group/iocn-report_forms@2x.png'" v-if="imageUrl && corpName === 'platform'" class="reg-manager-icon">
           <img :src="imageUrl + '/yx-image/retuan/iocn-report_forms@2x.png'" v-if="imageUrl && corpName === 'retuan'" class="reg-manager-icon">
           <p class="reg-manager-text">数据统计</p>
