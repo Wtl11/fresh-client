@@ -1,6 +1,7 @@
 <template>
   <div class="choiceness">
     <navigation-bar :title="shopName" :showArrow="false"></navigation-bar>
+    <test-recommend></test-recommend>
     <div class="community-box">
       <div class="community-main">
       <!--<div class="community-main" @click="jumpSelfPoint">-->
@@ -144,6 +145,7 @@
   import API from '@api'
   import {cartMethods} from '@state/helpers'
   import {getParams} from '@utils/common'
+  import TestRecommend from '../choiceness/test-recommend/test-recommend'
 
   const ald = getApp()
   const PAGE_NAME = 'CHOICENESS'
@@ -496,7 +498,8 @@
       LinkGroup,
       NavigationBar,
       CustomTabBar,
-      ConfirmMsg
+      ConfirmMsg,
+      TestRecommend
     }
   }
 </script>

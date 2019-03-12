@@ -181,7 +181,9 @@
           this._ref('nav', 'setNavigationBarTitle', this.navBarTitle)
           this.activeImageThumb = res.data.goods_cover_thumb_image
           this.activeImage = res.data.activity_cover_image
-          this.dataArray = res.data.activity_goods
+          this.dataArray = res.data.activity_goods.sort((a, b) => {
+            return a.sort > b.sort
+          })
         }).catch(e => {
           console.error(e, '获取活动信息失败!')
           this._ref('activeEnd', 'show')
