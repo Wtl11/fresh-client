@@ -208,10 +208,13 @@
       },
       // 静默授权
       async _authorization() {
-        let res = await API.Market.checkToken()
-        if (res.error === this.$ERR_OK) {
-          this.isAuthor = true
-          return
+        try {
+          let res = await API.Market.checkToken()
+          if (res.error === this.$ERR_OK) {
+            this.isAuthor = true
+            return
+          }
+        } catch (e) {
         }
         try {
           let res = await API.Login.getToken({code: this.loginCode.code}, false)
