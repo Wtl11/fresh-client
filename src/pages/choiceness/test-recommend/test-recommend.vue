@@ -1,6 +1,5 @@
 <template>
   <div v-if="!isHide" class="test-recommend">
-    <official-account>关注公众号</official-account>
     <ul>
       <li v-for="(item, index) in dataArray" :key="index" @click="navHandle(item)" style="padding:10px 0">
         <span>marketId:{{item.marketId}}</span><span>shopId:{{item.shopId}}</span>
@@ -21,12 +20,11 @@
 <script type="text/ecmascript-6">
   // import API from '@api'
   const COMPONENT_NAME = 'TEST_RECOMMEND'
-  const isHide = process.env === 'production'
   export default {
     name: COMPONENT_NAME,
     data() {
       return {
-        isHide,
+        isHide: process.env === 'production',
         marketId: '',
         shopId: '',
         dataArray: [

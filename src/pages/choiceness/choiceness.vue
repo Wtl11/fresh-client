@@ -151,6 +151,13 @@
   const PAGE_NAME = 'CHOICENESS'
   export default {
     name: PAGE_NAME,
+    components: {
+      LinkGroup,
+      NavigationBar,
+      CustomTabBar,
+      ConfirmMsg,
+      TestRecommend
+    },
     data() {
       return {
         praiseIndex: 0,
@@ -493,13 +500,6 @@
         }
         return times
       }
-    },
-    components: {
-      LinkGroup,
-      NavigationBar,
-      CustomTabBar,
-      ConfirmMsg,
-      TestRecommend
     }
   }
 </script>
