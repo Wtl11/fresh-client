@@ -32,17 +32,18 @@
                   <p class="unit">元</p>
                   <p class="origin">{{item.original_price}}元</p>
                 </section>
-                <button class="button-wrapper" :open-type="isAuthor ? '' : 'getUserInfo'" @getuserinfo="buyHandle(item, $event)" @click="buyHandle(item)">
+                <button v-if="index !== payIndex" class="button-wrapper" :open-type="isAuthor ? '' : 'getUserInfo'" @getuserinfo="buyHandle(item, $event)" @click="buyHandle(item)">
                   <div class="b-left">{{btnLeftText}}</div>
                   <div class="b-right"><p class="tri"></p><p class="trr"></p> 立即购买</div>
                 </button>
+                <div v-else class="button-pay-finish">已购买</div>
               </div>
             </article>
           </li>
         </ul>
       </div>
     </div>
-    <pay-result ref="pay" :dataInfo="dataInfo"></pay-result>
+    <!--<pay-result ref="pay" :dataInfo="dataInfo"></pay-result>-->
     <active-end ref="activeEnd" :navBarTitle="navBarTitle"></active-end>
   </div>
 </template>
@@ -50,7 +51,7 @@
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import CircleLink from './circle-link/circle-link'
-  import PayResult from './pay-result-com/pay-result-com'
+  // import PayResult from './pay-result-com/pay-result-com'
   import ActiveEnd from './active-end/active-end'
   import API from '@api'
   import {getParams} from '@utils/common'
@@ -62,7 +63,7 @@
     components: {
       NavigationBar,
       CircleLink,
-      PayResult,
+      // PayResult,
       ActiveEnd
     },
     data() {
@@ -77,7 +78,8 @@
         nowTime: Date.now(),
         navBarTitle: '',
         dataInfo: {},
-        isFirstLoad: true
+        isFirstLoad: true,
+        payIndex: -1
       }
     },
     computed: {
@@ -143,14 +145,15 @@
             signType,
             paySign,
             success (res) {
-              self._ref('pay', 'show')
+              // self._ref('pay', 'show')
+              self.payIndex = self.dataArray.findIndex(val => val.goods_sku_id === item.goods_sku_id)
             },
             fail (res) {
               self._closeOrder(orderId)
               console.error(res, '支付失败!')
             },
             complete() {
-              self._getDetail(false)
+              // self._getDetail(false)
               self.$wechat.hideLoading()
             }
           })
@@ -176,14 +179,14 @@
           if ('' + res.data.status !== '1') {
             this._ref('activeEnd', 'show')
           }
-          // this.navBarTitle = res.data.activity_name
           this.navBarTitle = res.data.activity_name
           this._ref('nav', 'setNavigationBarTitle', this.navBarTitle)
           this.activeImageThumb = res.data.goods_cover_thumb_image
           this.activeImage = res.data.activity_cover_image
-          this.dataArray = res.data.activity_goods.sort((a, b) => {
+          let arr = res.data.activity_goods.sort((a, b) => {
             return a.sort > b.sort
           })
+          this.dataArray = arr
         }).catch(e => {
           console.error(e, '获取活动信息失败!')
           this._ref('activeEnd', 'show')
@@ -357,6 +360,17 @@
                     font-family: $font-family-regular
                     font-size: 3.733333333333334vw
                     color: #A0A0A0
+                .button-pay-finish
+                  height :30px
+                  width :99px
+                  border: 1px solid $color-money-main
+                  border-radius: @height
+                  font-family: $font-family-medium
+                  font-size: 4.266666666666667vw
+                  line-height :7.733333333333333vw
+                  text-align :center
+                  color :$color-money-main
+                  box-sizing :border-box
                 .button-wrapper
                   button-reset()
                   box-sizing :border-box
