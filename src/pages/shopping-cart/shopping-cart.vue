@@ -95,7 +95,7 @@
     },
     onLoad() {
       let res = this.$wx.getSystemInfoSync()
-      this.height = res.statusBarHeight === 20 ? 0 : 28
+      this.height = res.statusBarHeight >= 44 ? 28 : 0
     },
     async onShow() {
       if (!wx.getStorageSync('token')) return
