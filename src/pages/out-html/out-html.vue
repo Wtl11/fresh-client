@@ -28,11 +28,12 @@
     methods: {
       getChartsConfig(type) {
         if (type !== 'data-overview') return
-        let url = `http://192.168.9.130:6874/${type}`
+        let url = `${baseURL.webview}/${type}`
         let token = wx.getStorageSync('token')
         let leaderId = wx.getStorageSync('leaderId')
         let statusBarHeight = wx.getSystemInfoSync().statusBarHeight
-        return `${url}?token=${token}&api=${baseURL.api}&leaderId=${leaderId}&currentCorp=${corp.currentCorp}&statusBarHeight=${statusBarHeight}`
+        let params = `${url}?token=${token}&api=${baseURL.api}&currentCorp=${corp.currentCorp}&leaderId=${leaderId}&statusBarHeight=${statusBarHeight}`
+        return params
       }
     }
   }

@@ -9,6 +9,7 @@ const DEV = {
   upload: 'http://social-shopping-api.jerryf.cn/social-shopping',
   outLink: 'wss://fresh-h5.jkweixin.net', // 外部h5链接
   websocket: 'wss://wss.jerryf.cn/',
+  webview: 'https://fresh-h5.jkweixin.net',
   defaultId: corp.defaultId
 }
 // todo
@@ -18,6 +19,7 @@ const TEST = {
   upload: 'https://social-shopping-api.jkweixin.net/social-shopping',
   outLink: 'https://fresh-h5.jkweixin.net',
   websocket: 'wss://wss.jkweixin.net',
+  webview: 'https://fresh-h5.jkweixin.net',
   defaultId: corp.defaultId
 }
 
@@ -27,6 +29,7 @@ const PROD = {
   upload: 'https://social-shopping-api.jkweixin.com/social-shopping' + version,
   outLink: 'https://fresh-h5.jkweixin.com',
   websocket: 'wss://wss.jkweixin.com',
+  webview: 'https://fresh-h5.jkweixin.com',
   defaultId: corp.defaultId
 }
 export const baseURL = env === 'production' ? PROD : env === 'test' ? TEST : DEV
