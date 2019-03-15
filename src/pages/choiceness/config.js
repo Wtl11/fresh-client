@@ -8,6 +8,8 @@ page.$mount()
 export default {
   config: {
     navigationBarTitleText: 'CHOICENESS',
-    enablePullDownRefresh: true
+    enablePullDownRefresh: true,
+    backgroundTextStyle: 'dark',
+    onReachBottomDistance: 300
   }
 }

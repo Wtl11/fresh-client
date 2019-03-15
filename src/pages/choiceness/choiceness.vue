@@ -124,7 +124,7 @@
           <div class="center">已经到底了</div>
           <div class="bot lines"></div>
         </div>
-        <div class="noting" v-if="goodsMore && goodsList.length === 0">
+        <div class="noting" v-if="isShowActiveEnd">
           <div class="notingimg"><img class="img" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'" alt=""></div>
           <div class="txt">活动即将开始，敬请期待</div>
         </div>
@@ -176,7 +176,8 @@
           hour: '00',
           minute: '00',
           second: '00'
-        }
+        },
+        isShowActiveEnd: false
       }
     },
     async onLoad(options) {
@@ -208,33 +209,40 @@
       }
     },
     async onShow() {
-      this.$sendMsg({
-        event_no: 1000
-      })
-      this.locationStatus = wx.getStorageSync('locationShow')
-      if (this.locationStatus * 1 === 3) {
-        wx.navigateTo({
-          url: `/pages/open-location`
+      try {
+        this.$wechat.showLoading()
+        this.$sendMsg({
+          event_no: 1000
         })
+        this.locationStatus = wx.getStorageSync('locationShow')
+        if (this.locationStatus * 1 === 3) {
+          wx.navigateTo({
+            url: `/pages/open-location`
+          })
+        }
+        if (this.locationStatus * 1 === 1) {
+          this.getLocationData()
+        }
+        ald.aldstat.sendEvent('首页')
+        this._getBuyUsers()
+        let shopId = wx.getStorageSync('shopId')
+        if (!shopId) {
+          let res = await API.Choiceness.getDefaultShopInfo()
+          wx.setStorageSync('shopId', res.data.id)
+          shopId = res.data.id
+        }
+        if (this.curShopId * 1 !== shopId * 1) {
+          await this._groupInfo(false)
+          await this._getIndexModule(false)
+          this.curShopId = shopId
+        }
+        if (!wx.getStorageSync('token')) return
+        this.setCartCount()
+      } catch (e) {
+        console.error(e)
+      } finally {
+        this.$wechat.hideLoading()
       }
-      if (this.locationStatus * 1 === 1) {
-        this.getLocationData()
-      }
-      ald.aldstat.sendEvent('首页')
-      this._getBuyUsers()
-      let shopId = wx.getStorageSync('shopId')
-      if (!shopId) {
-        let res = await API.Choiceness.getDefaultShopInfo()
-        wx.setStorageSync('shopId', res.data.id)
-        shopId = res.data.id
-      }
-      if (this.curShopId * 1 !== shopId * 1) {
-        await this._groupInfo(false)
-        await this._getIndexModule(false)
-        this.curShopId = shopId
-      }
-      if (!wx.getStorageSync('token')) return
-      this.setCartCount()
     },
     onHide() {
       this.carouselTimer && clearTimeout(this.carouselTimer)
@@ -243,16 +251,19 @@
       this.showBuyUser = false
     },
     onReachBottom() {
-      this.getMoreGoodsList()
+      this.getMoreGoodsList(false, () => {
+        this.isShowActiveEnd = !this.goodsList.length
+      })
     },
     async onPullDownRefresh() {
-      await this._groupInfo(true)
+      await this._groupInfo(false)
       await this._getIndexModule(false)
       this.goodsPage = 2
       this.goodsMore = false
       wx.stopPullDownRefresh()
       if (!wx.getStorageSync('token')) return
       this.setCartCount()
+      this.isShowActiveEnd = !this.goodsList.length
     },
     onShareAppMessage(res) {
       let imgUrl = ''
@@ -377,7 +388,7 @@
           url: `/pages/goods-detail?id=${item.goods_id}&activityId=${item.activity_id}`
         })
       },
-      getMoreGoodsList() {
+      getMoreGoodsList(loading = false, callback) {
         if (this.goodsMore) {
           return
         }
@@ -386,7 +397,7 @@
           page: this.goodsPage,
           limit: 10
         }
-        API.Choiceness.getGoodsShelfList(data, true).then((res) => {
+        API.Choiceness.getGoodsShelfList(data, loading).then((res) => {
           this.$wechat.hideLoading()
           if (res.error === this.$ERR_OK) {
             this.goodsList = this.goodsList.concat(res.data)
@@ -394,6 +405,7 @@
           } else {
             this.$wechat.showToast(res.message)
           }
+          callback && callback()
         })
       },
       _isUpList(res) {
@@ -436,6 +448,7 @@
             this.goodsMore = false
             if (this.goodsList.length === 0) {
               this.goodsMore = true
+              this.isShowActiveEnd = true
             }
           }
         })
