@@ -209,33 +209,40 @@
       }
     },
     async onShow() {
-      this.$sendMsg({
-        event_no: 1000
-      })
-      this.locationStatus = wx.getStorageSync('locationShow')
-      if (this.locationStatus * 1 === 3) {
-        wx.navigateTo({
-          url: `/pages/open-location`
+      try {
+        this.$wechat.showLoading()
+        this.$sendMsg({
+          event_no: 1000
         })
+        this.locationStatus = wx.getStorageSync('locationShow')
+        if (this.locationStatus * 1 === 3) {
+          wx.navigateTo({
+            url: `/pages/open-location`
+          })
+        }
+        if (this.locationStatus * 1 === 1) {
+          this.getLocationData()
+        }
+        ald.aldstat.sendEvent('首页')
+        this._getBuyUsers()
+        let shopId = wx.getStorageSync('shopId')
+        if (!shopId) {
+          let res = await API.Choiceness.getDefaultShopInfo()
+          wx.setStorageSync('shopId', res.data.id)
+          shopId = res.data.id
+        }
+        if (this.curShopId * 1 !== shopId * 1) {
+          await this._groupInfo(false)
+          await this._getIndexModule(false)
+          this.curShopId = shopId
+        }
+        if (!wx.getStorageSync('token')) return
+        this.setCartCount()
+      } catch (e) {
+        console.error(e)
+      } finally {
+        this.$wechat.hideLoading()
       }
-      if (this.locationStatus * 1 === 1) {
-        this.getLocationData()
-      }
-      ald.aldstat.sendEvent('首页')
-      this._getBuyUsers()
-      let shopId = wx.getStorageSync('shopId')
-      if (!shopId) {
-        let res = await API.Choiceness.getDefaultShopInfo()
-        wx.setStorageSync('shopId', res.data.id)
-        shopId = res.data.id
-      }
-      if (this.curShopId * 1 !== shopId * 1) {
-        await this._groupInfo(false)
-        await this._getIndexModule(false)
-        this.curShopId = shopId
-      }
-      if (!wx.getStorageSync('token')) return
-      this.setCartCount()
     },
     onHide() {
       this.carouselTimer && clearTimeout(this.carouselTimer)
