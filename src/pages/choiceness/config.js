@@ -9,6 +9,7 @@ export default {
   config: {
     navigationBarTitleText: 'CHOICENESS',
     enablePullDownRefresh: true,
-    backgroundTextStyle: 'dark'
+    backgroundTextStyle: 'dark',
+    onReachBottomDistance: 300
   }
 }
