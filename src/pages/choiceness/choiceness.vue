@@ -1,7 +1,6 @@
 <template>
   <div class="choiceness">
     <navigation-bar :title="shopName" :showArrow="false"></navigation-bar>
-    <test-recommend></test-recommend>
     <div class="community-box">
       <div class="community-main">
       <!--<div class="community-main" @click="jumpSelfPoint">-->
@@ -125,7 +124,7 @@
           <div class="center">已经到底了</div>
           <div class="bot lines"></div>
         </div>
-        <div class="noting" v-if="goodsMore && goodsList.length === 0">
+        <div class="noting" v-if="isShowActiveEnd">
           <div class="notingimg"><img class="img" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'" alt=""></div>
           <div class="txt">活动即将开始，敬请期待</div>
         </div>
@@ -145,7 +144,6 @@
   import API from '@api'
   import {cartMethods} from '@state/helpers'
   import {getParams} from '@utils/common'
-  import TestRecommend from '../choiceness/test-recommend/test-recommend'
 
   const ald = getApp()
   const PAGE_NAME = 'CHOICENESS'
@@ -155,8 +153,7 @@
       LinkGroup,
       NavigationBar,
       CustomTabBar,
-      ConfirmMsg,
-      TestRecommend
+      ConfirmMsg
     },
     data() {
       return {
@@ -179,7 +176,8 @@
           hour: '00',
           minute: '00',
           second: '00'
-        }
+        },
+        isShowActiveEnd: false
       }
     },
     async onLoad(options) {
@@ -246,16 +244,19 @@
       this.showBuyUser = false
     },
     onReachBottom() {
-      this.getMoreGoodsList()
+      this.getMoreGoodsList(false, () => {
+        this.isShowActiveEnd = !this.goodsList.length
+      })
     },
     async onPullDownRefresh() {
-      await this._groupInfo(true)
+      await this._groupInfo(false)
       await this._getIndexModule(false)
       this.goodsPage = 2
       this.goodsMore = false
       wx.stopPullDownRefresh()
       if (!wx.getStorageSync('token')) return
       this.setCartCount()
+      this.isShowActiveEnd = !this.goodsList.length
     },
     onShareAppMessage(res) {
       let imgUrl = ''
@@ -380,7 +381,7 @@
           url: `/pages/goods-detail?id=${item.goods_id}&activityId=${item.activity_id}`
         })
       },
-      getMoreGoodsList() {
+      getMoreGoodsList(loading = false, callback) {
         if (this.goodsMore) {
           return
         }
@@ -389,7 +390,7 @@
           page: this.goodsPage,
           limit: 10
         }
-        API.Choiceness.getGoodsShelfList(data, true).then((res) => {
+        API.Choiceness.getGoodsShelfList(data, loading).then((res) => {
           this.$wechat.hideLoading()
           if (res.error === this.$ERR_OK) {
             this.goodsList = this.goodsList.concat(res.data)
@@ -397,6 +398,7 @@
           } else {
             this.$wechat.showToast(res.message)
           }
+          callback && callback()
         })
       },
       _isUpList(res) {
@@ -439,6 +441,7 @@
             this.goodsMore = false
             if (this.goodsList.length === 0) {
               this.goodsMore = true
+              this.isShowActiveEnd = true
             }
           }
         })

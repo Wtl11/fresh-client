@@ -80,6 +80,9 @@ async function checkCode(res) {
         break
       case 13003:
         return res.data
+      case 13004: // 系统升级
+        wx.redirectTo({url: '/pages/app-update'})
+        return
     }
     throw requestException(res)
   }
