@@ -118,6 +118,7 @@
     </div>
     <div class="end" v-if="!isNoGoods">— 到底了—</div>
     <link-group ref="shareList" :linkType="2" :isSharePoster="false"></link-group>
+    <!--<button class="test" v-for="(item, index) in '123'" :key="index" open-type="share" :id="index" :data-hello="current">{{index}}</button>-->
   </div>
 </template>
 
@@ -153,8 +154,22 @@
         length: 1,
         detailedHeight: 280,
         customerCount: 0,
-        isFirstLoad: true
+        isFirstLoad: true,
+        current: -1 // todo
       }
+    },
+    onShareAppMessage(res) {
+      // todo
+      if (res.from === 'button') {
+        console.log(res.target)
+      } else {
+
+      }
+      console.warn(this.current, res)
+      // return {
+      //   title: '',
+      //   path: `/pages/pages/choiceness?a=${this.current}` // 商品详情
+      // }
     },
     async onReachBottom() {
       if (this.navIndex === 0) {
@@ -195,6 +210,10 @@
       }
     },
     methods: {
+      test(index) {
+        // todo
+        this.current = index
+      },
       _onSocketMsg() {
         Notification.getInstance().on((msg) => {
           console.warn('收到socket信息...', msg)
