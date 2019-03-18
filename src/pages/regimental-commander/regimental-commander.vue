@@ -180,6 +180,7 @@
     },
     onUnload() {
       Notification.getInstance().destroy()
+      this.$refs.navigationBar._initHeadStyle()
     },
     async onShow() {
       this._getCustomerCount()
