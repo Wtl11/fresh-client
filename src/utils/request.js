@@ -81,6 +81,10 @@ async function checkCode(res) {
       case 13003:
         return res.data
       case 13004: // 系统升级
+        const options = wx.getLaunchOptionsSync()
+        if (options.path === '/pages/app-update') {
+          return
+        }
         wx.redirectTo({url: '/pages/app-update'})
         return
     }
