@@ -15,19 +15,18 @@ to: "src/pages/<%= h.inflection.dasherize(name) %>/<%= h.inflection.dasherize(na
 
   export default {
     name: PAGE_NAME,
-    data() {
-      return {
-
-      }
-    },
     components: {
       NavigationBar
+    },
+    data() {
+      return {
+      }
     }
   }
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
-  @import "~@design"
+  @import "~@designCommon"
 
   .<%= h.inflection.dasherize(name) %>
     width: 100%
