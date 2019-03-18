@@ -2,7 +2,7 @@
   <div class="coupon-take">
     <navigation-bar title="领取优惠券"></navigation-bar>
     <coupon-common-channel :pageConfig="pageConfig"></coupon-common-channel>
-    <section class="panel">
+    <section v-if="userArray.length" class="panel">
       <dl class="wrapper">
         <dt class="title-wrapper">
           <p class="text">看看谁抢到了</p>
@@ -39,7 +39,7 @@
           btnText: '马上领取',
           btnStyle: 'padding-bottom:20px'
         },
-        userArray: new Array(11).fill(1)
+        userArray: new Array(10).fill(1)
       }
     }
   }
