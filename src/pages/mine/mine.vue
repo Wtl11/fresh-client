@@ -41,7 +41,17 @@
         </div>
       </div>
     </div>
-    <div class="self-addr">
+    <ul class="button-group">
+      <li class="button-item" v-for="(item, index) in BUTTON_GROUP" :key="index">
+        <article class="item-wrapper" @click="navHandle(item)">
+          <div class="item-text">{{item.isArray ? item.text[isLeader?1:0]: item.text}}</div>
+          <div class="item-arrow-img">
+            <img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="img">
+          </div>
+        </article>
+      </li>
+    </ul>
+    <div class="self-addr group">
       <div class="self-top">
         <div class="subtitle">我的自提点</div>
         <!--<div class="switch-btn" @click="toChangeShop">-->
@@ -66,14 +76,14 @@
         </div>
       </div>
     </div>
-    <div class="self-addr group" @click="_goMyHosing">
-      <div class="self-top">
-        <div class="subtitle">{{isLeader ? '小区管理' : '我的小区'}}</div>
-        <div class="switch-btn">
-          <img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="arrow-img">
-        </div>
-      </div>
-    </div>
+    <!--<div class="self-addr group" @click="_goMyHosing">-->
+      <!--<div class="self-top">-->
+        <!--<div class="subtitle">{{isLeader ? '小区管理' : '我的小区'}}</div>-->
+        <!--<div class="switch-btn">-->
+          <!--<img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="arrow-img">-->
+        <!--</div>-->
+      <!--</div>-->
+    <!--</div>-->
     <div class="mine-model" v-if="showModal" :animation="maskAnimation" @click="_cancelQrCodeBox">
       <div class="model-con" :animation="modalAnimation">
         <div class="erm" @click.stop>
@@ -103,6 +113,11 @@
     {icon_url: '/yx-image/cart/icon-order@2x.png', name: '全部', id: '', index: 0, count: 0}
   ]
 
+  const BUTTON_GROUP = [
+    {text: '优惠券', url: 'mine-coupon'},
+    {text: ['我的小区', '小区管理'], isArray: true, isLeader: true}
+  ]
+
   export default {
     beforeCreate() {
     },
@@ -122,7 +137,8 @@
         maskAnimation: '',
         modalAnimation: '',
         lastOrderList: [],
-        isLeader: false
+        isLeader: false,
+        BUTTON_GROUP: BUTTON_GROUP
       }
     },
     async onTabItemTap() {
@@ -150,6 +166,16 @@
           name: this.detail.socialName,
           address: this.detail.address
         })
+      },
+      navHandle(item) {
+        // let isLeader = wx.getStorageSync('isLeader') || false
+        // let page = isLeader ? '/pages/regimental-commander' : '/pages/mine-housing'
+        // wx.navigateTo({url: page})
+        if (item.isLeader) {
+          this._goMyHosing()
+        } else {
+          wx.navigateTo({url: `/pages/${item.url}`})
+        }
       },
       // 跳转我的小区
       _goMyHosing() {
@@ -285,6 +311,12 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
  @import "~@designCommon"
 
+  .img
+    width :100%
+    height :100%
+    font-size :0
+    line-height :0
+
   cover-view
     border: none
 
@@ -293,6 +325,27 @@
     min-height: 100vh
     background: $color-white
     position: relative
+    .button-group
+      position :relative
+      .button-item
+        padding :30px 12px 0
+        &:last-child
+          padding :30px 12px
+        .item-wrapper
+          layout(row)
+          justify-content :center
+          font-family: $font-family-medium
+          font-size: $font-size-16
+          color: $color-sub
+          height: 24px
+          line-height: 24px
+          letter-spacing: 0.4px
+          .item-text
+            flex: 1
+          .item-arrow-img
+            display: block
+            width: 7.5px
+            height: 12.5px
     .self-addr
       width: 100vw
       box-sizing: border-box
