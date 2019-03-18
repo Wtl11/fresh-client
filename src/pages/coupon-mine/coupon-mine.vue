@@ -55,7 +55,7 @@
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
-  @import "~@design"
+  @import "~@designCommon"
 
   .empty-wrapper
     padding-top :106px

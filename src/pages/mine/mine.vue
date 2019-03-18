@@ -114,7 +114,7 @@ console.log(wx.getLaunchOptionsSync())
   ]
 
   const BUTTON_GROUP = [
-    {text: '优惠券', url: 'mine-coupon'},
+    {text: '优惠券', url: 'coupon-mine'},
     {text: ['我的小区', '小区管理'], isArray: true, isLeader: true}
   ]
 

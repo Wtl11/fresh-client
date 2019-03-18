@@ -86,7 +86,7 @@
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
-  @import "~@design"
+  @import "~@designCommon"
 
   .color-b7b7b7
     color:$color-text-assist !important

@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import Page from './mine-coupon'
+import Page from './coupon-mine'
 
 const page = new Vue(Page)
 page.$mount()
