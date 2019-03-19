@@ -99,10 +99,10 @@
         height: 100%
     .classify-box-bottom
       padding-top: 10px
+      font-family: $font-family-regular
       .title
         color: $color-text-main
         font-size: $font-size-14
-        font-family: $font-family-regular
         min-height: $font-size-16
         no-wrap()
         margin-bottom: 8.5px
@@ -113,18 +113,15 @@
         .price-left
           layout(row)
           align-items: center
+          font-size: $font-size-12
+          font-family: $font-family-medium
           .price-number
             font-size: $font-size-18
-            font-family: $font-family-medium
             margin-right: 2px
           .price-money
-            font-size: $font-size-12
-            font-family: $font-family-medium
             margin-right: 5px
           .price-line
             color: $color-text-assist
-            font-size: $font-size-12
-            font-family: $font-family-regular
             text-decoration: line-through
         .price-right
           width: 23px
