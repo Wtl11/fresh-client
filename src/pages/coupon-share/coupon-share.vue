@@ -28,7 +28,7 @@
     },
     onShareAppMessage() {
       return {
-        title: '【赞播优鲜】送你一张优惠券！数量有限，赶快来领取吧！',
+        title: '【赞播优鲜】送你一张优惠券，赶快来领取吧！',
         path: `/pages/coupon-take`,
         imageUrl: `${this.imageUrl}/yx-image/2.1/pic-getcoupon@2x.png`
       }
