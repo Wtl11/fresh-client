@@ -23,6 +23,7 @@
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import CouponCommonChannel from '@components/coupon-common-channel/coupon-common-channel'
   import UserItem from './user-item/user-item'
+  import AuthorMixins from './author-mixins'
 
   const PAGE_NAME = 'COUPON_TAKE'
 
@@ -33,6 +34,7 @@
       CouponCommonChannel,
       UserItem
     },
+    mixins: [AuthorMixins],
     data() {
       return {
         pageConfig: {
@@ -41,6 +43,8 @@
         },
         userArray: new Array(10).fill(1)
       }
+    },
+    methods: {
     }
   }
 </script>

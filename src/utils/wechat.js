@@ -236,3 +236,13 @@ export function showToast(title, duration = 1500, mask = true, icon = 'none') {
   if (!title) return
   wx.showToast({title, icon, duration, mask})
 }
+
+// 检查登录态是否过期。
+export function checkSession () {
+  return new Promise((resolve, reject) => {
+    wx.checkSession({
+      success: resolve,
+      fail: reject
+    })
+  })
+}
