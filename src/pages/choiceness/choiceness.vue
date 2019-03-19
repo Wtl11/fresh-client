@@ -133,6 +133,7 @@
     <custom-tab-bar currentType="index"></custom-tab-bar>
     <link-group ref="groupComponents" :wechatInfo="groupInfo"></link-group>
     <confirm-msg ref="refundModel" title="您的位置距该提货点超过1km" msg="建议您切换自提点" sureString="马上切换" @confirm="confirm" @cancel="cancel"></confirm-msg>
+    <coupon-modal ref="couponModal"></coupon-modal>
   </div>
 </template>
 
@@ -144,16 +145,20 @@
   import API from '@api'
   import {cartMethods} from '@state/helpers'
   import {getParams} from '@utils/common'
+  import CouponModal from './coupon-modal/coupon-modal'
+  import CouponModalMixins from './coupon-modal-mixins'
 
   const ald = getApp()
   const PAGE_NAME = 'CHOICENESS'
   export default {
     name: PAGE_NAME,
+    mixins: [CouponModalMixins],
     components: {
       LinkGroup,
       NavigationBar,
       CustomTabBar,
-      ConfirmMsg
+      ConfirmMsg,
+      CouponModal
     },
     data() {
       return {

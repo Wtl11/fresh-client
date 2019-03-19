@@ -28,7 +28,7 @@ export default {
     _saveCurrentPage() {
       let url = this.$getUrl()
       // 记录页面栈
-      if (url.includes('pages/lost') || url.includes('pages/error')) {
+      if (!url || url.includes('pages/lost') || url.includes('pages/error')) {
         return
       }
       this.$wx.setStorageSync('errorUrl', url)
