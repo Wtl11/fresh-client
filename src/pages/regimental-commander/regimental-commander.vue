@@ -81,8 +81,8 @@
         </span>
       </div>
       <!--TODO-->
-      <div class="order-big-box" :style="{height: detailedHeight + 'px'}">
-        <div class="presell-wrapper order-box" :style="{'transform': ' translateX('+ -(navIndex * width) +'px)'}">
+      <article class="order-big-box" :style="{height: detailedHeight + 'px'}">
+        <section class="presell-wrapper order-box" :style="{'transform': ' translateX('+ -(navIndex * width) +'px)'}">
           <div class="title-wrapper border-bottom-1px" v-if="preSell.activity_title">
             <p class="title">{{preSell.activity_title}}</p>
             <div class="copy-btn" :class="'corp-' + corpName + '-goods-btn'" @click="copyPreSell">一键复制</div>
@@ -96,8 +96,26 @@
             </div>
             <div class="txt">空空如也</div>
           </div>
-        </div>
-        <div class="reg-goods-box order-box" :style="{'transform': ' translateX('+ -(navIndex * width) +'px)'}">
+        </section>
+        <section class="order-box" :style="{'transform': ' translateX('+ -(navIndex * width) +'px)'}">
+          <ul class="coupon-wrapper">
+            <li v-for="(child,idx) in couponArray"
+                :key="idx"
+                class="coupon-item-wrapper"
+            >
+              <div @click="couponHandle(child, idx)">
+                <coupon-item></coupon-item>
+              </div>
+            </li>
+          </ul>
+          <div class="noting" v-if="isNoCoupon">
+            <div class="noting-img">
+              <img class="img" v-if="imageUrl" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'">
+            </div>
+            <div class="txt">空空如也</div>
+          </div>
+        </section>
+        <section class="reg-goods-box order-box" :style="{'transform': ' translateX('+ -(navIndex * width) +'px)'}">
           <navigator :url="'/pages/copy-detail?id=' + item.goods_id + '&activityId=' + item.activity_id" hover-class="none" class="reg-goods-item" v-for="(item,index) in goodsList" :key="index">
             <img :src="item.goods_cover_image" class="reg-goods-img" mode="aspectFill">
             <div class="reg-goods-content">
@@ -113,12 +131,12 @@
             </div>
             <div class="txt">空空如也</div>
           </div>
-        </div>
-      </div>
+        </section>
+      </article>
     </div>
     <div class="end" v-if="!isNoGoods">— 到底了—</div>
     <link-group ref="shareList" :linkType="2" :isSharePoster="false"></link-group>
-    <!--<button class="test" v-for="(item, index) in '123'" :key="index" open-type="share" :id="index" :data-hello="current">{{index}}</button>-->
+    <coupon-share-modal ref="couponModal"></coupon-share-modal>
   </div>
 </template>
 
@@ -128,15 +146,23 @@
   import LinkGroup from '@components/link-group/link-group'
   import NotificationRegimental from './notification-regimental/notification-regimental'
   import Notification from './notification'
+  import CouponItem from './coupon-item/coupon-item'
+  import CouponShareModal from './coupon-share-modal/coupon-share-modal'
 
   const PAGE_NAME = 'REGIMENTAL_COMMANDER'
-  const Nav = [{title: '预售清单', status: 2}, {title: '商品资料', status: 3}]
+  const Nav = [
+    {title: '预售清单', status: 2},
+    {title: '优惠券', status: 0},
+    {title: '商品资料', status: 3}
+  ]
   export default {
     name: PAGE_NAME,
     components: {
       LinkGroup,
       NavigationBar,
-      NotificationRegimental
+      NotificationRegimental,
+      CouponItem,
+      CouponShareModal
     },
     data() {
       return {
@@ -155,21 +181,9 @@
         detailedHeight: 280,
         customerCount: 0,
         isFirstLoad: true,
-        current: -1 // todo
+        isNoCoupon: false, // 没有优惠券
+        couponArray: new Array(10).fill(1)
       }
-    },
-    onShareAppMessage(res) {
-      // todo
-      if (res.from === 'button') {
-        console.log(res.target)
-      } else {
-
-      }
-      console.warn(this.current, res)
-      // return {
-      //   title: '',
-      //   path: `/pages/pages/choiceness?a=${this.current}` // 商品详情
-      // }
     },
     async onReachBottom() {
       if (this.navIndex === 0) {
@@ -180,7 +194,7 @@
     },
     onUnload() {
       Notification.getInstance().destroy()
-      this.$refs.navigationBar._initHeadStyle()
+      this.$refs.navigationBar && this.$refs.navigationBar._initHeadStyle()
     },
     async onShow() {
       this._getCustomerCount()
@@ -211,9 +225,8 @@
       }
     },
     methods: {
-      test(index) {
-        // todo
-        this.current = index
+      couponHandle(child, idx) {
+        this.$refs.couponModal && this.$refs.couponModal.show()
       },
       _onSocketMsg() {
         Notification.getInstance().on((msg) => {
@@ -269,7 +282,12 @@
             })
             break
           case 1:
+            this.detailedHeight = 'auto'
+            break
+          case 2:
             this.detailedHeight = 99.5 * this.goodsList.length || 280
+            break
+          default:
             break
         }
         this.navIndex = index
@@ -339,7 +357,7 @@
       border: none
 
   .order-big-box
-    width: 187.2vw
+    width: 280.8vw
     display: flex
     transform: translateX(0)
     .order-box
@@ -347,6 +365,11 @@
       padding: 0 10px
       box-sizing: border-box
       width: 93.6vw
+
+  .coupon-wrapper
+    padding-bottom :10.5px
+    .coupon-item-wrapper
+      margin-bottom :12px
 
   .regimental-commander
     word-break: break-all
@@ -500,7 +523,7 @@
     padding: 25px 0 0px
     overflow: hidden
     .rag-goods-tab
-      width: 176px
+      width: 264px
       margin: 0 auto
       display: flex
       overflow: hidden
