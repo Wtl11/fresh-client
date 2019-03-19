@@ -2,6 +2,7 @@
   <div class="coupon-item">
     <div class="coupon-bg">
       <img class="img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.1/pic-couponbg@2x.png'">
+      <!--<img class="img" mode="aspectFill" src="/static/pic-couponbg@2x.png">-->
     </div>
     <div class="coupon-container">
       <section class="left">
@@ -61,6 +62,7 @@
 
 
   .img
+    display :block
     width :100%
     height :100%
     font-size :0
@@ -72,11 +74,12 @@
     padding-top :25.64102564102564%
     position :relative
     border-radius :6px
-    overflow :hidden
-    box-shadow: 0 3px 10px 0 rgba(17,17,17,0.06)
-    background: transparent
     .coupon-bg
-      fill-box(absolute)
+      position: absolute
+      left :-2.666666666666667vw
+      right :@left
+      top:@left
+      bottom :@left
     .coupon-container
       fill-box(absolute)
       layout(row,block,nowrap)

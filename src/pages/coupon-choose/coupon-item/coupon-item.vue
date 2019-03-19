@@ -20,9 +20,18 @@
           </div>
         </div>
         <div class="tool-wrapper">
-          <img class="sel-box" v-if="imageUrl && !isChecked" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt=""/>
-          <img class="sel-box" v-if="imageUrl && corpName === 'platform' && isChecked" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
-          <img class="sel-box" v-if="imageUrl && corpName === 'retuan' && isChecked" :src="imageUrl+'/yx-image/retuan/icon-pick_gwc@2x.png'" alt=""/>
+          <img class="sel-box"
+               :class="{active: !isChecked}"
+               v-if="imageUrl"
+               :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt=""/>
+          <img class="sel-box"
+               :class="{active: isChecked}"
+               v-if="imageUrl && corpName === 'platform'"
+               :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
+          <img class="sel-box"
+               :class="{active: isChecked}"
+               v-if="imageUrl && corpName === 'retuan'"
+               :src="imageUrl+'/yx-image/retuan/icon-pick_gwc@2x.png'" alt=""/>
         </div>
       </section>
     </div>
@@ -137,6 +146,10 @@
         height: 20px
         padding: 12px
         background: $color-white
+        opacity : 0
+        transition :opacity 0.3s
+        &.active
+          opacity : 1
 
     .info-wrapper
       flex: 2.2908496732026142
@@ -171,11 +184,12 @@
     padding-top :25.64102564102564%
     position :relative
     border-radius :6px
-    overflow :hidden
-    box-shadow: 0 3px 10px 0 rgba(17,17,17,0.06);
-    background: transparent
     .coupon-bg
-      fill-box(absolute)
+      position: absolute
+      left :-2.666666666666667vw
+      right :@left
+      top:@left
+      bottom :@left
     .coupon-container
       fill-box(absolute)
       layout(row,block,nowrap)
