@@ -20,7 +20,7 @@
           </div>
         </div>
         <div class="tool-wrapper">
-          <div v-if="USE_TYPE[useType].status === 'default'" class="button" :class="'corp-' + corpName + '-bg'" >去使用</div>
+          <div v-if="USE_TYPE[useType].status === 'default'" class="button" :class="'corp-' + corpName + '-bg'" @click="useHandle">去使用</div>
           <img v-if="imageUrl && USE_TYPE[useType].status === 'timeout'" class="icon-status" mode="aspectFill":src="imageUrl + '/yx-image/2.1/pic-coupon_ygq@2x.png'">
           <img v-if="imageUrl && USE_TYPE[useType].status === 'used'" class="icon-status" mode="aspectFill":src="imageUrl + '/yx-image/2.1/pic-coupon_ysy@2x.png'">
         </div>
@@ -47,6 +47,11 @@
           disable: {color: '#B7B7B7', status: 'used'}
         }
       }
+    },
+    methods: {
+      useHandle() {
+        wx.navigateTo({url: '/pages/coupon-classify'})
+      }
     }
   }
 </script>
@@ -68,7 +73,7 @@
     position :relative
     border-radius :6px
     overflow :hidden
-    box-shadow: 0 3px 10px 0 rgba(17,17,17,0.06);
+    box-shadow: 0 3px 10px 0 rgba(17,17,17,0.06)
     background: transparent
     .coupon-bg
       fill-box(absolute)

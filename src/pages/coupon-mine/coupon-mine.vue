@@ -41,7 +41,7 @@
       return {
         tabList: [
           {text: '可用', number: 0, dataArray: [1, 2, 3], isShowEmpty: false},
-          {text: '不可用', number: 0, dataArray: [], isShowEmpty: true}
+          {text: '不可用', number: 0, dataArray: [1, 2, 3], isShowEmpty: false}
         ],
         tabIndex: 0
       }

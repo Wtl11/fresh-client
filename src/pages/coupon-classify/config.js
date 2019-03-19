@@ -6,6 +6,8 @@ page.$mount()
 
 export default {
   config: {
-    navigationBarTitleText: '商品'
+    navigationBarTitleText: '商品',
+    backgroundColorTop: '#F7F7F7',
+    backgroundColorBottom: '#F7F7F7'
   }
 }

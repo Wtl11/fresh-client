@@ -56,9 +56,9 @@
     .coupon-bg
       position :absolute
       top:1px
-      bottom :1px
-      left:1px
-      right :1px
+      bottom :@top
+      left:2px
+      right :@left
     .coupon-container
       fill-box(absolute)
       layout(row,block,nowrap)
@@ -115,7 +115,7 @@
           justify-content :space-between
           color: #999
           .title
-            width :43vw
+            width :42vw
             font-family: $font-family-medium
             font-size: 3.733333333333334vw
             line-height: @font-size

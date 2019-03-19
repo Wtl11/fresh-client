@@ -60,13 +60,30 @@
             </div>
           </div>
         </div>
-        <div class="actual-amount">
-          <div class="sub">实付金额</div>
-          <div class="price" :class="'corp-' + corpName + '-money'"><span class="num" :class="'corp-' + corpName + '-money'">{{orderMsg.total}}</span>元</div>
-        </div>
+        <!--<div class="actual-amount">-->
+          <!--<div class="sub">实付金额</div>-->
+          <!--<div class="price" :class="'corp-' + corpName + '-money'"><span class="num" :class="'corp-' + corpName + '-money'">{{orderMsg.total}}</span>元</div>-->
+        <!--</div>-->
       </div>
     </div>
-    <div class="gary-box"></div>
+    <section class="goods-total-wrapper">
+      <p class="name">商品总价</p>
+      <p class="price">17.6</p>
+      <p>元</p>
+    </section>
+    <ul class="coupon-info-wrapper" :class="'corp-' + corpName + '-money'">
+      <li class="coupon-item">
+        <p class="name">使用优惠券</p>
+        <p class="price">-10</p>
+        <p>元</p>
+      </li>
+      <li class="coupon-item">
+        <p class="name">实付金额</p>
+        <p class="price">7.6</p>
+        <p>元</p>
+      </li>
+    </ul>
+    <!--<div class="gary-box"></div>-->
     <div class="oinfo">
       <div class="order-iden">
         <div class="txt">订单编号：{{orderMsg.order_sn}}</div>
@@ -275,7 +292,51 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
  @import "~@designCommon"
-  .wrap
+
+ .goods-total-wrapper
+   padding :15.5px 12px
+   display :flex
+   align-items :center
+   font-family: $font-family-regular
+   font-size: 14px;
+   line-height: 1
+   color: $color-text-main
+   background :#fff
+   border-bottom :11px solid $color-background
+   .name
+     flex:1
+     color: #000000
+   .price
+     font-family: $font-family-medium
+
+ .coupon-info-wrapper
+   border-bottom :11px solid $color-background
+   padding :10.5px 12px
+   font-family: $font-family-regular
+   font-size: 14px;
+   line-height: 1
+   background :#fff
+   .coupon-item
+     display :flex
+     align-items :center
+     padding :10px 0
+   .name
+     flex:1
+     color: #000000
+   .price
+     font-family: $font-family-medium
+   .item-arrow-img
+     margin-left :5px
+     display: block
+     width: 7.5px
+     height: 12.5px
+     .img
+       display :block
+       width :100%
+       height :100%
+
+
+ .wrap
     width: 100vw
     background: $color-background
     min-height: 100vh

@@ -21,12 +21,17 @@
       return {
         pageConfig: {
           btnText: '分享',
-          btnExplain: '优惠券24小时后未领取完的，剩余数量全部返还到团长账户中'
+          btnExplain: '优惠券24小时后未领取完的，剩余数量全部返还到团长账户中',
+          openType: 'share'
         }
       }
     },
     onShareAppMessage() {
-      return {}
+      return {
+        title: '【赞播优鲜】送你一张优惠券！数量有限，赶快来领取吧！',
+        path: `/pages/coupon-take`,
+        imageUrl: `${this.imageUrl}/yx-image/2.1/pic-getcoupon@2x.png`
+      }
     }
   }
 </script>
@@ -36,5 +41,5 @@
 
   .coupon-share
     min-height :100vh
-    background: linear-gradient(180deg, #FCC446 100vw, #FFA83F 100%)
+    background: linear-gradient(180deg,#FFFFFF 0, #FFFFFF 100vw, #FCC446 100vw, #FFA83F 100%)
 </style>

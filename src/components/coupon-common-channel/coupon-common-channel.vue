@@ -1,6 +1,7 @@
 <template>
   <div class="coupon-common">
     <div class="img-wrapper">
+      <img class="img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.1/pic-lqcoupon.png'">
       <img class="img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.1/pic-lqcoupon@2x.png'">
     </div>
     <div class="content">
@@ -12,7 +13,7 @@
           <img class="line" v-if="imageUrl" :src="imageUrl + '/yx-image/2.1/pic-wire@2x.png'">
         </div>
         <div class="button-wrapper" :style="pageConfig.btnStyle">
-          <div class="button">{{pageConfig.btnText}}</div>
+          <button :open-type="pageConfig.openType" class="button">{{pageConfig.btnText}}</button>
         </div>
         <p v-if="pageConfig.btnExplain" class="explain">{{pageConfig.btnExplain}}</p>
       </section>
@@ -47,6 +48,7 @@
   @import "~@designCommon"
 
   .img
+    fill-box(absolute)
     width :100%
     height :100%
     line-height :0
@@ -55,6 +57,7 @@
   .coupon-common
     .img-wrapper
       height :100vw
+      position :relative
     .content
       padding :10.5px 15px
       .coupon-info-wrapper

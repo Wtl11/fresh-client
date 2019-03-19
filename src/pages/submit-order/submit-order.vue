@@ -44,8 +44,31 @@
         </div>
       </div>
     </div>
+    <section class="goods-total-wrapper">
+      <p class="name">商品总价</p>
+      <p class="price">17.6</p>
+      <p>元</p>
+    </section>
+    <ul class="coupon-info-wrapper" :class="'corp-' + corpName + '-money'">
+      <li class="coupon-item" @click="chooseCouponHandle">
+        <p class="name">使用优惠券</p>
+        <p class="price">-10</p>
+        <p>元</p>
+        <div class="item-arrow-img">
+          <img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="img">
+        </div>
+      </li>
+      <li class="coupon-item">
+        <p class="name">实付金额</p>
+        <p class="price">7.6</p>
+        <p>元</p>
+      </li>
+    </ul>
     <div class="fixed-btn">
-      <div class="money" :class="'corp-' + corpName + '-money'">总计 {{total}}元</div>
+      <div class="money" :class="'corp-' + corpName + '-money'">
+        <p>总计 {{total}}元</p>
+        <p class="explain">(已优惠<span :class="'corp-' + corpName + '-money'">10</span>元)</p>
+      </div>
       <div class="pay" :class="'corp-' + corpName + '-bg'" @click.stop="goPay">去支付</div>
     </div>
   </div>
@@ -80,6 +103,9 @@
     },
     methods: {
       ...orderMethods,
+      chooseCouponHandle() {
+        wx.navigateTo({url: '/pages/coupon-choose'})
+      },
       _getCode() {
         this.$wechat.login()
           .then(res => {
@@ -147,6 +173,49 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
  @import "~@designCommon"
+  .goods-total-wrapper
+    padding :15.5px 12px
+    display :flex
+    align-items :center
+    font-family: $font-family-regular
+    font-size: 14px;
+    line-height: 1
+    color: $color-text-main
+    background :#fff
+    border-top-1px(#e6e6e6)
+    border-bottom :11px solid $color-background
+    .name
+      flex:1
+      color: #000000
+    .price
+      font-family: $font-family-medium
+
+  .coupon-info-wrapper
+    border-bottom :11px solid $color-background
+    padding :10.5px 12px
+    font-family: $font-family-regular
+    font-size: 14px;
+    line-height: 1
+    background :#fff
+    .coupon-item
+      display :flex
+      align-items :center
+      padding :10px 0
+     .name
+       flex:1
+       color: #000000
+     .price
+       font-family: $font-family-medium
+     .item-arrow-img
+       margin-left :5px
+       display: block
+       width: 7.5px
+       height: 12.5px
+       .img
+         display :block
+         width :100%
+         height :100%
+
   .submit-order
     width: 100%
     min-height: 100vh
@@ -338,6 +407,12 @@
     .money
       font-size: $font-size-16
       font-family: $font-family-medium
+      display :flex
+      align-items :flex-end
+      .explain
+        font-family: $font-family-regular
+        font-size: 14px
+        color: $color-text-main
     .pay
       font-size: $font-size-16
       color: #fff

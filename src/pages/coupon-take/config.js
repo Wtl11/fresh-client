@@ -6,6 +6,8 @@ page.$mount()
 
 export default {
   config: {
-    navigationBarTitleText: '领取优惠券'
+    navigationBarTitleText: '领取优惠券',
+    backgroundColorTop: '#FFFFFF',
+    backgroundColorBottom: '#FFA83F'
   }
 }

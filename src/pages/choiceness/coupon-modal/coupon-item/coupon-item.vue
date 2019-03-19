@@ -65,13 +65,14 @@
           layout(row,block,nowrap)
           align-items :center
           .number
-            font-size: 8.799999999999999vw
+            font-size: 7.466666666666668vw
             line-height: 6.666666666666667vw
+            margin :0 1px
           .unit
             font-family :$font-family-regular
             position :relative
-            top:1.5vw
-            font-size: 4.266666666666667vw
+            top:1.4vw
+            font-size: 3.266666666666667vw
             line-height: 3.733333333333334vw
       .right
         flex: 2.0031847133757963
@@ -84,12 +85,12 @@
           justify-content :space-between
           opacity: 0.9;
           font-family: $font-family-medium
-          font-size: 3.733333333333334vw
+          font-size: 3.4666666666666663vw
           line-height :1
           .title
             no-wrap()
           .condition
             opacity :0.8
-            font-size :3.4666666666666663vw
+            font-size :3.2vw
             no-wrap()
 </style>

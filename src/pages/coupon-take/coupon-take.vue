@@ -51,7 +51,7 @@
 
   .coupon-take
     min-height :100vh
-    background: linear-gradient(180deg, #FCC446 100vw, #FFA83F 100%)
+    background: linear-gradient(180deg,#FFFFFF 0, #FFFFFF 100vw, #FCC446 100vw, #FFA83F 100%)
     .panel
       padding :0 15px 10.5px
       .wrapper

@@ -9,6 +9,14 @@
            mode="aspectFill"
            v-if="imageUrl && couponArray.length === 2"
            :src="imageUrl + '/yx-image/2.1/pic-lqyhqtc@2x.png'">
+      <img class="img-bg"
+           mode="aspectFill"
+           v-if="imageUrl && couponArray.length === 1"
+           :src="imageUrl + '/yx-image/2.1/pic-lqyhqtc-one.png'">
+      <img class="img-bg"
+           mode="aspectFill"
+           v-if="imageUrl && couponArray.length === 2"
+           :src="imageUrl + '/yx-image/2.1/pic-lqyhqtc.png'">
       <img class="close"
            mode="aspectFill"
            v-if="imageUrl"
@@ -41,7 +49,7 @@
     data() {
       return {
         isShow: false,
-        couponArray: new Array(1).fill(1)
+        couponArray: new Array(2).fill(1)
       }
     },
     methods: {
