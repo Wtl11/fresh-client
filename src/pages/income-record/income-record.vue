@@ -15,7 +15,7 @@
       <div class="income-big-box" :style="{'transform': ' translateX('+ -(navIndex * 100) +'vw)'}">
         <div class="await-income" :class="navIndex * 1 === 0 ? '' : 'income-item-active'">
           <div class="income-money-box">
-            <div class="income-number" @click="openQuestion" v-if="incomeInfo.income_money">￥{{incomeInfo.income_money}}</div>
+            <div class="income-number" @click="openQuestion" v-if="incomeInfo.income_money">¥{{incomeInfo.income_money}}</div>
             <div class="income-icon" v-if="incomeInfo.income_money">
               <img class="jump-question" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/wallet/icon-question@2x.png'">
               <div class="income-icon-btn" @click="openQuestion"></div>
@@ -31,7 +31,7 @@
         </div>
         <div class="await-income" :class="navIndex * 1 === 1 ? '' : 'income-item-active'">
           <div class="income-money-box">
-            <div class="income-number" @click="openQuestion" v-if="incomeInfo.wait_income_money">￥{{incomeInfo.wait_income_money}}</div>
+            <div class="income-number" @click="openQuestion" v-if="incomeInfo.wait_income_money">¥{{incomeInfo.wait_income_money}}</div>
             <div class="income-icon" v-if="incomeInfo.wait_income_money">
               <img class="jump-question" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/wallet/icon-question@2x.png'">
               <div class="income-icon-btn" @click="openQuestion"></div>

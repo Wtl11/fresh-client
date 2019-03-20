@@ -6,6 +6,7 @@ page.$mount()
 
 export default {
   config: {
-    navigationBarTitleText: ''
+    navigationBarTitleText: '',
+    navigationStyle: 'default'
   }
 }

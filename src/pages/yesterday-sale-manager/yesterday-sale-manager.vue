@@ -277,7 +277,7 @@
     width: 100vw
     overflow: hidden
     .order-big-box
-      width: 200vw
+      width: 300vw
       display: flex
       transform: translateX(0)
       transition: all 0.3s
