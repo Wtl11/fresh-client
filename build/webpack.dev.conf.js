@@ -85,7 +85,13 @@ module.exports = merge(baseWebpackConfig, {
         ignore: ['.*']
       }
     ]),
-
+    new CopyWebpackPlugin([
+      {
+        from: path.resolve(__dirname, '../static/custom-tab-bar'),
+        to: config.build.assetsSubDirectoryTabBar,
+        ignore: ['.*']
+      }
+    ]),
     // https://github.com/glenjamin/webpack-hot-middleware#installation--usage
     // new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),

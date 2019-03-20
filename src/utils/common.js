@@ -157,14 +157,17 @@ function getUrl(path = '', query = {}) {
   return url
 }
 
+// 白名单
+const WHITE_LIST = ['pages/recommend', 'pages/coupon-take']
 // 凭证失效时重新调起接口请求获取登录
 export async function silentAuthorization() {
   /* eslint-disable no-undef */
   let el = await getCurrentPages()[getCurrentPages().length - 1]
   let url = el && getUrl(el.route, el.options)
   wx.setStorageSync('targetPage', url)
-  // 推广页面另外处理
-  if (el && el.route === 'pages/recommend') {
+  // 推广页面另外处理（白名单处理）
+  let flag = el && WHITE_LIST.some(val => val === el.route)
+  if (flag) {
     return
   }
   let codeJson = await wechat.login()

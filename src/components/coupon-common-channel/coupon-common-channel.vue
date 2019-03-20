@@ -13,7 +13,14 @@
           <img class="line" v-if="imageUrl" :src="imageUrl + '/yx-image/2.1/pic-wire@2x.png'">
         </div>
         <div class="button-wrapper" :style="pageConfig.btnStyle">
-          <button :open-type="pageConfig.openType" class="button">{{pageConfig.btnText}}</button>
+          <button
+            :open-type="pageConfig.openType"
+            @getuserinfo="getUserInfoHandle"
+            @click="buttonHandle"
+            class="button"
+          >
+            {{pageConfig.btnText}}
+          </button>
         </div>
         <p v-if="pageConfig.btnExplain" class="explain">{{pageConfig.btnExplain}}</p>
       </section>
@@ -39,6 +46,14 @@
     data() {
       return {
 
+      }
+    },
+    methods: {
+      getUserInfoHandle(e) {
+        this.$emit('getUserInfo', e)
+      },
+      buttonHandle() {
+        this.$emit('buttonHandle')
       }
     }
   }

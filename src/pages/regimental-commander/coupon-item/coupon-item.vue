@@ -15,7 +15,7 @@
         <div class="info-wrapper">
           <div class="title">赞播优鲜新人专享券赞播优鲜新人专享券赞播优鲜新人专享券</div>
           <div class="explain-wrapper">
-            <p class="explain">指定商品可用</p>
+            <p class="explain">指定商品可用(剩10张)</p>
             <p class="date">有效期至 2018.12.31 23:59:50</p>
           </div>
         </div>

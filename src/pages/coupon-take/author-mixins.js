@@ -3,8 +3,7 @@ export default {
   data() {
     return {
       isAuthor: false,
-      loginCode: {},
-      nowTime: Date.now()
+      loginCode: {}
     }
   },
   async onLoad(options) {
@@ -29,6 +28,10 @@ export default {
         }
       } catch (e) {
       }
+      // todo
+      let flag = true
+      if (flag) return
+      // todo end
       try {
         let res = await API.Login.getToken({code: this.loginCode.code}, false)
         if (res.error !== this.$ERR_OK) {

@@ -1,8 +1,12 @@
 <template>
   <div class="coupon-take">
     <navigation-bar title="领取优惠券"></navigation-bar>
-    <coupon-common-channel :pageConfig="pageConfig"></coupon-common-channel>
-    <section v-if="userArray.length" class="panel">
+    <coupon-common-channel
+      :pageConfig="pageConfig"
+      @getUserInfo="getUserInfoHandle"
+      @buttonHandle="_takeCoupon"
+    ></coupon-common-channel>
+    <section v-if="takeArray.length" class="panel">
       <dl class="wrapper">
         <dt class="title-wrapper">
           <p class="text">看看谁抢到了</p>
@@ -11,7 +15,7 @@
             <div class="line"></div>
           </div>
         </dt>
-        <dd class="user-wrapper" v-for="(item, index) in userArray" :key="index">
+        <dd class="user-wrapper" v-for="(item, index) in takeArray" :key="index">
           <user-item></user-item>
         </dd>
       </dl>
@@ -39,12 +43,58 @@
       return {
         pageConfig: {
           btnText: '马上领取',
-          btnStyle: 'padding-bottom:20px'
+          btnStyle: 'padding-bottom:20px',
+          openType: 'getUserInfo'
         },
-        userArray: new Array(10).fill(1)
+        takeArray: new Array(10).fill(1),
+        packetId: '',
+        tmpId: ''
       }
     },
+    watch: {
+      isAuthor(val) {
+        val && (this.pageConfig.openType = '')
+      }
+    },
+    onShow() {
+      this._initEntryParams()
+      this._getCouponInfo()
+      this._getTakeArray()
+      this._getCouponStatus()
+    },
     methods: {
+      // 初始化页面参数
+      _initEntryParams() {
+        let options = (wx.getLaunchOptionsSync() || {}).query || {}
+        this.packetId = +options.packetId
+        this.tmpId = options.tmpId
+        let shopId = +options.shopId
+        shopId && wx.setStorageSync('shopId', shopId)
+      },
+      // 获取优惠券信息
+      _getCouponInfo() {
+        // todo
+      },
+      // 获取
+      _getTakeArray() {
+        if (this.tmpId) {
+          this.takeArray = []
+          return
+        }
+        console.log('领取列表')
+      },
+      // 领取优惠券
+      _takeCoupon() {
+        console.log('领取优惠券啊')
+      },
+      // 获取优惠券状态
+      _getCouponStatus() {
+      },
+      getUserInfoHandle(e) {
+        this._login(e, () => {
+          this._takeCoupon()
+        })
+      }
     }
   }
 </script>

@@ -22,7 +22,7 @@ fly.interceptors.request.use((request) => {
 fly.interceptors.response.use((response) => {
   return response
 }, (error) => {
-  return Promise.resolve(error.response)
+  return Promise.resolve(error && error.response)
 })
 
 // 配置请求基地址
@@ -50,7 +50,7 @@ function checkStatus(response) {
  * @param res
  * @returns {string|Object[]|CanvasPixelArray}
  */
-async function checkCode(res) {
+async function checkCode(res = {}) {
   // silentAuthorization()
   // 如果code异常(这里已经包括网络错误，服务器错误，后端抛出的错误)，可以弹出一个错误提示，告诉用户
   if (res.status === ERR_NO) {
@@ -90,7 +90,7 @@ async function checkCode(res) {
     }
     throw requestException(res)
   }
-  return res.data
+  return res.data || {}
 }
 
 /**
@@ -98,11 +98,11 @@ async function checkCode(res) {
  * @param res
  * @returns {{}}
  */
-function requestException(res) {
+function requestException(res = {}) {
   hideLoading()
   const error = {}
   error.statusCode = res.status
-  const serviceData = res.data
+  const serviceData = res.data || {}
   if (serviceData) {
     error.code = serviceData.code
     error.error = serviceData.error

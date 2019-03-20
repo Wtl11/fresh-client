@@ -90,7 +90,7 @@
           <div class="content-wrapper" v-if="preSell.activity_content_list">
             <div v-for="(item, index) in preSell.activity_content_list" :key="index" class="content">{{item}}</div>
           </div>
-          <div class="noting" v-if="!preSell.title">
+          <div class="noting" v-if="nav[0].isShowEmpty">
             <div class="noting-img">
               <img class="img" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'" v-if="imageUrl">
             </div>
@@ -108,7 +108,7 @@
               </div>
             </li>
           </ul>
-          <div class="noting" v-if="isNoCoupon">
+          <div class="noting" v-if="nav[1].isShowEmpty">
             <div class="noting-img">
               <img class="img" v-if="imageUrl" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'">
             </div>
@@ -125,7 +125,7 @@
               <span class="reg-goods-del-money">{{item.original_price}}元</span>
             </div>
           </navigator>
-          <div class="noting" v-if="isNoGoods">
+          <div class="noting" v-if="nav[2].isShowEmpty">
             <div class="noting-img">
               <img class="img" v-if="imageUrl" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'">
             </div>
@@ -134,8 +134,8 @@
         </section>
       </article>
     </div>
-    <div class="end" v-if="!isNoGoods">— 到底了—</div>
-    <link-group ref="shareList" :linkType="2" :isSharePoster="false"></link-group>
+    <div class="end" v-if="isScrollToEnd">— 到底了—</div>
+    <!--<link-group ref="shareList" :linkType="2" :isSharePoster="false"></link-group>-->
     <coupon-share-modal ref="couponModal"></coupon-share-modal>
   </div>
 </template>
@@ -143,22 +143,19 @@
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import API from '@api'
-  import LinkGroup from '@components/link-group/link-group'
+  // import LinkGroup from '@components/link-group/link-group'
   import NotificationRegimental from './notification-regimental/notification-regimental'
   import Notification from './notification'
   import CouponItem from './coupon-item/coupon-item'
   import CouponShareModal from './coupon-share-modal/coupon-share-modal'
+  import TabItem from './tab-item'
 
   const PAGE_NAME = 'REGIMENTAL_COMMANDER'
-  const Nav = [
-    {title: '预售清单', status: 2},
-    {title: '优惠券', status: 0},
-    {title: '商品资料', status: 3}
-  ]
+
   export default {
     name: PAGE_NAME,
     components: {
-      LinkGroup,
+      // LinkGroup,
       NavigationBar,
       NotificationRegimental,
       CouponItem,
@@ -166,68 +163,81 @@
     },
     data() {
       return {
-        nav: Nav,
+        query: {},
+        systemInfo: {},
+        nav: [
+          new TabItem({title: '预售清单', fn: '_getPresellGoods', isOnReachBottom: false}),
+          new TabItem({title: '优惠券营销', fn: '_getCouponList', isOnReachBottom: true}),
+          new TabItem({title: '商品资料', fn: '_getRecommendGoods', isOnReachBottom: true})
+        ],
         width: 0,
         navIndex: 0,
         leaderDetail: {},
         orderTotal: {},
         goodsList: [],
         adaptation: {height: 195, marginTop: 64.5, hoseMarginTop: 164},
-        isNoGoods: false,
+        isScrollToEnd: false,
         preSell: {},
-        goodsItem: {},
-        page: 1,
-        length: 1,
         detailedHeight: 280,
         customerCount: 0,
         isFirstLoad: true,
-        isNoCoupon: false, // 没有优惠券
+        couponHeight: 0,
         couponArray: new Array(10).fill(1)
       }
     },
     async onReachBottom() {
-      if (this.navIndex === 0) {
-        return
-      }
-      this.page++
-      await this._getRecommendGoods()
+      let obj = this.nav[this.navIndex]
+      if (!obj.isOnReachBottom) return
+      obj.page++
+      this[obj.fn]()
+    },
+    onPullDownRefresh() {
+      this._getLeaderDetail()
+      this._leaderOrderTotal()
+      this._getCustomerCount(false, () => {
+        wx.stopPullDownRefresh()
+      })
+      let obj = this.nav[this.navIndex]
+      obj.page = 1
+      obj.hasMore = true
+      obj.isShowEmpty = false
+      this[obj.fn]()
     },
     onUnload() {
       Notification.getInstance().destroy()
       this.$refs.navigationBar && this.$refs.navigationBar._initHeadStyle()
     },
-    async onShow() {
-      this._getCustomerCount()
-      Notification.getInstance().connect() // 连接
-      this._onSocketMsg()
-      this.$wx.getSystemInfo({
-        success: (res) => {
-          this.width = res.screenWidth * 0.936
-        }
-      })
-      this.adaptation = {height: 195, marginTop: 64.5, hoseMarginTop: 164}
-      this.page = 1
-      let res = this.$wx.getSystemInfoSync()
-      let statusBarHeight = res.statusBarHeight - 20 || 0
+    onLoad() {
+      let info = wx.getSystemInfoSync() || {}
+      let screenWidth = info.screenWidth
+      this.couponHeight = screenWidth * 0.24
+      this.width = screenWidth * 0.936
+      this.systemInfo = info
+      this.query = wx.createSelectorQuery() || {}
+      let statusBarHeight = this.systemInfo.statusBarHeight - 20 || 0
       for (let key in this.adaptation) {
         this.adaptation[key] += statusBarHeight
       }
       this._getLeaderDetail()
       this._leaderOrderTotal()
+      this._getCustomerCount()
       this._getPresellGoods()
-      if (this.navIndex === 1) {
-        this._getRecommendGoods()
-      }
     },
-    computed: {
-      address() {
-        return this.leaderDetail.province ? this.leaderDetail.province + this.leaderDetail.city + this.leaderDetail.district + this.leaderDetail.address : ''
-      }
+    async onShow() {
+      Notification.getInstance().connect() // 连接
+      this._onSocketMsg()
     },
+    // computed: {
+    //   address() {
+    //     return this.leaderDetail.province ? this.leaderDetail.province + this.leaderDetail.city + this.leaderDetail.district + this.leaderDetail.address : ''
+    //   }
+    // },
     methods: {
+      // 优惠券弹窗
       couponHandle(child, idx) {
         this.$refs.couponModal && this.$refs.couponModal.show()
       },
+      // 监听socketMSG
       _onSocketMsg() {
         Notification.getInstance().on((msg) => {
           console.warn('收到socket信息...', msg)
@@ -239,8 +249,10 @@
           }
         })
       },
-      _getCustomerCount(loading = false) {
+      // 获取用户访问次数
+      _getCustomerCount(loading = false, callback) {
         API.Notification.getCustomerCount({}, loading).then((res) => {
+          callback && callback()
           if (res.error !== this.$ERR_OK) {
             return
           }
@@ -250,14 +262,17 @@
             this.isFirstLoad = false
             this.$refs.notification && this.$refs.notification._action(msg)
           }
+        }).catch(e => {
+          callback && callback()
         })
       },
-      async _shareGoods(item) {
-        this.goodsItem = item
-        let res = await API.Leader.goodsThumb({id: item.id})
-        this.$refs.shareList.showLink()
-        this.goodsItem.thumb_image = res.error === this.$ERR_OK ? res.data.thumb_image : {}
-      },
+      // async _shareGoods(item) {
+      //   this.goodsItem = item
+      //   let res = await API.Leader.goodsThumb({id: item.id})
+      //   this.$refs.shareList.showLink()
+      //   this.goodsItem.thumb_image = res.error === this.$ERR_OK ? res.data.thumb_image : {}
+      // },
+      // 二维码
       _scanCode() {
         wx.scanCode({
           success(res) {
@@ -266,47 +281,74 @@
           }
         })
       },
+      // dev...
       _inDevelopment() {
         this.$wechat.showToast('功能正在努力研发中')
       },
+      // tab栏切换
       async _setNav(index) {
-        if (index === 1 && !this.goodsList.length) {
-          await this._getRecommendGoods()
-        }
-        const query = wx.createSelectorQuery()
-        switch (index) {
-          case 0:
-            query.select('.content-wrapper').boundingClientRect()
-            query.exec((res) => {
-              this.detailedHeight = res[0] ? res[0].height + 40 : 280
-            })
-            break
-          case 1:
-            this.detailedHeight = 'auto'
-            break
-          case 2:
-            this.detailedHeight = 99.5 * this.goodsList.length || 280
-            break
-          default:
-            break
-        }
+        if (this.navIndex === index) return
         this.navIndex = index
+        let obj = this.nav[index]
+        if (index === 0) {
+          this.isScrollToEnd = true
+        }
+        if (obj.isFirstLoad) {
+          this[obj.fn]()
+        } else {
+          this.setPanelHeight()
+        }
       },
+      // 复制预售清单
       copyPreSell() {
         this.$wechat.setClipboardData(this.preSell.activity_content)
       },
-      async _getPresellGoods() {
+      // 获取优惠券列表
+      async _getCouponList(index = 1) {
+        let hasMore = this.nav[index].hasMore
+        if (!hasMore) return
+        let page = this.nav[index].page
+        let limit = this.nav[index].limit
+        try {
+          let res = await API.Leader.recommendGoods({page, limit}, this.nav[index].isFirstLoad)
+          if (res.error !== this.$ERR_OK) {
+            this.$wechat.showToast(res.message)
+            return
+          }
+          if (res.meta.current_page === 1) {
+            this.nav[index].isFirstLoad = false
+            // this.couponArray = []
+            this.nav[index].isShowEmpty = !this.couponArray.length
+            // this.goodsList = res.data
+          } else {
+            // let arr = this.goodsList.concat(res.data)
+            // this.goodsList = arr
+          }
+          this.setPanelHeight()
+          this.isScrollToEnd = res.meta.current_page >= res.meta.last_page
+          this.nav[index].hasMore = res.meta.current_page < res.meta.last_page
+        } catch (e) {
+          console.error(e)
+        } finally {
+          this.$wechat.hideLoading()
+        }
+      },
+      // 获取预售清单
+      async _getPresellGoods(index = 0) {
+        this.isScrollToEnd = true
         let res = await API.Leader.getPresellGoods()
         if (res.error !== this.$ERR_OK) {
           this.$wechat.showToast(res.message)
           return
         }
         this.preSell = res.data
-        this.isNoGoods = !this.preSell.activity_content
+        this.nav[index].isShowEmpty = !res.data.activity_title
+        this.nav[index].isFirstLoad = false
         setTimeout(() => {
-          this._setNav(this.navIndex)
+          this.setPanelHeight()
         }, 500)
       },
+      // 获取团长信息
       async _getLeaderDetail() {
         let res = await API.Leader.leaderDetail()
         if (res.error !== this.$ERR_OK) {
@@ -316,6 +358,7 @@
         this.leaderDetail = res.data
         wx.setStorageSync('leaderId', res.data.shop_id) // 存储团长id
       },
+      // 获取团长订单统计
       async _leaderOrderTotal() {
         let res = await API.Leader.leaderOrderTotal()
         if (res.error !== this.$ERR_OK) {
@@ -324,24 +367,58 @@
         }
         this.orderTotal = res.data
       },
-      async _getRecommendGoods() {
-        if (this.page > this.length) {
-          return
+      // 获取商品资料
+      async _getRecommendGoods(index = 2) {
+        let hasMore = this.nav[index].hasMore
+        if (!hasMore) return
+        let page = this.nav[index].page
+        let limit = this.nav[index].limit
+        try {
+          let res = await API.Leader.recommendGoods({page, limit}, this.nav[index].isFirstLoad)
+          if (res.error !== this.$ERR_OK) {
+            this.$wechat.showToast(res.message)
+            return
+          }
+          if (res.meta.current_page === 1) {
+            this.nav[index].isFirstLoad = false
+            this.nav[index].isShowEmpty = res.meta.total === 0
+            this.goodsList = res.data
+          } else {
+            let arr = this.goodsList.concat(res.data)
+            this.goodsList = arr
+          }
+          this.setPanelHeight()
+          this.isScrollToEnd = res.meta.current_page >= res.meta.last_page
+          this.nav[index].hasMore = res.meta.current_page < res.meta.last_page
+        } catch (e) {
+          console.error(e)
+        } finally {
+          this.$wechat.hideLoading()
         }
-        let res = await API.Leader.recommendGoods({page: this.page})
-        if (res.error !== this.$ERR_OK) {
-          this.$wechat.showToast(res.message)
-          this.isNoGoods = true
-          return
+      },
+      // 设置面板高度
+      setPanelHeight() {
+        let index = this.navIndex
+        let height = 0
+        switch (index) {
+          case 0:
+            this.query.select('.content-wrapper').boundingClientRect()
+            this.query.exec((res) => {
+              height = res[0] ? res[0].height + 40 : 280
+              this.detailedHeight = height
+            })
+            break
+          case 1:
+            let len = this.couponArray.length
+            height = len ? this.couponHeight * len + 12 * len + 10.5 : 280
+            break
+          case 2:
+            height = 99.5 * this.goodsList.length || 280
+            break
+          default:
+            break
         }
-        this.length = res.meta.last_page
-        if (this.page === 1) {
-          this.goodsList = res.data
-        } else {
-          this.goodsList = this.goodsList.concat(res.data)
-        }
-        this.isNoGoods = !this.goodsList.length
-        this.detailedHeight = 99.5 * this.goodsList.length || 280
+        index && (this.detailedHeight = height)
       }
     }
   }
@@ -360,6 +437,7 @@
     width: 280.8vw
     display: flex
     transform: translateX(0)
+    transition : height 0s
     .order-box
       transition: transform 0.3s
       padding: 0 10px
@@ -390,10 +468,13 @@
     justify-content: space-between
     .reg-img
       position: absolute
-      top: 0
+      top: -1px
       left: 0
       width: 100%
       height: 100%
+      font-size :0
+      line-height :0
+      display :block
     .reg-info
       width: 75%
       position: relative

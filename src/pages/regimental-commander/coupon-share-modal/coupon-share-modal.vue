@@ -87,7 +87,7 @@
           return
         }
         this.hide()
-        wx.navigateTo({url: `/pages/coupon-share`})
+        wx.navigateTo({url: `/pages/coupon-share?packetId=11`})
       },
       chooseHandle(item, index) {
         this.buttonIndex = index

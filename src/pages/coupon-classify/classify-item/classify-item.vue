@@ -25,6 +25,8 @@
 </template>
 
 <script type="text/ecmascript-6">
+  import API from '@api'
+  import {cartMethods} from '@state/helpers'
   const COMPONENT_NAME = 'CLASSIFY_ITEM'
 
   export default {
@@ -36,6 +38,7 @@
       }
     },
     methods: {
+      ...cartMethods,
       jumpGoodsDetail(item) {
         wx.navigateTo({
           url: `/pages/goods-detail?id=${item.goods_id}&activityId=${item.activity_id}`
@@ -45,20 +48,19 @@
         if (!this.$isLogin()) {
           return
         }
-        console.log(item)
-        // API.Choiceness.addShopCart({goods_sku_id: item.goods_sku_id, activity_id: item.activity_id}).then((res) => {
-        //   if (res.error === this.$ERR_OK) {
-        //     this.$sendMsg({
-        //       event_no: 1007,
-        //       goods_id: item.goods_id,
-        //       title: item.name
-        //     })
-        //     this.$wechat.showToast('加入购物车成功', 1000, false)
-        //     this.setCartCount()
-        //   } else {
-        //     this.$wechat.showToast(res.message, 1000, false)
-        //   }
-        // })
+        API.Choiceness.addShopCart({goods_sku_id: item.goods_sku_id, activity_id: item.activity_id}).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.$sendMsg({
+              event_no: 1007,
+              goods_id: item.goods_id,
+              title: item.name
+            })
+            this.$wechat.showToast('加入购物车成功', 1000, false)
+            this.setCartCount()
+          } else {
+            this.$wechat.showToast(res.message, 1000, false)
+          }
+        })
       }
     }
   }

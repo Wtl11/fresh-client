@@ -26,11 +26,24 @@
         }
       }
     },
+    onShow() {
+      this._getCouponInfo()
+    },
     onShareAppMessage() {
+      let shopId = wx.getStorageSync('leaderId')
+      let packetId = this.$mp.query.packetId
+      console.log(shopId, packetId) // todo
       return {
         title: '【赞播优鲜】送你一张优惠券，赶快来领取吧！',
-        path: `/pages/coupon-take`,
+        path: `/pages/coupon-take?shopId=${shopId}&packetId=${packetId}`,
         imageUrl: `${this.imageUrl}/yx-image/2.1/pic-getcoupon@2x.png`
+      }
+    },
+    methods: {
+      // 获取优惠券信息
+      _getCouponInfo() {
+        console.log(this.$mp.query)
+        // todo
       }
     }
   }

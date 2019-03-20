@@ -27,6 +27,7 @@
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import CouponTab from './coupon-tab/coupon-tab'
   import CouponItem from './coupon-item/coupon-item'
+  import TabItem from './tab-item'
 
   const PAGE_NAME = 'MINE_COUPON'
 
@@ -40,15 +41,30 @@
     data() {
       return {
         tabList: [
-          {text: '可用', number: 0, dataArray: [1, 2, 3], isShowEmpty: false},
-          {text: '不可用', number: 0, dataArray: [1, 2, 3], isShowEmpty: false}
+          new TabItem({text: '可用'}),
+          new TabItem({text: '不可用'})
         ],
         tabIndex: 0
       }
     },
+    onLoad() {
+      this._getList()
+    },
+    onReachBottom() {
+      this._getList(false)
+    },
+    onPullDownRefresh() {
+      this._getList(false)
+      setTimeout(() => {
+        wx.stopPullDownRefresh()
+      }, 1000)
+    },
     methods: {
       changeHandle(item, index) {
         this.tabIndex = index
+      },
+      _getList(loading = true) {
+        // todo
       }
     }
   }
@@ -74,6 +90,7 @@
   .mine-coupon
     background :$color-background
     min-height :100vh
+    overflow-x: hidden
     .scroll-wrapper
       width :200vw
       layout(row,block,nowrap)

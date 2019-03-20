@@ -38,24 +38,51 @@
       return {
         goodsList: [],
         hasMore: true,
-        isShowEmpty: false
+        isShowEmpty: false,
+        page: 1,
+        limit: 10
       }
     },
-    onShow() {
-      API.Choiceness.getClassifyList({goods_category_id: 88, limit: 10, page: 1}, true).then((res) => {
-        this.$wechat.hideLoading()
-        if (res.error !== this.$ERR_OK) {
-          return
-        }
-        this.goodsList = res.data
-        this.hasMore = res.meta.current_page !== res.meta.last_page
-        // this.goodsList = []
-        // this.hasMore = false
-        // this.isShowEmpty = !this.goodsList.length
-        // this.classifyList[this.tabIndex] = this.classifyList[this.tabIndex].concat(res.data)
+    onLoad() {
+      this._initPageParams()
+      this._getList()
+    },
+    onReachBottom() {
+      this.page++
+      this._getList(false)
+    },
+    onPullDownRefresh() {
+      this.page = 1
+      this._getList(false, () => {
+        wx.stopPullDownRefresh()
       })
     },
     methods: {
+      _initPageParams() {
+        console.log(this.$mp.query)
+      },
+      _getList(loading = true, callback) {
+        if (!this.hasMore) return
+        API.Choiceness.getClassifyList({goods_category_id: 90, limit: this.limit, page: this.page}, loading).then((res) => {
+          callback && callback()
+          this.$wechat.hideLoading()
+          if (res.error !== this.$ERR_OK) {
+            this.$wechat.showToast(res.message || '')
+            return
+          }
+          let meta = res.meta
+          if (meta.current_page === 1) {
+            this.goodsList = res.data
+            this.isShowEmpty = meta.total === 0
+          } else {
+            let arr = this.goodsList.concat(res.data)
+            this.goodsList = arr
+          }
+          this.hasMore = meta.current_page < meta.last_page
+        }).catch(() => {
+          callback && callback()
+        })
+      }
     }
   }
 </script>
