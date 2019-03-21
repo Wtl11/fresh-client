@@ -54,5 +54,10 @@ export default {
     const url = `/api/wap/coupon-activity-manage/get-shop-bag-status/${data.packetId}`
     data = ''
     return request.get({url, data, loading, toast})
+  },
+  // 根据商品数据返回优惠券列表
+  getChooseList(data, loading, toast) {
+    const url = `/api/wap/coupon/filter-customer-coupon`
+    return request.post({url, data, loading, toast})
   }
 }

@@ -6,17 +6,17 @@
     <div v-if="useType==='able'" class="coupon-container">
       <section class="left">
         <div class="l-top" :class="'corp-' + corpName + '-money'">
-          <p class="number">20</p>
-          <p class="unit">元</p>
+          <p class="number">{{dataInfo.denomination}}</p>
+          <p class="unit">{{unit}}</p>
         </div>
-        <div class="l-bottom">满100元可用</div>
+        <div class="l-bottom">{{dataInfo.condition_str}}</div>
       </section>
       <section class="right">
         <div class="info-wrapper">
-          <div class="title">赞播优鲜新人专享券赞播优鲜新人专享券赞播优鲜新人专享券</div>
+          <div class="title">{{dataInfo.coupon_name}}</div>
           <div class="explain-wrapper">
-            <p class="explain">指定商品可用</p>
-            <p class="date">有效期至 2018.12.31 23:59:50</p>
+            <p class="explain">{{dataInfo.range_type_desc}}</p>
+            <p class="date">有效期至 {{dataInfo.start_at}} {{dataInfo.end_at}}</p>
           </div>
         </div>
         <div class="tool-wrapper">
@@ -39,17 +39,17 @@
       <div class="top">
         <section class="left">
           <div class="l-top color-b7b7b7">
-            <p class="number">20</p>
-            <p class="unit">元</p>
+            <p class="number">{{dataInfo.denomination}}</p>
+            <p class="unit">{{unit}}</p>
           </div>
-          <div class="l-bottom color-b7b7b7">满100元可用</div>
+          <div class="l-bottom color-b7b7b7">{{dataInfo.condition_str}}</div>
         </section>
         <section class="right">
           <div class="info-wrapper">
-            <div class="title color-b7b7b7">赞播优鲜新人专享券赞播优鲜新人专享券赞播优鲜新人专享券</div>
+            <div class="title color-b7b7b7">{{dataInfo.coupon_name}}</div>
             <div class="explain-wrapper color-b7b7b7">
-              <p class="explain">指定商品可用</p>
-              <p class="date">有效期至 2018.12.31 23:59:50</p>
+              <p class="explain">{{dataInfo.range_type_desc}}</p>
+              <p class="date">有效期至 {{dataInfo.start_at}} {{dataInfo.end_at}}</p>
             </div>
           </div>
           <div class="tool-wrapper">
@@ -57,13 +57,14 @@
         </section>
       </div>
      <div class="bottom">
-        <p class="explain">不可用原因: 指定商品可用</p>
+        <p class="explain">不可用原因: {{dataInfo.unusable_reason}}</p>
      </div>
     </article>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
+  import Coupon from './coupon'
   const COMPONENT_NAME = 'COUPON_ITEM'
 
   export default {
@@ -76,6 +77,10 @@
       isChecked: {
         type: Boolean,
         default: false
+      },
+      dataInfo: {
+        type: Object,
+        default: () => new Coupon()
       }
     },
     data() {
@@ -89,6 +94,11 @@
             bgImg: '/yx-image/2.1/pic-couponbg_bky@2x.png'
           }
         }
+      }
+    },
+    computed: {
+      unit() {
+        return Coupon.COUPON_UNIT[this.dataInfo.preferential_type] || ''
       }
     }
   }

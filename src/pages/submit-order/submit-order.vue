@@ -46,28 +46,29 @@
     </div>
     <section class="goods-total-wrapper">
       <p class="name">商品总价</p>
-      <p class="price">17.6</p>
+      <p class="price">{{beforeTotal}}</p>
       <p>元</p>
     </section>
     <ul class="coupon-info-wrapper" :class="'corp-' + corpName + '-money'">
       <li class="coupon-item" @click="chooseCouponHandle">
         <p class="name">使用优惠券</p>
-        <p class="price">-10</p>
-        <p>元</p>
+        <p v-if="discount > 0" class="price">-{{discount}}</p>
+        <p v-else class="price">未使用优惠券</p>
+        <p v-if="discount > 0">元</p>
         <div class="item-arrow-img">
           <img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="img">
         </div>
       </li>
       <li class="coupon-item">
         <p class="name">实付金额</p>
-        <p class="price">7.6</p>
+        <p class="price">{{total}}</p>
         <p>元</p>
       </li>
     </ul>
     <div class="fixed-btn">
       <div class="money" :class="'corp-' + corpName + '-money'">
         <p>总计 {{total}}元</p>
-        <p class="explain">(已优惠<span :class="'corp-' + corpName + '-money'">10</span>元)</p>
+        <p class="explain">(已优惠<span :class="'corp-' + corpName + '-money'">{{discount}}</span>元)</p>
       </div>
       <div class="pay" :class="'corp-' + corpName + '-bg'" @click.stop="goPay">去支付</div>
     </div>
@@ -93,7 +94,13 @@
       }
     },
     computed: {
-      ...orderComputed
+      ...orderComputed,
+      discount() {
+        return +this.couponInfo.denomination || 0
+      }
+    },
+    onLoad() {
+      this._getCouponInfo()
     },
     async onShow() {
       ald.aldstat.sendEvent('去支付')
@@ -103,6 +110,13 @@
     },
     methods: {
       ...orderMethods,
+      _getCouponInfo() {
+        API.Coupon.getChooseList({goods: this.goodsList, is_usable: 1}).then((res) => {
+          if (!res.data.length) return
+          let coupon = res.data[0]
+          this.saveCoupon(coupon)
+        })
+      },
       chooseCouponHandle() {
         wx.navigateTo({url: '/pages/coupon-choose'})
       },

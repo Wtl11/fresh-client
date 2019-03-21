@@ -3,16 +3,16 @@
     <navigation-bar title="选择优惠券"></navigation-bar>
     <dl v-if="useArray.length" class="panel">
       <dt class="title">可用优惠券</dt>
-      <dd class="coupon-item" v-for="(item, index) in useArray" :key="index">
+      <dd class="coupon-item" v-for="(item, index) in useArray" :key="item.coupon_id || index">
         <div @click="chooseHandle(item, index)">
-          <coupon-item :isChecked="useIndex===index"></coupon-item>
+          <coupon-item :isChecked="useIndex===index" :dataInfo="item"></coupon-item>
         </div>
       </dd>
     </dl>
     <dl v-if="disableArray.length" class="panel">
       <dt class="title">不可用优惠券</dt>
-      <dd class="coupon-item" v-for="(item, index) in disableArray" :key="index">
-        <coupon-item useType="disable"></coupon-item>
+      <dd class="coupon-item" v-for="(item, index) in disableArray" :key="item.coupon_id || index">
+        <coupon-item useType="disable" :dataInfo="item"></coupon-item>
       </dd>
     </dl>
     <div v-if="isShowEmpty" class="empty-wrapper">
@@ -25,6 +25,8 @@
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import CouponItem from './coupon-item/coupon-item'
+  import {orderComputed, orderMethods} from '@state/helpers'
+  import API from '@api'
 
   const PAGE_NAME = 'CHOOSE_COUPON'
   // /cart/icon-pick1@2x.png
@@ -38,19 +40,39 @@
     },
     data() {
       return {
-        useArray: new Array(3).fill(1),
-        disableArray: new Array(3).fill(1),
+        useArray: [],
+        disableArray: [],
         useIndex: -1,
         isShowEmpty: false
       }
     },
+    computed: {
+      ...orderComputed
+    },
+    onLoad() {
+      console.log(this.goodsList)
+      this._getCouponInfo()
+    },
     methods: {
+      ...orderMethods,
       chooseHandle(item, index) {
         if (this.useIndex === index) {
           this.useIndex = -1
+          this.saveCoupon({})
           return
         }
         this.useIndex = index
+        this.saveCoupon(item)
+        wx.navigateBack()
+      },
+      _getCouponInfo() {
+        API.Coupon.getChooseList({goods: this.goodsList, is_usable: 1}, true).then((res) => {
+          this.useArray = res.data
+          this.useIndex = res.data.findIndex(val => val.coupon_id === this.couponInfo.coupon_id)
+        })
+        API.Coupon.getChooseList({goods: this.goodsList, is_usable: 0}, false).then((res) => {
+          this.disableArray = res.data
+        })
       }
     }
   }

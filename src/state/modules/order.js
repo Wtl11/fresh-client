@@ -5,7 +5,9 @@ import {ERR_OK} from '@utils/config'
 export const state = {
   goodsList: [],
   total: '',
-  deliverAt: ''
+  deliverAt: '',
+  beforeTotal: '',
+  couponInfo: {}
 }
 
 export const getters = {
@@ -20,14 +22,23 @@ export const getters = {
   },
   orderId(state) {
     return state.orderId
-  }
+  },
+  beforeTotal: state => state.beforeTotal,
+  couponInfo: state => state.couponInfo
 }
 
 export const actions = {
+  // 保存优惠券信息
+  saveCoupon({commit, state}, coupon) {
+    let money = coupon.denomination || 0
+    commit('SAVE_COUPON', coupon)
+    commit('SET_TOTAL', state.beforeTotal - money)
+  },
   setOrderInfo({commit, state}, {goodsList, total, deliverAt}) {
     commit('SET_GOODS_LIST', goodsList)
     commit('SET_TOTAL', total)
     commit('DELIVER_AT', deliverAt)
+    commit('SET_BEFORE_TOTAL', total)
   },
   submitOrder({commit, state}, {orderInfo, complete}) {
     API.SubmitOrder.submitOrder(orderInfo)
@@ -68,6 +79,9 @@ export const actions = {
 }
 
 export const mutations = {
+  SAVE_COUPON(state, coupon) {
+    state.couponInfo = coupon
+  },
   SET_GOODS_LIST(state, goodsList) {
     state.goodsList = goodsList
   },
@@ -76,5 +90,8 @@ export const mutations = {
   },
   DELIVER_AT(state, deliverAt) {
     state.deliverAt = deliverAt
+  },
+  SET_BEFORE_TOTAL(state, total) {
+    state.beforeTotal = total
   }
 }
