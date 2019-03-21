@@ -73,8 +73,9 @@ export default {
       // todo
     },
     // 手机formId
-    $getFormId(e) {
-      if (!this.$isLogin()) {
+    async $getFormId(e) {
+      let isLogin = await this.$isLogin()
+      if (!isLogin) {
         return
       }
       let formId = e.mp.detail.formId
