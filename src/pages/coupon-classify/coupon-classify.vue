@@ -61,7 +61,7 @@
     methods: {
       _getList(callback) {
         if (!this.hasMore) return
-        let data = {customer_coupon_id: this.$mp.query.customer_coupon_id, limit: this.limit, page: this.page}
+        let data = {customer_coupon_id: this.$mp.query.id, limit: this.limit, page: this.page}
         API.Coupon.getGoodsList(data, this.isFirstLoad).then((res) => {
           callback && callback()
           this.$wechat.hideLoading()

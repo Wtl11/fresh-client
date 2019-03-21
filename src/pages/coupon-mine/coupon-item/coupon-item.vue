@@ -30,12 +30,14 @@
 </template>
 
 <script type="text/ecmascript-6">
+  import CouponNavigator from '@mixins/coupon-navigator'
   import Coupon from './coupon'
 
   const COMPONENT_NAME = 'COUPON_ITEM'
 
   export default {
     name: COMPONENT_NAME,
+    mixins: [CouponNavigator],
     props: {
       dataInfo: {
         type: Object,
@@ -55,7 +57,7 @@
     },
     methods: {
       useHandle() {
-        wx.navigateTo({url: '/pages/coupon-classify'})
+        this.navHandle(this.dataInfo.range_type, this.dataInfo.coupon_id)
       }
     }
   }

@@ -4,7 +4,7 @@ export default class {
   constructor () {
     this.customer_coupon_id = 0
     this.coupon_id = 0
-    this.coupon_name = '优惠券'
+    this.coupon_name = ''
     this.preferential_type = 0
     this.preferential_str = ''
     this.denomination = 0
