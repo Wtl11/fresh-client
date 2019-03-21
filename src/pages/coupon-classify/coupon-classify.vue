@@ -39,41 +39,37 @@
         goodsList: [],
         hasMore: true,
         isShowEmpty: false,
+        isFirstLoad: true,
         page: 1,
         limit: 10
       }
     },
     onLoad() {
-      this._initPageParams()
       this._getList()
     },
     onReachBottom() {
       this.page++
-      this._getList(false)
+      this._getList()
     },
     onPullDownRefresh() {
       this.page = 1
-      this._getList(false, () => {
+      this.hasMore = true
+      this._getList(() => {
         wx.stopPullDownRefresh()
       })
     },
     methods: {
-      _initPageParams() {
-        console.log(this.$mp.query)
-      },
-      _getList(loading = true, callback) {
+      _getList(callback) {
         if (!this.hasMore) return
-        API.Choiceness.getClassifyList({goods_category_id: 90, limit: this.limit, page: this.page}, loading).then((res) => {
+        let data = {customer_coupon_id: this.$mp.query.customer_coupon_id, limit: this.limit, page: this.page}
+        API.Coupon.getGoodsList(data, this.isFirstLoad).then((res) => {
           callback && callback()
           this.$wechat.hideLoading()
-          if (res.error !== this.$ERR_OK) {
-            this.$wechat.showToast(res.message || '')
-            return
-          }
           let meta = res.meta
           if (meta.current_page === 1) {
             this.goodsList = res.data
             this.isShowEmpty = meta.total === 0
+            this.isFirstLoad = false
           } else {
             let arr = this.goodsList.concat(res.data)
             this.goodsList = arr
@@ -95,7 +91,6 @@
     background: $color-background
   .line
     height :5px
-    box-shadow: 0 6px 20px 0 rgba(17,17,17,0.06)
   .goods-list
     width: 100vw
     layout(row)

@@ -1,5 +1,5 @@
 <script>
-  import {oauthMethods} from '@state/helpers'
+  import {jwtMethods} from '@state/helpers'
   import {getParams, entryAppType} from '@utils/common'
   import API from '@api'
   import {ERR_OK, baseURL} from '@utils/config'
@@ -15,11 +15,15 @@
       let id = res.error === ERR_OK ? res.data.id : baseURL.defaultId
       wx.setStorageSync('defaultShopId', id)
       this.codeMsg = await this.$wechat.login()
-      if (!wx.getStorageSyn('token')) {
+      if (!wx.getStorageSync('token')) {
         let tokenJson = await API.Login.getToken({code: this.codeMsg.code}, false)
         if (tokenJson.error === ERR_OK) {
-          wx.setStorageSync('token', tokenJson.data.access_token)
-          wx.setStorageSync('userInfo', tokenJson.data.customer_info)
+          let token = tokenJson.data.access_token
+          let userInfo = tokenJson.data.customer_info
+          wx.setStorageSync('token', token)
+          wx.setStorageSync('userInfo', userInfo)
+          this.setToken(token)
+          this.setUserInfo(userInfo)
         }
       }
       //  判断是否可以静默登录
@@ -30,8 +34,6 @@
       if (options.query.scene) {
         let sceneMsg = decodeURIComponent(options.query.scene)
         const params = getParams(sceneMsg)
-        // console.info(params, 'app')
-        // console.info(sceneMsg, 'app22')
         storyShopId = params.shopId || wx.getStorageSync('defaultShopId')
       } else {
         if (!wx.getStorageSync('shopId') && !wx.getStorageSync('defaultShopId')) {
@@ -55,9 +57,6 @@
       if (options.path !== 'pages/lost' && options.path !== 'pages/error' && options.path !== 'pages/login') {
         wx.setStorageSync('targetPage', `${options.path}${query ? '?' : ''}${query.slice(0, -1)}`)
       }
-      // wx.reLaunch({url: '/pages/login'})
-      // todo
-      // this.update('')
     },
     onPageNotFound(res) {
       wx.redirectTo({
@@ -65,7 +64,7 @@
       })
     },
     methods: {
-      ...oauthMethods,
+      ...jwtMethods,
       setScene(options) {
         const type = entryAppType(options)
         wx.setStorageSync('entryAppType', type)

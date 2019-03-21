@@ -10,7 +10,7 @@
         <ul class="coupon-wrapper">
           <block v-for="(child, idx) in item.dataArray" :key="idx">
             <li class="coupon-item-wrapper">
-              <coupon-item :useType="index?'disable':'able'"></coupon-item>
+              <coupon-item :dataInfo="child"></coupon-item>
             </li>
           </block>
           <li v-if="item.isShowEmpty" class="empty-wrapper">
@@ -28,6 +28,7 @@
   import CouponTab from './coupon-tab/coupon-tab'
   import CouponItem from './coupon-item/coupon-item'
   import TabItem from './tab-item'
+  import API from '@api'
 
   const PAGE_NAME = 'MINE_COUPON'
 
@@ -41,30 +42,54 @@
     data() {
       return {
         tabList: [
-          new TabItem({text: '可用'}),
-          new TabItem({text: '不可用'})
+          new TabItem({text: '可用', status: '0'}),
+          new TabItem({text: '不可用', status: '1'})
         ],
         tabIndex: 0
+      }
+    },
+    computed: {
+      currentObj() {
+        return this.tabList[this.tabIndex]
       }
     },
     onLoad() {
       this._getList()
     },
     onReachBottom() {
-      this._getList(false)
+      this.currentObj.page++
+      this._getList()
     },
     onPullDownRefresh() {
-      this._getList(false)
-      setTimeout(() => {
+      this.currentObj.page = 1
+      this.currentObj.hasMore = true
+      this._getList(() => {
         wx.stopPullDownRefresh()
-      }, 1000)
+      })
     },
     methods: {
       changeHandle(item, index) {
+        if (this.tabIndex === index) return
         this.tabIndex = index
+        this._getList()
       },
-      _getList(loading = true) {
-        // todo
+      _getList(callbcak) {
+        let {hasMore, page, status, dataArray, isFirstLoad} = this.currentObj
+        if (!hasMore) return
+        API.Coupon.getClientList({status, page}, isFirstLoad).then((res) => {
+          callbcak && callbcak()
+          if (res.meta.current_page === 1) {
+            this.currentObj.dataArray = res.data
+            this.currentObj.isShowEmpty = !res.meta.total
+            this.currentObj.isFirstLoad = false
+          } else {
+            this.currentObj.dataArray = dataArray.concat(res.data)
+          }
+          this.currentObj.hasMore = res.meta.current_page < res.meta.last_page
+        }).catch(e => {
+          callbcak && callbcak()
+          console.error(e)
+        })
       }
     }
   }

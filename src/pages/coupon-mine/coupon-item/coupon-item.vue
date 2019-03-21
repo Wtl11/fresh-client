@@ -2,28 +2,27 @@
   <div class="coupon-item">
     <div class="coupon-bg">
       <img class="img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.1/pic-couponbg@2x.png'">
-      <!--<img class="img" mode="aspectFill" src="/static/pic-couponbg@2x.png">-->
     </div>
     <div class="coupon-container">
       <section class="left">
-        <div class="l-top" :class="'corp-' + corpName + '-money'" :style="{color: USE_TYPE[useType].color}">
-          <p class="number">20</p>
-          <p class="unit">元</p>
+        <div class="l-top" :class="'corp-' + corpName + '-money'" :style="{color}">
+          <p class="number">{{dataInfo.denomination}}</p>
+          <p class="unit">{{unit}}</p>
         </div>
-        <div class="l-bottom" :style="{color: USE_TYPE[useType].color}">满100元可用</div>
+        <div class="l-bottom" :style="{color}">{{dataInfo.condition_str}}</div>
       </section>
       <section class="right">
         <div class="info-wrapper">
-          <div class="title" :style="{color: USE_TYPE[useType].color}">赞播优鲜新人专享券赞播优鲜新人专享券赞播优鲜新人专享券</div>
+          <div class="title" :style="{color}">{{dataInfo.coupon_name}}</div>
           <div class="explain-wrapper">
-            <p class="explain" :style="{color: USE_TYPE[useType].color}">指定商品可用</p>
-            <p class="date" :style="{color: USE_TYPE[useType].color}">有效期至 2018.12.31 23:59:50</p>
+            <p class="explain" :style="{color}">{{dataInfo.range_type_desc}}</p>
+            <p class="date" :style="{color}">有效期至 {{dataInfo.start_at}} {{dataInfo.end_at}}</p>
           </div>
         </div>
         <div class="tool-wrapper">
-          <div v-if="USE_TYPE[useType].status === 'default'" class="button" :class="'corp-' + corpName + '-bg'" @click="useHandle">去使用</div>
-          <img v-if="imageUrl && USE_TYPE[useType].status === 'timeout'" class="icon-status" mode="aspectFill":src="imageUrl + '/yx-image/2.1/pic-coupon_ygq@2x.png'">
-          <img v-if="imageUrl && USE_TYPE[useType].status === 'used'" class="icon-status" mode="aspectFill":src="imageUrl + '/yx-image/2.1/pic-coupon_ysy@2x.png'">
+          <div v-if="status === 1" class="button" :class="'corp-' + corpName + '-bg'" @click="useHandle">去使用</div>
+          <img v-if="imageUrl && status === 2" class="icon-status" mode="aspectFill":src="imageUrl + '/yx-image/2.1/pic-coupon_ygq@2x.png'">
+          <img v-if="imageUrl && status === 0" class="icon-status" mode="aspectFill":src="imageUrl + '/yx-image/2.1/pic-coupon_ysy@2x.png'">
         </div>
       </section>
     </div>
@@ -31,22 +30,27 @@
 </template>
 
 <script type="text/ecmascript-6">
+  import Coupon from './coupon'
+
   const COMPONENT_NAME = 'COUPON_ITEM'
 
   export default {
     name: COMPONENT_NAME,
     props: {
-      useType: {
-        type: String,
-        default: 'able'
+      dataInfo: {
+        type: Object,
+        default: () => new Coupon()
       }
     },
-    data() {
-      return {
-        USE_TYPE: {
-          able: {color: '', status: 'default'},
-          disable: {color: '#B7B7B7', status: 'used'}
-        }
+    computed: {
+      status() {
+        return +this.dataInfo.status
+      },
+      color() {
+        return Coupon.COLOR[this.status]
+      },
+      unit() {
+        return Coupon.COUPON_UNIT[this.dataInfo.preferential_type] || ''
       }
     },
     methods: {

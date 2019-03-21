@@ -134,7 +134,7 @@
     align-items: center
     display: flex
     background: #fff
-    z-index: 100
+    z-index: 200
     .nav-list-box
       width: 33.3333vw
       height: 49px

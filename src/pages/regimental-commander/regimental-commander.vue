@@ -76,7 +76,7 @@
     <!--商品模块-->
     <div class="reg-goods">
       <div class="rag-goods-tab">
-        <span :class="[navIndex === index ? 'rag-goods-tab-item-active' : '',navIndex === index ? 'corp-' + corpName + '-bg' : '', 'corp-' + corpName + '-tab']" class="rag-goods-tab-item" v-for="(item, index) in nav" :key="index" @click="_setNav(index)">
+        <span :class="[navIndex === index ? 'rag-goods-tab-item-active' : '',navIndex === index ? 'corp-' + corpName + '-bg' : '', 'corp-' + corpName + '-tab']" class="rag-goods-tab-item" v-for="(item, index) in nav" :key="item || index" @click="_setNav(index)">
           {{item.title}}
         </span>
       </div>
@@ -100,11 +100,11 @@
         <section class="order-box" :style="{'transform': ' translateX('+ -(navIndex * width) +'px)'}">
           <ul class="coupon-wrapper">
             <li v-for="(child,idx) in couponArray"
-                :key="idx"
+                :key="child.id || idx"
                 class="coupon-item-wrapper"
             >
               <div @click="couponHandle(child, idx)">
-                <coupon-item></coupon-item>
+                <coupon-item :dataInfo="child"></coupon-item>
               </div>
             </li>
           </ul>
@@ -116,7 +116,7 @@
           </div>
         </section>
         <section class="reg-goods-box order-box" :style="{'transform': ' translateX('+ -(navIndex * width) +'px)'}">
-          <navigator :url="'/pages/copy-detail?id=' + item.goods_id + '&activityId=' + item.activity_id" hover-class="none" class="reg-goods-item" v-for="(item,index) in goodsList" :key="index">
+          <navigator :url="'/pages/copy-detail?id=' + item.goods_id + '&activityId=' + item.activity_id" hover-class="none" class="reg-goods-item" v-for="(item,index) in goodsList" :key="item.goods_sku_id || index">
             <img :src="item.goods_cover_image" class="reg-goods-img" mode="aspectFill">
             <div class="reg-goods-content">
               <div class="reg-goods-title">{{item.name}}</div>
@@ -182,7 +182,7 @@
         customerCount: 0,
         isFirstLoad: true,
         couponHeight: 0,
-        couponArray: new Array(10).fill(1)
+        couponArray: []
       }
     },
     async onReachBottom() {
@@ -310,19 +310,15 @@
         let page = this.nav[index].page
         let limit = this.nav[index].limit
         try {
-          let res = await API.Leader.recommendGoods({page, limit}, this.nav[index].isFirstLoad)
-          if (res.error !== this.$ERR_OK) {
-            this.$wechat.showToast(res.message)
-            return
-          }
+          let res = await API.Coupon.getMarketList({page, limit}, this.nav[index].isFirstLoad)
+          console.log(res)
           if (res.meta.current_page === 1) {
+            this.couponArray = res.data
             this.nav[index].isFirstLoad = false
-            // this.couponArray = []
-            this.nav[index].isShowEmpty = !this.couponArray.length
-            // this.goodsList = res.data
+            this.nav[index].isShowEmpty = !res.meta.total
           } else {
-            // let arr = this.goodsList.concat(res.data)
-            // this.goodsList = arr
+            let arr = this.couponArray.concat(res.data)
+            this.couponArray = arr
           }
           this.setPanelHeight()
           this.isScrollToEnd = res.meta.current_page >= res.meta.last_page
@@ -346,7 +342,7 @@
         this.nav[index].isFirstLoad = false
         setTimeout(() => {
           this.setPanelHeight()
-        }, 500)
+        }, 200)
       },
       // 获取团长信息
       async _getLeaderDetail() {

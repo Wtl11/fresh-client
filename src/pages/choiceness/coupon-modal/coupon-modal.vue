@@ -25,8 +25,8 @@
       >
       <article class="wrapper">
         <div class="place-box"></div>
-        <div v-for="(item, index) in couponArray" :key="index" class="coupon-wrapper">
-          <coupon-item></coupon-item>
+        <div v-for="(item, index) in couponArray" :key="item.coupon_id || index" class="coupon-wrapper">
+          <coupon-item :dataInfo="item"></coupon-item>
         </div>
         <p hover-class="none" class="explain" @click="navHandle">优惠券已放入账号 <span class="look">查看></span></p>
         <div class="button" @click="submitHandle"></div>
@@ -38,6 +38,8 @@
 <script type="text/ecmascript-6">
   import AnimationModal from '@mixins/animation-modal'
   import CouponItem from './coupon-item/coupon-item'
+  import API from '@api'
+
   const COMPONENT_NAME = 'COUPON_MODAL'
 
   export default {
@@ -49,21 +51,36 @@
     data() {
       return {
         isShow: false,
-        couponArray: new Array(2).fill(1)
+        couponArray: []
       }
     },
     methods: {
+      _targetList() {
+        let arr = this.couponArray.map((item) => {
+          return item.coupon_activity_id || 0
+        })
+        API.Coupon.targetModal({coupon_activity_ids: arr}).catch(e => {
+          console.error(e)
+        })
+      },
       navHandle() {
+        this._targetList()
         this.hide()
         wx.navigateTo({url: '/pages/coupon-mine'})
       },
       cancelHandle() {
+        this._targetList()
         this.hide()
       },
       submitHandle() {
+        this._targetList()
         this.hide()
       },
-      show() {
+      show(arr = []) {
+        if (!arr.length) {
+          return
+        }
+        this.couponArray = arr
         if (this.isShow) {
           return
         }
@@ -77,6 +94,7 @@
         })
       },
       _resetStatus() {
+        // todo some thing
       }
     }
   }

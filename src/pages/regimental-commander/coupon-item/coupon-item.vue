@@ -6,17 +6,17 @@
     <div class="coupon-container">
       <section class="left">
         <div class="l-top" :class="'corp-' + corpName + '-text'">
-          <p class="number">20</p>
-          <p class="unit">元</p>
+          <p class="number">{{dataInfo.coupon.denomination}}</p>
+          <p class="unit">{{unit}}</p>
         </div>
-        <div class="l-bottom">满100元可用</div>
+        <div v-if="dataInfo.coupon.condition_str" class="l-bottom">{{dataInfo.coupon.condition_str}}</div>
       </section>
       <section class="right">
         <div class="info-wrapper">
-          <div class="title">赞播优鲜新人专享券赞播优鲜新人专享券赞播优鲜新人专享券</div>
+          <div class="title">{{dataInfo.coupon.coupon_name}}</div>
           <div class="explain-wrapper">
-            <p class="explain">指定商品可用(剩10张)</p>
-            <p class="date">有效期至 2018.12.31 23:59:50</p>
+            <p class="explain">{{dataInfo.coupon.range_type_desc}}(剩{{dataInfo.usable_stock}}张)</p>
+            <p class="date">有效期至 {{dataInfo.coupon.start_at}} {{dataInfo.coupon.end_at}}</p>
           </div>
         </div>
         <div class="tool-wrapper">
@@ -28,13 +28,20 @@
 </template>
 
 <script type="text/ecmascript-6">
+  import Coupon from './coupon'
   const COMPONENT_NAME = 'COUPON_ITEM'
 
   export default {
     name: COMPONENT_NAME,
-    data() {
-      return {
-
+    props: {
+      dataInfo: {
+        type: Object,
+        default: () => new Coupon()
+      }
+    },
+    computed: {
+      unit() {
+        return Coupon.COUPON_UNIT[this.dataInfo.coupon.preferential_type] || ''
       }
     }
   }

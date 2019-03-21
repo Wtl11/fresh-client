@@ -6,15 +6,15 @@
     <div class="coupon-container" :class="'corp-' + corpName + '-money'">
       <section class="left">
         <div class="l-top">
-          <p v-if="false" class="unit">¥</p>
-          <p class="number">9.9</p>
-          <p class="unit">折</p>
+          <p v-if="dataInfo.coupon.preferential_type === 2" class="unit">¥</p>
+          <p class="number">{{dataInfo.coupon.denomination}}</p>
+          <p v-if="dataInfo.coupon.preferential_type === 1" class="unit">折</p>
         </div>
       </section>
       <section class="right">
         <div class="info-wrapper">
-          <div class="title">赞播优鲜新人专享券赞播优鲜新人专享券赞播优鲜新人专享券</div>
-          <p class="condition">满100元可用</p>
+          <div class="title">{{dataInfo.coupon.coupon_name}}</div>
+          <p class="condition">{{dataInfo.coupon.condition_str}}</p>
         </div>
       </section>
     </div>
@@ -22,13 +22,16 @@
 </template>
 
 <script type="text/ecmascript-6">
+  import Coupon from './coupon'
+
   const COMPONENT_NAME = 'COUPON_ITEM'
 
   export default {
     name: COMPONENT_NAME,
-    data() {
-      return {
-
+    props: {
+      dataInfo: {
+        type: Object,
+        default: () => new Coupon()
       }
     }
   }
