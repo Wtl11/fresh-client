@@ -42,8 +42,8 @@
     data() {
       return {
         tabList: [
-          new TabItem({text: '可用', status: '0'}),
-          new TabItem({text: '不可用', status: '1'})
+          new TabItem({text: '可用', status: '1'}),
+          new TabItem({text: '不可用', status: '0'})
         ],
         tabIndex: 0
       }
@@ -82,6 +82,7 @@
             this.currentObj.dataArray = res.data
             this.currentObj.isShowEmpty = !res.meta.total
             this.currentObj.isFirstLoad = false
+            this.currentObj.number = res.meta.total
           } else {
             this.currentObj.dataArray = dataArray.concat(res.data)
           }
