@@ -83,6 +83,7 @@
           .number
             font-size: 9.066666666666666vw
             line-height: 7.733333333333333vw
+            no-wrap()
           .unit
             margin-left :1px
             position :relative
@@ -135,6 +136,7 @@
             font-size: 3.2vw
             line-height: @font-size
             .date
+              width: 50vw
               padding-top :1.866666666666667vw
               no-wrap()
 </style>
