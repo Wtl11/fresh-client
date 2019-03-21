@@ -83,13 +83,14 @@
           .number
             font-size: 9.066666666666666vw
             line-height: 7.733333333333333vw
-            no-wrap()
+            white-space: nowrap
           .unit
             margin-left :1px
             position :relative
             top:1.3333333333333335vw
             font-size: 4.010695187165775vw
             line-height: @font-size
+            white-space: nowrap
         .l-bottom
           padding-top :1.4666666666666666vw
           font-family: $font-family-regular
@@ -97,6 +98,7 @@
           color: $color-text-sub
           text-align: center;
           line-height: @font-size
+          white-space: nowrap
       .right
         flex: 2.3461538461538463
         layout(row,block,nowrap)

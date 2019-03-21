@@ -48,5 +48,11 @@ export default {
     const url = `/api/wap/coupon-activity-manage/receive-coupon-by-bag/${data.packetId}`
     data = ''
     return request.post({url, data, loading, toast})
+  },
+  // 获取营销优惠券包状态
+  getPacketStatus(data, loading = false, toast = false) {
+    const url = `/api/wap/coupon-activity-manage/get-shop-bag-status/${data.packetId}`
+    data = ''
+    return request.get({url, data, loading, toast})
   }
 }

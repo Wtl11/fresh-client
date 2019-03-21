@@ -3,6 +3,7 @@
     <navigation-bar title="领取优惠券"></navigation-bar>
     <coupon-common-channel
       :pageConfig="pageConfig"
+      :couponInfo="couponInfo"
       @getUserInfo="getUserInfoHandle"
       @buttonHandle="_takeCoupon"
     ></coupon-common-channel>
@@ -29,7 +30,6 @@
   import UserItem from './user-item/user-item'
   import AuthorMixins from './author-mixins'
   import API from '@api'
-  import Coupon from './coupon'
   import CouponNavigator from '@mixins/coupon-navigator'
 
   const PAGE_NAME = 'COUPON_TAKE'
@@ -56,8 +56,8 @@
         hasMore: true,
         packetId: '',
         tmpId: '',
-        couponInfo: new Coupon(),
-        takeSuccess: false
+        couponInfo: undefined,
+        buttonStatus: 1
       }
     },
     watch: {
@@ -65,16 +65,10 @@
         val && (this.pageConfig.openType = '')
       }
     },
-    provide() {
-      return {
-        couponInfo: this.couponInfo,
-        COUPON_UNIT: Coupon.COUPON_UNIT
-      }
-    },
     onShow() {
       this._initEntryParams()
-      this._getCouponInfo()
       this._getTakeArray()
+      this._getCouponInfo()
       this._getCouponStatus()
     },
     onReachBottom() {
@@ -119,14 +113,13 @@
       },
       // 领取优惠券
       _takeCoupon() {
-        if (this.takeSuccess) {
+        if (this.buttonStatus === 1) {
           this.navHandle(this.couponInfo.coupon.range_type, this.couponInfo.coupon.coupon_id)
           return
         }
-        this.takeSuccess = true // todo
         API.Coupon.takeCoupon({packetId: this.packetId}).then((res) => {
           this.pageConfig.btnText = '立即使用'
-          this.takeSuccess = true
+          this.buttonStatus = 1
           this.page = 1
           this.hasMore = true
           this._getTakeArray()
@@ -137,6 +130,12 @@
       // 获取优惠券状态
       _getCouponStatus() {
         // todo
+        API.Coupon.getPacketStatus({packetId: this.packetId}).then((res) => {
+          this.pageConfig.btnText = res.data.status_str
+          this.buttonStatus = res.data.status
+        }).catch(e => {
+          console.error(e)
+        })
       },
       getUserInfoHandle(e) {
         this._login(e, () => {

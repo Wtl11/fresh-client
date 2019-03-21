@@ -7,7 +7,7 @@
     <div class="content">
       <section class="coupon-info-wrapper">
         <div class="coupon-item-wrapper">
-          <coupon-item></coupon-item>
+          <coupon-item :dataInfo="couponInfo"></coupon-item>
         </div>
         <div class="line-wrapper">
           <img class="line" v-if="imageUrl" :src="imageUrl + '/yx-image/2.1/pic-wire@2x.png'">
@@ -42,6 +42,10 @@
       pageConfig: {
         type: Object,
         default: () => {}
+      },
+      couponInfo: {
+        type: Object,
+        default: () => undefined
       }
     },
     data() {

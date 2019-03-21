@@ -6,7 +6,7 @@
     <div class="coupon-container">
       <section class="left">
         <div class="l-top" :class="'corp-' + corpName + '-money'">
-          <p class="number">{{dataInfo.coupon.coupon_name}}</p>
+          <p class="number">{{dataInfo.coupon.denomination}}</p>
           <p class="unit">{{unit}}</p>
         </div>
         <!--<div v-if="false" class="l-bottom">满100元可用</div>-->
@@ -26,19 +26,21 @@
 </template>
 
 <script type="text/ecmascript-6">
+  import Coupon from './coupon'
   const COMPONENT_NAME = 'COUPON_ITEM'
 
   export default {
     name: COMPONENT_NAME,
     inject: ['couponInfo', 'COUPON_UNIT'],
-    data() {
-      return {
-        dataInfo: this.couponInfo
+    props: {
+      dataInfo: {
+        type: Object,
+        default: () => new Coupon()
       }
     },
     computed: {
       unit() {
-        return this.COUPON_UNIT[this.dataInfo.coupon.preferential_type] || ''
+        return Coupon.COUPON_UNIT[this.dataInfo.coupon.preferential_type] || ''
       }
     }
   }
