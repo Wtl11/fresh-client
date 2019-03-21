@@ -333,8 +333,9 @@
       showShare() {
         this.$refs.shareList.showLink()
       },
-      addShoppingCart() {
-        if (!this.$isLogin()) {
+      async addShoppingCart() {
+        let isLogin = await this.$isLogin()
+        if (!isLogin) {
           return
         }
         API.Choiceness.addShopCart({goods_sku_id: this.goodsMsg.goods_skus[0].goods_sku_id, activity_id: this.activityId}).then((res) => {
@@ -351,8 +352,9 @@
           }
         })
       },
-      instantlyBuy() {
-        if (!this.$isLogin()) {
+      async instantlyBuy() {
+        let isLogin = await this.$isLogin()
+        if (!isLogin) {
           return
         }
         ald.aldstat.sendEvent('立即购买')

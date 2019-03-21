@@ -182,8 +182,9 @@
           url: `/pages/goods-detail?id=${item.goods_id}&activityId=${item.activity_id}`
         })
       },
-      addShoppingCart(item) {
-        if (!this.$isLogin()) {
+      async addShoppingCart(item) {
+        let isLogin = await this.$isLogin()
+        if (!isLogin) {
           return
         }
         API.Choiceness.addShopCart({goods_sku_id: item.goods_sku_id, activity_id: item.activity_id}).then((res) => {

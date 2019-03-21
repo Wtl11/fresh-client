@@ -215,7 +215,6 @@
     },
     async onShow() {
       try {
-        this.$wechat.showLoading()
         this.$sendMsg({
           event_no: 1000
         })
@@ -419,8 +418,9 @@
           this.goodsMore = true
         }
       },
-      addShoppingCart(item) {
-        if (!this.$isLogin()) {
+      async addShoppingCart(item) {
+        let isLogin = await this.$isLogin()
+        if (!isLogin) {
           return
         }
         API.Choiceness.addShopCart({goods_sku_id: item.goods_sku_id, activity_id: item.activity_id}).then((res) => {

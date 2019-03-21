@@ -14,7 +14,7 @@
       </div>
       <div class="info-money-box">
         <div class="money-number" :class="[wechatInfo.type === 30 ? 'corp-' + corpName + '-money' : '', wechatInfo.type === 31 ? 'corp-' + corpName + '-money': '']">{{wechatInfo.total}}</div>
-        <div class="money-balance" v-if="wechatType * 1 === 1">余额 ￥{{wechatInfo.after_remaining}}</div>
+        <div class="money-balance" v-if="wechatType * 1 === 1">余额 ¥{{wechatInfo.after_remaining}}</div>
         <div class="money-balance" v-if="wechatType * 1 === 2">{{wechatInfo.status_str}}</div>
         <div class="withdraw"></div>
       </div>
