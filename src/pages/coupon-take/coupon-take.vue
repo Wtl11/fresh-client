@@ -16,7 +16,7 @@
           </div>
         </dt>
         <dd class="user-wrapper" v-for="(item, index) in takeArray" :key="index">
-          <user-item></user-item>
+          <user-item :userInfo="item"></user-item>
         </dd>
       </dl>
     </section>
@@ -28,6 +28,9 @@
   import CouponCommonChannel from '@components/coupon-common-channel/coupon-common-channel'
   import UserItem from './user-item/user-item'
   import AuthorMixins from './author-mixins'
+  import API from '@api'
+  import Coupon from './coupon'
+  import CouponNavigator from '@mixins/coupon-navigator'
 
   const PAGE_NAME = 'COUPON_TAKE'
 
@@ -38,17 +41,23 @@
       CouponCommonChannel,
       UserItem
     },
-    mixins: [AuthorMixins],
+    mixins: [AuthorMixins, CouponNavigator],
     data() {
       return {
         pageConfig: {
           btnText: '马上领取',
           btnStyle: 'padding-bottom:20px',
-          openType: 'getUserInfo'
+          openType: 'getUserInfo',
+          btnCName: '' // disable
         },
-        takeArray: new Array(10).fill(1),
+        takeArray: [],
+        page: 1,
+        limit: 10,
+        hasMore: true,
         packetId: '',
-        tmpId: ''
+        tmpId: '',
+        couponInfo: new Coupon(),
+        takeSuccess: false
       }
     },
     watch: {
@@ -56,11 +65,21 @@
         val && (this.pageConfig.openType = '')
       }
     },
+    provide() {
+      return {
+        couponInfo: this.couponInfo,
+        COUPON_UNIT: Coupon.COUPON_UNIT
+      }
+    },
     onShow() {
       this._initEntryParams()
       this._getCouponInfo()
       this._getTakeArray()
       this._getCouponStatus()
+    },
+    onReachBottom() {
+      this.page++
+      this._getTakeArray()
     },
     methods: {
       // 初始化页面参数
@@ -73,7 +92,11 @@
       },
       // 获取优惠券信息
       _getCouponInfo() {
-        // todo
+        API.Coupon.getPacketDetail({packetId: this.packetId}).then((res) => {
+          this.couponInfo = res.data
+        }).catch(e => {
+          console.error(e)
+        })
       },
       // 获取
       _getTakeArray() {
@@ -81,14 +104,39 @@
           this.takeArray = []
           return
         }
-        console.log('领取列表')
+        if (!this.hasMore) return
+        API.Coupon.getTakeList({packetId: this.packetId, page: this.page}).then((res) => {
+          if (res.meta.current_page === 1) {
+            this.takeArray = res.data
+          } else {
+            let arr = this.takeArray.concat(res.data)
+            this.takeArray = arr
+          }
+          this.hasMore = res.meta.current_page < res.meta.last_page
+        }).catch(e => {
+          console.error(e)
+        })
       },
       // 领取优惠券
       _takeCoupon() {
-        console.log('领取优惠券啊')
+        if (this.takeSuccess) {
+          this.navHandle(this.couponInfo.coupon.range_type, this.couponInfo.coupon.coupon_id)
+          return
+        }
+        this.takeSuccess = true // todo
+        API.Coupon.takeCoupon({packetId: this.packetId}).then((res) => {
+          this.pageConfig.btnText = '立即使用'
+          this.takeSuccess = true
+          this.page = 1
+          this.hasMore = true
+          this._getTakeArray()
+        }).catch(e => {
+          console.error(e)
+        })
       },
       // 获取优惠券状态
       _getCouponStatus() {
+        // todo
       },
       getUserInfoHandle(e) {
         this._login(e, () => {

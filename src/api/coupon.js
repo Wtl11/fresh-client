@@ -25,5 +25,28 @@ export default {
   targetModal(data, loading = false, toast = false) {
     const url = `/api/wap/coupon-activity-manage/read-coupon-activity`
     return request.post({url, data, loading, toast})
+  },
+  // 团长生成营销优惠券包
+  createPacket(data, loading, toast) {
+    const url = `/api/wap/coupon-activity-manage/create-shop-coupon-bag/${data.couponId}`
+    return request.post({url, data, loading, toast})
+  },
+  // 团长营销优惠券包详情
+  getPacketDetail(data, loading, toast) {
+    const url = `/api/wap/coupon-activity-manage/shop-coupon-bag-detail/${data.packetId}`
+    data = ''
+    return request.get({url, data, loading, toast})
+  },
+  // 抢优惠券记录
+  getTakeList(data, loading = false, toast = false) {
+    const url = `/api/wap/coupon-activity-manage/receive-coupon-logs/${data.packetId}`
+    data = ''
+    return request.get({url, data, loading, toast})
+  },
+  // 抢优惠券
+  takeCoupon(data, loading, toast) {
+    const url = `/api/wap/coupon-activity-manage/receive-coupon-by-bag/${data.packetId}`
+    data = ''
+    return request.post({url, data, loading, toast})
   }
 }

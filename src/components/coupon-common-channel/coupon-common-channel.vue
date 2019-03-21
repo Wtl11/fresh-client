@@ -18,6 +18,7 @@
             @getuserinfo="getUserInfoHandle"
             @click="buttonHandle"
             class="button"
+            :class="pageConfig.btnCName"
           >
             {{pageConfig.btnText}}
           </button>
@@ -100,6 +101,8 @@
             color: #FFFFFF;
             text-align: center;
             line-height: @height
+            &.disable
+              background :#b7b7b7
         .explain
           padding :7.5px 0 15px
           font-size: 11px;

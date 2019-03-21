@@ -6,15 +6,15 @@
     <div class="coupon-container">
       <section class="left">
         <div class="l-top" :class="'corp-' + corpName + '-money'">
-          <p class="number">20</p>
-          <p class="unit">元</p>
+          <p class="number">{{dataInfo.coupon.coupon_name}}</p>
+          <p class="unit">{{unit}}</p>
         </div>
-        <div v-if="false" class="l-bottom">满100元可用</div>
+        <!--<div v-if="false" class="l-bottom">满100元可用</div>-->
       </section>
       <section class="right">
         <div class="info-wrapper">
-          <div class="title">赞播优鲜新人专享券赞播优鲜新人专享券赞播优鲜新人专享券</div>
-          <p class="explain">满100元可用</p>
+          <div class="title">{{dataInfo.coupon.coupon_name}}</div>
+          <p class="explain">{{dataInfo.coupon.condition_str}}</p>
           <!--<div class="explain-wrapper">-->
             <!--<p class="explain">指定商品可用</p>-->
             <!--<p class="date">有效期至 2018.12.31 23:59:50</p>-->
@@ -30,9 +30,15 @@
 
   export default {
     name: COMPONENT_NAME,
+    inject: ['couponInfo', 'COUPON_UNIT'],
     data() {
       return {
-
+        dataInfo: this.couponInfo
+      }
+    },
+    computed: {
+      unit() {
+        return this.COUPON_UNIT[this.dataInfo.coupon.preferential_type] || ''
       }
     }
   }

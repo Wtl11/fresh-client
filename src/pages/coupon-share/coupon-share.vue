@@ -8,6 +8,8 @@
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import CouponCommonChannel from '@components/coupon-common-channel/coupon-common-channel'
+  import API from '@api'
+  import Coupon from './coupon'
 
   const PAGE_NAME = 'COUPON_SHARE'
 
@@ -23,7 +25,14 @@
           btnText: '分享',
           btnExplain: '优惠券24小时后未领取完的，剩余数量全部返还到团长账户中',
           openType: 'share'
-        }
+        },
+        couponInfo: new Coupon()
+      }
+    },
+    provide() {
+      return {
+        couponInfo: this.couponInfo,
+        COUPON_UNIT: Coupon.COUPON_UNIT
       }
     },
     onShow() {
@@ -32,7 +41,6 @@
     onShareAppMessage() {
       let shopId = wx.getStorageSync('leaderId')
       let packetId = this.$mp.query.packetId
-      console.log(shopId, packetId) // todo
       return {
         title: '【赞播优鲜】送你一张优惠券，赶快来领取吧！',
         path: `/pages/coupon-take?shopId=${shopId}&packetId=${packetId}`,
@@ -42,8 +50,11 @@
     methods: {
       // 获取优惠券信息
       _getCouponInfo() {
-        console.log(this.$mp.query)
-        // todo
+        API.Coupon.getPacketDetail({packetId: this.$mp.query.packetId}).then((res) => {
+          this.couponInfo = res.data
+        }).catch(e => {
+          console.error(e)
+        })
       }
     }
   }

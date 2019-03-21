@@ -8,6 +8,7 @@ export default {
   config: {
     navigationBarTitleText: '领取优惠券',
     backgroundColorTop: '#FFFFFF',
-    backgroundColorBottom: '#FFA83F'
+    backgroundColorBottom: '#FFA83F',
+    onReachBottomDistance: 300
   }
 }

@@ -25,7 +25,6 @@
           <p v-else>{{item.text}}</p>
           <p v-if="item.type === 'input' && isShowing" class="input-placeholder">自定义</p>
         </li>
-        <!--<div class="btn confirm" @tap="confirm" :class="'corp-' + corpName + '-text'">知道了</div>-->
       </ul>
       <div class="submit-wrapper">
         <div class="btn" :class="'corp-' + corpName + '-bg'" @click="submitHandle">确定</div>
@@ -36,6 +35,7 @@
 
 <script type="text/ecmascript-6">
   import AnimationModal from '@mixins/animation-modal'
+  import API from '@api'
   const COMPONENT_NAME = 'COUPON_SHARE_MODAL'
 
   export default {
@@ -53,14 +53,16 @@
           {text: 20},
           {text: '', type: 'input'}
         ],
-        buttonIndex: 1
+        buttonIndex: 1,
+        couponId: 0
       }
     },
     onUnload() {
       this._resetStatus()
     },
     methods: {
-      show() {
+      show(coupon = {}, index = 0) {
+        this.couponId = coupon.id
         if (this.isShow) {
           return
         }
@@ -86,8 +88,7 @@
         if (val < 1) {
           return
         }
-        this.hide()
-        wx.navigateTo({url: `/pages/coupon-share?packetId=11`})
+        this._createPacket(val)
       },
       chooseHandle(item, index) {
         this.buttonIndex = index
@@ -95,6 +96,15 @@
       _resetStatus() {
         this.buttonIndex = 1
         this.buttonArray[this.buttonArray.length - 1].text = ''
+      },
+      _createPacket(number, callback) {
+        API.Coupon.createPacket({couponId: this.couponId, number}).then((res) => {
+          callback && callback()
+          this.hide()
+          wx.navigateTo({url: `/pages/coupon-share?packetId=${res.data.bag_id}`})
+        }).catch(e => {
+          console.error(e)
+        })
       }
     }
   }

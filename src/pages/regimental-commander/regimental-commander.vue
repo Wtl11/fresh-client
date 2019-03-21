@@ -235,7 +235,7 @@
     methods: {
       // 优惠券弹窗
       couponHandle(child, idx) {
-        this.$refs.couponModal && this.$refs.couponModal.show()
+        this.$refs.couponModal && this.$refs.couponModal.show(child, idx)
       },
       // 监听socketMSG
       _onSocketMsg() {

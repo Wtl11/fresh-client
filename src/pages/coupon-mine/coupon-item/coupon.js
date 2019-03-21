@@ -1,6 +1,6 @@
 export default class {
   static COLOR = ['#B7B7B7', '', '#B7B7B7']
-  static COUPON_UNIT = ['元', '折', '元']
+  static COUPON_UNIT = ['', '折', '元']
   constructor () {
     this.customer_coupon_id = 0
     this.coupon_id = 0
