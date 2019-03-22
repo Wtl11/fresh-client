@@ -7,5 +7,6 @@ export default class Query {
   }
   constructor () {
     this.query = wx.createSelectorQuery() || {}
+    this.query.select('#contentWrapper').boundingClientRect()
   }
 }

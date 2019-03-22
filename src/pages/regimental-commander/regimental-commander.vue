@@ -87,7 +87,7 @@
             <p class="title">{{preSell.activity_title}}</p>
             <div class="copy-btn" :class="'corp-' + corpName + '-goods-btn'" @click="copyPreSell">一键复制</div>
           </div>
-          <div class="content-wrapper" v-if="preSell.activity_content_list">
+          <div id="contentWrapper" class="content-wrapper" v-if="preSell.activity_content_list">
             <div v-for="(item, index) in preSell.activity_content_list" :key="item || index" class="content">{{item}}</div>
           </div>
           <div class="noting" v-if="nav[0].isShowEmpty">
@@ -207,11 +207,11 @@
       this.$refs.navigationBar && this.$refs.navigationBar._initHeadStyle()
     },
     onLoad() {
+      Query.getInstance()
       let systemInfo = wx.getSystemInfoSync() || {}
       let screenWidth = systemInfo.screenWidth
       this.couponHeight = screenWidth * 0.24
       this.width = screenWidth * 0.936
-      Query.getInstance()
       let statusBarHeight = systemInfo.statusBarHeight - 20 || 0
       for (let key in this.adaptation) {
         this.adaptation[key] += statusBarHeight
@@ -396,7 +396,6 @@
         let height = 0
         switch (index) {
           case 0:
-            Query.getInstance().query.select('.content-wrapper').boundingClientRect()
             Query.getInstance().query.exec((res) => {
               height = res[0] ? res[0].height + 40 : 280
               this.detailedHeight = height
