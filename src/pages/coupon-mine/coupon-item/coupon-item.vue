@@ -57,7 +57,7 @@
     },
     methods: {
       useHandle() {
-        this.navHandle(this.dataInfo.range_type, this.dataInfo.coupon_id)
+        this.navHandle(this.dataInfo.range_type, this.dataInfo.customer_coupon_id)
       }
     }
   }

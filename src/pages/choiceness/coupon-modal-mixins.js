@@ -24,7 +24,7 @@ export default {
       })
     },
     _ref(key, fn, params) {
-      this.$refs[key] && this.$refs[key][fn](params)
+      this.$refs[key] && this.$refs[key][fn] && this.$refs[key][fn](params)
     }
   }
 }

@@ -311,7 +311,6 @@
         let limit = this.nav[index].limit
         try {
           let res = await API.Coupon.getMarketList({page, limit}, this.nav[index].isFirstLoad)
-          console.log(res)
           if (res.meta.current_page === 1) {
             this.couponArray = res.data
             this.nav[index].isFirstLoad = false

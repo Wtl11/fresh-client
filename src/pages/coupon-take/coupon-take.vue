@@ -57,7 +57,9 @@
         packetId: '',
         tmpId: '',
         couponInfo: undefined,
-        buttonStatus: 1
+        buttonStatus: 1,
+        id: 0,
+        couponId: 0
       }
     },
     watch: {
@@ -80,13 +82,14 @@
       _initEntryParams() {
         let options = (wx.getLaunchOptionsSync() || {}).query || {}
         this.packetId = +options.packetId
-        this.tmpId = options.tmpId
+        this.tmpId = +options.tmpId
+        this.id = this.packetId || this.tmpId
         let shopId = +options.shopId
         shopId && wx.setStorageSync('shopId', shopId)
       },
       // 获取优惠券信息
       _getCouponInfo() {
-        API.Coupon.getPacketDetail({packetId: this.packetId}).then((res) => {
+        API.Coupon.getPacketDetail(this.id).then((res) => {
           this.couponInfo = res.data
         }).catch(e => {
           console.error(e)
@@ -114,25 +117,43 @@
       // 领取优惠券
       _takeCoupon() {
         if (this.buttonStatus === 1) {
-          this.navHandle(this.couponInfo.coupon.range_type, this.couponInfo.coupon.coupon_id)
+          this.navHandle(this.couponInfo.coupon.range_type, this.couponId, 'redirectTo')
+          return
+        }
+        if (this.tmpId) {
+          API.Coupon.takeCouponTmpl({tmpId: this.tmpId}).then((res) => {
+            this.pageConfig.btnText = '立即使用'
+            this.buttonStatus = 1
+          }).catch(this._errorHandle)
           return
         }
         API.Coupon.takeCoupon({packetId: this.packetId}).then((res) => {
+          this.couponId = res.data.customer_coupon_id
           this.pageConfig.btnText = '立即使用'
           this.buttonStatus = 1
           this.page = 1
           this.hasMore = true
           this._getTakeArray()
-        }).catch(e => {
-          console.error(e)
-        })
+        }).catch(this._errorHandle)
+      },
+      _errorHandle(e) {
+        console.warn(e)
+        if (!e) return
+        if (e.statusCode) {
+          let data = e.serverData || {}
+          this.pageConfig.btnText = data.message
+          data.message !== '立即使用' && (this.pageConfig.btnCName = 'disable')
+        }
       },
       // 获取优惠券状态
       _getCouponStatus() {
-        // todo
-        API.Coupon.getPacketStatus({packetId: this.packetId}).then((res) => {
+        API.Coupon.getPacketStatus(this.id).then((res) => {
           this.pageConfig.btnText = res.data.status_str
           this.buttonStatus = res.data.status
+          this.couponId = res.data.customer_coupon_id
+          if (res.data.status > 1) {
+            this.pageConfig.btnCName = 'disable'
+          }
         }).catch(e => {
           console.error(e)
         })
