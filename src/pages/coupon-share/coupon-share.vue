@@ -34,6 +34,7 @@
     onShareAppMessage() {
       let shopId = wx.getStorageSync('leaderId')
       let packetId = this.$mp.query.packetId
+      console.warn(shopId, packetId, '=======团长分享')
       return {
         title: '【赞播优鲜】送你一张优惠券，赶快来领取吧！',
         path: `/pages/coupon-take?shopId=${shopId}&packetId=${packetId}`,

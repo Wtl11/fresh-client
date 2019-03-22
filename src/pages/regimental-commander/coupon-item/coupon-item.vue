@@ -77,7 +77,7 @@
         align-items :center
         overflow :hidden
         .l-top
-          font-family: PingFang-SC-Bold
+          font-family: $font-family-medium
           layout(row,block,nowrap)
           align-items :center
           .number
@@ -87,7 +87,7 @@
           .unit
             margin-left :1px
             position :relative
-            top:1.3333333333333335vw
+            top:2vw
             font-size: 4.010695187165775vw
             line-height: @font-size
             white-space: nowrap

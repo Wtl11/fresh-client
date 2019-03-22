@@ -50,6 +50,7 @@
 
   .coupon-tab
     position :relative
+    border-bottom-1px()
     .container
       padding :0 34.5px
       background :#fff

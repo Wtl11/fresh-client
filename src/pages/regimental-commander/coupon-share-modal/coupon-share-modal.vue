@@ -8,7 +8,7 @@
           v-for="(item, index) in buttonArray"
           :key="index"
           class="button-item"
-          :class="{active: buttonIndex === index}"
+          :class="[{active: buttonIndex === index}, buttonIndex === index ? 'corp-' + corpName + '-text' : '']"
           @click="chooseHandle(item, index)"
         >
           <div class="border-wrapper" :class="{active: buttonIndex === index}"></div>
@@ -23,7 +23,7 @@
             v-model="buttonArray[buttonArray.length-1].text"
           >
           <p v-else>{{item.text}}</p>
-          <p v-if="item.type === 'input' && isShowing" class="input-placeholder">自定义</p>
+          <p v-if="item.type === 'input' && isShowing" :class="buttonIndex === index? 'corp-' + corpName + '-text' :'input-placeholder'">自定义</p>
         </li>
       </ul>
       <div class="submit-wrapper">

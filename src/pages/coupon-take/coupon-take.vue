@@ -61,6 +61,7 @@
           openType: 'getUserInfo',
           btnCName: '' // disable
         },
+        options: {},
         takeArray: [],
         page: 1,
         limit: 10,
@@ -79,8 +80,11 @@
         val && (this.pageConfig.openType = '')
       }
     },
-    onShow() {
-      this._initEntryParams()
+    onLoad(options) {
+      this.options = options || {}
+    },
+    async onShow() {
+      await this._initEntryParams()
       this._getTakeArray()
       this._getCouponInfo()
       this._getCouponStatus()
@@ -91,15 +95,21 @@
     },
     methods: {
       // 初始化页面参数
-      _initEntryParams() {
-        let options = (wx.getLaunchOptionsSync() || {}).query || {}
-        this.packetId = +options.packetId
-        this.tmpId = +options.tmpId
-        this.id = this.tmpId || this.packetId
-        this._initMethods()
-        console.warn(this.id, this.packetId, this.tmpId, '=========')
-        let shopId = +options.shopId
-        shopId && wx.setStorageSync('shopId', shopId)
+      async _initEntryParams() {
+        try {
+          let el = await getCurrentPages()[getCurrentPages().length - 1]  // eslint-disable-line
+          if (!el) return
+          let options = el.options || this.options
+          this.packetId = +options.packetId
+          this.tmpId = +options.tmpId
+          this.id = this.tmpId || this.packetId
+          this._initMethods()
+          console.warn(this.id, this.packetId, this.tmpId, '=========')
+          let shopId = +options.shopId
+          shopId && wx.setStorageSync('shopId', shopId)
+        } catch (e) {
+          console.error(e, '获取参数异常')
+        }
       },
       // 区分接口
       _initMethods() {

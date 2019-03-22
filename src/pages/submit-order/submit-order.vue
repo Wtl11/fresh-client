@@ -53,7 +53,7 @@
       <li class="coupon-item" @click="chooseCouponHandle">
         <p class="name">使用优惠券</p>
         <p v-if="discount > 0" class="price">-{{discount}}</p>
-        <p v-else class="price">未使用优惠券</p>
+        <p v-else class="price-disable">未使用优惠券</p>
         <p v-if="discount > 0">元</p>
         <div class="item-arrow-img">
           <img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="img">
@@ -196,7 +196,7 @@
     display :flex
     align-items :center
     font-family: $font-family-regular
-    font-size: 14px;
+    font-size: 14px
     line-height: 1
     color: $color-text-main
     background :#fff
@@ -223,8 +223,12 @@
        flex:1
        color: #000000
      .price
+       font-size: 16px
        font-family: $font-family-medium
-     .item-arrow-img
+     .price-disable
+        font-size :14px
+        color: #808080
+    .item-arrow-img
        margin-left :5px
        display: block
        width: 7.5px

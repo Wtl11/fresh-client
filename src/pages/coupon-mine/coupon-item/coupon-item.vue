@@ -97,7 +97,7 @@
         align-items :center
         overflow :hidden
         .l-top
-          font-family: PingFang-SC-Bold
+          font-family: $font-family-medium
           layout(row,block,nowrap)
           align-items :center
           .number
@@ -106,7 +106,7 @@
           .unit
             margin-left :1px
             position :relative
-            top:1.3333333333333335vw
+            top:2vw
             font-size: 4.010695187165775vw
             line-height: @font-size
         .l-bottom
@@ -153,7 +153,7 @@
             font-size: 3.733333333333334vw
             line-height: @font-size
             color: $color-text-main
-            no-wrap()
+            white-space: nowrap
           .explain-wrapper
             padding-top :2.666666666666667vw
             opacity: 0.8
@@ -161,6 +161,7 @@
             font-size: 3.2vw
             line-height: @font-size
             .date
+              width :60vw
               padding-top :1.866666666666667vw
-              no-wrap()
+              white-space: nowrap
 </style>

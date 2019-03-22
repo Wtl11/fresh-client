@@ -76,7 +76,7 @@
         <p class="name">使用优惠券</p>
         <p v-if="orderMsg.promote_price > 0" class="price">-{{orderMsg.promote_price}}</p>
         <p v-if="orderMsg.promote_price > 0">元</p>
-        <p v-else class="price">未使用优惠券</p>
+        <p v-else class="price-disable">未使用优惠券</p>
       </li>
       <li class="coupon-item">
         <p class="name">实付金额</p>
@@ -143,11 +143,28 @@
     computed: {
       ...oauthComputed,
       originTotal() {
-        return +this.orderMsg.total + +this.orderMsg.promote_price
+        return this._accAdd(this.orderMsg.total, this.orderMsg.promote_price)
       }
     },
     methods: {
       ...orderMethods,
+      // 两个浮点数求和
+      _accAdd(num1, num2) {
+        let r1, r2, m
+        try {
+          r1 = num1.toString().split('.')[1].length
+        } catch (e) {
+          r1 = 0
+        }
+        try {
+          r2 = num2.toString().split('.')[1].length
+        } catch (e) {
+          r2 = 0
+        }
+        m = Math.pow(10, Math.max(r1, r2))
+        // return (num1*m+num2*m)/m;
+        return Math.round(num1 * m + num2 * m) / m
+      },
       closeOrder() {
         this.modelMsg = '确定取消该订单？'
         this.confirmtype = 0
@@ -303,10 +320,11 @@
    display :flex
    align-items :center
    font-family: $font-family-regular
-   font-size: 14px;
+   font-size: 14px
    line-height: 1
    color: $color-text-main
    background :#fff
+   border-top-1px(#e6e6e6)
    border-bottom :11px solid $color-background
    .name
      flex:1
@@ -329,7 +347,11 @@
      flex:1
      color: #000000
    .price
+     font-size: 16px
      font-family: $font-family-medium
+   .price-disable
+     font-size :14px
+     color: #808080
    .item-arrow-img
      margin-left :5px
      display: block

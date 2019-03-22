@@ -95,13 +95,13 @@ export default {
     return request.get({url, undefined, loading, toast})
   },
   // 抢优惠券
-  takeCouponPacket(data, loading, toast) {
+  takeCouponPacket(data, loading = true, toast) {
     const url = `/api/wap/coupon-activity-manage/receive-coupon-by-bag/${data.packetId}`
     data = ''
     return request.post({url, data, loading, toast})
   },
   // 领取营销活动优惠券（如消息模板发送的）
-  takeCouponTmpl(data, loading, toast) {
+  takeCouponTmpl(data, loading = true, toast) {
     const url = `/api/wap/coupon-activity-manage/receive-coupon-by-activity/${data.tmpId}`
     data = ''
     return request.post({url, data, loading, toast})
