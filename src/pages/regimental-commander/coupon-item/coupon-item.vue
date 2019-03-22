@@ -9,14 +9,14 @@
           <p class="number">{{dataInfo.coupon.denomination}}</p>
           <p class="unit">{{unit}}</p>
         </div>
-        <div v-if="dataInfo.coupon.condition_str" class="l-bottom">{{dataInfo.coupon.condition_str}}</div>
+        <div v-if="dataInfo.coupon.condition > 0" class="l-bottom">{{dataInfo.coupon.condition_str}}</div>
       </section>
       <section class="right">
         <div class="info-wrapper">
           <div class="title">{{dataInfo.coupon.coupon_name}}</div>
           <div class="explain-wrapper">
             <p class="explain">{{dataInfo.coupon.range_type_desc}}(剩{{dataInfo.usable_stock}}张)</p>
-            <p class="date">有效期至 {{dataInfo.coupon.start_at}} {{dataInfo.coupon.end_at}}</p>
+            <p class="date">有效期至{{dataInfo.coupon.end_at}}</p>
           </div>
         </div>
         <div class="tool-wrapper">

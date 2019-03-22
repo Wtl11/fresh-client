@@ -9,14 +9,14 @@
           <p class="number">{{dataInfo.denomination}}</p>
           <p class="unit">{{unit}}</p>
         </div>
-        <div class="l-bottom" :style="{color}">{{dataInfo.condition_str}}</div>
+        <div v-if="dataInfo.condition > 0" class="l-bottom" :style="{color}">{{dataInfo.condition_str}}</div>
       </section>
       <section class="right">
         <div class="info-wrapper">
           <div class="title" :style="{color}">{{dataInfo.coupon_name}}</div>
           <div class="explain-wrapper">
             <p class="explain" :style="{color}">{{dataInfo.range_type_desc}}</p>
-            <p class="date" :style="{color}">有效期至 {{dataInfo.start_at}} {{dataInfo.end_at}}</p>
+            <p class="date" :style="{color}">有效期至{{dataInfo.end_at}}</p>
           </div>
         </div>
         <div class="tool-wrapper">

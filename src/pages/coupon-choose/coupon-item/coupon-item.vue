@@ -9,14 +9,14 @@
           <p class="number">{{dataInfo.denomination}}</p>
           <p class="unit">{{unit}}</p>
         </div>
-        <div class="l-bottom">{{dataInfo.condition_str}}</div>
+        <div v-if="dataInfo.condition > 0" class="l-bottom">{{dataInfo.condition_str}}</div>
       </section>
       <section class="right">
         <div class="info-wrapper">
           <div class="title">{{dataInfo.coupon_name}}</div>
           <div class="explain-wrapper">
             <p class="explain">{{dataInfo.range_type_desc}}</p>
-            <p class="date">有效期至 {{dataInfo.start_at}} {{dataInfo.end_at}}</p>
+            <p class="date">有效期至{{dataInfo.end_at}}</p>
           </div>
         </div>
         <div class="tool-wrapper">
@@ -42,14 +42,14 @@
             <p class="number">{{dataInfo.denomination}}</p>
             <p class="unit">{{unit}}</p>
           </div>
-          <div class="l-bottom color-b7b7b7">{{dataInfo.condition_str}}</div>
+          <div v-if="dataInfo.condition > 0" class="l-bottom color-b7b7b7">{{dataInfo.condition_str}}</div>
         </section>
         <section class="right">
           <div class="info-wrapper">
             <div class="title color-b7b7b7">{{dataInfo.coupon_name}}</div>
             <div class="explain-wrapper color-b7b7b7">
               <p class="explain">{{dataInfo.range_type_desc}}</p>
-              <p class="date">有效期至 {{dataInfo.start_at}} {{dataInfo.end_at}}</p>
+              <p class="date">有效期至{{dataInfo.end_at}}</p>
             </div>
           </div>
           <div class="tool-wrapper">
