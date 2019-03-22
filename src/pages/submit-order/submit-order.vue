@@ -100,6 +100,8 @@
       }
     },
     onLoad() {
+      // 重置优惠券
+      this.saveCoupon({})
       this._getCouponInfo()
     },
     async onShow() {
@@ -127,10 +129,12 @@
           })
       },
       async goPay() {
+        console.log(this.couponInfo.coupon_id)
         let orderInfo = {
           goods: this.goodsList,
           nickname: this.userInfo.nickname,
-          mobile: this.mobile
+          mobile: this.mobile,
+          customer_coupon_id: this.couponInfo.customer_coupon_id || 0
         }
         this.userInfo.mobile = this.mobile
         this.$wechat.setStorage('userInfo', this.userInfo)

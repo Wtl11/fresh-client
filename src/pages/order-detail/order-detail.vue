@@ -68,18 +68,19 @@
     </div>
     <section class="goods-total-wrapper">
       <p class="name">商品总价</p>
-      <p class="price">17.6</p>
+      <p class="price">{{originTotal}}</p>
       <p>元</p>
     </section>
     <ul class="coupon-info-wrapper" :class="'corp-' + corpName + '-money'">
       <li class="coupon-item">
         <p class="name">使用优惠券</p>
-        <p class="price">-10</p>
-        <p>元</p>
+        <p v-if="orderMsg.promote_price > 0" class="price">-{{orderMsg.promote_price}}</p>
+        <p v-if="orderMsg.promote_price > 0">元</p>
+        <p v-else class="price">未使用优惠券</p>
       </li>
       <li class="coupon-item">
         <p class="name">实付金额</p>
-        <p class="price">7.6</p>
+        <p class="price">{{orderMsg.total}}</p>
         <p>元</p>
       </li>
     </ul>
@@ -140,7 +141,10 @@
       this.getGoodsDetailData()
     },
     computed: {
-      ...oauthComputed
+      ...oauthComputed,
+      originTotal() {
+        return +this.orderMsg.total + +this.orderMsg.promote_price
+      }
     },
     methods: {
       ...orderMethods,
@@ -225,6 +229,7 @@
       getGoodsDetailData() {
         API.Order.getOrderDetailData(this.orderId).then((res) => {
           if (res.error === this.$ERR_OK) {
+            console.log(res)
             this.orderMsg = res.data
             this.address = res.data.address
             this.groupInfo = {
