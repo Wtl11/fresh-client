@@ -149,6 +149,7 @@
   import CouponItem from './coupon-item/coupon-item'
   import CouponShareModal from './coupon-share-modal/coupon-share-modal'
   import TabItem from './tab-item'
+  import Query from './query'
 
   const PAGE_NAME = 'REGIMENTAL_COMMANDER'
 
@@ -163,8 +164,6 @@
     },
     data() {
       return {
-        query: {},
-        systemInfo: {},
         nav: [
           new TabItem({title: '预售清单', fn: '_getPresellGoods', isOnReachBottom: false}),
           new TabItem({title: '优惠券营销', fn: '_getCouponList', isOnReachBottom: true}),
@@ -208,13 +207,12 @@
       this.$refs.navigationBar && this.$refs.navigationBar._initHeadStyle()
     },
     onLoad() {
-      let info = wx.getSystemInfoSync() || {}
-      let screenWidth = info.screenWidth
+      let systemInfo = wx.getSystemInfoSync() || {}
+      let screenWidth = systemInfo.screenWidth
       this.couponHeight = screenWidth * 0.24
       this.width = screenWidth * 0.936
-      this.systemInfo = info
-      this.query = wx.createSelectorQuery() || {}
-      let statusBarHeight = this.systemInfo.statusBarHeight - 20 || 0
+      Query.getInstance()
+      let statusBarHeight = systemInfo.statusBarHeight - 20 || 0
       for (let key in this.adaptation) {
         this.adaptation[key] += statusBarHeight
       }
@@ -226,6 +224,7 @@
     async onShow() {
       Notification.getInstance().connect() // 连接
       this._onSocketMsg()
+      Query.getInstance()
     },
     // computed: {
     //   address() {
@@ -397,8 +396,8 @@
         let height = 0
         switch (index) {
           case 0:
-            this.query.select('.content-wrapper').boundingClientRect()
-            this.query.exec((res) => {
+            Query.getInstance().query.select('.content-wrapper').boundingClientRect()
+            Query.getInstance().query.exec((res) => {
               height = res[0] ? res[0].height + 40 : 280
               this.detailedHeight = height
             })
