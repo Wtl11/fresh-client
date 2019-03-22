@@ -84,6 +84,7 @@
         this.packetId = +options.packetId
         this.tmpId = +options.tmpId
         this.id = this.packetId || this.tmpId
+        console.warn(this.id, this.packetId, this.tmpId, '=========')
         let shopId = +options.shopId
         shopId && wx.setStorageSync('shopId', shopId)
       },
@@ -92,7 +93,7 @@
         API.Coupon.getPacketDetail(this.id).then((res) => {
           this.couponInfo = res.data
         }).catch(e => {
-          console.error(e)
+          console.error(e, '获取优惠券信息')
         })
       },
       // 获取
@@ -116,10 +117,15 @@
       },
       // 领取优惠券
       _takeCoupon() {
+        console.log(this.isAuthor)
+        if (!this.isAuthor) return
         if (this.buttonStatus === 1) {
           this.navHandle(this.couponInfo.coupon.range_type, this.couponId, 'redirectTo')
           return
         }
+        this._takeCouponAction()
+      },
+      _takeCouponAction() {
         if (this.tmpId) {
           API.Coupon.takeCouponTmpl({tmpId: this.tmpId}).then((res) => {
             this.pageConfig.btnText = '立即使用'
@@ -155,12 +161,13 @@
             this.pageConfig.btnCName = 'disable'
           }
         }).catch(e => {
-          console.error(e)
+          console.error(e, '获取优惠券状态')
         })
       },
       getUserInfoHandle(e) {
         this._login(e, () => {
-          this._takeCoupon()
+          this._takeCouponAction()
+          this._getCouponStatus()
         })
       }
     }
