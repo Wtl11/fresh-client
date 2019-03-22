@@ -149,7 +149,6 @@
   import CouponItem from './coupon-item/coupon-item'
   import CouponShareModal from './coupon-share-modal/coupon-share-modal'
   import TabItem from './tab-item'
-  import Query from './query'
 
   const PAGE_NAME = 'REGIMENTAL_COMMANDER'
 
@@ -207,7 +206,6 @@
       this.$refs.navigationBar && this.$refs.navigationBar._initHeadStyle()
     },
     onLoad() {
-      Query.getInstance()
       let systemInfo = wx.getSystemInfoSync() || {}
       let screenWidth = systemInfo.screenWidth
       this.couponHeight = screenWidth * 0.24
@@ -224,7 +222,6 @@
     async onShow() {
       Notification.getInstance().connect() // 连接
       this._onSocketMsg()
-      Query.getInstance()
     },
     // computed: {
     //   address() {
@@ -396,7 +393,10 @@
         let height = 0
         switch (index) {
           case 0:
-            Query.getInstance().query.exec((res) => {
+            let query = wx.createSelectorQuery()
+            query.select('#contentWrapper').boundingClientRect()
+            if (!query) return
+            query.exec((res) => {
               height = res[0] ? res[0].height + 40 : 280
               this.detailedHeight = height
             })
