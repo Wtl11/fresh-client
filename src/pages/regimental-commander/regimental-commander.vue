@@ -76,7 +76,7 @@
     <!--商品模块-->
     <div class="reg-goods">
       <div class="rag-goods-tab">
-        <span :class="[navIndex === index ? 'rag-goods-tab-item-active' : '',navIndex === index ? 'corp-' + corpName + '-bg' : '', 'corp-' + corpName + '-tab']" class="rag-goods-tab-item" v-for="(item, index) in nav" :key="item || index" @click="_setNav(index)">
+        <span :class="[navIndex === index ? 'rag-goods-tab-item-active' : '',navIndex === index ? 'corp-' + corpName + '-bg' : '', 'corp-' + corpName + '-tab']" class="rag-goods-tab-item" v-for="(item, index) in nav" :key="index" @click="_setNav(index)">
           {{item.title}}
         </span>
       </div>
@@ -88,7 +88,7 @@
             <div class="copy-btn" :class="'corp-' + corpName + '-goods-btn'" @click="copyPreSell">一键复制</div>
           </div>
           <div class="content-wrapper" v-if="preSell.activity_content_list">
-            <div v-for="(item, index) in preSell.activity_content_list" :key="index" class="content">{{item}}</div>
+            <div v-for="(item, index) in preSell.activity_content_list" :key="item || index" class="content">{{item}}</div>
           </div>
           <div class="noting" v-if="nav[0].isShowEmpty">
             <div class="noting-img">
