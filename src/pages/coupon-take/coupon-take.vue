@@ -33,7 +33,18 @@
   import CouponNavigator from '@mixins/coupon-navigator'
 
   const PAGE_NAME = 'COUPON_TAKE'
-
+  const METHODS = {
+    PACKET: {
+      getCouponInfo: 'getDetailPacket',
+      getCouponStatus: 'getStatusPacket',
+      takeCoupon: 'takeCouponPacket'
+    },
+    TEMPLATE: {
+      getCouponInfo: 'getDetailTmpl',
+      getCouponStatus: 'getStatusTmpl',
+      takeCoupon: 'takeCouponTmpl'
+    }
+  }
   export default {
     name: PAGE_NAME,
     components: {
@@ -59,7 +70,8 @@
         couponInfo: undefined,
         buttonStatus: 1,
         id: 0,
-        couponId: 0
+        couponId: 0,
+        METHODS: METHODS['PACKET']
       }
     },
     watch: {
@@ -83,14 +95,21 @@
         let options = (wx.getLaunchOptionsSync() || {}).query || {}
         this.packetId = +options.packetId
         this.tmpId = +options.tmpId
-        this.id = this.packetId || this.tmpId
+        this.id = this.tmpId || this.packetId
+        this._initMethods()
         console.warn(this.id, this.packetId, this.tmpId, '=========')
         let shopId = +options.shopId
         shopId && wx.setStorageSync('shopId', shopId)
       },
+      // 区分接口
+      _initMethods() {
+        if (this.tmpId) {
+          this.METHODS = METHODS['TEMPLATE']
+        }
+      },
       // 获取优惠券信息
       _getCouponInfo() {
-        API.Coupon.getPacketDetail(this.id).then((res) => {
+        API.Coupon[this.METHODS.getCouponInfo](this.id).then((res) => {
           this.couponInfo = res.data
         }).catch(e => {
           console.error(e, '获取优惠券信息')
@@ -117,7 +136,6 @@
       },
       // 领取优惠券
       _takeCoupon() {
-        console.log(this.isAuthor)
         if (!this.isAuthor) return
         if (this.buttonStatus === 1) {
           this.navHandle(this.couponInfo.coupon.range_type, this.couponId, 'redirectTo')
@@ -126,14 +144,7 @@
         this._takeCouponAction()
       },
       _takeCouponAction() {
-        if (this.tmpId) {
-          API.Coupon.takeCouponTmpl({tmpId: this.tmpId}).then((res) => {
-            this.pageConfig.btnText = '立即使用'
-            this.buttonStatus = 1
-          }).catch(this._errorHandle)
-          return
-        }
-        API.Coupon.takeCoupon({packetId: this.packetId}).then((res) => {
+        API.Coupon[this.METHODS.getCouponStatus](this.id).then((res) => {
           this.couponId = res.data.customer_coupon_id
           this.pageConfig.btnText = '立即使用'
           this.buttonStatus = 1
@@ -153,7 +164,7 @@
       },
       // 获取优惠券状态
       _getCouponStatus() {
-        API.Coupon.getPacketStatus(this.id).then((res) => {
+        API.Coupon[this.METHODS.getCouponStatus](this.id).then((res) => {
           this.pageConfig.btnText = res.data.status_str
           this.buttonStatus = res.data.status
           this.couponId = res.data.customer_coupon_id

@@ -43,7 +43,7 @@
     methods: {
       // 获取优惠券信息
       _getCouponInfo() {
-        API.Coupon.getPacketDetail(this.$mp.query.packetId).then((res) => {
+        API.Coupon.getDetailPacket(this.$mp.query.packetId).then((res) => {
           this.couponInfo = res.data
           console.log(this.couponInfo)
         }).catch(e => {
