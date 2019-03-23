@@ -53,7 +53,7 @@
           {text: 20},
           {text: '', type: 'input'}
         ],
-        buttonIndex: 1,
+        buttonIndex: -1,
         couponId: 0
       }
     },
