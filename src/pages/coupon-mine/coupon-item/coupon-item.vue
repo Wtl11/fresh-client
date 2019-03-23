@@ -106,7 +106,7 @@
           .unit
             margin-left :1px
             position :relative
-            top:2vw
+            top:1.7vw
             font-size: 4.010695187165775vw
             line-height: @font-size
         .l-bottom
@@ -124,9 +124,11 @@
           position :relative
           .icon-status
             col-center()
+            top:46%
             left: -0.8vw
             width :18.8vw
             height :17.50344827586207vw
+            box-sizing :border-box
           .button
             col-center()
             left :-1.0666666666666667vw

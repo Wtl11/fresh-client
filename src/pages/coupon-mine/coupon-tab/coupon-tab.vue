@@ -14,7 +14,7 @@
         </dt>
       </dl>
     </div>
-    <div class="place-box"></div>
+    <!--<div class="place-box"></div>-->
   </div>
 </template>
 
@@ -50,7 +50,6 @@
 
   .coupon-tab
     position :relative
-    border-bottom-1px()
     .container
       padding :0 34.5px
       background :#fff
@@ -58,6 +57,14 @@
       box-sizing :border-box
       position: fixed
       z-index: 111
+      &:after
+        content: ""
+        position: absolute
+        bottom: 0
+        right: 0
+        width: 100%
+        transform: scaleY(.5) translateZ(0)
+        border-bottom: 1px solid $color-line
       .tab-wrapper
         height :$tab-height
         font-family: $font-family-regular

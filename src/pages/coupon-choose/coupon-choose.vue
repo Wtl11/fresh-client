@@ -15,7 +15,7 @@
         <coupon-item useType="disable" :dataInfo="item"></coupon-item>
       </dd>
     </dl>
-    <div v-if="isShowEmpty" class="empty-wrapper">
+    <div v-if="isShowEmpty > 1" class="empty-wrapper">
       <img class="img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.1/pic-kong@2x.png'">
       <p class="text">空空如也</p>
     </div>
@@ -43,7 +43,7 @@
         useArray: [],
         disableArray: [],
         useIndex: -1,
-        isShowEmpty: false
+        isShowEmpty: 0
       }
     },
     computed: {
@@ -69,9 +69,15 @@
         API.Coupon.getChooseList({goods: this.goodsList, is_usable: 1}, true).then((res) => {
           this.useArray = res.data
           this.useIndex = res.data.findIndex(val => val.coupon_id === this.couponInfo.coupon_id)
+          if (!res.data.length) {
+            this.isShowEmpty++
+          }
         })
         API.Coupon.getChooseList({goods: this.goodsList, is_usable: 0}, false).then((res) => {
           this.disableArray = res.data
+          if (!res.data.length) {
+            this.isShowEmpty++
+          }
         })
       }
     }
