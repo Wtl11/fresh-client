@@ -18,12 +18,12 @@
             class="input-wrapper"
             maxlength="9"
             placeholder="自定义"
-            placeholder-class="input-placeholder"
+            :placeholder-class="buttonIndex === index? 'corp-' + corpName + '-text' :'input-placeholder'"
             :adjust-position="true"
             v-model="buttonArray[buttonArray.length-1].text"
           >
           <p v-else>{{item.text}}</p>
-          <p v-if="item.type === 'input' && isShowing" :class="buttonIndex === index? 'corp-' + corpName + '-text' :'input-placeholder'">自定义</p>
+          <p v-if="item.type === 'input' && isShowing" class="input-placeholder">自定义</p>
         </li>
       </ul>
       <div class="submit-wrapper">
