@@ -84,6 +84,10 @@
         })
       },
       submitHandle() {
+        if (this.buttonIndex < 0) {
+          this.$wechat.showToast('请选择分享的数量！')
+          return
+        }
         let val = this.buttonArray[this.buttonIndex].text
         if (val < 1) {
           return
@@ -94,7 +98,7 @@
         this.buttonIndex = index
       },
       _resetStatus() {
-        this.buttonIndex = 1
+        this.buttonIndex = -1
         this.buttonArray[this.buttonArray.length - 1].text = ''
       },
       _createPacket(number, callback) {

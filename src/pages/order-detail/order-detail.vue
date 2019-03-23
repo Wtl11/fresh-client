@@ -118,6 +118,7 @@
   import ConfirmMsg from '@components/confirm-msg/confirm-msg'
   import API from '@api'
   import {oauthComputed, orderMethods} from '@state/helpers'
+  import {floatAccAdd} from '@utils/common'
 
   export default {
     data() {
@@ -143,28 +144,11 @@
     computed: {
       ...oauthComputed,
       originTotal() {
-        return this._accAdd(this.orderMsg.total, this.orderMsg.promote_price)
+        return floatAccAdd(this.orderMsg.total, this.orderMsg.promote_price)
       }
     },
     methods: {
       ...orderMethods,
-      // 两个浮点数求和
-      _accAdd(num1, num2) {
-        let r1, r2, m
-        try {
-          r1 = num1.toString().split('.')[1].length
-        } catch (e) {
-          r1 = 0
-        }
-        try {
-          r2 = num2.toString().split('.')[1].length
-        } catch (e) {
-          r2 = 0
-        }
-        m = Math.pow(10, Math.max(r1, r2))
-        // return (num1*m+num2*m)/m;
-        return Math.round(num1 * m + num2 * m) / m
-      },
       closeOrder() {
         this.modelMsg = '确定取消该订单？'
         this.confirmtype = 0

@@ -47,7 +47,6 @@
       _getCouponInfo() {
         API.Coupon.getDetailPacket(this.$mp.query.packetId).then((res) => {
           this.couponInfo = res.data
-          console.log(this.couponInfo)
         }).catch(e => {
           console.error(e)
         })

@@ -48,12 +48,30 @@
         </div>
       </div>
     </div>
+    <section class="goods-total-wrapper">
+      <p class="name">商品总价</p>
+      <p class="price">{{originTotal}}</p>
+      <p>元</p>
+    </section>
+    <ul class="coupon-info-wrapper" :class="'corp-' + corpName + '-money'">
+      <li class="coupon-item">
+        <p class="name">使用优惠券</p>
+        <p v-if="orderDetail.promote_price > 0" class="price">-{{orderDetail.promote_price}}</p>
+        <p v-if="orderDetail.promote_price > 0">元</p>
+        <p v-else class="price-disable">未使用优惠券</p>
+      </li>
+      <li class="coupon-item">
+        <p class="name">实付金额</p>
+        <p class="price">{{orderDetail.total}}</p>
+        <p>元</p>
+      </li>
+    </ul>
     <!--订单信息-->
     <div class="order-msg">
-      <div class="order-price">
-        <p class="price-title">实付金额</p>
-        <p  :class="'corp-' + corpName + '-money'">¥{{orderDetail.total}}</p>
-      </div>
+      <!--<div class="order-price">-->
+        <!--<p class="price-title">实付金额</p>-->
+        <!--<p  :class="'corp-' + corpName + '-money'">¥{{orderDetail.total}}</p>-->
+      <!--</div>-->
       <div class="order-detail">
         <div class="order-sn">订单编号: {{orderDetail.order_sn}} <span class="copy" @click="_copyOrderSn(orderDetail.order_sn)">复制</span></div>
         <div class="order-time">下单时间: {{orderDetail.created_at}}</div>
@@ -75,6 +93,7 @@
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import DialogModel from '@components/dialog-model/dialog-model'
   import API from '@api'
+  import {floatAccAdd} from '@utils/common'
 
   const PAGE_NAME = 'GROUP_ORDER_DETAIL'
 
@@ -95,6 +114,11 @@
       this.id = option.id || null
       await this._getOrderDetail()
     },
+    computed: {
+      originTotal() {
+        return floatAccAdd(this.orderDetail.total, this.orderDetail.promote_price)
+      }
+    },
     methods: {
       // 获取订单详情
       async _getOrderDetail(loading = true) {
@@ -104,6 +128,7 @@
           this.$wechat.showToast(res.message)
           return
         }
+        console.log(res.data)
         this.orderDetail = res.data
       },
       _copyOrderSn(text) {
@@ -155,7 +180,57 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
  @import "~@designCommon"
-  button
+
+ .goods-total-wrapper
+   padding :15.5px 12px
+   display :flex
+   align-items :center
+   font-family: $font-family-regular
+   font-size: 14px
+   line-height: 1
+   color: $color-text-main
+   background :#fff
+   border-top-1px(#e6e6e6)
+   border-bottom :11px solid $color-background
+   .name
+     flex:1
+     color: #000000
+   .price
+     font-family: $font-family-medium
+
+ .coupon-info-wrapper
+   border-bottom :11px solid $color-background
+   padding :10.5px 12px 0
+   font-family: $font-family-regular
+   font-size: 14px;
+   line-height: 1
+   background :#fff
+   .coupon-item
+     display :flex
+     align-items :center
+     padding :10px 0
+   .name
+     flex:1
+     color: #000000
+   .price
+     font-size: 16px
+     font-family: $font-family-medium
+   .price-disable
+     font-size :14px
+     color: #808080
+   .item-arrow-img
+     margin-left :5px
+     display: block
+     width: 7.5px
+     height: 12.5px
+     .img
+       display :block
+       width :100%
+       height :100%
+
+
+
+ button
     padding: 0
     margin: 0
     &:after
@@ -165,7 +240,7 @@
     box-sizing: border-box
     word-break: break-all
     min-height: 100vh
-    padding-bottom: 96px
+    padding-bottom: 10px
     background: $color-background
 
   .order-status
@@ -347,7 +422,7 @@
         height: 25px
 
   .order-msg
-    margin-top: 10px
+    margin-top: 0
     background: $color-white
     .order-price
       height: 50px
