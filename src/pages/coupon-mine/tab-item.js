@@ -9,5 +9,6 @@ export default class TabItem {
     this.hasMore = true
     this.status = props.status
     this.isFirstLoad = true
+    this.numberKey = props.numberKey
   }
 }

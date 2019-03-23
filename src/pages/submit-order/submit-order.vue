@@ -96,7 +96,7 @@
     computed: {
       ...orderComputed,
       discount() {
-        return +this.couponInfo.denomination || 0
+        return +this.couponInfo.promote_price || 0
       }
     },
     onLoad() {
@@ -129,7 +129,6 @@
           })
       },
       async goPay() {
-        console.log(this.couponInfo.coupon_id)
         let orderInfo = {
           goods: this.goodsList,
           nickname: this.userInfo.nickname,

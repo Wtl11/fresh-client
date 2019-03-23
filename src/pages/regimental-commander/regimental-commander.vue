@@ -220,6 +220,7 @@
       this._getPresellGoods()
     },
     async onShow() {
+      this._showRefresh()
       Notification.getInstance().connect() // 连接
       this._onSocketMsg()
     },
@@ -229,6 +230,20 @@
     //   }
     // },
     methods: {
+      _showRefresh() {
+        if (!this.isFirstLoad) {
+          this.nav = [
+            new TabItem({title: '预售清单', fn: '_getPresellGoods', isOnReachBottom: false}),
+            new TabItem({title: '优惠券营销', fn: '_getCouponList', isOnReachBottom: true}),
+            new TabItem({title: '商品资料', fn: '_getRecommendGoods', isOnReachBottom: true})
+          ]
+          let obj = this.nav[this.navIndex]
+          this[obj.fn]()
+          this._getLeaderDetail()
+          this._leaderOrderTotal()
+          this._getCustomerCount()
+        }
+      },
       // 优惠券弹窗
       couponHandle(child, idx) {
         this.$refs.couponModal && this.$refs.couponModal.show(child, idx)

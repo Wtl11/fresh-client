@@ -1,6 +1,6 @@
 <template>
   <div class="coupon-take">
-    <navigation-bar title="领取优惠券"></navigation-bar>
+    <navigation-bar title="领取优惠券" :showArrow="false"></navigation-bar>
     <coupon-common-channel
       :pageConfig="pageConfig"
       :couponInfo="couponInfo"
@@ -103,10 +103,11 @@
           this.packetId = +options.packetId
           this.tmpId = +options.tmpId
           this.id = this.tmpId || this.packetId
+          console.log(this.id)
           this._initMethods()
-          console.warn(this.id, this.packetId, this.tmpId, '=========')
           let shopId = +options.shopId
           shopId && wx.setStorageSync('shopId', shopId)
+          console.warn(this.id, this.packetId, this.tmpId, shopId, '=========')
         } catch (e) {
           console.error(e, '获取参数异常')
         }
@@ -147,17 +148,18 @@
       // 领取优惠券
       _takeCoupon() {
         if (!this.isAuthor) return
-        if (this.buttonStatus === 1) {
+        if (this.buttonStatus === 1 || this.pageConfig.btnText === '立即使用') {
           this.navHandle(this.couponInfo.coupon.range_type, this.couponId, 'redirectTo')
           return
         }
         this._takeCouponAction()
       },
       _takeCouponAction() {
-        API.Coupon[this.METHODS.getCouponStatus](this.id).then((res) => {
+        API.Coupon[this.METHODS.takeCoupon](this.id).then((res) => {
           this.couponId = res.data.customer_coupon_id
           this.pageConfig.btnText = '立即使用'
           this.buttonStatus = 1
+          this.$wechat.showToast('领取成功！')
           this.page = 1
           this.hasMore = true
           this._getTakeArray()
@@ -178,6 +180,7 @@
           this.pageConfig.btnText = res.data.status_str
           this.buttonStatus = res.data.status
           this.couponId = res.data.customer_coupon_id
+          console.warn(res, '优惠券状态====')
           if (res.data.status > 1) {
             this.pageConfig.btnCName = 'disable'
           }

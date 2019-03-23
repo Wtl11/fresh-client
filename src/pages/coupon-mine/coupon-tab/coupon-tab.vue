@@ -14,7 +14,7 @@
         </dt>
       </dl>
     </div>
-    <!--<div class="place-box"></div>-->
+    <div class="place-box"></div>
   </div>
 </template>
 

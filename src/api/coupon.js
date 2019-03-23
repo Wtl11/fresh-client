@@ -13,6 +13,11 @@ export default {
     const url = `/api/wap/coupon/customer-coupon`
     return request.get({url, data, loading, toast})
   },
+  // 用户优惠券可使用数和不可使用数
+  getClientListNumber(data, loading = false, toast) {
+    const url = `/api/wap/coupon/customer-coupon-count`
+    return request.get({url, data, loading, toast})
+  },
   /** ********** 用户优惠券--商品--页面 ************ **/
   /**
    * @param data
@@ -85,26 +90,24 @@ export default {
     return request.get({url, data, loading, toast})
   },
   // 团长营销优惠券包详情
-  getDetailPacket(id, loading, toast) {
+  getDetailPacket(id, loading = true, toast) {
     const url = `/api/wap/coupon-activity-manage/shop-coupon-bag-detail/${id}`
     return request.get({url, undefined, loading, toast})
   },
   // 营销活动优惠券详情(消息模板)
-  getDetailTmpl(id, loading, toast) {
+  getDetailTmpl(id, loading = true, toast) {
     const url = `/api/wap/coupon-activity-manage/activity-coupon-detail/${id}`
     return request.get({url, undefined, loading, toast})
   },
   // 抢优惠券
-  takeCouponPacket(data, loading = true, toast) {
-    const url = `/api/wap/coupon-activity-manage/receive-coupon-by-bag/${data.packetId}`
-    data = ''
-    return request.post({url, data, loading, toast})
+  takeCouponPacket(id, loading = true, toast) {
+    const url = `/api/wap/coupon-activity-manage/receive-coupon-by-bag/${id}`
+    return request.post({url, undefined, loading, toast})
   },
   // 领取营销活动优惠券（如消息模板发送的）
-  takeCouponTmpl(data, loading = true, toast) {
-    const url = `/api/wap/coupon-activity-manage/receive-coupon-by-activity/${data.tmpId}`
-    data = ''
-    return request.post({url, data, loading, toast})
+  takeCouponTmpl(id, loading = true, toast) {
+    const url = `/api/wap/coupon-activity-manage/receive-coupon-by-activity/${id}`
+    return request.post({url, undefined, loading, toast})
   },
   // 获取营销优惠券包状态
   getStatusPacket(id, loading = false, toast = false) {

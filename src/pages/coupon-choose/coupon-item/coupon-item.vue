@@ -133,7 +133,7 @@
       .unit
         margin-left :1px
         position :relative
-        top:2vw
+        top:1.65vw
         font-size: 4.010695187165775vw
         line-height: @font-size
     .l-bottom

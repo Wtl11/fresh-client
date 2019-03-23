@@ -106,7 +106,7 @@
           .unit
             margin-left :1px
             position :relative
-            top:1.7vw
+            top:1.65vw
             font-size: 4.010695187165775vw
             line-height: @font-size
         .l-bottom

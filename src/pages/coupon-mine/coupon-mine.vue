@@ -42,8 +42,8 @@
     data() {
       return {
         tabList: [
-          new TabItem({text: '可用', status: '1'}),
-          new TabItem({text: '不可用', status: '0'})
+          new TabItem({text: '可用', status: '1', numberKey: 'can_used_count'}),
+          new TabItem({text: '不可用', status: '0', numberKey: 'cannot_used_count'})
         ],
         tabIndex: 0
       }
@@ -54,6 +54,7 @@
       }
     },
     onLoad() {
+      this._getListNumber()
       this._getList()
     },
     onReachBottom() {
@@ -61,18 +62,47 @@
       this._getList()
     },
     onPullDownRefresh() {
-      this.currentObj.page = 1
-      this.currentObj.hasMore = true
-      this._getList(() => {
+      this._refresh(() => {
         wx.stopPullDownRefresh()
       })
     },
+    onShow() {
+      if (!this.currentObj.isFirstLoad) {
+        this._refresh()
+      }
+    },
     methods: {
+      // 切换tab
       changeHandle(item, index) {
         if (this.tabIndex === index) return
         this.tabIndex = index
-        this._getList()
+        if (this.currentObj.isFirstLoad) {
+          this._getList()
+        } else {
+          this._getListNumber(index)
+        }
       },
+      // 刷新当前tab
+      _refresh(callback) {
+        this.currentObj.page = 1
+        this.currentObj.hasMore = true
+        this._getList(() => {
+          callback && callback()
+        })
+      },
+      // 获取头部数量
+      _getListNumber(index = 0) {
+        API.Coupon.getClientListNumber().then(res => {
+          this.tabList.forEach(item => {
+            let number = res.data[item.numberKey]
+            if (number !== item.number && this.tabIndex === index) {
+              this._refresh()
+            }
+            item.number = res.data[item.numberKey]
+          })
+        })
+      },
+      // 获取列表
       _getList(callbcak) {
         let {hasMore, page, status, dataArray, isFirstLoad} = this.currentObj
         if (!hasMore) return

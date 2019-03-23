@@ -25,7 +25,7 @@
           btnExplain: '优惠券24小时后未领取完的，剩余数量全部返还到团长账户中',
           openType: 'share'
         },
-        couponInfo: undefined
+        couponInfo: {coupon: {}}
       }
     },
     onShow() {
@@ -34,9 +34,10 @@
     onShareAppMessage() {
       let shopId = wx.getStorageSync('leaderId')
       let packetId = this.$mp.query.packetId
+      let couponName = this.couponInfo.coupon.coupon_name || ''
       console.warn(shopId, packetId, '=======团长分享')
       return {
-        title: '【赞播优鲜】送你一张优惠券，赶快来领取吧！',
+        title: `【赞播优鲜】送你一张${couponName}优惠券，赶快来领取吧！`,
         path: `/pages/coupon-take?shopId=${shopId}&packetId=${packetId}`,
         imageUrl: `${this.imageUrl}/yx-image/2.1/pic-getcoupon@2x.png`
       }
