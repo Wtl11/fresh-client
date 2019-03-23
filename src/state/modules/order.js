@@ -30,8 +30,9 @@ export const getters = {
 export const actions = {
   // 保存优惠券信息
   saveCoupon({commit, state}, coupon) {
+    let total = coupon.real_condition_total || state.beforeTotal
     commit('SAVE_COUPON', coupon)
-    commit('SET_TOTAL', coupon.real_condition_total || 0)
+    commit('SET_TOTAL', total)
   },
   setOrderInfo({commit, state}, {goodsList, total, deliverAt}) {
     commit('SET_GOODS_LIST', goodsList)

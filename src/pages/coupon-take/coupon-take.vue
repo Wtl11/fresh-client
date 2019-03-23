@@ -148,7 +148,10 @@
       // 领取优惠券
       _takeCoupon() {
         if (!this.isAuthor) return
-        if (this.buttonStatus === 1 || this.pageConfig.btnText === '立即使用') {
+        if (this.buttonStatus > 1) {
+          return
+        }
+        if (this.buttonStatus === 1) {
           this.navHandle(this.couponInfo.coupon.range_type, this.couponId, 'redirectTo')
           return
         }
