@@ -12,7 +12,8 @@
         <img :src="item.image_url" class="goods-img" mode="aspectFill">
         <div class="goods-content">
           <div class="goods-title">{{item.goods_name}}</div>
-          <div class="goods-money">{{item.price}}<span class="small">元</span></div>
+          <!--<div class="goods-money">{{item.price}}<span class="small">元</span></div>-->
+          <div class="goods-money">{{item.total}}<span class="small">元</span></div>
         </div>
         <div class="goods-num-box">x<span class="goods-num">{{item.num}}</span></div>
       </div>
@@ -21,7 +22,8 @@
         <img :src="good.image_url" class="goods-img" mode="aspectFill">
         <div class="goods-content">
           <div class="goods-title">{{good.goods_name}}</div>
-          <div class="goods-money">{{good.price}}<span class="small">元</span></div>
+          <div class="goods-money">{{good.total}}<span class="small">元</span></div>
+          <!--<div class="goods-money">{{good.price}}<span class="small">元</span></div>-->
         </div>
         <div class="goods-num-box">x<span class="goods-num">{{good.num}}</span></div>
       </div>
