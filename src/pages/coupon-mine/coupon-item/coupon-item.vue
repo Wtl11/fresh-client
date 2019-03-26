@@ -119,9 +119,12 @@
       .right
         flex: 2.5493670886075948
         layout(row,block,nowrap)
+        position :relative
         .tool-wrapper
-          flex: 1
-          position :relative
+          position :absolute
+          right :0
+          width :20vw
+          height :100%
           .icon-status
             col-center()
             top:46%
@@ -141,7 +144,6 @@
             text-align: center;
             line-height: @height
         .info-wrapper
-          flex: 2.2908496732026142
           overflow :hidden
           height :100%
           box-sizing :border-box

@@ -240,7 +240,7 @@
     box-sizing: border-box
     word-break: break-all
     min-height: 100vh
-    padding-bottom: 10px
+    padding-bottom: 95px
     background: $color-background
 
   .order-status
