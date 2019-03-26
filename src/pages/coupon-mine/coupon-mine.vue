@@ -75,9 +75,9 @@
       })
     },
     onShow() {
-      if (!this.currentObj.isFirstLoad) {
-        this._refresh()
-      }
+      // if (!this.currentObj.isFirstLoad) {
+      //   this._refresh()
+      // }
     },
     methods: {
       // 切换tab
