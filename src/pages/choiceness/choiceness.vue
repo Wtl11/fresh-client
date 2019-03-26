@@ -18,21 +18,26 @@
         @bannerChange="bannerChangeHandle"
       ></home-banner>
       <!--导航-->
-      <home-hot :bigItem="bigItem"></home-hot>
+      <!--<home-hot :bigItem="bigItem"></home-hot>-->
       <!--今日抢购-->
-      <home-today-rush
-        :bigItem="bigItem"
-        :isShowActiveEnd="isShowActiveEnd"
-        :activityTime="activityTime"
-        :goodsList="goodsList"
-        :goodsMore="goodsMore"
-        @addShoppingCart="addShoppingCart"
-      ></home-today-rush>
+      <!--<home-today-rush-->
+        <!--:bigItem="bigItem"-->
+        <!--:isShowActiveEnd="isShowActiveEnd"-->
+        <!--:activityTime="activityTime"-->
+        <!--:goodsList="goodsList"-->
+        <!--:goodsMore="goodsMore"-->
+        <!--@addShoppingCart="addShoppingCart"-->
+      <!--&gt;</home-today-rush>-->
     </div>
+    <home-flash-sale></home-flash-sale>
+    <home-classify></home-classify>
     <custom-tab-bar currentType="index"></custom-tab-bar>
-    <!--<link-group ref="groupComponents" :wechatInfo="groupInfo"></link-group>-->
-    <!--<confirm-msg ref="refundModel" title="您的位置距该提货点超过1km" msg="建议您切换自提点" sureString="马上切换" @confirm="confirm" @cancel="cancel"></confirm-msg>-->
     <coupon-modal ref="couponModal"></coupon-modal>
+    <!--<home-hot-tab-->
+      <!--:isShowTab="isShowTab"-->
+      <!--:systemInfo="systemInfo"-->
+      <!--:hotTabList="hotTabList"-->
+    <!--&gt;</home-hot-tab>-->
   </div>
 </template>
 
@@ -50,15 +55,25 @@
   import Position from './home-position/position-mixins'
   import HomeBanner from './home-banner/home-banner'
   import Banner from './home-banner/banner-mixins'
-  import HomeHot from './home-hot/home-hot'
-  import HomeTodayRush from './home-today-rush/home-today-rush'
-  import TodayRush from './home-today-rush/today-rush-mixins'
+  import HomeFlashSale from './home-flash-sale/home-flash-sale'
+  import HomeClassify from './home-classify/home-classify'
+  // import HomeHot from './home-hot/home-hot'
+  // import HomeHotTab from './home-hot-tab/home-hot-tab'
+  // import HotTab from './home-hot-tab/hot-tab-mixins'
+  // import HomeTodayRush from './home-today-rush/home-today-rush'
+  // import TodayRush from './home-today-rush/today-rush-mixins'
 
   const ald = getApp()
   const PAGE_NAME = 'CHOICENESS'
   export default {
     name: PAGE_NAME,
-    mixins: [CouponModalMixins, Position, Banner, TodayRush],
+    mixins: [
+      CouponModalMixins,
+      Position,
+      Banner
+      // TodayRush,
+      // HotTab
+    ],
     components: {
       // LinkGroup,
       NavigationBar,
@@ -67,17 +82,22 @@
       CouponModal,
       HomePosition,
       HomeBanner,
-      HomeHot,
-      HomeTodayRush
+      HomeFlashSale,
+      HomeClassify
+      // HomeHot,
+      // HomeTodayRush,
+      // HomeHotTab
     },
     data() {
       return {
         title: '赞播优鲜',
         curShopId: '',
-        modulesList: []
+        modulesList: [],
+        systemInfo: {}
       }
     },
     onLoad(options) {
+      this._getSystemInfo()
       this._initPageParams(options)
     },
     async onShow() {
@@ -135,6 +155,7 @@
     },
     methods: {
       ...cartMethods,
+      // 初始化页面参数
       _initPageParams(options = {}) {
         if (options.scene) {
           let scene = decodeURIComponent(options.scene)
@@ -144,6 +165,10 @@
           this.shopId = options.shopId
         }
         this.shopId && wx.setStorageSync('shopId', this.shopId)
+      },
+      // 获取设备系统参数
+      _getSystemInfo() {
+        this.systemInfo = wx.getSystemInfoSync()
       },
       // 获取
       async _getIndexModule() {
