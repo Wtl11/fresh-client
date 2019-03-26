@@ -2,24 +2,27 @@
   <div class="mine-coupon">
     <navigation-bar title="我的优惠券"></navigation-bar>
     <coupon-tab :tabList="tabList" :tabIndex="tabIndex" @change="changeHandle"></coupon-tab>
-    <div class="scroll-wrapper" :style="{height: couponWrapperHeight + 'px'}">
-      <nav class="scroll-item-wrapper"
-           :style="'transform: translate3d(' + -tabIndex*100 + '%,0,0)'"
-           v-for="(item, index) in tabList" :key="index"
+    <article class="big-box">
+      <div class="scroll-wrapper"
+           :style="{'transform': ' translateX('+ -(tabIndex * 100) +'vw)', width:  (tabList.length * 100) +'vw'}"
       >
-        <ul class="coupon-wrapper">
-          <block v-for="(child, idx) in item.dataArray" :key="idx">
-            <li class="coupon-item-wrapper">
-              <coupon-item :dataInfo="child"></coupon-item>
+        <nav class="scroll-item-wrapper"
+             v-for="(item, index) in tabList" :key="index"
+        >
+          <ul class="coupon-wrapper" v-if="index === tabIndex">
+            <block v-for="(child, idx) in item.dataArray" :key="idx">
+              <li class="coupon-item-wrapper">
+                <coupon-item :dataInfo="child"></coupon-item>
+              </li>
+            </block>
+            <li v-if="item.isShowEmpty" class="empty-wrapper">
+              <img class="img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.1/pic-kong@2x.png'">
+              <p class="text">空空如也</p>
             </li>
-          </block>
-          <li v-if="item.isShowEmpty" class="empty-wrapper">
-            <img class="img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.1/pic-kong@2x.png'">
-            <p class="text">空空如也</p>
-          </li>
-        </ul>
-      </nav>
-    </div>
+          </ul>
+        </nav>
+      </div>
+    </article>
   </div>
 </template>
 
@@ -81,10 +84,10 @@
       changeHandle(item, index) {
         if (this.tabIndex === index) return
         this.tabIndex = index
-        wx.pageScrollTo({
-          scrollTop: 0,
-          duration: 0
-        })
+        // wx.pageScrollTo({
+        //   scrollTop: 0,
+        //   duration: 0
+        // })
         this._refresh()
       },
       // 刷新当前tab
@@ -118,7 +121,7 @@
             this.currentObj.dataArray = dataArray.concat(res.data)
           }
           this.currentObj.hasMore = res.meta.current_page < res.meta.last_page
-          this._setScrollHeight()
+          // this._setScrollHeight()
         }).catch(e => {
           callbcak && callbcak()
           console.error(e)
@@ -152,18 +155,24 @@
   .mine-coupon
     background :$color-background
     min-height :100vh
-    overflow-x: hidden
     position :relative
-    .scroll-wrapper
-      width :200vw
-      layout(row,block,nowrap)
-      overflow :hidden
-      .scroll-item-wrapper
-        flex: 1
+    .big-box
+      width: 100vw
+      overflow: hidden
+      display: flex
+      transform: translateX(0)
+      .scroll-wrapper
+        width :100vw
         transition :transform 0.3s
-        .coupon-wrapper
-          padding :15px 12px
-          .coupon-item-wrapper
-            padding-bottom :10px
+        layout(row,block,nowrap)
+        .scroll-item-wrapper
+          width :100vw
+          padding-bottom :10px
+          .coupon-wrapper
+            width :100vw
+            box-sizing :border-box
+            padding :15px 12px
+            .coupon-item-wrapper
+              padding-bottom :10px
 
 </style>

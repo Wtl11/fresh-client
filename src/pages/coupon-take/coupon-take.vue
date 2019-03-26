@@ -220,8 +220,8 @@
           &:last-child
             border-none()
         .title-wrapper
-          font-family: PingFangSC-Regular;
-          font-size: 17px;
+          font-family: $font-family-regular
+          font-size: 4.533333333333333vw
           color: $color-text-main
           text-align: center;
           line-height: 1

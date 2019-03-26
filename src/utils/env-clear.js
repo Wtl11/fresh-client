@@ -1,4 +1,5 @@
 import wx from 'wx'
+import {baseURL} from '@utils/config'
 
 export function envClear() {
   const env = process.env
@@ -8,6 +9,7 @@ export function envClear() {
     wx.setStorageSync('env', env)
   }
   console.warn('环境：' + env)
+  console.warn('参数：', baseURL)
 }
 
 envClear()

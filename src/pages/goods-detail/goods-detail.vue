@@ -376,7 +376,13 @@
         })
         let name = this.goodsMsg.name.length >= 12 ? this.goodsMsg.name.slice(0, 12) + '...' : this.goodsMsg.name
         let subName = this.goodsMsg.describe.length >= 12 ? this.goodsMsg.describe.slice(0, 12) + '...' : this.goodsMsg.describe
-        this.shareImg = this.shareImg || this.imageUrl + '/yx-image/choiceness/5@1x.png'
+        // this.shareImg = this.shareImg || this.imageUrl + '/yx-image/choiceness/5@1x.png'
+        // console.log(this.shareImg)
+        if (!this.shareImg) {
+          this.$wechat.showToast('图片生成失败，请重新尝试！')
+          this.getQrCode()
+          return
+        }
         let backGroundImg
         let moneyColor
         switch (this.corpName) {
@@ -593,10 +599,10 @@
         }
         return times
       },
-      getQrCode() {
+      getQrCode(loading) {
         let shopId = wx.getStorageSync('shopId')
         let path = `pages/goods-detail?id=${this.goodsId}&shopId=${shopId}&activityId=${this.activityId}`
-        API.Choiceness.createQrCodeApi({path}).then((res) => {
+        API.Choiceness.createQrCodeApi({path}, loading).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.shareImg = res.data.image_url
           } else {

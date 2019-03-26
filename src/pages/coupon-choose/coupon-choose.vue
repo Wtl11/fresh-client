@@ -50,7 +50,6 @@
       ...orderComputed
     },
     onLoad() {
-      console.log(this.goodsList)
       this._getCouponInfo()
     },
     methods: {
