@@ -122,9 +122,9 @@
           box-sizing :border-box
           padding : 0 3.5vw
           layout(column,block,nowrap)
-          justify-content :center
           color: $color-text-sub
           .title
+            padding-top :5.733333333333333vw
             width :50vw
             font-family: $font-family-medium
             font-size: 4.266666666666667vw
@@ -132,13 +132,15 @@
             color: #333
             no-wrap()
           .explain
-            margin-top :4vw
+            width :50vw
+            padding-top :4vw
             opacity: 0.6
             font-family: $font-family-regular
             font-size: 3.2vw
             color: #666666
             letter-spacing: 0.3px
             line-height: @font-size
+            no-wrap()
           .explain-wrapper
             padding-top :2.666666666666667vw
             opacity: 0.8

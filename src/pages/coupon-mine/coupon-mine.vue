@@ -2,7 +2,7 @@
   <div class="mine-coupon">
     <navigation-bar title="我的优惠券"></navigation-bar>
     <coupon-tab :tabList="tabList" :tabIndex="tabIndex" @change="changeHandle"></coupon-tab>
-    <article class="scroll-wrapper">
+    <div class="scroll-wrapper" :style="{height: couponWrapperHeight + 'px'}">
       <nav class="scroll-item-wrapper"
            :style="'transform: translate3d(' + -tabIndex*100 + '%,0,0)'"
            v-for="(item, index) in tabList" :key="index"
@@ -19,7 +19,7 @@
           </li>
         </ul>
       </nav>
-    </article>
+    </div>
   </div>
 </template>
 
@@ -45,7 +45,9 @@
           new TabItem({text: '可用', status: '1', numberKey: 'can_used_count'}),
           new TabItem({text: '不可用', status: '0', numberKey: 'cannot_used_count'})
         ],
-        tabIndex: 0
+        tabIndex: 0,
+        couponWrapperHeight: 0,
+        couponHeight: 0
       }
     },
     computed: {
@@ -54,6 +56,9 @@
       }
     },
     onLoad() {
+      let systemInfo = wx.getSystemInfoSync() || {}
+      let screenWidth = systemInfo.screenWidth
+      this.couponHeight = screenWidth * 0.24
       this._getListNumber()
       this._getList()
     },
@@ -76,11 +81,11 @@
       changeHandle(item, index) {
         if (this.tabIndex === index) return
         this.tabIndex = index
-        if (this.currentObj.isFirstLoad) {
-          this._getList()
-        } else {
-          this._getListNumber(index)
-        }
+        wx.pageScrollTo({
+          scrollTop: 0,
+          duration: 0
+        })
+        this._refresh()
       },
       // 刷新当前tab
       _refresh(callback) {
@@ -94,10 +99,6 @@
       _getListNumber(index = 0) {
         API.Coupon.getClientListNumber().then(res => {
           this.tabList.forEach(item => {
-            let number = res.data[item.numberKey]
-            if (number !== item.number && this.tabIndex === index) {
-              this._refresh()
-            }
             item.number = res.data[item.numberKey]
           })
         })
@@ -117,10 +118,15 @@
             this.currentObj.dataArray = dataArray.concat(res.data)
           }
           this.currentObj.hasMore = res.meta.current_page < res.meta.last_page
+          this._setScrollHeight()
         }).catch(e => {
           callbcak && callbcak()
           console.error(e)
         })
+      },
+      _setScrollHeight() {
+        let len = this.currentObj.dataArray.length
+        this.couponWrapperHeight = len * this.couponHeight + len * 12
       }
     }
   }
@@ -147,12 +153,13 @@
     background :$color-background
     min-height :100vh
     overflow-x: hidden
+    position :relative
     .scroll-wrapper
       width :200vw
       layout(row,block,nowrap)
+      overflow :hidden
       .scroll-item-wrapper
         flex: 1
-        height :500px
         transition :transform 0.3s
         .coupon-wrapper
           padding :15px 12px

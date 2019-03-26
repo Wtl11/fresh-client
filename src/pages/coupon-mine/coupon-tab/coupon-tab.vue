@@ -87,6 +87,7 @@
           bottom :0
           height :3px
           transition :transform 0.3s
+          z-index :6
           .line
             margin :0 auto
             height :100%
