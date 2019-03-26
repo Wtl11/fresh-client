@@ -154,7 +154,7 @@
   import {cartMethods} from '@state/helpers'
   import {getParams} from '@utils/common'
   import CouponModal from './coupon-modal/coupon-modal'
-  import CouponModalMixins from './coupon-modal-mixins'
+  import CouponModalMixins from './coupon-modal/coupon-modal-mixins'
   import HomePosition from './home-position/home-position'
   import Position from './home-position/position-mixins'
 

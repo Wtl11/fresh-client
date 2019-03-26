@@ -105,7 +105,6 @@ export default {
     // 获取团长的信息
     async _groupInfo(loading) {
       let res = await API.Choiceness.getGroupInfo(loading)
-      console.log(res)
       this.$wechat.hideLoading()
       if (res.error !== this.$ERR_OK) {
         this.$wechat.showToast(res.message)
