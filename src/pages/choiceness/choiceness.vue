@@ -1,27 +1,35 @@
 <template>
   <div class="choiceness">
     <navigation-bar :title="shopName" :showArrow="false"></navigation-bar>
-    <div class="community-box">
-      <div class="community-main">
-      <!--<div class="community-main" @click="jumpSelfPoint">-->
-        <div class="community-img">
-          <img v-if="(locationStatus * 1 === 1 || locationStatus * 1 === 2) && imageUrl" :src="groupInfo.head_image_url || imageUrl+'/yx-image/order/icon-colonel_head@2x.png'">
-        </div>
-        <div class="community-text" v-if="locationStatus * 1 === 1 || locationStatus * 1 === 2">
-          {{groupInfo.social_name}}
-        </div>
-        <div class="community-text" v-else>定位中...</div>
-        <!--<img v-if="imageUrl && (locationStatus * 1 === 1 || locationStatus * 1 === 2) && groupInfo.social_name"-->
-             <!--:src="imageUrl + '/yx-image/choiceness/icon-pitch@2x.png'" class="community-down">-->
-      </div>
-      <div class="carousel-wrapper" v-if="buyUsers.length > 0 && (locationStatus * 1 === 1 || locationStatus * 1 === 2)"
-           :class="{'show': showBuyUser}">
-        <div class="avatar-wrapper">
-          <img :src="buyUsers[showUserIndex].head_image_url" alt="">
-        </div>
-        <div class="content">买了{{buyUsers[showUserIndex].goods_name}}</div>
-      </div>
-    </div>
+    <!--<div class="community-box">-->
+    <!--<div class="community-main">-->
+      <!--&lt;!&ndash;<div class="community-main" @click="jumpSelfPoint">&ndash;&gt;-->
+      <!--<div class="community-img">-->
+        <!--<img v-if="(locationStatus * 1 === 1 || locationStatus * 1 === 2) && imageUrl" :src="groupInfo.head_image_url || imageUrl+'/yx-image/order/icon-colonel_head@2x.png'">-->
+      <!--</div>-->
+      <!--<div class="community-text" v-if="locationStatus * 1 === 1 || locationStatus * 1 === 2">-->
+        <!--{{groupInfo.social_name}}-->
+      <!--</div>-->
+      <!--<div class="community-text" v-else>定位中...</div>-->
+      <!--&lt;!&ndash;<img v-if="imageUrl && (locationStatus * 1 === 1 || locationStatus * 1 === 2) && groupInfo.social_name"&ndash;&gt;-->
+      <!--&lt;!&ndash;:src="imageUrl + '/yx-image/choiceness/icon-pitch@2x.png'" class="community-down">&ndash;&gt;-->
+    <!--</div>-->
+    <!--<div class="carousel-wrapper" v-if="buyUsers.length > 0 && (locationStatus * 1 === 1 || locationStatus * 1 === 2)"-->
+         <!--:class="{'show': showBuyUser}">-->
+      <!--<div class="avatar-wrapper">-->
+        <!--<img :src="buyUsers[showUserIndex].head_image_url" alt="">-->
+      <!--</div>-->
+      <!--<div class="content">买了{{buyUsers[showUserIndex].goods_name}}</div>-->
+    <!--</div>-->
+  <!--</div>-->
+    <home-position
+      :buyUsers="buyUsers"
+      :showUserIndex="showUserIndex"
+      :showBuyUser="showBuyUser"
+      :locationStatus="locationStatus"
+      :goodsListData="goodsListData"
+      :groupInfo="groupInfo"
+    ></home-position>
     <div class="modules-box" v-for="(bigItem, bigIndex) in modulesList" :key="bigIndex"
          v-if="locationStatus * 1 === 1 || locationStatus * 1 === 2">
       <!--轮播图-->
@@ -131,8 +139,8 @@
       </div>
     </div>
     <custom-tab-bar currentType="index"></custom-tab-bar>
-    <link-group ref="groupComponents" :wechatInfo="groupInfo"></link-group>
-    <confirm-msg ref="refundModel" title="您的位置距该提货点超过1km" msg="建议您切换自提点" sureString="马上切换" @confirm="confirm" @cancel="cancel"></confirm-msg>
+    <!--<link-group ref="groupComponents" :wechatInfo="groupInfo"></link-group>-->
+    <!--<confirm-msg ref="refundModel" title="您的位置距该提货点超过1km" msg="建议您切换自提点" sureString="马上切换" @confirm="confirm" @cancel="cancel"></confirm-msg>-->
     <coupon-modal ref="couponModal"></coupon-modal>
   </div>
 </template>
@@ -140,42 +148,45 @@
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import CustomTabBar from '@components/custom-tab-bar/custom-tab-bar'
-  import LinkGroup from '@components/link-group/link-group'
-  import ConfirmMsg from '@components/confirm-msg/confirm-msg'
+  // import LinkGroup from '@components/link-group/link-group'
+  // import ConfirmMsg from '@components/confirm-msg/confirm-msg'
   import API from '@api'
   import {cartMethods} from '@state/helpers'
   import {getParams} from '@utils/common'
   import CouponModal from './coupon-modal/coupon-modal'
   import CouponModalMixins from './coupon-modal-mixins'
+  import HomePosition from './home-position/home-position'
+  import Position from './home-position/position-mixins'
 
   const ald = getApp()
   const PAGE_NAME = 'CHOICENESS'
   export default {
     name: PAGE_NAME,
-    mixins: [CouponModalMixins],
+    mixins: [CouponModalMixins, Position],
     components: {
-      LinkGroup,
+      // LinkGroup,
       NavigationBar,
       CustomTabBar,
-      ConfirmMsg,
-      CouponModal
+      // ConfirmMsg,
+      CouponModal,
+      HomePosition
     },
     data() {
       return {
         praiseIndex: 0,
         tabIdx: 0,
-        groupInfo: {},
+        // groupInfo: {},
         goodsList: [],
         goodsMore: false,
         goodsPage: 2,
         title: '赞播优鲜',
         curShopId: '',
-        showBuyUser: false,
-        buyUsers: [],
-        showUserIndex: 0,
+        // showBuyUser: false,
+        // buyUsers: [],
+        // showUserIndex: 0,
         modulesList: [],
-        locationStatus: null,
-        goodsListData: null,
+        // locationStatus: null,
+        // goodsListData: null,
         activityTime: {
           day: '00',
           hour: '00',
@@ -194,41 +205,41 @@
         this.shopId = options.shopId
       }
       this.shopId && wx.setStorageSync('shopId', this.shopId)
-      if (wx.getStorageSync('locationShow') * 1 === 3 || wx.getStorageSync('locationShow') * 1 === 2) {
-      } else {
-        let that = this
-        wx.getLocation({
-          async success(res) {
-            wx.setStorageSync('locationData', res)
-            wx.setStorageSync('locationShow', 1)
-            that.locationStatus = 1
-            that.getLocationData()
-          },
-          fail(res) {
-            wx.setStorageSync('locationShow', 3)
-            wx.navigateTo({
-              url: `/pages/open-location`
-            })
-          }
-        })
-      }
+      // if (wx.getStorageSync('locationShow') * 1 === 3 || wx.getStorageSync('locationShow') * 1 === 2) {
+      // } else {
+      //   let that = this
+      //   wx.getLocation({
+      //     async success(res) {
+      //       wx.setStorageSync('locationData', res)
+      //       wx.setStorageSync('locationShow', 1)
+      //       that.locationStatus = 1
+      //       that.getLocationData()
+      //     },
+      //     fail(res) {
+      //       wx.setStorageSync('locationShow', 3)
+      //       wx.navigateTo({
+      //         url: `/pages/open-location`
+      //       })
+      //     }
+      //   })
+      // }
     },
     async onShow() {
       try {
         this.$sendMsg({
           event_no: 1000
         })
-        this.locationStatus = wx.getStorageSync('locationShow')
-        if (this.locationStatus * 1 === 3) {
-          wx.navigateTo({
-            url: `/pages/open-location`
-          })
-        }
-        if (this.locationStatus * 1 === 1) {
-          this.getLocationData()
-        }
+        // this.locationStatus = wx.getStorageSync('locationShow')
+        // if (this.locationStatus * 1 === 3) {
+        //   wx.navigateTo({
+        //     url: `/pages/open-location`
+        //   })
+        // }
+        // if (this.locationStatus * 1 === 1) {
+        //   this.getLocationData()
+        // }
         ald.aldstat.sendEvent('首页')
-        this._getBuyUsers()
+        // this._getBuyUsers()
         let shopId = wx.getStorageSync('shopId')
         if (!shopId) {
           let res = await API.Choiceness.getDefaultShopInfo()
@@ -236,7 +247,7 @@
           shopId = res.data.id
         }
         if (this.curShopId * 1 !== shopId * 1) {
-          await this._groupInfo(false)
+          // await this._groupInfo(false)
           await this._getIndexModule(false)
           this.curShopId = shopId
         }
@@ -249,10 +260,10 @@
       }
     },
     onHide() {
-      this.carouselTimer && clearTimeout(this.carouselTimer)
-      this.showCarouselTimer && clearTimeout(this.showCarouselTimer)
-      this.showUserIndex = 0
-      this.showBuyUser = false
+      // this.carouselTimer && clearTimeout(this.carouselTimer)
+      // this.showCarouselTimer && clearTimeout(this.showCarouselTimer)
+      // this.showUserIndex = 0
+      // this.showBuyUser = false
     },
     onReachBottom() {
       this.getMoreGoodsList(false, () => {
@@ -260,7 +271,7 @@
       })
     },
     async onPullDownRefresh() {
-      await this._groupInfo(false)
+      this._groupInfo(false)
       await this._getIndexModule(false)
       this.goodsPage = 2
       this.goodsMore = false
@@ -297,58 +308,58 @@
     },
     methods: {
       ...cartMethods,
-      _getBuyUsers() {
-        API.Choiceness.getUserImg({limit: 20}).then((res) => {
-          if (res.error !== this.$ERR_OK) {
-            this.$wechat.showToast(res.message)
-            return
-          }
-          this.buyUsers = res.data
-          this._handleBuyUserCarousel()
-        })
-      },
-      getLocationData() {
-        let data = wx.getStorageSync('locationData')
-        API.Choiceness.getLocationDistance({longitude: data.longitude || 0, latitude: data.latitude || 0}).then((res) => {
-          if (res.error !== this.$ERR_OK) {
-            return
-          }
-          let msgStatus = wx.getStorageSync('msgStatus')
-          if (msgStatus !== 4 && res.data.distance > 1000) {
-            // this.$refs.refundModel.show()
-          }
-        })
-      },
-      _handleBuyUserCarousel() {
-        this.showCarouselTimer = setTimeout(() => {
-          this.showBuyUser = true
-        }, 1000)
-        this.carouselTimer = setTimeout(() => {
-          this.showBuyUser = false
-          if (this.showUserIndex + 1 >= this.buyUsers.length) {
-            clearTimeout(this.carouselTimer)
-            return
-          }
-          setTimeout(() => {
-            this.showUserIndex += 1
-            this._handleBuyUserCarousel()
-          }, 300)
-        }, 5000)
-      },
+      // _getBuyUsers() {
+      //   API.Choiceness.getUserImg({limit: 20}).then((res) => {
+      //     if (res.error !== this.$ERR_OK) {
+      //       this.$wechat.showToast(res.message)
+      //       return
+      //     }
+      //     this.buyUsers = res.data
+      //     this._handleBuyUserCarousel()
+      //   })
+      // },
+      // getLocationData() {
+      //   let data = wx.getStorageSync('locationData')
+      //   API.Choiceness.getLocationDistance({longitude: data.longitude || 0, latitude: data.latitude || 0}).then((res) => {
+      //     if (res.error !== this.$ERR_OK) {
+      //       return
+      //     }
+      //     let msgStatus = wx.getStorageSync('msgStatus')
+      //     if (msgStatus !== 4 && res.data.distance > 1000) {
+      //       // this.$refs.refundModel.show()
+      //     }
+      //   })
+      // },
+      // _handleBuyUserCarousel() {
+      //   this.showCarouselTimer = setTimeout(() => {
+      //     this.showBuyUser = true
+      //   }, 1000)
+      //   this.carouselTimer = setTimeout(() => {
+      //     this.showBuyUser = false
+      //     if (this.showUserIndex + 1 >= this.buyUsers.length) {
+      //       clearTimeout(this.carouselTimer)
+      //       return
+      //     }
+      //     setTimeout(() => {
+      //       this.showUserIndex += 1
+      //       this._handleBuyUserCarousel()
+      //     }, 300)
+      //   }, 5000)
+      // },
       _setPraiseIndex(e) {
         this.praiseIndex = e.target.current
       },
-      linkGroup() {
-        this.$refs.groupComponents.showLink()
-      },
-      async _groupInfo(loading) {
-        let res = await API.Choiceness.getGroupInfo(loading)
-        this.$wechat.hideLoading()
-        if (res.error !== this.$ERR_OK) {
-          this.$wechat.showToast(res.message)
-        }
-        this.groupInfo = res.data
-      },
+      // linkGroup() {
+      //   this.$refs.groupComponents.showLink()
+      // },
+      // async _groupInfo(loading) {
+      //   let res = await API.Choiceness.getGroupInfo(loading)
+      //   this.$wechat.hideLoading()
+      //   if (res.error !== this.$ERR_OK) {
+      //     this.$wechat.showToast(res.message)
+      //   }
+      //   this.groupInfo = res.data
+      // },
       jumpDetail(item) {
         if (item.type === 'mini_goods') {
           wx.navigateTo({
@@ -527,68 +538,6 @@
     min-height: 100vh
     background: #fff
     overflow-x: hidden
-
-  .community-box
-    layout(row)
-    justify-content: space-between
-    align-items: center
-    padding: 0 12px
-    box-sizing: border-box
-    margin-bottom: 8px
-    .community-main
-      layout(row)
-      align-items: center
-      .community-img
-        width: 28px
-        height: 28px
-        margin-right: 8px
-        img
-          width: 100%
-          height: 100%
-          display: block
-          border-radius: 50%
-      .community-text
-        color: $color-text-main
-        font-size: $font-size-16
-        font-family: $font-family-medium
-        min-height: $font-size-18
-        max-width: 40vw
-        no-wrap()
-        margin-right: 5px
-      .community-down
-        width: 9px
-        height: 6px
-        display: block
-
-  .carousel-wrapper
-    layout(row)
-    max-width: 100%
-    align-items: center
-    height: 24px
-    padding: 0 9.5px 0 3px
-    background: rgba(0, 0, 0, .5)
-    border-radius: 36px
-    transition: opacity .3s
-    opacity: 0
-    &.show
-      opacity: 1
-    .avatar-wrapper
-      width: 20px
-      height: 20px
-      margin-right: 3px
-      border-radius: 50%
-      overflow: hidden
-      img
-        width: 100%
-        height: 100%
-    .content
-      flex: 1
-      overflow: hidden
-      font-size: $font-size-10
-      line-height: 24px
-      color: $color-white
-      max-width: 24vw
-      no-wrap()
 
   .banner-box
     height: 40vw
