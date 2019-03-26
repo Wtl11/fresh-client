@@ -52,6 +52,13 @@
         type: Object,
         default: () => {}
       }
+    },
+    methods: {
+      jumpSelfPoint() {
+        wx.navigateTo({
+          url: `/pages/self-point`
+        })
+      }
     }
   }
 </script>

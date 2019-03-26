@@ -27,6 +27,9 @@ export default {
     this.showUserIndex = 0
     this.showBuyUser = false
   },
+  async onPullDownRefresh() {
+    this._groupInfo(false)
+  },
   methods: {
     // 初始化地理位置
     _initLocation() {
