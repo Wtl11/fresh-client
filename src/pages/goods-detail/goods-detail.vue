@@ -606,7 +606,10 @@
           if (res.error === this.$ERR_OK) {
             this.shareImg = res.data.image_url
           } else {
+            console.error(res)
           }
+        }).catch(e => {
+          console.error(e)
         })
       },
       showMoreBtn() {
