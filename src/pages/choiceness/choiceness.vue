@@ -112,7 +112,7 @@
     },
     onPageScroll(e) {
       console.log(e)
-      this.classifyTabIsShow = e.scrollTop + this.classifyNavigationHeight >= this.classifyTabPosition
+      // this.classifyTabIsShow = e.scrollTop + this.classifyNavigationHeight >= this.classifyTabPosition
     },
     async onShow() {
       try {
