@@ -7,11 +7,11 @@
       :tabIndex="tabIndex"
       @changeTab="changeTabHandle"
     ></classify-tab>
-    <nav class="classify-wrapper">
+    <div class="classify-wrapper">
       <block v-for="(item, index) in classifyArray" :key="index">
         <classify-item :item="item"></classify-item>
       </block>
-    </nav>
+    </div>
     <classify-tab
       v-if="isShow"
       :styles="styles"
@@ -78,7 +78,4 @@
     width: 100%
     background :#fff
 
-
-  .classify-wrapper
-    height :100vh
 </style>

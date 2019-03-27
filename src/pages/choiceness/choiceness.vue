@@ -1,6 +1,6 @@
 <template>
   <div class="choiceness">
-    <!--<navigation-bar :title="shopName" :showArrow="false"></navigation-bar>-->
+    <navigation-bar :title="shopName" :showArrow="false"></navigation-bar>
     <home-position
       :buyUsers="buyUsers"
       :showUserIndex="showUserIndex"
@@ -41,6 +41,16 @@
     ></home-classify>
     <custom-tab-bar currentType="index"></custom-tab-bar>
     <coupon-modal ref="couponModal"></coupon-modal>
+    <!--<div v-show="classifyTabIsShow">-->
+      <!--<classify-tab-->
+        <!--:styles="classifyStyles"-->
+        <!--id="scrollView-fixed"-->
+        <!--:tabList="classifyTabList"-->
+        <!--:viewToItem="classifyViewToItem"-->
+        <!--:tabIndex="classifyTabIndex"-->
+        <!--@changeTab="classifyChangeTab"-->
+      <!--&gt;</classify-tab>-->
+    <!--</div>-->
     <!--<home-hot-tab-->
       <!--:isShowTab="isShowTab"-->
       <!--:systemInfo="systemInfo"-->
@@ -50,7 +60,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-  // import NavigationBar from '@components/navigation-bar/navigation-bar'
+  import NavigationBar from '@components/navigation-bar/navigation-bar'
   import CustomTabBar from '@components/custom-tab-bar/custom-tab-bar'
   // import LinkGroup from '@components/link-group/link-group'
   // import ConfirmMsg from '@components/confirm-msg/confirm-msg'
@@ -66,6 +76,7 @@
   import HomeFlashSale from './home-flash-sale/home-flash-sale'
   import HomeClassify from './home-classify/home-classify'
   import Classify from './home-classify/classify-mixins'
+  import ClassifyTab from './home-classify/home-classify-tab/home-classify-tab'
   // import HomeHot from './home-hot/home-hot'
   // import HomeHotTab from './home-hot-tab/home-hot-tab'
   // import HotTab from './home-hot-tab/hot-tab-mixins'
@@ -86,14 +97,15 @@
     ],
     components: {
       // LinkGroup,
-      // NavigationBar,
+      NavigationBar,
       CustomTabBar,
       // ConfirmMsg,
       CouponModal,
       HomePosition,
       HomeBanner,
       HomeFlashSale,
-      HomeClassify
+      HomeClassify,
+      ClassifyTab
       // HomeHot,
       // HomeTodayRush,
       // HomeHotTab
@@ -106,13 +118,12 @@
         systemInfo: {}
       }
     },
+    // onPageScroll(e) {
+    //   console.log(e)
+    // },
     onLoad(options) {
       this._getSystemInfo()
       this._initPageParams(options)
-    },
-    onPageScroll(e) {
-      console.log(e)
-      // this.classifyTabIsShow = e.scrollTop + this.classifyNavigationHeight >= this.classifyTabPosition
     },
     async onShow() {
       try {
@@ -202,7 +213,7 @@
 
   .choiceness
     max-width: 100vw
-    min-height: 100vh
+    min-height: 200vh
     background: #fff
     overflow-x: hidden
 </style>

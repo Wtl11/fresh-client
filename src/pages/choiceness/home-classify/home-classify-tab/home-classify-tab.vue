@@ -2,6 +2,7 @@
   <scroll-view
     class="home-classify-tab"
     :style="styles"
+    :class="{active: !isShow}"
     v-if="tabList.length"
     :id="id"
     :scroll-into-view="viewToItem" scroll-x
@@ -31,6 +32,10 @@
       id: {
         type: String,
         default: ''
+      },
+      isShow: {
+        type: Boolean,
+        default: true
       },
       tabList: {
         type: Array,
@@ -69,7 +74,9 @@
     white-space: nowrap
     box-sizing: border-box
     transform: translateX(0)
-    transition: all 0.3s
+    transition: all 0
+    &.active
+      display :none
     ::-webkit-scrollbar
       width: 0
       height: 0

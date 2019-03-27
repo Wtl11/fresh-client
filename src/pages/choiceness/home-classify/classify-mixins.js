@@ -25,16 +25,17 @@ export default {
   onReachBottom() {
     // this.getMoreCategoryList(this.classifyId, this.tabIndex)
   },
-  // onPageScroll(e) {
-  //   console.log(e)
-  //   this.classifyTabIsShow = e.scrollTop + this.classifyNavigationHeight >= this.classifyTabPosition
-  // },
+  onPageScroll(e) {
+    console.log(this.systemInfo)
+    console.log(this.classifyTabPosition, e.scrollTop + this.classifyNavigationHeight)
+    this.classifyTabIsShow = e.scrollTop + this.classifyNavigationHeight >= this.classifyTabPosition
+  },
   methods: {
     _getTabPosition() {
       const query = wx.createSelectorQuery()
       query.select('#scrollView-relative').boundingClientRect()
       query.exec(res => {
-        this.classifyTabPosition = res[0].height + res[0].top
+        this.classifyTabPosition = res[0].top
       })
     },
     getCategoryData(isLoad = false) {
@@ -87,7 +88,6 @@ export default {
       // }
     },
     async classifyChangeTab(index, id, e) {
-      e.preventDefault()
       if (this.classifyTabIndex * 1 === index * 1) return
       let number = index * 1 === 0 ? 1 : index
       if (this.classifyTabIndex > index) {
