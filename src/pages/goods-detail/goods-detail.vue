@@ -260,7 +260,7 @@
     onUnload() {
       clearInterval(this.timer)
       this.goodsBanner = []
-      this.$refs.navigationBar._initHeadStyle()
+      this.$refs.navigationBar && this.$refs.navigationBar._initHeadStyle()
       this.eventCount = 0
     },
     methods: {
