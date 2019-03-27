@@ -29,6 +29,7 @@
         <!--@addShoppingCart="addShoppingCart"-->
       <!--&gt;</home-today-rush>-->
     </div>
+    <div class="empty"></div>
     <home-flash-sale></home-flash-sale>
     <home-classify
       :tabList="classifyTabList"
@@ -213,7 +214,11 @@
 
   .choiceness
     max-width: 100vw
-    min-height: 200vh
+    min-height: 180vh
     background: #fff
     overflow-x: hidden
+
+  .empty
+    height :15px
+    background :#fff
 </style>

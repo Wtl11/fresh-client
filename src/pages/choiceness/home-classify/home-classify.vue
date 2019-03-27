@@ -21,6 +21,8 @@
       :tabIndex="tabIndex"
       @changeTab="changeTabHandle"
     ></classify-tab>
+    <is-end></is-end>
+    <is-active-empty></is-active-empty>
   </div>
 </template>
 
@@ -28,6 +30,8 @@
   // import API from '@api'
   import ClassifyItem from './home-classify-item/home-classify-item'
   import ClassifyTab from './home-classify-tab/home-classify-tab'
+  import IsEnd from '@components/is-end/is-end'
+  import isActiveEmpty from '@components/is-active-empty/is-active-empty'
 
   const COMPONENT_NAME = 'HOME_CLASSIFY'
 
@@ -35,7 +39,9 @@
     name: COMPONENT_NAME,
     components: {
       ClassifyItem,
-      ClassifyTab
+      ClassifyTab,
+      IsEnd,
+      isActiveEmpty
     },
     props: {
       isShow: {

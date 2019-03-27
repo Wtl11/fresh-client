@@ -12,13 +12,15 @@ export default {
       classifyId: 88,
       classifyNavigationHeight: 0,
       classifyTabIsShow: false,
-      classifyTabPosition: 9999
+      classifyTabPosition: 9999,
+      isIos: false
     }
   },
   onLoad(options) {
     this.getCategoryData(true)
   },
   onReady() {
+    this.isIos = /ios/i.test(this.systemInfo.system)
     this.classifyNavigationHeight = (this.systemInfo.statusBarHeight || 20) + 44
     this.classifyStyles = `top:${this.classifyNavigationHeight}px;position:fixed;left:0;z-index:100`
   },
@@ -26,8 +28,9 @@ export default {
     // this.getMoreCategoryList(this.classifyId, this.tabIndex)
   },
   onPageScroll(e) {
-    console.log(this.systemInfo)
-    console.log(this.classifyTabPosition, e.scrollTop + this.classifyNavigationHeight)
+    if (!this.isIos) return
+    // console.log(this.systemInfo)
+    // console.log(this.classifyTabPosition, e.scrollTop + this.classifyNavigationHeight)
     this.classifyTabIsShow = e.scrollTop + this.classifyNavigationHeight >= this.classifyTabPosition
   },
   methods: {

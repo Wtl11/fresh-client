@@ -857,7 +857,7 @@
             line-height:15px
     .banner-title-type
       height: 13vw
-      background: #FFF2E9
+      background: #ff6d0d
       width: 100%
       border-top-left-radius: 8px
       border-top-right-radius: 8px
@@ -868,6 +868,7 @@
       .left-price
         font-size: 30px
         font-family: PingFang-SC-Bold
+        color:rgba(255,255,255,1)
       .left-price-text
         layout(row)
         align-items: flex-end
@@ -875,12 +876,14 @@
           font-size: 22px
           font-family: $font-family-medium
           margin-right: 5px
+          color:rgba(255,255,255,1)
         .line-price-text
           font-size: $font-size-14
           font-family: $font-family-regular
           text-decoration: line-through
           line-height: 1
           color: #A0A0A0
+          color:rgba(255,255,255,0.8)
 
   .detail-info-box
     padding: 0 12px

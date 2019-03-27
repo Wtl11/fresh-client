@@ -57,6 +57,7 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@designCommon"
 
+
   .home-banner
     height: 40vw
     box-sizing: border-box
