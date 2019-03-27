@@ -1,6 +1,6 @@
 <template>
   <div class="choiceness">
-    <navigation-bar :title="shopName" :showArrow="false"></navigation-bar>
+    <!--<navigation-bar :title="shopName" :showArrow="false"></navigation-bar>-->
     <home-position
       :buyUsers="buyUsers"
       :showUserIndex="showUserIndex"
@@ -30,7 +30,15 @@
       <!--&gt;</home-today-rush>-->
     </div>
     <home-flash-sale></home-flash-sale>
-    <home-classify></home-classify>
+    <home-classify
+      :tabList="classifyTabList"
+      :tabIndex="classifyTabIndex"
+      :classifyArray="classifyArray"
+      :viewToItem="classifyViewToItem"
+      :styles="classifyStyles"
+      :isShow="classifyTabIsShow"
+      @changeTab="classifyChangeTab"
+    ></home-classify>
     <custom-tab-bar currentType="index"></custom-tab-bar>
     <coupon-modal ref="couponModal"></coupon-modal>
     <!--<home-hot-tab-->
@@ -42,7 +50,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import NavigationBar from '@components/navigation-bar/navigation-bar'
+  // import NavigationBar from '@components/navigation-bar/navigation-bar'
   import CustomTabBar from '@components/custom-tab-bar/custom-tab-bar'
   // import LinkGroup from '@components/link-group/link-group'
   // import ConfirmMsg from '@components/confirm-msg/confirm-msg'
@@ -57,6 +65,7 @@
   import Banner from './home-banner/banner-mixins'
   import HomeFlashSale from './home-flash-sale/home-flash-sale'
   import HomeClassify from './home-classify/home-classify'
+  import Classify from './home-classify/classify-mixins'
   // import HomeHot from './home-hot/home-hot'
   // import HomeHotTab from './home-hot-tab/home-hot-tab'
   // import HotTab from './home-hot-tab/hot-tab-mixins'
@@ -70,13 +79,14 @@
     mixins: [
       CouponModalMixins,
       Position,
-      Banner
+      Banner,
+      Classify
       // TodayRush,
       // HotTab
     ],
     components: {
       // LinkGroup,
-      NavigationBar,
+      // NavigationBar,
       CustomTabBar,
       // ConfirmMsg,
       CouponModal,
@@ -99,6 +109,10 @@
     onLoad(options) {
       this._getSystemInfo()
       this._initPageParams(options)
+    },
+    onPageScroll(e) {
+      console.log(e)
+      this.classifyTabIsShow = e.scrollTop + this.classifyNavigationHeight >= this.classifyTabPosition
     },
     async onShow() {
       try {

@@ -9,13 +9,13 @@ export default {
       })
     }
   },
-  onPageScroll(e) {
-    this.isShowTab = e.scrollTop + 44 + 20 >= this.scrollTop
-    // this._getTargetScrollTop()
-    if (this.isShowTab) {
-      // this._getScrollTargetItem('.home-hot-tab > .item')
-    }
-  },
+  // onPageScroll(e) {
+  //   this.isShowTab = e.scrollTop + 44 + 20 >= this.scrollTop
+  //   // this._getTargetScrollTop()
+  //   if (this.isShowTab) {
+  //     // this._getScrollTargetItem('.home-hot-tab > .item')
+  //   }
+  // },
   onReady() {
     setTimeout(() => {
       this._getTargetScrollTop('.home-hot')
