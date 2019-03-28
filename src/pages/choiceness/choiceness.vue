@@ -9,28 +9,39 @@
       :goodsListData="goodsListData"
       :groupInfo="groupInfo"
     ></home-position>
-    <div class="modules-box" v-for="(bigItem, bigIndex) in modulesList" :key="bigIndex"
-         v-if="locationStatus * 1 === 1 || locationStatus * 1 === 2">
-      <!--轮播图-->
-      <home-banner
-        :bigItem="bigItem"
-        :praiseIndex="praiseIndex"
-        @bannerChange="bannerChangeHandle"
-      ></home-banner>
-      <!--导航-->
-      <!--<home-hot :bigItem="bigItem"></home-hot>-->
-      <!--今日抢购-->
-      <!--<home-today-rush-->
+    <!--<div class="modules-box" v-for="(bigItem, bigIndex) in modulesList" :key="bigIndex"-->
+         <!--v-if="locationStatus * 1 === 1 || locationStatus * 1 === 2">-->
+      <!--&lt;!&ndash;轮播图&ndash;&gt;-->
+      <!--<home-banner-->
         <!--:bigItem="bigItem"-->
-        <!--:isShowActiveEnd="isShowActiveEnd"-->
-        <!--:activityTime="activityTime"-->
-        <!--:goodsList="goodsList"-->
-        <!--:goodsMore="goodsMore"-->
-        <!--@addShoppingCart="addShoppingCart"-->
-      <!--&gt;</home-today-rush>-->
-    </div>
+        <!--:praiseIndex="praiseIndex"-->
+        <!--@bannerChange="bannerChangeHandle"-->
+      <!--&gt;</home-banner>-->
+      <!--&lt;!&ndash;导航&ndash;&gt;-->
+      <!--&lt;!&ndash;<home-hot :bigItem="bigItem"></home-hot>&ndash;&gt;-->
+      <!--&lt;!&ndash;今日抢购&ndash;&gt;-->
+      <!--&lt;!&ndash;<home-today-rush&ndash;&gt;-->
+        <!--&lt;!&ndash;:bigItem="bigItem"&ndash;&gt;-->
+        <!--&lt;!&ndash;:isShowActiveEnd="isShowActiveEnd"&ndash;&gt;-->
+        <!--&lt;!&ndash;:activityTime="activityTime"&ndash;&gt;-->
+        <!--&lt;!&ndash;:goodsList="goodsList"&ndash;&gt;-->
+        <!--&lt;!&ndash;:goodsMore="goodsMore"&ndash;&gt;-->
+        <!--&lt;!&ndash;@addShoppingCart="addShoppingCart"&ndash;&gt;-->
+      <!--&lt;!&ndash;&gt;</home-today-rush>&ndash;&gt;-->
+    <!--</div>-->
+    <home-banner
+      :bigItem="bannerInfo"
+      :praiseIndex="praiseIndex"
+      @bannerChange="bannerChangeHandle"
+    ></home-banner>
     <div class="empty"></div>
-    <home-flash-sale></home-flash-sale>
+    <home-flash-sale
+      :tabList="flashTabList"
+      :tabIndex="flashTabIndex"
+      :flashArray="flashArray"
+      :countDownTimes="flashCountDownTimes"
+      @changeTab="flashChangeTab"
+    ></home-flash-sale>
     <home-classify
       :tabList="classifyTabList"
       :tabIndex="classifyTabIndex"
@@ -75,6 +86,7 @@
   import HomeBanner from './home-banner/home-banner'
   import Banner from './home-banner/banner-mixins'
   import HomeFlashSale from './home-flash-sale/home-flash-sale'
+  import FlashSale from './home-flash-sale/flash-sale-mixins'
   import HomeClassify from './home-classify/home-classify'
   import Classify from './home-classify/classify-mixins'
   import ClassifyTab from './home-classify/home-classify-tab/home-classify-tab'
@@ -92,7 +104,8 @@
       CouponModalMixins,
       Position,
       Banner,
-      Classify
+      Classify,
+      FlashSale
       // TodayRush,
       // HotTab
     ],
@@ -139,7 +152,8 @@
           shopId = res.data.id
         }
         if (this.curShopId * 1 !== shopId * 1) {
-          await this._getIndexModule(false)
+          // await this._getIndexModule(false)
+          await this._getModuleInfo()
           this.curShopId = shopId
         }
         if (!wx.getStorageSync('token')) return
@@ -151,7 +165,7 @@
       }
     },
     async onPullDownRefresh() {
-      await this._getIndexModule(false)
+      await this._getModuleInfo(false)
       wx.stopPullDownRefresh()
       if (!wx.getStorageSync('token')) return
       this.setCartCount()
@@ -196,15 +210,27 @@
       _getSystemInfo() {
         this.systemInfo = wx.getSystemInfoSync()
       },
-      // 获取
-      async _getIndexModule() {
-        let res = await API.Choiceness.getModulesInfo({page_name: 'index'})
-        if (res.error !== this.$ERR_OK) {
-          this.$wechat.showToast(res.message)
-          return
+      // 获取模块信息
+      async _getModuleInfo() {
+        try {
+          let res = await API.FlashSale.getModuleInfo({page_name: 'index'})
+          let bannerInfo = res.data.modules.find(val => val.module_name === 'bannar')
+          this.bannerInfo = bannerInfo || {}
+          await this._getFlashList()
+          await this._getClassifyList()
+        } catch (e) {
+          console.error(e)
         }
-        this.modulesList = res.data.modules
       }
+      // // 获取
+      // async _getIndexModule() {
+      //   let res = await API.Choiceness.getModulesInfo({page_name: 'index'})
+      //   if (res.error !== this.$ERR_OK) {
+      //     this.$wechat.showToast(res.message)
+      //     return
+      //   }
+      //   this.modulesList = res.data.modules
+      // }
     }
   }
 </script>

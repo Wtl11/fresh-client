@@ -1,27 +1,29 @@
 <template>
   <div class="flash-sale-list">
     <navigation-bar title="限时抢购"></navigation-bar>
-    <dl class="tab-wrapper">
-      <dt class="top-wrapper">
-        <nav class="top-item-wrapper" :class="{active: tabIndex === index}" v-for="(item, index) in tabList" :key="index" @click="changeTabHandle(item, index)">
-          <p class="text">{{item.text}}</p>
-          <p class="explain">{{item.explain}}</p>
-        </nav>
-      </dt>
-      <dd class="bottom-wrapper">
-        <div class="left-wrapper">正在抢购，先下单先得哦！</div>
-        <div class="right-wrapper">
-          <p class="title">距开始</p>
-          <div class="time-wrapper">
-            <p class="time">01</p>
-            <p class="dot">:</p>
-            <p class="time">59</p>
-            <p class="dot">:</p>
-            <p class="time">16</p>
+    <section class="tab-container">
+      <dl class="tab-wrapper">
+        <dt class="top-wrapper">
+          <nav class="top-item-wrapper" :class="{active: tabIndex === index}" v-for="(item, index) in tabList" :key="index" @click="changeTabHandle(item, index)">
+            <p class="text">{{item.text}}</p>
+            <p class="explain">{{item.explain}}</p>
+          </nav>
+        </dt>
+        <dd class="bottom-wrapper">
+          <div class="left-wrapper">正在抢购，先下单先得哦！</div>
+          <div class="right-wrapper">
+            <p class="title">距开始</p>
+            <div class="time-wrapper">
+              <p class="time">01</p>
+              <p class="dot">:</p>
+              <p class="time">59</p>
+              <p class="dot">:</p>
+              <p class="time">16</p>
+            </div>
           </div>
-        </div>
-      </dd>
-    </dl>
+        </dd>
+      </dl>
+    </section>
     <ul v-if="goodsList.length" class="goods-list">
       <li class="goods-item-box" v-for="(item, index) in goodsList" :key="index">
         <classify-item :item="item"></classify-item>
@@ -161,63 +163,73 @@
     width: 100%
     background :$color-background
     min-height :100vh
-    .tab-wrapper
-      color: #111111
-      .bottom-wrapper
-        height :40px
-        layout(row,block,nowrap)
-        align-items :center
-        padding 0 6px
-        font-family: $font-family-regular
-        .left-wrapper
-          font-size: 15px
-        .right-wrapper
-          flex:1
-          color: $color-text-sub
-          display :flex
+    .tab-container
+      position relative
+      width :100vw
+      height :100px
+      z-index :50
+      .tab-wrapper
+        color: #111111
+        position :fixed
+        left :0
+        right :0
+        .bottom-wrapper
+          height :45px
+          layout(row,block,nowrap)
           align-items :center
-          justify-content :flex-end
-          .title
-            font-size :12px
-            padding-right :6px
-          .time-wrapper
+          padding 0 6px
+          font-family: $font-family-regular
+          background :$color-background
+          .left-wrapper
+            font-size: 15px
+          .right-wrapper
+            flex:1
+            color: $color-text-sub
             display :flex
-            font-size: 12px;
-            padding-right :4px
-            .time
-              color: #FFFFFF;
-              font-family: DINAlternate-Bold;
-              background :rgba(17,17,17,0.8)
-              border-radius: 3px
-              height :15px
-              line-height :@height
-              padding :0 2px
-            .dot
-              padding :0 2px
-      .top-wrapper
-        height :55px
-        background: #FFE500
-        display:flex
-        justify-content :space-around
-        align-items :flex-end
-        .top-item-wrapper
-          width :95px
-          height :50px
+            align-items :center
+            justify-content :flex-end
+            .title
+              font-size :12px
+              padding-right :6px
+            .time-wrapper
+              display :flex
+              font-size: 12px;
+              padding-right :4px
+              .time
+                color: #FFFFFF;
+                font-family: DINAlternate-Bold;
+                background :rgba(17,17,17,0.8)
+                border-radius: 3px
+                height :15px
+                line-height :@height
+                padding :0 2px
+              .dot
+                padding :0 2px
+        .top-wrapper
+          height :55px
           background: #FFE500
-          border-radius: 8px 8px 0 0
-          display :flex
-          flex-direction :column
-          justify-content :center
-          align-items :center
-          font-family :$font-family-medium
-          transition :background 0.3s
-          &.active
-            background :$color-background
-          .text
-            font-size :18px
-          .explain
-            padding-top :3px
-            font-size :12px
+          display:flex
+          justify-content :space-around
+          align-items :flex-end
+          .top-item-wrapper
+            width :95px
+            height :50px
+            background: #FFE500
+            border-radius: 8px 8px 0 0
+            display :flex
+            flex-direction :column
+            justify-content :center
+            align-items :center
+            font-family :$font-family-medium
+            transition :background 0.3s
+            &.active
+              background :$color-background
+            .text
+              font-size :18px
+            .explain
+              font-family :$font-family-regular;
+              padding-top :3px
+              font-size :12px
 
   .goods-list
     width: 100vw

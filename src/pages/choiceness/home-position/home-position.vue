@@ -3,7 +3,8 @@
     <div class="community-main">
       <!--<div class="community-main" @click="jumpSelfPoint">-->
       <div class="community-img">
-        <img v-if="(locationStatus * 1 === 1 || locationStatus * 1 === 2) && imageUrl" :src="groupInfo.head_image_url || imageUrl+'/yx-image/order/icon-colonel_head@2x.png'">
+        <!--<img v-if="(locationStatus * 1 === 1 || locationStatus * 1 === 2) && imageUrl" :src="groupInfo.head_image_url || imageUrl+'/yx-image/order/icon-colonel_head@2x.png'">-->
+        <img class="p-img" mode="aspectFit" v-if="imageUrl" :src="imageUrl+'/yx-image/2.1/icon-address_sy@2x.png'">
       </div>
       <div class="community-text" v-if="locationStatus * 1 === 1 || locationStatus * 1 === 2">
         {{groupInfo.social_name}}
@@ -15,7 +16,7 @@
     <div class="carousel-wrapper" v-if="buyUsers.length > 0 && (locationStatus * 1 === 1 || locationStatus * 1 === 2)"
          :class="{'show': showBuyUser}">
       <div class="avatar-wrapper">
-        <img :src="buyUsers[showUserIndex].head_image_url" alt="">
+        <img v-if="buyUsers[showUserIndex] && buyUsers[showUserIndex].head_image_url" :src="buyUsers[showUserIndex].head_image_url" alt="">
       </div>
       <div class="content">买了{{buyUsers[showUserIndex].goods_name}}</div>
     </div>
@@ -77,8 +78,8 @@
       layout(row)
       align-items: center
       .community-img
-        width: 28px
-        height: 28px
+        width: 15.5px
+        height: 17.5px
         margin-right: 8px
         img
           width: 100%

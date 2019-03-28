@@ -1,12 +1,12 @@
 <template>
-  <div class="home-flash-sale">
+  <div v-if="isShow" class="home-flash-sale">
     <section class="top-wrapper">
       <div class="inner-wrapper">
         <div class="left-wrapper">
-          <figure class="button">
+          <figure class="button" @click="navHandle">
             <img class="img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.1/pic-title_xsqg@2x.png'">
           </figure>
-          <p class="time">01<span class="dot">:</span>59<span class="dot">:</span>25</p>
+          <p class="time">{{countDownTimes.hour}}<span class="dot">:</span>{{countDownTimes.minute}}<span class="dot">:</span>{{countDownTimes.second}}</p>
         </div>
         <ul class="right-wrapper">
           <li v-for="(item, index) in tabList" :key="index" class="right-item" @click="changeTab(item, index)">
@@ -16,7 +16,7 @@
         </ul>
       </div>
     </section>
-    <scroll-view class="bottom-wrapper" scroll-x>
+    <scroll-view class="bottom-wrapper" scroll-x @scrolltolower="scrollHandle">
       <div v-for="(child, idx) in flashArray" :key="idx" class="bottom-item-wrapper">
         <home-flash-item></home-flash-item>
       </div>
@@ -58,11 +58,37 @@
       flashArray: {
         type: Array,
         default: () => new Array(5).fill(1)
+      },
+      countDownTimes: {
+        type: Object,
+        default: () => {
+          return {
+            hour: '00',
+            minute: '00',
+            second: '00'
+          }
+        }
       }
+    },
+    data() {
+      return {
+        isShow: true
+      }
+    },
+    onLoad() {
+      setTimeout(() => {
+        this.isShow = true
+      }, 2000)
     },
     methods: {
       changeTab(item, index) {
-        this.tabIndex = index
+        this.$emit('changeTab', item, index)
+      },
+      scrollHandle(e) {
+        console.log(e)
+      },
+      navHandle() {
+        wx.navigateTo({url: '/pages/flash-sale-list'})
       }
     }
   }
@@ -137,9 +163,10 @@
               padding :0 2.5px
         .right-wrapper
           layout(row,block,nowrap)
-          padding-right :8px
+          padding-right :3px
           .right-item
             text-align :center
+            padding :0 5px
             .text
               width :60px
               height :21px

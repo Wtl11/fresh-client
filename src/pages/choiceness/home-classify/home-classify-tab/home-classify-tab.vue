@@ -63,11 +63,12 @@
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
+  $tab-height=45px
   @import "~@designCommon"
 
   .home-classify-tab
     display: block
-    height: 45px
+    height: $tab-height
     width: 100vw
     background: $color-white
     box-shadow: 0 1px 8px 0 rgba(55, 75, 99, 0.04)
@@ -82,8 +83,8 @@
       height: 0
       color: transparent
     .item
-      height: 100%
-      line-height: 40px
+      height: $tab-height
+      line-height: @height
       white-space: nowrap
       padding: 0 12.5px
       font-family: $font-family-regular

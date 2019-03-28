@@ -29,8 +29,6 @@ export default {
   },
   onPageScroll(e) {
     if (!this.isIos) return
-    // console.log(this.systemInfo)
-    // console.log(this.classifyTabPosition, e.scrollTop + this.classifyNavigationHeight)
     this.classifyTabIsShow = e.scrollTop + this.classifyNavigationHeight >= this.classifyTabPosition
   },
   methods: {
@@ -40,6 +38,9 @@ export default {
       query.exec(res => {
         this.classifyTabPosition = res[0].top
       })
+    },
+    async _getClassifyList() {
+      // todo
     },
     getCategoryData(isLoad = false) {
       API.Choiceness.getClassifyCategory().then((res) => {

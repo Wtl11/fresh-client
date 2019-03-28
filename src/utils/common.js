@@ -199,3 +199,27 @@ export function floatAccAdd(num1, num2) {
   // return (num1*m+num2*m)/m;
   return Math.round(num1 * m + num2 * m) / m
 }
+
+/**
+ * 时分秒
+ * @param time 入参为秒
+ * @returns {{hour: string, differ: number, minute: string, second: string}}
+ */
+export function countDownHandle(time) {
+  let differ = +time
+  // let day = ~~(differ / 60 / 60 / 24) + ''
+  let hour = ~~(differ / 60 / 60) + ''
+  let minute = ~~(differ / 60 % 60) + ''
+  let second = differ % 60 + ''
+  // day = day.padStart(2, '0')
+  hour = hour.padStart(2, '0')
+  minute = minute.padStart(2, '0')
+  second = second.padStart(2, '0')
+  return {
+    // day,
+    hour,
+    minute,
+    second,
+    differ
+  }
+}

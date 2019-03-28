@@ -7,12 +7,12 @@
         v-if="imageUrl"
         src="http://social-shopping-api-1254297111.picgz.myqcloud.com/1/2019/03/26/155357176784195.png">
     </figure>
-    <article class="bottom-wrapper">
+    <form class="bottom-wrapper"  action="" report-submit @submit="$getFormId" >
       <p class="title">超值特新鲜柠…</p>
       <div class="price-wrapper">
         <p class="number">10.8</p>
         <p class="unit">元</p>
-        <button class="button" @click.stop="submitHandle">
+        <button class="button" formType="submit" @click.stop="submitHandle">
           <figure class="button-img">
             <img
               class="img"
@@ -23,7 +23,7 @@
           </figure>
         </button>
       </div>
-    </article>
+    </form>
   </div>
 </template>
 
@@ -42,6 +42,8 @@
       return {
 
       }
+    },
+    onLoad() {
     },
     methods: {
       submitHandle() {
@@ -80,7 +82,7 @@
       .button-group-wrapper
         overflow :hidden
        .price-wrapper
-          padding-top: 10.4px
+          padding-top: 5px
           display :flex
           color: #FF8300;
           font-family: $font-family-medium
