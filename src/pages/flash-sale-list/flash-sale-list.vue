@@ -50,6 +50,16 @@
   import API from '@api'
 
   const PAGE_NAME = 'FLASH_SALE_LIST'
+  const SHARE_IMG = {
+    'WILL': {
+      img: '/yx-image/2.1/pic-xsqg_jjkq.png',
+      title: '即将开抢，敬请期待！'
+    },
+    'NOW': {
+      img: '/yx-image/2.1/pic-xsqg_ljqg.png',
+      title: '正在抢购，先下单先得哦！'
+    }
+  }
 
   export default {
     name: PAGE_NAME,
@@ -97,7 +107,11 @@
       })
     },
     onShareAppMessage() {
-      return {}
+      return {
+        title: SHARE_IMG.NOW.title,
+        path: '',
+        imageUrl: this.imageUrl + SHARE_IMG.NOW.img
+      }
     },
     methods: {
       changeTabHandle(item, index) {
