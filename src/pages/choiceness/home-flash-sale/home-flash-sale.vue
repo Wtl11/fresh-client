@@ -107,7 +107,7 @@
     background: $color-background
     border-bottom :10px solid $color-background
     .bottom-wrapper
-      height:179px
+      height:47.733333333333334vw
       border-top-1px()
       display: block
       width: 100vw
@@ -126,54 +126,54 @@
         display: inline-block
         position: relative
         box-sizing :border-box
-        padding-top :11px
-        padding-bottom :15px
-        padding-right :8.3px
+        padding-top :2.933333333333333vw
+        padding-bottom :4vw
+        padding-right :2.2133333333333334vw
         &:first-child
-          padding-left :12.2px
+          padding-left :3.253333333333333vw
         &:last-child
-          padding-right :8.3px
+          padding-right :2.2133333333333334vw
 
     .top-wrapper
-      height :68px
-      padding :10px 5px 0
+      height :18.133333333333333vw
+      padding :2.666666666666667vw 1.3333333333333335vw 0
       box-sizing :border-box
       .inner-wrapper
-        height :58px
+        height :15.466666666666667vw
         background :#fff
         border-radius :8px 8px 0 0
         box-sizing :border-box
-        padding :11px 0
+        padding :2.933333333333333vw 0
         layout(row,block,nowrap)
         .left-wrapper
           flex: 1
-          padding-left :6px
+          padding-left :1.6vw
           overflow :hidden
           .button
-            width :94px
-            height :18px
+            width :25.066666666666666vw
+            height :4.8vw
           .time
-            padding-top :4px
+            padding-top :1.0666666666666667vw
             font-family: DINAlternate-Bold
-            font-size: 13px
+            font-size: 3.4666666666666663vw
             color: $color-text-sub
             .dot
               position :relative
-              bottom :1px
-              padding :0 2.5px
+              bottom :0.26666666666666666vw
+              padding :0 0.6666666666666667vw
         .right-wrapper
           layout(row,block,nowrap)
-          padding-right :3px
+          padding-right :0.8vw
           .right-item
             text-align :center
-            padding :0 5px
+            padding :0 1.3333333333333335vw
             .text
-              width :60px
-              height :21px
+              width :16vw
+              height :5.6000000000000005vw
               background: #fff
               border-radius: @height
               font-family: $font-family-medium
-              font-size: 18px;
+              font-size: 4.8vw
               color: $color-text-sub
               line-height :@height
               transition :all 0.3s
@@ -181,9 +181,9 @@
                 color: #FFFFFF;
                 background: #FF8506
             .explain
-              padding-top :2.5px
+              padding-top :0.6666666666666667vw
               font-family: $font-family-regular
-              font-size: 12px;
+              font-size: 3.2vw
               color: $color-text-sub
               transition :all 0.3s
               &.active

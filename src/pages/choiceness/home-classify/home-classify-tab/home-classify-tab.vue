@@ -71,11 +71,18 @@
     height: $tab-height
     width: 100vw
     background: $color-white
-    box-shadow: 0 1px 8px 0 rgba(55, 75, 99, 0.04)
     white-space: nowrap
     box-sizing: border-box
-    transform: translateX(0)
+    transform: translate3d(0, 0, 0)
     transition: all 0
+    &:after
+      content: ""
+      position: absolute
+      bottom: 0
+      right: 0
+      width: 100%
+      transform: scaleY(.5) translateZ(0)
+      border-bottom: 1px solid $color-line
     &.active
       display :none
     ::-webkit-scrollbar

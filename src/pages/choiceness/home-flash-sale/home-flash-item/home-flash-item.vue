@@ -74,36 +74,36 @@
     .bottom-wrapper
       overflow :hidden
       .title
-        padding-top :10px
+        padding-top :2.666666666666667vw
         font-family: $font-family-regular
-        font-size: 13px;
+        font-size: 3.4666666666666663vw
         color: #111111;
         no-wrap()
       .button-group-wrapper
         overflow :hidden
        .price-wrapper
-          padding-top: 5px
+          padding-top: 1.3333333333333335vw
           display :flex
           color: #FF8300;
           font-family: $font-family-medium
           position :relative
           .number
-            font-size: 17px
+            font-size: 4.533333333333333vw
           .unit
             position :relative
-            top:5px
+            top:1.3333333333333335vw
             margin-left :1px
-            font-size :10px
+            font-size :2.666666666666667vw
           .button
             position :absolute
             bottom :0
             right :0
-            width :40px
+            width :10.666666666666668vw
             height :@width
             .button-img
               position :absolute
               bottom :0
               right :0
-              width :23px
+              width :6.133333333333333vw
               height :@width
 </style>
