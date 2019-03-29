@@ -12,6 +12,9 @@ export default {
       flashCountDownTimer: undefined
     }
   },
+  onUnload() {
+    this.flashCountDownTimer && clearInterval(this.flashCountDownTimer)
+  },
   methods: {
     // tab切换
     flashChangeTab(item, index) {
@@ -38,6 +41,9 @@ export default {
       this.flashCountDownTimer = setInterval(() => {
         currentTime--
         this.flashCountDownTimes = countDownHandle(currentTime)
+        if (!this.flashCountDownTimes.differ) {
+          clearInterval(this.flashCountDownTimer)
+        }
       }, 1000)
     }
   }

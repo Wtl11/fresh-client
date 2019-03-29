@@ -23,7 +23,7 @@
               <div class="left-price-line">
                 <div class="line-price-top">
                   <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-qgj@2x.png'" class="text-img" mode="aspectFill">
-                  <div class="text">抢购价</div>
+                  <div class="text">秒杀价</div>
                 </div>
                 <div class="line-price-box">{{goodsMsg.original_price}}元</div>
               </div>
@@ -611,13 +611,13 @@
         //     clearInterval(this.timer)
         //   }
         // }, 1000)
-        clearInterval(this.timer)
+        this.timer && clearInterval(this.timer)
         let diff = this.goodsMsg.at_diff
         this.activityTime = countDownHandle(diff)
         this.timer = setInterval(() => {
           diff--
           this.activityTime = countDownHandle(diff)
-          if (!this.activityTime.diff) {
+          if (!this.activityTime.differ) {
             clearInterval(this.timer)
           }
         }, 1000)
@@ -861,7 +861,7 @@
           align-items: center
           .left-price
             font-size: 30px
-            font-family: 'PingFang-SC-Bold'
+            font-family: $font-family-medium
             color: $color-white
           .left-price-text
             font-size: 22px
@@ -931,12 +931,13 @@
           margin-right: 5px
           color:rgba(255,255,255,1)
         .line-price-text
-          font-size: $font-size-14
+          font-size: $font-size-12
           font-family: $font-family-regular
           text-decoration: line-through
           line-height: 1
-          color: #A0A0A0
           color:rgba(255,255,255,0.8)
+          position :relative
+          bottom :2px
 
   .detail-info-box
     padding: 0 12px

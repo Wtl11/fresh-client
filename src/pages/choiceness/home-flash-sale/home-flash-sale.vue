@@ -130,9 +130,13 @@
           border-left-1px()
           .text
             font-size :13px
-            writing-mode :tb
+            width :13px
             letter-spacing :3.5px
+            white-space :normal
+            word-wrap: break-word
+            word-break :break-all
           .more-icon
+            margin-top :3.5px
             width :13px
             height:@width
 

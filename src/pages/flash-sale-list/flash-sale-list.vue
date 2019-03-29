@@ -77,7 +77,7 @@
         goodsList: [],
         hasMore: true,
         isShowEmpty: false,
-        isFirstLoad: true,
+        // isFirstLoad: true,
         page: 1,
         limit: 10,
         countDownTimes: {
@@ -122,6 +122,9 @@
         imageUrl: this.imageUrl + SHARE_IMG[status].img
       }
     },
+    onUnload() {
+      this.timer && clearInterval(this.timer)
+    },
     methods: {
       // 更新页面的参数
       async _getPageParams() {
@@ -153,7 +156,7 @@
       // tab-list
       async _getTabList() {
         try {
-          let res = await API.FlashSale.getFlashTabList({}, this.isFirstLoad)
+          let res = await API.FlashSale.getFlashTabList()
           this.tabList = res.data
           if (this.id) {
             let index = this.tabList.findIndex(val => val.id === this.id)
@@ -174,6 +177,9 @@
         this.timer = setInterval(() => {
           currentTime--
           this.countDownTimes = countDownHandle(currentTime)
+          if (!this.countDownTimes.differ) {
+            clearInterval(this.timer)
+          }
         }, 1000)
       },
       // 列表
@@ -187,7 +193,6 @@
           if (meta.current_page === 1) {
             this.goodsList = res.data
             this.isShowEmpty = meta.total === 0
-            this.isFirstLoad = false
           } else {
             let arr = this.goodsList.concat(res.data)
             this.goodsList = arr
