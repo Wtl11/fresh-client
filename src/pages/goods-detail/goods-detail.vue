@@ -920,7 +920,7 @@
       box-sizing: border-box
       .left-price
         font-size: 30px
-        font-family: PingFang-SC-Bold
+        font-family: $font-family-medium
         color:rgba(255,255,255,1)
       .left-price-text
         layout(row)
@@ -937,7 +937,7 @@
           line-height: 1
           color:rgba(255,255,255,0.8)
           position :relative
-          bottom :2px
+          bottom :4px
 
   .detail-info-box
     padding: 0 12px

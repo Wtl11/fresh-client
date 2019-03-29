@@ -141,9 +141,11 @@
             align-items :center
             border-left-1px()
             .text
+              font-family :$font-family-regular
+              color: $color-text-sub
               font-size :13px
               width :13px
-              letter-spacing :3.5px
+              letter-spacing :2px
               white-space :normal
               word-wrap: break-word
               word-break :break-all

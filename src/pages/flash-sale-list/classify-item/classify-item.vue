@@ -85,8 +85,8 @@
       position: relative
       .top-label
         position: absolute
-        left: 0
-        top: 0
+        left: -2.5px
+        top: @left
         display: block
         width: 31.2px
         height: 31.4px
@@ -94,7 +94,7 @@
       .box-top-img
         position: absolute
         left: 0
-        top: 0
+        top: @left
         z-index: 2
         display: block
         width: 100%
