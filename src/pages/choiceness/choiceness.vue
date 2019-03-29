@@ -1,5 +1,5 @@
 <template>
-  <div class="choiceness">
+  <div class="choiceness" :style="homeStyles">
     <navigation-bar :title="shopName" :showArrow="false"></navigation-bar>
     <home-position
       :buyUsers="buyUsers"
@@ -32,6 +32,7 @@
     <home-banner
       :bigItem="bannerInfo"
       :praiseIndex="praiseIndex"
+      :isShow="bannerIsShow"
       @bannerChange="bannerChangeHandle"
     ></home-banner>
     <div class="empty"></div>
@@ -40,6 +41,7 @@
       :tabIndex="flashTabIndex"
       :flashArray="flashArray"
       :countDownTimes="flashCountDownTimes"
+      :isShow="flashIsShow"
       @changeTab="flashChangeTab"
     ></home-flash-sale>
     <home-classify
@@ -48,7 +50,10 @@
       :classifyArray="classifyArray"
       :viewToItem="classifyViewToItem"
       :styles="classifyStyles"
-      :isShow="classifyTabIsShow"
+      :isShow="classifyIsShow"
+      :isShowTab="classifyTabIsShow"
+      :hasMore="classifyMore"
+      :isShowEmpty="classifyShowEmpty"
       @changeTab="classifyChangeTab"
     ></home-classify>
     <custom-tab-bar currentType="index"></custom-tab-bar>
@@ -98,6 +103,23 @@
 
   const ald = getApp()
   const PAGE_NAME = 'CHOICENESS'
+  const PAGE_CONFIG = {
+    'bannar': {
+      isShow: 'bannerIsShow',
+      tabList: '',
+      dataArray: 'bannerInfo'
+    },
+    'activity_fixed': {
+      isShow: 'flashIsShow',
+      tabList: 'flashTabList',
+      dataArray: ''
+    },
+    'goods_cate': {
+      isShow: 'classifyIsShow',
+      tabList: 'classifyTabList',
+      dataArray: ''
+    }
+  }
   export default {
     name: PAGE_NAME,
     mixins: [
@@ -129,7 +151,13 @@
         title: '赞播优鲜',
         curShopId: '',
         modulesList: [],
-        systemInfo: {}
+        systemInfo: {},
+        homeStyles: 'overflow:hidden;height:100vh;min-height:100vh;max-height:100vh' // 为了获取商品分类的tab高度;获取后置空
+      }
+    },
+    watch: {
+      classifyScrollHeight(val) {
+        // this.$wechat.hideLoading()
       }
     },
     // onPageScroll(e) {
@@ -140,6 +168,7 @@
       this._initPageParams(options)
     },
     async onShow() {
+      this.$wechat.showLoading()
       try {
         this.$sendMsg({
           event_no: 1000
@@ -152,7 +181,6 @@
           shopId = res.data.id
         }
         if (this.curShopId * 1 !== shopId * 1) {
-          // await this._getIndexModule(false)
           await this._getModuleInfo()
           this.curShopId = shopId
         }
@@ -161,11 +189,16 @@
       } catch (e) {
         console.error(e)
       } finally {
-        this.$wechat.hideLoading()
+        // this.$wechat.hideLoading()
       }
     },
     async onPullDownRefresh() {
-      await this._getModuleInfo(false)
+      this._resetGetClassifyListParams()
+      try {
+        await this._getModuleInfo(false)
+      } catch (e) {
+        console.error(e)
+      }
       wx.stopPullDownRefresh()
       if (!wx.getStorageSync('token')) return
       this.setCartCount()
@@ -211,11 +244,19 @@
         this.systemInfo = wx.getSystemInfoSync()
       },
       // 获取模块信息
-      async _getModuleInfo() {
+      async _getModuleInfo(loading) {
         try {
-          let res = await API.FlashSale.getModuleInfo({page_name: 'index'})
-          let bannerInfo = res.data.modules.find(val => val.module_name === 'bannar')
-          this.bannerInfo = bannerInfo || {}
+          let res = await API.FlashSale.getModuleInfo({page_name: 'index'}, loading)
+          let modules = res.data.modules || []
+          console.log(modules)
+          modules.forEach((item) => {
+            const key = PAGE_CONFIG[item.module_name]
+            if (key) {
+              let list = (item.content_data && item.content_data.list) || []
+              this[key.isShow] = !item.is_close
+              this[key.tabList] = list
+            }
+          })
           await this._getFlashList()
           await this._getClassifyList()
         } catch (e) {

@@ -223,3 +223,5 @@ export function countDownHandle(time) {
     differ
   }
 }
+
+console.log(countDownHandle(349367))

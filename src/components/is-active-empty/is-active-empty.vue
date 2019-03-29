@@ -15,7 +15,7 @@
     props: {
       text: {
         type: String,
-        default: '活动即将开始，敬请期待'
+        default: '空空如也'
       }
     }
   }

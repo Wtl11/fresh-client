@@ -74,6 +74,8 @@
     padding: 0 12px
     box-sizing: border-box
     margin-bottom: 8px
+    height :24px
+    box-sizing :border-box
     .community-main
       layout(row)
       align-items: center

@@ -68,11 +68,6 @@
         default: () => {}
       }
     },
-    data() {
-      return {
-
-      }
-    },
     methods: {
       ...cartMethods,
       jumpGoodsDetail(item) {
@@ -138,8 +133,8 @@
         width: 32px
         height: 32px
         position: absolute
-        left: -5px
-        top: -5px
+        left: -2.5px
+        top: -2.5px
         display: block
     .goods-right
       flex: 1

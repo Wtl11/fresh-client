@@ -1,5 +1,5 @@
 <template>
-  <div class="home-classify">
+  <div v-if="isShow" class="home-classify">
     <classify-tab
       id="scrollView-relative"
       :tabList="tabList"
@@ -13,7 +13,7 @@
       </block>
     </div>
     <classify-tab
-      v-if="isShow"
+      v-if="isShowTab"
       :styles="styles"
       id="scrollView-fixed"
       :tabList="tabList"
@@ -21,8 +21,8 @@
       :tabIndex="tabIndex"
       @changeTab="changeTabHandle"
     ></classify-tab>
-    <is-end></is-end>
-    <is-active-empty></is-active-empty>
+    <is-end v-if="!hasMore"></is-end>
+    <is-active-empty v-if="isShowEmpty"></is-active-empty>
   </div>
 </template>
 
@@ -48,6 +48,10 @@
         type: Boolean,
         default: true
       },
+      isShowTab: {
+        type: Boolean,
+        default: true
+      },
       tabList: {
         type: Array,
         default: () => []
@@ -67,6 +71,14 @@
       tabIndex: {
         type: Number,
         default: 0
+      },
+      hasMore: {
+        type: Boolean,
+        default: true
+      },
+      isShowEmpty: {
+        type: Boolean,
+        default: false
       }
     },
     methods: {

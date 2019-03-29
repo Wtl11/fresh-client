@@ -8,15 +8,19 @@
         src="http://social-shopping-api-1254297111.picgz.myqcloud.com/1/2019/03/26/155357176784195.png">
     </figure>
     <form class="bottom-wrapper"  action="" report-submit @submit="$getFormId" >
-      <p class="title">超值特新鲜柠…</p>
+      <div class="title-wrapper">
+        <p class="title">超值特新鲜柠,超值特新鲜</p>
+      </div>
       <div class="price-wrapper">
-        <p class="number">10.8</p>
-        <p class="unit">元</p>
+        <div class="price">
+          <p class="number">10.8</p>
+          <p class="unit">元</p>
+        </div>
         <button class="button" formType="submit" @click.stop="submitHandle">
           <figure class="button-img">
             <img
               class="img"
-              mode="aspectFill"
+              mode="aspectFit"
               v-if="imageUrl"
               :src="imageUrl + '/yx-image/2.1/icon-shopcart copy 2@2x.png'"
             >
@@ -64,6 +68,7 @@
     width :100%
     height :100%
     display :block
+    overflow :auto
 
   .home-flash-item
     width :26.666666666666668vw
@@ -72,28 +77,35 @@
       width :26.666666666666668vw
       height :26.666666666666668vw
     .bottom-wrapper
-      overflow :hidden
-      .title
-        padding-top :2.666666666666667vw
-        font-family: $font-family-regular
-        font-size: 3.4666666666666663vw
-        color: #111111;
-        no-wrap()
-      .button-group-wrapper
+      position :relative
+      .title-wrapper
         overflow :hidden
+        .title
+          padding-top :2.666666666666667vw
+          font-family: $font-family-regular
+          font-size: 3.4666666666666663vw
+          color: #111111;
+          no-wrap()
+      .button-group-wrapper
+        position :relative
+        z-index :10
        .price-wrapper
           padding-top: 1.3333333333333335vw
           display :flex
-          color: #FF8300;
+          color: #FF8300
           font-family: $font-family-medium
           position :relative
-          .number
-            font-size: 4.533333333333333vw
-          .unit
-            position :relative
-            top:1.3333333333333335vw
-            margin-left :1px
-            font-size :2.666666666666667vw
+          .price
+            flex:1
+            overflow :hidden
+            display :flex
+            .number
+              font-size: 4.533333333333333vw
+            .unit
+              position :relative
+              top:1.6vw
+              margin-left :1px
+              font-size :2.666666666666667vw
           .button
             position :absolute
             bottom :0
@@ -104,6 +116,6 @@
               position :absolute
               bottom :0
               right :0
-              width :6.133333333333333vw
+              width :6.14vw
               height :@width
 </style>

@@ -8,14 +8,19 @@ export default {
    * @param toast
    * @returns {*}
    */
-  // 用户优惠券列表
-  getModuleInfo(data, loading, toast) {
+  // 获取模块数据
+  getModuleInfo(data, loading = false, toast) {
     const url = `/api/wap/cms/page-index`
     return request.get({url, data, loading, toast})
   },
-  // 用户优惠券可使用数和不可使用数
-  getClientListNumber(data, loading = false, toast) {
-    const url = `/api/wap/coupon/customer-coupon-count`
+  // 获取商品分类列表数据
+  getClassifyList(data, loading = false, toast) {
+    const url = `/api/wap/goods/goods`
+    return request.get({url, data, loading, toast})
+  },
+  // 获取限时抢购列表数据
+  getFlashList(data, loading = false, toast) {
+    const url = `/api/wap/goods/activity-goods`
     return request.get({url, data, loading, toast})
   }
 }

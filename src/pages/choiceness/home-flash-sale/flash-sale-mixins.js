@@ -1,10 +1,14 @@
+import {countDownHandle} from '@utils/common'
+
 export default {
   data() {
     return {
       flashTabList: undefined,
-      flashTabIndex: undefined,
+      flashTabIndex: 0,
       flashArray: undefined,
-      flashCountDownTimes: undefined
+      flashCountDownTimes: undefined,
+      flashIsShow: undefined,
+      flashCountDownTimer: undefined
     }
   },
   methods: {
@@ -14,6 +18,24 @@ export default {
     },
     async _getFlashList() {
       // todo
+      // await new Promise((resolve, reject) => {
+      //   setTimeout(() => {
+      //     resolve()
+      //     this.flashIsShow = false
+      //   }, 2000)
+      // })
+      // this.flashIsShow = false
+      this._countDownAction()
+    },
+    _countDownAction() {
+      if (!this.flashTabList[this.flashTabIndex]) return
+      let currentTime = this.flashTabList[this.flashTabIndex].at_diff || 0
+      this.flashCountDownTimes = countDownHandle(currentTime)
+      this.flashCountDownTimer && clearInterval(this.flashCountDownTimer)
+      this.flashCountDownTimer = setInterval(() => {
+        currentTime--
+        this.flashCountDownTimes = countDownHandle(currentTime)
+      }, 1000)
     }
   }
 }

@@ -226,9 +226,9 @@
               background :$color-background
             .text
               font-size :18px
+              line-height :21px
             .explain
               font-family :$font-family-regular;
-              padding-top :3px
               font-size :12px
 
   .goods-list

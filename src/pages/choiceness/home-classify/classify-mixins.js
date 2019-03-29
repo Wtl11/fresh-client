@@ -6,93 +6,93 @@ export default {
       classifyTabIndex: 0,
       classifyViewToItem: 'item0',
       classifyPage: 1,
-      classifyMore: false,
+      classifyMore: true,
       classifyArray: [],
       classifyStyles: '',
       classifyId: 88,
       classifyNavigationHeight: 0,
       classifyTabIsShow: false,
-      classifyTabPosition: 9999,
-      isIos: false
+      classifyTabPosition: 999999,
+      classifyScrollHeight: 0,
+      getScrollHeightTimer: undefined,
+      classifyIsShow: undefined,
+      classifyShowEmpty: undefined
     }
   },
-  onLoad(options) {
-    this.getCategoryData(true)
-  },
   onReady() {
-    this.isIos = /ios/i.test(this.systemInfo.system)
     this.classifyNavigationHeight = (this.systemInfo.statusBarHeight || 20) + 44
     this.classifyStyles = `top:${this.classifyNavigationHeight}px;position:fixed;left:0;z-index:100`
   },
   onReachBottom() {
-    // this.getMoreCategoryList(this.classifyId, this.tabIndex)
+    this.classifyPage++
+    this._getClassifyList()
   },
   onPageScroll(e) {
-    if (!this.isIos) return
-    this.classifyTabIsShow = e.scrollTop + this.classifyNavigationHeight >= this.classifyTabPosition
+    // console.log(e.scrollTop + this.classifyNavigationHeight, this.classifyTabPosition.top)
+    this.classifyTabIsShow = e.scrollTop + this.classifyNavigationHeight >= this.classifyTabPosition.top
   },
   methods: {
+    // 获取tab位置信息
     _getTabPosition() {
-      const query = wx.createSelectorQuery()
-      query.select('#scrollView-relative').boundingClientRect()
-      query.exec(res => {
-        this.classifyTabPosition = res[0].top
-      })
+      if (this.classifyScrollHeight) return
+      clearTimeout(this.getScrollHeightTimer)
+      this.getScrollHeightTimer = setTimeout(() => {
+        const query = wx.createSelectorQuery()
+        query.select('#scrollView-relative').boundingClientRect()
+        query.exec(res => {
+          if (!res[0]) {
+            this.homeStyles = ``
+            return
+          }
+          this.classifyTabPosition = res[0]
+          this.classifyScrollHeight = res[0].top - this.classifyNavigationHeight
+          this.homeStyles = ``
+        })
+      }, 0)
     },
-    async _getClassifyList() {
-      // todo
-    },
-    getCategoryData(isLoad = false) {
-      API.Choiceness.getClassifyCategory().then((res) => {
-        if (res.error !== this.$ERR_OK) {
-          return
+    // 获取商品分类列表
+    async _getClassifyList(loading) {
+      console.log(this.classifyMore, '')
+      if (!this.classifyMore) return
+      let current = this.classifyTabList[this.classifyTabIndex] || {}
+      try {
+        const data = {
+          goods_category_id: current.id || 0,
+          page: this.classifyPage
         }
-        this.classifyTabList = res.data
-        // let length = res.data.length
-        // for (var i = 0; i < length; i++) {
-        //   this.classifyList.push([])
-        // }
-        // res.data.forEach((item, index) => {
-        //   if (item.id * 1 === this.classifyId * 1) {
-        //     this.tabIndex = index
-        //     // if (isLoad) {
-        //     //   setTimeout(() => {
-        //     //     this.boxTransition = 'all .3s'
-        //     //   }, 50)
-        //     // }
-        //     if (index > 3) {
-        //       this.viewToItem = `item${index}`
-        //     } else {
-        //       this.viewToItem = `item0`
-        //     }
-        //   }
-        // })
-        setTimeout(() => {
-          this._getTabPosition()
-        }, 500)
-        this.getCategoryList(this.classifyId, this.tabIndex)
-      })
+        let res = await API.FlashSale.getClassifyList(data, loading)
+        if (res.meta.current_page === 1) {
+          this.classifyArray = res.data
+          this.classifyShowEmpty = res.meta.total === 0
+        } else {
+          this.classifyArray = this.classifyArray.concat(res.data)
+        }
+        this.classifyMore = res.meta.current_page < res.meta.last_page
+        this._getTabPosition()
+      } catch (e) {
+        console.error(e)
+      }
     },
-    getCategoryList(id, index) {
+    // 重置参数
+    _resetGetClassifyListParams() {
       this.classifyPage = 1
-      this.classifyMore = false
-      API.Choiceness.getClassifyList({goods_category_id: id, limit: 10, page: this.classifyPage}).then((res) => {
-        if (res.error !== this.$ERR_OK) {
-          return
-        }
-        this.classifyArray = res.data
-        // this._isUpList(res)
+      this.classifyMore = true
+    },
+    // tab切换
+    classifyChangeTab(index, id, e) {
+      if (this.classifyTabIndex === index) return
+      this.classifyTabIsShow && wx.pageScrollTo({
+        scrollTop: this.classifyScrollHeight,
+        duration: 0
       })
+      let number = this._optimizeTabViewItem(index)
+      this.classifyViewToItem = `item${number}`
+      this.classifyTabIndex = index
+      this._resetGetClassifyListParams()
+      this._getClassifyList(true)
     },
-    _isUpList(res) {
-      // console.log(123)
-      // this.classifyPage++
-      // if (this.classifyList[this.tabIndex].length >= res.meta.total * 1) {
-      //   this.classifyMore = true
-      // }
-    },
-    async classifyChangeTab(index, id, e) {
-      if (this.classifyTabIndex * 1 === index * 1) return
+    // 优化tab切换时的动画问题
+    _optimizeTabViewItem(index) {
       let number = index * 1 === 0 ? 1 : index
       if (this.classifyTabIndex > index) {
         if (index <= 3) {
@@ -107,10 +107,7 @@ export default {
           number = index
         }
       }
-      this.classifyViewToItem = `item${number}`
-      this.classifyTabIndex = index
-      this.classifyId = id
-      this.getCategoryList(this.classifyId, index)
+      return number
     }
   }
 }

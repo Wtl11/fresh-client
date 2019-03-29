@@ -10,8 +10,8 @@
         </div>
         <ul class="right-wrapper">
           <li v-for="(item, index) in tabList" :key="index" class="right-item" @click="changeTab(item, index)">
-            <p class="text" :class="{active: tabIndex === index}">{{item.text}}</p>
-            <p class="explain" :class="{active: tabIndex === index}">{{item.explain}}</p>
+            <p class="text" :class="{active: tabIndex === index}">{{item.at}}</p>
+            <p class="explain" :class="{active: tabIndex === index}">{{item.at_str}}</p>
           </li>
         </ul>
       </div>
@@ -20,6 +20,17 @@
       <div v-for="(child, idx) in flashArray" :key="idx" class="bottom-item-wrapper">
         <home-flash-item></home-flash-item>
       </div>
+      <div class="bottom-item-wrapper">
+        <div class="look-wrapper">查看更多</div>
+      </div>
+      <!--<article class="bottom-item-wrapper look-more">-->
+        <!--<div class="look-wrapper">-->
+          <!--<div class="text">查看更多</div>-->
+          <!--<figure class="more-icon">-->
+            <!--<img class="img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.1/icon-pressed_gd@2x.png'">-->
+          <!--</figure>-->
+        <!--</div>-->
+      <!--</article>-->
     </scroll-view>
   </div>
 </template>
@@ -38,16 +49,8 @@
         type: Array,
         default: () => [
           {
-            text: '10:00',
-            explain: '正在抢购'
-          },
-          {
-            text: '16:00',
-            explain: '即将开抢'
-          },
-          {
-            text: '24:59',
-            explain: '3月19日'
+            at: '00:00',
+            at_str: ''
           }
         ]
       },
@@ -68,27 +71,23 @@
             second: '00'
           }
         }
-      }
-    },
-    data() {
-      return {
-        isShow: true
+      },
+      isShow: {
+        type: Boolean,
+        default: true
       }
     },
     onLoad() {
-      setTimeout(() => {
-        this.isShow = true
-      }, 2000)
+      // setTimeout(() => {
+      //   this.isShow = true
+      // }, 2000)
     },
     methods: {
       changeTab(item, index) {
         this.$emit('changeTab', item, index)
       },
-      scrollHandle(e) {
-        console.log(e)
-      },
       navHandle() {
-        wx.navigateTo({url: '/pages/flash-sale-list'})
+        // wx.navigateTo({url: '/pages/flash-sale-list'})
       }
     }
   }
@@ -115,6 +114,7 @@
       white-space: nowrap
       box-sizing: border-box
       transform: translate3d(0,0,0)
+      position :relative
       &.active
         display :none
       ::-webkit-scrollbar
@@ -133,6 +133,10 @@
           padding-left :3.253333333333333vw
         &:last-child
           padding-right :2.2133333333333334vw
+        .look-wrapper
+          width :26.666666666666668vw
+          height :100%
+          font-size :13px
 
     .top-wrapper
       height :18.133333333333333vw

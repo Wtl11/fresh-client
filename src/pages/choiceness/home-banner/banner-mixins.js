@@ -1,8 +1,9 @@
 export default {
   data() {
     return {
-      praiseIndex: 0,
-      bannerInfo: {}
+      praiseIndex: undefined,
+      bannerInfo: undefined,
+      bannerIsShow: undefined
     }
   },
   methods: {
