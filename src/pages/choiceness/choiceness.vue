@@ -155,13 +155,10 @@
         homeStyles: 'overflow:hidden;height:100vh;min-height:100vh;max-height:100vh' // 为了获取商品分类的tab高度;获取后置空
       }
     },
-    watch: {
-      classifyScrollHeight(val) {
-        // this.$wechat.hideLoading()
-      }
-    },
-    // onPageScroll(e) {
-    //   console.log(e)
+    // watch: {
+    //   classifyScrollHeight(val) {
+    //     this.$wechat.hideLoading()
+    //   }
     // },
     onLoad(options) {
       this._getSystemInfo()
@@ -180,16 +177,20 @@
           wx.setStorageSync('shopId', res.data.id)
           shopId = res.data.id
         }
-        if (this.curShopId * 1 !== shopId * 1) {
-          await this._getModuleInfo()
-          this.curShopId = shopId
-        }
+        // if (this.curShopId * 1 !== shopId * 1) {
+        //   await this._getModuleInfo()
+        //   this.curShopId = shopId
+        // }
+        await this._getModuleInfo()
+        this.curShopId = shopId
         if (!wx.getStorageSync('token')) return
         this.setCartCount()
       } catch (e) {
         console.error(e)
       } finally {
-        // this.$wechat.hideLoading()
+        if (this.classifyScrollHeight) {
+          this.$wechat.hideLoading()
+        }
       }
     },
     async onPullDownRefresh() {
@@ -248,13 +249,13 @@
         try {
           let res = await API.FlashSale.getModuleInfo({page_name: 'index'}, loading)
           let modules = res.data.modules || []
-          console.log(modules)
           modules.forEach((item) => {
             const key = PAGE_CONFIG[item.module_name]
             if (key) {
               let list = (item.content_data && item.content_data.list) || []
-              this[key.isShow] = !item.is_close
-              this[key.tabList] = list
+              key.isShow && (this[key.isShow] = !item.is_close)
+              key.tabList && (this[key.tabList] = list)
+              key.dataArray && (this[key.dataArray] = item)
             }
           })
           await this._getFlashList()
@@ -263,15 +264,6 @@
           console.error(e)
         }
       }
-      // // 获取
-      // async _getIndexModule() {
-      //   let res = await API.Choiceness.getModulesInfo({page_name: 'index'})
-      //   if (res.error !== this.$ERR_OK) {
-      //     this.$wechat.showToast(res.message)
-      //     return
-      //   }
-      //   this.modulesList = res.data.modules
-      // }
     }
   }
 </script>

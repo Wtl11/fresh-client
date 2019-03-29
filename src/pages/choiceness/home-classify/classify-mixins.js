@@ -40,6 +40,7 @@ export default {
         const query = wx.createSelectorQuery()
         query.select('#scrollView-relative').boundingClientRect()
         query.exec(res => {
+          this.$wechat.hideLoading()
           if (!res[0]) {
             this.homeStyles = ``
             return
@@ -52,7 +53,6 @@ export default {
     },
     // 获取商品分类列表
     async _getClassifyList(loading) {
-      console.log(this.classifyMore, '')
       if (!this.classifyMore) return
       let current = this.classifyTabList[this.classifyTabIndex] || {}
       try {

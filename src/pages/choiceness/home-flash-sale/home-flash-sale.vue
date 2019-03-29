@@ -9,7 +9,7 @@
           <p class="time">{{countDownTimes.hour}}<span class="dot">:</span>{{countDownTimes.minute}}<span class="dot">:</span>{{countDownTimes.second}}</p>
         </div>
         <ul class="right-wrapper">
-          <li v-for="(item, index) in tabList" :key="index" class="right-item" @click="changeTab(item, index)">
+          <li v-for="(item, index) in tabList" :key="item.id" class="right-item" @click="changeTab(item, index)">
             <p class="text" :class="{active: tabIndex === index}">{{item.at}}</p>
             <p class="explain" :class="{active: tabIndex === index}">{{item.at_str}}</p>
           </li>
@@ -18,19 +18,16 @@
     </section>
     <scroll-view class="bottom-wrapper" scroll-x @scrolltolower="scrollHandle">
       <div v-for="(child, idx) in flashArray" :key="idx" class="bottom-item-wrapper">
-        <home-flash-item></home-flash-item>
+        <home-flash-item :dataInfo="child"></home-flash-item>
       </div>
-      <div class="bottom-item-wrapper">
-        <div class="look-wrapper">查看更多</div>
-      </div>
-      <!--<article class="bottom-item-wrapper look-more">-->
-        <!--<div class="look-wrapper">-->
-          <!--<div class="text">查看更多</div>-->
-          <!--<figure class="more-icon">-->
-            <!--<img class="img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.1/icon-pressed_gd@2x.png'">-->
-          <!--</figure>-->
-        <!--</div>-->
-      <!--</article>-->
+      <article v-if="flashArray.length > 4" class="bottom-item-wrapper">
+        <div class="look-wrapper" @click="navHandle">
+          <div class="text">查看更多</div>
+          <figure class="more-icon">
+            <img class="img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.1/icon-pressed_gd@2x.png'">
+          </figure>
+        </div>
+      </article>
     </scroll-view>
   </div>
 </template>
@@ -47,12 +44,7 @@
     props: {
       tabList: {
         type: Array,
-        default: () => [
-          {
-            at: '00:00',
-            at_str: ''
-          }
-        ]
+        default: () => []
       },
       tabIndex: {
         type: Number,
@@ -60,7 +52,7 @@
       },
       flashArray: {
         type: Array,
-        default: () => new Array(5).fill(1)
+        default: () => []
       },
       countDownTimes: {
         type: Object,
@@ -77,17 +69,12 @@
         default: true
       }
     },
-    onLoad() {
-      // setTimeout(() => {
-      //   this.isShow = true
-      // }, 2000)
-    },
     methods: {
       changeTab(item, index) {
         this.$emit('changeTab', item, index)
       },
       navHandle() {
-        // wx.navigateTo({url: '/pages/flash-sale-list'})
+        wx.navigateTo({url: '/pages/flash-sale-list'})
       }
     }
   }
@@ -129,14 +116,25 @@
         padding-top :2.933333333333333vw
         padding-bottom :4vw
         padding-right :2.2133333333333334vw
+        overflow :hidden
         &:first-child
           padding-left :3.253333333333333vw
         &:last-child
           padding-right :2.2133333333333334vw
         .look-wrapper
-          width :26.666666666666668vw
+          width :55px
           height :100%
-          font-size :13px
+          layout()
+          justify-content :center
+          align-items :center
+          border-left-1px()
+          .text
+            font-size :13px
+            writing-mode :tb
+            letter-spacing :3.5px
+          .more-icon
+            width :13px
+            height:@width
 
     .top-wrapper
       height :18.133333333333333vw

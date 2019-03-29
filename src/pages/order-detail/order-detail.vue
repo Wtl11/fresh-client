@@ -230,7 +230,6 @@
       getGoodsDetailData() {
         API.Order.getOrderDetailData(this.orderId).then((res) => {
           if (res.error === this.$ERR_OK) {
-            console.log(res)
             this.orderMsg = res.data
             this.address = res.data.address
             this.groupInfo = {

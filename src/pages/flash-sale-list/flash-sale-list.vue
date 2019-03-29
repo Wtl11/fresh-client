@@ -1,24 +1,24 @@
 <template>
-  <div class="flash-sale-list">
+  <div class="flash-sale-list" :style="{background: isShowEmpty? '#fff': ''}">
     <navigation-bar title="限时抢购"></navigation-bar>
     <section class="tab-container">
       <dl class="tab-wrapper">
         <dt class="top-wrapper">
           <nav class="top-item-wrapper" :class="{active: tabIndex === index}" v-for="(item, index) in tabList" :key="index" @click="changeTabHandle(item, index)">
-            <p class="text">{{item.text}}</p>
-            <p class="explain">{{item.explain}}</p>
+            <p class="text">{{item.at}}</p>
+            <p class="explain">{{item.at_str}}</p>
           </nav>
         </dt>
         <dd class="bottom-wrapper">
-          <div class="left-wrapper">正在抢购，先下单先得哦！</div>
+          <div class="left-wrapper">{{currentObj.at_desc}}</div>
           <div class="right-wrapper">
-            <p class="title">距开始</p>
+            <p class="title">{{currentObj.at_diff_str}}</p>
             <div class="time-wrapper">
-              <p class="time">01</p>
+              <p class="time start">{{countDownTimes.hour}}</p>
               <p class="dot">:</p>
-              <p class="time">59</p>
+              <p class="time">{{countDownTimes.minute}}</p>
               <p class="dot">:</p>
-              <p class="time">16</p>
+              <p class="time">{{countDownTimes.second}}</p>
             </div>
           </div>
         </dd>
@@ -28,7 +28,7 @@
       <li class="goods-item-box" v-for="(item, index) in goodsList" :key="index">
         <classify-item :item="item"></classify-item>
       </li>
-      <li class="foot-ties" v-if="!hasMore">
+      <li class="foot-ties" v-if="!hasMore && !isShowEmpty">
         <div class="left lines"></div>
         <div class="center">再拉也没有了</div>
         <div class="bot lines"></div>
@@ -49,15 +49,16 @@
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import ClassifyItem from './classify-item/classify-item'
+  import {countDownHandle} from '@utils/common'
   import API from '@api'
 
   const PAGE_NAME = 'FLASH_SALE_LIST'
   const SHARE_IMG = {
-    'WILL': {
+    '0': {
       img: '/yx-image/2.1/pic-xsqg_jjkq.png',
       title: '即将开抢，敬请期待！'
     },
-    'NOW': {
+    '1': {
       img: '/yx-image/2.1/pic-xsqg_ljqg.png',
       title: '正在抢购，先下单先得哦！'
     }
@@ -71,58 +72,115 @@
     },
     data() {
       return {
-        tabList: [
-          {
-            text: '10:00',
-            explain: '正在抢购'
-          },
-          {
-            text: '16:00',
-            explain: '即将开抢'
-          },
-          {
-            text: '24:59',
-            explain: '3月19日'
-          }
-        ],
+        tabList: [],
         tabIndex: 0,
         goodsList: [],
         hasMore: true,
         isShowEmpty: false,
         isFirstLoad: true,
         page: 1,
-        limit: 10
+        limit: 10,
+        countDownTimes: {
+          hour: '00',
+          minute: '00',
+          second: '00'
+        },
+        id: undefined // 活动id
       }
     },
-    onLoad() {
-      this._getList()
+    computed: {
+      currentObj() {
+        return this.tabList[this.tabIndex] || {}
+      }
+    },
+    onShow() {
+      wx.pageScrollTo({
+        scrollTop: 0,
+        duration: 0
+      })
+      this._getPageParams()
+      this._resetListParams()
+      this._getTabList()
     },
     onReachBottom() {
       this.page++
       this._getList()
     },
     onPullDownRefresh() {
-      this.page = 1
-      this.hasMore = true
+      this._resetListParams()
       this._getList(() => {
         wx.stopPullDownRefresh()
       })
     },
     onShareAppMessage() {
+      const status = this.currentObj.status
+      const shopId = wx.getStorageSync('shopId')
+      console.warn(`/pages/flash-sale-list?id=${this.currentObj.id}&shopId=${shopId}`)
       return {
-        title: SHARE_IMG.NOW.title,
-        path: '',
-        imageUrl: this.imageUrl + SHARE_IMG.NOW.img
+        title: (this.currentObj.activity_name || '') + '，' + SHARE_IMG[status].title,
+        path: `/pages/flash-sale-list?id=${this.currentObj.id}&shopId=${shopId}`,
+        imageUrl: this.imageUrl + SHARE_IMG[status].img
       }
     },
     methods: {
-      changeTabHandle(item, index) {
-        this.tabIndex = index
+      // 更新页面的参数
+      async _getPageParams() {
+        try {
+          let el = await getCurrentPages()[getCurrentPages().length - 1]  // eslint-disable-line
+          if (!el) return
+          let id = +el.options.id
+          let shopId = +el.options.shopId
+          shopId && wx.setStorageSync('shopId', shopId)
+          id && (this.id = id)
+        } catch (e) {
+          console.error(e, '获取参数异常')
+        }
       },
+      // tab-change
+      changeTabHandle(item, index) {
+        if (this.tabIndex === index) {
+          return
+        }
+        this.tabIndex = index
+        this._resetListParams()
+        this._getTabList()
+      },
+      // 重置
+      _resetListParams() {
+        this.page = 1
+        this.hasMore = true
+      },
+      // tab-list
+      async _getTabList() {
+        try {
+          let res = await API.FlashSale.getFlashTabList()
+          this.tabList = res.data
+          if (this.id) {
+            let index = this.tabList.findIndex(val => val.id === this.id)
+            index > -1 && (this.tabIndex = index)
+          }
+          this._countDownAction()
+          this._getList()
+        } catch (e) {
+          console.error(e)
+        }
+      },
+      // 倒计时
+      _countDownAction() {
+        if (!this.currentObj) return
+        let currentTime = this.currentObj.at_diff * 2 || 0
+        this.countDownTimes = countDownHandle(currentTime)
+        this.timer && clearInterval(this.timer)
+        this.timer = setInterval(() => {
+          currentTime--
+          this.countDownTimes = countDownHandle(currentTime)
+        }, 1000)
+      },
+      // 列表
       _getList(callback) {
         if (!this.hasMore) return
-        let data = {customer_coupon_id: this.$mp.query.id || 30, limit: this.limit, page: this.page}
-        API.Coupon.getGoodsList(data, this.isFirstLoad).then((res) => {
+        let data = {activity_id: this.currentObj || 0, page: this.page}
+        API.FlashSale.getFlashList(data, this.isFirstLoad).then((res) => {
           callback && callback()
           this.$wechat.hideLoading()
           let meta = res.meta
@@ -202,9 +260,17 @@
                 border-radius: 3px
                 height :15px
                 line-height :@height
-                padding :0 2px
+                width :@height
+                text-align :center
+                box-sizing :border-box
+                &.start
+                  padding :0 2px
+                  width: auto
+                  box-sizing: content-box
               .dot
                 padding :0 2px
+                position :relative
+                bottom :1px
         .top-wrapper
           height :55px
           background: #FFE500
@@ -268,7 +334,7 @@
 
   .noting
     text-align: center
-    margin-top: 50px
+    margin-top: 100px
     .noting-img
       width: 116px
       height: 110px

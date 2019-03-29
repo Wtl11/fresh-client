@@ -19,7 +19,7 @@ export default {
     this._refreshLocation()
     this.getLocationData()
     this._getBuyUsers()
-    this._groupInfo()
+    this._groupInfo(false)
   },
   onHide() {
     this.carouselTimer && clearTimeout(this.carouselTimer)
@@ -108,7 +108,9 @@ export default {
     // 获取团长的信息
     async _groupInfo(loading) {
       let res = await API.Choiceness.getGroupInfo(loading)
-      this.$wechat.hideLoading()
+      if (loading) {
+        this.$wechat.hideLoading()
+      }
       if (res.error !== this.$ERR_OK) {
         this.$wechat.showToast(res.message)
       }

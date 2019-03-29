@@ -21,7 +21,7 @@
       :tabIndex="tabIndex"
       @changeTab="changeTabHandle"
     ></classify-tab>
-    <is-end v-if="!hasMore"></is-end>
+    <is-end v-if="!hasMore && !isShowEmpty"></is-end>
     <is-active-empty v-if="isShowEmpty"></is-active-empty>
   </div>
 </template>

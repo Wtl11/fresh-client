@@ -4,16 +4,16 @@
       <img
         class="img"
         mode="aspectFill"
-        v-if="imageUrl"
-        src="http://social-shopping-api-1254297111.picgz.myqcloud.com/1/2019/03/26/155357176784195.png">
+        v-if="dataInfo.goods_cover_image"
+        :src="dataInfo.goods_cover_image">
     </figure>
     <form class="bottom-wrapper"  action="" report-submit @submit="$getFormId" >
       <div class="title-wrapper">
-        <p class="title">超值特新鲜柠,超值特新鲜</p>
+        <p class="title">{{dataInfo.name}}</p>
       </div>
       <div class="price-wrapper">
         <div class="price">
-          <p class="number">10.8</p>
+          <p class="number">{{dataInfo.trade_price}}</p>
           <p class="unit">元</p>
         </div>
         <button class="button" formType="submit" @click.stop="submitHandle">
@@ -32,6 +32,9 @@
 </template>
 
 <script type="text/ecmascript-6">
+  import API from '@api'
+  import {cartMethods} from '@state/helpers'
+
   const COMPONENT_NAME = 'HOME_FLASH_ITEM'
 
   export default {
@@ -50,12 +53,35 @@
     onLoad() {
     },
     methods: {
+      ...cartMethods,
       submitHandle() {
-        console.log(123)
+        this.addShoppingCart()
+      },
+      // 添加购物车
+      async addShoppingCart() {
+        let item = this.dataInfo
+        let isLogin = await this.$isLogin()
+        if (!isLogin) {
+          return
+        }
+        API.Choiceness.addShopCart({goods_sku_id: item.goods_sku_id, activity_id: item.activity_id}).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.$sendMsg({
+              event_no: 1007,
+              goods_id: item.goods_id,
+              title: item.name
+            })
+            this.$wechat.showToast('加入购物车成功', 1000, false)
+            this.setCartCount()
+          } else {
+            this.$wechat.showToast(res.message, 1000, false)
+          }
+        })
       },
       navHandle() {
-        console.log(666)
-        wx.navigateTo({url: '/pages/flash-sale-list'})
+        wx.navigateTo({
+          url: `/pages/goods-detail?id=${this.dataInfo.goods_id}&activityId=${this.dataInfo.activity_id}`
+        })
       }
     }
   }

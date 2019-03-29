@@ -1,7 +1,7 @@
 import request from './request-handler'
 
 export default {
-  /** ********** 用户优惠券页面 ************ **/
+  /** ********** 首页页面 ************ **/
   /**
    * @param data
    * @param loading
@@ -21,6 +21,18 @@ export default {
   // 获取限时抢购列表数据
   getFlashList(data, loading = false, toast) {
     const url = `/api/wap/goods/activity-goods`
+    return request.get({url, data, loading, toast})
+  },
+  /** ********** 限时抢购页面 ************ **/
+  /**
+   * @param data
+   * @param loading
+   * @param toast
+   * @returns {*}
+   */
+  // 获取限时抢购tablist
+  getFlashTabList(data, loading, toast) {
+    const url = `/api/wap/activity/activity-fixed`
     return request.get({url, data, loading, toast})
   }
 }
