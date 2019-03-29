@@ -17,17 +17,25 @@
       </div>
     </section>
     <scroll-view class="bottom-wrapper" scroll-x @scrolltolower="scrollHandle">
-      <div v-for="(child, idx) in flashArray" :key="idx" class="bottom-item-wrapper">
+      <div v-for="(child, idx) in flashArray" :key="idx" class="bottom-item-wrapper" :class="flashArray.length>4?'item-r-2vw':'item-r-0'">
         <home-flash-item :dataInfo="child"></home-flash-item>
+        <section v-if="flashArray.length> 4 && idx === flashArray.length -1" class="look-more">
+          <div class="look-wrapper" @click="navHandle">
+            <div class="text">查看更多</div>
+            <figure class="more-icon">
+              <img class="img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.1/icon-pressed_gd@2x.png'">
+            </figure>
+          </div>
+        </section>
       </div>
-      <article v-if="flashArray.length > 4" class="bottom-item-wrapper">
-        <div class="look-wrapper" @click="navHandle">
-          <div class="text">查看更多</div>
-          <figure class="more-icon">
-            <img class="img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.1/icon-pressed_gd@2x.png'">
-          </figure>
-        </div>
-      </article>
+      <!--<article v-if="flashArray.length > 4" class="bottom-item-wrapper">-->
+        <!--<div class="look-wrapper" @click="navHandle">-->
+          <!--<div class="text">查看更多</div>-->
+          <!--<figure class="more-icon">-->
+            <!--<img class="img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.1/icon-pressed_gd@2x.png'">-->
+          <!--</figure>-->
+        <!--</div>-->
+      <!--</article>-->
     </scroll-view>
   </div>
 </template>
@@ -110,35 +118,39 @@
         color: transparent
       .bottom-item-wrapper
         height :100%
-        display: inline-block
+        display: inline-flex
         position: relative
         box-sizing :border-box
         padding-top :2.933333333333333vw
         padding-bottom :4vw
         padding-right :2.2133333333333334vw
         overflow :hidden
+        &.item-r-2vw
+          padding-right :2.2133333333333334vw
+        &.item-r-0
+          padding-right :0
         &:first-child
           padding-left :3.253333333333333vw
-        &:last-child
-          padding-right :2.2133333333333334vw
-        .look-wrapper
-          width :55px
-          height :100%
-          layout()
-          justify-content :center
-          align-items :center
-          border-left-1px()
-          .text
-            font-size :13px
-            width :13px
-            letter-spacing :3.5px
-            white-space :normal
-            word-wrap: break-word
-            word-break :break-all
-          .more-icon
-            margin-top :3.5px
-            width :13px
-            height:@width
+        .look-more
+          padding-left :2.2133333333333334vw
+          .look-wrapper
+            width :55px
+            height :100%
+            layout()
+            justify-content :center
+            align-items :center
+            border-left-1px()
+            .text
+              font-size :13px
+              width :13px
+              letter-spacing :3.5px
+              white-space :normal
+              word-wrap: break-word
+              word-break :break-all
+            .more-icon
+              margin-top :3.5px
+              width :13px
+              height:@width
 
     .top-wrapper
       height :18.133333333333333vw
