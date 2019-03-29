@@ -75,7 +75,6 @@ export default {
     // 手机formId
     async $getFormId(e) {
       let isLogin = await this.$isLogin()
-      console.log(isLogin, '=-=-')
       if (!isLogin) {
         return
       }

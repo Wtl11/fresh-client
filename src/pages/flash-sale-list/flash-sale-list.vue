@@ -153,7 +153,7 @@
       // tab-list
       async _getTabList() {
         try {
-          let res = await API.FlashSale.getFlashTabList()
+          let res = await API.FlashSale.getFlashTabList({}, this.isFirstLoad)
           this.tabList = res.data
           if (this.id) {
             let index = this.tabList.findIndex(val => val.id === this.id)
@@ -168,7 +168,7 @@
       // 倒计时
       _countDownAction() {
         if (!this.currentObj) return
-        let currentTime = this.currentObj.at_diff * 2 || 0
+        let currentTime = this.currentObj.at_diff || 0
         this.countDownTimes = countDownHandle(currentTime)
         this.timer && clearInterval(this.timer)
         this.timer = setInterval(() => {
@@ -180,7 +180,7 @@
       _getList(callback) {
         if (!this.hasMore) return
         let data = {activity_id: this.currentObj || 0, page: this.page}
-        API.FlashSale.getFlashList(data, this.isFirstLoad).then((res) => {
+        API.FlashSale.getFlashList(data).then((res) => {
           callback && callback()
           this.$wechat.hideLoading()
           let meta = res.meta

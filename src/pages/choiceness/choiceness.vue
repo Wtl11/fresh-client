@@ -155,17 +155,14 @@
         homeStyles: 'overflow:hidden;height:100vh;min-height:100vh;max-height:100vh' // 为了获取商品分类的tab高度;获取后置空
       }
     },
-    // watch: {
-    //   classifyScrollHeight(val) {
-    //     this.$wechat.hideLoading()
-    //   }
-    // },
     onLoad(options) {
       this._getSystemInfo()
       this._initPageParams(options)
     },
     async onShow() {
-      this.$wechat.showLoading()
+      if (!this.classifyScrollHeight) {
+        this.$wechat.showLoading()
+      }
       try {
         this.$sendMsg({
           event_no: 1000
@@ -177,12 +174,10 @@
           wx.setStorageSync('shopId', res.data.id)
           shopId = res.data.id
         }
-        // if (this.curShopId * 1 !== shopId * 1) {
-        //   await this._getModuleInfo()
-        //   this.curShopId = shopId
-        // }
-        await this._getModuleInfo()
-        this.curShopId = shopId
+        if (this.curShopId * 1 !== shopId * 1) {
+          await this._getModuleInfo()
+          this.curShopId = shopId
+        }
         if (!wx.getStorageSync('token')) return
         this.setCartCount()
       } catch (e) {

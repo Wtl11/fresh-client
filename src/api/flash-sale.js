@@ -31,7 +31,7 @@ export default {
    * @returns {*}
    */
   // 获取限时抢购tablist
-  getFlashTabList(data, loading, toast) {
+  getFlashTabList(data, loading = false, toast) {
     const url = `/api/wap/activity/activity-fixed`
     return request.get({url, data, loading, toast})
   }
