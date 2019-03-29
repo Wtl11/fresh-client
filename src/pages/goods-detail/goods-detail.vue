@@ -29,7 +29,7 @@
               </div>
             </div>
             <div class="banner-main-right">
-              <div class="time-text">距结束</div>
+              <div class="time-text">{{goodsMsg.at_diff_str}}</div>
               <div class="time-all-box">{{activityTime.hour}}:{{activityTime.minute}}:{{activityTime.second}}</div>
             </div>
           </div>
@@ -54,8 +54,12 @@
         </div>
         <div class="info-stock">已售<span :class="'corp-' + corpName + '-money'">{{goodsMsg.sale_count}}</span>{{goodsMsg.goods_units}}<span v-if="activityId * 1 > 0">，剩余<span :class="'corp-' + corpName + '-money'">{{goodsMsg.usable_stock}}</span>{{goodsMsg.goods_units}}</span></div>
       </div>
-      <img v-if="imageUrl && corpName === 'platform'" :src="imageUrl + '/yx-image/goods/icon-share2@2x.png'" mode="aspectFill" class="banner-share" @click="showShare">
-      <img v-if="imageUrl && corpName === 'retuan'" :src="imageUrl + '/yx-image/retuan/icon-share2@2x.png'" mode="aspectFill" class="banner-share" @click="showShare">
+      <!--<img v-if="imageUrl && corpName === 'platform'" :src="imageUrl + '/yx-image/goods/icon-share2@2x.png'" mode="aspectFill" class="banner-share" @click="showShare">-->
+      <!--<img v-if="imageUrl && corpName === 'retuan'" :src="imageUrl + '/yx-image/retuan/icon-share2@2x.png'" mode="aspectFill" class="banner-share" @click="showShare">-->
+      <button class="banner-share" :open-type="activityId? 'share': ''">
+        <img v-if="imageUrl && corpName === 'platform'" :src="imageUrl + '/yx-image/goods/icon-share2@2x.png'" mode="aspectFill" class="share-img" @click="showShare">
+        <img v-if="imageUrl && corpName === 'retuan'" :src="imageUrl + '/yx-image/retuan/icon-share2@2x.png'" mode="aspectFill" class="share-img" @click="showShare">
+      </button>
     </div>
     <div class="safeguard-box">
       <div class="safeguard-item" v-for="(item, index) in safeList" v-bind:key="index">
@@ -108,12 +112,12 @@
         </div>
       </div>
       <form action="" report-submit @submit="$getFormId">
-        <button v-if="goodsMsg.usable_stock * 1 !== 0" class="goods-btn goods-btn-active" formType="submit" @click="addShoppingCart">加入购物车</button>
+        <button v-if="isShowTwoButton" class="goods-btn goods-btn-active" formType="submit" @click="addShoppingCart">加入购物车</button>
       </form>
       <form action="" class="lost" report-submit @submit="$getFormId">
-        <button v-if="goodsMsg.usable_stock * 1 !== 0" class="goods-btn" :class="'corp-' + corpName + '-bg'" formType="submit" @click="instantlyBuy">立即购买</button>
+        <button v-if="isShowTwoButton" class="goods-btn" :class="'corp-' + corpName + '-bg'" formType="submit" @click="instantlyBuy">立即购买</button>
       </form>
-      <div v-if="goodsMsg.usable_stock * 1 === 0" class="goods-btn goods-btn-assint">已抢完</div>
+      <div v-if="!isShowTwoButton" class="goods-btn goods-btn-assint">{{BTN_TEXT}}</div>
     </div>
     <add-number ref="addNumber" :msgDetail="goodsMsg" :msgDetailInfo="buyGoodsInfo" @comfirmNumer="comfirmNumer"></add-number>
     <link-group ref="groupList" :wechatInfo="groupInfo"></link-group>
@@ -147,7 +151,7 @@
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import AddNumber from '@components/add-number/add-number'
   import LinkGroup from '@components/link-group/link-group'
-  import {getParams} from '@utils/common'
+  import {getParams, countDownHandle} from '@utils/common'
   import {SCENE_SHARE, SCENE_DEFAULT, SCENE_QR_CODE} from '../../utils/contants'
   import WePaint from '@components/we-paint/we-paint'
   import API from '@api'
@@ -163,6 +167,18 @@
     [SCENE_SHARE]: 1002,
     [SCENE_DEFAULT]: 1003
   }
+  // 按钮状态映射
+  const BTN_STATUS = {
+    WILL: 0,
+    ACTION: 1,
+    DOWN: 2
+  }
+  const BTN_TEXT = {
+    [BTN_STATUS.WILL]: '即将开抢',
+    [BTN_STATUS.ACTION]: '',
+    [BTN_STATUS.DOWN]: '已结束',
+    NO_INVENTORY: '已抢完'
+  }
   export default {
     name: PAGE_NAME,
     data() {
@@ -171,7 +187,7 @@
         describeHeight: DESCRIBE_HEIGHT,
         goodDescribe: '',
         activityTime: {
-          day: '00',
+          // day: '00',
           hour: '00',
           minute: '00',
           second: '00'
@@ -202,7 +218,30 @@
       }
     },
     computed: {
-      ...cartComputed
+      ...cartComputed,
+      activeStatus() {
+        let active = this.goodsMsg.activity || {}
+        return +active.status
+      },
+      BTN_TEXT() {
+        let key = this.activeStatus
+        if (this.goodsMsg.usable_stock < 1) {
+          key = 'NO_INVENTORY'
+        }
+        if (key == null) {
+          key = BTN_STATUS.DOWN
+        }
+        return BTN_TEXT[key]
+      },
+      isShowTwoButton() {
+        let flag = null
+        if (this.activityId) {
+          flag = this.goodsMsg.usable_stock > 0 && this.activeStatus === 1
+        } else {
+          flag = this.goodsMsg.usable_stock > 0
+        }
+        return flag
+      }
     },
     onShareAppMessage() {
       this.$sendMsg({
@@ -236,13 +275,13 @@
       if (options.scene) {
         let scene = decodeURIComponent(options.scene)
         let params = getParams(scene)
-        this.goodsId = params.id
-        this.activityId = params.activityId
-        this.shopId = params.shopId
+        this.goodsId = +params.id
+        this.activityId = +params.activityId
+        this.shopId = +params.shopId
       } else {
-        this.goodsId = options.id
-        this.activityId = options.activityId
-        this.shopId = options.shopId
+        this.goodsId = +options.id
+        this.activityId = +options.activityId
+        this.shopId = +options.shopId
       }
       this.shopId && wx.setStorageSync('shopId', this.shopId)
       this._setDescriptionNum()
@@ -331,6 +370,9 @@
         }
       },
       showShare() {
+        if (this.activityId) {
+          return
+        }
         this.$refs.shareList.showLink()
       },
       async addShoppingCart() {
@@ -541,6 +583,7 @@
         API.Choiceness.getGoodsDetailsThumb({goods_id: this.goodsId, activity_id: this.activityId}).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.thumb_image = res.data.thumb_image
+            console.log(this.thumb_image)
           } else {
           }
         })
@@ -560,45 +603,55 @@
         wx.navigateTo({url: `/pages/submit-order`})
       },
       _kanTimePlay() {
+        // clearInterval(this.timer)
+        // this.activityTime = this._groupTimeCheckout(this.goodsMsg.activity_end_at)
+        // this.timer = setInterval(() => {
+        //   this.activityTime = this._groupTimeCheckout(this.goodsMsg.activity_end_at)
+        //   if (this.timeEnd) {
+        //     clearInterval(this.timer)
+        //   }
+        // }, 1000)
         clearInterval(this.timer)
-        this.activityTime = this._groupTimeCheckout(this.goodsMsg.activity_end_at)
+        let diff = this.goodsMsg.at_diff
+        this.activityTime = countDownHandle(diff)
         this.timer = setInterval(() => {
-          this.activityTime = this._groupTimeCheckout(this.goodsMsg.activity_end_at)
-          if (this.timeEnd) {
+          diff--
+          this.activityTime = countDownHandle(diff)
+          if (!this.activityTime.diff) {
             clearInterval(this.timer)
           }
         }, 1000)
       },
-      _groupTimeCheckout(time) {
-        let nowSecond = parseInt(Date.now() / 1000)
-        let differ = time * 1 - nowSecond
-        let day = Math.floor(differ / (60 * 60 * 24))
-        day = day >= 10 ? day : '0' + day
-        let hour = Math.floor(differ / (60 * 60)) - (day * 24)
-        hour = hour >= 10 ? hour : '0' + hour
-        let minute = Math.floor(differ / 60) - (day * 24 * 60) - (hour * 60)
-        minute = minute >= 10 ? minute : '0' + minute
-        let second = Math.floor(differ) - (day * 24 * 60 * 60) - (hour * 60 * 60) - (minute * 60)
-        second = second >= 10 ? second : '0' + second
-        let times
-        if (differ > 0) {
-          times = {
-            day,
-            hour,
-            minute,
-            second
-          }
-        } else {
-          times = {
-            day: '00',
-            hour: '00',
-            minute: '00',
-            second: '00'
-          }
-          this.timeEnd = true
-        }
-        return times
-      },
+      // _groupTimeCheckout(time) {
+      //   let nowSecond = parseInt(Date.now() / 1000)
+      //   let differ = time * 1 - nowSecond
+      //   let day = Math.floor(differ / (60 * 60 * 24))
+      //   day = day >= 10 ? day : '0' + day
+      //   let hour = Math.floor(differ / (60 * 60)) - (day * 24)
+      //   hour = hour >= 10 ? hour : '0' + hour
+      //   let minute = Math.floor(differ / 60) - (day * 24 * 60) - (hour * 60)
+      //   minute = minute >= 10 ? minute : '0' + minute
+      //   let second = Math.floor(differ) - (day * 24 * 60 * 60) - (hour * 60 * 60) - (minute * 60)
+      //   second = second >= 10 ? second : '0' + second
+      //   let times
+      //   if (differ > 0) {
+      //     times = {
+      //       day,
+      //       hour,
+      //       minute,
+      //       second
+      //     }
+      //   } else {
+      //     times = {
+      //       day: '00',
+      //       hour: '00',
+      //       minute: '00',
+      //       second: '00'
+      //     }
+      //     this.timeEnd = true
+      //   }
+      //   return times
+      // },
       getQrCode(loading) {
         let shopId = wx.getStorageSync('shopId')
         let path = `pages/goods-detail?id=${this.goodsId}&shopId=${shopId}&activityId=${this.activityId}`
@@ -1034,6 +1087,10 @@
     z-index: 22
     display: block
     border-radius: 50%
+    .share-img
+      width :100%
+      height :100%
+      display :block
 
   .send-box
     padding: 20px 20px 28px 18px
