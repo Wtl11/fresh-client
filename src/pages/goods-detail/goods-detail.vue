@@ -616,10 +616,9 @@
         // }, 1000)
         this.timer && clearInterval(this.timer)
         let diff = this.goodsMsg.at_diff || 0
-        if (diff < 0) {
-          diff = 0
+        if (this.activeStatus === BTN_STATUS.DOWN) {
+          return
         }
-        if (!diff) return
         this.activityTime = countDownHandle(diff)
         this.timer = setInterval(() => {
           diff--
@@ -628,6 +627,7 @@
             clearInterval(this.timer)
             this.getGoodsDetailData()
             this.getGoodsDetailDataThumb()
+            this.getGoodsOtherInfo()
           }
         }, 1000)
       },
