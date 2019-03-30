@@ -400,12 +400,17 @@
           return
         }
         ald.aldstat.sendEvent('立即购买')
+        // 显示抢购限购数量
+        if (this.buyGoodsInfo.person_all_buy_count >= this.buyGoodsInfo.person_all_buy_limit) {
+          this.$wechat.showToast(`该商品限购${this.buyGoodsInfo.person_day_buy_limit}件，您不能再购买了`)
+          return
+        }
         if (this.buyGoodsInfo.person_day_buy_limit * 1 === -1) {
           this.$refs.addNumber.showLink()
           return
         }
         if (this.buyGoodsInfo.person_day_buy_count >= this.buyGoodsInfo.person_day_buy_limit) {
-          this.$wechat.showToast(`该商品限购${this.buyGoodsInfo.person_day_buy_limit}件，您不能在购买了`)
+          this.$wechat.showToast(`该商品限购${this.buyGoodsInfo.person_day_buy_limit}件，您不能再购买了`)
         } else {
           this.$refs.addNumber.showLink()
         }
@@ -574,6 +579,7 @@
         API.Choiceness.getGoodsBuyInfo(this.goodsId, {activity_id: this.activityId}).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.buyGoodsInfo = res.data
+            console.log(this.buyGoodsInfo, '=-=-')
           } else {
             this.$wechat.showToast(res.message)
           }
@@ -612,13 +618,16 @@
         //   }
         // }, 1000)
         this.timer && clearInterval(this.timer)
-        let diff = this.goodsMsg.at_diff
+        let diff = this.goodsMsg.at_diff || 0
+        if (diff < 0) {
+          diff = 0
+        }
         if (!diff) return
         this.activityTime = countDownHandle(diff)
         this.timer = setInterval(() => {
           diff--
           this.activityTime = countDownHandle(diff)
-          if (!this.activityTime.differ) {
+          if (this.activityTime.differ <= 0) {
             clearInterval(this.timer)
             this.getGoodsDetailData()
             this.getGoodsDetailDataThumb()

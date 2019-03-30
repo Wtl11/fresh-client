@@ -85,7 +85,8 @@
           minute: '00',
           second: '00'
         },
-        id: undefined // 活动id
+        id: undefined, // 活动id
+        sharing: false // 分享中
       }
     },
     computed: {
@@ -94,6 +95,11 @@
       }
     },
     async onShow() {
+      // 分享不执行
+      if (this.sharing) {
+        this.sharing = false
+        return
+      }
       wx.pageScrollTo({
         scrollTop: 0,
         duration: 0
@@ -113,6 +119,7 @@
       })
     },
     onShareAppMessage() {
+      this.sharing = true
       const status = this.currentObj.status
       const shopId = wx.getStorageSync('shopId')
       console.warn(`/pages/flash-sale-list?id=${this.currentObj.id}&shopId=${shopId}`)
@@ -138,6 +145,7 @@
           let shopId = +el.options.shopId
           shopId && wx.setStorageSync('shopId', shopId)
           id && (this.id = id)
+          console.log(id)
         } catch (e) {
           console.error(e, '获取参数异常')
         }
@@ -180,22 +188,27 @@
       _countDownAction() {
         if (!this.currentObj) return
         let currentTime = this.currentObj.at_diff || 0
-        if (!currentTime) return
+        if (currentTime < 0) {
+          currentTime = 0
+        }
+        // if (!currentTime) return
         this.countDownTimes = countDownHandle(currentTime)
         this.timer && clearInterval(this.timer)
         this.timer = setInterval(() => {
           currentTime--
           this.countDownTimes = countDownHandle(currentTime)
-          if (!this.countDownTimes.differ) {
+          if (this.countDownTimes.differ <= 0) {
             clearInterval(this.timer)
-            this._getList()
+            setTimeout(() => {
+              this._getTabList(0, false)
+            }, 1000)
           }
         }, 1000)
       },
       // 列表
       _getList(callback) {
         if (!this.hasMore) return
-        let data = {activity_id: this.currentObj || 0, page: this.page}
+        let data = {activity_id: this.currentObj.id || 0, page: this.page}
         API.FlashSale.getFlashList(data).then((res) => {
           callback && callback()
           this.$wechat.hideLoading()
@@ -290,10 +303,10 @@
           height :55px
           background: #FFE500
           display:flex
-          justify-content :space-around
           align-items :flex-end
+          padding :0 4vw
           .top-item-wrapper
-            width :95px
+            width :25.333333333333336vw
             height :50px
             background: #FFE500
             border-radius: 8px 8px 0 0
@@ -303,6 +316,8 @@
             align-items :center
             font-family :$font-family-medium
             transition :background 0.3s
+            &:nth-child(2n)
+              margin :0 8vw
             &.active
               background :$color-background
             .text

@@ -56,17 +56,21 @@ export default {
     _countDownAction() {
       if (!this.flashTabList[this.flashTabIndex]) return
       let currentTime = this.flashTabList[this.flashTabIndex].at_diff || 0
-      if (!currentTime) return // 倒计时为0不跑
+      if (currentTime < 0) {
+        currentTime = 0
+      }
+      // if (!currentTime) return // 倒计时为0不跑
       this.flashCountDownTimes = countDownHandle(currentTime)
       this.flashCountDownTimer && clearInterval(this.flashCountDownTimer)
       this.flashCountDownTimer = setInterval(() => {
         currentTime--
+        console.log(currentTime)
         this.flashCountDownTimes = countDownHandle(currentTime)
-        if (!this.flashCountDownTimes.differ) {
+        if (this.flashCountDownTimes.differ <= 0) {
           clearInterval(this.flashCountDownTimer)
           setTimeout(() => {
             this._getTabList()
-          }, 500)
+          }, 1000)
         }
       }, 1000)
     }
