@@ -93,14 +93,14 @@
         return this.tabList[this.tabIndex] || {}
       }
     },
-    onShow() {
+    async onShow() {
       wx.pageScrollTo({
         scrollTop: 0,
         duration: 0
       })
-      this._getPageParams()
+      await this._getPageParams()
       this._resetListParams()
-      this._getTabList()
+      this._getTabList(this.id)
     },
     onReachBottom() {
       this.page++
@@ -123,6 +123,9 @@
       }
     },
     onUnload() {
+      this.timer && clearInterval(this.timer)
+    },
+    onHide() {
       this.timer && clearInterval(this.timer)
     },
     methods: {
@@ -154,12 +157,17 @@
         this.hasMore = true
       },
       // tab-list
-      async _getTabList() {
+      async _getTabList(id) {
         try {
           let res = await API.FlashSale.getFlashTabList()
           this.tabList = res.data
-          if (this.id) {
-            let index = this.tabList.findIndex(val => val.id === this.id)
+          if (this.tabList && this.tabList.length === 0) {
+            wx.redirectTo({url: '/pages/goods-end'})
+            return
+          }
+          if (id) {
+            console.log(id)
+            let index = this.tabList.findIndex(val => val.id === id)
             index > -1 && (this.tabIndex = index)
           }
           this._countDownAction()

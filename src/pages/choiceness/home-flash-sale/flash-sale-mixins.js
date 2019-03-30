@@ -15,6 +15,12 @@ export default {
   onUnload() {
     this.flashCountDownTimer && clearInterval(this.flashCountDownTimer)
   },
+  onHide() {
+    this.flashCountDownTimer && clearInterval(this.flashCountDownTimer)
+  },
+  onShow() {
+    this._getTabList()
+  },
   methods: {
     // tab切换
     flashChangeTab(item, index) {
@@ -24,6 +30,10 @@ export default {
     },
     // 获取限时活动列表
     async _getFlashList(loading) {
+      if (this.flashTabList && this.flashTabList.length === 0) {
+        this.flashIsShow = false
+        return
+      }
       this._countDownAction()
       if (!this.flashTabList[this.flashTabIndex]) return
       let data = {

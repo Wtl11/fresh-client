@@ -248,9 +248,9 @@
             const key = PAGE_CONFIG[item.module_name]
             if (key) {
               let list = (item.content_data && item.content_data.list) || []
-              key.isShow && (this[key.isShow] = !item.is_close)
               key.tabList && (this[key.tabList] = list)
               key.dataArray && (this[key.dataArray] = item)
+              key.isShow && (this[key.isShow] = !item.is_close)
             }
           })
           await this._getFlashList()
