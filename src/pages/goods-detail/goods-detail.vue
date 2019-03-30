@@ -275,13 +275,13 @@
       if (options.scene) {
         let scene = decodeURIComponent(options.scene)
         let params = getParams(scene)
-        this.goodsId = +params.id
-        this.activityId = +params.activityId
-        this.shopId = +params.shopId
+        this.goodsId = +params.id || 0
+        this.activityId = +params.activityId || 0
+        this.shopId = +params.shopId || 0
       } else {
-        this.goodsId = +options.id
-        this.activityId = +options.activityId
-        this.shopId = +options.shopId
+        this.goodsId = +options.id || 0
+        this.activityId = +options.activityId || 0
+        this.shopId = +options.shopId || 0
       }
       this.shopId && wx.setStorageSync('shopId', this.shopId)
       this._setDescriptionNum()
