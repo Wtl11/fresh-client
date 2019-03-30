@@ -89,7 +89,7 @@ export default {
       this.classifyViewToItem = `item${number}`
       this.classifyTabIndex = index
       this._resetGetClassifyListParams()
-      this._getClassifyList(true)
+      this._getClassifyList(false)
     },
     // 优化tab切换时的动画问题
     _optimizeTabViewItem(index) {

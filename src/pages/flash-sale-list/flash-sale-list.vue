@@ -149,7 +149,7 @@
         }
         this.tabIndex = index
         this._resetListParams()
-        this._getTabList()
+        this._getTabList(0, false)
       },
       // 重置
       _resetListParams() {
@@ -157,9 +157,9 @@
         this.hasMore = true
       },
       // tab-list
-      async _getTabList(id) {
+      async _getTabList(id, loading) {
         try {
-          let res = await API.FlashSale.getFlashTabList()
+          let res = await API.FlashSale.getFlashTabList('', loading)
           this.tabList = res.data
           if (this.tabList && this.tabList.length === 0) {
             wx.redirectTo({url: '/pages/goods-end'})
