@@ -613,12 +613,15 @@
         // }, 1000)
         this.timer && clearInterval(this.timer)
         let diff = this.goodsMsg.at_diff
+        if (!diff) return
         this.activityTime = countDownHandle(diff)
         this.timer = setInterval(() => {
           diff--
           this.activityTime = countDownHandle(diff)
           if (!this.activityTime.differ) {
             clearInterval(this.timer)
+            this.getGoodsDetailData()
+            this.getGoodsDetailDataThumb()
           }
         }, 1000)
       },

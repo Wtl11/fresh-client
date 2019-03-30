@@ -172,6 +172,7 @@
       _countDownAction() {
         if (!this.currentObj) return
         let currentTime = this.currentObj.at_diff || 0
+        if (!currentTime) return
         this.countDownTimes = countDownHandle(currentTime)
         this.timer && clearInterval(this.timer)
         this.timer = setInterval(() => {
@@ -179,6 +180,7 @@
           this.countDownTimes = countDownHandle(currentTime)
           if (!this.countDownTimes.differ) {
             clearInterval(this.timer)
+            this._getList()
           }
         }, 1000)
       },
