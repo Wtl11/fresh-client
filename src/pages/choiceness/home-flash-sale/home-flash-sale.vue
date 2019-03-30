@@ -85,11 +85,11 @@
       isShow: {
         type: Boolean,
         default: true
+      },
+      systemInfo: {
+        type: Object,
+        default: () => {}
       }
-      // systemInfo: {
-      //   type: Object,
-      //   default: () => {}
-      // },
       // scrollLeft: {
       //   type: Number,
       //   default: undefined
@@ -97,7 +97,7 @@
     },
     data() {
       return {
-        // navigating: false,
+        navigating: false,
         // scrollPosition: 0,
         // isIos: false,
         viewToChild: undefined

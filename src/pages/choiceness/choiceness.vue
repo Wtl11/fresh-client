@@ -42,6 +42,7 @@
       :flashArray="flashArray"
       :countDownTimes="flashCountDownTimes"
       :isShow="flashIsShow"
+      :systemInfo="systemInfo"
       @changeTab="flashChangeTab"
     ></home-flash-sale>
     <home-classify
