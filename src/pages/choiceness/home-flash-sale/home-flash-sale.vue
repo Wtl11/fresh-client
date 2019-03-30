@@ -82,7 +82,8 @@
         this.$emit('changeTab', item, index)
       },
       navHandle() {
-        wx.navigateTo({url: '/pages/flash-sale-list'})
+        const id = this.tabList[this.tabIndex].id
+        wx.navigateTo({url: `/pages/flash-sale-list?id=${id}`})
       },
       scrollHandle(e) {
         console.log(e)

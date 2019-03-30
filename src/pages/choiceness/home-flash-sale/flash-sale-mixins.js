@@ -20,7 +20,7 @@ export default {
     flashChangeTab(item, index) {
       if (this.flashTabIndex === index) return
       this.flashTabIndex = index
-      this._getFlashList(false)
+      this._getTabList(false)
     },
     // 获取限时活动列表
     async _getFlashList(loading) {
@@ -33,15 +33,10 @@ export default {
       this.flashArray = res.data
     },
     // tab-list
-    async _getTabList() {
+    async _getTabList(loading = false) {
       try {
-        let res = await API.FlashSale.getFlashTabList('', false)
+        let res = await API.FlashSale.getFlashTabList('', loading)
         this.flashTabList = res.data
-        const id = this.flashTabList[0]
-        if (id) {
-          let index = this.flashTabList.findIndex(val => val.id === id)
-          index > -1 && (this.flashTabIndex = index)
-        }
         this._getFlashList()
       } catch (e) {
         console.error(e)
