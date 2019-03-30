@@ -79,7 +79,9 @@
         <span :class="[navIndex === index ? 'rag-goods-tab-item-active' : '',navIndex === index ? 'corp-' + corpName + '-bg' : '', 'corp-' + corpName + '-tab']" class="rag-goods-tab-item" v-for="(item, index) in nav" :key="index" @click="_setNav(index)">
           {{item.title}}
         </span>
+
       </div>
+      <article class="rag-test-tab">优惠券营销</article>
       <!--TODO-->
       <article class="order-big-box" :style="{height: detailedHeight + 'px'}">
         <section class="presell-wrapper order-box" :style="{'transform': ' translateX('+ -(navIndex * width) +'px)'}">
@@ -169,7 +171,7 @@
           new TabItem({title: '商品资料', fn: '_getRecommendGoods', isOnReachBottom: true})
         ],
         width: 0,
-        navIndex: 0,
+        navIndex: 1,
         leaderDetail: {},
         orderTotal: {},
         goodsList: [],
@@ -217,7 +219,8 @@
       this._getLeaderDetail()
       this._leaderOrderTotal()
       this._getCustomerCount()
-      this._getPresellGoods()
+      // this._getPresellGoods() // todo暂时影藏
+      this._getCouponList()
     },
     async onShow() {
       this._showRefresh()
@@ -609,14 +612,29 @@
     box-sizing: border-box
     background: $color-white
     margin: 12px auto
-    padding: 25px 0 0px
+    padding: 25px 0 0
     overflow: hidden
+    position :relative
+    .rag-test-tab
+      position :absolute
+      top:0
+      left :0
+      right :0
+      height :(33+20+25)px
+      z-index :2
+      background :#fff
+      display :flex
+      align-items :center
+      font-family :$font-family-medium
+      font-size :20px
+      padding-left :15px
     .rag-goods-tab
       width: 264px
       margin: 0 auto
       display: flex
       overflow: hidden
       margin-bottom: 20px
+      position :relative
       .rag-goods-tab-item
         box-sizing: border-box
         width: 88px

@@ -17,7 +17,7 @@
       </div>
     </section>
     <scroll-view class="bottom-wrapper" scroll-x @scrolltolower="scrollHandle">
-      <div v-for="(child, idx) in flashArray" :key="idx" class="bottom-item-wrapper" :class="flashArray.length>4?'item-r-2vw':'item-r-0'">
+      <div v-for="(child, idx) in flashArray" :key="idx" class="bottom-item-wrapper" :class="flashArray.length> 4 && idx === flashArray.length -1?'item-r-0':''">
         <home-flash-item :dataInfo="child"></home-flash-item>
         <section v-if="flashArray.length> 4 && idx === flashArray.length -1" class="look-more">
           <div class="look-wrapper" @click="navHandle">

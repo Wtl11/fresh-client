@@ -135,7 +135,7 @@
           .button
             position :absolute
             bottom :0
-            right :0
+            right :1.5199999999999998vw
             width :10.666666666666668vw
             height :@width
             .button-img
