@@ -145,7 +145,7 @@
           let shopId = +el.options.shopId
           shopId && wx.setStorageSync('shopId', shopId)
           id && (this.id = id)
-          console.log(id)
+          console.warn(id)
         } catch (e) {
           console.error(e, '获取参数异常')
         }
@@ -174,7 +174,6 @@
             return
           }
           if (id) {
-            console.log(id)
             let index = this.tabList.findIndex(val => val.id === id)
             index > -1 && (this.tabIndex = index)
           }

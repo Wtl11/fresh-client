@@ -81,6 +81,13 @@
         if (this.orderNum > 0) {
           this.showOrderNum = false
         }
+        // 显示抢购限购数量
+        let limitAll = +this.msgDetailInfo.person_all_buy_limit
+        let buyAll = +this.msgDetailInfo.person_all_buy_count
+        if (limitAll !== -1 && this.orderNum + buyAll + 1 > limitAll) {
+          this.$wechat.showToast(`该商品限购${this.msgDetailInfo.person_all_buy_limit}件，您不能再购买了`)
+          return
+        }
         let number = this.msgDetailInfo.person_day_buy_limit - this.msgDetailInfo.person_day_buy_count
         if (this.orderNum >= number && this.msgDetailInfo.person_day_buy_limit * 1 !== -1) {
           this.$wechat.showToast(`该商品限购${this.msgDetailInfo.person_day_buy_limit}件，您不能再购买了`)

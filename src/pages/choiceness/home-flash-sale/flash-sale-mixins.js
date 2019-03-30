@@ -27,7 +27,15 @@ export default {
       if (this.flashTabIndex === index) return
       this.flashTabIndex = index
       this._getTabList(false)
+      // this.flashScrollLeft = 0
+      // if (this.$refs.flashSale && !this.$refs.flashSale.scrollPosition) {
+      //   this._getTabList(false)
+      // }
     },
+    // flashScrollEnd() {
+    //   this.flashScrollLeft = undefined
+    //   this._getTabList(false)
+    // },
     // 获取限时活动列表
     async _getFlashList(loading) {
       if (this.flashTabList && this.flashTabList.length === 0) {
@@ -64,7 +72,7 @@ export default {
       this.flashCountDownTimer && clearInterval(this.flashCountDownTimer)
       this.flashCountDownTimer = setInterval(() => {
         currentTime--
-        console.log(currentTime)
+        // console.log(currentTime)
         this.flashCountDownTimes = countDownHandle(currentTime)
         if (this.flashCountDownTimes.differ <= 0) {
           clearInterval(this.flashCountDownTimer)

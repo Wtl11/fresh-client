@@ -16,8 +16,18 @@
         </ul>
       </div>
     </section>
-    <scroll-view class="bottom-wrapper" scroll-x @scrolltolower="scrollHandle">
-      <div v-for="(child, idx) in flashArray" :key="idx" class="bottom-item-wrapper" :class="flashArray.length> 4 && idx === flashArray.length -1?'item-r-0':''">
+    <scroll-view
+      class="bottom-wrapper"
+      scroll-x
+      @scroll="scrollHandle"
+      :scroll-into-view="viewToChild"
+    >
+      <div
+        v-for="(child, idx) in flashArray"
+        :key="idx" class="bottom-item-wrapper"
+        :class="flashArray.length> 4 && idx === flashArray.length -1?'item-r-0':''"
+        :id="'child'+idx"
+      >
         <home-flash-item :dataInfo="child"></home-flash-item>
         <section v-if="flashArray.length> 4 && idx === flashArray.length -1" class="look-more">
           <div class="look-wrapper" @click="navHandle">
@@ -76,9 +86,27 @@
         type: Boolean,
         default: true
       }
+      // systemInfo: {
+      //   type: Object,
+      //   default: () => {}
+      // },
+      // scrollLeft: {
+      //   type: Number,
+      //   default: undefined
+      // }
+    },
+    data() {
+      return {
+        // navigating: false,
+        // scrollPosition: 0,
+        // isIos: false,
+        viewToChild: undefined
+      }
     },
     methods: {
       changeTab(item, index) {
+        if (index === this.tabIndex) return
+        this.viewToChild = 'child0'
         this.$emit('changeTab', item, index)
       },
       navHandle() {
@@ -86,7 +114,22 @@
         wx.navigateTo({url: `/pages/flash-sale-list?id=${id}`})
       },
       scrollHandle(e) {
-        console.log(e)
+        this.viewToChild = undefined
+        // if (this.scrollLeft === 0) {
+        //   this.$emit('scrollEnd')
+        // }
+        // this.scrollPosition = e.target.scrollLeft
+        // 滚动加载
+        // if (this.flashArray.length < 5) return
+        // if (this.navigating) return
+        // let mixScoll = e.target.scrollWidth - e.target.scrollLeft + 50 < this.systemInfo.screenWidth
+        // if (mixScoll) {
+        //   this.navigating = true
+        //   setTimeout(() => {
+        //     this.navigating = false
+        //   }, 2000)
+        //   this.navHandle()
+        // }
       }
     }
   }

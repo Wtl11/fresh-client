@@ -400,9 +400,10 @@
           return
         }
         ald.aldstat.sendEvent('立即购买')
+        console.warn(this.buyGoodsInfo.person_all_buy_count, this.buyGoodsInfo.person_all_buy_limit)
         // 显示抢购限购数量
-        if (this.buyGoodsInfo.person_all_buy_count >= this.buyGoodsInfo.person_all_buy_limit) {
-          this.$wechat.showToast(`该商品限购${this.buyGoodsInfo.person_day_buy_limit}件，您不能再购买了`)
+        if (this.buyGoodsInfo.person_all_buy_limit * 1 !== -1 && this.buyGoodsInfo.person_all_buy_count >= this.buyGoodsInfo.person_all_buy_limit) {
+          this.$wechat.showToast(`该商品限购${this.buyGoodsInfo.person_all_buy_limit}件，您不能再购买了`)
           return
         }
         if (this.buyGoodsInfo.person_day_buy_limit * 1 === -1) {
@@ -423,8 +424,6 @@
         })
         let name = this.goodsMsg.name.length >= 12 ? this.goodsMsg.name.slice(0, 12) + '...' : this.goodsMsg.name
         let subName = this.goodsMsg.describe.length >= 12 ? this.goodsMsg.describe.slice(0, 12) + '...' : this.goodsMsg.describe
-        // this.shareImg = this.shareImg || this.imageUrl + '/yx-image/choiceness/5@1x.png'
-        // console.log(this.shareImg)
         if (!this.shareImg) {
           this.$wechat.showToast('图片生成失败，请重新尝试！')
           this.getQrCode()
@@ -579,7 +578,6 @@
         API.Choiceness.getGoodsBuyInfo(this.goodsId, {activity_id: this.activityId}).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.buyGoodsInfo = res.data
-            console.log(this.buyGoodsInfo, '=-=-')
           } else {
             this.$wechat.showToast(res.message)
           }
@@ -589,7 +587,6 @@
         API.Choiceness.getGoodsDetailsThumb({goods_id: this.goodsId, activity_id: this.activityId}).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.thumb_image = res.data.thumb_image
-            console.log(this.thumb_image)
           } else {
           }
         })
