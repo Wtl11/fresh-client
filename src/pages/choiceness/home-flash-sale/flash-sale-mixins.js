@@ -20,7 +20,7 @@ export default {
     flashChangeTab(item, index) {
       if (this.flashTabIndex === index) return
       this.flashTabIndex = index
-      this._getFlashList(true)
+      this._getFlashList(false)
     },
     // 获取限时活动列表
     async _getFlashList(loading) {
@@ -31,6 +31,21 @@ export default {
       }
       let res = await API.FlashSale.getFlashList(data, loading)
       this.flashArray = res.data
+    },
+    // tab-list
+    async _getTabList() {
+      try {
+        let res = await API.FlashSale.getFlashTabList('', false)
+        this.flashTabList = res.data
+        const id = this.flashTabList[0]
+        if (id) {
+          let index = this.flashTabList.findIndex(val => val.id === id)
+          index > -1 && (this.flashTabIndex = index)
+        }
+        this._getFlashList()
+      } catch (e) {
+        console.error(e)
+      }
     },
     // 倒计时
     _countDownAction() {
@@ -44,7 +59,9 @@ export default {
         this.flashCountDownTimes = countDownHandle(currentTime)
         if (!this.flashCountDownTimes.differ) {
           clearInterval(this.flashCountDownTimer)
-          this._getFlashList() // 刷新列表
+          setTimeout(() => {
+            this._getTabList()
+          }, 500)
         }
       }, 1000)
     }

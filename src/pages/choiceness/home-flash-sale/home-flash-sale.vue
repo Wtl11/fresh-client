@@ -83,6 +83,9 @@
       },
       navHandle() {
         wx.navigateTo({url: '/pages/flash-sale-list'})
+      },
+      scrollHandle(e) {
+        console.log(e)
       }
     }
   }
