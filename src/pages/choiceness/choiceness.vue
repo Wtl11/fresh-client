@@ -186,6 +186,10 @@
         if (this.classifyScrollHeight) {
           this.$wechat.hideLoading()
         }
+        // 3秒后强制关loading
+        setTimeout(() => {
+          this.$wechat.hideLoading()
+        }, 3000)
       }
     },
     async onPullDownRefresh() {
