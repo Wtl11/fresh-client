@@ -155,6 +155,7 @@
         if (this.tabIndex === index) {
           return
         }
+        this.timer && clearInterval(this.timer)
         this.tabIndex = index
         this._resetListParams()
         this._getTabList(0, false)
@@ -198,9 +199,7 @@
           this.countDownTimes = countDownHandle(currentTime)
           if (this.countDownTimes.differ <= 0) {
             clearInterval(this.timer)
-            setTimeout(() => {
-              this._getTabList(0, false)
-            }, 1000)
+            this._getTabList(0, false)
           }
         }, 1000)
       },

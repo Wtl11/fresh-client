@@ -27,6 +27,10 @@ export default {
     this.showUserIndex = 0
     this.showBuyUser = false
   },
+  onUnload() {
+    this.carouselTimer && clearTimeout(this.carouselTimer)
+    this.showCarouselTimer && clearTimeout(this.showCarouselTimer)
+  },
   async onPullDownRefresh() {
     this._groupInfo(false)
   },

@@ -25,6 +25,7 @@ export default {
     // tab切换
     flashChangeTab(item, index) {
       if (this.flashTabIndex === index) return
+      clearInterval(this.flashCountDownTimer)
       this.flashTabIndex = index
       this._getTabList(false)
       // this.flashScrollLeft = 0
@@ -64,9 +65,8 @@ export default {
     _countDownAction() {
       if (!this.flashTabList[this.flashTabIndex]) return
       let currentTime = this.flashTabList[this.flashTabIndex].at_diff || 0
-      if (currentTime <= 0) {
+      if (currentTime < 0) {
         currentTime = 0
-        return
       }
       // if (!currentTime) return // 倒计时为0不跑
       this.flashCountDownTimes = countDownHandle(currentTime)
