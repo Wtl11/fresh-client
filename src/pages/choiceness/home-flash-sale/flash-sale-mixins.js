@@ -13,10 +13,10 @@ export default {
     }
   },
   onUnload() {
-    this.flashCountDownTimer && clearInterval(this.flashCountDownTimer)
+    clearInterval(this.flashCountDownTimer)
   },
   onHide() {
-    this.flashCountDownTimer && clearInterval(this.flashCountDownTimer)
+    clearInterval(this.flashCountDownTimer)
   },
   onShow() {
     this._getTabList()
@@ -64,8 +64,9 @@ export default {
     _countDownAction() {
       if (!this.flashTabList[this.flashTabIndex]) return
       let currentTime = this.flashTabList[this.flashTabIndex].at_diff || 0
-      if (currentTime < 0) {
+      if (currentTime <= 0) {
         currentTime = 0
+        return
       }
       // if (!currentTime) return // 倒计时为0不跑
       this.flashCountDownTimes = countDownHandle(currentTime)
@@ -74,7 +75,7 @@ export default {
         currentTime--
         // console.log(currentTime)
         this.flashCountDownTimes = countDownHandle(currentTime)
-        if (this.flashCountDownTimes.differ <= 0) {
+        if (this.flashCountDownTimes.differ <= 0 || !this.flashCountDownTimes.differ) {
           clearInterval(this.flashCountDownTimer)
           this._getTabList()
         }

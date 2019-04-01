@@ -20,7 +20,6 @@
       class="bottom-wrapper"
       scroll-x
       @scroll="scrollHandle"
-      :scroll-into-view="viewToChild"
     >
       <div
         v-for="(child, idx) in flashArray"
@@ -97,16 +96,16 @@
     },
     data() {
       return {
-        navigating: false,
+        navigating: false
         // scrollPosition: 0,
         // isIos: false,
-        viewToChild: undefined
+        // viewToChild: undefined
       }
     },
     methods: {
       changeTab(item, index) {
         if (index === this.tabIndex) return
-        this.viewToChild = 'child0'
+        // this.viewToChild = 'child0'
         this.$emit('changeTab', item, index)
       },
       navHandle() {
@@ -114,7 +113,7 @@
         wx.navigateTo({url: `/pages/flash-sale-list?id=${id}`})
       },
       scrollHandle(e) {
-        this.viewToChild = undefined
+        // this.viewToChild = undefined
         // if (this.scrollLeft === 0) {
         //   this.$emit('scrollEnd')
         // }
