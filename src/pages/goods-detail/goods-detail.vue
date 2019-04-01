@@ -301,6 +301,7 @@
       this.goodsBanner = []
       this.$refs.navigationBar && this.$refs.navigationBar._initHeadStyle()
       this.eventCount = 0
+      this.$refs.shareList && this.$refs.shareList.hideLink()
     },
     methods: {
       ...orderMethods,
