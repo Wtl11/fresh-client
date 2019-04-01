@@ -92,7 +92,7 @@ export default {
           clearTimeout(this.flashCountDownTimer)
           this._getTabList()
         } else {
-          return this._countDown(currentTime)
+          this._countDown(currentTime)
         }
       }, 998)
     }
