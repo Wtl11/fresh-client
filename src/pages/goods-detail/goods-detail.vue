@@ -664,7 +664,7 @@
       // },
       getQrCode(loading) {
         let shopId = wx.getStorageSync('shopId')
-        let path = `pages/goods-detail?id=${this.goodsId}&shopId=${shopId}&activityId=${this.activityId}`
+        let path = `pages/goods-detail?g=${this.goodsId}&s=${shopId}&a=${this.activityId}`
         API.Choiceness.createQrCodeApi({path}, loading).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.shareImg = res.data.image_url
