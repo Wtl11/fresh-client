@@ -83,7 +83,10 @@
       <!--</div>-->
       <article class="rag-test-tab">
         <p class="text">优惠券营销</p>
-        <div class="line-wrapper"></div>
+        <div class="line-wrapper">
+          <em class="line"></em>
+          <em class="line-two"></em>
+        </div>
       </article>
       <!--TODO-->
       <article class="order-big-box" :style="{height: detailedHeight + 'px'}">
@@ -634,9 +637,21 @@
         font-size :16px
         color: #111111
         z-index :3
+        padding :0 6px
+        position :relative
+        background :#fff
       .line-wrapper
         fill-box(absolute)
-
+        .line
+          margin :25.5px auto 0
+          width :133px
+          height :1px
+          background:#111
+        .line-two
+          margin :3px auto 0
+          width:110px
+          height:1px
+          background :#111
     .rag-goods-tab
       width: 264px
       margin: 0 auto

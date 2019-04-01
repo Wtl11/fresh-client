@@ -149,7 +149,7 @@
     border-bottom :10px solid $color-background
     .bottom-wrapper
       height:47.733333333333334vw
-      border-top-1px()
+      border-top-1px($color-line)
       display: block
       width: 100vw
       background: $color-white
@@ -186,7 +186,7 @@
             layout()
             justify-content :center
             align-items :center
-            border-left-1px()
+            border-left-1px($color-line)
             .text
               font-family :$font-family-regular
               color: $color-text-sub
