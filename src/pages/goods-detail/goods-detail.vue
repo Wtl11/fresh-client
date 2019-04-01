@@ -424,7 +424,6 @@
         })
         let name = this.goodsMsg.name.length >= 12 ? this.goodsMsg.name.slice(0, 12) + '...' : this.goodsMsg.name
         let subName = this.goodsMsg.describe.length >= 12 ? this.goodsMsg.describe.slice(0, 12) + '...' : this.goodsMsg.describe
-        console.log(this.goodsMsg.goods_cover_image)
         if (!this.shareImg) {
           this.$wechat.showToast('图片生成失败，请重新尝试！')
           this.getQrCode()
