@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isShow" class="home-banner">
+  <div v-if="isShow" class="home-banner" id="homeBanner">
     <swiper class="banner" autoplay interval="5000" display-multiple-items="1" previous-margin="7.5px"
             next-margin="17.5px" circular @change="_setPraiseIndex">
       <block v-for="(item,index) in bigItem.content_data.list" :key="index">

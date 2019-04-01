@@ -1,5 +1,5 @@
 <template>
-  <div class="choiceness" :style="homeStyles">
+  <div class="choiceness">
     <navigation-bar :title="shopName" :showArrow="false"></navigation-bar>
     <home-position
       :buyUsers="buyUsers"
@@ -9,34 +9,14 @@
       :goodsListData="goodsListData"
       :groupInfo="groupInfo"
     ></home-position>
-    <!--<div class="modules-box" v-for="(bigItem, bigIndex) in modulesList" :key="bigIndex"-->
-         <!--v-if="locationStatus * 1 === 1 || locationStatus * 1 === 2">-->
-      <!--&lt;!&ndash;轮播图&ndash;&gt;-->
-      <!--<home-banner-->
-        <!--:bigItem="bigItem"-->
-        <!--:praiseIndex="praiseIndex"-->
-        <!--@bannerChange="bannerChangeHandle"-->
-      <!--&gt;</home-banner>-->
-      <!--&lt;!&ndash;导航&ndash;&gt;-->
-      <!--&lt;!&ndash;<home-hot :bigItem="bigItem"></home-hot>&ndash;&gt;-->
-      <!--&lt;!&ndash;今日抢购&ndash;&gt;-->
-      <!--&lt;!&ndash;<home-today-rush&ndash;&gt;-->
-        <!--&lt;!&ndash;:bigItem="bigItem"&ndash;&gt;-->
-        <!--&lt;!&ndash;:isShowActiveEnd="isShowActiveEnd"&ndash;&gt;-->
-        <!--&lt;!&ndash;:activityTime="activityTime"&ndash;&gt;-->
-        <!--&lt;!&ndash;:goodsList="goodsList"&ndash;&gt;-->
-        <!--&lt;!&ndash;:goodsMore="goodsMore"&ndash;&gt;-->
-        <!--&lt;!&ndash;@addShoppingCart="addShoppingCart"&ndash;&gt;-->
-      <!--&lt;!&ndash;&gt;</home-today-rush>&ndash;&gt;-->
-    <!--</div>-->
     <home-banner
       :bigItem="bannerInfo"
       :praiseIndex="praiseIndex"
       :isShow="bannerIsShow"
       @bannerChange="bannerChangeHandle"
     ></home-banner>
-    <div class="empty"></div>
-    <article v-if="flashIsShow" class="home-flash-sale">
+    <div class="empty" id="homeEmpty"></div>
+    <article v-if="flashIsShow" class="home-flash-sale" id="homeFlashSale">
       <section class="top-wrapper">
         <div class="inner-wrapper">
           <div class="left-wrapper">
@@ -73,14 +53,6 @@
             </div>
           </section>
         </div>
-        <!--<article v-if="flashArray.length > 4" class="bottom-item-wrapper">-->
-        <!--<div class="look-wrapper" @click="navHandle">-->
-        <!--<div class="text">查看更多</div>-->
-        <!--<figure class="more-icon">-->
-        <!--<img class="img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.1/icon-pressed_gd@2x.png'">-->
-        <!--</figure>-->
-        <!--</div>-->
-        <!--</article>-->
       </scroll-view>
     </article>
     <!--<home-flash-sale-->
@@ -106,29 +78,12 @@
     ></home-classify>
     <custom-tab-bar currentType="index"></custom-tab-bar>
     <coupon-modal ref="couponModal"></coupon-modal>
-    <!--<div v-show="classifyTabIsShow">-->
-      <!--<classify-tab-->
-        <!--:styles="classifyStyles"-->
-        <!--id="scrollView-fixed"-->
-        <!--:tabList="classifyTabList"-->
-        <!--:viewToItem="classifyViewToItem"-->
-        <!--:tabIndex="classifyTabIndex"-->
-        <!--@changeTab="classifyChangeTab"-->
-      <!--&gt;</classify-tab>-->
-    <!--</div>-->
-    <!--<home-hot-tab-->
-      <!--:isShowTab="isShowTab"-->
-      <!--:systemInfo="systemInfo"-->
-      <!--:hotTabList="hotTabList"-->
-    <!--&gt;</home-hot-tab>-->
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import CustomTabBar from '@components/custom-tab-bar/custom-tab-bar'
-  // import LinkGroup from '@components/link-group/link-group'
-  // import ConfirmMsg from '@components/confirm-msg/confirm-msg'
   import API from '@api'
   import {cartMethods} from '@state/helpers'
   import {getParams, countDownHandle} from '@utils/common'
@@ -138,17 +93,10 @@
   import Position from './home-position/position-mixins'
   import HomeBanner from './home-banner/home-banner'
   import Banner from './home-banner/banner-mixins'
-  // import HomeFlashSale from './home-flash-sale/home-flash-sale'
   import HomeFlashItem from './home-flash-item/home-flash-item'
-  // import FlashSale from './home-flash-sale/flash-sale-mixins'
   import HomeClassify from './home-classify/home-classify'
   import Classify from './home-classify/classify-mixins'
   import ClassifyTab from './home-classify/home-classify-tab/home-classify-tab'
-  // import HomeHot from './home-hot/home-hot'
-  // import HomeHotTab from './home-hot-tab/home-hot-tab'
-  // import HotTab from './home-hot-tab/hot-tab-mixins'
-  // import HomeTodayRush from './home-today-rush/home-today-rush'
-  // import TodayRush from './home-today-rush/today-rush-mixins'
 
   const ald = getApp()
   const PAGE_NAME = 'CHOICENESS'
@@ -176,25 +124,16 @@
       Position,
       Banner,
       Classify
-      // FlashSale
-      // TodayRush,
-      // HotTab
     ],
     components: {
-      // LinkGroup,
       NavigationBar,
       CustomTabBar,
-      // ConfirmMsg,
       CouponModal,
       HomePosition,
       HomeBanner,
-      // HomeFlashSale,
       HomeClassify,
       ClassifyTab,
       HomeFlashItem
-      // HomeHot,
-      // HomeTodayRush,
-      // HomeHotTab
     },
     data() {
       return {
@@ -211,8 +150,8 @@
         title: '赞播优鲜',
         curShopId: '',
         modulesList: [],
-        systemInfo: {},
-        homeStyles: 'overflow:hidden;height:100vh;min-height:100vh;max-height:100vh' // 为了获取商品分类的tab高度;获取后置空
+        systemInfo: {}
+        // homeStyles: 'overflow:hidden;height:100vh;min-height:100vh;max-height:100vh' // 为了获取商品分类的tab高度;获取后置空
       }
     },
     onLoad(options) {
@@ -220,9 +159,7 @@
       this._initPageParams(options)
     },
     async onShow() {
-      if (!this.classifyScrollHeight) {
-        this.$wechat.showLoading()
-      }
+      this.$wechat.showLoading()
       try {
         this.$sendMsg({
           event_no: 1000
@@ -243,13 +180,7 @@
       } catch (e) {
         console.error(e)
       } finally {
-        if (this.classifyScrollHeight) {
-          this.$wechat.hideLoading()
-        }
-        // 3秒后强制关loading
-        setTimeout(() => {
-          this.$wechat.hideLoading()
-        }, 3000)
+        this.$wechat.hideLoading()
       }
     },
     async onPullDownRefresh() {
@@ -296,25 +227,14 @@
       // tab切换
       flashChangeTab(item, index) {
         if (this.flashTabIndex === index) return
-        // clearInterval(this.flashCountDownTimer)
         this.flashTabIndex = index
-        this._getTabList(false)
-        // this.flashScrollLeft = 0
-        // if (this.$refs.flashSale && !this.$refs.flashSale.scrollPosition) {
-        //   this._getTabList(false)
-        // }
       },
-      // flashScrollEnd() {
-      //   this.flashScrollLeft = undefined
-      //   this._getTabList(false)
-      // },
       // 获取限时活动列表
       async _getFlashList(loading) {
         if (this.flashTabList && this.flashTabList.length === 0) {
           this.flashIsShow = false
           return
         }
-        // clearTimeout(this.flashCountDownTimer)
         this._countDownAction()
         if (!this.flashTabList[this.flashTabIndex]) return
         let data = {
@@ -355,19 +275,6 @@
           }
         }, 1000)
       },
-      // _countDown(currentTime) {
-      //   this.flashCountDownTimer && clearTimeout(this.flashCountDownTimer)
-      //   this.flashCountDownTimer = setTimeout(() => {
-      //     currentTime--
-      //     this.flashCountDownTimes = countDownHandle(currentTime)
-      //     if (!this.flashCountDownTimes || !this.flashCountDownTimes.differ || this.flashCountDownTimes.differ <= 0) {
-      //       clearTimeout(this.flashCountDownTimer)
-      //       this._getTabList()
-      //     } else {
-      //       this._countDown(currentTime)
-      //     }
-      //   }, 998)
-      // },
       // 初始化页面参数
       _initPageParams(options = {}) {
         if (options.scene) {

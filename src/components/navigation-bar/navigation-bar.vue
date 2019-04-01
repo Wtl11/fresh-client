@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="navigationBar">
     <div class="head-item" :style="headStyleData" :class="showTitle ? '' : 'showNavigation'">
       <div class="status-bar" :style="{height: statusBarHeight + 'px'}"></div>
       <div class="head-content" :style="{color: titleColor}">

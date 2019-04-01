@@ -1,5 +1,5 @@
 <template>
-  <div class="home-position">
+  <div class="home-position" id="homePosition">
     <div class="community-main">
       <!--<div class="community-main" @click="jumpSelfPoint">-->
       <div class="community-img">
