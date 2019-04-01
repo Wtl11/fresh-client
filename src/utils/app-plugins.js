@@ -35,3 +35,6 @@ wx.onNetworkStatusChange(function (res) {
   console.error(res.isConnected, '是否有网络连接')
   console.error(res.networkType)
 })
+wx.onMemoryWarning(function (res) {
+  console.warn('onMemoryWarningReceive', res)
+})

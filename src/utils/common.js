@@ -206,7 +206,7 @@ export function floatAccAdd(num1, num2) {
  * @returns {{hour: string, differ: number, minute: string, second: string}}
  */
 export function countDownHandle(time) {
-  let differ = +time
+  let differ = +time || 0
   // let day = ~~(differ / 60 / 60 / 24) + ''
   let hour = ~~(differ / 60 / 60) + ''
   let minute = ~~(differ / 60 % 60) + ''

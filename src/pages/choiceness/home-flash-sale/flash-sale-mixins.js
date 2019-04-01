@@ -13,10 +13,10 @@ export default {
     }
   },
   onUnload() {
-    clearInterval(this.flashCountDownTimer)
+    // this.flashCountDownTimer && clearInterval(this.flashCountDownTimer)
   },
   onHide() {
-    clearInterval(this.flashCountDownTimer)
+    // clearInterval(this.flashCountDownTimer)
   },
   onShow() {
     this._getTabList()
@@ -25,7 +25,7 @@ export default {
     // tab切换
     flashChangeTab(item, index) {
       if (this.flashTabIndex === index) return
-      clearInterval(this.flashCountDownTimer)
+      // clearInterval(this.flashCountDownTimer)
       this.flashTabIndex = index
       this._getTabList(false)
       // this.flashScrollLeft = 0
@@ -43,6 +43,7 @@ export default {
         this.flashIsShow = false
         return
       }
+      // clearTimeout(this.flashCountDownTimer)
       this._countDownAction()
       if (!this.flashTabList[this.flashTabIndex]) return
       let data = {
@@ -63,23 +64,37 @@ export default {
     },
     // 倒计时
     _countDownAction() {
-      if (!this.flashTabList[this.flashTabIndex]) return
+      if (!this.flashTabList || !this.flashTabList[this.flashTabIndex]) return
       let currentTime = this.flashTabList[this.flashTabIndex].at_diff || 0
       if (currentTime < 0) {
         currentTime = 0
       }
-      // if (!currentTime) return // 倒计时为0不跑
       this.flashCountDownTimes = countDownHandle(currentTime)
-      clearInterval(this.flashCountDownTimer)
-      this.flashCountDownTimer = setInterval(() => {
+      clearTimeout(this.flashCountDownTimer)
+      this._countDown(currentTime)
+      // this.flashCountDownTimer = setTimeout(() => {
+      //   currentTime--
+      //   this.flashCountDownTimes = countDownHandle(currentTime)
+      //   console.log(this.flashCountDownTimes)
+      //   if (!this.flashCountDownTimes || !this.flashCountDownTimes.differ || this.flashCountDownTimes.differ <= 0) {
+      //     clearTimeout(this.flashCountDownTimer)
+      //     this._getTabList()
+      //   } else {
+      //     return this._countDownAction()
+      //   }
+      // }, 998)
+    },
+    _countDown(currentTime) {
+      this.flashCountDownTimer = setTimeout(() => {
         currentTime--
-        // console.log(currentTime)
         this.flashCountDownTimes = countDownHandle(currentTime)
-        if (this.flashCountDownTimes.differ <= 0 || !this.flashCountDownTimes.differ) {
-          clearInterval(this.flashCountDownTimer)
+        if (!this.flashCountDownTimes || !this.flashCountDownTimes.differ || this.flashCountDownTimes.differ <= 0) {
+          clearTimeout(this.flashCountDownTimer)
           this._getTabList()
+        } else {
+          return this._countDown(currentTime)
         }
-      }, 1000)
+      }, 998)
     }
   }
 }

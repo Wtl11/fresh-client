@@ -36,6 +36,24 @@
       @bannerChange="bannerChangeHandle"
     ></home-banner>
     <div class="empty"></div>
+    <!--<section>-->
+      <!--<section class="top-wrapper">-->
+        <!--<div class="inner-wrapper">-->
+          <!--<div class="left-wrapper">-->
+            <!--<figure class="button">-->
+              <!--<img class="img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.1/pic-title_xsqg@2x.png'">-->
+            <!--</figure>-->
+            <!--<p class="time">{{flashCountDownTimes.hour}}<span class="dot">:</span>{{flashCountDownTimes.minute}}<span class="dot">:</span>{{flashCountDownTimes.second}}</p>-->
+          <!--</div>-->
+          <!--&lt;!&ndash;<ul class="right-wrapper">&ndash;&gt;-->
+            <!--&lt;!&ndash;<li v-for="(item, index) in tabList" :key="item.id" class="right-item" @click="changeTab(item, index)">&ndash;&gt;-->
+              <!--&lt;!&ndash;<p class="text" :class="{active: tabIndex === index}">{{item.at}}</p>&ndash;&gt;-->
+              <!--&lt;!&ndash;<p class="explain" :class="{active: tabIndex === index}">{{item.at_str}}</p>&ndash;&gt;-->
+            <!--&lt;!&ndash;</li>&ndash;&gt;-->
+          <!--&lt;!&ndash;</ul>&ndash;&gt;-->
+        <!--</div>-->
+      <!--</section>-->
+    <!--</section>-->
     <home-flash-sale
       :tabList="flashTabList"
       :tabIndex="flashTabIndex"
