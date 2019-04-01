@@ -614,6 +614,7 @@
         //     clearInterval(this.timer)
         //   }
         // }, 1000)
+        if (!this.activityId) return
         this.timer && clearInterval(this.timer)
         let diff = this.goodsMsg.at_diff || 0
         if (this.activeStatus === BTN_STATUS.DOWN) {

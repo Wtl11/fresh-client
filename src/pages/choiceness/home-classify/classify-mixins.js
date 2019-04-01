@@ -43,11 +43,12 @@ export default {
         .select('#homeFlashSale').boundingClientRect()
         .select('#homeEmpty').boundingClientRect()
         .exec(res => {
-          this.$wechat.hideLoading()
           let height = 0
           res.forEach(item => {
-            height += item.height
-            item.id === 'navigationBar' && (this.navigationBar = item.height)
+            if (item.height) {
+              height += item.height
+              item.id === 'navigationBar' && (this.navigationBar = item.height)
+            }
           })
           this.classifyStyles = `top:${this.navigationBar}px;position:fixed;left:0;z-index:100`
           this.classifyScrollHeight = height + 10

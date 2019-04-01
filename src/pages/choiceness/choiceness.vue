@@ -217,6 +217,9 @@
         }
       }
     },
+    onUnload() {
+      this._clearFlashTimer()
+    },
     methods: {
       ...cartMethods,
       //
@@ -266,15 +269,33 @@
           currentTime = 0
         }
         this.flashCountDownTimes = countDownHandle(currentTime)
-        this.flashCountDownTimer && clearInterval(this.flashCountDownTimer)
-        this.flashCountDownTimer = setInterval(() => {
+        this._clearFlashTimer()
+        this._countDownTimeout(currentTime)
+        // this.flashCountDownTimer && clearInterval(this.flashCountDownTimer)
+        // this.flashCountDownTimer = setInterval(() => {
+        //   currentTime--
+        //   this.flashCountDownTimes = countDownHandle(currentTime)
+        //   if (!this.flashCountDownTimes || !this.flashCountDownTimes.differ || this.flashCountDownTimes.differ <= 0) {
+        //     clearInterval(this.flashCountDownTimer)
+        //     this._getTabList()
+        //   }
+        // }, 1000)
+      },
+      _countDownTimeout(currentTime) {
+        this.flashCountDownTimer = setTimeout(() => {
           currentTime--
           this.flashCountDownTimes = countDownHandle(currentTime)
           if (!this.flashCountDownTimes || !this.flashCountDownTimes.differ || this.flashCountDownTimes.differ <= 0) {
-            clearInterval(this.flashCountDownTimer)
+            this._clearFlashTimer()
             this._getTabList()
+          } else {
+            this._countDownTimeout(currentTime)
           }
         }, 1000)
+      },
+      _clearFlashTimer() {
+        clearInterval(this.flashCountDownTimer)
+        clearTimeout(this.flashCountDownTimer)
       },
       // 初始化页面参数
       _initPageParams(options = {}) {
