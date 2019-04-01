@@ -69,16 +69,14 @@ export default {
       }
       // if (!currentTime) return // 倒计时为0不跑
       this.flashCountDownTimes = countDownHandle(currentTime)
-      this.flashCountDownTimer && clearInterval(this.flashCountDownTimer)
+      clearInterval(this.flashCountDownTimer)
       this.flashCountDownTimer = setInterval(() => {
         currentTime--
         // console.log(currentTime)
         this.flashCountDownTimes = countDownHandle(currentTime)
         if (this.flashCountDownTimes.differ <= 0) {
           clearInterval(this.flashCountDownTimer)
-          setTimeout(() => {
-            this._getTabList()
-          }, 1000)
+          this._getTabList()
         }
       }, 1000)
     }

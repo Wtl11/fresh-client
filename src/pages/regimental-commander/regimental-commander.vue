@@ -75,13 +75,16 @@
     </div>
     <!--商品模块-->
     <div class="reg-goods">
-      <div class="rag-goods-tab">
-        <span :class="[navIndex === index ? 'rag-goods-tab-item-active' : '',navIndex === index ? 'corp-' + corpName + '-bg' : '', 'corp-' + corpName + '-tab']" class="rag-goods-tab-item" v-for="(item, index) in nav" :key="index" @click="_setNav(index)">
-          {{item.title}}
-        </span>
+      <!--<div class="rag-goods-tab">-->
+        <!--<span :class="[navIndex === index ? 'rag-goods-tab-item-active' : '',navIndex === index ? 'corp-' + corpName + '-bg' : '', 'corp-' + corpName + '-tab']" class="rag-goods-tab-item" v-for="(item, index) in nav" :key="index" @click="_setNav(index)">-->
+          <!--{{item.title}}-->
+        <!--</span>-->
 
-      </div>
-      <article class="rag-test-tab">优惠券营销</article>
+      <!--</div>-->
+      <article class="rag-test-tab">
+        <p class="text">优惠券营销</p>
+        <div class="line-wrapper"></div>
+      </article>
       <!--TODO-->
       <article class="order-big-box" :style="{height: detailedHeight + 'px'}">
         <section class="presell-wrapper order-box" :style="{'transform': ' translateX('+ -(navIndex * width) +'px)'}">
@@ -612,28 +615,34 @@
     box-sizing: border-box
     background: $color-white
     margin: 12px auto
-    padding: 25px 0 0
+    //padding: 25px 0 0
     overflow: hidden
     position :relative
     .rag-test-tab
-      position :absolute
+      position :relative
       top:0
       left :0
       right :0
-      height :(33+20+25)px
+      height :55px
       z-index :2
       background :#fff
       display :flex
       align-items :center
-      font-family :$font-family-medium
-      font-size :20px
-      padding-left :15px
+      justify-content :center
+      .text
+        font-family :$font-family-medium
+        font-size :16px
+        color: #111111
+        z-index :3
+      .line-wrapper
+        fill-box(absolute)
+
     .rag-goods-tab
       width: 264px
       margin: 0 auto
       display: flex
       overflow: hidden
-      margin-bottom: 20px
+      margin-bottom: 0px
       position :relative
       .rag-goods-tab-item
         box-sizing: border-box
