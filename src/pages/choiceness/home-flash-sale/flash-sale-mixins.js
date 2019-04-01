@@ -7,7 +7,11 @@ export default {
       flashTabList: undefined,
       flashTabIndex: 0,
       flashArray: undefined,
-      flashCountDownTimes: undefined,
+      flashCountDownTimes: {
+        hour: '00',
+        minute: '00',
+        second: '00'
+      },
       flashIsShow: undefined,
       flashCountDownTimer: undefined
     }
