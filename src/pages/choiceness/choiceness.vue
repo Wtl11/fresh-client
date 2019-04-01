@@ -228,6 +228,7 @@
       flashChangeTab(item, index) {
         if (this.flashTabIndex === index) return
         this.flashTabIndex = index
+        this._getTabList(false)
       },
       // 获取限时活动列表
       async _getFlashList(loading) {
