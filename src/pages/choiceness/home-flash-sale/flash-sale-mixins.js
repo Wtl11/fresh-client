@@ -28,6 +28,7 @@ export default {
     },
     // 获取限时活动列表
     async _getFlashList(loading) {
+      this._countDownAction()
       if (this.flashTabList && this.flashTabList.length === 0) {
         this.flashIsShow = false
         return
@@ -44,7 +45,6 @@ export default {
       try {
         let res = await API.FlashSale.getFlashTabList('', loading)
         this.flashTabList = res.data
-        this._countDownAction()
         await this._getFlashList()
       } catch (e) {
         console.error(e)

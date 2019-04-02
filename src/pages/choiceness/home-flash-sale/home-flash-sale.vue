@@ -19,6 +19,7 @@
     <scroll-view
       class="bottom-wrapper"
       scroll-x
+      :scroll-into-view="viewToChild"
     >
       <div
         v-for="(child, idx) in flashArray"
@@ -95,16 +96,19 @@
     },
     data() {
       return {
-        navigating: false
+        navigating: false,
         // scrollPosition: 0,
         // isIos: false,
-        // viewToChild: undefined
+        viewToChild: undefined
       }
     },
     methods: {
       changeTab(item, index) {
-        // if (index === this.tabIndex) return
-        // this.viewToChild = 'child0'
+        if (index === this.tabIndex) return
+        this.viewToChild = 'child0'
+        setTimeout(() => {
+          this.viewToChild = undefined
+        }, 100)
         this.$emit('changeTab', item, index)
       },
       navHandle() {

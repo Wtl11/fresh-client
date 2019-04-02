@@ -54,7 +54,7 @@ export default {
             this.classifyStyles = `top:${this.navigationBar}px;position:fixed;left:0;z-index:100`
             this.classifyScrollHeight = height + 10
           })
-      }, 50)
+      }, 500)
     },
     // 获取商品分类列表
     async _getClassifyList(loading) {

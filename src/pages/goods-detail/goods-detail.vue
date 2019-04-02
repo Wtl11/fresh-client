@@ -303,6 +303,9 @@
       this.eventCount = 0
       this.$refs.shareList && this.$refs.shareList.hideLink()
     },
+    onHide() {
+      clearInterval(this.timer)
+    },
     methods: {
       ...orderMethods,
       ...cartMethods,
