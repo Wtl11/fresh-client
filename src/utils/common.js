@@ -212,6 +212,7 @@ export function resolveQueryScene(scene) {
     try {
       let sceneMsg = decodeURIComponent(scene)
       const params = getParams(sceneMsg)
+      console.warn(params)
       shopId = +params.shopId || +params.s || 0
       goodsId = +params.id || +params.g || 0
       activityId = +params.activityId || +params.a || 0
