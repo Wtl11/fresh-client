@@ -86,7 +86,7 @@
   import CustomTabBar from '@components/custom-tab-bar/custom-tab-bar'
   import API from '@api'
   import {cartMethods} from '@state/helpers'
-  import {getParams} from '@utils/common'
+  import {resolveQueryScene} from '@utils/common'
   import CouponModal from './coupon-modal/coupon-modal'
   import CouponModalMixins from './coupon-modal/coupon-modal-mixins'
   import HomePosition from './home-position/home-position'
@@ -118,7 +118,6 @@
       dataArray: ''
     }
   }
-  // ald.globalData.$flashCountDownTimer = null
   export default {
     name: PAGE_NAME,
     mixins: [
@@ -313,9 +312,10 @@
       // 初始化页面参数
       _initPageParams(options = {}) {
         if (options.scene) {
-          let scene = decodeURIComponent(options.scene)
-          let params = getParams(scene)
-          this.shopId = params.shopId
+          // let scene = decodeURIComponent(options.scene)
+          // let params = getParams(scene)
+          let {shopId} = resolveQueryScene(options.scene)
+          this.shopId = shopId
         } else {
           this.shopId = options.shopId
         }
