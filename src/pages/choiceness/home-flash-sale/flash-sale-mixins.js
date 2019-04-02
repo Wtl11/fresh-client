@@ -32,8 +32,6 @@ export default {
         this.flashIsShow = false
         return
       }
-      // clearTimeout(this.flashCountDownTimer)
-      this._countDownAction()
       if (!this.flashTabList[this.flashTabIndex]) return
       let data = {
         activity_id: this.flashTabList[this.flashTabIndex].id || 0
@@ -46,7 +44,8 @@ export default {
       try {
         let res = await API.FlashSale.getFlashTabList('', loading)
         this.flashTabList = res.data
-        this._getFlashList()
+        this._countDownAction()
+        await this._getFlashList()
       } catch (e) {
         console.error(e)
       }

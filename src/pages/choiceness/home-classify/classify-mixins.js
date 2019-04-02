@@ -73,7 +73,6 @@ export default {
           this.classifyArray = this.classifyArray.concat(res.data)
         }
         this.classifyMore = res.meta.current_page < res.meta.last_page
-        // getTabPosition && this._getTabPosition()
       } catch (e) {
         console.error(e)
       }

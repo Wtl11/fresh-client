@@ -181,8 +181,10 @@
           await this._getModuleInfo()
           this.curShopId = shopId
         } else {
-          this._getFlashTabList()
+          await this._getFlashTabList()
         }
+        // 获取tab高度
+        this._getTabPosition()
         if (!wx.getStorageSync('token')) return
         this.setCartCount()
       } catch (e) {
@@ -195,6 +197,8 @@
       this._resetGetClassifyListParams()
       try {
         await this._getModuleInfo(false)
+        // 获取tab高度
+        this._getTabPosition()
       } catch (e) {
         console.error(e)
       }
@@ -336,7 +340,6 @@
             }
           })
           await this._getFlashList()
-          this._getTabPosition()
           await this._getClassifyList()
         } catch (e) {
           console.error(e)
