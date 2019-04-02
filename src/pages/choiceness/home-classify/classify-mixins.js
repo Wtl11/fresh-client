@@ -57,7 +57,7 @@ export default {
       }, 50)
     },
     // 获取商品分类列表
-    async _getClassifyList(loading, getTabPosition = true) {
+    async _getClassifyList(loading) {
       if (!this.classifyMore) return
       let current = this.classifyTabList[this.classifyTabIndex] || {}
       try {
@@ -73,7 +73,7 @@ export default {
           this.classifyArray = this.classifyArray.concat(res.data)
         }
         this.classifyMore = res.meta.current_page < res.meta.last_page
-        getTabPosition && this._getTabPosition()
+        // getTabPosition && this._getTabPosition()
       } catch (e) {
         console.error(e)
       }
@@ -97,7 +97,7 @@ export default {
       }, 100)
       this.classifyTabIndex = index
       this._resetGetClassifyListParams()
-      this._getClassifyList(false, false)
+      this._getClassifyList(false)
     },
     // 优化tab切换时的动画问题
     _optimizeTabViewItem(index) {

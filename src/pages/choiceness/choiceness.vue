@@ -336,6 +336,7 @@
             }
           })
           await this._getFlashList()
+          this._getTabPosition()
           await this._getClassifyList()
         } catch (e) {
           console.error(e)
