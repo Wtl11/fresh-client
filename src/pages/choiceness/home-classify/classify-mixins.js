@@ -30,7 +30,7 @@ export default {
   onPageScroll(e) {
     if (!this.classifyStyles) return
     // console.log(e.scrollTop + this.classifyNavigationHeight, this.classifyTabPosition.top)
-    // console.log(e.scrollTop + this.navigationBar)
+    // console.log(e.scrollTop + this.navigationBar, this.classifyScrollHeight)
     this.classifyTabIsShow = e.scrollTop + this.navigationBar >= this.classifyScrollHeight
   },
   methods: {
