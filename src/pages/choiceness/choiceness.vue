@@ -144,7 +144,7 @@
   import ConfirmMsg from '@components/confirm-msg/confirm-msg'
   import API from '@api'
   import {cartMethods} from '@state/helpers'
-  import {getParams} from '@utils/common'
+  import {resolveQueryScene} from '@utils/common'
   import CouponModal from './coupon-modal/coupon-modal'
   import CouponModalMixins from './coupon-modal-mixins'
 
@@ -187,9 +187,10 @@
     },
     async onLoad(options) {
       if (options.scene) {
-        let scene = decodeURIComponent(options.scene)
-        let params = getParams(scene)
-        this.shopId = params.shopId
+        // let scene = decodeURIComponent(options.scene)
+        // let params = getParams(scene)
+        let {shopId} = resolveQueryScene(options.scene)
+        this.shopId = shopId
       } else {
         this.shopId = options.shopId
       }

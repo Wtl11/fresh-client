@@ -1,6 +1,6 @@
 <script>
   import {jwtMethods} from '@state/helpers'
-  import {getParams, entryAppType} from '@utils/common'
+  import {resolveQueryScene, entryAppType} from '@utils/common'
   import API from '@api'
   import {ERR_OK, baseURL} from '@utils/config'
 
@@ -32,9 +32,10 @@
       this.setScene(options)
       let storyShopId = baseURL.defaultId
       if (options.query.scene) {
-        let sceneMsg = decodeURIComponent(options.query.scene)
-        const params = getParams(sceneMsg)
-        storyShopId = params.shopId || wx.getStorageSync('defaultShopId')
+        let {shopId} = resolveQueryScene(options.query.scene)
+        // let sceneMsg = decodeURIComponent(options.query.scene)
+        // const params = getParams(sceneMsg)
+        storyShopId = shopId || wx.getStorageSync('defaultShopId')
       } else {
         if (!wx.getStorageSync('shopId') && !wx.getStorageSync('defaultShopId')) {
           let res = await API.Choiceness.getDefaultShopInfo()

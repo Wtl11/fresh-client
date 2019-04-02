@@ -54,7 +54,7 @@
   // import PayResult from './pay-result-com/pay-result-com'
   import ActiveEnd from './active-end/active-end'
   import API from '@api'
-  import {getParams} from '@utils/common'
+  import {resolveQueryScene} from '@utils/common'
 
   const PAGE_NAME = 'RECOMMEND'
 
@@ -200,10 +200,11 @@
       _getMarketId(options) {
         if (!options) return
         try {
-          const sceneMsg = decodeURIComponent(options.scene)
-          const params = getParams(sceneMsg)
-          this.marketId = +params.marketId || +options.marketId
-          let shopId = +params.shopId || +options.shopId
+          // const sceneMsg = decodeURIComponent(options.scene)
+          // const params = getParams(sceneMsg)
+          let {marketId, shopId} = resolveQueryScene(options.scene)
+          this.marketId = marketId || +options.marketId
+          shopId = shopId || +options.shopId
           shopId && wx.setStorageSync('shopId', shopId)
         } catch (e) {
           console.error(e, '获取活动ID失败!')

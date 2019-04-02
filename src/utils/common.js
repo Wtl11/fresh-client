@@ -199,3 +199,31 @@ export function floatAccAdd(num1, num2) {
   // return (num1*m+num2*m)/m;
   return Math.round(num1 * m + num2 * m) / m
 }
+
+/**
+ * 解析二维码-公共方法
+ */
+export function resolveQueryScene(scene) {
+  let goodsId = 0
+  let shopId = 0
+  let activityId = 0
+  let marketId = 0
+  if (scene) {
+    try {
+      let sceneMsg = decodeURIComponent(scene)
+      const params = getParams(sceneMsg)
+      shopId = +params.shopId || +params.s || 0
+      goodsId = +params.id || +params.g || 0
+      activityId = +params.activityId || +params.a || 0
+      marketId = +params.marketId || +params.m || 0
+    } catch (e) {
+      console.error(e)
+    }
+  }
+  return {
+    shopId,
+    goodsId,
+    activityId,
+    marketId
+  }
+}
