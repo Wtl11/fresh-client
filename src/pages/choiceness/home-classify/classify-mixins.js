@@ -4,7 +4,7 @@ export default {
     return {
       classifyTabList: [],
       classifyTabIndex: 0,
-      classifyViewToItem: 'item0',
+      classifyViewToItem: '',
       classifyPage: 1,
       classifyMore: true,
       classifyArray: [],
@@ -92,6 +92,9 @@ export default {
       })
       let number = this._optimizeTabViewItem(index)
       this.classifyViewToItem = `item${number}`
+      setTimeout(() => {
+        this.classifyViewToItem = ``
+      }, 100)
       this.classifyTabIndex = index
       this._resetGetClassifyListParams()
       this._getClassifyList(false, false)

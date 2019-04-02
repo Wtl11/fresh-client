@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isShow" class="home-flash-sale">
+  <div v-if="isShow" class="home-flash-sale" id="homeFlashSale">
     <section class="top-wrapper">
       <div class="inner-wrapper">
         <div class="left-wrapper">
@@ -19,7 +19,6 @@
     <scroll-view
       class="bottom-wrapper"
       scroll-x
-      @scroll="scrollHandle"
     >
       <div
         v-for="(child, idx) in flashArray"
@@ -104,7 +103,7 @@
     },
     methods: {
       changeTab(item, index) {
-        if (index === this.tabIndex) return
+        // if (index === this.tabIndex) return
         // this.viewToChild = 'child0'
         this.$emit('changeTab', item, index)
       },

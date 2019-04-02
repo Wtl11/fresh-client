@@ -6,6 +6,7 @@ page.$mount()
 
 export default {
   config: {
-    navigationBarTitleText: '限时抢购'
+    navigationBarTitleText: '限时抢购',
+    usingComponents: {}
   }
 }

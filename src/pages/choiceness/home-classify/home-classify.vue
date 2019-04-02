@@ -62,7 +62,7 @@
       },
       viewToItem: {
         type: String,
-        default: 'item0'
+        default: ''
       },
       styles: {
         type: String,
