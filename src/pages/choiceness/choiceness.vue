@@ -117,6 +117,8 @@
       dataArray: ''
     }
   }
+  ald.globalData.$flashCountDownTimer = null
+  console.log(ald.globalData)
   export default {
     name: PAGE_NAME,
     mixins: [
@@ -146,7 +148,7 @@
           second: '00'
         },
         flashIsShow: false,
-        flashCountDownTimer: 0,
+        // flashCountDownTimer: 0,
         title: '赞播优鲜',
         curShopId: '',
         modulesList: [],
@@ -174,6 +176,8 @@
         if (this.curShopId * 1 !== shopId * 1) {
           await this._getModuleInfo()
           this.curShopId = shopId
+        } else {
+          this._getTabList()
         }
         if (!wx.getStorageSync('token')) return
         this.setCartCount()
@@ -220,6 +224,9 @@
     onUnload() {
       this._clearFlashTimer()
     },
+    onHide() {
+      this._clearFlashTimer()
+    },
     methods: {
       ...cartMethods,
       //
@@ -264,7 +271,10 @@
       // 倒计时
       _countDownAction() {
         if (!this.flashTabList || !this.flashTabList[this.flashTabIndex]) return
-        let currentTime = this.flashTabList[this.flashTabIndex].at_diff || 0
+        let currentTime = this.flashTabList[this.flashTabIndex].at_diff
+        if (currentTime == null || !this.flashIsShow) {
+          return
+        }
         if (currentTime < 0) {
           currentTime = 0
         }
@@ -282,7 +292,8 @@
         // }, 1000)
       },
       _countDownTimeout(currentTime) {
-        this.flashCountDownTimer = setTimeout(() => {
+        ald.globalData.$flashCountDownTimer = setTimeout(() => {
+          console.log(currentTime)
           currentTime--
           this.flashCountDownTimes = countDownHandle(currentTime)
           if (!this.flashCountDownTimes || !this.flashCountDownTimes.differ || this.flashCountDownTimes.differ <= 0) {
@@ -294,8 +305,8 @@
         }, 1000)
       },
       _clearFlashTimer() {
-        clearInterval(this.flashCountDownTimer)
-        clearTimeout(this.flashCountDownTimer)
+        clearInterval(ald.globalData.$flashCountDownTimer)
+        clearTimeout(ald.globalData.$flashCountDownTimer)
       },
       // 初始化页面参数
       _initPageParams(options = {}) {

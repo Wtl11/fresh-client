@@ -10,6 +10,7 @@ export default {
     navigationBarTitleText: 'CHOICENESS',
     enablePullDownRefresh: true,
     backgroundTextStyle: 'dark',
-    onReachBottomDistance: 300
+    onReachBottomDistance: 300,
+    usingComponents: {}
   }
 }

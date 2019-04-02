@@ -444,6 +444,7 @@
           default:
             break
         }
+        console.log(this.goodsMsg.goods_cover_image)
         let options = {
           canvasId: 'we-paint',
           multiple: 1,
@@ -530,6 +531,7 @@
           ]
         }
         let obj = options
+        console.log(obj)
         this.$refs.wePaint.action(obj, false)
       },
       _drawDone(pic) {

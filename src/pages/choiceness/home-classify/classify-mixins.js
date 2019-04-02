@@ -37,42 +37,24 @@ export default {
     // 获取tab位置信息
     _getTabPosition() {
       const query = wx.createSelectorQuery()
-      query.select('#navigationBar').boundingClientRect()
-        .select('#homePosition').boundingClientRect()
-        .select('#homeBanner').boundingClientRect()
-        .select('#homeFlashSale').boundingClientRect()
-        .select('#homeEmpty').boundingClientRect()
-        .exec(res => {
-          let height = 0
-          res.forEach(item => {
-            if (item.height) {
-              height += item.height
-              item.id === 'navigationBar' && (this.navigationBar = item.height)
-            }
+      setTimeout(() => {
+        query.select('#navigationBar').boundingClientRect()
+          .select('#homePosition').boundingClientRect()
+          .select('#homeBanner').boundingClientRect()
+          .select('#homeFlashSale').boundingClientRect()
+          .select('#homeEmpty').boundingClientRect()
+          .exec(res => {
+            let height = 0
+            res.forEach(item => {
+              if (item && item.height) {
+                height += item.height
+                item.id === 'navigationBar' && (this.navigationBar = item.height)
+              }
+            })
+            this.classifyStyles = `top:${this.navigationBar}px;position:fixed;left:0;z-index:100`
+            this.classifyScrollHeight = height + 10
           })
-          this.classifyStyles = `top:${this.navigationBar}px;position:fixed;left:0;z-index:100`
-          this.classifyScrollHeight = height + 10
-        })
-      // if (this.classifyScrollHeight) return
-      // clearTimeout(this.getScrollHeightTimer)
-      // this.getScrollHeightTimer = setTimeout(() => {
-      //   const query = wx.createSelectorQuery()
-      //   // query.select('#scrollView-relative').boundingClientRect()
-      //   query.select('#navigationBar').boundingClientRect()
-      //   query.select('#homePosition').boundingClientRect()
-      //   query.select('#homeBanner').boundingClientRect()
-      //   query.select('#homeEmpty').boundingClientRect()
-      //   query.exec(res => {
-      //     this.$wechat.hideLoading()
-      //     let height = 0
-      //     res.forEach(item => {
-      //       height += item.height
-      //     })
-      //     // console.log(height)
-      //     // this.classifyTabPosition = res[0]
-      //     this.classifyScrollHeight = height
-      //   })
-      // }, 0)
+      }, 50)
     },
     // 获取商品分类列表
     async _getClassifyList(loading, getTabPosition = true) {
