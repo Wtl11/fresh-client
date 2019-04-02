@@ -90,6 +90,7 @@
         }
         let val = this.buttonArray[this.buttonIndex].text
         if (val < 1) {
+          this.$wechat.showToast('请输入正确的分享数量！')
           return
         }
         this._createPacket(val)

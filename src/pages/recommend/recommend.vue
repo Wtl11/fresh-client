@@ -202,7 +202,7 @@
         try {
           // const sceneMsg = decodeURIComponent(options.scene)
           // const params = getParams(sceneMsg)
-          let {shopId, marketId} = resolveQueryScene(options.scene)
+          let {marketId, shopId} = resolveQueryScene(options.scene)
           this.marketId = marketId || +options.marketId
           shopId = shopId || +options.shopId
           shopId && wx.setStorageSync('shopId', shopId)

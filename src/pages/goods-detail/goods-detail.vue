@@ -151,7 +151,7 @@
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import AddNumber from '@components/add-number/add-number'
   import LinkGroup from '@components/link-group/link-group'
-  import {getParams, countDownHandle} from '@utils/common'
+  import {resolveQueryScene, countDownHandle} from '@utils/common'
   import {SCENE_SHARE, SCENE_DEFAULT, SCENE_QR_CODE} from '../../utils/contants'
   import WePaint from '@components/we-paint/we-paint'
   import API from '@api'
@@ -273,11 +273,12 @@
       }
       ald.aldstat.sendEvent('商品详情')
       if (options.scene) {
-        let scene = decodeURIComponent(options.scene)
-        let params = getParams(scene)
-        this.goodsId = +params.id || 0
-        this.activityId = +params.activityId || 0
-        this.shopId = +params.shopId || 0
+        // let scene = decodeURIComponent(options.scene)
+        // let params = getParams(scene)
+        let {shopId, activityId, goodsId} = resolveQueryScene(options.scene)
+        this.goodsId = goodsId
+        this.activityId = activityId
+        this.shopId = shopId
       } else {
         this.goodsId = +options.id || 0
         this.activityId = +options.activityId || 0
@@ -668,6 +669,7 @@
       // },
       getQrCode(loading) {
         let shopId = wx.getStorageSync('shopId')
+        // 修改创建二维码的参数
         let path = `pages/goods-detail?g=${this.goodsId}&s=${shopId}&a=${this.activityId}`
         API.Choiceness.createQrCodeApi({path}, loading).then((res) => {
           if (res.error === this.$ERR_OK) {
