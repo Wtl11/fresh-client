@@ -444,7 +444,6 @@
           default:
             break
         }
-        console.log(this.goodsMsg.goods_cover_image)
         let options = {
           canvasId: 'we-paint',
           multiple: 1,
@@ -470,7 +469,7 @@
               shadow: [0, 2, 22, 'rgba(0,0,0,0.10)', '#fff', 0]
             },
             {
-              el: '.share-img', // 图片
+              el: '.share-box > .share-img', // 图片
               drawType: 'img',
               source: this.goodsMsg.goods_cover_image,
               mode: 'aspectFill'
@@ -524,14 +523,13 @@
               color: '#b7b7b7'
             },
             {
-              el: '.wem-img',
+              el: '.share-bottom > .wem-img',
               drawType: 'img',
               source: this.shareImg
             }
           ]
         }
         let obj = options
-        console.log(obj)
         this.$refs.wePaint.action(obj, false)
       },
       _drawDone(pic) {
@@ -700,7 +698,7 @@
     position: fixed
     width: 100vw
     height: 100vh
-    right: -100%
+    right :-100%
     .share-bg
       position: absolute
       left: 0
