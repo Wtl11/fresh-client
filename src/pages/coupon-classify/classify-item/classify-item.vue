@@ -122,9 +122,13 @@
             margin-right: 2px
           .price-money
             margin-right: 5px
+            position :relative
+            top:2px
           .price-line
             color: $color-text-assist
             text-decoration: line-through
+            position :relative
+            top:2px
         .price-right
           width: 23px
           height: 23px

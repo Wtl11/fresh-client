@@ -208,6 +208,8 @@
             text-decoration line-through
             padding-bottom: 1px
             line-height: 1
+            position :relative
+            bottom:1px
         .add-goods-btn
           layout(row)
           width: 75px

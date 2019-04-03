@@ -151,6 +151,10 @@
         } else {
           this.showTitle = true
         }
+      },
+      setTranslucentTitle(title) {
+        if (this.translucentTitle === title) return
+        this.translucentTitle = title
       }
     },
     computed: {

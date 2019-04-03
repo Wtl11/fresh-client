@@ -129,7 +129,7 @@
               font-size: 4.533333333333333vw
             .unit
               position :relative
-              top:1.6vw
+              top:1.8vw
               margin-left :1px
               font-size :2.666666666666667vw
           .button

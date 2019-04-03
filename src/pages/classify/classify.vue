@@ -285,11 +285,15 @@
                 font-size: $font-size-12
                 font-family: $font-family-medium
                 margin-right: 5px
+                position :relative
+                top:2px
               .price-line
                 color: $color-text-assist
                 font-size: $font-size-12
                 font-family: $font-family-regular
                 text-decoration: line-through
+                position :relative
+                top:2px
             .price-right
               width: 23px
               height: 23px

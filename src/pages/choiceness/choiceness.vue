@@ -1,6 +1,6 @@
 <template>
   <div class="choiceness">
-    <navigation-bar :title="shopName" :showArrow="false"></navigation-bar>
+    <navigation-bar ref="navigationBar" :title="title" :showArrow="false"></navigation-bar>
     <home-position
       :buyUsers="buyUsers"
       :showUserIndex="showUserIndex"
@@ -158,11 +158,16 @@
       }
     },
     onLoad(options) {
+      this.$wechat.showLoading()
       this._getSystemInfo()
       this._initPageParams(options)
     },
+    onPageScroll(e) {
+      let title = e.scrollTop < this.navigationBar ? '赞播优鲜' : '赞播优鲜·' + (this.groupInfo.social_name || '')
+      this.$refs.navigationBar.setTranslucentTitle(title)
+    },
     async onShow() {
-      this.$wechat.showLoading()
+      // this.$wechat.showLoading()
       try {
         this.$sendMsg({
           event_no: 1000
