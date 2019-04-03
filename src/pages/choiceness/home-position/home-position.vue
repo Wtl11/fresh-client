@@ -142,7 +142,7 @@
             height: 20px
             border-radius: 50%
             overflow: hidden
-            margin :0 3px 0 0
+            margin :0 5px 0 0
             .img
               width: 100%
               height: 100%

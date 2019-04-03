@@ -1,7 +1,8 @@
 <template>
   <div class="goods-detail">
-    <navigation-bar ref="navigationBar" :title="msgTitle" :showArrow="true" :translucent="true"></navigation-bar>
+    <navigation-bar ref="navigationBar" :title="msgTitle" :showArrow="true"></navigation-bar>
     <div class="banner-box">
+      <buy-users :buyUsers="buyUsers"></buy-users>
       <swiper class="banner" @change="bannerChange" interval="5000">
         <block v-for="(item, index) in goodsMsg.goods_banner_images" :key="index">
           <swiper-item class="banner-item">
@@ -153,6 +154,7 @@
   import LinkGroup from '@components/link-group/link-group'
   import {resolveQueryScene, countDownHandle} from '@utils/common'
   import {SCENE_SHARE, SCENE_DEFAULT, SCENE_QR_CODE} from '../../utils/contants'
+  import BuyUsers from './buy-users/buy-users'
   import WePaint from '@components/we-paint/we-paint'
   import API from '@api'
 
@@ -214,7 +216,8 @@
         buyGoodsInfo: {},
         eventNo: 0,
         eventCount: 0,
-        shopId: 0
+        shopId: 0,
+        buyUsers: []
       }
     },
     computed: {
@@ -286,6 +289,7 @@
       }
       this.shopId && wx.setStorageSync('shopId', this.shopId)
       this._setDescriptionNum()
+      this._getBuyUsers()
     },
     onShow() {
       this._setEventNo()
@@ -405,7 +409,6 @@
           return
         }
         ald.aldstat.sendEvent('立即购买')
-        console.warn(this.buyGoodsInfo.person_all_buy_count, this.buyGoodsInfo.person_all_buy_limit)
         // 显示抢购限购数量
         if (this.buyGoodsInfo.person_all_buy_limit * 1 !== -1 && this.buyGoodsInfo.person_all_buy_count >= this.buyGoodsInfo.person_all_buy_limit) {
           this.$wechat.showToast(`该商品限购${this.buyGoodsInfo.person_all_buy_limit}件，您不能再购买了`)
@@ -563,7 +566,7 @@
             this.goodsBanner = goodDetail.goods_banner_images
             this.showOpen = goodDetail.describe.length > this.describeNum
             this.deliverAt = goodDetail.delivery_at
-            this.msgTitle = goodDetail.name
+            this.$refs.navigationBar && this.$refs.navigationBar.setTranslucentTitle(goodDetail.name)
             this._kanTimePlay()
             this._handleDescribe()
             if (this.eventCount > -1) {
@@ -611,14 +614,6 @@
         wx.navigateTo({url: `/pages/submit-order`})
       },
       _kanTimePlay() {
-        // clearInterval(this.timer)
-        // this.activityTime = this._groupTimeCheckout(this.goodsMsg.activity_end_at)
-        // this.timer = setInterval(() => {
-        //   this.activityTime = this._groupTimeCheckout(this.goodsMsg.activity_end_at)
-        //   if (this.timeEnd) {
-        //     clearInterval(this.timer)
-        //   }
-        // }, 1000)
         if (!this.activityId) return
         this.timer && clearInterval(this.timer)
         let diff = this.goodsMsg.at_diff || 0
@@ -637,36 +632,6 @@
           }
         }, 1000)
       },
-      // _groupTimeCheckout(time) {
-      //   let nowSecond = parseInt(Date.now() / 1000)
-      //   let differ = time * 1 - nowSecond
-      //   let day = Math.floor(differ / (60 * 60 * 24))
-      //   day = day >= 10 ? day : '0' + day
-      //   let hour = Math.floor(differ / (60 * 60)) - (day * 24)
-      //   hour = hour >= 10 ? hour : '0' + hour
-      //   let minute = Math.floor(differ / 60) - (day * 24 * 60) - (hour * 60)
-      //   minute = minute >= 10 ? minute : '0' + minute
-      //   let second = Math.floor(differ) - (day * 24 * 60 * 60) - (hour * 60 * 60) - (minute * 60)
-      //   second = second >= 10 ? second : '0' + second
-      //   let times
-      //   if (differ > 0) {
-      //     times = {
-      //       day,
-      //       hour,
-      //       minute,
-      //       second
-      //     }
-      //   } else {
-      //     times = {
-      //       day: '00',
-      //       hour: '00',
-      //       minute: '00',
-      //       second: '00'
-      //     }
-      //     this.timeEnd = true
-      //   }
-      //   return times
-      // },
       getQrCode(loading) {
         let shopId = wx.getStorageSync('shopId')
         // 修改创建二维码的参数
@@ -684,13 +649,24 @@
       showMoreBtn() {
         this.bigUserImgList = this.userImgList
         this.showMoreImg = false
+      },
+      // 获取购买者的用户信息
+      _getBuyUsers() {
+        API.Choiceness.getUserImg({limit: 20}).then((res) => {
+          if (res.error !== this.$ERR_OK) {
+            this.$wechat.showToast(res.message)
+            return
+          }
+          this.buyUsers = res.data
+        })
       }
     },
     components: {
       NavigationBar,
       AddNumber,
       WePaint,
-      LinkGroup
+      LinkGroup,
+      BuyUsers
     }
   }
 </script>

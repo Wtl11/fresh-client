@@ -164,7 +164,7 @@
     },
     onPageScroll(e) {
       let title = e.scrollTop < this.navigationBar ? '赞播优鲜' : '赞播优鲜·' + (this.groupInfo.social_name || '')
-      this.$refs.navigationBar.setTranslucentTitle(title)
+      this.$refs.navigationBar && this.$refs.navigationBar.setTranslucentTitle(title)
     },
     async onShow() {
       // this.$wechat.showLoading()
