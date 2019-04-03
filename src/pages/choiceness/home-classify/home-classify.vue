@@ -13,7 +13,7 @@
       </block>
     </div>
     <classify-tab
-      v-if="isShowTab"
+      v-if="styles"
       :styles="styles"
       id="scrollView-fixed"
       :tabList="tabList"
@@ -50,7 +50,7 @@
       },
       isShowTab: {
         type: Boolean,
-        default: true
+        default: false
       },
       tabList: {
         type: Array,

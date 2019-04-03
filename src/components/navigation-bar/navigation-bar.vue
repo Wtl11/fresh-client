@@ -77,6 +77,10 @@
       exceedHeight: {
         type: Number,
         default: 100
+      },
+      titleMaxLen: {
+        type: Number,
+        default: 10
       }
     },
     onPageScroll(e) {
@@ -159,8 +163,8 @@
     },
     computed: {
       currentTitle() {
-        if (this.translucentTitle.length > 10) {
-          return this.translucentTitle.slice(0, 10) + '···'
+        if (this.translucentTitle.length > this.titleMaxLen) {
+          return this.translucentTitle.slice(0, this.titleMaxLen) + '···'
         } else {
           return this.translucentTitle
         }

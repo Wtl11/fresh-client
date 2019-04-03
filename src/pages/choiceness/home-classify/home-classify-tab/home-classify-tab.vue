@@ -17,7 +17,8 @@
       @click="changeTabHandle(index, item.id, $event)"
     >
       <figure class="icon">
-        <img class="img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.1/icon-all@2x.png'">
+        <img class="img" mode="aspectFill" v-if="item.image_url" :src="item.image_url">
+        <img class="img" mode="aspectFill" v-else-if="imageUrl" :src="imageUrl + '/yx-image/2.1/icon-all@2x.png'">
       </figure>
       <p class="text"><span class="name">{{item.name}}</span><span class="t-name" :class="tabIndex === index ? 'active'  : ''">{{item.name}}</span></p>
       <div
@@ -43,6 +44,10 @@
       isShow: {
         type: Boolean,
         default: true
+      },
+      isShowTab: {
+        type: Boolean,
+        default: false
       },
       tabList: {
         type: Array,
@@ -86,7 +91,7 @@
     white-space: nowrap
     box-sizing: border-box
     transform: translate3d(0, 0, 0)
-    transition: all 0
+    transition: transform 0.3s ease-out
     &:after
       content: ""
       position: absolute

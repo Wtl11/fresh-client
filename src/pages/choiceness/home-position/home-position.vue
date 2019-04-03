@@ -121,12 +121,13 @@
         height: 6px
         display: block
     .carousel-wrapper
-      width :40vw
+      width :35vw
       height: 24px
       padding: 0 9.5px 0 3px
       background: #E6E6E6
       border-radius: 36px
       position :relative
+      overflow :hidden
       .place-holder
         fill-box(absolute)
         z-index :3
@@ -141,7 +142,7 @@
             height: 20px
             border-radius: 50%
             overflow: hidden
-            margin :0 3px
+            margin :0 3px 0 0
             .img
               width: 100%
               height: 100%

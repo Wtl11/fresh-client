@@ -1,6 +1,6 @@
 <template>
   <div class="choiceness">
-    <navigation-bar ref="navigationBar" :title="title" :showArrow="false"></navigation-bar>
+    <navigation-bar ref="navigationBar" :title="title" :showArrow="false" :titleMaxLen="12"></navigation-bar>
     <home-position
       :buyUsers="buyUsers"
       :showUserIndex="showUserIndex"
@@ -188,7 +188,7 @@
           await this._getFlashTabList()
         }
         // 获取tab高度
-        this._getTabPosition()
+        await this._getTabPosition()
         if (!wx.getStorageSync('token')) return
         this.setCartCount()
       } catch (e) {
@@ -202,7 +202,7 @@
       try {
         await this._getModuleInfo(false)
         // 获取tab高度
-        this._getTabPosition()
+        await this._getTabPosition()
       } catch (e) {
         console.error(e)
       }

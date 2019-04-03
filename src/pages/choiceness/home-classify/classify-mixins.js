@@ -11,12 +11,13 @@ export default {
       classifyStyles: '',
       // classifyNavigationHeight: 0,
       classifyTabIsShow: false,
-      // classifyTabPosition: 999999,
+      classifyTabPosition: 999999,
       classifyScrollHeight: 9999999,
       getScrollHeightTimer: undefined,
       classifyIsShow: undefined,
       classifyShowEmpty: undefined,
-      navigationBar: 0
+      navigationBar: 0,
+      classifyTabScrolling: false
     }
   },
   onReady() {
@@ -29,32 +30,44 @@ export default {
   },
   onPageScroll(e) {
     if (!this.classifyStyles) return
-    // console.log(e.scrollTop + this.classifyNavigationHeight, this.classifyTabPosition.top)
-    // console.log(e.scrollTop + this.navigationBar, this.classifyScrollHeight)
-    this.classifyTabIsShow = e.scrollTop + this.navigationBar >= this.classifyScrollHeight
+    if (this.classifyTabScrolling) return
+    this.classifyTabIsShow = e.scrollTop + this.navigationBar >= this.classifyScrollHeight + this.classifyTabPosition * 2
+    if (this.classifyTabIsShow) {
+      this.classifyStyles = `top:${this.navigationBar}px;position:fixed;left:0;z-index:90;transform:translate3d(0,0,0)`
+    } else {
+      this.classifyStyles = `top:${this.navigationBar}px;position:fixed;left:0;z-index:90;transform:translate3d(0,-${this.classifyTabPosition}px,0)`
+    }
   },
   methods: {
     // 获取tab位置信息
     _getTabPosition() {
       const query = wx.createSelectorQuery()
-      setTimeout(() => {
-        query.select('#navigationBar').boundingClientRect()
-          .select('#homePosition').boundingClientRect()
-          .select('#homeBanner').boundingClientRect()
-          .select('#homeFlashSale').boundingClientRect()
-          .select('#homeEmpty').boundingClientRect()
-          .exec(res => {
-            let height = 0
-            res.forEach(item => {
-              if (item && item.height) {
-                height += item.height
-                item.id === 'navigationBar' && (this.navigationBar = item.height)
-              }
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          query.select('#navigationBar').boundingClientRect()
+            .select('#homePosition').boundingClientRect()
+            .select('#homeBanner').boundingClientRect()
+            .select('#homeFlashSale').boundingClientRect()
+            .select('#homeEmpty').boundingClientRect()
+            .select('#scrollView-relative').boundingClientRect()
+            .exec(res => {
+              let height = 0
+              res.forEach(item => {
+                if (item && item.height) {
+                  item.id === 'navigationBar' && (this.navigationBar = item.height)
+                  if (item.id === 'scrollView-relative') {
+                    this.classifyTabPosition = item.height
+                  } else {
+                    height += item.height
+                  }
+                }
+              })
+              this.classifyStyles = `opacity:0;top:${this.navigationBar}px;position:fixed;left:0;z-index:90;transform:translate3d(0,-${this.classifyTabPosition}px,0)`
+              this.classifyScrollHeight = height + 10
+              resolve()
             })
-            this.classifyStyles = `top:${this.navigationBar}px;position:fixed;left:0;z-index:100`
-            this.classifyScrollHeight = height + 10
-          })
-      }, 500)
+        }, 500)
+      })
     },
     // 获取商品分类列表
     async _getClassifyList(loading) {
@@ -85,11 +98,22 @@ export default {
     // tab切换
     classifyChangeTab(index, id, e) {
       if (this.classifyTabIndex === index) return
-      this.classifyTabIsShow && wx.pageScrollTo({
-        scrollTop: this.classifyScrollHeight - this.navigationBar,
-        duration: 0
-      })
-      let number = this._optimizeTabViewItem(index)
+      if (this.classifyTabIsShow) {
+        this.classifyStyles = `top:${this.navigationBar}px;position:fixed;left:0;z-index:90;transform:translate3d(0,-${this.classifyTabPosition}px,0);opacity: 0`
+        this.classifyTabScrolling = true
+        setTimeout(() => {
+          this.classifyTabScrolling = false
+        }, 100)
+        wx.pageScrollTo({
+          scrollTop: this.classifyScrollHeight - this.navigationBar,
+          duration: 0
+        })
+      }
+      // this.classifyTabIsShow && wx.pageScrollTo({
+      //   scrollTop: this.classifyScrollHeight - this.navigationBar,
+      //   duration: 0
+      // })
+      let number = this._optimizeTabViewItem(index, this.classifyTabIndex)
       this.classifyViewToItem = `item${number}`
       setTimeout(() => {
         this.classifyViewToItem = ``
@@ -99,20 +123,24 @@ export default {
       this._getClassifyList(false)
     },
     // 优化tab切换时的动画问题
-    _optimizeTabViewItem(index) {
-      let number = index * 1 === 0 ? 1 : index
-      if (this.classifyTabIndex > index) {
-        if (index <= 3) {
-          number = 0
-        } else {
-          number = index
-        }
-      } else if (this.classifyTabIndex < index) {
-        if (index <= 3) {
-          number = 0
-        } else {
-          number = index
-        }
+    _optimizeTabViewItem(index, lastIndex) {
+      // let number = index * 1 === 0 ? 1 : index
+      // if (this.classifyTabIndex > index) {
+      //   if (index <= 3) {
+      //     number = 0
+      //   } else {
+      //     number = index
+      //   }
+      // } else if (this.classifyTabIndex < index) {
+      //   if (index <= 3) {
+      //     number = 0
+      //   } else {
+      //     number = index
+      //   }
+      // }
+      let number = index
+      if (index < lastIndex) {
+        number = Math.max(0, index - 2)
       }
       return number
     }
