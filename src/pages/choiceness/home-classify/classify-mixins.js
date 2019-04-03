@@ -62,7 +62,10 @@ export default {
                   }
                 }
               })
-              this.classifyStyles = `opacity:0;top:${this.navigationBar}px;position:fixed;left:0;z-index:90;transform:translate3d(0,-${this.classifyTabPosition}px,0)`
+              console.log(height)
+              if (this.classifyScrollHeight !== height + 10) {
+                this.classifyStyles = `opacity:0;top:${this.navigationBar}px;position:fixed;left:0;z-index:90;transform:translate3d(0,-${this.classifyTabPosition}px,0)`
+              }
               this.classifyScrollHeight = height + 10
               resolve()
             })

@@ -114,7 +114,7 @@
       border: none
 
   .home-classify-item
-    height: 40.5vw
+    height: 37.733333333333334vw
     layout(row)
     border-bottom-1px(#e6e6e6)
     align-items: center
