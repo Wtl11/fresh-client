@@ -265,7 +265,7 @@
           font-family: $font-family-regular
           background :$color-background
           .left-wrapper
-            font-size: 15px
+            font-size: 14px
           .right-wrapper
             flex:1
             color: $color-text-sub

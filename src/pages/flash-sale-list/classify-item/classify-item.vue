@@ -1,12 +1,15 @@
 <template>
   <div class="classify-item" @click="jumpGoodsDetail(item)">
     <figure class="classify-box-top">
-      <img v-if="imageUrl && corpName === 'platform'" :src="imageUrl + '/yx-image/choiceness/icon-label2@2x.png'" alt="" class="top-label" mode="aspectFill">
-      <img v-if="imageUrl && corpName === 'retuan'" :src="imageUrl + '/yx-image/retuan/icon-label2@2x.png'" alt="" class="top-label" mode="aspectFill">
+      <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.1/icon-qiang2@2x.png'" alt="" class="top-label" mode="aspectFill">
+      <!--<img v-if="imageUrl && corpName === 'retuan'" :src="imageUrl + '/yx-image/retuan/icon-label2@2x.png'" alt="" class="top-label" mode="aspectFill">-->
       <img v-if="item.goods_cover_image" :src="item.goods_cover_image" alt="" class="box-top-img" mode="aspectFill">
     </figure>
     <section class="classify-box-bottom">
       <div class="title">{{item.name}}</div>
+      <figure class="icon">
+        <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.1/pic-qianglabel@2x.png'" alt="" class="img" mode="aspectFill">
+      </figure>
       <div class="classify-price-box">
         <div class="price-left">
           <div class="price-number" :class="'corp-' + corpName + '-money'">{{item.trade_price}}</div>
@@ -69,6 +72,11 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@designCommon"
 
+  .img
+    width: 100%
+    height :@width
+    display :block
+
   .classify-item
     background: #fff
     overflow: hidden
@@ -81,15 +89,14 @@
       padding-bottom: 100%
       height: 0
       width: 100%
-      overflow: hidden
       position: relative
       .top-label
         position: absolute
         left: -2.5px
         top: @left
         display: block
-        width: 31.2px
-        height: 31.4px
+        width: 26px
+        height: 28px
         z-index: 11
       .box-top-img
         position: absolute
@@ -107,7 +114,10 @@
         font-size: $font-size-14
         min-height: $font-size-16
         no-wrap()
-        margin-bottom: 8.5px
+      .icon
+        width :37px
+        height :17px
+        padding :5px 0 0
       .classify-price-box
         layout(row)
         align-items: center
