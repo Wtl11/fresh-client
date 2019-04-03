@@ -6,6 +6,14 @@
         mode="aspectFill"
         v-if="dataInfo.goods_cover_image"
         :src="dataInfo.goods_cover_image">
+      <div class="img-label">
+        <img
+          class="img"
+          mode="aspectFit"
+          v-if="imageUrl"
+          :src="imageUrl + '/yx-image/2.1/icon-qiang@2x.png'"
+        >
+      </div>
     </figure>
     <form class="bottom-wrapper"  action="" report-submit @submit="$getFormId" >
       <div class="title-wrapper">
@@ -15,6 +23,7 @@
         <div class="price">
           <p class="number">{{dataInfo.trade_price}}</p>
           <p class="unit">元</p>
+          <p class="origin-price">{{dataInfo.original_price}}元</p>
         </div>
         <button class="button" formType="submit" @click.stop="submitHandle">
           <figure class="button-img">
@@ -88,6 +97,7 @@
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
+  $flash-width=24vw
   @import "~@designCommon"
 
   .img
@@ -97,17 +107,24 @@
     overflow :auto
 
   .home-flash-item
-    width :26.666666666666668vw
+    width :$flash-width
     height :100%
     .goods-wrapper
-      width :26.666666666666668vw
-      height :26.666666666666668vw
+      width :$flash-width
+      height :$flash-width
+      position :relative
+      .img-label
+        position :absolute
+        left :0
+        top:@left
+        width: 5.333333333333334vw
+        height:@width
     .bottom-wrapper
       position :relative
       .title-wrapper
         overflow :hidden
         .title
-          padding-top :2.666666666666667vw
+          padding-top :5.333333333333334vw
           font-family: $font-family-regular
           font-size: 3.4666666666666663vw
           color: #111111;
@@ -116,7 +133,7 @@
         position :relative
         z-index :10
        .price-wrapper
-          padding-top: 1.3333333333333335vw
+          padding-top: 2.7733333333333334vw
           display :flex
           color: #FF8300
           font-family: $font-family-medium
@@ -132,6 +149,15 @@
               top:1.8vw
               margin-left :1px
               font-size :2.666666666666667vw
+            .origin-price
+              padding-left :1.0666666666666667vw
+              font-family: $font-family-regular
+              font-size: 2.666666666666667vw
+              color: $color-text-assist
+              line-height: @font-size
+              text-decoration :line-through
+              position :relative
+              top:2.666666666666667vw
           .button
             position :absolute
             bottom :0

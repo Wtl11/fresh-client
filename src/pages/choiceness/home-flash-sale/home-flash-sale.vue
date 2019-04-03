@@ -4,48 +4,41 @@
       <div class="inner-wrapper">
         <div class="left-wrapper">
           <figure class="button" @click="navHandle">
-            <img class="img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.1/pic-title_xsqg@2x.png'">
+            <img class="img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.1/icon-pressed_xsqg@2x.png'">
           </figure>
           <p class="time">{{countDownTimes.hour}}<span class="dot">:</span>{{countDownTimes.minute}}<span class="dot">:</span>{{countDownTimes.second}}</p>
         </div>
         <ul class="right-wrapper">
           <li v-for="(item, index) in tabList" :key="item.id" class="right-item" @click="changeTab(item, index)">
+            <div class="tab-item"></div>
             <p class="text" :class="{active: tabIndex === index}">{{item.at}}</p>
             <p class="explain" :class="{active: tabIndex === index}">{{item.at_str}}</p>
           </li>
         </ul>
       </div>
     </section>
-    <scroll-view
-      class="bottom-wrapper"
-      scroll-x
-      :scroll-into-view="viewToChild"
-    >
-      <div
-        v-for="(child, idx) in flashArray"
-        :key="idx" class="bottom-item-wrapper"
-        :class="flashArray.length> 4 && idx === flashArray.length -1?'item-r-0':''"
-        :id="'child'+idx"
-      >
-        <home-flash-item :dataInfo="child"></home-flash-item>
-        <section v-if="flashArray.length> 4 && idx === flashArray.length -1" class="look-more">
-          <div class="look-wrapper" @click="navHandle">
-            <div class="text">查看更多</div>
-            <figure class="more-icon">
-              <img class="img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.1/icon-pressed_gd@2x.png'">
-            </figure>
-          </div>
-        </section>
-      </div>
-      <!--<article v-if="flashArray.length > 4" class="bottom-item-wrapper">-->
-        <!--<div class="look-wrapper" @click="navHandle">-->
-          <!--<div class="text">查看更多</div>-->
-          <!--<figure class="more-icon">-->
-            <!--<img class="img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.1/icon-pressed_gd@2x.png'">-->
-          <!--</figure>-->
-        <!--</div>-->
-      <!--</article>-->
-    </scroll-view>
+    <!--<scroll-view-->
+      <!--class="bottom-wrapper"-->
+      <!--scroll-x-->
+      <!--:scroll-into-view="viewToChild"-->
+    <!--&gt;-->
+      <!--<div-->
+        <!--v-for="(child, idx) in flashArray"-->
+        <!--:key="idx" class="bottom-item-wrapper"-->
+        <!--:class="flashArray.length> 4 && idx === flashArray.length -1?'item-r-0':''"-->
+        <!--:id="'child'+idx"-->
+      <!--&gt;-->
+        <!--<home-flash-item :dataInfo="child"></home-flash-item>-->
+        <!--<section v-if="flashArray.length> 4 && idx === flashArray.length -1" class="look-more">-->
+          <!--<div class="look-wrapper" @click="navHandle">-->
+            <!--<div class="text">查看更多</div>-->
+            <!--<figure class="more-icon">-->
+              <!--<img class="img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.1/icon-pressed_gd@2x.png'">-->
+            <!--</figure>-->
+          <!--</div>-->
+        <!--</section>-->
+      <!--</div>-->
+    <!--</scroll-view>-->
   </div>
 </template>
 
@@ -146,9 +139,9 @@
     display :block
 
   .home-flash-sale
-    width: 100%
+    padding :0 10px
     background: $color-background
-    border-bottom :10px solid $color-background
+    border-bottom :12px solid $color-background
     .bottom-wrapper
       height:47.733333333333334vw
       border-top-1px($color-line)
@@ -204,20 +197,17 @@
               height:@width
 
     .top-wrapper
-      height :18.133333333333333vw
-      padding :2.666666666666667vw 1.3333333333333335vw 0
-      box-sizing :border-box
+      height :15.733333333333333vw
       .inner-wrapper
-        height :15.466666666666667vw
-        background :#fff
+        height :100%
+        background :#FFE359
         border-radius :8px 8px 0 0
         box-sizing :border-box
-        padding :2.933333333333333vw 0
+        padding :15px 0 10px
         layout(row,block,nowrap)
         .left-wrapper
           flex: 1
           padding-left :1.6vw
-          overflow :hidden
           .button
             width :25.066666666666666vw
             height :4.8vw
@@ -225,7 +215,7 @@
             padding-top :1.0666666666666667vw
             font-family: DINAlternate-Bold
             font-size: 3.4666666666666663vw
-            color: $color-text-sub
+            color: #1D2023
             .dot
               position :relative
               bottom :0.26666666666666666vw
@@ -235,27 +225,32 @@
           padding-right :0.8vw
           .right-item
             text-align :center
-            padding :0 1.3333333333333335vw
+            width :65px
+            position :relative
+            .tab-item
+              position :absolute
+              top:0
+              left :0
+              width :65px
+              height :52px
+              background :#fff
             .text
+              position :relative
               width :16vw
               height :5.6000000000000005vw
-              background: #fff
               border-radius: @height
               font-family: $font-family-medium
               font-size: 4.8vw
-              color: $color-text-sub
+              color: #1D2023
               line-height :@height
-              transition :all 0.3s
-              &.active
-                color: #FFFFFF;
-                background: #FF8506
+              z-index :2
+              text-align :center
             .explain
-              padding-top :0.6666666666666667vw
+              position :relative
               font-family: $font-family-regular
               font-size: 3.2vw
-              color: $color-text-sub
-              transition :all 0.3s
-              &.active
-                color: #FF8506
+              color: #1D2023
+              text-align :center
+              z-index :2
 
 </style>
