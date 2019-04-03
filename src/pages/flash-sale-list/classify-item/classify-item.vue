@@ -119,7 +119,7 @@
           font-family: $font-family-medium
           .price-number
             font-size: $font-size-18
-            margin-right: 2px
+            margin-right: 1px
           .price-money
             margin-right: 5px
             position :relative
