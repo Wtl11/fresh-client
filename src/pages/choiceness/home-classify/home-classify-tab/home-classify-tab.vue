@@ -5,18 +5,25 @@
     :class="{active: !isShow}"
     v-if="tabList.length"
     :id="id"
-    :scroll-into-view="viewToItem" scroll-x
+    :scroll-into-view="viewToItem"
+    scroll-x
+    scroll-with-animation
   >
     <div
       v-for="(item, index) in tabList"
-      :class="tabIndex === index ? 'item-active'  : ''"
       :key="index"
       class="item"
       :id="'item'+index"
       @click="changeTabHandle(index, item.id, $event)"
     >
-      {{item.name}}
-      <div class="item-under-line">
+      <figure class="icon">
+        <img class="img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.1/icon-all@2x.png'">
+      </figure>
+      <p class="text"><span class="name">{{item.name}}</span><span class="t-name" :class="tabIndex === index ? 'active'  : ''">{{item.name}}</span></p>
+      <div
+        class="item-under-line"
+        :class="tabIndex === index ? 'active'  : ''"
+      >
         <div class="line" :class="'corp-' + corpName + '-bg'"></div>
       </div>
     </div>
@@ -63,8 +70,13 @@
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
-  $tab-height=45px
+  $tab-height=86px
   @import "~@designCommon"
+
+  .img
+    width :100%
+    height :100%
+    display :block
 
   .home-classify-tab
     display: block
@@ -91,28 +103,44 @@
       color: transparent
     .item
       height: $tab-height
-      line-height: @height
-      white-space: nowrap
       padding: 0 12.5px
-      font-family: $font-family-regular
-      font-size: $font-size-14
-      color: $color-text-main
       text-align: center
-      display: inline-block
+      display: inline-flex
       position: relative
       /*transition: all 0.3s*/
       min-width: 66px
       box-sizing: border-box
-      transform-origin: 50%
-    .item-active
-      font-family: $font-family-medium
-      font-size: $font-size-16
+      flex-direction :column
+      .icon
+        margin :0 auto
+        padding :7px 0
+        width :44px
+        height :@width
+      .text
+        flex: 1
+        font-family: $font-family-regular
+        font-size: 13px
+        color: #333
+        position :relative
+        .name
+          opacity :0
+        .t-name
+          white-space: nowrap
+          row-center()
+          transition: all 0.3s
+          &.active
+            font-size: 15px
+            font-family: $font-family-medium
       .item-under-line
         position: absolute
         width: 100%
         height: 3px
         left: 0
         bottom: 0
+        opacity :0
+        transition: opacity 0.3s
+        &.active
+          opacity :1
         .line
           width: 30px
           height: 3px
