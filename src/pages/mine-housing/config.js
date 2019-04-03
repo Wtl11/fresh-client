@@ -6,6 +6,7 @@ page.$mount()
 
 export default {
   config: {
-    navigationBarTitleText: '我的小区'
+    navigationBarTitleText: '我的小区',
+    usingComponents: {}
   }
 }
