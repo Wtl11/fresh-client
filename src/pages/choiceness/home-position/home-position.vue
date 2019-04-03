@@ -13,13 +13,34 @@
       <!--<img v-if="imageUrl && (locationStatus * 1 === 1 || locationStatus * 1 === 2) && groupInfo.social_name"-->
       <!--:src="imageUrl + '/yx-image/choiceness/icon-pitch@2x.png'" class="community-down">-->
     </div>
-    <div class="carousel-wrapper" v-if="buyUsers.length > 0 && (locationStatus * 1 === 1 || locationStatus * 1 === 2)"
-         :class="{'show': showBuyUser}">
-      <div class="avatar-wrapper">
-        <img v-if="buyUsers[showUserIndex] && buyUsers[showUserIndex].head_image_url" :src="buyUsers[showUserIndex].head_image_url" alt="">
-      </div>
-      <div class="content">买了{{buyUsers[showUserIndex].goods_name}}</div>
-    </div>
+    <!--<div class="carousel-wrapper" v-if="buyUsers.length > 0 && (locationStatus * 1 === 1 || locationStatus * 1 === 2)"-->
+         <!--:class="{'show': showBuyUser}">-->
+      <!--<div class="avatar-wrapper">-->
+        <!--<img v-if="buyUsers[showUserIndex] && buyUsers[showUserIndex].head_image_url" :src="buyUsers[showUserIndex].head_image_url" alt="">-->
+      <!--</div>-->
+      <!--<div class="content">买了{{buyUsers[showUserIndex].goods_name}}</div>-->
+    <!--</div>-->
+    <section class="carousel-wrapper">
+      <swiper
+        v-if="buyUsers.length > 0 && (locationStatus * 1 === 1 || locationStatus * 1 === 2)"
+        class="carousel"
+        :autoplay="true"
+        :interval="3000"
+        :duration="500"
+        circular
+        vertical
+      >
+        <block v-for="(item, index) in buyUsers" :key="index">
+          <swiper-item class="content-wrapper">
+            <figure class="avatar-wrapper">
+              <img v-if="item.head_image_url" :src="item.head_image_url" alt="" class="img">
+            </figure>
+            <div class="text">买了{{item.goods_name}}</div>
+          </swiper-item>
+        </block>
+      </swiper>
+      <div class="place-holder"></div>
+    </section>
   </div>
 </template>
 
@@ -75,7 +96,6 @@
     box-sizing: border-box
     margin-bottom: 8px
     height :24px
-    box-sizing :border-box
     .community-main
       layout(row)
       align-items: center
@@ -101,33 +121,35 @@
         height: 6px
         display: block
     .carousel-wrapper
-      layout(row)
-      max-width: 100%
-      align-items: center
+      width :40vw
       height: 24px
       padding: 0 9.5px 0 3px
-      background: rgba(0, 0, 0, .5)
+      background: #E6E6E6
       border-radius: 36px
-      transition: opacity .3s
-      opacity: 0
-      &.show
-        opacity: 1
-      .avatar-wrapper
-        width: 20px
-        height: 20px
-        margin-right: 3px
-        border-radius: 50%
-        overflow: hidden
-        img
-          width: 100%
-          height: 100%
-      .content
-        flex: 1
-        overflow: hidden
-        font-size: $font-size-10
-        line-height: 24px
-        color: $color-white
-        max-width: 24vw
-        no-wrap()
+      position :relative
+      .place-holder
+        fill-box(absolute)
+        z-index :3
+      .carousel
+        height :100%
+        width :100%
+        .content-wrapper
+          layout(row)
+          align-items: center
+          .avatar-wrapper
+            width: 20px
+            height: 20px
+            border-radius: 50%
+            overflow: hidden
+            margin :0 3px
+            .img
+              width: 100%
+              height: 100%
+          .text
+            flex: 1
+            font-family: $font-family-regular
+            font-size: 12px
+            color: $color-sub
+            no-wrap()
 
 </style>

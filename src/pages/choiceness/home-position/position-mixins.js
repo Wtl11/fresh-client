@@ -88,7 +88,7 @@ export default {
           return
         }
         this.buyUsers = res.data
-        this._handleBuyUserCarousel()
+        // this._handleBuyUserCarousel()
       })
     },
     // 购买用户信息的选择动画
