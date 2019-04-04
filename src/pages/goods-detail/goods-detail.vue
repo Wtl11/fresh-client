@@ -124,7 +124,7 @@
     <link-group ref="groupList" :wechatInfo="groupInfo"></link-group>
     <link-group ref="shareList" :linkType="2" @saveImg="_action"></link-group>
     <we-paint ref="wePaint" @drawDone="_drawDone"></we-paint>
-    <div class="share-goods">
+    <div class="share-goods" id="share-goods">
       <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-sharegoods@2x.png'" class="share-bg" mode="aspectFill">
       <div class="share-box">
         <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/5@1x.png'" class="share-img" mode="aspectFill">
@@ -157,6 +157,7 @@
   import BuyUsers from './buy-users/buy-users'
   import WePaint from '@components/we-paint/we-paint'
   import API from '@api'
+  import base64src from './utils'
 
   const PAGE_NAME = 'GOODS_DETAIL'
   const TYPEBTN = [{url: '/yx-image/goods/icon-homepage@2x.png', text: '首页', type: 0}, {url: '/yx-image/goods/icon-shopcart@2x.png', text: '购物车', type: 2}]
@@ -424,7 +425,7 @@
           this.$refs.addNumber.showLink()
         }
       },
-      _action() {
+      async _action() {
         this.$sendMsg({
           event_no: 1005,
           goods_id: this.goodsId,
@@ -436,6 +437,14 @@
           this.$wechat.showToast('图片生成失败，请重新尝试！')
           this.getQrCode()
           return
+        }
+        let qrCodeIsBase64 = /base64/i.test(this.shareImg)
+        try {
+          if (qrCodeIsBase64) {
+            this.shareImg = await base64src(this.shareImg)
+          }
+        } catch (e) {
+          console.error(e)
         }
         let backGroundImg
         let moneyColor
@@ -455,16 +464,16 @@
           canvasId: 'we-paint',
           multiple: 1,
           panel: {
-            el: '.share-goods'
+            el: '#share-goods'
           },
           els: [
             {
-              el: '.share-goods',
+              el: '#share-goods',
               drawType: 'rect',
               color: '#fff'
             },
             {
-              el: '.share-bg', // 背景图
+              el: '#share-goods > .share-bg', // 背景图
               drawType: 'img',
               mode: 'aspectFill',
               source: backGroundImg
@@ -532,7 +541,9 @@
             {
               el: '.share-bottom > .wem-img',
               drawType: 'img',
-              source: this.shareImg
+              source: this.shareImg,
+              unLoad: !qrCodeIsBase64
+              // source: qrCode
             }
           ]
         }

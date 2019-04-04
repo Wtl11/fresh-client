@@ -122,7 +122,7 @@
   .coupon-modal
     background-color: rgba(17, 17, 17, 0.8)
     fill-box(fixed)
-    z-index: 100
+    z-index: 999
     display :flex
     justify-content :center
     align-items :center

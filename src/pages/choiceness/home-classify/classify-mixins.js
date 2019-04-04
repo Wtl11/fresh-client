@@ -16,7 +16,9 @@ export default {
       classifyIsShow: undefined,
       classifyShowEmpty: undefined,
       navigationBar: 0,
-      classifyTabScrolling: false
+      classifyTabScrolling: false,
+      scrollTop: 0,
+      nowTime: 0
     }
   },
   onReachBottom() {
@@ -25,20 +27,36 @@ export default {
   },
   onPageScroll(e) {
     if (this.classifyTabScrolling) return
+    // if (Date.now() - this.nowTime < 100) {
+    //   this.nowTime = Date.now()
+    //   return
+    // }
     const currentScrollTop = e.scrollTop + this.navigationBar
     const t10 = this.classifyScrollHeight + this.classifyTabPosition
     const t15 = this.classifyScrollHeight + this.classifyTabPosition * 1.5
     const t20 = this.classifyScrollHeight + this.classifyTabPosition * 2
-    if (currentScrollTop > t10 && currentScrollTop <= t15) {
-      this._setClassifyStyles(this.navigationBar, -this.classifyTabPosition, 1, 0)
-    } else {
+    // if (currentScrollTop > t10 && currentScrollTop <= t15 && this.lastScroll < e.scrollTop) {
+    //   this._setClassifyStyles(this.navigationBar, -this.classifyTabPosition, 1, 0)
+    // } else if (currentScrollTop > t20) {
+    //   this._setClassifyStyles(this.navigationBar, 0, 1)
+    // } else if (currentScrollTop < t20 && currentScrollTop > t15) {
+    //   this._setClassifyStyles(this.navigationBar, -this.classifyTabPosition, 1)
+    // } else {
+    //   this.classifyStyles = ''
+    // }
+    if (currentScrollTop < t10) {
       this.classifyStyles = ''
+    }
+    if (currentScrollTop > t10 && currentScrollTop < t15) {
+      this._setClassifyStyles(this.navigationBar, -this.classifyTabPosition, 1, 0)
+    }
+    if (currentScrollTop >= t15 && currentScrollTop <= t20) {
+      this._setClassifyStyles(this.navigationBar, -this.classifyTabPosition, 1)
     }
     if (currentScrollTop > t20) {
       this._setClassifyStyles(this.navigationBar, 0, 1)
-    } else if (currentScrollTop <= t20 && currentScrollTop > t15) {
-      this._setClassifyStyles(this.navigationBar, -this.classifyTabPosition, 1)
     }
+    // this.scrollTop = e.scrollTop
   },
   methods: {
     _setClassifyStyles(top, y, opacity, time = 300) {

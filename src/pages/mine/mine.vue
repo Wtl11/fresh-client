@@ -45,6 +45,7 @@
       <li class="button-item" v-for="(item, index) in BUTTON_GROUP" :key="index">
         <article class="item-wrapper" @click="navHandle(item)">
           <div class="item-text">{{item.isArray ? item.text[isLeader?1:0]: item.text}}</div>
+          <p v-if="item.type === 'coupon'" class="right-number">{{couponNumber}}</p>
           <div class="item-arrow-img">
             <img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="img">
           </div>
@@ -113,7 +114,7 @@
   ]
 
   const BUTTON_GROUP = [
-    {text: '优惠券', url: 'coupon-mine'},
+    {text: '优惠券', url: 'coupon-mine', type: 'coupon'},
     {text: ['我的小区', '小区管理'], isArray: true, isLeader: true}
   ]
 
@@ -137,7 +138,8 @@
         modalAnimation: '',
         lastOrderList: [],
         isLeader: false,
-        BUTTON_GROUP: BUTTON_GROUP
+        BUTTON_GROUP: BUTTON_GROUP,
+        couponNumber: 0
       }
     },
     async onTabItemTap() {
@@ -150,6 +152,7 @@
       this.isLeader = wx.getStorageSync('isLeader')
       this._getShopDetail()
       this._getOrderCount()
+      this._getCouponNumber()
     },
     onHide() {
     },
@@ -296,6 +299,13 @@
         wx.navigateTo({
           url: `/pages/order-detail?id=${item.id}`
         })
+      },
+      // 获取头部数量
+      _getCouponNumber() {
+        API.Coupon.getClientListNumber('', false).then(res => {
+          console.log(res)
+          this.couponNumber = res.data.can_used_count
+        })
       }
     },
     components: {
@@ -341,6 +351,9 @@
           letter-spacing: 0.4px
           .item-text
             flex: 1
+          .right-number
+            font-size: 16px
+            padding :0 5px
           .item-arrow-img
             display: block
             width: 7.5px
