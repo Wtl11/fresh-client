@@ -21,14 +21,14 @@ export default {
     this._getBuyUsers()
   },
   onHide() {
-    this.carouselTimer && clearTimeout(this.carouselTimer)
-    this.showCarouselTimer && clearTimeout(this.showCarouselTimer)
-    this.showUserIndex = 0
-    this.showBuyUser = false
+    // this.carouselTimer && clearTimeout(this.carouselTimer)
+    // this.showCarouselTimer && clearTimeout(this.showCarouselTimer)
+    // this.showUserIndex = 0
+    // this.showBuyUser = false
   },
   onUnload() {
-    this.carouselTimer && clearTimeout(this.carouselTimer)
-    this.showCarouselTimer && clearTimeout(this.showCarouselTimer)
+    // this.carouselTimer && clearTimeout(this.carouselTimer)
+    // this.showCarouselTimer && clearTimeout(this.showCarouselTimer)
   },
   async onPullDownRefresh() {
     this._groupInfo(false)
@@ -88,7 +88,10 @@ export default {
           return
         }
         this.buyUsers = res.data
+        // console.warn(res.data)
         // this._handleBuyUserCarousel()
+      }).catch(e => {
+        console.error(e)
       })
     },
     // 购买用户信息的选择动画

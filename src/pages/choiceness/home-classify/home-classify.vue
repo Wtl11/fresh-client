@@ -1,28 +1,30 @@
 <template>
   <div v-if="isShow" class="home-classify">
-    <classify-tab
-      id="scrollView-relative"
-      :tabList="tabList"
-      :viewToItem="viewToItem"
-      :tabIndex="tabIndex"
-      :scroll-left="relativeLeft"
-      @changeTab="changeTabHandle"
-    ></classify-tab>
+    <section class="tab-wrapper">
+      <div class="place-holder"></div>
+      <classify-tab
+        id="scrollView-relative"
+        :styles="styles"
+        :tabList="tabList"
+        :viewToItem="viewToItem"
+        :tabIndex="tabIndex"
+        @changeTab="changeTabHandle"
+      ></classify-tab>
+    </section>
     <div class="classify-wrapper">
       <block v-for="(item, index) in classifyArray" :key="index">
         <classify-item :item="item"></classify-item>
       </block>
     </div>
-    <classify-tab
-      v-if="styles"
-      :styles="styles"
-      id="scrollView-fixed"
-      :tabList="tabList"
-      :viewToItem="viewToItem"
-      :tabIndex="tabIndex"
-      :scroll-left="fixLeft"
-      @changeTab="changeTabHandle"
-    ></classify-tab>
+    <!--<classify-tab-->
+      <!--v-if="styles"-->
+      <!--:styles="styles"-->
+      <!--id="scrollView-fixed"-->
+      <!--:tabList="tabList"-->
+      <!--:viewToItem="viewToItem"-->
+      <!--:tabIndex="tabIndex"-->
+      <!--@changeTab="changeTabHandle"-->
+    <!--&gt;</classify-tab>-->
     <is-end v-if="!hasMore && !isShowEmpty"></is-end>
     <is-active-empty v-if="isShowEmpty"></is-active-empty>
   </div>
@@ -97,5 +99,8 @@
   .home-classify
     width: 100%
     background :#fff
-
+    .tab-wrapper
+      position :relative
+      .place-holder
+        height :86px
 </style>

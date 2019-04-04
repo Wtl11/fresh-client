@@ -9,7 +9,6 @@ export default {
       classifyMore: true,
       classifyArray: [],
       classifyStyles: '',
-      // classifyNavigationHeight: 0,
       classifyTabIsShow: false,
       classifyTabPosition: 999999,
       classifyScrollHeight: 9999999,
@@ -25,18 +24,33 @@ export default {
     this._getClassifyList()
   },
   onPageScroll(e) {
-    if (!this.classifyStyles) return
     if (this.classifyTabScrolling) return
-    this.classifyTabIsShow = e.scrollTop + this.navigationBar >= this.classifyScrollHeight + this.classifyTabPosition * 2
-    if (this.classifyTabIsShow) {
-      this._setClassifyStyles(this.navigationBar, 0, Number(this.classifyTabIsShow))
+    const currentScrollTop = e.scrollTop + this.navigationBar
+    const t10 = this.classifyScrollHeight + this.classifyTabPosition
+    const t15 = this.classifyScrollHeight + this.classifyTabPosition * 1.5
+    const t20 = this.classifyScrollHeight + this.classifyTabPosition * 2
+    if (currentScrollTop > t10 && currentScrollTop <= t15) {
+      this._setClassifyStyles(this.navigationBar, -this.classifyTabPosition, 1, 0)
     } else {
+      this.classifyStyles = ''
+    }
+    if (currentScrollTop > t20) {
+      this._setClassifyStyles(this.navigationBar, 0, 1)
+    } else if (currentScrollTop <= t20 && currentScrollTop > t15) {
       this._setClassifyStyles(this.navigationBar, -this.classifyTabPosition, 1)
     }
   },
   methods: {
-    _setClassifyStyles(top, y, opacity) {
-      this.classifyStyles = `opacity:${opacity};top:${top}px;position:fixed;left:0;z-index:90;transform:translate3d(0,${y}px,0)`
+    _setClassifyStyles(top, y, opacity, time = 300) {
+      this.classifyStyles = `
+      opacity:${opacity};
+      top:${top}px;
+      position:fixed;
+      left:0;
+      z-index:90;
+      transform:translate3d(0,${y}px,0);
+      transition: transform ${time}ms ease-out
+      `
     },
     // 获取tab位置信息
     _getTabPosition() {
@@ -63,7 +77,6 @@ export default {
               })
               if (this.classifyScrollHeight !== height + 10) {
                 this.classifyScrollHeight = height + 10
-                this._setClassifyStyles(this.navigationBar, -this.classifyTabPosition, Number(this.classifyTabIsShow))
               }
               resolve()
             })
@@ -99,8 +112,8 @@ export default {
     // tab切换
     classifyChangeTab(index, id, e) {
       if (this.classifyTabIndex === index) return
-      if (this.classifyTabIsShow) {
-        this._setClassifyStyles(this.navigationBar, -this.classifyTabPosition, 0)
+      if (this.classifyStyles) {
+        this.classifyStyles = ''
         this.classifyTabScrolling = true
         setTimeout(() => {
           this.classifyTabScrolling = false
@@ -123,7 +136,7 @@ export default {
     _optimizeTabViewItem(index, lastIndex) {
       let number = index
       if (index < lastIndex) {
-        number = Math.max(0, index - 2)
+        number = index - 2 >= 0 ? index - 2 : 0
       }
       return number
     }

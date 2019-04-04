@@ -2,7 +2,7 @@
   <div class="home-flash-item" @click="navHandle">
     <figure class="goods-wrapper">
       <img
-        class="img"
+        class="img-goods"
         mode="aspectFill"
         v-if="dataInfo.goods_cover_image"
         :src="dataInfo.goods_cover_image">
@@ -113,6 +113,12 @@
       width :$flash-width
       height :$flash-width
       position :relative
+      .img-goods
+        width :100%
+        height :@width
+        display :block
+        overflow :auto
+        border-radius :3px
       .img-label
         position :absolute
         left :-3px

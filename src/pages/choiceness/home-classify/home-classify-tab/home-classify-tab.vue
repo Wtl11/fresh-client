@@ -7,7 +7,7 @@
     :id="id"
     :scroll-into-view="viewToItem"
     scroll-x
-    scroll-with-animation
+    :scroll-with-animation="!isIos"
   >
     <div
       v-for="(item, index) in tabList"
@@ -17,8 +17,8 @@
       @click="changeTabHandle(index, item.id, $event)"
     >
       <figure class="icon">
-        <img class="img" mode="aspectFill" v-if="item.image_url" :src="item.image_url">
-        <img class="img" mode="aspectFill" v-else-if="imageUrl && index === 0" :src="imageUrl + '/yx-image/2.1/icon-all@2x.png'">
+        <img class="icon-img" mode="aspectFill" v-if="item.image_url" :src="item.image_url">
+        <img class="icon-img" mode="aspectFill" v-else-if="imageUrl && index === 0" :src="imageUrl + '/yx-image/2.1/icon-all@2x.png'">
       </figure>
       <p class="text"><span class="name">{{item.name}}</span><span class="t-name" :class="tabIndex === index ? 'active'  : ''">{{item.name}}</span></p>
       <div
@@ -66,6 +66,19 @@
         default: 0
       }
     },
+    data() {
+      return {
+        isIos: true
+      }
+    },
+    onLoad() {
+      try {
+        const systemInfo = wx.getSystemInfoSync()
+        this.isIos = /ios/i.test(systemInfo.system)
+      } catch (e) {
+        console.error(e)
+      }
+    },
     methods: {
       changeTabHandle(index, id, e) {
         this.$emit('changeTab', index, id, e)
@@ -84,6 +97,9 @@
     display :block
 
   .home-classify-tab
+    position :absolute
+    top:0
+    left :0
     display: block
     height: $tab-height
     width: 100vw
@@ -91,7 +107,6 @@
     white-space: nowrap
     box-sizing: border-box
     transform: translate3d(0, 0, 0)
-    transition: transform 0.3s ease-out
     &:after
       content: ""
       position: absolute
@@ -121,6 +136,12 @@
         padding :5px 0
         width :44px
         height :@width
+        position :relative
+        .icon-img
+          all-center()
+          width :52px
+          height:@width
+          display: block
       .text
         flex: 1
         font-family: $font-family-regular
