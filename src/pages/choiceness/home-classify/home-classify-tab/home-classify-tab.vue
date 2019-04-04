@@ -118,7 +118,7 @@
       flex-direction :column
       .icon
         margin :0 auto
-        padding :7px 0
+        padding :5px 0
         width :44px
         height :@width
       .text
@@ -132,7 +132,6 @@
         .t-name
           white-space: nowrap
           row-center()
-          transition: all 0.3s
           &.active
             font-size: 15px
             font-family: $font-family-medium

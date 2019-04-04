@@ -25,16 +25,16 @@
           <p class="unit">元</p>
           <p class="origin-price">{{dataInfo.original_price}}元</p>
         </div>
-        <button class="button" formType="submit" @click.stop="submitHandle">
-          <figure class="button-img">
-            <img
-              class="img"
-              mode="aspectFit"
-              v-if="imageUrl"
-              :src="imageUrl + '/yx-image/2.1/icon-shopcart copy 2@2x.png'"
-            >
-          </figure>
-        </button>
+        <!--<button class="button" formType="submit" @click.stop="submitHandle">-->
+          <!--<figure class="button-img">-->
+            <!--<img-->
+              <!--class="img"-->
+              <!--mode="aspectFit"-->
+              <!--v-if="imageUrl"-->
+              <!--:src="imageUrl + '/yx-image/2.1/icon-shopcart copy 2@2x.png'"-->
+            <!--&gt;-->
+          <!--</figure>-->
+        <!--</button>-->
       </div>
     </form>
   </div>
@@ -115,7 +115,7 @@
       position :relative
       .img-label
         position :absolute
-        left :0
+        left :-3px
         top:@left
         width: 5.333333333333334vw
         height:@width
@@ -124,7 +124,7 @@
       .title-wrapper
         overflow :hidden
         .title
-          padding-top :5.333333333333334vw
+          padding-top :20px
           font-family: $font-family-regular
           font-size: 3.4666666666666663vw
           color: #111111;
@@ -133,7 +133,7 @@
         position :relative
         z-index :10
        .price-wrapper
-          padding-top: 2.7733333333333334vw
+          padding-top: 4px
           display :flex
           color: #FF8300
           font-family: $font-family-medium
