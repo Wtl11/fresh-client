@@ -11,12 +11,13 @@
         <div class="hoseLogin">
           <div class="login-item border-bottom-1px">
             <img :src="imageUrl + '/yx-image/wallet/icon-phone@2x.png'" v-if="imageUrl" class="login-item-icon">
-            <input type="number" :focus="phoneInput" @focus="phoneFocus" class="login-input" placeholder="请输入手机号" :maxlength="11" placeholder-class="text-color" v-model="phoneNum">
+            <input type="number" class="login-input" placeholder="请输入手机号" :maxlength="11" placeholder-class="text-color" v-model="phoneNum">
           </div>
           <div class="login-item border-bottom-1px">
             <img :src="imageUrl + '/yx-image/wallet/icon-code@2x.png'" v-if="imageUrl" class="login-item-icon">
-            <input type="number" class="login-input login-input-small" :focus="focusInput" @focus="inputFocus" placeholder="请输入验证码" :maxlength="6" placeholder-class="text-color" v-model="code">
-            <span class="get-code" :class="[!isSet ? 'get-code-disable' : '', 'corp-' + corpName + '-goods-btn']" @click="setCode">{{codeText}}</span>
+            <input type="number" class="login-input login-input-small" placeholder="请输入验证码" :maxlength="6" placeholder-class="text-color" v-model="code">
+            <span v-if="isSet" class="get-code" :class="['corp-' + corpName + '-goods-btn']" @click="setCode">{{codeText}}</span>
+            <span v-else class="get-code" :class="['get-code-disable', 'corp-' + corpName + '-goods-btn']">{{codeText}}</span>
           </div>
           <div class="lost">
             <div class="btn" :class="'corp-' + corpName + '-bg'" @click="_login">团长登录</div>
@@ -53,9 +54,9 @@
         phoneNum: '',
         tapCode: true,
         isSet: true,
-        code: '',
-        phoneInput: false,
-        focusInput: false
+        code: ''
+        // phoneInput: false,
+        // focusInput: false
       }
     },
     onLoad() {
@@ -104,31 +105,42 @@
         if (!this.tapCode) {
           return
         }
-        let codeData = await API.Leader.messageBind(data)
-        this.codeText = '发送中…'
-        this.$wechat.hideLoading()
-        this.$wechat.showToast(codeData.message)
-        if (codeData.error !== this.$ERR_OK) {
-          this.codeText = '获取验证码'
-        } else {
-          this.isSet = false
-          let time = 60
-          this.codeText = '重新获取(60s)'
-          let timer = setInterval(() => {
-            this.tapCode = false
-            time--
-            this.codeText = `重新获取(${time}s)`
-            if (time <= 0) {
-              this.codeText = '获取验证码'
-              this.tapCode = true
-              if (REGPHONE.test(this.phoneNum)) {
-                this.isSet = true
-              } else {
-                this.isSet = false
+        this.tapCode = false
+        let codeData = {}
+        try {
+          codeData = await API.Leader.messageBind(data)
+          this.codeText = '发送中…'
+          setTimeout(() => {
+            this.$wechat.showToast(codeData.message)
+          }, 200)
+          if (codeData.error !== this.$ERR_OK) {
+            this.codeText = '获取验证码'
+            this.tapCode = true
+          } else {
+            this.isSet = false
+            let time = 60
+            this.codeText = '重新获取(60s)'
+            let timer = setInterval(() => {
+              // this.tapCode = false
+              time--
+              this.codeText = `重新获取(${time}s)`
+              if (time <= 0) {
+                this.codeText = '获取验证码'
+                this.tapCode = true
+                if (REGPHONE.test(this.phoneNum)) {
+                  this.isSet = true
+                } else {
+                  this.isSet = false
+                }
+                clearInterval(timer)
               }
-              clearInterval(timer)
-            }
-          }, 1000)
+            }, 1000)
+          }
+        } catch (e) {
+          this.tapCode = true
+          console.error(e)
+        } finally {
+          this.$wechat.hideLoading()
         }
       },
       async _login() {
@@ -142,10 +154,10 @@
           this.$wechat.showToast('请输入正确验证码')
           return
         }
-        setTimeout(() => {
-          this.focusInput = false
-          this.phoneInput = false
-        }, 50)
+        // setTimeout(() => {
+        //   this.focusInput = false
+        //   this.phoneInput = false
+        // }, 50)
         let res = await API.Leader.loginLeader({mobile: this.phoneNum, auth_code: this.code})
         this.$wechat.hideLoading()
         if (res.error === this.$ERR_OK && res.code === 13003) {
@@ -165,15 +177,15 @@
       },
       _getScroll(e) {
         this._setNav(e.target.current)
-      },
-      phoneFocus() {
-        this.phoneInput = true
-        this.focusInput = false
-      },
-      inputFocus() {
-        this.focusInput = true
-        this.phoneInput = false
       }
+      // phoneFocus() {
+      //   this.phoneInput = true
+      //   this.focusInput = false
+      // },
+      // inputFocus() {
+      //   this.focusInput = true
+      //   this.phoneInput = false
+      // }
     },
     components: {
       NavigationBar,
