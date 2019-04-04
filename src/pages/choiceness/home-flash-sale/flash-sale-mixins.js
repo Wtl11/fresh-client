@@ -66,7 +66,6 @@ export default {
     },
     _countDownTimeout(currentTime) {
       this.flashCountDownTimer = setTimeout(() => {
-        // console.log(currentTime)
         currentTime--
         this.flashCountDownTimes = countDownHandle(currentTime)
         if (!this.flashCountDownTimes || !this.flashCountDownTimes.differ || this.flashCountDownTimes.differ <= 0) {

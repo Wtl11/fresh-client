@@ -16,45 +16,6 @@
       @bannerChange="bannerChangeHandle"
     ></home-banner>
     <div class="empty" id="homeEmpty"></div>
-    <!--<article v-if="flashIsShow" class="home-flash-sale" id="homeFlashSale">-->
-      <!--<section class="top-wrapper">-->
-        <!--<div class="inner-wrapper">-->
-          <!--<div class="left-wrapper">-->
-            <!--<figure class="button" @click="flashNavHandle">-->
-              <!--<img class="img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.1/pic-title_xsqg@2x.png'">-->
-            <!--</figure>-->
-            <!--<p class="time">{{flashCountDownTimes.hour}}<span class="dot">:</span>{{flashCountDownTimes.minute}}<span class="dot">:</span>{{flashCountDownTimes.second}}</p>-->
-          <!--</div>-->
-          <!--<ul class="right-wrapper">-->
-            <!--<li v-for="(item, index) in flashTabList" :key="item.id" class="right-item" @click="flashChangeTab(item, index)">-->
-              <!--<p class="text" :class="{active: flashTabIndex === index}">{{item.at}}</p>-->
-              <!--<p class="explain" :class="{active: flashTabIndex === index}">{{item.at_str}}</p>-->
-            <!--</li>-->
-          <!--</ul>-->
-        <!--</div>-->
-      <!--</section>-->
-      <!--<scroll-view-->
-        <!--class="bottom-wrapper"-->
-        <!--scroll-x-->
-      <!--&gt;-->
-        <!--<div-->
-          <!--v-for="(child, idx) in flashArray"-->
-          <!--:key="idx" class="bottom-item-wrapper"-->
-          <!--:class="flashArray.length> 4 && idx === flashArray.length -1?'item-r-0':''"-->
-          <!--:id="'child'+idx"-->
-        <!--&gt;-->
-          <!--<home-flash-item :dataInfo="child"></home-flash-item>-->
-          <!--<section v-if="flashArray.length> 4 && idx === flashArray.length -1" class="look-more">-->
-            <!--<div class="look-wrapper" @click="flashNavHandle">-->
-              <!--<div class="text">查看更多</div>-->
-              <!--<figure class="more-icon">-->
-                <!--<img class="img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.1/icon-pressed_gd@2x.png'">-->
-              <!--</figure>-->
-            <!--</div>-->
-          <!--</section>-->
-        <!--</div>-->
-      <!--</scroll-view>-->
-    <!--</article>-->
     <home-flash-sale
       :tabList="flashTabList"
       :tabIndex="flashTabIndex"
@@ -139,22 +100,10 @@
     },
     data() {
       return {
-        // flashTabList: [],
-        // flashTabIndex: 0,
-        // flashArray: [],
-        // flashCountDownTimes: {
-        //   hour: '00',
-        //   minute: '00',
-        //   second: '00'
-        // },
-        // flashIsShow: false,
-        // flashCountDownTimer: 0,
         title: '赞播优鲜',
         curShopId: '',
         modulesList: [],
         systemInfo: {}
-        // isFirstLoad: true
-        // homeStyles: 'overflow:hidden;height:100vh;min-height:100vh;max-height:100vh' // 为了获取商品分类的tab高度;获取后置空
       }
     },
     onLoad(options) {
@@ -167,7 +116,6 @@
       this.$refs.navigationBar && this.$refs.navigationBar.setTranslucentTitle(title)
     },
     async onShow() {
-      // this.$wechat.showLoading()
       try {
         this.$sendMsg({
           event_no: 1000
@@ -235,86 +183,6 @@
     },
     methods: {
       ...cartMethods,
-      // //
-      // flashNavHandle() {
-      //   const id = this.flashTabList[this.flashTabIndex].id
-      //   wx.navigateTo({url: `/pages/flash-sale-list?id=${id}`})
-      // },
-      // // tab切换
-      // flashChangeTab(item, index) {
-      //   if (this.flashTabIndex === index) return
-      //   this.flashTabIndex = index
-      //   this._getTabList(false)
-      // },
-      // // 获取限时活动列表
-      // async _getFlashList(loading) {
-      //   if (this.flashTabList && this.flashTabList.length === 0) {
-      //     this.flashIsShow = false
-      //     return
-      //   }
-      //   this._countDownAction()
-      //   if (!this.flashTabList[this.flashTabIndex]) return
-      //   let data = {
-      //     activity_id: this.flashTabList[this.flashTabIndex].id || 0
-      //   }
-      //   try {
-      //     let res = await API.FlashSale.getFlashList(data, loading)
-      //     this.flashArray = res.data
-      //   } catch (e) {
-      //     console.error(e)
-      //   }
-      // },
-      // // tab-list
-      // async _getTabList(loading = false) {
-      //   try {
-      //     let res = await API.FlashSale.getFlashTabList('', loading)
-      //     this.flashTabList = res.data
-      //     this._getFlashList()
-      //   } catch (e) {
-      //     console.error(e)
-      //   }
-      // },
-      // // 倒计时
-      // _countDownAction() {
-      //   if (!this.flashTabList || !this.flashTabList[this.flashTabIndex]) return
-      //   let currentTime = this.flashTabList[this.flashTabIndex].at_diff
-      //   if (currentTime == null || !this.flashIsShow) {
-      //     return
-      //   }
-      //   if (currentTime < 0) {
-      //     currentTime = 0
-      //   }
-      //   this.flashCountDownTimes = countDownHandle(currentTime)
-      //   this._clearFlashTimer()
-      //   this._countDownTimeout(currentTime)
-      //   // this.flashCountDownTimer && clearInterval(this.flashCountDownTimer)
-      //   // this.flashCountDownTimer = setInterval(() => {
-      //   //   currentTime--
-      //   //   this.flashCountDownTimes = countDownHandle(currentTime)
-      //   //   if (!this.flashCountDownTimes || !this.flashCountDownTimes.differ || this.flashCountDownTimes.differ <= 0) {
-      //   //     clearInterval(this.flashCountDownTimer)
-      //   //     this._getTabList()
-      //   //   }
-      //   // }, 1000)
-      // },
-      // _countDownTimeout(currentTime) {
-      //   ald.globalData.$flashCountDownTimer = setTimeout(() => {
-      //     console.log(currentTime)
-      //     currentTime--
-      //     this.flashCountDownTimes = countDownHandle(currentTime)
-      //     if (!this.flashCountDownTimes || !this.flashCountDownTimes.differ || this.flashCountDownTimes.differ <= 0) {
-      //       this._clearFlashTimer()
-      //       this._getTabList()
-      //     } else {
-      //       this._countDownTimeout(currentTime)
-      //     }
-      //   }, 1000)
-      // },
-      // _clearFlashTimer() {
-      //   clearInterval(ald.globalData.$flashCountDownTimer)
-      //   clearTimeout(ald.globalData.$flashCountDownTimer)
-      // },
-      // 初始化页面参数
       _initPageParams(options = {}) {
         if (options.scene) {
           // let scene = decodeURIComponent(options.scene)
