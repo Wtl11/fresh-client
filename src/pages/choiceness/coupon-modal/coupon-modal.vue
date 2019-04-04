@@ -123,11 +123,14 @@
     background-color: rgba(17, 17, 17, 0.8)
     fill-box(fixed)
     z-index: 100
+    display :flex
+    justify-content :center
+    align-items :center
     .content
       position: relative
       width: 71.33333333333334vw
       height :102.26666666666667vw
-      margin :39.6vw auto 0
+      margin-top :-15%
       &.one
         height :86.26666666666667vw
       .wrapper
