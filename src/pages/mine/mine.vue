@@ -355,6 +355,8 @@
             font-size: 14px
             color: #808080
             padding :0 6px
+            position :relative
+            bottom :1px
           .item-arrow-img
             display: block
             width: 7.5px
