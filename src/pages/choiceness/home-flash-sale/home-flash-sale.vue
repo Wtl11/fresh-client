@@ -26,7 +26,7 @@
         <div
           v-for="(child, idx) in flashArray"
           class="bottom-item-wrapper"
-          :class="flashArray.length> 4 && idx === flashArray.length -1?'item-r-0':''"
+          :class="flashArray.length> 4 && idx === flashArray.length -1?'':'item-r-2vw'"
           :key="idx"
           :id="'child'+idx"
         >
@@ -177,9 +177,9 @@
           &.item-r-2vw
             padding-right :2.2133333333333334vw
           &.item-r-0
-            padding-right :0
+            padding-right :2.2133333333333334vw
           .look-more
-            padding-left :2.2133333333333334vw
+            padding-left :0
             .look-wrapper
               width :14.666666666666666vw
               height :100%
@@ -220,7 +220,7 @@
             padding-top :1.0666666666666667vw
             font-family: DINAlternate-Bold
             font-size: 3.4666666666666663vw
-            color: #1D2023
+            color: rgba(29,32,35,0.8)
             .dot
               position :relative
               bottom :0.26666666666666666vw

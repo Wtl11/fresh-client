@@ -45,7 +45,7 @@
       <li class="button-item" v-for="(item, index) in BUTTON_GROUP" :key="index">
         <article class="item-wrapper" @click="navHandle(item)">
           <div class="item-text">{{item.isArray ? item.text[isLeader?1:0]: item.text}}</div>
-          <p v-if="item.type === 'coupon'" class="right-number">{{couponNumber}}张</p>
+          <p v-if="item.type === 'coupon' && couponNumber > 0" class="right-number">{{couponNumber}}张</p>
           <div class="item-arrow-img">
             <img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="img">
           </div>

@@ -120,7 +120,7 @@
     z-index :3
 
   .coupon-modal
-    background-color: rgba(17, 17, 17, 0.8)
+    background-color: rgba(17, 17, 17, 0.7)
     fill-box(fixed)
     z-index: 999
     display :flex
