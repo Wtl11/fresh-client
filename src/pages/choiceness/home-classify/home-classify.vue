@@ -5,6 +5,7 @@
       :tabList="tabList"
       :viewToItem="viewToItem"
       :tabIndex="tabIndex"
+      :scroll-left="relativeLeft"
       @changeTab="changeTabHandle"
     ></classify-tab>
     <div class="classify-wrapper">
@@ -19,6 +20,7 @@
       :tabList="tabList"
       :viewToItem="viewToItem"
       :tabIndex="tabIndex"
+      :scroll-left="fixLeft"
       @changeTab="changeTabHandle"
     ></classify-tab>
     <is-end v-if="!hasMore && !isShowEmpty"></is-end>
