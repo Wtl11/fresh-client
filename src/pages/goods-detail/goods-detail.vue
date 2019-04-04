@@ -542,7 +542,7 @@
               el: '.share-bottom > .wem-img',
               drawType: 'img',
               source: this.shareImg,
-              unLoad: !qrCodeIsBase64
+              unLoad: /tmp/i.test(this.shareImg)
               // source: qrCode
             }
           ]

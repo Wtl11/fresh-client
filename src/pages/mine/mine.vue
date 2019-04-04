@@ -45,7 +45,7 @@
       <li class="button-item" v-for="(item, index) in BUTTON_GROUP" :key="index">
         <article class="item-wrapper" @click="navHandle(item)">
           <div class="item-text">{{item.isArray ? item.text[isLeader?1:0]: item.text}}</div>
-          <p v-if="item.type === 'coupon'" class="right-number">{{couponNumber}}</p>
+          <p v-if="item.type === 'coupon'" class="right-number">{{couponNumber}}张</p>
           <div class="item-arrow-img">
             <img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="img">
           </div>
@@ -303,7 +303,6 @@
       // 获取头部数量
       _getCouponNumber() {
         API.Coupon.getClientListNumber('', false).then(res => {
-          console.log(res)
           this.couponNumber = res.data.can_used_count
         })
       }
@@ -352,8 +351,10 @@
           .item-text
             flex: 1
           .right-number
-            font-size: 16px
-            padding :0 5px
+            font-family: $font-family-regular
+            font-size: 14px
+            color: #808080
+            padding :0 6px
           .item-arrow-img
             display: block
             width: 7.5px
