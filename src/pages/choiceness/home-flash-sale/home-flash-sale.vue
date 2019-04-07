@@ -1,6 +1,6 @@
 <template>
   <div v-if="isShow" class="home-flash-sale" id="homeFlashSale">
-    <section class="top-wrapper">
+    <section v-if="tabList.length" class="top-wrapper">
       <div class="inner-wrapper">
         <div class="left-wrapper">
           <figure class="button" @click="navHandle">
@@ -17,7 +17,7 @@
         </ul>
       </div>
     </section>
-    <section class="scroll-wrapper">
+    <section v-if="tabList.length" class="scroll-wrapper">
       <scroll-view
         class="bottom-wrapper"
         scroll-x

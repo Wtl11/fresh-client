@@ -1,7 +1,7 @@
 <template>
   <div v-if="isShow" class="home-classify">
     <section class="tab-wrapper">
-      <div class="place-holder"></div>
+      <div v-if="tabList.length" class="place-holder"></div>
       <classify-tab
         id="scrollView-relative"
         :styles="styles"

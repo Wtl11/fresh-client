@@ -33,7 +33,7 @@ export default {
         this.flashIsShow = false
         return
       }
-      if (!this.flashTabList[this.flashTabIndex]) return
+      if (!this.flashTabList || !this.flashTabList[this.flashTabIndex]) return
       let data = {
         activity_id: this.flashTabList[this.flashTabIndex].id || 0
       }
