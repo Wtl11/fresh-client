@@ -10,6 +10,7 @@ export default {
     onReachBottomDistance: 100,
     backgroundColorBottom: '#F7F7F7',
     backgroundColorTop: '#AECD00',
-    enablePullDownRefresh: true
+    enablePullDownRefresh: true,
+    usingComponents: {}
   }
 }
