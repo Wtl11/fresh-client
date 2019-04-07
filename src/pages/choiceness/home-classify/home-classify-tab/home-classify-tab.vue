@@ -17,8 +17,8 @@
       @click="changeTabHandle(index, item.id, $event)"
     >
       <figure class="icon">
-        <img class="icon-img" mode="aspectFill" v-if="item.image_url" :src="item.image_url">
-        <img class="icon-img" mode="aspectFill" v-else-if="imageUrl && index === 0" :src="imageUrl + '/yx-image/2.1/icon-all@2x.png'">
+        <img class="img" mode="aspectFill" v-if="item.image_url" :src="item.image_url">
+        <img class="img" mode="aspectFill" v-else-if="imageUrl && index === 0" :src="imageUrl + '/yx-image/2.1/icon-all@2x.png'">
       </figure>
       <p class="text"><span class="name">{{item.name}}</span><span class="t-name" :class="tabIndex === index ? 'active'  : ''">{{item.name}}</span></p>
       <div
@@ -137,11 +137,7 @@
         width :44px
         height :@width
         position :relative
-        .icon-img
-          all-center()
-          width :52px
-          height:@width
-          display: block
+
       .text
         flex: 1
         font-family: $font-family-regular
