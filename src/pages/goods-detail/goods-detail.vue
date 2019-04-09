@@ -176,7 +176,7 @@
     ACTION: 1,
     DOWN: 2
   }
-  const BTN_TEXT = {
+  const BTN_TEXT_CONSTANT = {
     [BTN_STATUS.WILL]: '即将开抢',
     [BTN_STATUS.ACTION]: '',
     [BTN_STATUS.DOWN]: '已结束',
@@ -235,7 +235,7 @@
         if (key == null) {
           key = BTN_STATUS.DOWN
         }
-        return BTN_TEXT[key]
+        return BTN_TEXT_CONSTANT[key]
       },
       isShowTwoButton() {
         let flag = null

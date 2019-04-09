@@ -4,7 +4,7 @@
             next-margin="17.5px" circular @change="_setPraiseIndex">
       <block v-for="(item,index) in bigItem.content_data.list" :key="index">
         <swiper-item class="banner-item" :class="{'current-banner-active': praiseIndex === index}">
-          <img class="item-img" mode="aspectFill" v-if="item.image_url" :src="item.image_url"
+          <img class="item-img" lazy-load mode="aspectFill" v-if="item.image_url" :src="item.image_url"
                @click="jumpDetail(item)">
         </swiper-item>
       </block>

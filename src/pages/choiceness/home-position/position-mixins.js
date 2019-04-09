@@ -17,7 +17,7 @@ export default {
   },
   onShow() {
     this._refreshLocation()
-    this.getLocationData()
+    // this.getLocationData()
     this._getBuyUsers()
   },
   onHide() {
@@ -44,7 +44,7 @@ export default {
             wx.setStorageSync('locationData', res)
             wx.setStorageSync('locationShow', 1)
             that.locationStatus = 1
-            that.getLocationData()
+            // that.getLocationData()
           },
           fail(res) {
             wx.setStorageSync('locationShow', 3)
@@ -64,7 +64,7 @@ export default {
         })
       }
       if (this.locationStatus * 1 === 1) {
-        this.getLocationData()
+        // this.getLocationData()
       }
     },
     // 获取地理位置

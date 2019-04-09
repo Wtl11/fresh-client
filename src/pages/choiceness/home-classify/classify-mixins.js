@@ -16,10 +16,12 @@ export default {
       classifyIsShow: undefined,
       classifyShowEmpty: undefined,
       navigationBar: 0,
-      classifyTabScrolling: false
+      classifyTabScrolling: false,
+      isLoading: false
     }
   },
   onReachBottom() {
+    if (this.isLoading) return
     this.classifyPage++
     this._getClassifyList()
   },
@@ -94,7 +96,9 @@ export default {
           goods_category_id: current.id || 0,
           page: this.classifyPage
         }
+        this.isLoading = true
         let res = await API.FlashSale.getClassifyList(data, loading)
+        this.isLoading = false
         if (res.meta.current_page === 1) {
           this.classifyArray = res.data
           this.classifyShowEmpty = res.meta.total === 0
@@ -103,6 +107,7 @@ export default {
         }
         this.classifyMore = res.meta.current_page < res.meta.last_page
       } catch (e) {
+        this.isLoading = false
         console.error(e)
       }
     },
@@ -139,6 +144,8 @@ export default {
       let number = index
       if (index < lastIndex) {
         number = index - 2 >= 0 ? index - 2 : 0
+      } else {
+        number = index < 3 ? 0 : index - 2
       }
       return number
     }

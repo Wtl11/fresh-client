@@ -33,7 +33,7 @@
         <block v-for="(item, index) in buyUsers" :key="index">
           <swiper-item class="content-wrapper">
             <figure class="avatar-wrapper">
-              <img v-if="item.head_image_url" :src="item.head_image_url" alt="" class="img">
+              <img v-if="item.head_image_url" lazy-load :src="item.head_image_url" alt="" class="img">
             </figure>
             <div class="text">买了{{item.goods_name}}</div>
           </swiper-item>

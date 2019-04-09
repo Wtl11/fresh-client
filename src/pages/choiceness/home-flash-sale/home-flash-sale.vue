@@ -4,7 +4,7 @@
       <div class="inner-wrapper">
         <div class="left-wrapper">
           <figure class="button" @click="navHandle">
-            <img class="img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.1/icon-pressed_xsqg@2x.png'">
+            <img lazy-load class="img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.1/icon-pressed_xsqg@2x.png'">
           </figure>
           <p class="time">{{countDownTimes.hour}}<span class="dot">:</span>{{countDownTimes.minute}}<span class="dot">:</span>{{countDownTimes.second}}</p>
         </div>
@@ -35,7 +35,7 @@
             <div class="look-wrapper" @click="navHandle">
               <div class="text">查看更多</div>
               <figure class="more-icon">
-                <img class="img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.1/icon-pressed_gd@2x.png'">
+                <img class="img" lazy-load mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.1/icon-pressed_gd@2x.png'">
               </figure>
             </div>
           </section>

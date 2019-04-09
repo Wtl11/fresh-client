@@ -230,6 +230,7 @@
     min-height: 180vh
     background: #fff
     overflow-x: hidden
+    -webkit-overflow-scrolling: touch
 
   .empty
     height :15px

@@ -3,12 +3,14 @@
     <figure class="goods-wrapper">
       <img
         class="img-goods"
+        lazy-load
         mode="aspectFill"
         v-if="dataInfo.goods_cover_image"
         :src="dataInfo.goods_cover_image">
       <div class="img-label">
         <img
           class="img"
+          lazy-load
           mode="aspectFit"
           v-if="imageUrl"
           :src="imageUrl + '/yx-image/2.1/icon-qiang@2x.png'"

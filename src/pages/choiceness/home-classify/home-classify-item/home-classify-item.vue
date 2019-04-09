@@ -1,10 +1,10 @@
 <template>
   <div class="home-classify-item" @click="jumpGoodsDetail(item)">
     <div class="goods-left">
-      <img class="goods-left-img" mode="aspectFill" v-if="item.goods_cover_image" :src="item.goods_cover_image">
-      <img class="goods-left-icon" mode="aspectFill" v-if="imageUrl && corpName === 'platform'"
+      <img class="goods-left-img" lazy-load mode="aspectFill" v-if="item.goods_cover_image" :src="item.goods_cover_image">
+      <img class="goods-left-icon" lazy-load mode="aspectFill" v-if="imageUrl && corpName === 'platform'"
            :src="imageUrl + '/yx-image/choiceness/icon-label@2x.png'">
-      <img class="goods-left-icon" mode="aspectFill" v-if="imageUrl && corpName === 'retuan'"
+      <img class="goods-left-icon" lazy-load mode="aspectFill" v-if="imageUrl && corpName === 'retuan'"
            :src="imageUrl + '/yx-image/retuan/icon-label@2x.png'">
     </div>
     <div class="goods-right">
@@ -19,9 +19,9 @@
         <div class="add-box-left">
           <section class="left">
             <!--<div class="text-group" :class="'corp-' + corpName + '-money'">团购价</div>-->
-            <img class="text-group-img" mode="aspectFill" v-if="imageUrl && corpName === 'platform'"
+            <img class="text-group-img" mode="aspectFill" lazy-load v-if="imageUrl && corpName === 'platform'"
                  :src="imageUrl + '/yx-image/choiceness/pic-price_bg@2x.png'">
-            <img class="text-group-img" mode="aspectFill" v-if="imageUrl && corpName === 'retuan'"
+            <img class="text-group-img" mode="aspectFill" lazy-load v-if="imageUrl && corpName === 'retuan'"
                  :src="imageUrl + '/yx-image/retuan/pic-price_rtbg@2x.png'">
           </section>
           <div class="price-box">
