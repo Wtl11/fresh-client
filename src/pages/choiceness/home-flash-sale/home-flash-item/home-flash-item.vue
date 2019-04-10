@@ -115,6 +115,7 @@
       width :$flash-width
       height :$flash-width
       position :relative
+      -webkit-overflow-scrolling: touch
       .img-goods
         width :100%
         height :@width

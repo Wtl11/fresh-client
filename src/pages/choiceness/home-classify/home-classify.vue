@@ -27,6 +27,7 @@
     <!--&gt;</classify-tab>-->
     <is-end v-if="!hasMore && !isShowEmpty"></is-end>
     <is-active-empty v-if="isShowEmpty"></is-active-empty>
+    <loading-more v-if="isShowLoadingMore"></loading-more>
   </div>
 </template>
 
@@ -36,6 +37,7 @@
   import ClassifyTab from './home-classify-tab/home-classify-tab'
   import IsEnd from '@components/is-end/is-end'
   import isActiveEmpty from '@components/is-active-empty/is-active-empty'
+  import LoadingMore from '@components/loading-more/loading-more'
 
   const COMPONENT_NAME = 'HOME_CLASSIFY'
 
@@ -45,7 +47,8 @@
       ClassifyItem,
       ClassifyTab,
       IsEnd,
-      isActiveEmpty
+      isActiveEmpty,
+      LoadingMore
     },
     props: {
       isShow: {
@@ -81,6 +84,10 @@
         default: true
       },
       isShowEmpty: {
+        type: Boolean,
+        default: false
+      },
+      isShowLoadingMore: {
         type: Boolean,
         default: false
       }

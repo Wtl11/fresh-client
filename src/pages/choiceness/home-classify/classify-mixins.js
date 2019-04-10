@@ -98,14 +98,15 @@ export default {
         }
         this.isLoading = true
         let res = await API.FlashSale.getClassifyList(data, loading)
-        this.isLoading = false
         if (res.meta.current_page === 1) {
           this.classifyArray = res.data
           this.classifyShowEmpty = res.meta.total === 0
         } else {
-          this.classifyArray = this.classifyArray.concat(res.data)
+          const arr = this.classifyArray.concat(res.data)
+          this.classifyArray = arr
         }
         this.classifyMore = res.meta.current_page < res.meta.last_page
+        this.isLoading = false
       } catch (e) {
         this.isLoading = false
         console.error(e)

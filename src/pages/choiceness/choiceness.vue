@@ -1,5 +1,5 @@
 <template>
-  <div class="choiceness">
+  <scroll-view class="choiceness">
     <navigation-bar ref="navigationBar" :title="title" :showArrow="false" :titleMaxLen="12"></navigation-bar>
     <home-position
       :buyUsers="buyUsers"
@@ -35,11 +35,12 @@
       :isShowTab="classifyTabIsShow"
       :hasMore="classifyMore"
       :isShowEmpty="classifyShowEmpty"
+      :isShowLoadingMore="isLoading"
       @changeTab="classifyChangeTab"
     ></home-classify>
     <custom-tab-bar currentType="index"></custom-tab-bar>
     <coupon-modal ref="couponModal"></coupon-modal>
-  </div>
+  </scroll-view>
 </template>
 
 <script type="text/ecmascript-6">
