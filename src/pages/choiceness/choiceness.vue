@@ -60,7 +60,11 @@
   import ClassifyTab from './home-classify/home-classify-tab/home-classify-tab'
   import HomeFlashSale from './home-flash-sale/home-flash-sale'
   import FlashSale from './home-flash-sale/flash-sale-mixins'
-
+  // /* eslint-disable */
+  // const io = new IntersectionObserver(()=>{ //实例化 默认基于当前视窗
+  //
+  // })
+  // console.warn(io)
   const ald = getApp()
   const PAGE_NAME = 'CHOICENESS'
   const PAGE_CONFIG = {
@@ -104,7 +108,8 @@
         title: '赞播优鲜',
         curShopId: '',
         modulesList: [],
-        systemInfo: {}
+        systemInfo: {},
+        pageScrollEvent: {}
       }
     },
     onLoad(options) {
@@ -113,8 +118,13 @@
       this._initPageParams(options)
     },
     onPageScroll(e) {
-      let title = e.scrollTop < this.navigationBar ? '赞播优鲜' : '赞播优鲜·' + (this.groupInfo.social_name || '')
-      this.$refs.navigationBar && this.$refs.navigationBar.setTranslucentTitle(title)
+      this.pageScrollEvent = e
+    },
+    watch: {
+      pageScrollEvent(e) {
+        let title = e.scrollTop < this.navigationBar ? '赞播优鲜' : '赞播优鲜·' + (this.groupInfo.social_name || '')
+        this.$refs.navigationBar && this.$refs.navigationBar.setTranslucentTitle(title)
+      }
     },
     async onShow() {
       try {
@@ -148,6 +158,9 @@
     },
     async onPullDownRefresh() {
       this._resetGetClassifyListParams()
+      this._refreshLocation()
+      this._getCouponModalList()
+      this._getBuyUsers()
       try {
         await this._getModuleInfo(false)
         // 获取tab高度

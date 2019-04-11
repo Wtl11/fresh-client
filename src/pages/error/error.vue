@@ -29,6 +29,10 @@
     },
     methods: {
       _refresh() {
+        if (!getApp().globalData.isConnected) {
+          this.$wechat.showToast('请检查您的网络')
+          return
+        }
         if (this.isTab) {
           wx.redirectTo({url: '/' + this.targetPage})
           return

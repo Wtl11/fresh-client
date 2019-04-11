@@ -32,7 +32,15 @@ const AppPlugin = {
 // 使用插件
 Vue.use(AppPlugin)
 wx.onNetworkStatusChange(function (res) {
-  console.error(res.isConnected, '是否有网络连接')
+  // console.error(res.isConnected, typeof res.isConnected, '是否有网络连接')
+  getApp().globalData.isConnected = res.isConnected
+  if (!res.isConnected) {
+    const options = wx.getLaunchOptionsSync()
+    if (options.path === '/pages/error') {
+      return
+    }
+    wx.redirectTo({url: '/pages/error'})
+  }
   console.error(res.networkType)
 })
 wx.onMemoryWarning(function (res) {

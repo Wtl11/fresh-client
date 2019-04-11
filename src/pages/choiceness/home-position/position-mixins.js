@@ -17,7 +17,6 @@ export default {
   },
   onShow() {
     this._refreshLocation()
-    // this.getLocationData()
     this._getBuyUsers()
   },
   onHide() {

@@ -3,18 +3,18 @@ import {jwtComputed} from '@state/helpers'
 
 export default {
   onShow() {
-    this._getList()
+    this._getCouponModalList()
   },
   computed: {
     ...jwtComputed
   },
   watch: {
     userInfo(val = {}) {
-      this._getList(val.id)
+      this._getCouponModalList(val.id)
     }
   },
   methods: {
-    _getList(id) {
+    _getCouponModalList(id) {
       if (!wx.getStorageSync('token')) return
       let customerId = id || (wx.getStorageSync('userInfo') || {}).id || 0
       API.Coupon.getModalList({customer_id: customerId}).then(res => {

@@ -25,23 +25,45 @@ export default {
     this.classifyPage++
     this._getClassifyList()
   },
-  onPageScroll(e) {
-    if (this.classifyTabScrolling) return
-    const currentScrollTop = e.scrollTop + this.navigationBar
-    const t10 = this.classifyScrollHeight + this.classifyTabPosition
-    const t15 = this.classifyScrollHeight + this.classifyTabPosition * 1.1
-    const t20 = this.classifyScrollHeight + this.classifyTabPosition * 1.5
-    if (currentScrollTop < t10) {
-      this.classifyStyles = ''
-    }
-    if (currentScrollTop > t10 && currentScrollTop < t15) {
-      this._setClassifyStyles(0, 1, 0)
-    }
-    if (currentScrollTop >= t15 && currentScrollTop <= t20) {
-      this._setClassifyStyles(0, 1)
-    }
-    if (currentScrollTop > t20) {
-      this._setClassifyStyles(this.classifyTabPosition, 1)
+  // onPageScroll(e) {
+  //   this.pageScrollEvent = e
+  //   // if (this.classifyTabScrolling) return
+  //   // const currentScrollTop = e.scrollTop + this.navigationBar
+  //   // const t10 = this.classifyScrollHeight + this.classifyTabPosition
+  //   // const t15 = this.classifyScrollHeight + this.classifyTabPosition * 1.1
+  //   // const t20 = this.classifyScrollHeight + this.classifyTabPosition * 1.5
+  //   // if (currentScrollTop < t10) {
+  //   //   this.classifyStyles = ''
+  //   // }
+  //   // if (currentScrollTop > t10 && currentScrollTop < t15) {
+  //   //   this._setClassifyStyles(0, 1, 0)
+  //   // }
+  //   // if (currentScrollTop >= t15 && currentScrollTop <= t20) {
+  //   //   this._setClassifyStyles(0, 1)
+  //   // }
+  //   // if (currentScrollTop > t20) {
+  //   //   this._setClassifyStyles(this.classifyTabPosition, 1)
+  //   // }
+  // },
+  watch: {
+    pageScrollEvent(e) {
+      if (this.classifyTabScrolling) return
+      const currentScrollTop = e.scrollTop + this.navigationBar
+      const t10 = this.classifyScrollHeight + this.classifyTabPosition
+      const t15 = this.classifyScrollHeight + this.classifyTabPosition * 1.1
+      const t20 = this.classifyScrollHeight + this.classifyTabPosition * 1.5
+      if (currentScrollTop < t10) {
+        this.classifyStyles = ''
+      }
+      if (currentScrollTop > t10 && currentScrollTop < t15) {
+        this._setClassifyStyles(0, 1, 0)
+      }
+      if (currentScrollTop >= t15 && currentScrollTop <= t20) {
+        this._setClassifyStyles(0, 1)
+      }
+      if (currentScrollTop > t20) {
+        this._setClassifyStyles(this.classifyTabPosition, 1)
+      }
     }
   },
   methods: {
@@ -102,11 +124,16 @@ export default {
           this.classifyArray = res.data
           this.classifyShowEmpty = res.meta.total === 0
         } else {
-          const arr = this.classifyArray.concat(res.data)
-          this.classifyArray = arr
+          res.data.forEach((item) => {
+            this.classifyArray.push(item)
+          })
+          // const arr = this.classifyArray.concat(res.data)
+          // this.classifyArray = arr
         }
         this.classifyMore = res.meta.current_page < res.meta.last_page
-        this.isLoading = false
+        wx.nextTick(() => {
+          this.isLoading = false
+        })
       } catch (e) {
         this.isLoading = false
         console.error(e)
@@ -116,6 +143,7 @@ export default {
     _resetGetClassifyListParams() {
       this.classifyPage = 1
       this.classifyMore = true
+      this.isLoading = false // loading-more
     },
     // tab切换
     classifyChangeTab(index, id, e) {
