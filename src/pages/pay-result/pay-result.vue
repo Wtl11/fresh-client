@@ -10,7 +10,7 @@
       <div class="result-text-box">{{allReady ? '订单支付成功' : '支付中···'}}</div>
     </div>
     <div class="jump-btn-box lost">
-      <button class="jump-goods" :class="[allReady ? '' : 'jump-goods-show', 'corp-' + corpName + '-bg']" open-type="share"  formType="submit" >提醒团长接单</button>
+      <button v-if="payType !== 'offline'" class="jump-goods" :class="[allReady ? '' : 'jump-goods-show', 'corp-' + corpName + '-bg']" open-type="share"  formType="submit" >提醒团长接单</button>
       <form action="" report-submit @submit="$getFormId">
         <button class="jump-goods jump-order" formType="submit"  @click="jumpGoods">继续购物</button>
       </form>
@@ -28,7 +28,8 @@
     data() {
       return {
         allReady: false,
-        orderId: ''
+        orderId: '',
+        payType: ''
       }
     },
     components: {
@@ -37,6 +38,7 @@
     onLoad(e) {
       ald.aldstat.sendEvent('支付成功页')
       this.orderId = e.orderId
+      this.payType = e.payType
       this.$sendMsg({
         event_no: 1006,
         total: e.total

@@ -55,6 +55,7 @@
   import ActiveEnd from './active-end/active-end'
   import API from '@api'
   import {resolveQueryScene} from '@utils/common'
+  import {orderMethods} from '@state/helpers'
 
   const PAGE_NAME = 'RECOMMEND'
 
@@ -106,6 +107,7 @@
       this._getDetail(false)
     },
     methods: {
+      ...orderMethods,
       buyHandle(item, e) {
         this.dataInfo = item
         if (this.isAuthor) {
@@ -126,46 +128,60 @@
           console.error(e, '获取参数异常')
         }
       },
-      // 支付
       _pay(item) {
-        item.marketId = this.marketId
-        API.Market.createOrder(item).then((res) => {
-          if (res.error !== this.$ERR_OK) {
-            this.$wechat.hideLoading()
-            this.$wechat.showToast(res.message)
-            return
-          }
-          let orderId = res.data.order_id
-          let self = this
-          let {timestamp, nonceStr, signType, paySign} = res.data
-          wx.requestPayment({
-            timeStamp: timestamp,
-            nonceStr,
-            package: res.data.package,
-            signType,
-            paySign,
-            success (res) {
-              // self._ref('pay', 'show')
-              self.payIndex = self.dataArray.findIndex(val => val.goods_sku_id === item.goods_sku_id)
-            },
-            fail (res) {
-              self._closeOrder(orderId)
-              console.error(res, '支付失败!')
-            },
-            complete() {
-              // self._getDetail(false)
-              self.$wechat.hideLoading()
-            }
-          })
-        })
+        let orderInfo = {
+          goodsList: [{
+            ...item,
+            activity_id: this.marketId,
+            num: 1,
+            cart_id: 0
+          }],
+          total: item.trade_price
+        }
+        this.setOrderInfo(orderInfo)
+        const url = `/pages/recommend-pay`
+        wx.navigateTo({url})
       },
-      _closeOrder(orderId) {
-        API.Market.closeOrder({orderId}, false).then((res) => {
-          if (res.error !== this.$ERR_OK) {
-            console.error(res, '关闭订单失败!')
-          }
-        })
-      },
+      // // 支付
+      // _pay(item) {
+      //   item.marketId = this.marketId
+      //   API.Market.createOrder(item).then((res) => {
+      //     if (res.error !== this.$ERR_OK) {
+      //       this.$wechat.hideLoading()
+      //       this.$wechat.showToast(res.message)
+      //       return
+      //     }
+      //     let orderId = res.data.order_id
+      //     let self = this
+      //     let {timestamp, nonceStr, signType, paySign} = res.data
+      //     wx.requestPayment({
+      //       timeStamp: timestamp,
+      //       nonceStr,
+      //       package: res.data.package,
+      //       signType,
+      //       paySign,
+      //       success (res) {
+      //         // self._ref('pay', 'show')
+      //         self.payIndex = self.dataArray.findIndex(val => val.goods_sku_id === item.goods_sku_id)
+      //       },
+      //       fail (res) {
+      //         self._closeOrder(orderId)
+      //         console.error(res, '支付失败!')
+      //       },
+      //       complete() {
+      //         // self._getDetail(false)
+      //         self.$wechat.hideLoading()
+      //       }
+      //     })
+      //   })
+      // },
+      // _closeOrder(orderId) {
+      //   API.Market.closeOrder({orderId}, false).then((res) => {
+      //     if (res.error !== this.$ERR_OK) {
+      //       console.error(res, '关闭订单失败!')
+      //     }
+      //   })
+      // },
       // 获取活动详情
       _getDetail(loading) {
         API.Market.getDetail(this, loading).then((res) => {
@@ -206,6 +222,7 @@
           this.marketId = marketId || +options.marketId
           shopId = shopId || +options.shopId
           shopId && wx.setStorageSync('shopId', shopId)
+          console.log(marketId, shopId)
         } catch (e) {
           console.error(e, '获取活动ID失败!')
         }

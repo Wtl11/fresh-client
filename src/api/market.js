@@ -7,20 +7,20 @@ export default {
     return request.get(url, data, loading)
   },
   createOrder(data, loading) {
-    const userInfo = wx.getStorageSync('userInfo') || {}
-    data = {
-      goods: [
-        {
-          goods_sku_id: data.goods_sku_id,
-          activity_id: data.marketId,
-          num: 1,
-          cart_id: 0
-        }
-      ],
-      nickname: userInfo.nickname || '',
-      mobile: userInfo.mobile || '',
-      source: 'c_offline'
-    }
+    // const userInfo = wx.getStorageSync('userInfo') || {}
+    // data = {
+    //   goods: [
+    //     {
+    //       goods_sku_id: data.goods_sku_id,
+    //       activity_id: data.marketId,
+    //       num: 1,
+    //       cart_id: 0
+    //     }
+    //   ],
+    //   nickname: userInfo.nickname || '',
+    //   mobile: userInfo.mobile || '',
+    //   source: 'c_offline'
+    // }
     let url = '/api/wap/create-order'
     return request.post(url, data, loading)
   },
