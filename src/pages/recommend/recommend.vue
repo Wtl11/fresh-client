@@ -222,7 +222,7 @@
           this.marketId = marketId || +options.marketId
           shopId = shopId || +options.shopId
           shopId && wx.setStorageSync('shopId', shopId)
-          console.log(marketId, shopId)
+          console.warn(marketId, shopId)
         } catch (e) {
           console.error(e, '获取活动ID失败!')
         }
