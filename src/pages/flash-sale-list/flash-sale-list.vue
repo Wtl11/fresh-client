@@ -51,6 +51,7 @@
   import ClassifyItem from './classify-item/classify-item'
   import {countDownHandle} from '@utils/common'
   import API from '@api'
+  import ShareHandler from '@mixins/share-handler'
 
   const PAGE_NAME = 'FLASH_SALE_LIST'
   const SHARE_IMG = {
@@ -66,6 +67,7 @@
 
   export default {
     name: PAGE_NAME,
+    mixins: [ShareHandler],
     components: {
       NavigationBar,
       ClassifyItem
@@ -107,6 +109,7 @@
       await this._getPageParams()
       this._resetListParams()
       this._getTabList(this.id)
+      this.shareHandler()
     },
     onReachBottom() {
       this.page++
@@ -122,10 +125,11 @@
       this.sharing = true
       const status = this.currentObj.status
       const shopId = wx.getStorageSync('shopId')
+      const flag = Date.now()
       console.warn(`/pages/flash-sale-list?id=${this.currentObj.id}&shopId=${shopId}`)
       return {
         title: (this.currentObj.activity_name || '') + '，' + SHARE_IMG[status].title,
-        path: `/pages/flash-sale-list?id=${this.currentObj.id}&shopId=${shopId}`,
+        path: `/pages/flash-sale-list?id=${this.currentObj.id}&shopId=${shopId}&flag=${flag}`,
         imageUrl: this.imageUrl + SHARE_IMG[status].img
       }
     },

@@ -20,6 +20,7 @@
 
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
+
   const ald = getApp()
   const PAGE_NAME = 'PAY_RESULT'
 
@@ -51,10 +52,11 @@
     onShareAppMessage() {
       let shopId = wx.getStorageSync('shopId')
       let userInfo = wx.getStorageSync('userInfo').nickname
+      const flag = Date.now()
       console.log(`/pages/share-order?id=${this.orderId}&shopId=${shopId}`)
       return {
         title: `团长，我是“${userInfo}”，刚在店里买了商品↓，请接单！`,
-        path: `/pages/share-order?id=${this.orderId}&shopId=${shopId}`,
+        path: `/pages/share-order?id=${this.orderId}&shopId=${shopId}&flag=${flag}`,
         imageUrl: `${this.imageUrl}/yx-image/order/pic-share_order@2x.png`,
         success: (res) => {
           // 转发成功

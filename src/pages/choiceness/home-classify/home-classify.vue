@@ -25,8 +25,8 @@
       <!--:tabIndex="tabIndex"-->
       <!--@changeTab="changeTabHandle"-->
     <!--&gt;</classify-tab>-->
-    <loading-more v-if="isShowLoadingMore"></loading-more>
     <is-end v-if="!hasMore && !isShowEmpty"></is-end>
+    <loading-more v-else-if="!isShowEmpty"></loading-more>
     <is-active-empty v-if="isShowEmpty"></is-active-empty>
   </div>
 </template>

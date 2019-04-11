@@ -35,10 +35,11 @@
       let shopId = wx.getStorageSync('leaderId')
       let packetId = this.$mp.query.packetId
       let couponName = this.couponInfo.coupon.coupon_name || ''
+      const flag = Date.now()
       console.warn(shopId, packetId, '=======团长分享')
       return {
         title: `【赞播优鲜】送你一张${couponName}优惠券，赶快来领取吧！`,
-        path: `/pages/coupon-take?shopId=${shopId}&packetId=${packetId}`,
+        path: `/pages/coupon-take?shopId=${shopId}&packetId=${packetId}&flag=${flag}`,
         imageUrl: `${this.imageUrl}/yx-image/2.1/pic-getcoupon@2x.png`
       }
     },

@@ -57,14 +57,10 @@
   import Banner from './home-banner/banner-mixins'
   import HomeClassify from './home-classify/home-classify'
   import Classify from './home-classify/classify-mixins'
-  import ClassifyTab from './home-classify/home-classify-tab/home-classify-tab'
   import HomeFlashSale from './home-flash-sale/home-flash-sale'
   import FlashSale from './home-flash-sale/flash-sale-mixins'
-  // /* eslint-disable */
-  // const io = new IntersectionObserver(()=>{ //实例化 默认基于当前视窗
-  //
-  // })
-  // console.warn(io)
+  import ShareHandler from '@mixins/share-handler'
+
   const ald = getApp()
   const PAGE_NAME = 'CHOICENESS'
   const PAGE_CONFIG = {
@@ -91,7 +87,8 @@
       Position,
       Banner,
       Classify,
-      FlashSale
+      FlashSale,
+      ShareHandler
     ],
     components: {
       NavigationBar,
@@ -100,7 +97,6 @@
       HomePosition,
       HomeBanner,
       HomeClassify,
-      ClassifyTab,
       HomeFlashSale
     },
     data() {
@@ -120,9 +116,14 @@
     onPageScroll(e) {
       this.pageScrollEvent = e
     },
+    computed: {
+      socialName() {
+        return (this.groupInfo || {}).social_name || ''
+      }
+    },
     watch: {
       pageScrollEvent(e) {
-        let title = e.scrollTop < this.navigationBar ? '赞播优鲜' : '赞播优鲜·' + (this.groupInfo.social_name || '')
+        let title = e.scrollTop < this.navigationBar ? '赞播优鲜' : '赞播优鲜·' + this.socialName
         this.$refs.navigationBar && this.$refs.navigationBar.setTranslucentTitle(title)
       }
     },
@@ -154,6 +155,7 @@
         console.error(e)
       } finally {
         this.$wechat.hideLoading()
+        this.shareHandler()
       }
     },
     async onPullDownRefresh() {
@@ -185,9 +187,10 @@
           imgUrl = '/yx-image/choiceness/pic-zbyx@2x.png'
           break
       }
+      const flag = Date.now()
       return {
         title: `${this.groupInfo.social_name},次日达、直采直销，点击下单↓`,
-        path: `/pages/choiceness?shopId=${this.curShopId}`,
+        path: `/pages/choiceness?shopId=${this.curShopId}&flag=${flag}`,
         imageUrl: this.imageUrl + imgUrl,
         success: (res) => {
         },

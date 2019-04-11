@@ -68,9 +68,12 @@
 
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
+  import ShareHandler from '@mixins/share-handler'
+
   import API from '@api'
 
   export default {
+    mixins: [ShareHandler],
     data() {
       return {
         orderId: '',
@@ -88,6 +91,7 @@
     },
     onShow() {
       this.getShareOrderDate()
+      this.shareHandler()
     },
     methods: {
       jumpGoodsDetail(item) {

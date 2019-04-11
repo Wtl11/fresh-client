@@ -23,9 +23,13 @@ export default {
   },
   methods: {
     _getShopName() {
+      // 重置页面组件的data数据
+      if (!this.$mp) return
       this.shopName = corp.shopName
     },
     _saveCurrentPage() {
+      // 重置页面组件的data数据
+      if (!this.$mp) return
       let url = this.$getUrl()
       // 记录页面栈
       if (!url || url.includes('pages/lost') || url.includes('pages/error')) {
@@ -40,7 +44,7 @@ export default {
       if (!status) {
         let string = ''
         for (let value in query) {
-          string = `&${value}=${query[value]}`
+          string += `&${value}=${query[value]}`
         }
         url = string ? `${url}?${string.slice(1)}` : url
       }

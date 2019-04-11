@@ -29,6 +29,7 @@
       //  判断是否可以静默登录
     },
     async onShow(options) {
+      wx.setStorageSync('options', options)
       this.setScene(options)
       let storyShopId = baseURL.defaultId
       if (options.query.scene) {

@@ -2,7 +2,7 @@
   <div class="error lost">
     <navigation-bar :title="shopName" :showArrow="false"></navigation-bar>
     <div class="img-box">
-      <img :src="imageUrl + '/yx-image/group/pic-wifi@2x.png'" v-if="imageUrl" class="error-img">
+      <img src="/static/img/pic-wifi@2x.png" class="error-img">
       <p class="text">网络繁忙，稍后再试吧！</p>
     </div>
     <div class="btn" :class="'corp-' + corpName + '-bg'" @click="_refresh">刷新</div>

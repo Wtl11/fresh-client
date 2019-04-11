@@ -31,6 +31,7 @@
   import AuthorMixins from './author-mixins'
   import API from '@api'
   import CouponNavigator from '@mixins/coupon-navigator'
+  import ShareHandler from '@mixins/share-handler'
 
   const PAGE_NAME = 'COUPON_TAKE'
   const METHODS = {
@@ -52,7 +53,7 @@
       CouponCommonChannel,
       UserItem
     },
-    mixins: [AuthorMixins, CouponNavigator],
+    mixins: [AuthorMixins, CouponNavigator, ShareHandler],
     data() {
       return {
         pageConfig: {
@@ -88,6 +89,7 @@
       this._getTakeArray()
       this._getCouponInfo()
       this._getCouponStatus()
+      this.shareHandler()
     },
     onReachBottom() {
       this.page++

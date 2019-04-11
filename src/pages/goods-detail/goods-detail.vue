@@ -158,6 +158,7 @@
   import WePaint from '@components/we-paint/we-paint'
   import API from '@api'
   import base64src from './utils'
+  import ShareHandler from '@mixins/share-handler'
 
   const PAGE_NAME = 'GOODS_DETAIL'
   const TYPEBTN = [{url: '/yx-image/goods/icon-homepage@2x.png', text: '首页', type: 0}, {url: '/yx-image/goods/icon-shopcart@2x.png', text: '购物车', type: 2}]
@@ -184,6 +185,7 @@
   }
   export default {
     name: PAGE_NAME,
+    mixins: [ShareHandler],
     data() {
       return {
         describeNum: 0,
@@ -254,9 +256,10 @@
         title: this.goodsMsg.name
       })
       let shopId = wx.getStorageSync('shopId')
+      const flag = Date.now()
       return {
         title: this.goodsMsg.name,
-        path: `/pages/goods-detail?id=${this.goodsId}&shopId=${shopId}&activityId=${this.activityId}`, // 商品详情
+        path: `/pages/goods-detail?id=${this.goodsId}&shopId=${shopId}&activityId=${this.activityId}&flag=${flag}`, // 商品详情
         imageUrl: this.thumb_image || this.goodsMsg.goods_cover_image,
         success: (res) => {
           // 转发成功
@@ -301,6 +304,7 @@
       this.setCartCount()
       this.getGoodsOtherInfo()
       this.getQrCode()
+      this.shareHandler()
     },
     onUnload() {
       clearInterval(this.timer)
