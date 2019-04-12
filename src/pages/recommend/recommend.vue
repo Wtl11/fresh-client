@@ -80,7 +80,8 @@
         navBarTitle: '',
         dataInfo: {},
         isFirstLoad: true,
-        payIndex: -1
+        payIndex: -1,
+        employeeId: 0
       }
     },
     computed: {
@@ -133,6 +134,7 @@
           goodsList: [{
             ...item,
             activity_id: this.marketId,
+            member_id: this.employeeId,
             num: 1,
             cart_id: 0
           }],
@@ -218,11 +220,12 @@
         try {
           // const sceneMsg = decodeURIComponent(options.scene)
           // const params = getParams(sceneMsg)
-          let {marketId, shopId} = resolveQueryScene(options.scene)
+          let {marketId, shopId, employeeId} = resolveQueryScene(options.scene)
           this.marketId = marketId || +options.marketId
+          this.employeeId = employeeId || +options.employeeId
           shopId = shopId || +options.shopId
           shopId && wx.setStorageSync('shopId', shopId)
-          console.warn(this.marketId, shopId)
+          console.warn(this.marketId, shopId, this.employeeId)
         } catch (e) {
           console.error(e, '获取活动ID失败!')
         }
