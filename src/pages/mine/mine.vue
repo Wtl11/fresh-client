@@ -1,6 +1,7 @@
 <template>
   <div class="wrap">
     <navigation-bar title="我的" :showArrow="false" :translucent="false"></navigation-bar>
+    <mine-r-test v-if="ENV === 'test'"></mine-r-test>
     <div class="mine-top">
       <div class="info">
         <div class="avatar">
@@ -105,6 +106,7 @@
   import QrcodeMsg from '@components/qrcode-msg/qrcode-msg'
   import API from '@api'
   import {oauthComputed} from '@state/helpers'
+  import MineRTest from './mine-r-test/mine-r-test'
   const ORRDER_NAV_LIST = [
     {icon_url: '/yx-image/cart/icon-payment@2x.png', name: '待付款', id: 0, index: 1, count: 0},
     {icon_url: '/yx-image/cart/icon-delivery@2x.png', name: '待提货', id: 1, index: 2, count: 0},
@@ -139,8 +141,12 @@
         lastOrderList: [],
         isLeader: false,
         BUTTON_GROUP: BUTTON_GROUP,
-        couponNumber: 0
+        couponNumber: 0,
+        ENV: false
       }
+    },
+    created() {
+      this.ENV = process.env
     },
     async onTabItemTap() {
       await this.$isLogin()
@@ -311,7 +317,8 @@
       WePaint,
       QrcodeMsg,
       NavigationBar,
-      CustomTabBar
+      CustomTabBar,
+      MineRTest
     }
   }
 </script>
