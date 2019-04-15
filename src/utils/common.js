@@ -241,7 +241,7 @@ export function resolveQueryScene(scene) {
       goodsId = +params.id || +params.g || 0
       activityId = +params.activityId || +params.a || 0
       marketId = +params.marketId || +params.m || 0
-      employeeId = +params.e || 0
+      employeeId = +params.employeeId || +params.e || 0
     } catch (e) {
       console.error(e)
     }
