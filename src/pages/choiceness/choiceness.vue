@@ -1,5 +1,5 @@
 <template>
-  <scroll-view class="choiceness">
+  <div class="choiceness">
     <navigation-bar ref="navigationBar" :title="title" :showArrow="false" :titleMaxLen="12"></navigation-bar>
     <home-position
       :buyUsers="buyUsers"
@@ -40,7 +40,7 @@
     ></home-classify>
     <custom-tab-bar currentType="index"></custom-tab-bar>
     <coupon-modal ref="couponModal"></coupon-modal>
-  </scroll-view>
+  </div>
 </template>
 
 <script type="text/ecmascript-6">
@@ -247,7 +247,6 @@
     min-height: 180vh
     background: #fff
     overflow-x: hidden
-    -webkit-overflow-scrolling: touch
 
   .empty
     height :15px
