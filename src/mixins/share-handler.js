@@ -21,7 +21,6 @@ export default {
         wx.getShareInfo({ shareTicket, success: resolve, fail: reject })
       }).then(async (res) => {
         if (!res || res.errMsg !== 'getShareInfo:ok') return
-        console.log(res)
         const data = {
           code: this.$loginCode.code,
           iv: res.iv,
