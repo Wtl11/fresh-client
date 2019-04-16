@@ -158,7 +158,7 @@
   import WePaint from '@components/we-paint/we-paint'
   import API from '@api'
   import base64src from './utils'
-  import ShareHandler from '@mixins/share-handler'
+  import ShareHandler, {EVENT_CODE} from '@mixins/share-handler'
 
   const PAGE_NAME = 'GOODS_DETAIL'
   const TYPEBTN = [{url: '/yx-image/goods/icon-homepage@2x.png', text: '首页', type: 0}, {url: '/yx-image/goods/icon-shopcart@2x.png', text: '购物车', type: 2}]
@@ -304,7 +304,11 @@
       this.setCartCount()
       this.getGoodsOtherInfo()
       this.getQrCode()
-      this.shareHandler()
+      this.$$shareHandler({
+        event: EVENT_CODE.GOODS_DETAIL,
+        activityId: this.activityId,
+        goodsId: this.goodsId
+      })
     },
     onUnload() {
       clearInterval(this.timer)
