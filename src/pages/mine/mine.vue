@@ -94,6 +94,8 @@
         <div class="erm-text" :class="'corp-' + corpName + '-text'">向团长出示二维码提货</div>
       </div>
     </div>
+    <official-account></official-account>
+    <div style="height: 60px"></div>
     <custom-tab-bar currentType="mine"></custom-tab-bar>
   </div>
 </template>

@@ -128,7 +128,7 @@
       const flag = Date.now()
       console.warn(`/pages/flash-sale-list?id=${this.currentObj.id}&shopId=${shopId}`)
       return {
-        title: (this.currentObj.activity_name || '') + '，' + SHARE_IMG[status].title,
+        title: SHARE_IMG[status].title,
         path: `/pages/flash-sale-list?id=${this.currentObj.id}&shopId=${shopId}&flag=${flag}`,
         imageUrl: this.imageUrl + SHARE_IMG[status].img
       }
