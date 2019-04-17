@@ -79,13 +79,13 @@
           delay: 0
         })
         maskAnimation.opacity(0).step()
-        modalAnimation.scale(0.3).step()
+        // modalAnimation.scale(0.3).step()
         this.maskAnimation = maskAnimation.export()
         this.modalAnimation = modalAnimation.export()
         this.isShow = true
         setTimeout(() => {
           maskAnimation.opacity(1).step()
-          modalAnimation.scale(1).step()
+          // modalAnimation.scale(1).step()
           this.maskAnimation = maskAnimation.export()
           this.modalAnimation = modalAnimation.export()
         }, 200)
@@ -113,12 +113,12 @@
           delay: 0
         })
         maskAnimation.opacity(0).step()
-        modalAnimation.scale(0.3).step()
+        // modalAnimation.scale(0.3).step()
         this.maskAnimation = maskAnimation.export()
         this.modalAnimation = modalAnimation.export()
         setTimeout(() => {
           maskAnimation.opacity(1).step()
-          modalAnimation.scale(1).step()
+          // modalAnimation.scale(1).step()
           this.maskAnimation = maskAnimation.export()
           this.modalAnimation = modalAnimation.export()
           this.isShow = false
@@ -140,12 +140,12 @@
           delay: 0
         })
         maskAnimation.opacity(0).step()
-        modalAnimation.scale(0.3).step()
+        // modalAnimation.scale(0.3).step()
         this.maskAnimation = maskAnimation.export()
         this.modalAnimation = modalAnimation.export()
         setTimeout(() => {
           maskAnimation.opacity(1).step()
-          modalAnimation.scale(1).step()
+          // modalAnimation.scale(1).step()
           this.maskAnimation = maskAnimation.export()
           this.modalAnimation = modalAnimation.export()
           this.isShow = false
@@ -160,7 +160,7 @@
  @import "~@designCommon"
 
   .confirm-msg
-    background-color: rgba(17, 17, 17, 0.8)
+    background-color: rgba(17, 17, 17, 0.7)
     fill-box(fixed)
     z-index: 100
     layout()

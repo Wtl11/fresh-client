@@ -18,12 +18,12 @@ export default {
         delay: 0
       })
       maskAnimation.opacity(0).step()
-      modalAnimation.scale(0.3).step()
+      // modalAnimation.scale(0.3).step()
       this.maskAnimation = maskAnimation.export()
       this.modalAnimation = modalAnimation.export()
       setTimeout(() => {
         maskAnimation.opacity(1).step()
-        modalAnimation.scale(1).step()
+        // modalAnimation.scale(1).step()
         this.maskAnimation = maskAnimation.export()
         this.modalAnimation = modalAnimation.export()
         callback && callback(duration)
@@ -41,12 +41,12 @@ export default {
         delay: 0
       })
       maskAnimation.opacity(0).step()
-      modalAnimation.scale(0.3).step()
+      // modalAnimation.scale(0.3).step()
       this.maskAnimation = maskAnimation.export()
       this.modalAnimation = modalAnimation.export()
       setTimeout(() => {
         maskAnimation.opacity(1).step()
-        modalAnimation.scale(1).step()
+        // modalAnimation.scale(1).step()
         this.maskAnimation = maskAnimation.export()
         this.modalAnimation = modalAnimation.export()
         callback && callback(duration)
