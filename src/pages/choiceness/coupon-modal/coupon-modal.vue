@@ -54,6 +54,11 @@
         couponArray: []
       }
     },
+    onLoad() {
+      setTimeout(() => {
+        this.isShow = true
+      }, 2000)
+    },
     methods: {
       _targetList() {
         let arr = this.couponArray.map((item) => {

@@ -42,8 +42,10 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import wx from 'wx'
+  // import wx from 'wx'
+  import AnimationModal from '@mixins/animation-modal'
   export default {
+    mixins: [AnimationModal],
     props: {
       useType: String,
       sureString: {
@@ -61,34 +63,36 @@
     },
     data () {
       return {
-        isShow: false,
-        maskAnimation: '',
-        modalAnimation: ''
+        isShow: false
+        // maskAnimation: '',
+        // modalAnimation: ''
       }
     },
     methods: {
       show () {
-        let modalAnimation = wx.createAnimation({
-          duration: 500,
-          timingFunction: 'cubic-bezier(1, -0.07, 0.51, 1.48)',
-          delay: 0
-        })
-        let maskAnimation = wx.createAnimation({
-          duration: 500,
-          timingFunction: 'linear',
-          delay: 0
-        })
-        maskAnimation.opacity(0).step()
-        // modalAnimation.scale(0.3).step()
-        this.maskAnimation = maskAnimation.export()
-        this.modalAnimation = modalAnimation.export()
+        // let modalAnimation = wx.createAnimation({
+        //   duration: 500,
+        //   timingFunction: 'cubic-bezier(1, -0.07, 0.51, 1.48)',
+        //   delay: 0
+        // })
+        // let maskAnimation = wx.createAnimation({
+        //   duration: 500,
+        //   timingFunction: 'linear',
+        //   delay: 0
+        // })
+        // maskAnimation.opacity(0).step()
+        // // modalAnimation.scale(0.3).step()
+        // this.maskAnimation = maskAnimation.export()
+        // this.modalAnimation = modalAnimation.export()
+        // this.isShow = true
+        // setTimeout(() => {
+        //   maskAnimation.opacity(1).step()
+        //   // modalAnimation.scale(1).step()
+        //   this.maskAnimation = maskAnimation.export()
+        //   this.modalAnimation = modalAnimation.export()
+        // }, 200)
         this.isShow = true
-        setTimeout(() => {
-          maskAnimation.opacity(1).step()
-          // modalAnimation.scale(1).step()
-          this.maskAnimation = maskAnimation.export()
-          this.modalAnimation = modalAnimation.export()
-        }, 200)
+        this.showAnimation()
         this.$emit('show')
       },
       close () {
@@ -102,54 +106,59 @@
       cancel () {
         // this.isShow = false
         // this.$emit('close')
-        let modalAnimation = wx.createAnimation({
-          duration: 300,
-          timingFunction: 'linear',
-          delay: 0
-        })
-        let maskAnimation = wx.createAnimation({
-          duration: 300,
-          timingFunction: 'linear',
-          delay: 0
-        })
-        maskAnimation.opacity(0).step()
-        // modalAnimation.scale(0.3).step()
-        this.maskAnimation = maskAnimation.export()
-        this.modalAnimation = modalAnimation.export()
-        setTimeout(() => {
-          maskAnimation.opacity(1).step()
-          // modalAnimation.scale(1).step()
-          this.maskAnimation = maskAnimation.export()
-          this.modalAnimation = modalAnimation.export()
+        // let modalAnimation = wx.createAnimation({
+        //   duration: 300,
+        //   timingFunction: 'linear',
+        //   delay: 0
+        // })
+        // let maskAnimation = wx.createAnimation({
+        //   duration: 300,
+        //   timingFunction: 'linear',
+        //   delay: 0
+        // })
+        // maskAnimation.opacity(0).step()
+        // // modalAnimation.scale(0.3).step()
+        // this.maskAnimation = maskAnimation.export()
+        // this.modalAnimation = modalAnimation.export()
+        // setTimeout(() => {
+        //   maskAnimation.opacity(1).step()
+        //   // modalAnimation.scale(1).step()
+        //   this.maskAnimation = maskAnimation.export()
+        //   this.modalAnimation = modalAnimation.export()
+        //   this.isShow = false
+        // }, 300)
+        this.hideAnimation(() => {
           this.isShow = false
-        }, 300)
+        })
         this.$emit('cancel')
       },
       cancelIncome () {
         if (this.useType !== 'income') return
         // this.isShow = false
         // this.$emit('close')
-        let modalAnimation = wx.createAnimation({
-          duration: 300,
-          timingFunction: 'linear',
-          delay: 0
-        })
-        let maskAnimation = wx.createAnimation({
-          duration: 300,
-          timingFunction: 'linear',
-          delay: 0
-        })
-        maskAnimation.opacity(0).step()
-        // modalAnimation.scale(0.3).step()
-        this.maskAnimation = maskAnimation.export()
-        this.modalAnimation = modalAnimation.export()
-        setTimeout(() => {
-          maskAnimation.opacity(1).step()
-          // modalAnimation.scale(1).step()
-          this.maskAnimation = maskAnimation.export()
-          this.modalAnimation = modalAnimation.export()
-          this.isShow = false
-        }, 300)
+        // let modalAnimation = wx.createAnimation({
+        //   duration: 300,
+        //   timingFunction: 'linear',
+        //   delay: 0
+        // })
+        // let maskAnimation = wx.createAnimation({
+        //   duration: 300,
+        //   timingFunction: 'linear',
+        //   delay: 0
+        // })
+        // maskAnimation.opacity(0).step()
+        // // modalAnimation.scale(0.3).step()
+        // this.maskAnimation = maskAnimation.export()
+        // this.modalAnimation = modalAnimation.export()
+        // setTimeout(() => {
+        //   maskAnimation.opacity(1).step()
+        //   // modalAnimation.scale(1).step()
+        //   this.maskAnimation = maskAnimation.export()
+        //   this.modalAnimation = modalAnimation.export()
+        //   this.isShow = false
+        // }, 300)
+        this.isShow = true
+        this.showAnimation()
         this.$emit('cancel')
       }
     }
@@ -162,7 +171,7 @@
   .confirm-msg
     background-color: rgba(17, 17, 17, 0.7)
     fill-box(fixed)
-    z-index: 100
+    z-index: 500
     layout()
     align-items: center
     .mask
