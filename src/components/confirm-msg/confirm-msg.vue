@@ -91,6 +91,9 @@
         //   this.maskAnimation = maskAnimation.export()
         //   this.modalAnimation = modalAnimation.export()
         // }, 200)
+        if (this.isShow) {
+          return
+        }
         this.isShow = true
         this.showAnimation()
         this.$emit('show')
@@ -191,6 +194,7 @@
       bottom:0
       right:0
       margin:auto
+      opacity :1
       .title
         font-family: $font-family-medium
         font-size: $font-size-16
