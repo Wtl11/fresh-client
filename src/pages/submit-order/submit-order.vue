@@ -133,7 +133,8 @@
           goods: this.goodsList,
           nickname: this.userInfo.nickname,
           mobile: this.mobile,
-          customer_coupon_id: this.couponInfo.customer_coupon_id || 0
+          customer_coupon_id: this.couponInfo.customer_coupon_id || 0,
+          open_gid: wx.getStorageSync('openGId') || 0
         }
         this.userInfo.mobile = this.mobile
         this.$wechat.setStorage('userInfo', this.userInfo)

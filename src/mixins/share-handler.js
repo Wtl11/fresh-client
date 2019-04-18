@@ -30,6 +30,7 @@ export default {
           let res = await API.Share.getGroupId(data)
           const openGId = res.data.openGId
           if (!openGId) return
+          wx.setStorageSync('openGId', openGId)
           const flag = options.query.flag
           const share = new Share({...args, flag, openGId})
           API.Share.sendMsgWxGroup(share)
