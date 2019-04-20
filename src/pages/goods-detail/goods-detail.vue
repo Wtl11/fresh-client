@@ -276,7 +276,7 @@
         this.safeList = RETUANSAFELIST
       }
       if (options.shopId) {
-        wx.setStorageSync('shopId', options.shopId)
+        options.shopId && wx.setStorageSync('shopId', options.shopId)
       }
       ald.aldstat.sendEvent('商品详情')
       if (options.scene) {
