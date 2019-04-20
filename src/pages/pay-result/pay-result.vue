@@ -20,12 +20,13 @@
 
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
-
+  import ShareTrick from '@mixins/share-trick'
   const ald = getApp()
   const PAGE_NAME = 'PAY_RESULT'
 
   export default {
     name: PAGE_NAME,
+    mixins: [ShareTrick],
     data() {
       return {
         allReady: false,
