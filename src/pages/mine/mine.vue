@@ -119,7 +119,11 @@
 
   const BUTTON_GROUP = [
     {text: '优惠券', url: 'coupon-mine', type: 'coupon'},
-    {text: ['我的小区', '小区管理'], isArray: true, isLeader: true}
+    {text: ['我的小区', '小区管理'], isArray: true, isLeader: true},
+    {text: '团长招募', url: 'out-html?routeType=recruit-regimental', type: 'recruit'},
+    {text: '供应商招募', url: 'out-html?routeType=recruit-supplier', type: 'recruit'},
+    {text: '加盟商招募', url: 'out-html?routeType=recruit-alliance', type: 'recruit'},
+    {text: '常见问题', url: 'out-html?routeType=FAQ', type: 'faq'}
   ]
 
   export default {

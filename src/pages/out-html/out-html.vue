@@ -22,12 +22,28 @@
       // NavigationBar
     },
     onLoad(e) {
-      let chartsConfig = this.getChartsConfig(e.routeType)
-      this.url = e.url || chartsConfig
+      const chartsConfig = this.getChartsConfig(e.routeType)
+      const recruit = this.recruitConfig(e.routeType)
+      this.url = e.url || chartsConfig || recruit
+      console.log(this.url)
     },
     methods: {
+      recruitConfig(type) {
+        const arr = ['recruit-regimental', 'recruit-supplier', 'recruit-alliance', 'FAQ']
+        if (!arr.some(val => val === type)) {
+          return null
+        }
+        const webUrl = `http://192.168.9.130:6874` || baseURL.webview
+        let url = `${webUrl}/${type}`
+        let token = wx.getStorageSync('token')
+        let shopId = wx.getStorageSync('shopId')
+        let params = `${url}?token=${token}&api=${baseURL.api}&currentCorp=${corp.currentCorp}&shopId=${shopId}`
+        return params
+      },
       getChartsConfig(type) {
-        if (type !== 'data-overview') return
+        if (type !== 'data-overview') {
+          return null
+        }
         let url = `${baseURL.webview}/${type}`
         let token = wx.getStorageSync('token')
         let leaderId = wx.getStorageSync('leaderId')
