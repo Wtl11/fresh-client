@@ -59,7 +59,7 @@
   import Classify from './home-classify/classify-mixins'
   import HomeFlashSale from './home-flash-sale/home-flash-sale'
   import FlashSale from './home-flash-sale/flash-sale-mixins'
-  import ShareHandler from '@mixins/share-handler'
+  import ShareHandler, {EVENT_CODE} from '@mixins/share-handler'
 
   const ald = getApp()
   const PAGE_NAME = 'CHOICENESS'
@@ -155,7 +155,7 @@
         console.error(e)
       } finally {
         this.$wechat.hideLoading()
-        this.shareHandler()
+        this.$$shareHandler({event: EVENT_CODE.HOME})
       }
     },
     async onPullDownRefresh() {

@@ -51,7 +51,7 @@
   import ClassifyItem from './classify-item/classify-item'
   import {countDownHandle} from '@utils/common'
   import API from '@api'
-  import ShareHandler from '@mixins/share-handler'
+  import ShareHandler, {EVENT_CODE} from '@mixins/share-handler'
 
   const PAGE_NAME = 'FLASH_SALE_LIST'
   const SHARE_IMG = {
@@ -109,7 +109,10 @@
       await this._getPageParams()
       this._resetListParams()
       this._getTabList(this.id)
-      this.shareHandler()
+      this.$$shareHandler({
+        event: EVENT_CODE.FLASH_SALE_LIST,
+        activityId: this.id
+      })
     },
     onReachBottom() {
       this.page++
