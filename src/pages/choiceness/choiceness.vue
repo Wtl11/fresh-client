@@ -60,6 +60,7 @@
   import HomeFlashSale from './home-flash-sale/home-flash-sale'
   import FlashSale from './home-flash-sale/flash-sale-mixins'
   import ShareHandler, {EVENT_CODE} from '@mixins/share-handler'
+  import ShareTrick from '@mixins/share-trick'
 
   const ald = getApp()
   const PAGE_NAME = 'CHOICENESS'
@@ -88,7 +89,8 @@
       Banner,
       Classify,
       FlashSale,
-      ShareHandler
+      ShareHandler,
+      ShareTrick
     ],
     components: {
       NavigationBar,

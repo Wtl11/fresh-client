@@ -12,11 +12,11 @@ export default {
     async $$shareHandler (args) {
       const token = wx.getStorageSync('token')
       if (!token) return
-      await this.checkCode()
       const options = wx.getStorageSync('options')
       console.warn(options, 'share-handle')
       const shareTicket = options.shareTicket
       if (!shareTicket) return
+      await this.checkCode()
       new Promise((resolve, reject) => {
         wx.getShareInfo({ shareTicket, success: resolve, fail: reject })
       }).then(async (res) => {

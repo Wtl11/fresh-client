@@ -52,6 +52,7 @@
   import {countDownHandle} from '@utils/common'
   import API from '@api'
   import ShareHandler, {EVENT_CODE} from '@mixins/share-handler'
+  import ShareTrick from '@mixins/share-trick'
 
   const PAGE_NAME = 'FLASH_SALE_LIST'
   const SHARE_IMG = {
@@ -67,7 +68,7 @@
 
   export default {
     name: PAGE_NAME,
-    mixins: [ShareHandler],
+    mixins: [ShareHandler, ShareTrick],
     components: {
       NavigationBar,
       ClassifyItem

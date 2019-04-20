@@ -8,12 +8,14 @@
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import CouponCommonChannel from '@components/coupon-common-channel/coupon-common-channel'
+  import ShareTrick from '@mixins/share-trick'
   import API from '@api'
 
   const PAGE_NAME = 'COUPON_SHARE'
 
   export default {
     name: PAGE_NAME,
+    mixins: [ShareTrick],
     components: {
       NavigationBar,
       CouponCommonChannel
