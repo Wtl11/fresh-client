@@ -299,7 +299,7 @@
     onShow() {
       this._setEventNo()
       this.getGoodsDetailData()
-      this.getGoodsDetailDataThumb()
+      // this.getGoodsDetailDataThumb()
       this._groupInfo()
       this.getUserImgList()
       this.setCartCount()
@@ -583,6 +583,7 @@
           if (res.error === this.$ERR_OK) {
             let goodDetail = res.data
             this.goodsMsg = goodDetail
+            this.thumb_image = goodDetail.thumb_image
             this.goodsBanner = goodDetail.goods_banner_images
             this.showOpen = goodDetail.describe.length > this.describeNum
             this.deliverAt = goodDetail.delivery_at
@@ -611,14 +612,14 @@
           }
         })
       },
-      getGoodsDetailDataThumb() {
-        API.Choiceness.getGoodsDetailsThumb({goods_id: this.goodsId, activity_id: this.activityId}).then((res) => {
-          if (res.error === this.$ERR_OK) {
-            this.thumb_image = res.data.thumb_image
-          } else {
-          }
-        })
-      },
+      // getGoodsDetailDataThumb() {
+      //   API.Choiceness.getGoodsDetailsThumb({goods_id: this.goodsId, activity_id: this.activityId}).then((res) => {
+      //     if (res.error === this.$ERR_OK) {
+      //       this.thumb_image = res.data.thumb_image
+      //     } else {
+      //     }
+      //   })
+      // },
       comfirmNumer(number) {
         let goodsList = this.goodsMsg.goods_skus[0]
         goodsList.sku_id = goodsList.goods_sku_id
@@ -647,7 +648,7 @@
           if (this.activityTime.differ <= 0) {
             clearInterval(this.timer)
             this.getGoodsDetailData()
-            this.getGoodsDetailDataThumb()
+            // this.getGoodsDetailDataThumb()
             this.getGoodsOtherInfo()
           }
         }, 1000)
