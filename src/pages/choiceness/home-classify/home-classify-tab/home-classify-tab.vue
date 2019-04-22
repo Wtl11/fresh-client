@@ -9,25 +9,32 @@
     scroll-x
     :scroll-with-animation="!isIos"
   >
-    <div
+    <form report-submit @submit="$getFormId"
       v-for="(item, index) in tabList"
       :key="index"
       class="item"
       :id="'item'+index"
       @click="changeTabHandle(index, item.id, $event)"
     >
-      <figure class="icon">
-        <img class="img" mode="aspectFill" lazy-load v-if="item.image_url" :src="item.image_url">
-        <img class="img" mode="aspectFill" lazy-load v-else-if="imageUrl && index === 0" :src="imageUrl + '/yx-image/2.1/icon-all@2x.png'">
-      </figure>
-      <p class="text"><span class="name">{{item.name}}</span><span class="t-name" :class="tabIndex === index ? 'active'  : ''">{{item.name}}</span></p>
+      <button formType="submit">
+        <figure class="icon">
+          <img class="img" mode="aspectFill" lazy-load v-if="item.image_url" :src="item.image_url">
+          <img class="img" mode="aspectFill" lazy-load v-else-if="imageUrl && index === 0" :src="imageUrl + '/yx-image/2.1/icon-all@2x.png'">
+        </figure>
+        <p class="text"><span class="name">{{item.name}}</span><span class="t-name" :class="tabIndex === index ? 'active'  : ''">{{item.name}}</span></p>
+      </button>
+<!--      <figure class="icon">-->
+<!--        <img class="img" mode="aspectFill" lazy-load v-if="item.image_url" :src="item.image_url">-->
+<!--        <img class="img" mode="aspectFill" lazy-load v-else-if="imageUrl && index === 0" :src="imageUrl + '/yx-image/2.1/icon-all@2x.png'">-->
+<!--      </figure>-->
+<!--      <p class="text"><span class="name">{{item.name}}</span><span class="t-name" :class="tabIndex === index ? 'active'  : ''">{{item.name}}</span></p>-->
       <div
         class="item-under-line"
         :class="tabIndex === index ? 'active'  : ''"
       >
         <div class="line" :class="'corp-' + corpName + '-bg'"></div>
       </div>
-    </div>
+    </form>
   </scroll-view>
 </template>
 
@@ -90,6 +97,9 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   $tab-height=86px
   @import "~@designCommon"
+
+  button
+    reset-button()
 
   .img
     width :100%

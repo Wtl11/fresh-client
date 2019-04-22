@@ -1,4 +1,5 @@
 <template>
+  <form action="" report-submit @submit="$getFormId">
   <div class="link-group">
     <div scroll-y class="link-box" v-show="linkShow" @touchmove.prevent="" @click.stop="hideLink"></div>
     <div class="link-bottom" :class="linkShow ? 'show' : ''">
@@ -12,6 +13,7 @@
       <div class="link-tab" @click.stop="hideLink">取消</div>
     </div>
   </div>
+  </form>
 </template>
 
 <script type="text/ecmascript-6">

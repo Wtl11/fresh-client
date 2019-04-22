@@ -1,4 +1,5 @@
 <template>
+  <form action="" report-submit @submit="$getFormId">
   <div class="goods-detail">
     <navigation-bar ref="navigationBar" :title="msgTitle" :showArrow="true"></navigation-bar>
     <div class="banner-box">
@@ -57,7 +58,7 @@
       </div>
       <!--<img v-if="imageUrl && corpName === 'platform'" :src="imageUrl + '/yx-image/goods/icon-share2@2x.png'" mode="aspectFill" class="banner-share" @click="showShare">-->
       <!--<img v-if="imageUrl && corpName === 'retuan'" :src="imageUrl + '/yx-image/retuan/icon-share2@2x.png'" mode="aspectFill" class="banner-share" @click="showShare">-->
-      <button class="banner-share" :open-type="activityId? 'share': ''">
+      <button class="banner-share" formType="submit" :open-type="activityId? 'share': ''">
         <img v-if="imageUrl && corpName === 'platform'" :src="imageUrl + '/yx-image/goods/icon-share2@2x.png'" mode="aspectFill" class="share-img" @click="showShare">
         <img v-if="imageUrl && corpName === 'retuan'" :src="imageUrl + '/yx-image/retuan/icon-share2@2x.png'" mode="aspectFill" class="share-img" @click="showShare">
       </button>
@@ -104,13 +105,13 @@
     </div>
     <div class="fixed-btn">
       <div class="hlep-btn">
-        <div class="hlep-btn-box" v-for="(item, index) in typeBtn" :key="index" @click.stop="switchItem(item)">
+        <button formType="submit" class="hlep-btn-box" v-for="(item, index) in typeBtn" :key="index" @click.stop="switchItem(item)">
           <div class="hlep-top">
             <img v-if="imageUrl" :src="imageUrl + item.url" class="detail-img" mode="aspectFill">
             <div class="help-number" v-if="index * 1 === 1 && count * 1 >= 1">{{count * 1 > 99 ? 99 : count}}</div>
           </div>
           <div class="hlep-bottom">{{item.text}}</div>
-        </div>
+        </button>
       </div>
       <form action="" report-submit @submit="$getFormId">
         <button v-if="isShowTwoButton" class="goods-btn goods-btn-active" formType="submit" @click="addShoppingCart">加入购物车</button>
@@ -145,6 +146,7 @@
       </div>
     </div>
   </div>
+  </form>
 </template>
 
 <script type="text/ecmascript-6">
