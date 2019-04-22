@@ -105,6 +105,9 @@
       setNavigationBarTitle(title) {
         this.translucentTitle = title
       },
+      setNavigationBarBackground(styles) {
+        this.headStyleData = styles
+      },
       getStatusBarHeight() {
         return this.statusBarHeight
       },

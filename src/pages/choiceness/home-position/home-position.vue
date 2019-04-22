@@ -94,8 +94,9 @@
     align-items: center
     padding: 0 12px
     box-sizing: border-box
-    margin-bottom: 8px
-    height :24px
+    margin-bottom: 10px
+    height :27px
+    position :relative
     .community-main
       layout(row)
       align-items: center
@@ -109,7 +110,7 @@
           display: block
           border-radius: 50%
       .community-text
-        color: $color-text-main
+        color: $color-white
         font-size: $font-size-16
         font-family: $font-family-medium
         min-height: $font-size-18

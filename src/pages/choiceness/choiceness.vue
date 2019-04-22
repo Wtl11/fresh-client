@@ -1,6 +1,9 @@
 <template>
   <div class="choiceness">
-    <navigation-bar ref="navigationBar" :title="title" :showArrow="false" :titleMaxLen="12"></navigation-bar>
+    <navigation-bar ref="navigationBar" :headStyle="headStyle" :titleColor="titleColor" :title="title" :showArrow="false" :titleMaxLen="12" :translucent="fasle"></navigation-bar>
+    <section class="top-background">
+      <img class="img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/bg-homepage@2x.png'">
+    </section>
     <home-position
       :buyUsers="buyUsers"
       :showUserIndex="showUserIndex"
@@ -107,7 +110,9 @@
         curShopId: '',
         modulesList: [],
         systemInfo: {},
-        pageScrollEvent: {}
+        pageScrollEvent: {},
+        headStyle: `background:#73C200`,
+        titleColor: `#fff`
       }
     },
     onLoad(options) {
@@ -125,8 +130,7 @@
     },
     watch: {
       pageScrollEvent(e) {
-        let title = e.scrollTop < this.navigationBar ? '赞播优鲜' : '赞播优鲜·' + this.socialName
-        this.$refs.navigationBar && this.$refs.navigationBar.setTranslucentTitle(title)
+        this._changeNavigation(e)
       }
     },
     async onShow() {
@@ -202,6 +206,22 @@
     },
     methods: {
       ...cartMethods,
+      _changeNavigation(e) {
+        let flag = e.scrollTop < this.navigationBar
+        let title = flag ? '赞播优鲜' : '赞播优鲜·' + this.socialName
+        let styles = flag ? `background:#73C200` : `background:#fff`
+        this.$refs.navigationBar && this.$refs.navigationBar.setTranslucentTitle(title)
+        this.$refs.navigationBar && this.$refs.navigationBar.setNavigationBarBackground(styles)
+        this.titleColor = flag ? `#ffffff` : `#000000`
+        wx.setNavigationBarColor({
+          frontColor: this.titleColor,
+          backgroundColor: '#ffffff',
+          animation: {
+            duration: 300,
+            timingFunc: 'easeIn'
+          }
+        })
+      },
       _initPageParams(options = {}) {
         if (options.scene) {
           // let scene = decodeURIComponent(options.scene)
@@ -249,9 +269,21 @@
     min-height: 180vh
     background: #fff
     overflow-x: hidden
+    position:relative
+    .top-background
+      position :absolute
+      left :0
+      right :0
+      top:0
+      height :192px
+      .img
+        width :100vw
+        height :100%
+        display :block
+
 
   .empty
-    height :15px
+    height :11px
     background :#fff
 
 </style>

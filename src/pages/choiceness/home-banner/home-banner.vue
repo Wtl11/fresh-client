@@ -1,7 +1,7 @@
 <template>
   <div v-if="isShow" class="home-banner" id="homeBanner">
-    <swiper class="banner" autoplay interval="5000" display-multiple-items="1" previous-margin="7.5px"
-            next-margin="17.5px" circular @change="_setPraiseIndex">
+    <swiper class="banner" autoplay interval="5000" display-multiple-items="1" previous-margin="0px"
+            next-margin="0px" circular @change="_setPraiseIndex">
       <block v-for="(item,index) in bigItem.content_data.list" :key="index">
         <swiper-item class="banner-item" :class="{'current-banner-active': praiseIndex === index}">
           <img class="item-img" lazy-load mode="aspectFill" v-if="item.image_url" :src="item.image_url"
@@ -96,7 +96,8 @@
           border-radius: 6px !important
           transform: translateY(0)
           overflow: hidden !important
-          margin-left: 10px
+          margin-left: 12px
+          margin-right :12px
       .current-banner-active
         .item-img
           width: 100%
