@@ -47,8 +47,14 @@
     </div>
     <div class="detail-info-box">
       <div class="info-box">
-        <div class="title" :class="goodsMsg.name ? 'has-title' : ''">{{goodsMsg.name}}</div>
-        <div class="has--sub-title" v-if="goodsMsg.describe">{{goodsMsg.describe}}</div>
+        <article class="title-wrapper">
+          <div class="title" :class="goodsMsg.name ? 'has-title' : ''">{{goodsMsg.name}}</div>
+          <div class="has-sub-title" v-if="goodsMsg.describe">{{goodsMsg.describe}}</div>
+          <button class="share-wrapper" formType="submit" :open-type="activityId? 'share': ''" @click="showShare">
+            <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/icon-sharexq@2x.png'" mode="aspectFill" class="share-img">
+            <p class="share-text">分享</p>
+          </button>
+        </article>
         <div class="info-sub">
           <img v-if="imageUrl && corpName === 'platform'" :src="imageUrl + '/yx-image/choiceness/icon-fast@2x.png'" mode="aspectFill" class="info-sub-img">
           <img v-if="imageUrl && corpName === 'retuan'" :src="imageUrl + '/yx-image/retuan/icon-fast@2x.png'" mode="aspectFill" class="info-sub-img">
@@ -58,10 +64,10 @@
       </div>
       <!--<img v-if="imageUrl && corpName === 'platform'" :src="imageUrl + '/yx-image/goods/icon-share2@2x.png'" mode="aspectFill" class="banner-share" @click="showShare">-->
       <!--<img v-if="imageUrl && corpName === 'retuan'" :src="imageUrl + '/yx-image/retuan/icon-share2@2x.png'" mode="aspectFill" class="banner-share" @click="showShare">-->
-      <button class="banner-share" formType="submit" :open-type="activityId? 'share': ''">
-        <img v-if="imageUrl && corpName === 'platform'" :src="imageUrl + '/yx-image/goods/icon-share2@2x.png'" mode="aspectFill" class="share-img" @click="showShare">
-        <img v-if="imageUrl && corpName === 'retuan'" :src="imageUrl + '/yx-image/retuan/icon-share2@2x.png'" mode="aspectFill" class="share-img" @click="showShare">
-      </button>
+<!--      <button class="banner-share" formType="submit" :open-type="activityId? 'share': ''">-->
+<!--        <img v-if="imageUrl && corpName === 'platform'" :src="imageUrl + '/yx-image/goods/icon-share2@2x.png'" mode="aspectFill" class="share-img" @click="showShare">-->
+<!--        <img v-if="imageUrl && corpName === 'retuan'" :src="imageUrl + '/yx-image/retuan/icon-share2@2x.png'" mode="aspectFill" class="share-img" @click="showShare">-->
+<!--      </button>-->
     </div>
     <div class="safeguard-box">
       <div class="safeguard-item" v-for="(item, index) in safeList" v-bind:key="index">
@@ -968,22 +974,41 @@
       box-sizing: border-box
       margin-bottom: 10px
       box-shadow: 0 6px 20px 0 rgba(17, 17, 17, 0.06)
-      .title
-        width: 100%
-        font-size: $font-size-17
-        color: #1F1F1F
-        min-height: 20px
-        line-height: $font-size-20
-        font-family: $font-family-medium
-      .has-title
-        no-wrap-plus()
-      .has--sub-title
-        margin-top: 7px
-        font-family: $font-family-regular
-        font-size: $font-size-14
-        color: #808080
-        letter-spacing: 0.3px
-        word-break:break-word
+      .title-wrapper
+        position :relative
+        min-height :53px
+        .share-wrapper
+          col-center()
+          right :18px
+          .share-img
+            width :36px
+            height :@width
+            display :block
+          .share-text
+            padding-top :6px
+            text-align :center
+            font-family: $font-family-regular
+            font-size: 11px;
+            color: #342903;
+        .title
+          width: 71vw
+          font-size: $font-size-17
+          color: #1F1F1F
+          min-height: 20px
+          line-height: $font-size-20
+          font-family: $font-family-medium
+          no-wrap-plus()
+        .has-title
+          width: 71vw
+          no-wrap-plus()
+        .has-sub-title
+          width: 71vw
+          margin-top: 7px
+          font-family: $font-family-regular
+          font-size: $font-size-14
+          color: #808080
+          letter-spacing: 0.3px
+          word-break:break-word
       .info-sub
         layout(row)
         align-items: center
