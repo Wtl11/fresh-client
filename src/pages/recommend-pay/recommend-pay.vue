@@ -1,4 +1,5 @@
 <template>
+  <form action="" report-submit @submit="$getFormId">
   <div class="submit-order">
     <navigation-bar title="提交订单" :showArrow="true" :translucent="false"></navigation-bar>
     <div class="order-title" :class="'corp-' + corpName + '-submit-order'">请在{{deliverAt}}到货后，到团长代理点自提</div>
@@ -70,9 +71,10 @@
         <p>总计 {{total}}元</p>
         <p class="explain">(已优惠<span :class="'corp-' + corpName + '-money'">{{discount}}</span>元)</p>
       </div>
-      <div class="pay" :class="'corp-' + corpName + '-bg'" @click.stop="goPay">去支付</div>
+      <button formType="submit" class="pay" :class="'corp-' + corpName + '-bg'" @click.stop="goPay">去支付</button>
     </div>
   </div>
+  </form>
 </template>
 
 <script type="text/ecmascript-6">

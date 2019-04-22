@@ -1,4 +1,5 @@
 <template>
+  <form action="" report-submit @submit="$getFormId">
   <div class="link-group">
     <scroll-view scroll-y class="link-box" v-show="linkShow" @touchmove.prevent="" @click.stop="hideLink"></scroll-view>
     <div class="link-bottom" :class="linkShow ? 'show' : ''">
@@ -18,14 +19,14 @@
       <div class="order-num-box">
         <div class="num-title">数量</div>
         <div class="num-btn-box1">
-          <div class="left" @click.stop="subNum">
+          <button class="left" @click.stop="subNum" formType="submit">
             <div class="cut" :class="showOrderNum ? 'cut1' : ''"></div>
-          </div>
+          </button>
           <div class="count ">{{orderNum}}</div>
-          <div class="right" @click.stop="addNum">
+          <button class="right" @click.stop="addNum" formType="submit">
             <div class="add1"></div>
             <div class="add2"></div>
-          </div>
+          </button>
         </div>
       </div>
       <div class="price-box">
@@ -40,6 +41,7 @@
       </form>
     </div>
   </div>
+  </form>
 </template>
 
 <script type="text/ecmascript-6">

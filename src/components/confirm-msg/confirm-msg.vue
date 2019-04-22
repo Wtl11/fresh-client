@@ -1,17 +1,18 @@
 <template>
+  <form action="" report-submit @submit="$getFormId">
   <article class="confirm-msg" v-if="isShow" :animation="maskAnimation" @click="cancelIncome">
     <!--<div class="mask"  ></div>-->
-    <section class="content" v-if="useType==='single'" :animation="modalAnimation">
+    <button class="content" v-if="useType==='single'" :animation="modalAnimation">
       <div class="msg">{{msg}}</div>
       <div class="btn-group">
         <div class="btn confirm" @tap="confirm" :class="'corp-' + corpName + '-text'">知道了</div>
       </div>
-    </section>
+    </button>
     <section class="content" v-else-if="useType==='double'" :animation="modalAnimation">
       <div class="msg">{{msg}}</div>
-      <div class="btn-group">
-        <div class="btn cancel" @tap="cancel">取消</div>
-        <div class="btn confirm" @tap="confirm" :class="'corp-' + corpName + '-text'">{{sureString}}</div>
+      <div formType="submit" class="btn-group">
+        <div formType="submit" class="btn cancel" @tap="cancel">取消</div>
+        <div  formType="submit" class="btn confirm" @tap="confirm" :class="'corp-' + corpName + '-text'">{{sureString}}</div>
       </div>
     </section>
     <section class="content" v-else-if="useType==='close'" :animation="modalAnimation">
@@ -39,6 +40,7 @@
       </div>
     </section>
   </article>
+  </form>
 </template>
 
 <script type="text/ecmascript-6">

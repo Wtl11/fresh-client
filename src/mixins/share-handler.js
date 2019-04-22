@@ -16,6 +16,16 @@ export default {
       console.warn(options, 'share-handle')
       const shareTicket = options.shareTicket
       if (!shareTicket) return
+      if (shareTicket === wx.getStorageSync('shareTicket')) {
+        const openGId = wx.getStorageSync('openGId')
+        if (openGId) {
+          const flag = options.query.flag
+          const share = new Share({...args, flag, openGId})
+          API.Share.sendMsgWxGroup(share)
+          return
+        }
+      }
+      wx.setStorageSync('shareTicket', shareTicket)
       await this.checkCode()
       new Promise((resolve, reject) => {
         wx.getShareInfo({ shareTicket, success: resolve, fail: reject })
@@ -40,11 +50,9 @@ export default {
       })
     },
     async checkCode() {
-      try {
-        await this.$wechat.checkSession()
-      } catch (e) {
+      await this.$wechat.checkSession().catch(async() => {
         await this.getCode()
-      }
+      })
     },
     async getCode() {
       try {

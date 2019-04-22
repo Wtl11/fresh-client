@@ -1,67 +1,68 @@
 <template>
+  <form action="" report-submit @submit="$getFormId">
   <div class="wrap">
     <navigation-bar title="购物车" :showArrow="false" :translucent="false"></navigation-bar>
-    <div class="shop-list">
-      <div class="shop-item" :class="{'shop-item-opcta' : item.num <= 0}" v-for="(item, index) in goodsList" :key="index">
-        <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && !item.checked && item.num > 0" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt=""/>
-        <!--<img class="sel-box" v-if="imageUrl && item.num <= 0" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt="" />-->
-        <div class="sel-box sel-clr-box" v-if="imageUrl && item.num <= 0"></div>
-        <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && item.checked && item.num > 0 && corpName === 'platform'" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
-        <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && item.checked && item.num > 0 && corpName === 'retuan'" :src="imageUrl+'/yx-image/retuan/icon-pick_gwc@2x.png'" alt=""/>
-        <div class="goods-image" @click.stop="jumpGoodsDetail(item)">
-          <img class="goods-img" mode="aspectFill" :src="item.goods_cover_image" alt="">
-          <div class="robbed" v-if="item.num <= 0">已抢完</div>
-        </div>
-        <div class="good-info">
-          <div class="top" @click.stop="jumpGoodsDetail(item)">
-            <div class="title">{{item.name}}</div>
-            <div class="del" @click.stop="delGoodsInfo(index, item.id)">
-              <img class="del-img" v-if="imageUrl" :src="imageUrl + '/yx-image/cart/icon_delete@2x.png'" alt="">
+      <div class="shop-list">
+        <div class="shop-item" :class="{'shop-item-opcta' : item.num <= 0}" v-for="(item, index) in goodsList" :key="index">
+          <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && !item.checked && item.num > 0" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt=""/>
+          <!--<img class="sel-box" v-if="imageUrl && item.num <= 0" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt="" />-->
+          <div class="sel-box sel-clr-box" v-if="imageUrl && item.num <= 0"></div>
+          <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && item.checked && item.num > 0 && corpName === 'platform'" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
+          <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && item.checked && item.num > 0 && corpName === 'retuan'" :src="imageUrl+'/yx-image/retuan/icon-pick_gwc@2x.png'" alt=""/>
+          <button formType="submit" class="goods-image" @click.stop="jumpGoodsDetail(item)">
+            <img class="goods-img" mode="aspectFill" :src="item.goods_cover_image" alt="">
+            <div class="robbed" v-if="item.num <= 0">已抢完</div>
+          </button>
+          <div class="good-info">
+            <div formType="submit" class="top" @click.stop="jumpGoodsDetail(item)">
+              <div class="title">{{item.name}}</div>
+              <button formType="submit" class="del" @click.stop="delGoodsInfo(index, item.id)">
+                <img class="del-img" v-if="imageUrl" :src="imageUrl + '/yx-image/cart/icon_delete@2x.png'" alt="">
+              </button>
+            </div>
+            <div class="bot">
+              <div formType="submit" class="left" @click.stop="jumpGoodsDetail(item)">
+                <div class="spec" v-if="item.goods_units">规格：{{item.goods_units}}</div>
+                <div class="remain">
+                  <div class="txt" :class="'corp-' + corpName + '-money-text'" v-if="item.is_urgency">仅剩{{item.usable_stock}}件</div>
+                </div>
+                <div class="price" :class="'corp-' + corpName + '-money'" v-if="item.trade_price"><span class="num">{{item.trade_price}}</span>元</div>
+              </div>
+              <div class="right">
+                <div class="number-box">
+                  <button formType="submit" class="minus" @click.stop="subNum(index, item.num, item.id)">-</button>
+                  <div class="num">{{item.num}}</div>
+                  <button formType="submit" class="add" @click.stop="addNum(index, item.num, item.buy_limit, item.id)">+</button>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="bot">
-            <div class="left" @click.stop="jumpGoodsDetail(item)">
-              <div class="spec" v-if="item.goods_units">规格：{{item.goods_units}}</div>
-              <div class="remain">
-                <div class="txt" :class="'corp-' + corpName + '-money-text'" v-if="item.is_urgency">仅剩{{item.usable_stock}}件</div>
-              </div>
-              <div class="price" :class="'corp-' + corpName + '-money'" v-if="item.trade_price"><span class="num">{{item.trade_price}}</span>元</div>
-            </div>
-            <div class="right">
-              <div class="number-box">
-                <div class="minus" @click.stop="subNum(index, item.num, item.id)">-</div>
-                <div class="num">{{item.num}}</div>
-                <div class="add" @click.stop="addNum(index, item.num, item.buy_limit, item.id)">+</div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
-    </div>
-    <!--结算-->
-    <div class="payment" :style="{bottom: (49 + height) + 'px'}" v-if="goodsList.length > 0">
-      <div class="check-all" @click.stop="toggleCheckAll">
-        <img class="sel-box" v-if="imageUrl && allChecked && corpName === 'platform'" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
-        <img class="sel-box" v-if="imageUrl && allChecked && corpName === 'retuan'" :src="imageUrl+'/yx-image/retuan/icon-pick_gwc@2x.png'" alt=""/>
-        <img class="sel-box" v-if="imageUrl && !allChecked" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt=""/>
-        <div class="txt">全选</div>
+      <!--结算-->
+      <div class="payment" :style="{bottom: (49 + height) + 'px'}" v-if="goodsList.length > 0">
+        <button formType="submit" class="check-all" @click.stop="toggleCheckAll">
+          <img class="sel-box" v-if="imageUrl && allChecked && corpName === 'platform'" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
+          <img class="sel-box" v-if="imageUrl && allChecked && corpName === 'retuan'" :src="imageUrl+'/yx-image/retuan/icon-pick_gwc@2x.png'" alt=""/>
+          <img class="sel-box" v-if="imageUrl && !allChecked" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt=""/>
+          <div class="txt">全选</div>
+        </button>
+        <div class="payment-content">
+          <div class="price" :class="'corp-' + corpName + '-money'">合计 {{totalPrice}}元</div>
+          <button formType="submit" class="pay-btn" :class="'corp-' + corpName + '-bg'" @click.stop="submitOrder">去结算</button>
+        </div>
       </div>
-      <div class="payment-content">
-        <div class="price" :class="'corp-' + corpName + '-money'">合计 {{totalPrice}}元</div>
-        <div class="pay-btn" :class="'corp-' + corpName + '-bg'" @click.stop="submitOrder">去结算</div>
+      <!--没有商品-->
+      <div class="without" v-if="isShowCart">
+        <div class="without-img"><img class="img" v-if="imageUrl" :src="imageUrl+'/yx-image/cart/pic-gwc@2x.png'" alt=""></div>
+        <div class="txt">购物车没有商品哦!</div>
+        <div class="txt">赶快去挑选吧</div>
+        <div class="btn" :class="'corp-' + corpName + '-bg'" @click.stop="toChoicenessPage">去逛逛</div>
       </div>
-    </div>
-    <!--没有商品-->
-    <div class="without" v-if="isShowCart">
-      <div class="without-img"><img class="img" v-if="imageUrl" :src="imageUrl+'/yx-image/cart/pic-gwc@2x.png'" alt=""></div>
-      <div class="txt">购物车没有商品哦!</div>
-      <div class="txt">赶快去挑选吧</div>
-      <div class="btn" :class="'corp-' + corpName + '-bg'" @click.stop="toChoicenessPage">去逛逛</div>
-    </div>
     <confirm-msg ref="msg" :msg="msg" useType="double" @confirm="deleteCartGood"></confirm-msg>
     <custom-tab-bar currentType="cart"></custom-tab-bar>
   </div>
-
+  </form>
 </template>
 
 <script type="text/ecmascript-6">
