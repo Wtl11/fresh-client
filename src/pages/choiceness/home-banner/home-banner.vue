@@ -9,6 +9,11 @@
         </swiper-item>
       </block>
     </swiper>
+    <ul class="dot-wrapper">
+      <li class="dot">{{currentIndex}}</li>
+      <li class="dot-line">/</li>
+      <li class="dot right">{{bigItem.content_data.list.length}}</li>
+    </ul>
   </div>
 </template>
 
@@ -37,6 +42,11 @@
         default: true
       }
     },
+    data() {
+      return {
+        currentIndex: 1
+      }
+    },
     methods: {
       jumpDetail(item) {
         if (item.type === 'mini_goods') {
@@ -58,6 +68,7 @@
         }
       },
       _setPraiseIndex(e) {
+        this.currentIndex = e.target.current + 1
         this.$emit('bannerChange', e.target.current)
       }
     }
@@ -74,6 +85,24 @@
     position: relative
     border-radius: 6px !important
     overflow: hidden !important
+    .dot-wrapper
+      position :absolute
+      right :22px
+      bottom :8px
+      layout(row,block,nowrap)
+      font-family: $font-family-regular
+      font-size: 10px;
+      color: #F1F5EB;
+      .dot
+        width :17.5px
+        height :@width
+        border-radius :50%
+        background :rgba(17,17,17,0.6)
+        text-align :center
+        line-height :@height
+        &.right
+          position :relative
+          left:-5px
     .banner
       width: 100vw
       height: 100%

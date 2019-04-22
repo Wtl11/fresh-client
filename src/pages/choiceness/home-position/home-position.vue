@@ -7,9 +7,10 @@
         <img class="p-img" mode="aspectFit" v-if="imageUrl" :src="imageUrl+'/yx-image/2.3/icon-address_sy@2x.png'">
       </div>
       <div class="community-text" v-if="locationStatus * 1 === 1 || locationStatus * 1 === 2">
-        <span>{{groupInfo && groupInfo.social_name}}</span><img class="p-img" mode="aspectFit" v-if="imageUrl" :src="imageUrl+'/yx-image/icon-pressed_qhztd@2x.png'">
+        <span>{{groupInfo && groupInfo.social_name}}</span>
       </div>
       <div class="community-text" v-else>定位中...</div>
+      <img class="more-img" mode="aspectFit" v-if="imageUrl" :src="imageUrl+'/yx-image/2.3/icon-pressed_qhztd@2x.png'">
       <!--<img v-if="imageUrl && (locationStatus * 1 === 1 || locationStatus * 1 === 2) && groupInfo.social_name"-->
       <!--:src="imageUrl + '/yx-image/choiceness/icon-pitch@2x.png'" class="community-down">-->
     </div>
@@ -117,6 +118,10 @@
         max-width: 40vw
         no-wrap()
         margin-right: 5px
+      .more-img
+        width :8.5px
+        height :5.5px
+
       .community-down
         width: 9px
         height: 6px
