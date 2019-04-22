@@ -10,7 +10,11 @@
           </nav>
         </dt>
         <dd class="bottom-wrapper">
-          <div class="left-wrapper">{{currentObj.at_desc}}</div>
+          <button class="share-button" open-type="share">
+            <img class="share-img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/icon-sharexsqg@2x.png'" alt="">
+            <p class="share-text">分享</p>
+          </button>
+<!--          <div class="left-wrapper">{{currentObj.at_desc}}</div>-->
           <div class="right-wrapper">
             <p class="title">{{currentObj.at_diff_str}}</p>
             <div class="time-wrapper">
@@ -40,8 +44,9 @@
       </div>
       <div class="txt">空空如也</div>
     </section>
-    <button class="share-button" open-type="share">
-      <img class="img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.1/icon-share2@2x.png'" alt="">
+    <button class="shop-car">
+      <img class="car-img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/icon-shopcart@2x.png'" alt="">
+      <p v-if="count" class="red-wrapper">{{count * 1 > 99 ? 99 : count}}</p>
     </button>
   </div>
 </template>
@@ -53,6 +58,7 @@
   import API from '@api'
   import ShareHandler, {EVENT_CODE} from '@mixins/share-handler'
   import ShareTrick from '@mixins/share-trick'
+  import {cartComputed} from '@state/helpers'
 
   const PAGE_NAME = 'FLASH_SALE_LIST'
   const SHARE_IMG = {
@@ -93,6 +99,7 @@
       }
     },
     computed: {
+      ...cartComputed,
       currentObj() {
         return this.tabList[this.tabIndex] || {}
       }
@@ -238,27 +245,73 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@designCommon"
 
+  .shop-car
+    position :fixed
+    right :15px
+    bottom :65px
+    width :45px
+    height :@width
+    background: #FFFFFF;
+    box-shadow: 0 4px 15px 0 rgba(17,17,17,0.20);
+    border-radius :50%
+    z-index :101
+    display :flex
+    align-items :center
+    justify-content :center
+    .car-img
+      width :20.5px
+      height :16.5px
+    .red-wrapper
+      position :absolute
+      top:5px
+      right :6px
+      width :16px
+      height :@width
+      box-sizing :border-box
+      background: #FE3B39;
+      border: 1px solid #FFFFFF;
+      border-radius :50%
+      font-family: $font-family-regular
+      font-size: 10px;
+      color: #FFFFFF;
+      text-align :center
+      line-height :15px
+
+
   .img
     width :100%
     height :100%
     display :block
 
   .share-button
-    width:52.5px
-    height :50px
-    position :fixed
-    bottom :70px
+    width:67px
+    height :29px
+    col-center()
     right :0
     z-index :50
+    display :flex
+    align-items :center
+    justify-content :center
+    border-radius :29px 0 0 29px
+    background :rgba(255,255,255,0.6)
+    font-family: $font-family-regular
+    font-size: 14px;
+    color: #1D2023;
+    .share-img
+      width :15px
+      height: @width
+      display :block
+    .share-text
+      padding-left :5px
 
   .flash-sale-list
     width: 100%
-    background :$color-background
+    background :#FFE500
     min-height :100vh
     .tab-container
       position relative
       width :100vw
-      height :100px
+      height :110px
       z-index :50
       .tab-wrapper
         color: #111111
@@ -266,12 +319,13 @@
         left :0
         right :0
         .bottom-wrapper
-          height :45px
+          height :55px
           layout(row,block,nowrap)
           align-items :center
           padding 0 6px
           font-family: $font-family-regular
-          background :$color-background
+          background :#FFE500
+          position :relative
           .left-wrapper
             font-size: 14px
           .right-wrapper
@@ -279,8 +333,9 @@
             color: $color-text-sub
             display :flex
             align-items :center
-            justify-content :flex-end
+            justify-content :flex-start
             .title
+              color: #111
               font-size :12px
               padding-right :6px
             .time-wrapper
@@ -307,15 +362,15 @@
                 bottom :1px
         .top-wrapper
           height :55px
-          background: #FFE500
+          background: #F7F7F7
           display:flex
           align-items :flex-end
           padding :0 4vw
           .top-item-wrapper
             width :25.333333333333336vw
-            height :50px
-            background: #FFE500
-            border-radius: 8px 8px 0 0
+            height :55px
+            background: #F7F7F7
+            border-radius: 4px 4px 0 0
             display :flex
             flex-direction :column
             justify-content :center
@@ -325,7 +380,7 @@
             &:nth-child(2n)
               margin :0 8vw
             &.active
-              background :$color-background
+              background :#FFE500
             .text
               font-size :18px
               line-height :21px

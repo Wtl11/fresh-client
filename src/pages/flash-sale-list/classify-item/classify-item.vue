@@ -1,15 +1,16 @@
 <template>
   <div class="classify-item" @click="jumpGoodsDetail(item)">
     <figure class="classify-box-top">
-      <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.1/icon-qiang2@2x.png'" alt="" class="top-label" mode="aspectFill">
+<!--      <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.1/icon-qiang2@2x.png'" alt="" class="top-label" mode="aspectFill">-->
       <!--<img v-if="imageUrl && corpName === 'retuan'" :src="imageUrl + '/yx-image/retuan/icon-label2@2x.png'" alt="" class="top-label" mode="aspectFill">-->
       <img v-if="item.goods_cover_image" :src="item.goods_cover_image" alt="" class="box-top-img" mode="aspectFill">
     </figure>
     <section class="classify-box-bottom">
       <div class="title">{{item.name}}</div>
-      <figure class="icon">
-        <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.1/pic-qianglabel@2x.png'" alt="" class="img" mode="aspectFill">
-      </figure>
+<!--      <figure class="icon">-->
+<!--        <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.1/pic-qianglabel@2x.png'" alt="" class="img" mode="aspectFill">-->
+<!--      </figure>-->
+      <p class="icon">抢购价</p>
       <div class="classify-price-box">
         <div class="price-left">
           <div class="price-number" :class="'corp-' + corpName + '-money'">{{item.trade_price}}</div>
@@ -116,8 +117,15 @@
         no-wrap()
       .icon
         width :37px
-        height :17px
-        padding :5px 0 0
+        height :14px
+        margin :5px 0 0
+        border: 1px solid #FA7500;
+        border-radius: 14.5px;
+        text-align :center
+        line-height :@height
+        font-family: $font-family-regular
+        font-size: 10px;
+        color: #FA7500;
       .classify-price-box
         layout(row)
         align-items: center
