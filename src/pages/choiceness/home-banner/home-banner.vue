@@ -3,7 +3,7 @@
     <swiper class="banner" autoplay interval="5000" display-multiple-items="1" previous-margin="0px"
             next-margin="0px" circular @change="_setPraiseIndex">
       <block v-for="(item,index) in bigItem.content_data.list" :key="index">
-        <swiper-item class="banner-item" :class="{'current-banner-active': praiseIndex === index}">
+        <swiper-item class="banner-item" :class="{'current-banner-active': false}">
           <img class="item-img" lazy-load mode="aspectFill" v-if="item.image_url" :src="item.image_url"
                @click="jumpDetail(item)">
         </swiper-item>
@@ -91,7 +91,7 @@
         align-items: center
         .item-img
           width: 100%
-          height: 95%
+          height: 100%
           display: block
           border-radius: 6px !important
           transform: translateY(0)

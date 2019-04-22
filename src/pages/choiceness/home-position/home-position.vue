@@ -4,10 +4,10 @@
       <!--<div class="community-main" @click="jumpSelfPoint">-->
       <div class="community-img">
         <!--<img v-if="(locationStatus * 1 === 1 || locationStatus * 1 === 2) && imageUrl" :src="groupInfo.head_image_url || imageUrl+'/yx-image/order/icon-colonel_head@2x.png'">-->
-        <img class="p-img" mode="aspectFit" v-if="imageUrl" :src="imageUrl+'/yx-image/2.1/icon-address_sy@2x.png'">
+        <img class="p-img" mode="aspectFit" v-if="imageUrl" :src="imageUrl+'/yx-image/2.3/icon-address_sy@2x.png'">
       </div>
       <div class="community-text" v-if="locationStatus * 1 === 1 || locationStatus * 1 === 2">
-        {{groupInfo && groupInfo.social_name}}
+        <span>{{groupInfo && groupInfo.social_name}}</span><img class="p-img" mode="aspectFit" v-if="imageUrl" :src="imageUrl+'/yx-image/icon-pressed_qhztd@2x.png'">
       </div>
       <div class="community-text" v-else>定位中...</div>
       <!--<img v-if="imageUrl && (locationStatus * 1 === 1 || locationStatus * 1 === 2) && groupInfo.social_name"-->
