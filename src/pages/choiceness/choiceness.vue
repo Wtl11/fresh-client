@@ -209,7 +209,7 @@
       _changeNavigation(e) {
         let flag = e.scrollTop < this.navigationBar
         let title = flag ? '赞播优鲜' : '赞播优鲜·' + this.socialName
-        let styles = flag ? `background:#73C200` : `background:#fff`
+        let styles = flag ? `background:#73C200;transition:none` : `background:#fff;transition:none`
         this.$refs.navigationBar && this.$refs.navigationBar.setTranslucentTitle(title)
         this.$refs.navigationBar && this.$refs.navigationBar.setNavigationBarBackground(styles)
         this.titleColor = flag ? `#ffffff` : `#000000`
@@ -217,7 +217,7 @@
           frontColor: this.titleColor,
           backgroundColor: '#ffffff',
           animation: {
-            duration: 300,
+            duration: 0,
             timingFunc: 'easeIn'
           }
         })

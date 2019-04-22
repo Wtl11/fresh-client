@@ -13,10 +13,10 @@ export default {
     }
   },
   onUnload() {
-    this._clearFlashTimer()
+    // this._clearFlashTimer()
   },
   onHide() {
-    this._clearFlashTimer()
+    // this._clearFlashTimer()
   },
   methods: {
     // tab切换
@@ -28,7 +28,7 @@ export default {
     },
     // 获取限时活动列表
     async _getFlashList(loading) {
-      this._countDownAction()
+      // this._countDownAction()
       if (this.flashTabList && this.flashTabList.length === 0) {
         this.flashIsShow = false
         return

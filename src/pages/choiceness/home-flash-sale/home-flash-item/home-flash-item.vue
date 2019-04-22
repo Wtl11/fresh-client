@@ -13,7 +13,7 @@
           lazy-load
           mode="aspectFit"
           v-if="imageUrl"
-          :src="imageUrl + '/yx-image/2.1/icon-qiang@2x.png'"
+          :src="imageUrl + '/yx-image/2.3/pic-label_qg@2x.png'"
         >
       </div>
     </figure>
@@ -124,18 +124,18 @@
         border-radius :3px
       .img-label
         position :absolute
-        left :-3px
-        top:@left
-        width: 5.333333333333334vw
-        height:@width
+        left :0px
+        bottom:@left
+        width: 25.5px
+        height:15.5px
     .bottom-wrapper
       position :relative
       .title-wrapper
         overflow :hidden
         .title
-          padding-top :20px
+          padding-top :7px
           font-family: $font-family-regular
-          font-size: 3.4666666666666663vw
+          font-size: 13px
           color: #111111;
           no-wrap()
       .button-group-wrapper

@@ -10,6 +10,9 @@
       </block>
     </swiper>
     <ul class="dot-wrapper">
+      <li class="background">
+        <img lazy-load class="img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/pic-switch@2x.png'">
+      </li>
       <li class="dot">{{currentIndex}}</li>
       <li class="dot-line">/</li>
       <li class="dot right">{{bigItem.content_data.list.length}}</li>
@@ -89,20 +92,27 @@
       position :absolute
       right :22px
       bottom :8px
+      width :35px
+      height :17.5px
       layout(row,block,nowrap)
       font-family: $font-family-regular
       font-size: 10px;
       color: #F1F5EB;
+      .background
+        fill-box(absolute)
+        .img
+          width :100%
+          height:@width
+          display :block
+      .dot-line
+        position :relative
+        transform :scale(0.8)
       .dot
+        position :relative
         width :17.5px
         height :@width
-        border-radius :50%
-        background :rgba(17,17,17,0.6)
         text-align :center
         line-height :@height
-        &.right
-          position :relative
-          left:-5px
     .banner
       width: 100vw
       height: 100%
