@@ -1,4 +1,5 @@
 <template>
+  <form report-submit @submit="$getFormId">
   <div class="flash-sale-list" :style="{background: isShowEmpty? '#fff': ''}">
     <navigation-bar title="限时抢购"></navigation-bar>
     <section class="tab-container">
@@ -10,7 +11,7 @@
           </nav>
         </dt>
         <dd class="bottom-wrapper">
-          <button class="share-button" open-type="share">
+          <button class="share-button" open-type="share" formType="submit">
             <img class="share-img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/icon-sharexsqg@2x.png'" alt="">
             <p class="share-text">分享</p>
           </button>
@@ -44,11 +45,12 @@
       </div>
       <div class="txt">空空如也</div>
     </section>
-    <button class="shop-car">
+    <button class="shop-car" formType="submit" @click="handleNav">
       <img class="car-img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/icon-shopcart@2x.png'" alt="">
       <p v-if="count" class="red-wrapper">{{count * 1 > 99 ? 99 : count}}</p>
     </button>
   </div>
+  </form>
 </template>
 
 <script type="text/ecmascript-6">
@@ -151,6 +153,9 @@
       this.timer && clearInterval(this.timer)
     },
     methods: {
+      handleNav() {
+        wx.switchTab({url: '/pages/shopping-cart'})
+      },
       // 更新页面的参数
       async _getPageParams() {
         try {

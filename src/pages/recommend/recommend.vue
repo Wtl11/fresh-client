@@ -287,6 +287,8 @@
   $color-card-background = #F6FAF1
   $color-money-main = #FF8506
   @import "~@designCommon"
+
+
   .img
     width :100%
     height :100%

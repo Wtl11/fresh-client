@@ -145,6 +145,7 @@
     <div class="end" v-if="isScrollToEnd">— 到底了—</div>
     <!--<link-group ref="shareList" :linkType="2" :isSharePoster="false"></link-group>-->
     <coupon-share-modal ref="couponModal"></coupon-share-modal>
+    <one-notify></one-notify>
   </div>
 </template>
 
@@ -157,6 +158,7 @@
   import CouponItem from './coupon-item/coupon-item'
   import CouponShareModal from './coupon-share-modal/coupon-share-modal'
   import TabItem from './tab-item'
+  import OneNotify from './one-notify/one-notify'
 
   const PAGE_NAME = 'REGIMENTAL_COMMANDER'
 
@@ -167,7 +169,8 @@
       NavigationBar,
       NotificationRegimental,
       CouponItem,
-      CouponShareModal
+      CouponShareModal,
+      OneNotify
     },
     data() {
       return {
