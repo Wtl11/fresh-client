@@ -3,7 +3,7 @@
     <navigation-bar title="我的" :showArrow="false" :translucent="true"></navigation-bar>
 <!--    <mine-r-test v-if="ENV === 'test'"></mine-r-test>-->
     <div :style="{height: 59 + statusBarHeight + 'px'}"></div>
-    <section class="top-background" :style="{height: 206+statusBarHeight+'px'}">
+    <section class="top-background" :style="{height: 206+statusBarHeight-15+'px'}">
       <img class="img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/bg-top_me@2x.png'">
     </section>
     <div class="mine-top">
@@ -355,7 +355,7 @@
           this.couponNumber = res.data.can_used_count
         })
       }
-    },
+    }, // 235
     components: {
       WePaint,
       QrcodeMsg,

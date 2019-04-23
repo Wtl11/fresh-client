@@ -125,7 +125,7 @@
       .img-label
         position :absolute
         left :0
-        bottom:@left
+        bottom:-1px
         width: 25.5px
         height:15.5px
     .bottom-wrapper

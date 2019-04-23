@@ -237,6 +237,7 @@
           .time
             font-size:16px
           .explain
+            margin-top :-2px
             font-size :10px
 
 </style>

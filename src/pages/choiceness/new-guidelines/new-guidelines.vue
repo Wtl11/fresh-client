@@ -50,13 +50,14 @@
     line-height :@height
     text-align: center;
     .triangle
-      col-center()
+      position :absolute
       width: 0
       height: 0
-      border: 5px solid #FFFFFF;
+      border: 5px solid #Fff
       border-left: 5px solid transparent
-      border-bottom: 5px solid transparent
+      border-top: 5px solid transparent
       border-right: 5px solid transparent
-      right: -9.8px
+      top:-10px
+      left :140px
       z-index :3
 </style>
