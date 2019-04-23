@@ -31,6 +31,7 @@
         API.Notification.remindDeliveries().then(res => {
           if (res.error !== this.$ERR_OK) {
             if (res.message === '系统异常') {
+              this.$wechat.showToast('系统繁忙，请稍后再试。')
               return
             }
             this.$wechat.showToast(res.message)
