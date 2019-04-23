@@ -10,7 +10,7 @@
         codeMsg: ''
       }
     },
-    async created() {
+    async onLaunch() {
       let res = await API.Choiceness.getDefaultShopInfo()
       let id = res.error === ERR_OK ? res.data.id : baseURL.defaultId
       wx.setStorageSync('defaultShopId', id)

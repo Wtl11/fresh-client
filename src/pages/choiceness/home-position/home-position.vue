@@ -7,7 +7,7 @@
         <img class="p-img" mode="aspectFit" v-if="imageUrl" :src="imageUrl+'/yx-image/2.3/icon-address_sy@2x.png'">
       </div>
       <div class="community-text" v-if="locationStatus * 1 === 1 || locationStatus * 1 === 2">
-        <span>{{groupInfo && groupInfo.social_name}}</span>
+        <span>{{gName}}</span>
       </div>
       <div class="community-text" v-else>定位中...</div>
       <img class="more-img" mode="aspectFit" v-if="imageUrl" :src="imageUrl+'/yx-image/2.3/icon-pressed_qhztd@2x.png'">
@@ -76,6 +76,12 @@
         default: () => {}
       }
     },
+    computed: {
+      gName() {
+        let name = (this.groupInfo && this.groupInfo.social_name) || ''
+        return name.substring(0, 5) + (name.length > 5 ? '...' : '')
+      }
+    },
     methods: {
       jumpSelfPoint() {
         wx.navigateTo({
@@ -101,6 +107,7 @@
     .community-main
       layout(row)
       align-items: center
+      opacity :0.8
       .community-img
         width: 15.5px
         height: 17.5px
@@ -115,9 +122,10 @@
         font-size: $font-size-16
         font-family: $font-family-medium
         min-height: $font-size-18
-        max-width: 40vw
-        no-wrap()
+        max-width: 83px
         margin-right: 5px
+        overflow :hidden
+        white-space: nowrap
       .more-img
         width :8.5px
         height :5.5px
@@ -130,7 +138,7 @@
       width :35vw
       height: 24px
       padding: 0 9.5px 0 3px
-      background: #E6E6E6
+      background: rgba(255,255,255,0.2)
       border-radius: 36px
       position :relative
       overflow :hidden
@@ -156,7 +164,7 @@
             flex: 1
             font-family: $font-family-regular
             font-size: 12px
-            color: $color-sub
+            color: #fff
             no-wrap()
 
 </style>

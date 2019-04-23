@@ -43,6 +43,7 @@
     ></home-classify>
     <custom-tab-bar currentType="index"></custom-tab-bar>
     <coupon-modal ref="couponModal"></coupon-modal>
+<!--    <new-guidelines :navigationBar="navigationBar"></new-guidelines>-->
   </div>
 </template>
 
@@ -64,6 +65,7 @@
   import FlashSale from './home-flash-sale/flash-sale-mixins'
   import ShareHandler, {EVENT_CODE} from '@mixins/share-handler'
   import ShareTrick from '@mixins/share-trick'
+  import NewGuidelines from './new-guidelines/new-guidelines'
 
   const ald = getApp()
   const PAGE_NAME = 'CHOICENESS'
@@ -102,7 +104,8 @@
       HomePosition,
       HomeBanner,
       HomeClassify,
-      HomeFlashSale
+      HomeFlashSale,
+      NewGuidelines
     },
     data() {
       return {
@@ -275,7 +278,7 @@
       left :0
       right :0
       top:0
-      height :192px
+      height :51.2vw
       .img
         width :100vw
         height :100%

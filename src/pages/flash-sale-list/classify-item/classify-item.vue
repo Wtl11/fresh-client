@@ -10,7 +10,8 @@
 <!--      <figure class="icon">-->
 <!--        <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.1/pic-qianglabel@2x.png'" alt="" class="img" mode="aspectFill">-->
 <!--      </figure>-->
-      <p class="icon">抢购价</p>
+<!--      <p class="icon">抢购价</p>-->
+      <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/pic-qianglabel@2x.png'" alt="" class="icon-img" mode="aspectFill">
       <div class="classify-price-box">
         <div class="price-left">
           <div class="price-number" :class="'corp-' + corpName + '-money'">{{item.trade_price}}</div>
@@ -115,6 +116,11 @@
         font-size: $font-size-14
         min-height: $font-size-16
         no-wrap()
+      .icon-img
+        padding-top :5px
+        width:38px
+        height :14px
+        display :block
       .icon
         width :37px
         height :14px

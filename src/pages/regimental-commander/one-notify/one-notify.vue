@@ -1,7 +1,7 @@
 <template>
   <div class="one-notify" @click="handleRemind">
     <img class="notify-img" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/icon-informall@2x.png'">
-    <div v-if="isShow" class="top-content">一键通知提货</div>
+    <div v-if="isShow" class="top-content">一键通知提货<p class="triangle"></p> </div>
   </div>
 </template>
 
@@ -20,14 +20,18 @@
       const isShow = wx.getStorageSync('showGroupNotify')
       if (!isShow) {
         this.isShow = !isShow
-        wx.setStorageSync('showGroupNotify', 'showGroupNotify')
-        setTimeout(() => {
-          this.isShow = false
-        }, 3000)
+        // wx.setStorageSync('showGroupNotify', 'showGroupNotify')
+        // setTimeout(() => {
+        //   this.isShow = false
+        // }, 3000)
       }
     },
     methods: {
       handleRemind() {
+        if (this.isShow) {
+          wx.setStorageSync('showGroupNotify', 'showGroupNotify')
+          this.isShow = false
+        }
         API.Notification.remindDeliveries().then(res => {
           if (res.error !== this.$ERR_OK) {
             if (res.message === '系统异常') {
@@ -72,14 +76,14 @@
       font-family: $font-family-regular
       font-size: 15px;
       color: #FFFFFF;
-      &:before
-        content: ""
+      .triangle
+        col-center()
         width: 0
         height: 0
         border: 5px solid rgba(17,17,17,.7)
         border-top: 4px solid transparent
         border-bottom: 5px solid transparent
         border-right: 5px solid transparent
-        col-center()
-        right: -10px
+        right: -9.8px
+        z-index :3
 </style>

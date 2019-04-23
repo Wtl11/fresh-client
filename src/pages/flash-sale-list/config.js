@@ -7,6 +7,7 @@ page.$mount()
 export default {
   config: {
     navigationBarTitleText: '限时抢购',
+    backgroundColorBottom: '#FFE359',
     usingComponents: {}
   }
 }

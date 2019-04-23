@@ -124,7 +124,7 @@
         border-radius :3px
       .img-label
         position :absolute
-        left :0px
+        left :0
         bottom:@left
         width: 25.5px
         height:15.5px
@@ -133,16 +133,16 @@
       .title-wrapper
         overflow :hidden
         .title
-          padding-top :7px
+          padding-top :2px
           font-family: $font-family-regular
           font-size: 13px
-          color: #111111;
+          color: #111111
           no-wrap()
       .button-group-wrapper
         position :relative
         z-index :10
        .price-wrapper
-          padding-top: 4px
+          margin-top: -3px
           display :flex
           color: #FF8300
           font-family: $font-family-medium

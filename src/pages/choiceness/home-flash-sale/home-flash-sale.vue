@@ -131,6 +131,7 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   $color-flash-background=#FFE359
+  $box-radius=4px
   @import "~@designCommon"
 
   .img
@@ -146,7 +147,7 @@
     .scroll-wrapper
       padding :9px
       background :$color-flash-background
-      border-radius :0 0 8px 8px
+      border-radius :0 0 $box-radius $box-radius
       .bottom-wrapper
         display: block
         width: 100%
@@ -155,7 +156,7 @@
         box-sizing: border-box
         transform: translate3d(0,0,0)
         position :relative
-        border-radius :8px 8px
+        border-radius :$box-radius $box-radius
         &.active
           display :none
         ::-webkit-scrollbar
@@ -167,13 +168,9 @@
           display: inline-flex
           position: relative
           box-sizing :border-box
-          padding-top :10px
-          padding-bottom :10px
-          padding-left :2.2133333333333334vw
-          &.item-r-2vw
-            padding-right :2.2133333333333334vw
-          &.item-r-0
-            padding-right :2.2133333333333334vw
+          padding-top :8px
+          padding-bottom :5px
+          padding-left :7px
           .look-more
             padding-left :0
             .look-wrapper
@@ -200,7 +197,7 @@
     .top-wrapper
       height :45px
       background: #F7F9FA
-      border-radius :8px 8px 0 0
+      border-radius :$box-radius $box-radius 0 0
       padding :0 11.5px 0 10px
       layout(row,block,nowrap)
       align-items :center
@@ -232,7 +229,7 @@
           align-items :center
           font-family: $font-family-medium
           color: #1D2023;
-          border-radius :4px 4px 0 0
+          border-radius :2px 2px 0 0
           transition :all 0.3s
           background :#F7F9FA
           &.active

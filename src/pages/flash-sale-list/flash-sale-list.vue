@@ -34,9 +34,9 @@
         <classify-item :item="item"></classify-item>
       </li>
       <li class="foot-ties" v-if="!hasMore && !isShowEmpty">
-        <div class="left lines"></div>
+        <div class="lines left"></div>
+        <div class="lines right"></div>
         <div class="center">再拉也没有了</div>
-        <div class="bot lines"></div>
       </li>
     </ul>
     <section class="noting" v-else-if="isShowEmpty">
@@ -253,7 +253,7 @@
   .shop-car
     position :fixed
     right :15px
-    bottom :65px
+    bottom :22px
     width :45px
     height :@width
     background: #FFFFFF;
@@ -264,8 +264,10 @@
     align-items :center
     justify-content :center
     .car-img
-      width :20.5px
-      height :16.5px
+      position :relative
+      top:2px
+      width :25px
+      height :20.2px
     .red-wrapper
       position :absolute
       top:5px
@@ -280,7 +282,7 @@
       font-size: 10px;
       color: #FFFFFF;
       text-align :center
-      line-height :15px
+      line-height :14px
 
 
   .img
@@ -311,7 +313,7 @@
 
   .flash-sale-list
     width: 100%
-    background :#FFE500
+    background :#FFE359
     min-height :100vh
     .tab-container
       position relative
@@ -329,7 +331,7 @@
           align-items :center
           padding 0 6px
           font-family: $font-family-regular
-          background :#FFE500
+          background :#FFE359
           position :relative
           .left-wrapper
             font-size: 14px
@@ -370,27 +372,22 @@
           background: #F7F7F7
           display:flex
           align-items :flex-end
-          padding :0 4vw
           .top-item-wrapper
-            width :25.333333333333336vw
+            flex: 1
             height :55px
             background: #F7F7F7
-            border-radius: 4px 4px 0 0
             display :flex
             flex-direction :column
             justify-content :center
             align-items :center
             font-family :$font-family-medium
             transition :background 0.3s
-            &:nth-child(2n)
-              margin :0 8vw
             &.active
-              background :#FFE500
+              background :#FFE359
             .text
               font-size :18px
               line-height :21px
             .explain
-              font-family :$font-family-regular;
               font-size :12px
 
   .goods-list
@@ -409,24 +406,28 @@
         padding-left: 1.5px
     .foot-ties
       width :100vw
-      box-sizing :border-box
-      layout(row)
+      layout(row,block,nowrap)
       justify-content: center
       align-items: center
-      height: 60px
       padding-top: 25px
       padding-bottom: 20px
+      position :relative
       .lines
+        position absolute
+        col-center()
+        margin-top :2.5px
         width: 10px
         height: 1px
         background: rgba(124, 132, 156, 0.20)
-        margin: 0 5px
+        &.left
+          left :34%
+        &.right
+          right: 34%
       .center
+        position :relative
         font-family: $font-family-regular
         font-size: $font-size-14
         color: rgba(152, 152, 159, 0.30)
-        text-align: justify
-        line-height: 1
 
   .noting
     text-align: center

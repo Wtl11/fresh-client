@@ -10,6 +10,7 @@ export default {
     navigationBarTitleText: 'CHOICENESS',
     enablePullDownRefresh: true,
     backgroundColorTop: '#73C200',
+    backgroundColorBottom: '#fff',
     navigationBarTextStyle: 'white',
     backgroundTextStyle: 'light',
     onReachBottomDistance: 50,

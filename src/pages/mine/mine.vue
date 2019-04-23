@@ -3,7 +3,7 @@
     <navigation-bar title="我的" :showArrow="false" :translucent="true"></navigation-bar>
 <!--    <mine-r-test v-if="ENV === 'test'"></mine-r-test>-->
     <div :style="{height: 59 + statusBarHeight + 'px'}"></div>
-    <section class="top-background">
+    <section class="top-background" :style="{height: 206+statusBarHeight+'px'}">
       <img class="img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/bg-top_me@2x.png'">
     </section>
     <div class="mine-top">
@@ -390,7 +390,6 @@
       left :0
       right :0
       top: 0
-      height :206px
     .button-group
       position :relative
       .button-item
@@ -511,7 +510,7 @@
           width: 55px
           height: @width
           border-radius: 50%
-          border: 1px solid rgba(255,255,255,0.80);
+          border: 1.5px solid rgba(255,255,255,0.80)
           .avatar-img
             display: block
             border-radius: 50%

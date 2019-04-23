@@ -107,6 +107,7 @@
       .dot-line
         position :relative
         transform :scale(0.8)
+        top:1px
       .dot
         position :relative
         width :17.5px
