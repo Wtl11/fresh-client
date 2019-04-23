@@ -43,7 +43,7 @@
     ></home-classify>
     <custom-tab-bar currentType="index"></custom-tab-bar>
     <coupon-modal ref="couponModal"></coupon-modal>
-    <new-guidelines :navigationBar="navigationBar"></new-guidelines>
+    <new-guidelines :navigationBar="navigationBar" :titleColor="titleColor"></new-guidelines>
   </div>
 </template>
 
@@ -115,7 +115,7 @@
         systemInfo: {},
         pageScrollEvent: {},
         headStyle: `background:#73C200`,
-        titleColor: `#fff`
+        titleColor: `#ffffff`
       }
     },
     onLoad(options) {

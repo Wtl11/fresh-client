@@ -9,8 +9,10 @@
       添加「我的小程序」团购更方便<p class="triangle"></p>
     </section>
     <article class="mask-wrapper" v-if="isShow" :animation="maskAnimation">
-      <img class="pic-img" mode="widthFix" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/pic-xszytc.png'">
-      <div class="button" @click="cancel"></div>
+      <div class="pic-wrapper" :style="{top: top + 'px'}">
+        <img class="pic-img" mode="widthFix" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/pic-xszy.png'">
+        <div class="button" @click="cancel"></div>
+      </div>
     </article>
   </div>
 </template>
@@ -27,6 +29,10 @@
       navigationBar: {
         type: Number,
         default: 0
+      },
+      titleColor: {
+        type: String,
+        default: '#000000'
       }
     },
     data() {
@@ -38,7 +44,7 @@
     },
     watch: {
       navigationBar(val) {
-        if (!this.isShowGuidelines) return
+        // if (!this.isShowGuidelines) return
         if (val) {
           this.top = val + 3
         }
@@ -57,6 +63,14 @@
         if (this.isShow) {
           return
         }
+        wx.setNavigationBarColor({
+          frontColor: '#000000',
+          backgroundColor: '#ffffff',
+          animation: {
+            duration: 0,
+            timingFunc: 'easeIn'
+          }
+        })
         this.isShow = true
         this.showAnimation()
       },
@@ -67,6 +81,14 @@
         this.cancel()
       },
       cancel () {
+        wx.setNavigationBarColor({
+          frontColor: this.titleColor,
+          backgroundColor: '#ffffff',
+          animation: {
+            duration: 0,
+            timingFunc: 'easeIn'
+          }
+        })
         this.hideAnimation(() => {
           this.isShow = false
         })
@@ -86,16 +108,19 @@
     background-color: rgba(17, 17, 17, 0.7)
     fill-box(fixed)
     z-index: 999
-    .pic-img
-      row-center()
-      top:88px
-      width :82.39999999999999vw
+    .pic-wrapper
+      width :309px
+      position :absolute
+      right :35px
       display :block
-    .button
-      row-center()
-      width :200px
-      height :50px
-      top: 125vw
+      .pic-img
+        width :100%
+        display :block
+      .button
+        row-center()
+        width :200px
+        height :50px
+        top: 387px
 
 
   .top-tip
