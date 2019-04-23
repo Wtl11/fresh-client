@@ -1,7 +1,11 @@
 <template>
   <div class="wrap">
-    <navigation-bar title="我的" :showArrow="false" :translucent="false"></navigation-bar>
-    <mine-r-test v-if="ENV === 'test'"></mine-r-test>
+    <navigation-bar title="我的" :showArrow="false" :translucent="true"></navigation-bar>
+<!--    <mine-r-test v-if="ENV === 'test'"></mine-r-test>-->
+    <div :style="{height: 59 + statusBarHeight + 'px'}"></div>
+    <section class="top-background">
+      <img class="img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/bg-top_me@2x.png'">
+    </section>
     <div class="mine-top">
       <div class="info">
         <div class="avatar">
@@ -9,8 +13,9 @@
         </div>
         <div class="nickname">{{userInfo.nickname}}</div>
       </div>
-      <div class="erwcode">
-        <img class="ecode-img" v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-code@2x.png'" @click="createQrCode">
+      <div class="erwcode" @click="createQrCode">
+        <img class="ecode-img" v-if="imageUrl" :src="imageUrl+'/yx-image/2.3/icon-code@2x.png'">
+        <p class="ecode-text">提货码</p>
       </div>
     </div>
     <div class="order-nav-box">
@@ -42,42 +47,47 @@
         </div>
       </div>
     </div>
-    <ul class="button-group">
-      <li class="button-item" v-for="(item, index) in BUTTON_GROUP" :key="index">
-        <article class="item-wrapper" @click="navHandle(item)">
-          <div class="item-text">{{item.isArray ? item.text[isLeader?1:0]: item.text}}</div>
-          <p v-if="item.type === 'coupon' && couponNumber > 0" class="right-number">{{couponNumber}}张</p>
-          <div class="item-arrow-img">
-            <img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="img">
-          </div>
-        </article>
-      </li>
-    </ul>
-    <div class="self-addr group">
-      <div class="self-top">
-        <div class="subtitle">我的自提点</div>
-        <!--<div class="switch-btn" @click="toChangeShop">-->
-          <!--<div class="switch-content">切换自提点</div>-->
-          <!--<img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="arrow-img">-->
-        <!--</div>-->
-      </div>
-      <div class="location-wrapper" @click="navigateLocation">
-        <img v-if="imageUrl" :src="imageUrl + '/yx-image/mine/pic-map_bg@2x.png'" alt="" class="map">
-        <div class="maker-wrapper">
-          <div class="maker-content">
-            <div class="item-wrapper">
-              <img v-if="imageUrl" :src="imageUrl+'/yx-image/choiceness/icon-address_small@2x.png'" alt="" class="icon">
-              <div class="text">{{detail.address}}</div>
-            </div>
-            <div class="item-wrapper">
-              <img v-if="imageUrl" :src="imageUrl+'/yx-image/mine/icon-phone_samll@2x.png'" alt="" class="icon">
-              <div class="text">{{detail.mobile}}</div>
-            </div>
-          </div>
-          <img v-if="imageUrl" :src="imageUrl+'/yx-image/mine/pic-map_triangle@2x.png'" class="maker-triangle">
-        </div>
-      </div>
-    </div>
+    <mine-navigation
+      :detail="detail"
+      :couponNumber="couponNumber"
+      :isLeader="isLeader"
+    ></mine-navigation>
+<!--    <ul class="button-group">-->
+<!--      <li class="button-item" v-for="(item, index) in BUTTON_GROUP" :key="index">-->
+<!--        <article class="item-wrapper" @click="navHandle(item)">-->
+<!--          <div class="item-text">{{item.isArray ? item.text[isLeader?1:0]: item.text}}</div>-->
+<!--          <p v-if="item.type === 'coupon' && couponNumber > 0" class="right-number">{{couponNumber}}张</p>-->
+<!--          <div class="item-arrow-img">-->
+<!--            <img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="img">-->
+<!--          </div>-->
+<!--        </article>-->
+<!--      </li>-->
+<!--    </ul>-->
+<!--    <div class="self-addr group">-->
+<!--      <div class="self-top">-->
+<!--        <div class="subtitle">我的自提点</div>-->
+<!--        &lt;!&ndash;<div class="switch-btn" @click="toChangeShop">&ndash;&gt;-->
+<!--          &lt;!&ndash;<div class="switch-content">切换自提点</div>&ndash;&gt;-->
+<!--          &lt;!&ndash;<img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="arrow-img">&ndash;&gt;-->
+<!--        &lt;!&ndash;</div>&ndash;&gt;-->
+<!--      </div>-->
+<!--      <div class="location-wrapper" @click="navigateLocation">-->
+<!--        <img v-if="imageUrl" :src="imageUrl + '/yx-image/mine/pic-map_bg@2x.png'" alt="" class="map">-->
+<!--        <div class="maker-wrapper">-->
+<!--          <div class="maker-content">-->
+<!--            <div class="item-wrapper">-->
+<!--              <img v-if="imageUrl" :src="imageUrl+'/yx-image/choiceness/icon-address_small@2x.png'" alt="" class="icon">-->
+<!--              <div class="text">{{detail.address}}</div>-->
+<!--            </div>-->
+<!--            <div class="item-wrapper">-->
+<!--              <img v-if="imageUrl" :src="imageUrl+'/yx-image/mine/icon-phone_samll@2x.png'" alt="" class="icon">-->
+<!--              <div class="text">{{detail.mobile}}</div>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <img v-if="imageUrl" :src="imageUrl+'/yx-image/mine/pic-map_triangle@2x.png'" class="maker-triangle">-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
     <!--<div class="self-addr group" @click="_goMyHosing">-->
       <!--<div class="self-top">-->
         <!--<div class="subtitle">{{isLeader ? '小区管理' : '我的小区'}}</div>-->
@@ -94,8 +104,8 @@
         <div class="erm-text" :class="'corp-' + corpName + '-text'">向团长出示二维码提货</div>
       </div>
     </div>
-    <official-account></official-account>
-    <div style="height: 60px"></div>
+<!--    <official-account></official-account>-->
+    <div style="height: 50px"></div>
     <custom-tab-bar currentType="mine"></custom-tab-bar>
   </div>
 </template>
@@ -109,6 +119,8 @@
   import API from '@api'
   import {oauthComputed} from '@state/helpers'
   import MineRTest from './mine-r-test/mine-r-test'
+  import MineNavigation from './mine-navigation/mine-navigation'
+  import AnimationModal from '@mixins/animation-modal'
   const ORRDER_NAV_LIST = [
     {icon_url: '/yx-image/cart/icon-payment@2x.png', name: '待付款', id: 0, index: 1, count: 0},
     {icon_url: '/yx-image/cart/icon-delivery@2x.png', name: '待提货', id: 1, index: 2, count: 0},
@@ -117,18 +129,19 @@
     {icon_url: '/yx-image/cart/icon-order@2x.png', name: '全部', id: '', index: 0, count: 0}
   ]
 
-  const BUTTON_GROUP = [
-    {text: '优惠券', url: 'coupon-mine', type: 'coupon'},
-    {text: ['我的小区', '小区管理'], isArray: true, isLeader: true},
-    {text: '团长招募', url: 'out-html?routeType=recruit-regimental', type: 'recruit'},
-    {text: '供应商招募', url: 'out-html?routeType=recruit-supplier', type: 'recruit'},
-    {text: '加盟商招募', url: 'out-html?routeType=recruit-alliance', type: 'recruit'},
-    {text: '常见问题', url: 'out-html?routeType=FAQ', type: 'faq'}
-  ]
+  // const BUTTON_GROUP = [
+  //   {text: '优惠券', url: 'coupon-mine', type: 'coupon'},
+  //   {text: ['我的小区', '小区管理'], isArray: true, isLeader: true},
+  //   {text: '团长招募', url: 'out-html?routeType=recruit-regimental', type: 'recruit'},
+  //   {text: '供应商招募', url: 'out-html?routeType=recruit-supplier', type: 'recruit'},
+  //   {text: '加盟商招募', url: 'out-html?routeType=recruit-alliance', type: 'recruit'},
+  //   {text: '常见问题', url: 'out-html?routeType=FAQ', type: 'faq'}
+  // ]
 
   export default {
     beforeCreate() {
     },
+    mixins: [AnimationModal],
     data() {
       return {
         userInfo: {},
@@ -146,13 +159,16 @@
         modalAnimation: '',
         lastOrderList: [],
         isLeader: false,
-        BUTTON_GROUP: BUTTON_GROUP,
+        // BUTTON_GROUP: BUTTON_GROUP,
         couponNumber: 0,
-        ENV: false
+        ENV: false,
+        statusBarHeight: 0
       }
     },
     created() {
       this.ENV = process.env
+      let res = this.$wx.getSystemInfoSync()
+      this.statusBarHeight = res.statusBarHeight || 20
     },
     async onTabItemTap() {
       await this.$isLogin()
@@ -168,80 +184,101 @@
     },
     onHide() {
     },
+    onPageScroll(e) {
+      this._changeNavigation(e)
+    },
     computed: {
       ...oauthComputed
       // ...mapGetters(['role'])
     },
     methods: {
-      navigateLocation() {
-        this.$wechat.openLocation({
-          latitude: this.detail.latitude,
-          longitude: this.detail.longitude,
-          name: this.detail.socialName,
-          address: this.detail.address
+      _changeNavigation(e) {
+        let flag = e.scrollTop < 64
+        const color = flag ? `#ffffff` : `#000000`
+        wx.setNavigationBarColor({
+          frontColor: color,
+          backgroundColor: '#ffffff',
+          animation: {
+            duration: 0,
+            timingFunc: 'easeIn'
+          }
         })
       },
-      navHandle(item) {
-        // let isLeader = wx.getStorageSync('isLeader') || false
-        // let page = isLeader ? '/pages/regimental-commander' : '/pages/mine-housing'
-        // wx.navigateTo({url: page})
-        if (item.isLeader) {
-          this._goMyHosing()
-        } else {
-          wx.navigateTo({url: `/pages/${item.url}`})
-        }
-      },
-      // 跳转我的小区
-      _goMyHosing() {
-        let isLeader = wx.getStorageSync('isLeader') || false
-        let page = isLeader ? '/pages/regimental-commander' : '/pages/mine-housing'
-        wx.navigateTo({url: page})
-      },
+      // navigateLocation() {
+      //   this.$wechat.openLocation({
+      //     latitude: this.detail.latitude,
+      //     longitude: this.detail.longitude,
+      //     name: this.detail.socialName,
+      //     address: this.detail.address
+      //   })
+      // },
+      // navHandle(item) {
+      //   // let isLeader = wx.getStorageSync('isLeader') || false
+      //   // let page = isLeader ? '/pages/regimental-commander' : '/pages/mine-housing'
+      //   // wx.navigateTo({url: page})
+      //   if (item.isLeader) {
+      //     this._goMyHosing()
+      //   } else {
+      //     wx.navigateTo({url: `/pages/${item.url}`})
+      //   }
+      // },
+      // // 跳转我的小区
+      // _goMyHosing() {
+      //   let isLeader = wx.getStorageSync('isLeader') || false
+      //   let page = isLeader ? '/pages/regimental-commander' : '/pages/mine-housing'
+      //   wx.navigateTo({url: page})
+      // },
       _showQrCodeBox() {
-        let modalAnimation = wx.createAnimation({
-          duration: 500,
-          timingFunction: 'cubic-bezier(1, -0.07, 0.51, 1.48)',
-          delay: 0
-        })
-        let maskAnimation = wx.createAnimation({
-          duration: 500,
-          timingFunction: 'linear',
-          delay: 0
-        })
-        maskAnimation.opacity(0).step()
-        modalAnimation.scale(0.3).step()
-        this.maskAnimation = maskAnimation.export()
-        this.modalAnimation = modalAnimation.export()
+        // let modalAnimation = wx.createAnimation({
+        //   duration: 500,
+        //   timingFunction: 'cubic-bezier(1, -0.07, 0.51, 1.48)',
+        //   delay: 0
+        // })
+        // let maskAnimation = wx.createAnimation({
+        //   duration: 500,
+        //   timingFunction: 'linear',
+        //   delay: 0
+        // })
+        // maskAnimation.opacity(0).step()
+        // modalAnimation.scale(0.3).step()
+        // this.maskAnimation = maskAnimation.export()
+        // this.modalAnimation = modalAnimation.export()
+        // this.showModal = true
+        // setTimeout(() => {
+        //   maskAnimation.opacity(1).step()
+        //   modalAnimation.scale(1).step()
+        //   this.maskAnimation = maskAnimation.export()
+        //   this.modalAnimation = modalAnimation.export()
+        // }, 200)
+        if (this.showModal) return
         this.showModal = true
-        setTimeout(() => {
-          maskAnimation.opacity(1).step()
-          modalAnimation.scale(1).step()
-          this.maskAnimation = maskAnimation.export()
-          this.modalAnimation = modalAnimation.export()
-        }, 200)
+        this.showAnimation()
       },
       _cancelQrCodeBox() {
-        let modalAnimation = wx.createAnimation({
-          duration: 300,
-          timingFunction: 'linear',
-          delay: 0
-        })
-        let maskAnimation = wx.createAnimation({
-          duration: 300,
-          timingFunction: 'linear',
-          delay: 0
-        })
-        maskAnimation.opacity(0).step()
-        modalAnimation.scale(0.3).step()
-        this.maskAnimation = maskAnimation.export()
-        this.modalAnimation = modalAnimation.export()
-        setTimeout(() => {
-          maskAnimation.opacity(1).step()
-          modalAnimation.scale(1).step()
-          this.maskAnimation = maskAnimation.export()
-          this.modalAnimation = modalAnimation.export()
+        // let modalAnimation = wx.createAnimation({
+        //   duration: 300,
+        //   timingFunction: 'linear',
+        //   delay: 0
+        // })
+        // let maskAnimation = wx.createAnimation({
+        //   duration: 300,
+        //   timingFunction: 'linear',
+        //   delay: 0
+        // })
+        // maskAnimation.opacity(0).step()
+        // modalAnimation.scale(0.3).step()
+        // this.maskAnimation = maskAnimation.export()
+        // this.modalAnimation = modalAnimation.export()
+        // setTimeout(() => {
+        //   maskAnimation.opacity(1).step()
+        //   modalAnimation.scale(1).step()
+        //   this.maskAnimation = maskAnimation.export()
+        //   this.modalAnimation = modalAnimation.export()
+        //   this.showModal = false
+        // }, 300)
+        this.hideAnimation(() => {
           this.showModal = false
-        }, 300)
+        })
       },
       createQrCode() {
         let id = wx.getStorageSync('userInfo') ? wx.getStorageSync('userInfo').id : 0
@@ -251,9 +288,9 @@
         this.testSrc = img
         this._showQrCodeBox()
       },
-      toChangeShop() {
-        wx.navigateTo({url: '/pages/self-point'})
-      },
+      // toChangeShop() {
+      //   wx.navigateTo({url: '/pages/self-point'})
+      // },
       _getOrderCount() {
         API.Mine.getOrderCount()
           .then((res) => {
@@ -324,13 +361,15 @@
       QrcodeMsg,
       NavigationBar,
       CustomTabBar,
-      MineRTest
+      MineRTest,
+      MineNavigation
     }
   }
 </script>
 
+
 <style scoped lang="stylus" rel="stylesheet/stylus">
- @import "~@designCommon"
+  @import "~@designCommon"
 
   .img
     width :100%
@@ -346,6 +385,12 @@
     min-height: 100vh
     background: $color-white
     position: relative
+    .top-background
+      position :absolute
+      left :0
+      right :0
+      top: 0
+      height :206px
     .button-group
       position :relative
       .button-item
@@ -454,41 +499,44 @@
     .group
       padding: 0 3.46vw 0 3.2vw
     .mine-top
-      width: 100vw
-      height: 60px
-      layout(row)
+      padding :0 21px
+      layout(row,block,nowrap)
       align-items: center
-      padding-top: 5px
-      box-sizing: border-box
-      justify-content: space-between
+      position :relative
       .info
         layout(row)
         align-items: center
+        flex: 1
         .avatar
-          width: 14.6vw
+          width: 55px
+          height: @width
           border-radius: 50%
-          height: 14.6vw
-          margin: 0 2.67vw 0 3.2vw
+          border: 1px solid rgba(255,255,255,0.80);
           .avatar-img
             display: block
             border-radius: 50%
             width: 100%
             height: 100%
         .nickname
+          padding-left :17px
           max-width: 53vw
           font-family: $font-family-medium
           font-size: $font-size-18
-          color: #1F1F1F
-          letter-spacing: 0.45px
+          color: #fff
+          letter-spacing: 0.9px
           no-wrap()
       .erwcode
-        width: 9.33vw
-        height: 9.33vw
-        margin-right: 5.34vw
+        opacity: 0.9;
+        .ecode-text
+          padding-top :4px
+          font-family: $font-family-regular
+          font-size: 11px;
+          color: #FFFFFF;
+          text-align :center
         .ecode-img
           display: block
-          width: 9.33vw
-          height: 9.33vw
+          width: 38px
+          height: @width
     .order-nav
       width: 100%
       height: 88px
@@ -546,10 +594,11 @@
   .order-nav-box
     box-shadow: 0 4px 30px 0 rgba(17, 17, 17, 0.06)
     border-radius: 6px
-    margin: 30px auto 0
+    margin: 23px auto 0
     width: 93.6vw
     background: $color-white
     overflow: hidden
+    position :relative
     .order-banner-box
       padding: 0 10px 10px
       box-sizing: border-box
@@ -603,9 +652,9 @@
     left: 0
     bottom: 0
     right: 0
-    background-color: rgba(17, 17, 17, 0.8)
+    background-color: rgba(17, 17, 17, 0.7)
     fill-box(fixed)
-    z-index: 100
+    z-index: 555
     layout()
     justify-content: center
     align-items: center

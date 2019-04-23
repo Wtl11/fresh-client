@@ -7,6 +7,9 @@ page.$mount()
 
 export default {
   config: {
-    navigationBarTitleText: '我的'
+    navigationBarTitleText: '我的',
+    backgroundColorTop: '#73C200',
+    navigationBarTextStyle: 'white',
+    backgroundTextStyle: 'light'
   }
 }
