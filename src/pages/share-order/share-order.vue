@@ -68,7 +68,7 @@
 
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
-  import ShareHandler from '@mixins/share-handler'
+  import ShareHandler, {EVENT_CODE} from '@mixins/share-handler'
 
   import API from '@api'
 
@@ -91,7 +91,10 @@
     },
     onShow() {
       this.getShareOrderDate()
-      this.shareHandler()
+      this.$$shareHandler({
+        event: EVENT_CODE.SHARE_ORDER,
+        orderId: this.orderId
+      })
     },
     methods: {
       jumpGoodsDetail(item) {

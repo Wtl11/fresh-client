@@ -1,4 +1,5 @@
 <template>
+  <form action="" report-submit @submit="$getFormId">
   <div class="goods-detail">
     <navigation-bar ref="navigationBar" :title="msgTitle" :showArrow="true"></navigation-bar>
     <div class="banner-box">
@@ -57,7 +58,7 @@
       </div>
       <!--<img v-if="imageUrl && corpName === 'platform'" :src="imageUrl + '/yx-image/goods/icon-share2@2x.png'" mode="aspectFill" class="banner-share" @click="showShare">-->
       <!--<img v-if="imageUrl && corpName === 'retuan'" :src="imageUrl + '/yx-image/retuan/icon-share2@2x.png'" mode="aspectFill" class="banner-share" @click="showShare">-->
-      <button class="banner-share" :open-type="activityId? 'share': ''">
+      <button class="banner-share" formType="submit" :open-type="activityId? 'share': ''">
         <img v-if="imageUrl && corpName === 'platform'" :src="imageUrl + '/yx-image/goods/icon-share2@2x.png'" mode="aspectFill" class="share-img" @click="showShare">
         <img v-if="imageUrl && corpName === 'retuan'" :src="imageUrl + '/yx-image/retuan/icon-share2@2x.png'" mode="aspectFill" class="share-img" @click="showShare">
       </button>
@@ -104,13 +105,13 @@
     </div>
     <div class="fixed-btn">
       <div class="hlep-btn">
-        <div class="hlep-btn-box" v-for="(item, index) in typeBtn" :key="index" @click.stop="switchItem(item)">
+        <button formType="submit" class="hlep-btn-box" v-for="(item, index) in typeBtn" :key="index" @click.stop="switchItem(item)">
           <div class="hlep-top">
             <img v-if="imageUrl" :src="imageUrl + item.url" class="detail-img" mode="aspectFill">
             <div class="help-number" v-if="index * 1 === 1 && count * 1 >= 1">{{count * 1 > 99 ? 99 : count}}</div>
           </div>
           <div class="hlep-bottom">{{item.text}}</div>
-        </div>
+        </button>
       </div>
       <form action="" report-submit @submit="$getFormId">
         <button v-if="isShowTwoButton" class="goods-btn goods-btn-active" formType="submit" @click="addShoppingCart">加入购物车</button>
@@ -145,6 +146,7 @@
       </div>
     </div>
   </div>
+  </form>
 </template>
 
 <script type="text/ecmascript-6">
@@ -158,7 +160,8 @@
   import WePaint from '@components/we-paint/we-paint'
   import API from '@api'
   import base64src from './utils'
-  import ShareHandler from '@mixins/share-handler'
+  import ShareHandler, {EVENT_CODE} from '@mixins/share-handler'
+  import ShareTrick from '@mixins/share-trick'
 
   const PAGE_NAME = 'GOODS_DETAIL'
   const TYPEBTN = [{url: '/yx-image/goods/icon-homepage@2x.png', text: '首页', type: 0}, {url: '/yx-image/goods/icon-shopcart@2x.png', text: '购物车', type: 2}]
@@ -185,7 +188,7 @@
   }
   export default {
     name: PAGE_NAME,
-    mixins: [ShareHandler],
+    mixins: [ShareHandler, ShareTrick],
     data() {
       return {
         describeNum: 0,
@@ -298,13 +301,17 @@
     onShow() {
       this._setEventNo()
       this.getGoodsDetailData()
-      this.getGoodsDetailDataThumb()
+      // this.getGoodsDetailDataThumb()
       this._groupInfo()
       this.getUserImgList()
       this.setCartCount()
       this.getGoodsOtherInfo()
       this.getQrCode()
-      this.shareHandler()
+      this.$$shareHandler({
+        event: EVENT_CODE.GOODS_DETAIL,
+        activityId: this.activityId,
+        goodsId: this.goodsId
+      })
     },
     onUnload() {
       clearInterval(this.timer)
@@ -578,6 +585,7 @@
           if (res.error === this.$ERR_OK) {
             let goodDetail = res.data
             this.goodsMsg = goodDetail
+            this.thumb_image = goodDetail.thumb_image
             this.goodsBanner = goodDetail.goods_banner_images
             this.showOpen = goodDetail.describe.length > this.describeNum
             this.deliverAt = goodDetail.delivery_at
@@ -606,14 +614,14 @@
           }
         })
       },
-      getGoodsDetailDataThumb() {
-        API.Choiceness.getGoodsDetailsThumb({goods_id: this.goodsId, activity_id: this.activityId}).then((res) => {
-          if (res.error === this.$ERR_OK) {
-            this.thumb_image = res.data.thumb_image
-          } else {
-          }
-        })
-      },
+      // getGoodsDetailDataThumb() {
+      //   API.Choiceness.getGoodsDetailsThumb({goods_id: this.goodsId, activity_id: this.activityId}).then((res) => {
+      //     if (res.error === this.$ERR_OK) {
+      //       this.thumb_image = res.data.thumb_image
+      //     } else {
+      //     }
+      //   })
+      // },
       comfirmNumer(number) {
         let goodsList = this.goodsMsg.goods_skus[0]
         goodsList.sku_id = goodsList.goods_sku_id
@@ -642,7 +650,7 @@
           if (this.activityTime.differ <= 0) {
             clearInterval(this.timer)
             this.getGoodsDetailData()
-            this.getGoodsDetailDataThumb()
+            // this.getGoodsDetailDataThumb()
             this.getGoodsOtherInfo()
           }
         }, 1000)

@@ -31,7 +31,7 @@
   import AuthorMixins from './author-mixins'
   import API from '@api'
   import CouponNavigator from '@mixins/coupon-navigator'
-  import ShareHandler from '@mixins/share-handler'
+  import ShareHandler, {EVENT_CODE} from '@mixins/share-handler'
 
   const PAGE_NAME = 'COUPON_TAKE'
   const METHODS = {
@@ -89,7 +89,6 @@
       this._getTakeArray()
       this._getCouponInfo()
       this._getCouponStatus()
-      this.shareHandler()
     },
     onReachBottom() {
       this.page++
@@ -124,6 +123,10 @@
       _getCouponInfo() {
         API.Coupon[this.METHODS.getCouponInfo](this.id).then((res) => {
           this.couponInfo = res.data
+          this.$$shareHandler({
+            event: EVENT_CODE.COUPON_TAKE,
+            couponId: res.data.coupon.id
+          })
         }).catch(e => {
           console.error(e, '获取优惠券信息')
         })
