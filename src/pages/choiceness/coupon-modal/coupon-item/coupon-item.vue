@@ -1,20 +1,23 @@
 <template>
   <div class="coupon-item">
     <div class="coupon-bg">
-      <img class="img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.1/pic-coupon_lqtc@2x.png'">
+      <img class="img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/pic-coupon_lqtc.png'">
     </div>
     <div class="coupon-container" :class="'corp-' + corpName + '-money'">
       <section class="left">
         <div class="l-top">
-          <p v-if="dataInfo.coupon.preferential_type === 2" class="unit">¥</p>
+<!--          <p v-if="dataInfo.coupon.preferential_type === 2" class="unit">¥</p>-->
           <p class="number">{{dataInfo.coupon.denomination}}</p>
-          <p v-if="dataInfo.coupon.preferential_type === 1" class="unit">折</p>
+          <p v-if="dataInfo.coupon.preferential_type === 1" class="unit">{{dataInfo.coupon.preferential_type === 1?'折': '元'}}</p>
         </div>
       </section>
       <section class="right">
         <div class="info-wrapper">
-          <div class="title">{{dataInfo.coupon.coupon_name}}</div>
-          <p class="condition">{{dataInfo.coupon.condition_str}}</p>
+          <div class="title">
+            <p class="use-type">通用</p>
+            <p class="txt">满100元减5元</p>
+          </div>
+          <p class="condition">{{dataInfo.coupon.condition_str}}有效期至 2018.12.31</p>
         </div>
       </section>
     </div>
@@ -28,10 +31,15 @@
 
   export default {
     name: COMPONENT_NAME,
-    props: {
-      dataInfo: {
-        type: Object,
-        default: () => new Coupon()
+    // props: {
+    //   dataInfo: {
+    //     type: Object,
+    //     default: () => new Coupon()
+    //   }
+    // },
+    data() {
+      return {
+        dataInfo: new Coupon()
       }
     }
   }
@@ -50,7 +58,8 @@
   .coupon-item
     width: 100%
     height :0
-    padding-top :29.100529100529098%
+    padding-top :30.567685589519648%
+    position :relative
     .coupon-bg
       fill-box(absolute)
     .coupon-container
@@ -82,17 +91,25 @@
         overflow :hidden
         .info-wrapper
           height :100%
-          box-sizing :border-box
-          padding:3.0666666666666664vw 1.813333333333333vw 2.8000000000000003vw
           layout(column,block,nowrap)
-          justify-content :space-between
+          justify-content :center
           opacity: 0.9;
           font-family: $font-family-medium
           font-size: 3.4666666666666663vw
           line-height :1
+          color: #3F454B;
           .title
-            no-wrap()
+            layout(row,block,nowrap)
+            align-items :center
+            color: #1D2023;
+            .use-type
+              height :14px
+              border-bottom :1px solid #1D2023
+              border-radius :3.73px
+              color:#1D2023
+
           .condition
+            padding-top :11px
             opacity :0.8
             font-size :3.2vw
             no-wrap()

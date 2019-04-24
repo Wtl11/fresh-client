@@ -32,7 +32,7 @@
 <!--        <div class="button" @click="submitHandle"></div>-->
 <!--      </article>-->
 <!--    </section>-->
-    <section class="content">
+    <section class="content" @touchmove.stop>
       <img class="img-bg"
            mode="aspectFill"
            v-if="imageUrl"
@@ -45,8 +45,13 @@
       >
       <article class="wrapper">
         <div class="place-box"></div>
-        <scroll-view class="coupon-wrapper">
-          <div style="height: 500px;background: red"></div>
+        <scroll-view
+          class="coupon-wrapper"
+          scroll-y
+        >
+          <div v-for="(item, index) in couponArray" :key="index" class="coupon-item-wrapper">
+            <coupon-item :dataInfo="item"></coupon-item>
+          </div>
         </scroll-view>
       </article>
       <article class="button-wrapper">
@@ -75,7 +80,7 @@
     data() {
       return {
         isShow: true,
-        couponArray: []
+        couponArray: [1]
       }
     },
     methods: {
@@ -161,15 +166,6 @@
         left :@right
         bottom :0
         height :27.73333333333333vw
-      &.one
-        height :86.26666666666667vw2
-      .wrapper
-        position :relative
-        .place-box
-          height :165px
-        .coupon-wrapper
-          position :relative
-          margin :0 20px 0 18.5px
         .explain
           padding-top :4.266666666666667vw
           font-family: $font-family-regular
@@ -183,4 +179,20 @@
           margin :1.866666666666667vw auto
           height :8.799999999999999vw
           width :35.46666666666667vw
+      .wrapper
+        position :relative
+        .place-box
+          height :165px
+        .coupon-wrapper
+          position :relative
+          width :229px
+          height: 150px
+          margin :0 auto
+          ::-webkit-scrollbar
+            width: 0
+            height: 0
+            color: transparent
+          .coupon-item-wrapper
+            width :100%
+
 </style>
