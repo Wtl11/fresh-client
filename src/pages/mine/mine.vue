@@ -177,7 +177,7 @@
       if (!wx.getStorageSync('token')) return
       let storageUserInfo = await this.$wechat.getStorage('userInfo')
       this.userInfo = storageUserInfo.data
-      this.isLeader = wx.getStorageSync('isLeader')
+      this.isLeader = wx.getStorageSync('isLeader') || false
       this._getShopDetail()
       this._getOrderCount()
       this._getCouponNumber()
