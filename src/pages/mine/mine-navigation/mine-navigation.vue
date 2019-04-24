@@ -59,7 +59,7 @@
           {
             icon: '/yx-image/2.3/icon-question_me@2x.png',
             title: '常见问题',
-            url: 'out-html?routeType=FAQ',
+            url: 'faq',
             fn: '_handleNav'
           }
           // {

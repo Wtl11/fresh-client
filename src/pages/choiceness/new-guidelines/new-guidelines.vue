@@ -47,6 +47,10 @@
         // if (!this.isShowGuidelines) return
         if (val) {
           this.top = val + 3
+          setTimeout(() => {
+            this.isShowGuidelines = false
+            wx.setStorageSync('showNewGuidelines', 'showNewGuidelines')
+          }, 3000)
         }
       }
     },
@@ -58,21 +62,21 @@
     },
     methods: {
       show () {
-        this.isShowGuidelines = false
-        wx.setStorageSync('showNewGuidelines', 'showNewGuidelines')
-        if (this.isShow) {
-          return
-        }
-        wx.setNavigationBarColor({
-          frontColor: '#000000',
-          backgroundColor: '#ffffff',
-          animation: {
-            duration: 0,
-            timingFunc: 'easeIn'
-          }
-        })
-        this.isShow = true
-        this.showAnimation()
+        // this.isShowGuidelines = false
+        // wx.setStorageSync('showNewGuidelines', 'showNewGuidelines')
+        // if (this.isShow) {
+        //   return
+        // }
+        // wx.setNavigationBarColor({
+        //   frontColor: '#000000',
+        //   backgroundColor: '#ffffff',
+        //   animation: {
+        //     duration: 0,
+        //     timingFunc: 'easeIn'
+        //   }
+        // })
+        // this.isShow = true
+        // this.showAnimation()
       },
       close () {
         this.isShow = false

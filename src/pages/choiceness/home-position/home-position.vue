@@ -107,7 +107,7 @@
     .community-main
       layout(row)
       align-items: center
-      opacity :0.8
+      opacity :1
       .community-img
         width: 15.5px
         height: 17.5px
@@ -138,7 +138,7 @@
       width :35vw
       height: 24px
       padding: 0 9.5px 0 3px
-      background: rgba(255,255,255,0.2)
+      background: rgba(255,255,255,1)
       border-radius: 36px
       position :relative
       overflow :hidden
@@ -164,7 +164,7 @@
             flex: 1
             font-family: $font-family-regular
             font-size: 12px
-            color: #fff
+            color: $color-text-main
             no-wrap()
 
 </style>

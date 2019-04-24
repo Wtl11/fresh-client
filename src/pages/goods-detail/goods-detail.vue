@@ -970,7 +970,7 @@
       width: 100%
       border-bottom-left-radius: 8px
       border-bottom-right-radius: 8px
-      padding: 15px 10px 23px
+      padding: 10px
       box-sizing: border-box
       margin-bottom: 10px
       box-shadow: 0 6px 20px 0 rgba(17, 17, 17, 0.06)
@@ -1012,7 +1012,7 @@
       .info-sub
         layout(row)
         align-items: center
-        margin: 21.5px 0 16.5px
+        margin: 10px 0 5px
         .info-sub-img
           width: 14.5px
           height: 15.5px
@@ -1029,7 +1029,7 @@
 
   .safeguard-box
     padding-left: 10px
-    height: 60px
+    height: 40px
     background: $color-white
     border-radius: 8px
     box-sizing: border-box

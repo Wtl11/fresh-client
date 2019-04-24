@@ -266,7 +266,7 @@
   .shop-car
     position :fixed
     right :15px
-    bottom :22px
+    bottom :65px
     width :45px
     height :@width
     background: #FFFFFF;
