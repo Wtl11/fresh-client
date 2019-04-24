@@ -131,9 +131,6 @@
     },
     async onShow() {
       try {
-        this.$sendMsg({
-          event_no: 1000
-        })
         ald.aldstat.sendEvent('首页')
         let shopId = wx.getStorageSync('shopId')
         if (!shopId) {
@@ -158,6 +155,9 @@
         console.error(e)
       } finally {
         this.$wechat.hideLoading()
+        this.$sendMsg({
+          event_no: 1000
+        })
         this.$$shareHandler({event: EVENT_CODE.HOME})
       }
     },
