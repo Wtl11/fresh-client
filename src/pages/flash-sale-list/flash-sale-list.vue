@@ -31,7 +31,7 @@
     </section>
     <ul v-if="goodsList.length" class="goods-list">
       <li class="goods-item-box" v-for="(item, index) in goodsList" :key="index">
-        <classify-item :item="item"></classify-item>
+        <classify-item :item="item" @goToChildPage="handleGoToChildPage"></classify-item>
       </li>
       <li class="foot-ties" v-if="!hasMore && !isShowEmpty">
         <div class="lines left"></div>
@@ -97,7 +97,8 @@
           second: '00'
         },
         id: undefined, // 活动id
-        sharing: false // 分享中
+        sharing: false, // 分享中
+        goChildPage: false
       }
     },
     computed: {
@@ -110,6 +111,11 @@
       // 分享不执行
       if (this.sharing) {
         this.sharing = false
+        return
+      }
+      if (this.goChildPage) {
+        this.goChildPage = false
+        this._getTabList(0, false)
         return
       }
       wx.pageScrollTo({
@@ -153,6 +159,9 @@
       this.timer && clearInterval(this.timer)
     },
     methods: {
+      handleGoToChildPage() {
+        this.goChildPage = true
+      },
       handleNav() {
         wx.switchTab({url: '/pages/shopping-cart'})
       },
@@ -177,6 +186,10 @@
         }
         this.timer && clearInterval(this.timer)
         this.tabIndex = index
+        wx.pageScrollTo({
+          scrollTop: 0,
+          duration: 0
+        })
         this._resetListParams()
         this._getTabList(0, false)
       },

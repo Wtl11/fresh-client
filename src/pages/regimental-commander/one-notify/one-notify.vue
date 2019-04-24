@@ -41,7 +41,7 @@
             this.$wechat.showToast(res.message)
             return
           }
-          this.$wechat.showToast('操作成功')
+          this.$wechat.showToast(res.message)
         })
       }
     }

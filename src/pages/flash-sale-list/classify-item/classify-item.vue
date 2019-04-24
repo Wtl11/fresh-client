@@ -45,6 +45,7 @@
     methods: {
       ...cartMethods,
       jumpGoodsDetail(item) {
+        this.$emit('goToChildPage')
         wx.navigateTo({
           url: `/pages/goods-detail?id=${item.goods_id}&activityId=${item.activity_id}`
         })
