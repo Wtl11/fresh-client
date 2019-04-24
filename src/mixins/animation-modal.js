@@ -1,4 +1,4 @@
-const DURATION_SHOW = 100
+const DURATION_SHOW = 300
 const DURATION_CANCEL = 300
 export default {
   data() {
