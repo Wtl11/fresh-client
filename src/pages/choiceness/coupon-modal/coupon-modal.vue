@@ -1,35 +1,57 @@
 <template>
   <div class="coupon-modal" v-if="isShow" :animation="maskAnimation">
-    <section class="content" :class="{one: couponArray.length === 1}" :animation="modalAnimation">
+<!--    <section class="content" :class="{one: couponArray.length === 1}" :animation="modalAnimation">-->
+<!--      <img class="img-bg"-->
+<!--           mode="aspectFill"-->
+<!--           v-if="imageUrl && couponArray.length === 1"-->
+<!--           :src="imageUrl + '/yx-image/2.1/pic-lqyhqtc-one@2x.png'">-->
+<!--      <img class="img-bg"-->
+<!--           mode="aspectFill"-->
+<!--           v-if="imageUrl && couponArray.length === 2"-->
+<!--           :src="imageUrl + '/yx-image/2.1/pic-lqyhqtc@2x.png'">-->
+<!--      <img class="img-bg"-->
+<!--           mode="aspectFill"-->
+<!--           v-if="imageUrl && couponArray.length === 1"-->
+<!--           :src="imageUrl + '/yx-image/2.1/pic-lqyhqtc-one.png'">-->
+<!--      <img class="img-bg"-->
+<!--           mode="aspectFill"-->
+<!--           v-if="imageUrl && couponArray.length === 2"-->
+<!--           :src="imageUrl + '/yx-image/2.1/pic-lqyhqtc.png'">-->
+<!--      <img class="close"-->
+<!--           mode="aspectFill"-->
+<!--           v-if="imageUrl"-->
+<!--           :src="imageUrl + '/yx-image/2.1/icon-deletetc@2x.png'"-->
+<!--           @click="cancelHandle"-->
+<!--      >-->
+<!--      <article class="wrapper">-->
+<!--        <div class="place-box"></div>-->
+<!--        <div v-for="(item, index) in couponArray" :key="item.coupon_id || index" class="coupon-wrapper">-->
+<!--          <coupon-item :dataInfo="item"></coupon-item>-->
+<!--        </div>-->
+<!--        <p hover-class="none" class="explain" @click="navHandle">优惠券已放入账号 <span class="look">查看></span></p>-->
+<!--        <div class="button" @click="submitHandle"></div>-->
+<!--      </article>-->
+<!--    </section>-->
+    <section class="content">
       <img class="img-bg"
            mode="aspectFill"
-           v-if="imageUrl && couponArray.length === 1"
-           :src="imageUrl + '/yx-image/2.1/pic-lqyhqtc-one@2x.png'">
-      <img class="img-bg"
-           mode="aspectFill"
-           v-if="imageUrl && couponArray.length === 2"
-           :src="imageUrl + '/yx-image/2.1/pic-lqyhqtc@2x.png'">
-      <img class="img-bg"
-           mode="aspectFill"
-           v-if="imageUrl && couponArray.length === 1"
-           :src="imageUrl + '/yx-image/2.1/pic-lqyhqtc-one.png'">
-      <img class="img-bg"
-           mode="aspectFill"
-           v-if="imageUrl && couponArray.length === 2"
-           :src="imageUrl + '/yx-image/2.1/pic-lqyhqtc.png'">
+           v-if="imageUrl"
+           :src="imageUrl + '/yx-image/2.3/pic-lqyhqtc.png'">
       <img class="close"
            mode="aspectFill"
            v-if="imageUrl"
-           :src="imageUrl + '/yx-image/2.1/icon-deletetc@2x.png'"
+           :src="imageUrl + '/yx-image/2.3/icon-deletetc@2x.png'"
            @click="cancelHandle"
       >
       <article class="wrapper">
         <div class="place-box"></div>
-        <div v-for="(item, index) in couponArray" :key="item.coupon_id || index" class="coupon-wrapper">
-          <coupon-item :dataInfo="item"></coupon-item>
-        </div>
-        <p hover-class="none" class="explain" @click="navHandle">优惠券已放入账号 <span class="look">查看></span></p>
-        <div class="button" @click="submitHandle"></div>
+        <ul class="coupon-wrapper"></ul>
+      </article>
+      <article class="button-wrapper">
+        <img class="img-bg"
+             mode="aspectFill"
+             v-if="imageUrl"
+             :src="imageUrl + '/yx-image/2.3/pic-coupontc_up.png'">
       </article>
     </section>
   </div>
@@ -50,7 +72,7 @@
     },
     data() {
       return {
-        isShow: false,
+        isShow: true,
         couponArray: []
       }
     },
@@ -131,8 +153,14 @@
       width: 71.33333333333334vw
       height :102.26666666666667vw
       margin-top :-15%
+      .button-wrapper
+        position :absolute
+        right :1.0666666666666667vw
+        left :@right
+        bottom :0
+        height :27.73333333333333vw
       &.one
-        height :86.26666666666667vw
+        height :86.26666666666667vw2
       .wrapper
         position :relative
         .place-box
