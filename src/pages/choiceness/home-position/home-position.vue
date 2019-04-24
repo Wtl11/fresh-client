@@ -79,7 +79,7 @@
     computed: {
       gName() {
         let name = (this.groupInfo && this.groupInfo.social_name) || ''
-        return name.substring(0, 5) + (name.length > 5 ? '...' : '')
+        return name.substring(0, 6) + (name.length > 6 ? '...' : '')
       }
     },
     methods: {
@@ -122,7 +122,6 @@
         font-size: $font-size-16
         font-family: $font-family-medium
         min-height: $font-size-18
-        max-width: 83px
         margin-right: 5px
         overflow :hidden
         white-space: nowrap

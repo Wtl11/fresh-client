@@ -39,7 +39,7 @@
       return {
         top: 0,
         isShow: false,
-        isShowGuidelines: false
+        isShowGuidelines: true
       }
     },
     watch: {
@@ -49,16 +49,16 @@
           this.top = val + 3
           setTimeout(() => {
             this.isShowGuidelines = false
-            wx.setStorageSync('showNewGuidelines', 'showNewGuidelines')
-          }, 3000)
+            // wx.setStorageSync('showNewGuidelines', 'showNewGuidelines')
+          }, 2000)
         }
       }
     },
     onLoad() {
-      const isShowGuidelines = wx.getStorageSync('showNewGuidelines')
-      if (!isShowGuidelines) {
-        this.isShowGuidelines = !isShowGuidelines
-      }
+      // const isShowGuidelines = wx.getStorageSync('showNewGuidelines')
+      // if (!isShowGuidelines) {
+      //   this.isShowGuidelines = !isShowGuidelines
+      // }
     },
     methods: {
       show () {
