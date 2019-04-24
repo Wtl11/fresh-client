@@ -45,7 +45,9 @@
       >
       <article class="wrapper">
         <div class="place-box"></div>
-        <ul class="coupon-wrapper"></ul>
+        <scroll-view class="coupon-wrapper">
+          <div style="height: 500px;background: red"></div>
+        </scroll-view>
       </article>
       <article class="button-wrapper">
         <img class="img-bg"
@@ -164,12 +166,10 @@
       .wrapper
         position :relative
         .place-box
-          height :47.733333333333334vw
+          height :165px
         .coupon-wrapper
           position :relative
-          margin :0 auto 1.6vw
-          z-index :2
-          width :50.4vw
+          margin :0 20px 0 18.5px
         .explain
           padding-top :4.266666666666667vw
           font-family: $font-family-regular
