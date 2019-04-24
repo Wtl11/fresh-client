@@ -59,6 +59,13 @@
              mode="aspectFill"
              v-if="imageUrl"
              :src="imageUrl + '/yx-image/2.3/pic-coupontc_up.png'">
+        <p hover-class="none" class="explain" @click="navHandle">优惠券已放入账号 <span class="look">查看></span></p>
+        <img class="button"
+             mode="aspectFill"
+             v-if="imageUrl"
+             :src="imageUrl + '/yx-image/2.3/btn-touse.png'"
+             @click="submitHandle"
+        >
       </article>
     </section>
   </div>
@@ -79,8 +86,8 @@
     },
     data() {
       return {
-        isShow: true,
-        couponArray: [1]
+        isShow: false,
+        couponArray: []
       }
     },
     methods: {
@@ -167,7 +174,8 @@
         bottom :0
         height :27.73333333333333vw
         .explain
-          padding-top :4.266666666666667vw
+          position :relative
+          padding-top :7.466666666666668vw
           font-family: $font-family-regular
           font-size: 3.2vw
           color: #FFFFFF;
@@ -176,23 +184,30 @@
           .look
             text-decoration :underline
         .button
-          margin :1.866666666666667vw auto
-          height :8.799999999999999vw
-          width :35.46666666666667vw
+          position :relative
+          margin :4.266666666666667vw auto 0
+          width :34.66666666666667vw
+          height :8.666666666666668vw
+          display :block
       .wrapper
         position :relative
         .place-box
-          height :165px
+          height :44vw
         .coupon-wrapper
           position :relative
-          width :229px
-          height: 150px
+          width :61.06666666666667vw
+          height: 40vw
           margin :0 auto
+          &.active
+            display :none
           ::-webkit-scrollbar
             width: 0
             height: 0
             color: transparent
           .coupon-item-wrapper
             width :100%
+            padding-bottom :2.1333333333333333vw
+            &:last-child
+              padding-bottom :8vw
 
 </style>

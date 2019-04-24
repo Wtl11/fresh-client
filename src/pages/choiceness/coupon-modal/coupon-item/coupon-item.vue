@@ -8,16 +8,16 @@
         <div class="l-top">
 <!--          <p v-if="dataInfo.coupon.preferential_type === 2" class="unit">¥</p>-->
           <p class="number">{{dataInfo.coupon.denomination}}</p>
-          <p v-if="dataInfo.coupon.preferential_type === 1" class="unit">{{dataInfo.coupon.preferential_type === 1?'折': '元'}}</p>
+          <p class="unit">{{dataInfo.coupon.preferential_type === 1?'折':'元'}}</p>
         </div>
       </section>
       <section class="right">
         <div class="info-wrapper">
           <div class="title">
-            <p class="use-type">通用</p>
-            <p class="txt">满100元减5元</p>
+            <p class="use-type">{{dataInfo.coupon.range_type_str}}</p>
+            <p class="txt">{{dataInfo.coupon.condition_str}}</p>
           </div>
-          <p class="condition">{{dataInfo.coupon.condition_str}}有效期至 2018.12.31</p>
+          <p class="condition">有效期至 {{dataInfo.coupon.end_at}}</p>
         </div>
       </section>
     </div>
@@ -31,17 +31,17 @@
 
   export default {
     name: COMPONENT_NAME,
-    // props: {
-    //   dataInfo: {
-    //     type: Object,
-    //     default: () => new Coupon()
-    //   }
-    // },
-    data() {
-      return {
-        dataInfo: new Coupon()
+    props: {
+      dataInfo: {
+        type: Object,
+        default: () => new Coupon()
       }
     }
+    // data() {
+    //   return {
+    //     dataInfo: new Coupon()
+    //   }
+    // }
   }
 </script>
 
@@ -83,18 +83,18 @@
           .unit
             font-family :$font-family-regular
             position :relative
-            top:1.4vw
+            top:1.1vw
             font-size: 3.266666666666667vw
             line-height: 3.733333333333334vw
       .right
-        flex: 2.0031847133757963
+        flex: 1.7926829268292683
         overflow :hidden
         .info-wrapper
           height :100%
           layout(column,block,nowrap)
           justify-content :center
           opacity: 0.9;
-          font-family: $font-family-medium
+          font-family: $font-family-regular
           font-size: 3.4666666666666663vw
           line-height :1
           color: #3F454B;
@@ -104,13 +104,23 @@
             color: #1D2023;
             .use-type
               height :14px
-              border-bottom :1px solid #1D2023
-              border-radius :3.73px
+              border :0.5px solid #1D2023
+              border-radius :1px
               color:#1D2023
-
+              font-size:10px
+              line-height :15px
+              padding :0 3px
+            .txt
+              padding-left :0.8vw
+              font-family: $font-family-medium
+              font-size :3.733333333333334vw
+              line-height :1
+              max-width :25vw
+              no-wrap()
           .condition
-            padding-top :11px
+            padding-top :2.933333333333333vw
             opacity :0.8
             font-size :3.2vw
+            line-height :1
             no-wrap()
 </style>
