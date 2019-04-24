@@ -35,7 +35,7 @@
       <img class="qr-code" :src="qrCodeImage" alt="">
       <div class="save-wrapper">
         <div class="save-btn" @click="saveImage">保存图片</div>
-        <div class="tips">“目前仅开放广州白云区”</div>
+<!--        <div class="tips">“目前仅开放广州白云区”</div>-->
       </div>
     </div>
   </div>

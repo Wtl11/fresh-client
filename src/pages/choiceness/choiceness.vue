@@ -138,9 +138,6 @@
     },
     async onShow() {
       try {
-        this.$sendMsg({
-          event_no: 1000
-        })
         ald.aldstat.sendEvent('首页')
         let shopId = wx.getStorageSync('shopId')
         if (!shopId) {
@@ -148,6 +145,7 @@
           wx.setStorageSync('shopId', res.data.id)
           shopId = res.data.id
         }
+        this._getBuyUsers()
         // 获取团的信息
         this._groupInfo(false)
         if (this.curShopId * 1 !== shopId * 1) {
@@ -164,6 +162,9 @@
         console.error(e)
       } finally {
         this.$wechat.hideLoading()
+        this.$sendMsg({
+          event_no: 1000
+        })
         this.$$shareHandler({event: EVENT_CODE.HOME})
       }
     },
