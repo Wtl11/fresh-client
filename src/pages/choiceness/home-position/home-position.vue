@@ -10,10 +10,14 @@
         <span>{{gName}}</span>
       </div>
       <div class="community-text" v-else>定位中...</div>
-      <img class="more-img" mode="aspectFit" v-if="imageUrl && false" :src="imageUrl+'/yx-image/2.3/icon-pressed_qhztd@2x.png'">
+      <img class="more-img" mode="aspectFit" v-if="imageUrl" :src="imageUrl+'/yx-image/2.3/icon-pressed_qhztd@2x.png'">
       <!--<img v-if="imageUrl && (locationStatus * 1 === 1 || locationStatus * 1 === 2) && groupInfo.social_name"-->
       <!--:src="imageUrl + '/yx-image/choiceness/icon-pitch@2x.png'" class="community-down">-->
     </div>
+    <section class="search-wrapper">
+      <img class="s-img" mode="aspectFit" v-if="imageUrl" :src="imageUrl+'/yx-image/2.3/icon-search@2x.png'">
+      <p>搜索商品</p>
+    </section>
     <!--<div class="carousel-wrapper" v-if="buyUsers.length > 0 && (locationStatus * 1 === 1 || locationStatus * 1 === 2)"-->
          <!--:class="{'show': showBuyUser}">-->
       <!--<div class="avatar-wrapper">-->
@@ -21,27 +25,27 @@
       <!--</div>-->
       <!--<div class="content">买了{{buyUsers[showUserIndex].goods_name}}</div>-->
     <!--</div>-->
-    <section class="carousel-wrapper">
-      <swiper
-        v-if="buyUsers.length > 0 && (locationStatus * 1 === 1 || locationStatus * 1 === 2)"
-        class="carousel"
-        :autoplay="true"
-        :interval="3000"
-        :duration="500"
-        circular
-        vertical
-      >
-        <block v-for="(item, index) in buyUsers" :key="index">
-          <swiper-item class="content-wrapper">
-            <figure class="avatar-wrapper">
-              <img v-if="item.head_image_url" lazy-load :src="item.head_image_url" alt="" class="img">
-            </figure>
-            <div class="text">买了{{item.goods_name}}</div>
-          </swiper-item>
-        </block>
-      </swiper>
-      <div class="place-holder"></div>
-    </section>
+<!--    <section class="carousel-wrapper">-->
+<!--      <swiper-->
+<!--        v-if="buyUsers.length > 0 && (locationStatus * 1 === 1 || locationStatus * 1 === 2)"-->
+<!--        class="carousel"-->
+<!--        :autoplay="true"-->
+<!--        :interval="3000"-->
+<!--        :duration="500"-->
+<!--        circular-->
+<!--        vertical-->
+<!--      >-->
+<!--        <block v-for="(item, index) in buyUsers" :key="index">-->
+<!--          <swiper-item class="content-wrapper">-->
+<!--            <figure class="avatar-wrapper">-->
+<!--              <img v-if="item.head_image_url" lazy-load :src="item.head_image_url" alt="" class="img">-->
+<!--            </figure>-->
+<!--            <div class="text">买了{{item.goods_name}}</div>-->
+<!--          </swiper-item>-->
+<!--        </block>-->
+<!--      </swiper>-->
+<!--      <div class="place-holder"></div>-->
+<!--    </section>-->
   </div>
 </template>
 
@@ -104,6 +108,22 @@
     margin-bottom: 10px
     height :27px
     position :relative
+    .search-wrapper
+      width :150px
+      height :27px
+      background: #FFFFFF;
+      border-radius: @height
+      display :flex
+      align-items :center
+      opacity: 0.9;
+      font-family: $font-family-regular
+      font-size: 13px;
+      color: #B7B7B7;
+      .s-img
+        padding-left :13px
+        padding-right :4px
+        width :14px
+        height :13.5px
     .community-main
       layout(row)
       align-items: center

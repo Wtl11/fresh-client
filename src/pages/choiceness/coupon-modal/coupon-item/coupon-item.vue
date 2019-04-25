@@ -111,11 +111,11 @@
             color: #1D2023;
             .use-type
               height :14px
-              border :0.5px solid #1D2023
+              border :1px solid #1D2023
               border-radius :1px
               color:#1D2023
               font-size:10px
-              line-height :15px
+              line-height :14.5px
               padding :0 3px
             .txt
               padding-left :0.8vw
