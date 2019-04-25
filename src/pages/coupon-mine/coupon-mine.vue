@@ -11,7 +11,7 @@
         >
           <ul class="coupon-wrapper" v-if="index === tabIndex">
             <block v-for="(child, idx) in item.dataArray" :key="idx">
-              <li class="coupon-item-wrapper">
+              <li class="coupon-item-wrapper" :style="{top: idx * -10 + 'px'}">
                 <coupon-item :dataInfo="child"></coupon-item>
               </li>
             </block>
@@ -169,10 +169,11 @@
           width :100vw
           padding-bottom :10px
           .coupon-wrapper
-            width :100vw
-            box-sizing :border-box
-            padding :15px 12px
+            position :relative
             .coupon-item-wrapper
-              padding-bottom :10px
+              position :relative
+              top:-5px
+              &:first-child
+                top: 0
 
 </style>

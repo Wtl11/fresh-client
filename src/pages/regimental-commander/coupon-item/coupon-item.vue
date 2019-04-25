@@ -6,6 +6,7 @@
     <div class="coupon-container">
       <section class="left">
         <img class="lab" mode="aspectFit" v-if="imageUrl && false" :src="imageUrl + '/yx-image/2.3/pic-dfcoupon.png'">
+        <img class="lab" mode="aspectFit" v-if="imageUrl && false" :src="imageUrl + '/yx-image/2.3/pic-qfcoupon.png'">
         <div class="l-top" :class="'corp-' + corpName + '-text'">
           <p class="number">{{money.int}}</p>
           <p class="unit">{{money.dec}}{{unit}}</p>
