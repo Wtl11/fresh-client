@@ -1,7 +1,7 @@
 <template>
   <div class="coupon-item">
     <div class="coupon-bg">
-      <img class="img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.1/pic-couponbg@2x.png'">
+      <img class="img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/pic-couponbg_my@1x.png'">
     </div>
     <div class="coupon-container">
       <section class="left">
@@ -44,6 +44,11 @@
         default: () => new Coupon()
       }
     },
+    // data() {
+    //   return {
+    //     dataInfo: new Coupon()
+    //   }
+    // },
     computed: {
       status() {
         return +this.dataInfo.status

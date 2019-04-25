@@ -5,17 +5,21 @@
     </div>
     <div class="coupon-container">
       <section class="left">
+        <img class="lab" mode="aspectFit" v-if="imageUrl && false" :src="imageUrl + '/yx-image/2.3/pic-dfcoupon.png'">
         <div class="l-top" :class="'corp-' + corpName + '-text'">
-          <p class="number">{{dataInfo.coupon.denomination}}</p>
-          <p class="unit">{{unit}}</p>
+          <p class="number">{{7 || dataInfo.coupon.denomination}}</p>
+          <p class="unit">.5{{unit}}</p>
         </div>
-        <div v-if="dataInfo.coupon.condition > 0" class="l-bottom">{{dataInfo.coupon.condition_str}}</div>
+<!--        <div v-if="dataInfo.coupon.condition > 0" class="l-bottom">{{dataInfo.coupon.condition_str}}</div>-->
       </section>
       <section class="right">
         <div class="info-wrapper">
-          <div class="title">{{dataInfo.coupon.coupon_name}}</div>
+          <div class="title">
+            <p class="use-type">{{dataInfo.coupon.range_type_str}}</p>
+            <p class="txt">{{dataInfo.coupon.condition_str}}</p>
+          </div>
           <div class="explain-wrapper">
-            <p class="explain">{{dataInfo.coupon.range_type_desc}}(剩{{dataInfo.usable_stock}}张)</p>
+            <p class="explain">(剩{{dataInfo.usable_stock}}张)</p>
             <p class="date">有效期至{{dataInfo.coupon.end_at}}</p>
           </div>
         </div>
@@ -76,10 +80,17 @@
         justify-content :center
         align-items :center
         overflow :hidden
+        .lab
+          position :absolute
+          top:1px
+          left :4px
+          width :50px
+          height :16px
         .l-top
           font-family: $font-family-medium
           layout(row,block,nowrap)
           align-items :center
+          position :relative
           .number
             font-size: 9.066666666666666vw
             line-height: 7.733333333333333vw
@@ -104,7 +115,7 @@
         layout(row,block,nowrap)
         position :relative
         .tool-wrapper
-          right :2.666666666666667vw
+          right :3.666666666666667vw
           col-center()
           .button
             width:16vw
@@ -126,14 +137,29 @@
           color: #999
           .title
             width :42vw
-            font-family: $font-family-medium
-            font-size: 3.733333333333334vw
-            line-height: @font-size
+            layout(row,block,nowrap)
+            align-items :center
             color: $color-text-main
-            no-wrap()
+            font-family: $font-family-medium
+            .use-type
+              font-family :$font-family-regular
+              height :14px
+              border :0.5px solid #1D2023
+              border-radius :1px
+              color:#1D2023
+              font-size:10px
+              line-height :15px
+              padding :0 3px
+            .txt
+              padding-left :0.8vw
+              font-size :3.733333333333334vw
+              line-height :1
+              max-width :25vw
+              no-wrap()
           .explain-wrapper
             padding-top :2.666666666666667vw
             opacity: 0.8
+            color: $color-text-sub
             font-family: $font-family-regular
             font-size: 3.2vw
             line-height: @font-size
