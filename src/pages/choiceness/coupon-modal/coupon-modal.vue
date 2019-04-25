@@ -1,35 +1,71 @@
 <template>
   <div class="coupon-modal" v-if="isShow" :animation="maskAnimation">
-    <section class="content" :class="{one: couponArray.length === 1}" :animation="modalAnimation">
+<!--    <section class="content" :class="{one: couponArray.length === 1}" :animation="modalAnimation">-->
+<!--      <img class="img-bg"-->
+<!--           mode="aspectFill"-->
+<!--           v-if="imageUrl && couponArray.length === 1"-->
+<!--           :src="imageUrl + '/yx-image/2.1/pic-lqyhqtc-one@2x.png'">-->
+<!--      <img class="img-bg"-->
+<!--           mode="aspectFill"-->
+<!--           v-if="imageUrl && couponArray.length === 2"-->
+<!--           :src="imageUrl + '/yx-image/2.1/pic-lqyhqtc@2x.png'">-->
+<!--      <img class="img-bg"-->
+<!--           mode="aspectFill"-->
+<!--           v-if="imageUrl && couponArray.length === 1"-->
+<!--           :src="imageUrl + '/yx-image/2.1/pic-lqyhqtc-one.png'">-->
+<!--      <img class="img-bg"-->
+<!--           mode="aspectFill"-->
+<!--           v-if="imageUrl && couponArray.length === 2"-->
+<!--           :src="imageUrl + '/yx-image/2.1/pic-lqyhqtc.png'">-->
+<!--      <img class="close"-->
+<!--           mode="aspectFill"-->
+<!--           v-if="imageUrl"-->
+<!--           :src="imageUrl + '/yx-image/2.1/icon-deletetc@2x.png'"-->
+<!--           @click="cancelHandle"-->
+<!--      >-->
+<!--      <article class="wrapper">-->
+<!--        <div class="place-box"></div>-->
+<!--        <div v-for="(item, index) in couponArray" :key="item.coupon_id || index" class="coupon-wrapper">-->
+<!--          <coupon-item :dataInfo="item"></coupon-item>-->
+<!--        </div>-->
+<!--        <p hover-class="none" class="explain" @click="navHandle">优惠券已放入账号 <span class="look">查看></span></p>-->
+<!--        <div class="button" @click="submitHandle"></div>-->
+<!--      </article>-->
+<!--    </section>-->
+    <section class="content" @touchmove.stop>
       <img class="img-bg"
            mode="aspectFill"
-           v-if="imageUrl && couponArray.length === 1"
-           :src="imageUrl + '/yx-image/2.1/pic-lqyhqtc-one@2x.png'">
-      <img class="img-bg"
-           mode="aspectFill"
-           v-if="imageUrl && couponArray.length === 2"
-           :src="imageUrl + '/yx-image/2.1/pic-lqyhqtc@2x.png'">
-      <img class="img-bg"
-           mode="aspectFill"
-           v-if="imageUrl && couponArray.length === 1"
-           :src="imageUrl + '/yx-image/2.1/pic-lqyhqtc-one.png'">
-      <img class="img-bg"
-           mode="aspectFill"
-           v-if="imageUrl && couponArray.length === 2"
-           :src="imageUrl + '/yx-image/2.1/pic-lqyhqtc.png'">
+           v-if="imageUrl"
+           :src="imageUrl + '/yx-image/2.3/pic-lqyhqtc.png'">
       <img class="close"
            mode="aspectFill"
            v-if="imageUrl"
-           :src="imageUrl + '/yx-image/2.1/icon-deletetc@2x.png'"
+           :src="imageUrl + '/yx-image/2.3/icon-deletetc@2x.png'"
            @click="cancelHandle"
       >
       <article class="wrapper">
         <div class="place-box"></div>
-        <div v-for="(item, index) in couponArray" :key="item.coupon_id || index" class="coupon-wrapper">
-          <coupon-item :dataInfo="item"></coupon-item>
-        </div>
+        <scroll-view
+          class="coupon-wrapper"
+          scroll-y
+        >
+          <div v-for="(item, index) in couponArray" :key="index" class="coupon-item-wrapper">
+            <coupon-item :dataInfo="item"></coupon-item>
+          </div>
+        </scroll-view>
+      </article>
+      <article class="button-wrapper">
+        <img class="img-bg"
+             mode="aspectFill"
+             v-if="imageUrl"
+             :src="imageUrl + '/yx-image/2.3/pic-coupontc_up.png'">
         <p hover-class="none" class="explain" @click="navHandle">优惠券已放入账号 <span class="look">查看></span></p>
-        <div class="button" @click="submitHandle"></div>
+        <img class="button"
+             mode="aspectFill"
+             v-if="imageUrl"
+             :src="imageUrl + '/yx-image/2.3/btn-touse.png'"
+             @click="submitHandle"
+        >
       </article>
     </section>
   </div>
@@ -136,19 +172,15 @@
       width: 71.33333333333334vw
       height :102.26666666666667vw
       margin-top :-15%
-      &.one
-        height :86.26666666666667vw
-      .wrapper
-        position :relative
-        .place-box
-          height :47.733333333333334vw
-        .coupon-wrapper
-          position :relative
-          margin :0 auto 1.6vw
-          z-index :2
-          width :50.4vw
+      .button-wrapper
+        position :absolute
+        right :1.0666666666666667vw
+        left :@right
+        bottom :0
+        height :27.73333333333333vw
         .explain
-          padding-top :4.266666666666667vw
+          position :relative
+          padding-top :7.466666666666668vw
           font-family: $font-family-regular
           font-size: 3.2vw
           color: #FFFFFF;
@@ -157,7 +189,30 @@
           .look
             text-decoration :underline
         .button
-          margin :1.866666666666667vw auto
-          height :8.799999999999999vw
-          width :35.46666666666667vw
+          position :relative
+          margin :4.266666666666667vw auto 0
+          width :34.66666666666667vw
+          height :8.666666666666668vw
+          display :block
+      .wrapper
+        position :relative
+        .place-box
+          height :44vw
+        .coupon-wrapper
+          position :relative
+          width :61.06666666666667vw
+          height: 40vw
+          margin :0 auto
+          &.active
+            display :none
+          ::-webkit-scrollbar
+            width: 0
+            height: 0
+            color: transparent
+          .coupon-item-wrapper
+            width :100%
+            padding-bottom :2.1333333333333333vw
+            &:last-child
+              padding-bottom :8vw
+
 </style>

@@ -1,20 +1,23 @@
 <template>
   <div class="coupon-item">
     <div class="coupon-bg">
-      <img class="img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.1/pic-coupon_lqtc@2x.png'">
+      <img class="img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/pic-coupon_lqtc.png'">
     </div>
     <div class="coupon-container" :class="'corp-' + corpName + '-money'">
       <section class="left">
         <div class="l-top">
-          <p v-if="dataInfo.coupon.preferential_type === 2" class="unit">¥</p>
-          <p class="number">{{dataInfo.coupon.denomination}}</p>
-          <p v-if="dataInfo.coupon.preferential_type === 1" class="unit">折</p>
+<!--          <p v-if="dataInfo.coupon.preferential_type === 2" class="unit">¥</p>-->
+          <p class="number">{{money.int}}</p>
+          <p class="unit">{{money.dec}}{{dataInfo.coupon.preferential_type === 1?'折':'元'}}</p>
         </div>
       </section>
       <section class="right">
         <div class="info-wrapper">
-          <div class="title">{{dataInfo.coupon.coupon_name}}</div>
-          <p class="condition">{{dataInfo.coupon.condition_str}}</p>
+          <div class="title">
+            <p class="use-type">{{dataInfo.coupon.range_type_str}}</p>
+            <p class="txt">{{dataInfo.coupon.condition_str}}</p>
+          </div>
+          <p class="condition">有效期至 {{dataInfo.coupon.end_at}}</p>
         </div>
       </section>
     </div>
@@ -22,6 +25,8 @@
 </template>
 
 <script type="text/ecmascript-6">
+  import {formatCouponMoney} from '@utils/common'
+
   import Coupon from './coupon'
 
   const COMPONENT_NAME = 'COUPON_ITEM'
@@ -33,7 +38,17 @@
         type: Object,
         default: () => new Coupon()
       }
+    },
+    computed: {
+      money() {
+        return formatCouponMoney(this.dataInfo.coupon.denomination)
+      }
     }
+    // data() {
+    //   return {
+    //     dataInfo: new Coupon()
+    //   }
+    // }
   }
 </script>
 
@@ -50,7 +65,8 @@
   .coupon-item
     width: 100%
     height :0
-    padding-top :29.100529100529098%
+    padding-top :30.567685589519648%
+    position :relative
     .coupon-bg
       fill-box(absolute)
     .coupon-container
@@ -74,26 +90,44 @@
           .unit
             font-family :$font-family-regular
             position :relative
-            top:1.4vw
+            top:1.1vw
             font-size: 3.266666666666667vw
             line-height: 3.733333333333334vw
       .right
-        flex: 2.0031847133757963
+        flex: 1.7926829268292683
         overflow :hidden
         .info-wrapper
           height :100%
-          box-sizing :border-box
-          padding:3.0666666666666664vw 1.813333333333333vw 2.8000000000000003vw
           layout(column,block,nowrap)
-          justify-content :space-between
+          justify-content :center
           opacity: 0.9;
-          font-family: $font-family-medium
+          font-family: $font-family-regular
           font-size: 3.4666666666666663vw
           line-height :1
+          color: #3F454B;
           .title
-            no-wrap()
+            layout(row,block,nowrap)
+            align-items :center
+            color: #1D2023;
+            .use-type
+              height :14px
+              border :0.5px solid #1D2023
+              border-radius :1px
+              color:#1D2023
+              font-size:10px
+              line-height :15px
+              padding :0 3px
+            .txt
+              padding-left :0.8vw
+              font-family: $font-family-medium
+              font-size :3.733333333333334vw
+              line-height :1
+              max-width :25vw
+              no-wrap()
           .condition
+            padding-top :2.933333333333333vw
             opacity :0.8
             font-size :3.2vw
+            line-height :1
             no-wrap()
 </style>
