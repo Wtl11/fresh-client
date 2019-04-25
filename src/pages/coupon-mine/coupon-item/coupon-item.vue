@@ -27,7 +27,7 @@
 <!--      </section>-->
 <!--    </div>-->
     <section class="top-wrapper">
-      <img class="img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/pic-couponbg_myzk1.png'">
+      <img class="top-bg-img" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/pic-couponbg_myzk1.png'">
       <div class="top-container">
         <artilce class="left">
           <p class="number">{{money.int}}</p>
@@ -44,18 +44,17 @@
       </div>
     </section>
     <section class="middle-wrapper">
-      <img class="img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/pic-couponbg_myzk2.png'">
+      <img class="middle-bg-img" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/pic-couponbg_myzk2.png'">
       <div class="middle-container">
         <aritlce class="title" @click="handleShowTip">
           <p>使用说明</p>
-          <img class="down-img" :class="{'rotate': showTip}" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/icon-pressed_down@2x.png'">
+          <img class="down-img" :class="{'rotate': showTip}" mode="widthFix" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/icon-pressed_down@2x.png'">
         </aritlce>
-<!--        <div class="place-box"></div>-->
         <p v-if="showTip" class="explain">生鲜品类专享，仅限指定商品使用；限时购、特价等特惠商品新品期商品及标注不可用券的商品除外</p>
       </div>
     </section>
     <section class="bottom-wrapper">
-      <img class="img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/pic-couponbg_myzk3.png'">
+      <img class="bottom-bg-img" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/pic-couponbg_myzk3.png'">
     </section>
   </div>
 </template>
@@ -113,18 +112,22 @@
 
 
   .bottom-wrapper
-    width :100.8%
+    width :100%
     position :relative
-    height :6.133333333333333vw
-    left:-0.5333333333333333vw
-    top:-1px
+    .bottom-bg-img
+      position :absolute
+      display :block
+      width :100%
+      height :6.133333333333333vw
 
   .middle-wrapper
-    width :100.8%
+    width :100vw
     position :relative
-    left:-0.5333333333333333vw
     min-height :15px
-    overflow :hidden
+    .middle-bg-img
+      position :absolute
+      display :block
+      width :100vw
     .middle-container
       position :relative
       padding-left :24px
@@ -154,6 +157,11 @@
     width: 100%
     height :26.68463611859838vw
     position :relative
+    .top-bg-img
+      position :absolute
+      display :block
+      width :100%
+      height :100%
     .top-container
       position :relative
       padding-top :1.866666666666667vw
@@ -235,7 +243,7 @@
     line-height :0
 
   .coupon-item
-    width :98.93333333333332vw
+    width :100vw
     position :relative
     margin :0 auto
 </style>

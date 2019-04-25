@@ -2,6 +2,9 @@
   <div class="mine-coupon">
     <navigation-bar title="我的优惠券"></navigation-bar>
     <coupon-tab :tabList="tabList" :tabIndex="tabIndex" @change="changeHandle"></coupon-tab>
+    <img style="display: block; width: 100vw"  mode="widthFix" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/pic-couponbg_myzk1.png'">
+    <img style="display: block; width: 100vw" mode="widthFix" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/pic-couponbg_myzk2.png'">
+    <img style="display: block; width: 100vw" mode="widthFix" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/pic-couponbg_myzk3.png'">
     <article class="big-box">
       <div class="scroll-wrapper"
            :style="{'transform': ' translateX('+ -(tabIndex * 100) +'vw)', width:  (tabList.length * 100) +'vw'}"
@@ -11,7 +14,7 @@
         >
           <ul class="coupon-wrapper" v-if="index === tabIndex">
             <block v-for="(child, idx) in item.dataArray" :key="idx">
-              <li class="coupon-item-wrapper" :style="{top: idx * -10 + 'px'}">
+              <li class="coupon-item-wrapper">
                 <coupon-item :dataInfo="child"></coupon-item>
               </li>
             </block>
@@ -113,12 +116,13 @@
         API.Coupon.getClientList({status, page}, isFirstLoad).then((res) => {
           callbcak && callbcak()
           if (res.meta.current_page === 1) {
-            this.currentObj.dataArray = res.data
+            this.currentObj.dataArray = res.data.slice(0, 1)
             this.currentObj.isShowEmpty = !res.meta.total
             this.currentObj.isFirstLoad = false
             this.currentObj.number = res.meta.total
           } else {
             this.currentObj.dataArray = dataArray.concat(res.data)
+            this.currentObj.dataArray = this.currentObj.dataArray.slice(0, 1)
           }
           this.currentObj.hasMore = res.meta.current_page < res.meta.last_page
           // this._setScrollHeight()
@@ -172,8 +176,6 @@
             position :relative
             .coupon-item-wrapper
               position :relative
-              top:-5px
-              &:first-child
-                top: 0
+              padding-bottom :15px
 
 </style>
