@@ -50,7 +50,7 @@
           <p>使用说明</p>
           <img class="down-img" :class="{'rotate': showTip}" mode="widthFix" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/icon-pressed_down@2x.png'">
         </aritlce>
-        <p v-if="showTip" class="explain">生鲜品类专享，仅限指定商品使用；限时购、特价等特惠商品新品期商品及标注不可用券的商品除外</p>
+        <p v-if="showTip" class="explain">{{dataInfo.description}}</p>
       </div>
     </section>
     <section class="bottom-wrapper">

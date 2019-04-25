@@ -2,9 +2,6 @@
   <div class="mine-coupon">
     <navigation-bar title="我的优惠券"></navigation-bar>
     <coupon-tab :tabList="tabList" :tabIndex="tabIndex" @change="changeHandle"></coupon-tab>
-    <img style="display: block; width: 100vw"  mode="widthFix" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/pic-couponbg_myzk1.png'">
-    <img style="display: block; width: 100vw" mode="widthFix" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/pic-couponbg_myzk2.png'">
-    <img style="display: block; width: 100vw" mode="widthFix" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/pic-couponbg_myzk3.png'">
     <article class="big-box">
       <div class="scroll-wrapper"
            :style="{'transform': ' translateX('+ -(tabIndex * 100) +'vw)', width:  (tabList.length * 100) +'vw'}"
