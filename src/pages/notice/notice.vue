@@ -24,7 +24,8 @@
         <span class="before">/</span>
       </div>
       <div class="notice-title">
-        由于供应商提供的商品未达到品质要求，导致你所购买的商品未能及时送达，我们将尽快为你 <span class="notice-title-block">退款或次日补货。</span>
+        <span v-for="(child, idx) in textArr" :key="idx" :class="{'notice-title-block': child.weight}">{{child}}</span>
+<!--        由于供应商提供的商品未达到品质要求，导致你所购买的商品未能及时送达，我们将尽快为你 <span class="notice-title-block">退款或次日补货。</span>-->
       </div>
     </div>
 
@@ -56,18 +57,10 @@
     methods: {
       _getDetail() {
         API.AfterNotice.getNotifyDetail().then(res => {
-          // res.data.coupon = []
-          // console.log(typeof this.data.coupon.id )
-          // console.log(res.data.coup)
-          // let flag = res.data.coupon.length || this.data.coupon.id
           this.showCoupon = res.data.coupon.id
           this.coupon = res.data.coupon
           this.couponText = res.data.tips
-          console.log(this.coupon, '-=1-23')
-          let a = res.data.desc
-          let b = res.data['font-weight']
-          console.log(a, b)
-          // this.coupon = res.data.coupon
+          this.textArr = [res.data.desc]
         })
       }
     }
