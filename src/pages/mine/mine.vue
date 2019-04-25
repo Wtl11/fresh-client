@@ -167,7 +167,7 @@
         placeHeight: 0
       }
     },
-    created() {
+    onLoad() {
       this.ENV = process.env
       let res = this.$wx.getSystemInfoSync()
       this.statusBarHeight = res.statusBarHeight || 20
