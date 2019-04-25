@@ -1,6 +1,7 @@
 <template>
   <div class="choiceness">
-    <navigation-bar ref="navigationBar" :headStyle="headStyle" :titleColor="titleColor" :title="title" :showArrow="false" :titleMaxLen="12" :translucent="fasle"></navigation-bar>
+    <navigation-bar ref="navigationBar" :headStyle="headStyle" :titleColor="titleColor" :title="title"
+                    :showArrow="false" :titleMaxLen="12" :translucent="fasle"></navigation-bar>
     <section class="top-background" :style="{height: backgroundHeight+'px'}">
       <img class="img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/bg-homepage@2x.png'">
     </section>
@@ -18,6 +19,7 @@
       :isShow="bannerIsShow"
       @bannerChange="bannerChangeHandle"
     ></home-banner>
+    <notice></notice>
     <div class="empty" id="homeEmpty"></div>
     <home-flash-sale
       :tabList="flashTabList"
@@ -66,6 +68,7 @@
   import ShareHandler, {EVENT_CODE} from '@mixins/share-handler'
   import ShareTrick from '@mixins/share-trick'
   import NewGuidelines from './new-guidelines/new-guidelines'
+  import Notice from './notice/notice'
 
   const ald = getApp()
   const PAGE_NAME = 'CHOICENESS'
@@ -105,7 +108,8 @@
       HomeBanner,
       HomeClassify,
       HomeFlashSale,
-      NewGuidelines
+      NewGuidelines,
+      Notice
     },
     data() {
       return {
@@ -190,15 +194,15 @@
     onShareAppMessage(res) {
       let imgUrl = ''
       switch (this.corpName) {
-        case 'platform':
-          imgUrl = '/yx-image/choiceness/pic-zbyx@2x.png'
-          break
-        case 'retuan':
-          imgUrl = '/yx-image/retuan/pic-zbyx@2x.png'
-          break
-        default:
-          imgUrl = '/yx-image/choiceness/pic-zbyx@2x.png'
-          break
+      case 'platform':
+        imgUrl = '/yx-image/choiceness/pic-zbyx@2x.png'
+        break
+      case 'retuan':
+        imgUrl = '/yx-image/retuan/pic-zbyx@2x.png'
+        break
+      default:
+        imgUrl = '/yx-image/choiceness/pic-zbyx@2x.png'
+        break
       }
       const flag = Date.now()
       return {
@@ -269,27 +273,26 @@
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
- @import "~@designCommon"
+  @import "~@designCommon"
 
   .choiceness
     max-width: 100vw
     min-height: 180vh
     background: #fff
     overflow-x: hidden
-    position:relative
+    position: relative
     .top-background
-      position :absolute
-      left :0
-      right :0
-      top:0
+      position: absolute
+      left: 0
+      right: 0
+      top: 0
       .img
-        width :100vw
-        height :100%
-        display :block
-
+        width: 100vw
+        height: 100%
+        display: block
 
   .empty
-    height :11px
-    background :#fff
+    height: 11px
+    background: #fff
 
 </style>
