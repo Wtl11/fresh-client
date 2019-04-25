@@ -17,7 +17,7 @@
         <div class="info-wrapper">
           <div class="title">
             <p class="use-type">{{dataInfo.coupon.range_type_str}}</p>
-            <p class="txt">{{dataInfo.coupon.condition_str}}</p>
+            <p class="txt">{{dataInfo.coupon.coupon_name}}</p>
           </div>
           <div class="explain-wrapper">
             <p class="explain">(剩{{dataInfo.usable_stock}}张)</p>

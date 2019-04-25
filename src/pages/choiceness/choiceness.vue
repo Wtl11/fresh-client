@@ -123,8 +123,10 @@
       this.$wechat.showLoading()
       this._getSystemInfo()
       this._initPageParams(options)
-      // console.log(this.systemInfo)
       this.backgroundHeight = 0.453 * this.systemInfo.screenWidth + this.systemInfo.statusBarHeight || 20
+      this.$refs.navigationBar && this.$refs.navigationBar.setNavigationBarBackground(`background:#73C200;transition:none`)
+      this.$refs.navigationBar && this.$refs.navigationBar.setTranslucentTitle('赞播优鲜')
+      this.titleColor = `#ffffff`
     },
     onPageScroll(e) {
       this.pageScrollEvent = e

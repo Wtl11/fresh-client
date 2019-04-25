@@ -36,7 +36,7 @@
         <article class="right">
           <div class="title">
             <p class="use-type" :style="{color, borderColor: color}">{{dataInfo.range_type_str}}</p>
-            <p class="txt" :style="{color}">{{dataInfo.condition_str}}</p>
+            <p class="txt" :style="{color}">{{dataInfo.coupon_name}}</p>
           </div>
           <p class="condition" :style="{color}">有效期至 {{dataInfo.end_at}}</p>
           <div v-if="status === 1" class="button" @click="useHandle">去使用</div>
