@@ -7,8 +7,8 @@
       <section class="left">
         <div class="l-top">
 <!--          <p v-if="dataInfo.coupon.preferential_type === 2" class="unit">¥</p>-->
-          <p class="number">{{dataInfo.coupon.denomination}}</p>
-          <p class="unit">{{dataInfo.coupon.preferential_type === 1?'折':'元'}}</p>
+          <p class="number">{{money.int}}</p>
+          <p class="unit">{{money.dec}}{{dataInfo.coupon.preferential_type === 1?'折':'元'}}</p>
         </div>
       </section>
       <section class="right">
@@ -25,6 +25,8 @@
 </template>
 
 <script type="text/ecmascript-6">
+  import {formatCouponMoney} from '@utils/common'
+
   import Coupon from './coupon'
 
   const COMPONENT_NAME = 'COUPON_ITEM'
@@ -35,6 +37,11 @@
       dataInfo: {
         type: Object,
         default: () => new Coupon()
+      }
+    },
+    computed: {
+      money() {
+        return formatCouponMoney(this.dataInfo.coupon.denomination)
       }
     }
     // data() {

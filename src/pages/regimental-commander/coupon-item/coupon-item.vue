@@ -7,8 +7,8 @@
       <section class="left">
         <img class="lab" mode="aspectFit" v-if="imageUrl && false" :src="imageUrl + '/yx-image/2.3/pic-dfcoupon.png'">
         <div class="l-top" :class="'corp-' + corpName + '-text'">
-          <p class="number">{{7 || dataInfo.coupon.denomination}}</p>
-          <p class="unit">.5{{unit}}</p>
+          <p class="number">{{money.int}}</p>
+          <p class="unit">{{money.dec}}{{unit}}</p>
         </div>
 <!--        <div v-if="dataInfo.coupon.condition > 0" class="l-bottom">{{dataInfo.coupon.condition_str}}</div>-->
       </section>
@@ -33,6 +33,7 @@
 
 <script type="text/ecmascript-6">
   import Coupon from './coupon'
+  import {formatCouponMoney} from '@utils/common'
   const COMPONENT_NAME = 'COUPON_ITEM'
 
   export default {
@@ -46,6 +47,9 @@
     computed: {
       unit() {
         return Coupon.COUPON_UNIT[this.dataInfo.coupon.preferential_type] || ''
+      },
+      money() {
+        return formatCouponMoney(this.dataInfo.coupon.denomination)
       }
     }
   }
