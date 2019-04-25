@@ -267,7 +267,7 @@
     position :fixed
     right :15px
     bottom :65px
-    width :45px
+    width :52px
     height :@width
     background: #FFFFFF;
     box-shadow: 0 4px 15px 0 rgba(17,17,17,0.20);
@@ -283,9 +283,9 @@
       height :20.2px
     .red-wrapper
       position :absolute
-      top:5px
-      right :6px
-      width :16px
+      top:9px
+      right :8px
+      width :17px
       height :@width
       box-sizing :border-box
       background: #FE3B39;

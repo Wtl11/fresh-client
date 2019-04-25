@@ -968,12 +968,8 @@
     .info-box
       background: $color-white
       width: 100%
-      border-bottom-left-radius: 8px
-      border-bottom-right-radius: 8px
-      padding: 10px
+      padding: 10px 10px 15px
       box-sizing: border-box
-      margin-bottom: 10px
-      box-shadow: 0 6px 20px 0 rgba(17, 17, 17, 0.06)
       .title-wrapper
         position :relative
         min-height :53px
@@ -1029,9 +1025,9 @@
 
   .safeguard-box
     padding-left: 10px
-    height: 40px
-    background: $color-white
-    border-radius: 8px
+    height: 45px
+    background: #FAFAFA
+    border-radius:0 0 8px 8px
     box-sizing: border-box
     margin: 0 12px 10px
     box-shadow: 0 2px 15px 0 rgba(17, 17, 17, 0.06)

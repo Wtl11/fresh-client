@@ -2,9 +2,9 @@
   <div class="wrap">
     <navigation-bar title="我的" :showArrow="false" :translucent="true"></navigation-bar>
 <!--    <mine-r-test v-if="ENV === 'test'"></mine-r-test>-->
-    <div :style="{height: 59 + statusBarHeight + 'px'}"></div>
-    <section class="top-background" :style="{height: 206+statusBarHeight-15+'px'}">
-      <img class="img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/bg-top_me@2x.png'">
+    <div :style="{height: placeHeight+'px'}"></div>
+    <section class="top-background" :style="{height: backgroundHeight+'px'}">
+      <img class="img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/bg-top_me.png'">
     </section>
     <div class="mine-top">
       <div class="info">
@@ -162,13 +162,17 @@
         // BUTTON_GROUP: BUTTON_GROUP,
         couponNumber: 0,
         ENV: false,
-        statusBarHeight: 0
+        statusBarHeight: 0,
+        backgroundHeight: 0,
+        placeHeight: 0
       }
     },
     created() {
       this.ENV = process.env
       let res = this.$wx.getSystemInfoSync()
       this.statusBarHeight = res.statusBarHeight || 20
+      this.placeHeight = 44 + this.statusBarHeight
+      this.backgroundHeight = 0.32 * res.screenWidth + this.placeHeight
     },
     async onTabItemTap() {
       await this.$isLogin()
@@ -498,7 +502,7 @@
     .group
       padding: 0 3.46vw 0 3.2vw
     .mine-top
-      padding :0 21px
+      padding :10px 23px 0
       layout(row,block,nowrap)
       align-items: center
       position :relative
@@ -510,7 +514,7 @@
           width: 55px
           height: @width
           border-radius: 50%
-          border: 1.5px solid rgba(255,255,255,0.80)
+          border: 2px solid rgba(255,255,255,0.80)
           .avatar-img
             display: block
             border-radius: 50%
@@ -555,7 +559,7 @@
       .order-item
         width: 12.8vw
         margin: 0 2.667vw
-        padding-top: 6.93vw
+        padding-top: 5.93vw
         text-align: center
         position: relative
         .mark
@@ -593,7 +597,7 @@
   .order-nav-box
     box-shadow: 0 4px 30px 0 rgba(17, 17, 17, 0.06)
     border-radius: 6px
-    margin: 23px auto 0
+    margin: 17px auto 0
     width: 93.6vw
     background: $color-white
     overflow: hidden

@@ -117,14 +117,14 @@
     .banner
       width: 100vw
       height: 100%
-      border-radius: 6px !important
+      border-radius: 4px !important
       transform: translateY(0)
       overflow: hidden !important
       .banner-item
         width: 100%
         height: 100%
         position: relative
-        border-radius: 6px !important
+        border-radius: 4px !important
         transform: translateY(0)
         overflow: hidden !important
         layout(row)
@@ -133,7 +133,7 @@
           width: 100%
           height: 100%
           display: block
-          border-radius: 6px !important
+          border-radius: 4px !important
           transform: translateY(0)
           overflow: hidden !important
           margin-left: 12px

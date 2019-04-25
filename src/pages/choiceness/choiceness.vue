@@ -1,7 +1,7 @@
 <template>
   <div class="choiceness">
     <navigation-bar ref="navigationBar" :headStyle="headStyle" :titleColor="titleColor" :title="title" :showArrow="false" :titleMaxLen="12" :translucent="fasle"></navigation-bar>
-    <section class="top-background">
+    <section class="top-background" :style="{height: backgroundHeight+'px'}">
       <img class="img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/bg-homepage@2x.png'">
     </section>
     <home-position
@@ -115,13 +115,16 @@
         systemInfo: {},
         pageScrollEvent: {},
         headStyle: `background:#73C200`,
-        titleColor: `#ffffff`
+        titleColor: `#ffffff`,
+        backgroundHeight: 0
       }
     },
     onLoad(options) {
       this.$wechat.showLoading()
       this._getSystemInfo()
       this._initPageParams(options)
+      // console.log(this.systemInfo)
+      this.backgroundHeight = 0.453 * this.systemInfo.screenWidth + this.systemInfo.statusBarHeight || 20
     },
     onPageScroll(e) {
       this.pageScrollEvent = e
@@ -279,7 +282,6 @@
       left :0
       right :0
       top:0
-      height :54.2vw
       .img
         width :100vw
         height :100%

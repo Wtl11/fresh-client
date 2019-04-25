@@ -3,7 +3,7 @@
     <section
       v-if="top && isShowGuidelines"
       class="top-tip"
-      :style="{top: top + 'px'}"
+      :style="{top: top - 1 + 'px'}"
       @click="show"
     >
       添加「我的小程序」团购更方便<p class="triangle"></p>
