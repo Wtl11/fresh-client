@@ -111,6 +111,7 @@
       // 分享不执行
       if (this.sharing) {
         this.sharing = false
+        this._getTabList(0, false)
         return
       }
       if (this.goChildPage) {
@@ -386,7 +387,7 @@
           display:flex
           align-items :flex-end
           .top-item-wrapper
-            flex: 1
+            width :33.33333333333333vw
             height :55px
             background: #F7F7F7
             display :flex

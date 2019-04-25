@@ -19,7 +19,10 @@
       :isShow="bannerIsShow"
       @bannerChange="bannerChangeHandle"
     ></home-banner>
-    <notice></notice>
+    <notice
+      v-if="isShowNotify"
+      :notice="notifyDesc"
+    ></notice>
     <div class="empty" id="homeEmpty"></div>
     <home-flash-sale
       :tabList="flashTabList"
@@ -69,6 +72,7 @@
   import ShareTrick from '@mixins/share-trick'
   import NewGuidelines from './new-guidelines/new-guidelines'
   import Notice from './notice/notice'
+  import NoticeMixins from './notice/notice-mixins'
 
   const ald = getApp()
   const PAGE_NAME = 'CHOICENESS'
@@ -98,7 +102,8 @@
       Classify,
       FlashSale,
       ShareHandler,
-      ShareTrick
+      ShareTrick,
+      NoticeMixins
     ],
     components: {
       NavigationBar,
@@ -163,6 +168,7 @@
         } else {
           await this._getFlashTabList()
         }
+        await this._getNotify()
         // 获取tab高度
         await this._getTabPosition()
         if (!wx.getStorageSync('token')) return
@@ -196,15 +202,15 @@
     onShareAppMessage(res) {
       let imgUrl = ''
       switch (this.corpName) {
-      case 'platform':
-        imgUrl = '/yx-image/choiceness/pic-zbyx@2x.png'
-        break
-      case 'retuan':
-        imgUrl = '/yx-image/retuan/pic-zbyx@2x.png'
-        break
-      default:
-        imgUrl = '/yx-image/choiceness/pic-zbyx@2x.png'
-        break
+        case 'platform':
+          imgUrl = '/yx-image/choiceness/pic-zbyx@2x.png'
+          break
+        case 'retuan':
+          imgUrl = '/yx-image/retuan/pic-zbyx@2x.png'
+          break
+        default:
+          imgUrl = '/yx-image/choiceness/pic-zbyx@2x.png'
+          break
       }
       const flag = Date.now()
       return {

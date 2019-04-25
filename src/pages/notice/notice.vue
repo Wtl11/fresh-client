@@ -6,14 +6,15 @@
         <image v-if="imageUrl" :src="imageUrl + '/yx-image/notice/pic-5_money@2x.png'" class="notice-coupon-img">
           <div class="notice-coupon-msg">
             <div class="notice-coupon-price">
-              <span class="notice-coupon-icon">¥</span>
-              <span>5</span>
+<!--              <span class="notice-coupon-icon">¥</span>-->
+              <span>{{coupon.denomination}}</span>
+              <span class="notice-coupon-icon">{{coupon.preferential_type == 1 ? '折': '元'}}</span>
             </div>
-            <div class="notice-tip">满0元可用</div>
+            <div class="notice-tip">{{coupon.condition_str}}</div>
           </div>
         </image>
       </div>
-      <div class="notice-text">送你一张5元优惠券</div>
+      <div class="notice-text">{{couponText}}</div>
       <div class="notice-btn">点击查看</div>
     </div>
     <div class="notice-content">
@@ -32,6 +33,7 @@
 
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
+  import API from '@api'
 
   const PAGE_NAME = 'NOTICE'
 
@@ -42,7 +44,31 @@
     },
     data() {
       return {
-        showCoupon: true
+        showCoupon: true,
+        coupon: {},
+        couponText: '送你一张5元优惠券',
+        textArr: []
+      }
+    },
+    onLoad() {
+      this._getDetail()
+    },
+    methods: {
+      _getDetail() {
+        API.AfterNotice.getNotifyDetail().then(res => {
+          // res.data.coupon = []
+          // console.log(typeof this.data.coupon.id )
+          // console.log(res.data.coup)
+          // let flag = res.data.coupon.length || this.data.coupon.id
+          this.showCoupon = res.data.coupon.id
+          this.coupon = res.data.coupon
+          this.couponText = res.data.tips
+          console.log(this.coupon, '-=1-23')
+          let a = res.data.desc
+          let b = res.data['font-weight']
+          console.log(a, b)
+          // this.coupon = res.data.coupon
+        })
       }
     }
   }
@@ -100,7 +126,7 @@
     .notice-coupon-msg
       position: absolute
       top: 33.95px
-      left: 65.5px
+      row-center()
       z-index: 1
       .notice-coupon-price
         margin-left: 9px
@@ -109,7 +135,7 @@
         color: #FA7502
       .notice-coupon-icon
         display: inline-block
-        margin-right: 3.5px
+        margin-left: 3.5px
         transform: translateY(-3.5px)
         font-size: $font-size-16
     .notice-tip

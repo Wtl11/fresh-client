@@ -1,5 +1,5 @@
 <template>
-  <div class="notice">
+  <div class="notice" id="notice">
     <img v-if="imageUrl" :src="imageUrl + '/yx-image/notice/pic-notice@2x.png'" class="notice-img">
     <div class="notice-msg">
       <div class="notice-content">
@@ -18,7 +18,7 @@
     props: {
       notice: {
         type: Array,
-        default: ['由于供应商提供的商品未达到品质要求，导致你所购买的商品未能及时送达，我们将尽快为你 退款或次日补货。']
+        default: () => []
       }
     }
   }
