@@ -46,14 +46,18 @@
       </div>
     </div>
     <div class="detail-info-box">
+      <button class="share-wrapper" formType="submit" :open-type="activityId? 'share': ''" @click="showShare">
+        <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/icon-sharexq@2x.png'" mode="aspectFill" class="share-img">
+        <p class="share-text">分享</p>
+      </button>
       <div class="info-box">
         <article class="title-wrapper">
           <div class="title" :class="goodsMsg.name ? 'has-title' : ''">{{goodsMsg.name}}</div>
           <div class="has-sub-title" v-if="goodsMsg.describe">{{goodsMsg.describe}}</div>
-          <button class="share-wrapper" formType="submit" :open-type="activityId? 'share': ''" @click="showShare">
-            <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/icon-sharexq@2x.png'" mode="aspectFill" class="share-img">
-            <p class="share-text">分享</p>
-          </button>
+<!--          <button class="share-wrapper" formType="submit" :open-type="activityId? 'share': ''" @click="showShare">-->
+<!--            <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/icon-sharexq@2x.png'" mode="aspectFill" class="share-img">-->
+<!--            <p class="share-text">分享</p>-->
+<!--          </button>-->
         </article>
         <div class="info-sub">
           <img v-if="imageUrl && corpName === 'platform'" :src="imageUrl + '/yx-image/choiceness/icon-fast@2x.png'" mode="aspectFill" class="info-sub-img">
@@ -965,6 +969,20 @@
     padding: 0 12px
     box-sizing: border-box
     position: relative
+    .share-wrapper
+      position :absolute
+      right :30px
+      top: 21px
+      .share-img
+        width :36px
+        height :@width
+        display :block
+      .share-text
+        padding-top :6px
+        text-align :center
+        font-family: $font-family-regular
+        font-size: 11px;
+        color: #342903;
     .info-box
       background: $color-white
       width: 100%
@@ -972,7 +990,6 @@
       box-sizing: border-box
       .title-wrapper
         position :relative
-        min-height :53px
         .share-wrapper
           col-center()
           right :18px

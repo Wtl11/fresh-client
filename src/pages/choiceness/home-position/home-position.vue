@@ -10,7 +10,7 @@
         <span>{{gName}}</span>
       </div>
       <div class="community-text" v-else>定位中...</div>
-      <img class="more-img" mode="aspectFit" v-if="imageUrl" :src="imageUrl+'/yx-image/2.3/icon-pressed_qhztd@2x.png'">
+      <img class="more-img" mode="aspectFit" v-if="imageUrl && false" :src="imageUrl+'/yx-image/2.3/icon-pressed_qhztd@2x.png'">
       <!--<img v-if="imageUrl && (locationStatus * 1 === 1 || locationStatus * 1 === 2) && groupInfo.social_name"-->
       <!--:src="imageUrl + '/yx-image/choiceness/icon-pitch@2x.png'" class="community-down">-->
     </div>
