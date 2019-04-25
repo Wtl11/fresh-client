@@ -51,7 +51,7 @@
           },
           {
             icon: '/yx-image/2.3/icon-myxq_me@2x.png',
-            title: ['小区管理', '我的小区'],
+            title: ['我的小区', '小区管理'],
             titleIsArray: true,
             url: '',
             fn: '_handleNav'
