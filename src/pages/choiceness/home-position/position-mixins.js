@@ -86,7 +86,11 @@ export default {
           this.$wechat.showToast(res.message)
           return
         }
-        this.buyUsers = res.data
+        this.buyUsers = []
+        res.data.forEach(item => {
+          this.buyUsers.push(item)
+        })
+        // this.buyUsers = res.data
         // console.warn(res.data)
         // this._handleBuyUserCarousel()
       }).catch(e => {
