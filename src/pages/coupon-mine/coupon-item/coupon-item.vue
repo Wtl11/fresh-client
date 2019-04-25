@@ -29,24 +29,26 @@
     <section class="top-wrapper">
       <img class="top-bg-img" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/pic-couponbg_myzk1.png'">
       <div class="top-container">
-        <artilce class="left">
+        <artilce class="left" :style="{color}">
           <p class="number">{{money.int}}</p>
           <p class="unit">{{money.dec}}{{unit}}</p>
         </artilce>
         <article class="right">
           <div class="title">
-            <p class="use-type">{{dataInfo.range_type_str}}</p>
-            <p class="txt">{{dataInfo.condition_str}}</p>
+            <p class="use-type" :style="{color, borderColor: color}">{{dataInfo.range_type_str}}</p>
+            <p class="txt" :style="{color}">{{dataInfo.condition_str}}</p>
           </div>
-          <p class="condition">有效期至 {{dataInfo.end_at}}</p>
+          <p class="condition" :style="{color}">有效期至 {{dataInfo.end_at}}</p>
           <div v-if="status === 1" class="button" @click="useHandle">去使用</div>
+          <img class="lab-img" v-if="imageUrl && status === 2" :src="imageUrl + '/yx-image/2.3/pic-coupon_ygq.png'">
+          <img class="lab-img" v-if="imageUrl && status === 0" :src="imageUrl + '/yx-image/2.3/pic-coupon_ysy.png'">
         </article>
       </div>
     </section>
     <section class="middle-wrapper">
       <img class="middle-bg-img" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/pic-couponbg_myzk2.png'">
       <div class="middle-container">
-        <aritlce class="title" @click="handleShowTip">
+        <aritlce class="title" :style="{color}" @click="handleShowTip">
           <p>使用说明</p>
           <img class="down-img" :class="{'rotate': showTip}" mode="widthFix" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/icon-pressed_down@2x.png'">
         </aritlce>
@@ -78,7 +80,6 @@
     },
     data() {
       return {
-        // dataInfo: new Coupon()
         showTip: false
       }
     },
@@ -123,34 +124,34 @@
   .middle-wrapper
     width :100vw
     position :relative
-    min-height :15px
+    min-height :4vw
+    overflow :hidden
     .middle-bg-img
       position :absolute
       display :block
       width :100vw
     .middle-container
       position :relative
-      padding-left :24px
+      padding-left :6.4vw
       padding-right :@padding-left
       font-family: $font-family-regular
-      font-size: 13px;
+      font-size: 3.4666666666666663vw
       color: #1D2023;
-      line-height :1
       .title
         display :flex
         align-items :center
         justify-content :space-between
         .down-img
-          width:12.5px
-          height :7.5px
+          width:3.3333333333333335vw
+          height :2vw
           display :block
           transition :transform 0.3s
           transform :rotate(0deg)
           &.rotate
             transform :rotate(180deg)
       .explain
-        padding-top :9px
-        font-size :12px
+        padding-top :2.4vw
+        font-size :3.2vw
         line-height :1.42
 
   .top-wrapper
@@ -165,8 +166,8 @@
     .top-container
       position :relative
       padding-top :1.866666666666667vw
-      padding-left :2.4vw
-      padding-right :2.4vw
+      padding-left :3.2vw
+      padding-right :@padding-left
       height :83%
       layout(block,block,nowrap)
       .left
@@ -192,6 +193,13 @@
         justify-content :center
         box-sizing :border-box
         padding-left :3.4133333333333336vw
+        .lab-img
+          position :absolute
+          right :0
+          top:0
+          width :16.666666666666664vw
+          height :18vw
+          z-index :50
         .button
           col-center()
           right :4vw

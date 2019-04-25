@@ -194,7 +194,7 @@
     [BTN_STATUS.WILL]: '即将开抢',
     [BTN_STATUS.ACTION]: '',
     [BTN_STATUS.DOWN]: '已结束',
-    NO_INVENTORY: '已抢完'
+    'NO_INVENTORY': '已抢完'
   }
   export default {
     name: PAGE_NAME,
@@ -973,6 +973,7 @@
       position :absolute
       right :30px
       top: 21px
+      z-index :99
       .share-img
         width :36px
         height :@width

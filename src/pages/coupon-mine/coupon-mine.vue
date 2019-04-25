@@ -113,13 +113,12 @@
         API.Coupon.getClientList({status, page}, isFirstLoad).then((res) => {
           callbcak && callbcak()
           if (res.meta.current_page === 1) {
-            this.currentObj.dataArray = res.data.slice(0, 1)
+            this.currentObj.dataArray = res.data
             this.currentObj.isShowEmpty = !res.meta.total
             this.currentObj.isFirstLoad = false
             this.currentObj.number = res.meta.total
           } else {
             this.currentObj.dataArray = dataArray.concat(res.data)
-            this.currentObj.dataArray = this.currentObj.dataArray.slice(0, 1)
           }
           this.currentObj.hasMore = res.meta.current_page < res.meta.last_page
           // this._setScrollHeight()
@@ -174,5 +173,7 @@
             .coupon-item-wrapper
               position :relative
               padding-bottom :15px
+              &:last-child
+                padding-bottom :40px
 
 </style>
