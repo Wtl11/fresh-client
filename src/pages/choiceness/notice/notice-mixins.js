@@ -4,7 +4,7 @@ export default {
   data() {
     return {
       notifyDesc: [],
-      isShowNotify: true
+      isShowNotify: false
     }
   },
   methods: {

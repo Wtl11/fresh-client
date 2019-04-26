@@ -15,7 +15,7 @@
         </image>
       </div>
       <div class="notice-text">{{couponText}}</div>
-      <div class="notice-btn">点击查看</div>
+      <div class="notice-btn" @click="handleNav">点击查看</div>
     </div>
     <div class="notice-content">
       <div class="notice-name">
@@ -24,7 +24,7 @@
         <span class="before">/</span>
       </div>
       <div class="notice-title">
-        <span v-for="(child, idx) in textArr" :key="idx" :class="{'notice-title-block': child.weight}">{{child}}</span>
+        <span v-for="(child, idx) in textArr" :key="idx" :class="{'notice-title-block': child.type === 'weight'}">{{child.text}}</span>
 <!--        由于供应商提供的商品未达到品质要求，导致你所购买的商品未能及时送达，我们将尽快为你 <span class="notice-title-block">退款或次日补货。</span>-->
       </div>
     </div>
@@ -60,8 +60,11 @@
           this.showCoupon = res.data.coupon.id
           this.coupon = res.data.coupon
           this.couponText = res.data.tips
-          this.textArr = [res.data.desc]
+          this.textArr = res.data.text
         })
+      },
+      handleNav() {
+        wx.navigateTo({url: '/pages/coupon-mine'})
       }
     }
   }
