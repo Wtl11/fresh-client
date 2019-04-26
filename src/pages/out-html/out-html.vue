@@ -25,7 +25,7 @@
       const chartsConfig = this.getChartsConfig(e.routeType)
       const recruit = this.recruitConfig(e.routeType)
       this.url = e.url || chartsConfig || recruit
-      console.log(this.url)
+      // console.log(this.url)
     },
     methods: {
       recruitConfig(type) {
