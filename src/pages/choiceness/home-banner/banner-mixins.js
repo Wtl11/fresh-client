@@ -9,6 +9,13 @@ export default {
   methods: {
     bannerChangeHandle(index) {
       this.praiseIndex = index
+    },
+    _checkBannerIsEmpty() {
+      const content = ((this.bannerInfo) || {}).content_data || {}
+      const list = content.list || []
+      if (list.length === 0) {
+        this.bannerIsShow = false
+      }
     }
   }
 }

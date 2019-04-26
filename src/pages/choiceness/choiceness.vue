@@ -3,7 +3,7 @@
     <navigation-bar ref="navigationBar" :headStyle="headStyle" :titleColor="titleColor" :title="title"
                     :showArrow="false" :titleMaxLen="12" :translucent="fasle"></navigation-bar>
     <section class="top-background" :style="{height: backgroundHeight+'px'}">
-      <img class="img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/bg-homepage@2x.png'">
+      <img class="img" :style="{backgroundColor: backgroundColor}" @load="handleLoadBackground" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/bg-homepage@2x.png'">
     </section>
     <home-position
       :buyUsers="buyUsers"
@@ -125,7 +125,8 @@
         pageScrollEvent: {},
         headStyle: `background:#73C200`,
         titleColor: `#ffffff`,
-        backgroundHeight: 0
+        backgroundHeight: 0,
+        backgroundColor: '#73C200'
       }
     },
     onLoad(options) {
@@ -168,7 +169,7 @@
         } else {
           await this._getFlashTabList()
         }
-        await this._getNotify()
+        // await this._getNotify() // todo
         // 获取tab高度
         await this._getTabPosition()
         if (!wx.getStorageSync('token')) return
@@ -225,6 +226,9 @@
     },
     methods: {
       ...cartMethods,
+      handleLoadBackground(e) {
+        this.backgroundColor = ''
+      },
       _changeNavigation(e) {
         let flag = e.scrollTop < this.navigationBar
         let title = flag ? '赞播优鲜' : '赞播优鲜·' + this.socialName
@@ -270,6 +274,7 @@
               key.isShow && (this[key.isShow] = !item.is_close)
             }
           })
+          this._checkBannerIsEmpty()
           await this._getFlashList()
           await this._getClassifyList()
         } catch (e) {
@@ -300,6 +305,7 @@
         display: block
 
   .empty
+    position :relative
     height: 11px
     background: #fff
 

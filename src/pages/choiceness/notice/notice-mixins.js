@@ -15,7 +15,7 @@ export default {
         this.isShowNotify = res && res.data.has_notify && res.data.desc
       } catch (e) {
         this.isShowNotify = false
-        console.error(e)
+        console.warn(e)
       }
     }
   }

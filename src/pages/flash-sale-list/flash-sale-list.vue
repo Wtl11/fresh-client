@@ -109,13 +109,16 @@
     },
     async onShow() {
       // 分享不执行
-      if (this.sharing) {
-        this.sharing = false
-        this._getTabList(0, false)
-        return
-      }
-      if (this.goChildPage) {
+      // if (this.sharing) {
+      //   this.sharing = false
+      //   this._getTabList(0, false)
+      //   return
+      // }
+      // 分享,跳转不执行
+      if (this.goChildPage || this.sharing) {
         this.goChildPage = false
+        this.sharing = false
+        this._resetListParams()
         this._getTabList(0, false)
         return
       }
@@ -175,7 +178,7 @@
           let shopId = +el.options.shopId
           shopId && wx.setStorageSync('shopId', shopId)
           id && (this.id = id)
-          console.warn(id)
+          console.warn(id, '页面id')
         } catch (e) {
           console.error(e, '获取参数异常')
         }
