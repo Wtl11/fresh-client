@@ -1026,7 +1026,7 @@
       .info-sub
         layout(row)
         align-items: center
-        margin: 10px 0 5px
+        margin: 10px 0 10px
         .info-sub-img
           width: 14.5px
           height: 15.5px

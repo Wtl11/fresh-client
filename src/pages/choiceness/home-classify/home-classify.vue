@@ -106,6 +106,7 @@
   .home-classify
     width: 100%
     background :#fff
+    position :relative
     .tab-wrapper
       position :relative
       .place-holder

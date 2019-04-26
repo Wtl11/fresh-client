@@ -9,7 +9,7 @@ export default class {
       store_id: 0,
       shop_id: 0,
       level: 0,
-      coupon_name: '',
+      coupon_name: '满100元减5元',
       preferential_type: 0,
       denomination: 0,
       condition: 0,
@@ -17,7 +17,7 @@ export default class {
       support_activity: 0,
       validity_type: 0,
       start_at: '',
-      end_at: '',
+      end_at: '2018.12.31',
       take_limit: 0,
       is_online: 0,
       total_stock: 0,
@@ -27,7 +27,7 @@ export default class {
       status: 0,
       status_str: '',
       range_type: 0,
-      range_type_str: '',
+      range_type_str: '通用',
       range_type_desc: '',
       ranges: [
         {

@@ -307,10 +307,11 @@
           margin: 0 auto
           display: flex
           align-items: center
-          height: 50px
+          height: 55px
           padding: 0 10px
           box-sizing: border-box
           position: relative
+          border-bottom-1px()
           .login-item-icon
             margin-right: 10.5px
             width: 15px

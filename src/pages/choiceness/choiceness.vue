@@ -160,6 +160,7 @@
           wx.setStorageSync('shopId', res.data.id)
           shopId = res.data.id
         }
+        this._getCouponModalList() // 首页弹窗
         this._getBuyUsers()
         // 获取团的信息
         this._groupInfo(false)

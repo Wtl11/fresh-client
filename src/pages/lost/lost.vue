@@ -20,8 +20,12 @@
       return {}
     },
     onLoad(e) {
-      if (e.shopId) {
-        wx.setStorageSync('shopId', wx.getStorageSync('defaultShopId'))
+      if (e && e.shopId) {
+        const shopId = wx.getStorageSync('defaultShopId')
+        if (shopId) {
+          wx.setStorageSync('shopId', shopId)
+        }
+        // wx.setStorageSync('shopId', wx.getStorageSync('defaultShopId'))
       }
     },
     components: {
