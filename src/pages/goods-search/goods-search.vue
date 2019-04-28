@@ -60,6 +60,14 @@
     width: 100%
     .search-wrapper
       layout(block, block, nowrap)
+      align-items :center
+      padding : 0 12px
+      font-family :$font-family-regular
+      font-size :12px
+      width :30px
+      height :60px
+      line-height :@height
+      text-align :center
       .input-wrapper
         flex: 1
         display :flex
@@ -70,10 +78,6 @@
           height :20px
           width :90%
       .btn
-        font-family :$font-family-regular
-        font-size :12px
-        width :30px
-        height :60px
-        line-height :@height
+        padding-left :14px
         text-align :center
 </style>

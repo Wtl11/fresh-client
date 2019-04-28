@@ -1,8 +1,15 @@
 <template>
   <div class="choose-pickup">
-    <navigation-bar ref="navigationBar" title="选择提货点" :headStyle="headStyle" :titleColor="titleColor" :showArrow="true"></navigation-bar>
+    <navigation-bar
+      ref="navigationBar"
+      title="选择提货点"
+      :headStyle="headStyle"
+      :titleColor="titleColor"
+      :showArrow="true"
+      :arrowUrl="arrowUrl"
+    ></navigation-bar>
     <section class="top-background">
-      <div :style="{height: backgroundTop+'px'}"></div>
+      <div class="top-empty" :style="{height: backgroundTop+'px'}"></div>
       <img class="img" mode="widthFix" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/bg-xzthd.png'">
     </section>
     <section class="header panel">
@@ -33,6 +40,7 @@
   import API from '@api'
 
   const PAGE_NAME = 'CHOOSE_PICKUP'
+  const ARROW_URL = ['/yx-image/2.3/icon-return_white@2x.png', '/zd-image/1.2/icon-title_back@2x.png']
 
   export default {
     name: PAGE_NAME,
@@ -52,7 +60,8 @@
         dataArray: [],
         isShowEmpty: false,
         hasMore: true,
-        currentItem: {}
+        currentItem: {},
+        arrowUrl: ARROW_URL[0]
       }
     },
     onLoad(options) {
@@ -61,6 +70,7 @@
       this.backgroundTop = (this.systemInfo.statusBarHeight || 20) + 44
       this.$refs.navigationBar && this.$refs.navigationBar.setNavigationBarBackground(`background:#73c200;transition:none`)
       this.titleColor = `#ffffff`
+      this.arrowUrl = ARROW_URL[0]
       this._getList()
     },
     onPageScroll(e) {
@@ -79,6 +89,7 @@
       _changeNavigation(e) {
         let flag = e.scrollTop < 20
         let styles = flag ? `background:#73c200;transition:none` : `background:#fff;transition:none`
+        this.arrowUrl = ARROW_URL[flag ? 0 : 1]
         this.$refs.navigationBar && this.$refs.navigationBar.setNavigationBarBackground(styles)
         this.titleColor = flag ? `#ffffff` : `#000000`
         wx.setNavigationBarColor({
@@ -130,6 +141,8 @@
     left :0
     right :0
     top:0
+    .top-empty
+      background:#73c200
     .img
       width :100vw
       display :block
@@ -182,6 +195,7 @@
       display :block
   .list-wrapper
     flex: 1
+    min-height :200vh
     margin :12px
     padding :0 10px
     position :relative
