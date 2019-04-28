@@ -2,7 +2,7 @@
   <div class="choose-pickup">
     <navigation-bar ref="navigationBar" title="选择提货点" :headStyle="headStyle" :titleColor="titleColor" :showArrow="false"></navigation-bar>
     <section class="top-background">
-      <img class="img" :style="'padding-top:' +  backgroundTop + 'px'" mode="widthFix" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/bg-xzthd.png'">
+      <img class="img" :style="'border-top-width:' +  backgroundTop + 'px'" mode="widthFix" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/bg-xzthd.png'">
     </section>
     <section class="header panel">
       <figure class="avatar">
@@ -150,6 +150,7 @@
         width :100%
         height :100%
         display :block
+        border-top-color :#73c200
     .name
       padding-top :58px
       font-family: $font-family-medium
