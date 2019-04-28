@@ -14,7 +14,7 @@
       <!--<img v-if="imageUrl && (locationStatus * 1 === 1 || locationStatus * 1 === 2) && groupInfo.social_name"-->
       <!--:src="imageUrl + '/yx-image/choiceness/icon-pitch@2x.png'" class="community-down">-->
     </div>
-    <section class="search-wrapper">
+    <section class="search-wrapper" @click="handleSearch">
       <img class="s-img" mode="aspectFit" v-if="imageUrl" :src="imageUrl+'/yx-image/2.3/icon-search@2x.png'">
       <p>搜索商品</p>
     </section>
@@ -96,6 +96,11 @@
         getApp().globalData.$groupInfo = this.groupInfo
         wx.navigateTo({
           url: `/pages/choose-pickup`
+        })
+      },
+      handleSearch() {
+        wx.navigateTo({
+          url: `/pages/goods-search`
         })
       }
     }
