@@ -25,7 +25,7 @@
       const chartsConfig = this.getChartsConfig(e.routeType)
       const recruit = this.recruitConfig(e.routeType)
       this.url = e.url || chartsConfig || recruit
-      console.log(this.url)
+      // console.log(this.url)
     },
     methods: {
       recruitConfig(type) {
@@ -33,8 +33,8 @@
         if (!arr.some(val => val === type)) {
           return null
         }
-        // const webUrl = `http://192.168.9.130:6874` || baseURL.webview
-        const webUrl = baseURL.webview
+        const webUrl = `http://192.168.9.130:6874` || baseURL.webview
+        // const webUrl = baseURL.webview
         let url = `${webUrl}/${type}`
         let token = wx.getStorageSync('token')
         let shopId = wx.getStorageSync('shopId')

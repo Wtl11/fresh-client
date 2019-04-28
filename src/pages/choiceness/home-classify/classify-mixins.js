@@ -89,6 +89,7 @@ export default {
             .select('#homeFlashSale').boundingClientRect()
             .select('#homeEmpty').boundingClientRect()
             .select('#scrollView-relative').boundingClientRect()
+            .select('#notice').boundingClientRect()
             .exec(res => {
               let height = 0
               res.forEach(item => {

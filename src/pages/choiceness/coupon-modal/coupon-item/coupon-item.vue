@@ -99,13 +99,13 @@
         .info-wrapper
           height :100%
           layout(column,block,nowrap)
-          justify-content :center
           opacity: 0.9;
           font-family: $font-family-regular
           font-size: 3.4666666666666663vw
           line-height :1
           color: #3F454B;
           .title
+            padding-top :4.266666666666667vw
             layout(row,block,nowrap)
             align-items :center
             color: #1D2023;

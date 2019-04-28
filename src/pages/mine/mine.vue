@@ -394,6 +394,7 @@
       left :0
       right :0
       top: 0
+      background-color :#73c200
     .button-group
       position :relative
       .button-item

@@ -61,30 +61,30 @@
             title: '常见问题',
             url: 'out-html?routeType=FAQ',
             fn: '_handleNav'
+          },
+          {
+            styles: `height:17px;padding-bottom:0`,
+            cname: 'line-box',
+            hideArrow: true
+          },
+          {
+            icon: '/yx-image/2.3/icon-colonel@2x.png',
+            title: '团长招募',
+            url: 'out-html?routeType=recruit-regimental',
+            fn: '_handleNav'
+          },
+          {
+            icon: '/yx-image/2.3/icon-supplier_me@2x.png',
+            title: '供应商招募',
+            url: 'out-html?routeType=recruit-supplier',
+            fn: '_handleNav'
+          },
+          {
+            icon: '/yx-image/2.3/icon-alliance_me@2x.png',
+            title: '加盟商招募',
+            url: 'out-html?routeType=recruit-alliance',
+            fn: '_handleNav'
           }
-          // {
-          //   styles: `height:17px;padding-bottom:0`,
-          //   cname: 'line-box',
-          //   hideArrow: true
-          // },
-          // {
-          //   icon: '/yx-image/2.3/icon-colonel@2x.png',
-          //   title: '团长招募',
-          //   url: 'out-html?routeType=recruit-regimental',
-          //   fn: '_handleNav'
-          // },
-          // {
-          //   icon: '/yx-image/2.3/icon-supplier_me@2x.png',
-          //   title: '供应商招募',
-          //   url: 'out-html?routeType=recruit-supplier',
-          //   fn: '_handleNav'
-          // },
-          // {
-          //   icon: '/yx-image/2.3/icon-alliance_me@2x.png',
-          //   title: '加盟商招募',
-          //   url: 'out-html?routeType=recruit-alliance',
-          //   fn: '_handleNav'
-          // }
         ]
       }
     },
@@ -148,7 +148,7 @@
               left :15px
               right :@left
               height :1px
-              background:$color-line
+              border-bottom :0.5px solid $color-line
           &:last-child
             padding-bottom :0
           .icon-img

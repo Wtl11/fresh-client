@@ -1,8 +1,9 @@
 <template>
   <div class="choiceness">
-    <navigation-bar ref="navigationBar" :headStyle="headStyle" :titleColor="titleColor" :title="title" :showArrow="false" :titleMaxLen="12" :translucent="fasle"></navigation-bar>
+    <navigation-bar ref="navigationBar" :headStyle="headStyle" :titleColor="titleColor" :title="title"
+                    :showArrow="false" :titleMaxLen="12" :translucent="fasle"></navigation-bar>
     <section class="top-background" :style="{height: backgroundHeight+'px'}">
-      <img class="img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/bg-homepage@2x.png'">
+      <img class="img" :style="{backgroundColor: backgroundColor}" @load="handleLoadBackground" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/bg-homepage@2x.png'">
     </section>
     <home-position
       :buyUsers="buyUsers"
@@ -18,6 +19,10 @@
       :isShow="bannerIsShow"
       @bannerChange="bannerChangeHandle"
     ></home-banner>
+    <notice
+      v-if="isShowNotify"
+      :notice="notifyDesc"
+    ></notice>
     <div class="empty" id="homeEmpty"></div>
     <home-flash-sale
       :tabList="flashTabList"
@@ -66,6 +71,8 @@
   import ShareHandler, {EVENT_CODE} from '@mixins/share-handler'
   import ShareTrick from '@mixins/share-trick'
   import NewGuidelines from './new-guidelines/new-guidelines'
+  import Notice from './notice/notice'
+  import NoticeMixins from './notice/notice-mixins'
 
   const ald = getApp()
   const PAGE_NAME = 'CHOICENESS'
@@ -95,7 +102,8 @@
       Classify,
       FlashSale,
       ShareHandler,
-      ShareTrick
+      ShareTrick,
+      NoticeMixins
     ],
     components: {
       NavigationBar,
@@ -105,7 +113,8 @@
       HomeBanner,
       HomeClassify,
       HomeFlashSale,
-      NewGuidelines
+      NewGuidelines,
+      Notice
     },
     data() {
       return {
@@ -116,7 +125,8 @@
         pageScrollEvent: {},
         headStyle: `background:#73C200`,
         titleColor: `#ffffff`,
-        backgroundHeight: 0
+        backgroundHeight: 0,
+        backgroundColor: '#73C200'
       }
     },
     onLoad(options) {
@@ -150,6 +160,7 @@
           wx.setStorageSync('shopId', res.data.id)
           shopId = res.data.id
         }
+        this._getCouponModalList() // 首页弹窗
         // this._getBuyUsers()
         // 获取团的信息
         this._groupInfo(false)
@@ -159,6 +170,7 @@
         } else {
           await this._getFlashTabList()
         }
+        // await this._getNotify() // todo
         // 获取tab高度
         await this._getTabPosition()
         if (!wx.getStorageSync('token')) return
@@ -215,6 +227,9 @@
     },
     methods: {
       ...cartMethods,
+      handleLoadBackground(e) {
+        this.backgroundColor = ''
+      },
       _changeNavigation(e) {
         let flag = e.scrollTop < this.navigationBar
         let title = flag ? '赞播优鲜' : '赞播优鲜·' + this.socialName
@@ -260,6 +275,7 @@
               key.isShow && (this[key.isShow] = !item.is_close)
             }
           })
+          this._checkBannerIsEmpty()
           await this._getFlashList()
           await this._getClassifyList()
         } catch (e) {
@@ -271,27 +287,27 @@
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
- @import "~@designCommon"
+  @import "~@designCommon"
 
   .choiceness
     max-width: 100vw
     min-height: 180vh
     background: #fff
     overflow-x: hidden
-    position:relative
+    position: relative
     .top-background
-      position :absolute
-      left :0
-      right :0
-      top:0
+      position: absolute
+      left: 0
+      right: 0
+      top: 0
       .img
-        width :100vw
-        height :100%
-        display :block
-
+        width: 100vw
+        height: 100%
+        display: block
 
   .empty
-    height :11px
-    background :#fff
+    position :relative
+    height: 11px
+    background: #fff
 
 </style>

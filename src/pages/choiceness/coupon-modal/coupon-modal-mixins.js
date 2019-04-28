@@ -3,7 +3,7 @@ import {jwtComputed} from '@state/helpers'
 
 export default {
   onShow() {
-    this._getCouponModalList()
+    // this._getCouponModalList()
   },
   computed: {
     ...jwtComputed

@@ -144,6 +144,7 @@
     padding :0 2.666666666666667vw
     background: #fff
     border-bottom :10px solid @background
+    position :relative
     .scroll-wrapper
       padding :9px
       background :$color-flash-background
