@@ -3,13 +3,13 @@
   <article class="confirm-msg" v-if="isShow" :animation="maskAnimation" @click="cancelIncome">
     <!--<div class="mask"  ></div>-->
     <button class="content" v-if="useType==='single'" :animation="modalAnimation">
-      <div class="msg">{{msg}}</div>
+      <div class="msg">{{showMsg || msg}}</div>
       <div class="btn-group">
         <div class="btn confirm" @tap="confirm" :class="'corp-' + corpName + '-text'">知道了</div>
       </div>
     </button>
     <section class="content" v-else-if="useType==='double'" :animation="modalAnimation">
-      <div class="msg">{{msg}}</div>
+      <div class="msg">{{showMsg || msg}}</div>
       <div formType="submit" class="btn-group">
         <div formType="submit" class="btn cancel" @tap="cancel">取消</div>
         <div  formType="submit" class="btn confirm" @tap="confirm" :class="'corp-' + corpName + '-text'">{{sureString}}</div>
@@ -18,7 +18,7 @@
     <section class="content" v-else-if="useType==='close'" :animation="modalAnimation">
       <div class="title">{{title}}</div>
       <div class="close" @click.stop="cancel"><img :src="imageUrl+'/ws-image/ws-saas/icon-close@2x.png'" alt="" class="close-img"></div>
-      <div class="coninfo">{{msg}}</div>
+      <div class="coninfo">{{showMsg || msg}}</div>
       <!--<div class="msg">{{msg}}</div>-->
     </section>
     <section class="content income-content" v-else-if="useType==='income'" :animation="modalAnimation"  @click.stop>
@@ -33,7 +33,7 @@
     </section>
     <section class="content" v-else :animation="modalAnimation">
       <div class="title item">{{title}}</div>
-      <div class="coninfo show">{{msg}}</div>
+      <div class="coninfo show">{{showMsg || msg}}</div>
       <div class="btn-group">
         <div class="btn cancel" @tap="cancel">取消</div>
         <div class="btn confirm" :class="'corp-' + corpName + '-text'" @tap="confirm">{{sureString}}</div>
@@ -65,13 +65,17 @@
     },
     data () {
       return {
-        isShow: false
+        isShow: false,
         // maskAnimation: '',
         // modalAnimation: ''
+        showMsg: ''
       }
     },
     methods: {
-      show () {
+      show (msg) {
+        if (msg) {
+          this.showMsg = msg
+        }
         // let modalAnimation = wx.createAnimation({
         //   duration: 500,
         //   timingFunction: 'cubic-bezier(1, -0.07, 0.51, 1.48)',
@@ -226,6 +230,7 @@
         color: $color-text-main
         letter-spacing: 0.05px
         text-align: center
+        padding :0 34.5px
       .close
         width: 30px
         right: 5px
