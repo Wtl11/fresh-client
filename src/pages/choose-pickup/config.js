@@ -8,7 +8,7 @@ export default {
   config: {
     navigationBarTitleText: '选择提货点',
     backgroundColorTop: '#73c200',
-    backgroundColorBottom: '#FFFFFF',
+    backgroundColorBottom: '#f5f5f5',
     navigationBarTextStyle: 'white',
     backgroundTextStyle: 'light'
   }

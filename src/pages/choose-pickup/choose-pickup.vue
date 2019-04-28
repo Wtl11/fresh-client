@@ -1,8 +1,9 @@
 <template>
   <div class="choose-pickup">
-    <navigation-bar ref="navigationBar" title="选择提货点" :headStyle="headStyle" :titleColor="titleColor" :showArrow="false"></navigation-bar>
+    <navigation-bar ref="navigationBar" title="选择提货点" :headStyle="headStyle" :titleColor="titleColor" :showArrow="true"></navigation-bar>
     <section class="top-background">
-      <img class="img" :style="'border-top-width:' +  backgroundTop + 'px'" mode="widthFix" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/bg-xzthd.png'">
+      <div :style="{height: backgroundTop+'px'}"></div>
+      <img class="img" mode="widthFix" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/bg-xzthd.png'">
     </section>
     <section class="header panel">
       <figure class="avatar">
@@ -123,6 +124,7 @@
     width: 100%
     min-height :100vh
     layout(column,block,nowrap)
+    background :#f5f5f5
   .top-background
     position :absolute
     left :0
