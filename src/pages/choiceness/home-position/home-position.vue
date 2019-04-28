@@ -1,6 +1,6 @@
 <template>
   <div class="home-position" id="homePosition">
-    <div class="community-main">
+    <div class="community-main" @click="handleNav">
       <!--<div class="community-main" @click="jumpSelfPoint">-->
       <div class="community-img">
         <!--<img v-if="(locationStatus * 1 === 1 || locationStatus * 1 === 2) && imageUrl" :src="groupInfo.head_image_url || imageUrl+'/yx-image/order/icon-colonel_head@2x.png'">-->
@@ -90,6 +90,12 @@
       jumpSelfPoint() {
         wx.navigateTo({
           url: `/pages/self-point`
+        })
+      },
+      handleNav() {
+        getApp().globalData.$groupInfo = this.groupInfo
+        wx.navigateTo({
+          url: `/pages/choose-pickup`
         })
       }
     }

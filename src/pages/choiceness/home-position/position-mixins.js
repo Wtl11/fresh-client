@@ -17,7 +17,6 @@ export default {
   },
   onShow() {
     this._refreshLocation()
-    // this._getBuyUsers()
   },
   onHide() {
     // this.carouselTimer && clearTimeout(this.carouselTimer)

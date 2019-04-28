@@ -7,7 +7,7 @@ page.$mount()
 export default {
   config: {
     navigationBarTitleText: '选择提货点',
-    backgroundColorTop: '#76bb00',
+    backgroundColorTop: '#73c200',
     backgroundColorBottom: '#FFFFFF',
     navigationBarTextStyle: 'white',
     backgroundTextStyle: 'light'

@@ -1,11 +1,11 @@
 <template>
   <div class="pickup-item">
     <figure class="left">
-      <img class="avatar-img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/zd-image/test-img/1@1x.png'">
+      <img class="avatar-img" mode="aspectFill" v-if="dataInfo.shop_image_url" :src="dataInfo.shop_image_url">
     </figure>
     <section class="middle">
-      <h1 class="name">团长：董秀英</h1>
-      <p class="position">提货点：广州海珠区TIT创意园 </p>
+      <h1 class="name">团长：{{dataInfo.name}}</h1>
+      <p class="position">提货点：{{dataInfo.social_name}} </p>
     </section>
     <img class="right" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/icon-pressed@2x.png'">
   </div>
@@ -16,6 +16,12 @@
 
   export default {
     name: COMPONENT_NAME,
+    props: {
+      dataInfo: {
+        type: Object,
+        default: () => {}
+      }
+    },
     data() {
       return {
 
@@ -38,6 +44,7 @@
       height :@width
       border-radius :50%
       overflow :hidden
+      background :#ccc
       .avatar-img
         width :100%
         height :100%
