@@ -510,10 +510,11 @@
   .recommend
     .title
       height: 60px
-      padding-top: 25px
+      padding-top: 12px
       box-sizing: border-box
       background: #F7F7F7
       display: flex
+      align-items: center
       justify-content: center
       .icon
         width: 17px
