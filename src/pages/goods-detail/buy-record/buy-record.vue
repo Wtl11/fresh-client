@@ -42,9 +42,6 @@
 
       }
     },
-    onLoad(options) {
-      console.log(options)
-    },
     methods: {
       handleNav() {
         const url = `/pages/goods-record?goodsId=${this.goodsId}&shopId=${this.shopId}&activityId=${this.activityId}`

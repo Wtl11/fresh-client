@@ -100,7 +100,8 @@
         isLoading: false,
         page: 1,
         typeBtn: TYPEBTN,
-        buyGoodsInfo: {}
+        buyGoodsInfo: {},
+        isSharing: false
       }
     },
     computed: {
@@ -141,13 +142,16 @@
         this.activityId = +options.activityId || 0
         this.shopId = +options.shopId || 0
       }
-      console.log(+options.shopId)
       if (this.shopId) {
         wx.setStorageSync('shopId', this.shopId)
       }
       // !!this.shopId && wx.setStorageSync('shopId', this.shopId)
     },
     onShow() {
+      if (this.isSharing) {
+        this.isSharing = false
+        return
+      }
       this._resetReqListParams()
       this._getGoodsDetailData()
       this.getGoodsOtherInfo()
@@ -164,6 +168,7 @@
         goods_id: this.goodsId,
         title: this.goodsMsg.name
       })
+      this.isSharing = true
       let shopId = wx.getStorageSync('shopId')
       const flag = Date.now()
       return {

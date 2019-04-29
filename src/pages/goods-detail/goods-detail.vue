@@ -392,13 +392,11 @@
         //     //   }
         //     // }
         //     // this.userImgData = res
-        //     console.log(this.userImgList)
         //   } else {
         //     this.$wechat.showToast(res.message)
         //   }
         // })
         API.GoodsRecord.getList({goods_id: this.goodsId, limit: 5, page: 1}, false).then((res) => {
-          console.log(res)
           this.userImgList = res.data
           this.userTotal = res.meta.total
         })
@@ -615,8 +613,7 @@
           this.$wechat.hideLoading()
           if (res.error === this.$ERR_OK) {
             let goodDetail = res.data
-            console.log(res.data)
-            this.thumb_image = goodDetail.thumb_image
+            // this.thumb_image = goodDetail.thumb_image
             this.goodsMsg = goodDetail
             this.thumb_image = goodDetail.thumb_image
             this.goodsBanner = goodDetail.goods_banner_images
