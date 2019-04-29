@@ -55,6 +55,7 @@
               goods_id: item.goods_id,
               title: item.name
             })
+            this.$emit('_getShopCart')
             this.$wechat.showToast('加入购物车成功', 1000, false)
             this.setCartCount()
           } else {
@@ -72,7 +73,7 @@
   .classify-item
     background: #fff
     overflow: hidden
-    padding: 10px 7px 15px
+    padding: 10px 7px 10px
     box-sizing: border-box
     width: 100%
     border-radius: 4px

@@ -1,6 +1,6 @@
 <template>
   <form action="" report-submit @submit="$getFormId">
-  <div class="wrap">
+  <div class="wrap" :class="{'padding-wrap': goodsList.length}">
     <navigation-bar title="购物车" :showArrow="false" :translucent="false"></navigation-bar>
     <div class="shop-list">
       <div class="shop-item" :class="{'shop-item-opcta' : item.num <= 0}" v-for="(item, index) in goodsList" :key="index">
@@ -57,16 +57,17 @@
       <div class="without-img"><img class="img" v-if="imageUrl" :src="imageUrl+'/yx-image/cart/pic-gwc@2x.png'" alt=""></div>
       <div class="txt">购物车没有商品哦!</div>
       <div class="txt">赶快去挑选吧</div>
-      <div class="btn" :class="'corp-' + corpName + '-bg'" @click.stop="toChoicenessPage">去逛逛</div>
+      <!--<div class="btn" :class="'corp-' + corpName + '-bg'" @click.stop="toChoicenessPage">去逛逛</div>-->
     </div>
+    <!--商品推荐-->
     <div class="recommend">
       <p class="title">
-        <img src="https://img.jkweixin.net/defaults/yx-image/2.1/icon-ulike@2x.png" alt="" class="icon">
+        <img src="https://img.jkweixin.net/defaults/yx-image/2.3/icon-ulike@2x.png" alt="" class="icon">
         <span class="text">猜你喜欢</span>
       </p>
       <div class="recommend-list">
         <div v-for="(item, index) in recommendList" :key="index" class="list-item">
-          <goods-item :item="item"></goods-item>
+          <goods-item :item="item" @_getShopCart="_getShopCart"></goods-item>
         </div>
 
       </div>
@@ -94,29 +95,7 @@
         msg: '确定删除该商品吗?',
         delIndex: 0,
         goodsList: [],
-        recommendList: [
-          {
-            name: '蔬菜水果一箩筐',
-            image_url: 'https://img.jkweixin.net/defaults/yx-image/choiceness/icon-label@2x.png',
-            goods_cover_image: 'https://social-shopping-api-1254297111.picgz.myqcloud.com/1/2019/04/28/155644254115157.png?imageView2/3/w/400/h/400/q/90',
-            original_price: '100',
-            trade_price: '50'
-          },
-          {
-            name: '蔬菜水果一箩筐',
-            image_url: 'https://img.jkweixin.net/defaults/yx-image/choiceness/icon-label@2x.png',
-            goods_cover_image: 'https://social-shopping-api-1254297111.picgz.myqcloud.com/1/2019/04/28/155644254115157.png?imageView2/3/w/400/h/400/q/90',
-            original_price: '100',
-            trade_price: '50'
-          },
-          {
-            name: '蔬菜水果一箩筐',
-            image_url: 'https://img.jkweixin.net/defaults/yx-image/choiceness/icon-label@2x.png',
-            goods_cover_image: 'https://social-shopping-api-1254297111.picgz.myqcloud.com/1/2019/04/28/155644254115157.png?imageView2/3/w/400/h/400/q/90',
-            original_price: '100',
-            trade_price: '50'
-          }
-        ],
+        recommendList: [],
         isShowCart: false,
         deleteInfo: {
           delIndex: null,
@@ -137,6 +116,7 @@
     async onShow() {
       if (!wx.getStorageSync('token')) return
       await this._getShopCart()
+      await this.getCarRecommend()
     },
     computed: {
       checkedGoods() {
@@ -180,6 +160,14 @@
         this.goodsList.length > 0 ? this.isShowCart = false : this.isShowCart = true
         this.deliverAt = res.delivery_at
         this.setCartCount()
+      },
+      async getCarRecommend() {
+        let res = await API.Cart.getCarRecommend()
+        if (res.error !== this.$ERR_OK) {
+          this.$wechat.showToast(res.message)
+          return
+        }
+        this.recommendList = res.data
       },
       addNum(i, num, limit, id) {
         num++
@@ -281,21 +269,24 @@
     min-height: 100vh
     background: $color-background
     position: relative
+    padding-bottom: 10px
+  .padding-wrap
     padding-bottom: 60px
-
   .payment
+    border-top-1px(#EEEEEE)
     position: fixed
     width: 100%
     height: 50px
     background: $color-white
     left: 0
-    padding: 0 3.2vw
+    padding-left: 3.2vw
     box-sizing: border-box
     bottom: 49px
     layout(row)
     justify-content: space-between
     align-items: center
-    border-bottom: .5px solid #EEEEEE
+    z-index: 20
+    box-shadow: 0 -4px 20px 0 rgba(29,32,35,0.06)
     .check-all
       layout(row)
       .sel-box
@@ -323,16 +314,15 @@
       align-items: center
       .price
         font-family: $font-family-medium
-        font-size: $font-size-18
+        font-size: $font-size-16
       .pay-btn
-        margin-left: 8px
-        border-radius: 17px
-        width: 100px
-        height: 34px
+        margin-left: 10px
+        width: 125px
+        height: 50px
         text-align: center
         font-size: $font-size-16
         font-family: $font-family-medium
-        line-height: 34px
+        line-height: 50px
         color: $color-white
 
   .shop-list
@@ -520,14 +510,14 @@
   .recommend
     .title
       height: 60px
-      display: flex
-      align-items: center
-      justify-content: center
+      padding-top: 25px
+      box-sizing: border-box
       background: #F7F7F7
+      display: flex
+      justify-content: center
       .icon
         width: 17px
         height: 17px
-        border: 1px solid #ccc
         margin-right: 4px
       .text
         font-family: $font-family-medium
@@ -542,7 +532,7 @@
       .list-item
         width: 50%
         box-sizing: border-box
-        margin-bottom: 3px
+        margin-bottom: 5px
         &:nth-of-type(odd)
           padding-right: 2.5px
         &:nth-of-type(even)
