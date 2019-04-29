@@ -110,6 +110,7 @@
             align-items :center
             color: #1D2023;
             .use-type
+              font-family: $font-family-medium
               height:12px;
               border:1px solid rgba(29,32,35,0.8);
               border-radius:2px;
