@@ -10,6 +10,7 @@
           placeholder-class="input-p"
           @focus="handleFocus"
           @blur="handleBlur"
+          @confirm="handleConfirm"
           v-model="goodsNameInput"
         >
         <figure v-if="showClearGoodsNameBtn" class="close" @click.stop="handleClearGoodsName">
@@ -32,11 +33,16 @@
         <li v-for="(item, index) in historyArray" :key="index" class="item-wrapper" @click="handleSearch(item)">{{item}}</li>
       </ul>
     </section>
-    <section v-if="!historyArray">
+    <section v-if="!isShowHistory">
       <div class="classify-wrapper">
         <block v-for="(item, index) in classifyArray" :key="index">
           <classify-item :item="item"></classify-item>
         </block>
+      </div>
+      <is-end v-if="!classifyMore && !classifyShowEmpty"></is-end>
+      <loading-more v-else-if="!classifyShowEmpty"></loading-more>
+      <div v-if="classifyShowEmpty" class="empty-wrapper">
+        <is-active-empty></is-active-empty>
       </div>
     </section>
   </div>
@@ -89,11 +95,21 @@
         }
       }
     },
+    watch: {
+      isShowHistory(val) {
+        if (val) {
+          this.classifyArray = []
+        }
+      }
+    },
     onLoad() {
-      const arr = wx.getStorageSync('historyArray') || []
+      let arr = wx.getStorageSync('historyArray') || []
       this.historyArray = arr
-      console.log(this.historyArray)
-      // this._getClassifyList()
+    },
+    onReachBottom() {
+      if (this.isLoading) return
+      this.classifyPage++
+      this._getClassifyList(false)
     },
     methods: {
       handleFocus(e) {
@@ -116,6 +132,7 @@
         arr.push(this.goodsName)
         this.historyArray = [...new Set(arr)]
         wx.setStorageSync('historyArray', this.historyArray)
+        this.resetReqParams()
         this._getClassifyList()
       },
       handleClearGoodsName() {
@@ -124,6 +141,9 @@
       handleClearHistoryArr() {
         this.historyArray = []
         wx.removeStorageSync('historyArray')
+      },
+      handleConfirm() {
+        this.handleSearch('')
       },
       // 获取商品分类列表
       async _getClassifyList(loading = true) {
@@ -144,9 +164,17 @@
             })
           }
           this.classifyMore = res.meta.current_page < res.meta.last_page
+          wx.nextTick(() => {
+            this.isLoading = false
+          })
         } catch (e) {
-          console.error(e)
+          console.warn(e)
+          this.isLoading = false
         }
+      },
+      resetReqParams() {
+        this.classifyMore = true
+        this.classifyPage = 1
       }
     }
   }
@@ -240,4 +268,7 @@
       background :#fff
       position :relative
       border-top-1px()
+
+    .empty-wrapper
+      padding-top :82px
 </style>

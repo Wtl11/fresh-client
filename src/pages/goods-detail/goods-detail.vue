@@ -79,20 +79,28 @@
         <div class="text">{{item.text}}</div>
       </div>
     </div>
-    <div class="buy-record" v-if="userImgList.length > 0">
-      <div class="record-title">
-        <div class="record-text-main">购买记录</div>
-        <div class="record-text-sub">本社区已有{{userImgData.buy_people_num}}人购买，共销售{{userImgData.shop_sale_count}}份</div>
-      </div>
-      <div class="record-image-box">
-        <div class="image-item" v-for="(item, index) in bigUserImgList" :key="index">
-          <img v-if="item.head_image_url" :src="item.head_image_url" mode="aspectFill" class="image-item-img">
-        </div>
-        <div class="image-item" v-if="userImgList.length >= 15 && showMoreImg && bigUserImgList.length === 13" @click="showMoreBtn">
-          <div class="image-item-text">更多</div>
-        </div>
-      </div>
-    </div>
+    <buy-record
+      v-if="userImgList.length > 0"
+      :userImgList="userImgList"
+      :userTotal="userTotal"
+      :goodsId="goodsId"
+      :shopId="shopId"
+      :activityId="activityId"
+    ></buy-record>
+<!--    <div class="buy-record" v-if="userImgList.length > 0">-->
+<!--      <div class="record-title">-->
+<!--        <div class="record-text-main">购买记录</div>-->
+<!--        <div class="record-text-sub">本社区已有{{userImgData.buy_people_num}}人购买，共销售{{userImgData.shop_sale_count}}份</div>-->
+<!--      </div>-->
+<!--      <div class="record-image-box">-->
+<!--        <div class="image-item" v-for="(item, index) in bigUserImgList" :key="index">-->
+<!--          <img v-if="item.head_image_url" :src="item.head_image_url" mode="aspectFill" class="image-item-img">-->
+<!--        </div>-->
+<!--        <div class="image-item" v-if="userImgList.length >= 15 && showMoreImg && bigUserImgList.length === 13" @click="showMoreBtn">-->
+<!--          <div class="image-item-text">更多</div>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
     <div class="detail-title">
       <img v-if="imageUrl" :src="imageUrl + '/yx-image/goods/pic-tital_spxq@2x.png'" mode="widthFix" class="detail-title-img">
     </div>
@@ -172,6 +180,7 @@
   import base64src from './utils'
   import ShareHandler, {EVENT_CODE} from '@mixins/share-handler'
   import ShareTrick from '@mixins/share-trick'
+  import BuyRecord from './buy-record/buy-record'
 
   const PAGE_NAME = 'GOODS_DETAIL'
   const TYPEBTN = [{url: '/yx-image/goods/icon-homepage@2x.png', text: '首页', type: 0}, {url: '/yx-image/goods/icon-shopcart@2x.png', text: '购物车', type: 2}]
@@ -199,6 +208,14 @@
   export default {
     name: PAGE_NAME,
     mixins: [ShareHandler, ShareTrick],
+    components: {
+      NavigationBar,
+      AddNumber,
+      WePaint,
+      LinkGroup,
+      BuyUsers,
+      BuyRecord
+    },
     data() {
       return {
         describeNum: 0,
@@ -233,7 +250,8 @@
         eventNo: 0,
         eventCount: 0,
         shopId: 0,
-        buyUsers: []
+        buyUsers: [],
+        userTotal: 0
       }
     },
     computed: {
@@ -287,9 +305,6 @@
         this.safeList = SAFELIST
       } else if (this.corpName === 'retuan') {
         this.safeList = RETUANSAFELIST
-      }
-      if (options.shopId) {
-        options.shopId && wx.setStorageSync('shopId', options.shopId)
       }
       ald.aldstat.sendEvent('商品详情')
       if (options.scene) {
@@ -366,20 +381,26 @@
         this.groupInfo = res.data
       },
       getUserImgList() {
-        API.Choiceness.getUserImg({goods_id: this.goodsId, limit: 200}).then((res) => {
-          if (res.error === this.$ERR_OK) {
-            this.userImgList = res.data
-            if (this.bigUserImgList.length === 0) {
-              if (this.userImgList.length === 14) {
-                this.bigUserImgList = this.userImgList.slice(0, 14)
-              } else {
-                this.bigUserImgList = this.userImgList.slice(0, 13)
-              }
-            }
-            this.userImgData = res
-          } else {
-            this.$wechat.showToast(res.message)
-          }
+        // API.Choiceness.getUserImg({goods_id: this.goodsId, limit: 200}).then((res) => {
+        //   if (res.error === this.$ERR_OK) {
+        //     this.userImgList = res.data
+        //     // if (this.bigUserImgList.length === 0) {
+        //     //   if (this.userImgList.length === 14) {
+        //     //     this.bigUserImgList = this.userImgList.slice(0, 14)
+        //     //   } else {
+        //     //     this.bigUserImgList = this.userImgList.slice(0, 13)
+        //     //   }
+        //     // }
+        //     // this.userImgData = res
+        //     console.log(this.userImgList)
+        //   } else {
+        //     this.$wechat.showToast(res.message)
+        //   }
+        // })
+        API.GoodsRecord.getList({goods_id: this.goodsId, limit: 5, page: 1}, false).then((res) => {
+          console.log(res)
+          this.userImgList = res.data
+          this.userTotal = res.meta.total
         })
       },
       bannerChange(e) {
@@ -594,6 +615,7 @@
           this.$wechat.hideLoading()
           if (res.error === this.$ERR_OK) {
             let goodDetail = res.data
+            console.log(res.data)
             this.thumb_image = goodDetail.thumb_image
             this.goodsMsg = goodDetail
             this.thumb_image = goodDetail.thumb_image
@@ -694,13 +716,6 @@
           this.buyUsers = res.data
         })
       }
-    },
-    components: {
-      NavigationBar,
-      AddNumber,
-      WePaint,
-      LinkGroup,
-      BuyUsers
     }
   }
 </script>

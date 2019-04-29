@@ -71,6 +71,7 @@ export default {
 * pay-result 支付成功页 ---> share-order 分享的订单 2005
 * copy-detail 团长-商品-页 ---> goods-detail 活动详情页
 * coupon-share 团长-优惠券发放页 ---> coupon-take 领取优惠券 2006
+* goods-detail 商品购买记录 2007
 * */
 export const EVENT_CODE = {
   FLASH_SALE_LIST: 2001,
@@ -78,7 +79,8 @@ export const EVENT_CODE = {
   ACTIVE_DETAIL: 2003,
   HOME: 2004,
   SHARE_ORDER: 2005,
-  COUPON_TAKE: 2006
+  COUPON_TAKE: 2006,
+  GOODS_RECORD: 2007
 }
 
 export class Share {
