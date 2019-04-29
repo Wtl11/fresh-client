@@ -15,6 +15,7 @@
     <section class="header panel">
       <figure class="avatar">
         <img class="avatar-img" mode="aspectFill" v-if="groupInfo.head_image_url" :src="groupInfo.head_image_url">
+        <img class="avatar-img" mode="aspectFill" v-else-if="imageUrl" :src="imageUrl + '/yx-image/2.1/default_avatar@2x.png'">
       </figure>
       <h1 class="name">团长 {{groupInfo.name}}</h1>
       <p class="position">当前提货点：{{groupInfo.social_name}}</p>
@@ -25,6 +26,8 @@
         <pick-up :dataInfo="item"></pick-up>
       </dd>
     </dl>
+    <is-end v-if="!hasMore"></is-end>
+    <loading-more v-else></loading-more>
     <div v-if="isShowEmpty" class="panel empty-wrapper">
       <img class="empty-img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/pic-address@2x.png'">
       <p>没有其他提货点</p>
@@ -79,7 +82,7 @@
     onReachBottom() {
       if (!this.hasMore) return
       this.page++
-      this._getList()
+      this._getList(false)
     },
     methods: {
       // 获取设备系统参数
@@ -101,8 +104,8 @@
           }
         })
       },
-      _getList() {
-        API.Pickup.getList({page: this.page}).then(res => {
+      _getList(loading) {
+        API.Pickup.getList({page: this.page}, loading).then(res => {
           res.data.forEach(item => {
             this.dataArray.push(item)
           })
@@ -160,7 +163,6 @@
       border-radius :50%
       border: 2px solid #FFFFFF
       overflow :hidden
-      background :#ccc
       .avatar-img
         width :100%
         height :100%
@@ -195,7 +197,6 @@
       display :block
   .list-wrapper
     flex: 1
-    min-height :200vh
     margin :12px
     padding :0 10px
     position :relative

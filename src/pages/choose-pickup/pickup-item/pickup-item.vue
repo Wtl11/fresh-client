@@ -2,6 +2,7 @@
   <div class="pickup-item">
     <figure class="left">
       <img class="avatar-img" mode="aspectFill" v-if="dataInfo.shop_image_url" :src="dataInfo.shop_image_url">
+      <img class="avatar-img" mode="aspectFill" v-else-if="imageUrl" :src="imageUrl + '/yx-image/2.1/default_avatar@2x.png'">
     </figure>
     <section class="middle">
       <h1 class="name">团长：{{dataInfo.name}}</h1>
@@ -44,7 +45,6 @@
       height :@width
       border-radius :50%
       overflow :hidden
-      background :#ccc
       .avatar-img
         width :100%
         height :100%
