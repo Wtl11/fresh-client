@@ -71,6 +71,10 @@
         showMsg: ''
       }
     },
+    onUnload() {
+      this.isShow = false
+      this.showMsg = ''
+    },
     methods: {
       show (msg) {
         if (msg) {

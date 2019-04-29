@@ -197,14 +197,14 @@
       },
       _getList(loading) {
         this.isLoading = true
-        API.GoodsRecord.getList({page: this.page}, loading).then((res) => {
+        API.GoodsRecord.getList({page: this.page, goods_id: this.goodsId}, loading).then((res) => {
           res.data.forEach(item => {
             this.listArray.push({
               ...item,
               userName: this._formatName(item.nickname)
             })
           })
-          this.hasMore = res.data.length
+          this.hasMore = res.meta.current_page !== res.meta.last_page
           this.isLoading = false
         }).catch(e => {
           console.warn(e)

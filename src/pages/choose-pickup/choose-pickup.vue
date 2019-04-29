@@ -10,27 +10,30 @@
     ></navigation-bar>
     <section class="top-background">
       <div class="top-empty" :style="{height: backgroundTop+'px'}"></div>
-      <img class="img" mode="widthFix" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/bg-xzthd.png'">
+      <img class="img" mode="widthFix" v-if="imageUrl && backgroundTop > 0" :src="imageUrl + '/yx-image/2.3/bg-xzthd.png'" @load="handleLoad">
     </section>
-    <section class="header panel">
-      <figure class="avatar">
-        <img class="avatar-img" mode="aspectFill" v-if="groupInfo.head_image_url" :src="groupInfo.head_image_url">
-        <img class="avatar-img" mode="aspectFill" v-else-if="imageUrl" :src="imageUrl + '/yx-image/2.1/default_avatar@2x.png'">
-      </figure>
-      <h1 class="name">团长 {{groupInfo.name}}</h1>
-      <p class="position">当前提货点：{{groupInfo.social_name}}</p>
-    </section>
-    <dl v-if="dataArray.length" class="panel list-wrapper">
-      <dt class="title">历史提货点</dt>
-      <dd v-for="(item, index) in dataArray" :key="index" class="list-item-wrapper" :class="{'has-line': true}" @click="handleCheck(item)">
-        <pick-up :dataInfo="item"></pick-up>
-      </dd>
-    </dl>
-    <is-end v-if="!hasMore"></is-end>
-    <loading-more v-else></loading-more>
-    <div v-if="isShowEmpty" class="panel empty-wrapper">
-      <img class="empty-img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/pic-address@2x.png'">
-      <p>没有其他提货点</p>
+    <div v-if="backgroundLoad">
+      <div style="height: 41px"></div>
+      <section class="header panel">
+        <figure class="avatar">
+          <img class="avatar-img" mode="aspectFill" v-if="groupInfo.head_image_url" :src="groupInfo.head_image_url">
+          <img class="avatar-img" mode="aspectFill" v-else-if="imageUrl" :src="imageUrl + '/yx-image/2.1/default_avatar@2x.png'">
+        </figure>
+        <h1 class="name">团长 {{groupInfo.name}}</h1>
+        <p class="position">当前提货点：{{groupInfo.social_name}}</p>
+      </section>
+      <dl v-if="dataArray.length" class="panel list-wrapper">
+        <dt class="title">历史提货点</dt>
+        <dd v-for="(item, index) in dataArray" :key="index" class="list-item-wrapper" :class="{'has-line': true}" @click="handleCheck(item)">
+          <pick-up :dataInfo="item"></pick-up>
+        </dd>
+      </dl>
+      <is-end v-if="!hasMore"></is-end>
+      <loading-more v-else></loading-more>
+      <div v-if="isShowEmpty" class="panel empty-wrapper">
+        <img class="empty-img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/pic-address@2x.png'">
+        <p>没有其他提货点</p>
+      </div>
     </div>
     <confirm-msg ref="msg" useType="double" @confirm="handleConfirm"></confirm-msg>
   </div>
@@ -64,7 +67,8 @@
         isShowEmpty: false,
         hasMore: true,
         currentItem: {},
-        arrowUrl: ARROW_URL[0]
+        arrowUrl: ARROW_URL[0],
+        backgroundLoad: true
       }
     },
     onLoad(options) {
@@ -85,6 +89,14 @@
       this._getList(false)
     },
     methods: {
+      handleLoad() {
+        // wx.nextTick(() => {
+        //   this.backgroundLoad = true
+        // })
+        setTimeout(() => {
+          this.backgroundLoad = true
+        }, 100)
+      },
       // 获取设备系统参数
       _getSystemInfo() {
         this.systemInfo = wx.getSystemInfoSync()
@@ -148,9 +160,10 @@
       background:#73c200
     .img
       width :100vw
+      min-height :99px
       display :block
   .header
-    margin :41px 12px 0
+    margin :0 12px
     padding :0 10px
     position :relative
     text-align :center

@@ -384,6 +384,7 @@
         // API.Choiceness.getUserImg({goods_id: this.goodsId, limit: 200}).then((res) => {
         //   if (res.error === this.$ERR_OK) {
         //     this.userImgList = res.data
+        //     console.log(res.data)
         //     // if (this.bigUserImgList.length === 0) {
         //     //   if (this.userImgList.length === 14) {
         //     //     this.bigUserImgList = this.userImgList.slice(0, 14)
@@ -396,9 +397,9 @@
         //     this.$wechat.showToast(res.message)
         //   }
         // })
-        API.GoodsRecord.getList({goods_id: this.goodsId, limit: 5, page: 1}, false).then((res) => {
+        API.GoodsRecord.getList({goods_id: this.goodsId, limit: 5, page: 1, is_remove_duplicate: 1}, false).then((res) => {
           this.userImgList = res.data
-          this.userTotal = res.meta.total
+          this.userTotal = res.not_duplicate_total || 0
         })
       },
       bannerChange(e) {
