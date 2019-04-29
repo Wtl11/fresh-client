@@ -32,6 +32,25 @@
       <loading-more v-else></loading-more>
       <div style="height: 75px"></div>
     </section>
+    <div class="fixed-btn">
+      <div class="hlep-btn">
+        <button formType="submit" class="hlep-btn-box" v-for="(item, index) in typeBtn" :key="index" @click.stop="switchItem(item)">
+          <div class="hlep-top">
+            <img v-if="imageUrl" :src="imageUrl + item.url" class="detail-img" mode="aspectFill">
+            <div class="help-number" v-if="index * 1 === 1 && count * 1 >= 1">{{count * 1 > 99 ? 99 : count}}</div>
+          </div>
+          <div class="hlep-bottom">{{item.text}}</div>
+        </button>
+      </div>
+      <form action="" report-submit @submit="$getFormId">
+        <button v-if="isShowTwoButton" class="goods-btn goods-btn-active" formType="submit" @click="addShoppingCart">加入购物车</button>
+      </form>
+      <form action="" class="lost" report-submit @submit="$getFormId">
+        <button v-if="isShowTwoButton" class="goods-btn" :class="'corp-' + corpName + '-bg'" formType="submit" @click="instantlyBuy">立即购买</button>
+      </form>
+      <div v-if="!isShowTwoButton" class="goods-btn goods-btn-assint">{{BTN_TEXT}}</div>
+    </div>
+    <add-number ref="addNumber" :msgDetail="goodsMsg" :msgDetailInfo="buyGoodsInfo" @comfirmNumer="comfirmNumer"></add-number>
   </div>
 </template>
 
@@ -42,16 +61,31 @@
   import ShareHandler, {EVENT_CODE} from '@mixins/share-handler'
   import IsEnd from '@components/is-end/is-end'
   import LoadingMore from '@components/loading-more/loading-more'
+  import {orderMethods, cartMethods, cartComputed} from '@state/helpers'
+  import AddNumber from '@components/add-number/add-number'
 
   const PAGE_NAME = 'GOODS_RECORD'
-
+  const TYPEBTN = [{url: '/yx-image/goods/icon-homepage@2x.png', text: '首页', type: 0}, {url: '/yx-image/goods/icon-shopcart@2x.png', text: '购物车', type: 2}]
+  // 按钮状态映射
+  const BTN_STATUS = {
+    WILL: 0,
+    ACTION: 1,
+    DOWN: 2
+  }
+  const BTN_TEXT_CONSTANT = {
+    [BTN_STATUS.WILL]: '即将开抢',
+    [BTN_STATUS.ACTION]: '',
+    [BTN_STATUS.DOWN]: '已结束',
+    'NO_INVENTORY': '已抢完'
+  }
   export default {
     name: PAGE_NAME,
     mixins: [ShareHandler],
     components: {
       NavigationBar,
       IsEnd,
-      LoadingMore
+      LoadingMore,
+      AddNumber
     },
     data() {
       return {
@@ -64,7 +98,35 @@
         listArray: [],
         hasMore: true,
         isLoading: false,
-        page: 1
+        page: 1,
+        typeBtn: TYPEBTN,
+        buyGoodsInfo: {}
+      }
+    },
+    computed: {
+      ...cartComputed,
+      activeStatus() {
+        let active = this.goodsMsg.activity || {}
+        return +active.status
+      },
+      BTN_TEXT() {
+        let key = this.activeStatus
+        if (this.goodsMsg.usable_stock < 1) {
+          key = 'NO_INVENTORY'
+        }
+        if (key == null) {
+          key = BTN_STATUS.DOWN
+        }
+        return BTN_TEXT_CONSTANT[key]
+      },
+      isShowTwoButton() {
+        let flag = null
+        if (this.activityId) {
+          flag = this.goodsMsg.usable_stock > 0 && this.activeStatus === 1
+        } else {
+          flag = this.goodsMsg.usable_stock > 0
+        }
+        return flag
       }
     },
     onLoad(options) {
@@ -86,7 +148,9 @@
       // !!this.shopId && wx.setStorageSync('shopId', this.shopId)
     },
     onShow() {
+      this._resetReqListParams()
       this._getGoodsDetailData()
+      this.getGoodsOtherInfo()
       this._getList()
       this.$$shareHandler({
         event: EVENT_CODE.GOODS_DETAIL,
@@ -95,6 +159,11 @@
       })
     },
     onShareAppMessage() {
+      this.$sendMsg({
+        event_no: 1004,
+        goods_id: this.goodsId,
+        title: this.goodsMsg.name
+      })
       let shopId = wx.getStorageSync('shopId')
       const flag = Date.now()
       return {
@@ -115,6 +184,13 @@
       this._getList(false)
     },
     methods: {
+      ...cartMethods,
+      ...orderMethods,
+      _resetReqListParams() {
+        this.page = 1
+        this.hasMore = true
+        this.listArray = []
+      },
       _getList(loading) {
         this.isLoading = true
         API.GoodsRecord.getList({page: this.page}, loading).then((res) => {
@@ -146,13 +222,89 @@
           this.isFirstLoad = false
           if (res.error === this.$ERR_OK) {
             let goodDetail = res.data
-            console.log(res.data)
             this.goodsMsg = goodDetail
             this.thumb_image = goodDetail.thumb_image
           } else {
             this.$wechat.showToast(res.message)
           }
         })
+      },
+      getGoodsOtherInfo() {
+        API.Choiceness.getGoodsBuyInfo(this.goodsId, {activity_id: this.activityId}).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.buyGoodsInfo = res.data
+          } else {
+            this.$wechat.showToast(res.message)
+          }
+        })
+      },
+      async addShoppingCart() {
+        let isLogin = await this.$isLogin()
+        if (!isLogin) {
+          return
+        }
+        API.Choiceness.addShopCart({goods_sku_id: this.goodsMsg.goods_skus[0].goods_sku_id, activity_id: this.activityId}).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.$sendMsg({
+              event_no: 1007,
+              goods_id: this.goodsId,
+              title: this.goodsMsg.name
+            })
+            this.$wechat.showToast('加入购物车成功')
+            this.setCartCount()
+          } else {
+            this.$wechat.showToast(res.message)
+          }
+        })
+      },
+      switchItem(item) {
+        switch (item.type) {
+          case 0:
+            wx.switchTab({url: '/pages/choiceness'})
+            break
+          case 1:
+            this.$refs.groupList.showLink()
+            break
+          case 2:
+            if (this.$isLogin()) {
+              wx.switchTab({url: '/pages/shopping-cart'})
+            }
+            break
+        }
+      },
+      async instantlyBuy() {
+        let isLogin = await this.$isLogin()
+        if (!isLogin) {
+          return
+        }
+        // 显示抢购限购数量
+        if (this.buyGoodsInfo.person_all_buy_limit * 1 !== -1 && this.buyGoodsInfo.person_all_buy_count >= this.buyGoodsInfo.person_all_buy_limit) {
+          this.$wechat.showToast(`该商品限购${this.buyGoodsInfo.person_all_buy_limit}件，您不能再购买了`)
+          return
+        }
+        if (this.buyGoodsInfo.person_day_buy_limit * 1 === -1) {
+          this.$refs.addNumber.showLink()
+          return
+        }
+        if (this.buyGoodsInfo.person_day_buy_count >= this.buyGoodsInfo.person_day_buy_limit) {
+          this.$wechat.showToast(`该商品限购${this.buyGoodsInfo.person_day_buy_limit}件，您不能再购买了`)
+        } else {
+          this.$refs.addNumber.showLink()
+        }
+      },
+      comfirmNumer(number) {
+        let goodsList = this.goodsMsg.goods_skus[0]
+        goodsList.sku_id = goodsList.goods_sku_id
+        goodsList.num = number
+        goodsList.goods_units = this.goodsMsg.goods_units
+        const total = (goodsList.trade_price * number).toFixed(2)
+        let orderInfo = {
+          goodsList: new Array(goodsList),
+          total: total,
+          deliverAt: this.deliverAt
+        }
+        this.setOrderInfo(orderInfo)
+        wx.navigateTo({url: `/pages/submit-order`})
       }
     }
   }
@@ -160,6 +312,73 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@designCommon"
+
+  .fixed-btn
+    position: fixed
+    left: 0
+    bottom: 0
+    height: 55px
+    width: 100%
+    background: #fff
+    layout(row)
+    z-index: 111
+    .hlep-btn
+      width: 30vw
+      height: 55px
+      layout(row)
+      border-top-1px(#E6E6E6)
+      .hlep-btn-box
+        width: 50%
+        layout()
+        justify-content: center
+        align-items: center
+        .hlep-top
+          width: 20px
+          height: 20px
+          margin-bottom: 8px
+          position: relative
+          .detail-img
+            width: 100%
+            height: 100%
+            display: block
+          .help-number
+            position: absolute
+            top: -5px
+            right: -7px
+            min-width: 16px
+            text-align: center
+            height: 16px
+            line-height: 14px
+            padding: 0 3px
+            box-sizing: border-box
+            font-family: $font-family-medium
+            color: $color-white
+            font-size: $font-size-10
+            border: 1px solid $color-white
+            background: #FF3B39
+            border-radius: 50%
+        .hlep-bottom
+          font-size: $font-size-10
+          font-family: $font-family-regular
+          color: $color-text-main
+          line-height: 1
+    .goods-btn
+      width: 35vw
+      line-height: 55px
+      height: 55px
+      text-align: center
+      font-size: $font-size-14
+      font-family: $font-family-regular
+      color: #fff
+      &:after
+        border: none
+    .goods-btn-active
+      color: $color-text-main
+      background: $color-tag
+    .goods-btn-assint
+      color: #fff
+      background: $color-text-assist
+      width: 70vw
 
   .panel
     background: #FFFFFF;
