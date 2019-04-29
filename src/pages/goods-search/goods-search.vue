@@ -57,7 +57,7 @@
   import API from '@api'
 
   const PAGE_NAME = 'GOODS_SEARCH'
-
+  const MAX_HISTORY = 30
   export default {
     name: PAGE_NAME,
     components: {
@@ -129,8 +129,13 @@
         }
         this.isShowHistory = false
         let arr = this.historyArray
-        arr.push(this.goodsName)
-        this.historyArray = [...new Set(arr)]
+        arr.unshift(this.goodsName)
+        arr = [...new Set(arr)]
+        if (arr.length > MAX_HISTORY) {
+          this.historyArray = arr.splice(0, MAX_HISTORY)
+        } else {
+          this.historyArray = arr
+        }
         wx.setStorageSync('historyArray', this.historyArray)
         this.resetReqParams()
         this._getClassifyList()
@@ -248,7 +253,7 @@
       .list-wrapper
         layout(row,block)
         padding :15px 0
-        height :210px
+        max-height :210px
         box-sizing :border-box
         overflow :hidden
         .item-wrapper
