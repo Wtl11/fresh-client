@@ -10,7 +10,7 @@
     ></navigation-bar>
     <section class="top-background">
       <div class="top-empty" :style="{height: backgroundTop+'px'}"></div>
-      <img class="img" mode="widthFix" v-if="imageUrl && backgroundTop > 0" :src="imageUrl + '/yx-image/2.3/bg-xzthd.png'" @load="handleLoad">
+      <img class="img" mode="widthFix" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/bg-xzthd.png'" @load="handleLoad">
     </section>
     <div v-if="backgroundLoad">
       <div style="height: 41px"></div>
@@ -78,7 +78,7 @@
       this.$refs.navigationBar && this.$refs.navigationBar.setNavigationBarBackground(`background:#73c200;transition:none`)
       this.titleColor = `#ffffff`
       this.arrowUrl = ARROW_URL[0]
-      this._getList()
+      this._getList(false)
     },
     onPageScroll(e) {
       this._changeNavigation(e)
@@ -93,9 +93,9 @@
         // wx.nextTick(() => {
         //   this.backgroundLoad = true
         // })
-        setTimeout(() => {
-          this.backgroundLoad = true
-        }, 100)
+        // setTimeout(() => {
+        //   this.backgroundLoad = true
+        // }, 100)
       },
       // 获取设备系统参数
       _getSystemInfo() {
@@ -156,7 +156,10 @@
     left :0
     right :0
     top:0
+    width :100vw
+    min-height :163px
     .top-empty
+      width :100vw
       background:#73c200
     .img
       width :100vw
@@ -178,9 +181,8 @@
       overflow :hidden
       .avatar-img
         width :100%
-        height :100%
+        height :@width
         display :block
-        border-top-color :#73c200
     .name
       padding-top :58px
       font-family: $font-family-medium
