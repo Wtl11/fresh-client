@@ -197,7 +197,7 @@
     },
     methods: {
       _changeNavigation(e) {
-        let flag = e.scrollTop < 64
+        let flag = e.scrollTop < 184
         const color = flag ? `#ffffff` : `#000000`
         wx.setNavigationBarColor({
           frontColor: color,
