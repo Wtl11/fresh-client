@@ -86,7 +86,6 @@ export default {
   // 抢优惠券记录
   getTakeList(data, loading = false, toast = false) {
     const url = `/api/wap/coupon-activity-manage/receive-coupon-logs/${data.packetId}`
-    data = ''
     return request.get({url, data, loading, toast})
   },
   // 团长营销优惠券包详情
