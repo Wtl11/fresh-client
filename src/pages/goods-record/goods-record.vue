@@ -204,7 +204,7 @@
               userName: this._formatName(item.nickname)
             })
           })
-          this.hasMore = res.meta.current_page !== res.meta.last_page
+          this.hasMore = res.meta.current_page < res.meta.last_page
           this.isLoading = false
         }).catch(e => {
           console.warn(e)
