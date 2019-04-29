@@ -49,7 +49,7 @@
         storyShopId = wx.getStorageSync('shopId') || wx.getStorageSync('defaultShopId')
       }
       let shopId = options.query.shopId || +storyShopId
-      wx.setStorageSync('shopId', shopId)
+      shopId > 0 && wx.setStorageSync('shopId', shopId)
       // let token = wx.getStorageSync('token')
       let query = ''
       for (let key in options.query) {

@@ -142,10 +142,9 @@
         this.activityId = +options.activityId || 0
         this.shopId = +options.shopId || 0
       }
-      if (this.shopId) {
+      if (this.shopId > 0) {
         wx.setStorageSync('shopId', this.shopId)
       }
-      // !!this.shopId && wx.setStorageSync('shopId', this.shopId)
     },
     onShow() {
       if (this.isSharing) {
