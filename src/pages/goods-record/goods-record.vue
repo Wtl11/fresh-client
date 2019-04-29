@@ -28,6 +28,8 @@
           </p>
         </li>
       </ul>
+      <is-end v-if="!hasMore"></is-end>
+      <loading-more v-else></loading-more>
       <div style="height: 75px"></div>
     </section>
   </div>
@@ -38,6 +40,8 @@
   import API from '@api'
   import {resolveQueryScene} from '@utils/common'
   import ShareHandler, {EVENT_CODE} from '@mixins/share-handler'
+  import IsEnd from '@components/is-end/is-end'
+  import LoadingMore from '@components/loading-more/loading-more'
 
   const PAGE_NAME = 'GOODS_RECORD'
 
@@ -45,7 +49,9 @@
     name: PAGE_NAME,
     mixins: [ShareHandler],
     components: {
-      NavigationBar
+      NavigationBar,
+      IsEnd,
+      LoadingMore
     },
     data() {
       return {
@@ -55,7 +61,10 @@
         shopId: 0,
         activity_id: 0,
         goodsId: 0,
-        listArray: []
+        listArray: [],
+        hasMore: true,
+        isLoading: false,
+        page: 1
       }
     },
     onLoad(options) {
@@ -100,19 +109,26 @@
         }
       }
     },
+    onReachBottom() {
+      if (this.isLoading) return
+      this.page++
+      this._getList(false)
+    },
     methods: {
-      _getList() {
-        API.GoodsRecord.getList({page: this.page}).then((res) => {
-          // console.log(res)
-          // this.listArray = res.data.map(item =>)
+      _getList(loading) {
+        this.isLoading = true
+        API.GoodsRecord.getList({page: this.page}, loading).then((res) => {
           res.data.forEach(item => {
             this.listArray.push({
               ...item,
               userName: this._formatName(item.nickname)
             })
           })
-          // console.log(this.listArray)
-          // console.log(this._formatName(res.data[0].nickname), '==asdsad==', res.data[0].nickname)
+          this.hasMore = res.data.length
+          this.isLoading = false
+        }).catch(e => {
+          console.warn(e)
+          this.isLoading = false
         })
       },
       _formatName(name) {
@@ -133,20 +149,6 @@
             console.log(res.data)
             this.goodsMsg = goodDetail
             this.thumb_image = goodDetail.thumb_image
-            // this.goodsBanner = goodDetail.goods_banner_images
-            // this.showOpen = goodDetail.describe.length > this.describeNum
-            // this.deliverAt = goodDetail.delivery_at
-            // this.$refs.navigationBar && this.$refs.navigationBar.setTranslucentTitle(goodDetail.name)
-            // this._kanTimePlay()
-            // this._handleDescribe()
-            // if (this.eventCount > -1) {
-            //   this.eventCount++
-            //   this.$sendMsg({
-            //     event_no: this.eventNo,
-            //     goods_id: this.goodsId,
-            //     title: this.goodsMsg.name
-            //   })
-            // }
           } else {
             this.$wechat.showToast(res.message)
           }
