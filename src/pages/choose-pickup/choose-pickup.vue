@@ -24,7 +24,7 @@
       </section>
       <dl v-if="dataArray.length" class="panel list-wrapper">
         <dt class="title">历史提货点</dt>
-        <dd v-for="(item, index) in dataArray" :key="index" class="list-item-wrapper" :class="{'has-line': true}" @click="handleCheck(item)">
+        <dd v-for="(item, index) in dataArray" :key="index" class="list-item-wrapper" :class="{'has-line': index < dataArray.length}" @click="handleCheck(item)">
           <pick-up :dataInfo="item"></pick-up>
         </dd>
       </dl>
