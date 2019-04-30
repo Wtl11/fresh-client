@@ -16,6 +16,9 @@ export default {
       if (list.length === 0) {
         this.bannerIsShow = false
       }
+      if (!list.every(val => val.image_url)) {
+        this.bannerIsShow = false
+      }
     }
   }
 }
