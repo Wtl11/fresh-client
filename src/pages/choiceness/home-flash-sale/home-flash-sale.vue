@@ -1,6 +1,6 @@
 <template>
   <div v-if="isShow" class="home-flash-sale" id="homeFlashSale">
-    <section v-if="tabList.length" class="top-wrapper">
+    <section v-if="tabList.length && flashArray.length" class="top-wrapper">
       <img lazy-load class="title-img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/pic-qgtitle@2x.png'">
       <ul class="tab-wrapper">
         <li v-if="index < 2" v-for="(item, index) in tabList" :key="index" class="tab-item-wrapper" :class="{active: tabIndex === index}" @click="changeTab(item, index)">
@@ -13,7 +13,7 @@
         <img lazy-load class="more-img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/icon-pressed@2x.png'">
       </div>
     </section>
-    <section v-if="tabList.length" class="scroll-wrapper">
+    <section v-if="tabList.length && flashArray.length" class="scroll-wrapper">
       <scroll-view
         class="bottom-wrapper"
         scroll-x

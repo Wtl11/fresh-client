@@ -19,7 +19,7 @@
       <button formType="submit">
         <figure class="icon">
           <img class="img" mode="aspectFill" lazy-load v-if="item.image_url" :src="item.image_url">
-          <img class="img" mode="aspectFill" lazy-load v-else-if="imageUrl && index === 0" :src="imageUrl + '/yx-image/2.1/icon-all@2x.png'">
+<!--          <img class="img" mode="aspectFill" lazy-load v-else-if="imageUrl && index === 0" :src="imageUrl + '/yx-image/2.1/icon-all@2x.png'">-->
         </figure>
         <p class="text"><span class="name">{{item.name}}</span><span class="t-name" :class="tabIndex === index ? 'active'  : ''">{{item.name}}</span></p>
       </button>
