@@ -138,7 +138,7 @@
         this.activityId = activityId
         this.shopId = shopId
       } else {
-        this.goodsId = +options.goodsId || 0
+        this.goodsId = +options.goodsId || +options.id || 0
         this.activityId = +options.activityId || 0
         this.shopId = +options.shopId || 0
       }
@@ -172,7 +172,7 @@
       const flag = Date.now()
       return {
         title: this.goodsMsg.name,
-        path: `/pages/goods-record?id=${this.goodsId}&shopId=${shopId}&activityId=${this.activityId}&flag=${flag}`, // 商品详情
+        path: `/pages/goods-record?goodsId=${this.goodsId}&shopId=${shopId}&activityId=${this.activityId}&flag=${flag}`, // 商品详情
         imageUrl: this.thumb_image || this.goodsMsg.goods_cover_image,
         success: (res) => {
           // 转发成功

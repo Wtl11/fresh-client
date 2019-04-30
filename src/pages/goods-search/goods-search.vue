@@ -8,18 +8,20 @@
           type="text"
           placeholder="请输入商品名称"
           placeholder-class="input-p"
+          :focus="true"
+          confirm-type="search"
           @focus="handleFocus"
           @blur="handleBlur"
           @confirm="handleConfirm"
           v-model="goodsNameInput"
         >
-        <figure v-if="showClearGoodsNameBtn" class="close" @click.stop="handleClearGoodsName">
+        <figure v-if="showClearGoodsNameBtn" class="close" @click="handleClearGoodsName">
           <img class="close-img" mode="aspectFit" v-if="imageUrl" :src="imageUrl+'/yx-image/2.3/icon-delsr@2x.png'">
         </figure>
       </div>
       <div class="btn" @click.stop="handleSearch('')">搜索</div>
     </section>
-    <section v-if="isShowHistory" class="history-wrapper">
+    <section v-if="isShowHistory && historyArray.length" class="history-wrapper">
       <div class="title-wrapper">
         <p>历史记录</p>
         <img
@@ -40,7 +42,7 @@
         </block>
       </div>
 <!--      <is-end v-if="!classifyMore && !classifyShowEmpty"></is-end>-->
-      <loading-more v-if="!classifyShowEmpty"></loading-more>
+      <loading-more v-if="classifyMore"></loading-more>
       <div v-if="classifyShowEmpty" class="empty-wrapper">
         <is-active-empty></is-active-empty>
       </div>
@@ -76,6 +78,7 @@
         classifyMore: true,
         classifyArray: [],
         classifyShowEmpty: false
+        // autoFocus: true
       }
     },
     computed: {
@@ -142,6 +145,7 @@
       },
       handleClearGoodsName() {
         this.goodsName = ''
+        // this.autoFocus = true
       },
       handleClearHistoryArr() {
         this.historyArray = []
@@ -153,6 +157,7 @@
       // 获取商品分类列表
       async _getClassifyList(loading = true) {
         if (!this.classifyMore) return
+        if (!this.goodsName) return
         try {
           const data = {
             keyword: this.goodsName,
@@ -245,7 +250,7 @@
         align-items :center
         justify-content :space-between
         font-family: $font-family-medium
-        font-size: 16px
+        font-size: 15px
         .delete-img
           width :16px
           height :17.5px
