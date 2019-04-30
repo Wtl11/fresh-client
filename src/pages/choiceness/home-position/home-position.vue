@@ -126,7 +126,6 @@
       border-radius: @height
       display :flex
       align-items :center
-      opacity: 0.9;
       font-family: $font-family-regular
       font-size: 13px;
       color: #B7B7B7;

@@ -55,22 +55,24 @@
       padding :0 10px
       overflow:hidden
       .name
-        padding-top :24px
+        padding-top :20px
         font-family: $font-family-medium
-        font-size: 17px;
+        font-size: 15px;
         color: #1D2023;
-        line-height: 1
+        line-height: 1.2
         no-wrap()
       .position
-        padding-top :11px
+        padding-top :8px
         font-family: $font-family-regular
         font-size: 15px;
         color: #3F454B;
-        line-height: 1.4
-        no-wrap()
+        line-height: 1.3
+        no-wrap-plus()
     .right
       display: block
       width: 7.5px
       height: 12.5px
       padding-right :5px
+      position :relative
+      top: 15px
 </style>

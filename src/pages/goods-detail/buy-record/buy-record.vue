@@ -5,7 +5,7 @@
         <img v-if="item.head_image_url" :src="item.head_image_url" mode="aspectFill" class="img">
       </li>
     </ul>
-    <div class="right">已有<span class="red">{{userTotal}}</span>已有</div>
+    <div class="right">已有<span class="red">{{userTotal}}</span>人购买</div>
     <img class="arrow-right" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/icon-pressed@2x.png'">
   </div>
 </template>

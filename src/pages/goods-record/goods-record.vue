@@ -28,8 +28,8 @@
           </p>
         </li>
       </ul>
-      <is-end v-if="!hasMore"></is-end>
-      <loading-more v-else></loading-more>
+<!--      <is-end v-if="!hasMore"></is-end>-->
+      <loading-more v-if="hasMore"></loading-more>
       <div style="height: 75px"></div>
     </section>
     <div class="fixed-btn">
@@ -393,7 +393,11 @@
     width: 100%
     .container
       padding :0 12px
+      min-height :100vh
+      layout(column, block, nowrap)
+      box-sizing :border-box
       .list-wrapper
+        flex: 1
         margin-top :10px
         padding : 0 15px
         .item-wrapper
@@ -440,7 +444,7 @@
         position :relative
         .share-button
           position :absolute
-          width :40px
+          width :48px
           height :@width
           right :13px
           bottom :-4px
@@ -451,7 +455,7 @@
           justify-content :center
           z-index :50
           .share-img
-            width :30px
+            width :36px
             height :@width
             display :block
         .left
@@ -469,12 +473,14 @@
           flex: 1
           overflow :hidden
           font-family: $font-family-regular
+          position :relative
           .title
+            padding-top :4px
             font-family: $font-family-medium
-            font-size: 14px;
+            font-size: 15px;
             color: $color-text-main
             letter-spacing: 0.6px;
-            line-height: 1
+            line-height: 1.3
             no-wrap()
           .title-sub
             padding-top :6px
@@ -483,7 +489,9 @@
             line-height:1.24
             no-wrap-plus()
           .money
-            padding-top :21px
+            position :absolute
+            bottom :7px
+            left :0
             display :flex
             font-family: $font-family-medium
             color: #FA7500;

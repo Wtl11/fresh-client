@@ -12,7 +12,7 @@
       <div class="top-empty" :style="{height: backgroundTop+'px'}"></div>
       <img class="img" mode="widthFix" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/bg-xzthd.png'" @load="handleLoad">
     </section>
-    <div v-if="backgroundLoad">
+    <div v-if="backgroundLoad" class="container">
       <div style="height: 41px"></div>
       <section class="header panel">
         <figure class="avatar">
@@ -165,6 +165,9 @@
       width :100vw
       min-height :99px
       display :block
+  .container
+    min-height :100vh
+    layout(column,block,nowrap)
   .header
     margin :0 12px
     padding :0 10px
@@ -190,8 +193,8 @@
       color: #1D2023;
       line-height: 1
     .position
-      padding-top :23px
-      padding-bottom :28px
+      padding-top :20px
+      padding-bottom :26px
       font-family: $font-family-regular
       font-size: 15px;
       color: #3F454B;

@@ -39,8 +39,8 @@
           <classify-item :item="item"></classify-item>
         </block>
       </div>
-      <is-end v-if="!classifyMore && !classifyShowEmpty"></is-end>
-      <loading-more v-else-if="!classifyShowEmpty"></loading-more>
+<!--      <is-end v-if="!classifyMore && !classifyShowEmpty"></is-end>-->
+      <loading-more v-if="!classifyShowEmpty"></loading-more>
       <div v-if="classifyShowEmpty" class="empty-wrapper">
         <is-active-empty></is-active-empty>
       </div>
@@ -51,7 +51,7 @@
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import ClassifyItem from './home-classify-item/home-classify-item'
-  import IsEnd from '@components/is-end/is-end'
+  // import IsEnd from '@components/is-end/is-end'
   import isActiveEmpty from '@components/is-active-empty/is-active-empty'
   import LoadingMore from '@components/loading-more/loading-more'
   import API from '@api'
@@ -63,7 +63,7 @@
     components: {
       NavigationBar,
       ClassifyItem,
-      IsEnd,
+      // IsEnd,
       isActiveEmpty,
       LoadingMore
     },

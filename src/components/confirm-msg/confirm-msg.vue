@@ -229,7 +229,7 @@
         layout()
         justify-content: center
         align-items: center
-        font-family: $font-family-regular
+        font-family: $font-family-medium
         font-size: $font-size-16
         color: $color-text-main
         letter-spacing: 0.05px
