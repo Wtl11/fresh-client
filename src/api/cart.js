@@ -42,5 +42,11 @@ export default {
   shopCartNumber(data = null, loading = false) {
     const url = `/api/wap/cart-count`
     return request.get(url, data, loading)
+  },
+
+  // 购物车 猜你喜欢
+  getCarRecommend(data = null, loading = false) {
+    const url = `/api/wap/cart-recommend`
+    return request.get(url, data, loading)
   }
 }
