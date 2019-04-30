@@ -41,14 +41,14 @@
       ...cartMethods,
       jumpGoodsDetail(item) {
         wx.navigateTo({
-          url: `/pages/goods-detail?id=${item.goods_id}&activityId=${item.activity_id}`
+          url: `/pages/goods-detail?id=${item.id}&activityId=${item.activity_id}`
         })
       },
       addShoppingCart(item) {
         if (!this.$isLogin()) {
           return
         }
-        API.Choiceness.addShopCart({goods_sku_id: item.goods_sku_id, activity_id: item.activity_id}).then((res) => {
+        API.Choiceness.addShopCart({goods_sku_id: item.goods_sku_id, activity_id: item.activity_id || 0}).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.$sendMsg({
               event_no: 1007,
