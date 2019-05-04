@@ -165,6 +165,7 @@
         // 获取团的信息
         this._groupInfo(false)
         if (this.curShopId * 1 !== shopId * 1) {
+          this._resetGetClassifyListParams()
           await this._getModuleInfo()
           this.curShopId = shopId
         } else {
