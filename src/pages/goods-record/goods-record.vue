@@ -287,7 +287,7 @@
         const dot = '***'
         // name = name.replace(/\uD83C[\uDF00-\uDFFF]|\uD83D[\uDC00-\uDE4F]/g, '?')
         if (name.length > 1) {
-          name = name.substring(0, 1) + dot + name.substring(name.length - 2, name.length - 1)
+          name = name.substr(0, 1) + dot + name.substr(-1)
         } else {
           name += dot
         }
