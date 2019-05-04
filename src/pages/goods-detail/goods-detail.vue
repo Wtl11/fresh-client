@@ -677,6 +677,9 @@
         this.activityTime = countDownHandle(diff)
         this.timer = setInterval(() => {
           diff--
+          if (diff < 0) {
+            diff = 0
+          }
           this.activityTime = countDownHandle(diff)
           if (this.activityTime.differ <= 0) {
             clearInterval(this.timer)

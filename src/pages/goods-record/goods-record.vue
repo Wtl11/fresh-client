@@ -207,30 +207,60 @@
       this._getList(false)
     },
     onUnload() {
-      this.timer && clearInterval(this.timer)
+      this._clearTimer()
     },
     onHide() {
-      this.timer && clearInterval(this.timer)
+      this._clearTimer()
     },
     methods: {
       ...cartMethods,
       ...orderMethods,
-      _kanTimePlay() {
+      // _kanTimePlay() {
+      //   if (!this.activityId) return
+      //   clearInterval(this.timer)
+      //   let diff = this.goodsMsg.at_diff || 0
+      //   if (this.activeStatus === BTN_STATUS.DOWN) {
+      //     return
+      //   }
+      //   this.countDownTimes = countDownHandle(diff)
+      //   this.timer = setInterval(() => {
+      //     diff--
+      //     if (diff < 0) {
+      //       diff = 0
+      //     }
+      //     this.countDownTimes = countDownHandle(diff)
+      //     console.log(this.countDownTimes, '================>')
+      //     if (this.countDownTimes.differ <= 0) {
+      //       clearInterval(this.timer)
+      //       this._getGoodsDetailData()
+      //     }
+      //   }, 1000)
+      // },
+      _kanTimePlay(diff) {
         if (!this.activityId) return
-        this.timer && clearInterval(this.timer)
-        let diff = this.goodsMsg.at_diff || 0
+        this._clearTimer()
+        // let diff = this.goodsMsg.at_diff || 0
         if (this.activeStatus === BTN_STATUS.DOWN) {
           return
         }
         this.countDownTimes = countDownHandle(diff)
-        this.timer = setInterval(() => {
+        this.timer = setTimeout(() => {
           diff--
+          if (diff < 0) {
+            diff = 0
+          }
           this.countDownTimes = countDownHandle(diff)
           if (this.countDownTimes.differ <= 0) {
-            clearInterval(this.timer)
+            this._clearTimer()
             this._getGoodsDetailData()
+          } else {
+            return this._kanTimePlay(diff)
           }
         }, 1000)
+      },
+      _clearTimer() {
+        clearInterval(this.timer)
+        clearTimeout(this.timer)
       },
       _resetReqListParams() {
         this.page = 1
@@ -270,7 +300,8 @@
             let goodDetail = res.data
             this.goodsMsg = goodDetail
             this.thumb_image = goodDetail.thumb_image
-            this._kanTimePlay()
+            let diff = this.goodsMsg.at_diff || 0
+            this._kanTimePlay(diff)
           } else {
             this.$wechat.showToast(res.message)
           }
@@ -363,7 +394,7 @@
   .right-wrapper
     position absolute
     right :10px
-    bottom :15px
+    bottom :12px
     flex:1
     color: $color-text-sub
     display :flex
@@ -569,14 +600,14 @@
             line-height: 1.3
             no-wrap()
           .title-sub
-            padding-top :6px
-            font-size: 13px;
+            padding-top :4px
+            font-size: 14px;
             color: $color-text-sub
             line-height:1.24
             no-wrap-plus()
           .money
             position :absolute
-            bottom :7px
+            bottom :5px
             left :0
             display :flex
             font-family: $font-family-medium

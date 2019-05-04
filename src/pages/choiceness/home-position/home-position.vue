@@ -111,7 +111,7 @@
   @import "~@designCommon"
 
   .home-position
-    layout(row)
+    layout(row,block,nowrap)
     justify-content: space-between
     align-items: center
     padding: 0 12px
@@ -120,7 +120,7 @@
     height :27px
     position :relative
     .search-wrapper
-      width :150px
+      width :40vw
       height :27px
       background: #FFFFFF;
       border-radius: @height
@@ -135,7 +135,7 @@
         width :14px
         height :13.5px
     .community-main
-      layout(row)
+      layout(row,block,nowrap)
       align-items: center
       opacity :1
       .community-img

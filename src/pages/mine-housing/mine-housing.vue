@@ -73,7 +73,7 @@
       },
       applyLeader() {
         this.$wx.navigateTo({
-          url: '/pages/apply-leader'
+          url: '/pages/out-html?routeType=recruit-regimental'
         })
       },
       // 保存二维码
