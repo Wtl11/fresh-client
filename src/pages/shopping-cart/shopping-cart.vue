@@ -103,7 +103,8 @@
         },
         isShowNum: true,
         deliverAt: '',
-        height: 0
+        height: 0,
+        isFirstLoad: true
       }
     },
     async onTabItemTap() {
@@ -117,6 +118,7 @@
       if (!wx.getStorageSync('token')) return
       await this._getShopCart()
       await this.getCarRecommend()
+      this.isFirstLoad = false
     },
     computed: {
       checkedGoods() {
@@ -137,13 +139,13 @@
       ...orderMethods,
       ...cartMethods,
       async _getShopCart() {
-        let loading = false
-        if (this.goodsList.length === 0) {
-          loading = true
-        } else {
-          loading = false
-        }
-        let res = await API.Cart.shopCart(loading)
+        // let loading = false
+        // if (this.goodsList.length === 0) {
+        //   loading = true
+        // } else {
+        //   loading = false
+        // }
+        let res = await API.Cart.shopCart(this.isFirstLoad)
         this.$wechat.hideLoading()
         if (res.error !== this.$ERR_OK) {
           this.isShowCart = true

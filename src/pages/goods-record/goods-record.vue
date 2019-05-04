@@ -11,9 +11,21 @@
           <h3 class="title-sub">{{goodsMsg.describe}}</h3>
           <p class="money"><span class="number">{{goodsMsg.trade_price}}</span><span class="unit">元</span></p>
         </div>
+<!--        <div class="line"></div>-->
+        <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/pic-line.png'" mode="aspectFill" class="line">
         <button class="share-button" open-type="share">
           <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/icon-sharexq@2x.png'" mode="aspectFill" class="share-img">
         </button>
+        <article v-if="activityId > 0" class="right-wrapper">
+          <p class="title">{{goodsMsg.at_diff_str}}</p>
+          <div class="time-wrapper">
+            <p class="time start">{{countDownTimes.hour}}</p>
+            <p class="dot">:</p>
+            <p class="time">{{countDownTimes.minute}}</p>
+            <p class="dot">:</p>
+            <p class="time">{{countDownTimes.second}}</p>
+          </div>
+        </article>
       </article>
       <ul class="list-wrapper panel">
         <li v-for="(item, index) in listArray" :key="index" class="item-wrapper">
@@ -57,7 +69,7 @@
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import API from '@api'
-  import {resolveQueryScene} from '@utils/common'
+  import {resolveQueryScene, countDownHandle} from '@utils/common'
   import ShareHandler, {EVENT_CODE} from '@mixins/share-handler'
   import IsEnd from '@components/is-end/is-end'
   import LoadingMore from '@components/loading-more/loading-more'
@@ -93,7 +105,7 @@
         isFirstLoad: true,
         goodsMsg: {},
         shopId: 0,
-        activity_id: 0,
+        activityId: 0,
         goodsId: 0,
         listArray: [],
         hasMore: true,
@@ -101,7 +113,13 @@
         page: 1,
         typeBtn: TYPEBTN,
         buyGoodsInfo: {},
-        isSharing: false
+        isSharing: false,
+        countDownTimes: {
+          hour: '00',
+          minute: '00',
+          second: '00'
+        },
+        timer: null
       }
     },
     computed: {
@@ -187,9 +205,32 @@
       this.page++
       this._getList(false)
     },
+    onUnload() {
+      this.timer && clearInterval(this.timer)
+    },
+    onHide() {
+      this.timer && clearInterval(this.timer)
+    },
     methods: {
       ...cartMethods,
       ...orderMethods,
+      _kanTimePlay() {
+        if (!this.activityId) return
+        this.timer && clearInterval(this.timer)
+        let diff = this.goodsMsg.at_diff || 0
+        if (this.activeStatus === BTN_STATUS.DOWN) {
+          return
+        }
+        this.countDownTimes = countDownHandle(diff)
+        this.timer = setInterval(() => {
+          diff--
+          this.countDownTimes = countDownHandle(diff)
+          if (this.countDownTimes.differ <= 0) {
+            clearInterval(this.timer)
+            this._getGoodsDetailData()
+          }
+        }, 1000)
+      },
       _resetReqListParams() {
         this.page = 1
         this.hasMore = true
@@ -228,6 +269,7 @@
             let goodDetail = res.data
             this.goodsMsg = goodDetail
             this.thumb_image = goodDetail.thumb_image
+            this._kanTimePlay()
           } else {
             this.$wechat.showToast(res.message)
           }
@@ -316,6 +358,42 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@designCommon"
+
+  .right-wrapper
+    position absolute
+    right :10px
+    bottom :15px
+    flex:1
+    color: $color-text-sub
+    display :flex
+    align-items :center
+    justify-content :flex-start
+    .title
+      color: #111
+      font-size :12px
+      padding-right :6px
+    .time-wrapper
+      display :flex
+      font-size: 12px;
+      padding-right :4px
+      .time
+        color: #FFFFFF;
+        font-family: DINAlternate-Bold;
+        background :rgba(17,17,17,0.8)
+        border-radius: 3px
+        height :15px
+        line-height :@height
+        width :@height
+        text-align :center
+        box-sizing :border-box
+        &.start
+          padding :0 2px
+          width: auto
+          box-sizing: content-box
+      .dot
+        padding :0 2px
+        position :relative
+        bottom :1px
 
   .fixed-btn
     position: fixed
@@ -442,12 +520,18 @@
         padding :10px
         layout(row,block,nowrap)
         position :relative
+        .line
+          position absolute
+          width :1px
+          height :57px
+          top:13px
+          right :62px
         .share-button
           position :absolute
-          width :48px
+          width :36px
           height :@width
-          right :13px
-          bottom :-4px
+          right :15px
+          top :26px
           border-radius :50%
           background :#fff
           display: flex
@@ -471,6 +555,7 @@
             display :block
         .right
           flex: 1
+          max-width :48%
           overflow :hidden
           font-family: $font-family-regular
           position :relative

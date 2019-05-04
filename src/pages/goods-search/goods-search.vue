@@ -59,7 +59,7 @@
   import API from '@api'
 
   const PAGE_NAME = 'GOODS_SEARCH'
-  const MAX_HISTORY = 30
+  const MAX_HISTORY = 10
   export default {
     name: PAGE_NAME,
     components: {
