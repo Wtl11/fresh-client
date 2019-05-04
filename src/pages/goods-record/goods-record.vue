@@ -167,6 +167,7 @@
     onShow() {
       if (this.isSharing) {
         this.isSharing = false
+        this._getGoodsDetailData()
         return
       }
       this._resetReqListParams()
