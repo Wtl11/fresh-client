@@ -15,14 +15,12 @@
     <form action="" class="lost" report-submit @submit="$getFormId">
       <button v-if="isShowTwoButton" class="goods-btn" :class="'corp-' + corpName + '-bg'" formType="submit" @click="instantlyBuy">立即购买</button>
     </form>
-    <div v-if="!isShowTwoButton" class="goods-btn goods-btn-assint">{{BTN_TEXT}}</div>
+    <div v-if="!isShowTwoButton" class="goods-btn goods-btn-assint">{{btnText}}</div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-  import {BTN_STATUS, BTN_TEXT_CONSTANT} from '../active-status'
-  import {orderMethods, cartMethods, cartComputed} from '@state/helpers'
-  import API from '@api'
+  import {cartComputed} from '@state/helpers'
 
   const COMPONENT_NAME = 'BUTTON_GROUP'
   const TYPE_BTN = [
@@ -33,17 +31,9 @@
   export default {
     name: COMPONENT_NAME,
     props: {
-      goodsMsg: {
+      buttonInfo: {
         type: Object,
         default: () => {}
-      },
-      activityId: {
-        type: Number,
-        default: 0
-      },
-      goodsId: {
-        type: Number,
-        default: 0
       }
     },
     data() {
@@ -54,65 +44,21 @@
     computed: {
       ...cartComputed,
       activeStatus() {
-        let active = this.goodsMsg.activity || {}
-        return +active.status
+        return this.buttonInfo.activeStatus
       },
-      BTN_TEXT() {
-        let key = this.activeStatus
-        if (this.goodsMsg.usable_stock < 1) {
-          key = 'NO_INVENTORY'
-        }
-        if (key == null) {
-          key = BTN_STATUS.DOWN
-        }
-        return BTN_TEXT_CONSTANT[key]
+      btnText() {
+        return this.buttonInfo.btnText
       },
       isShowTwoButton() {
-        let flag = null
-        if (this.activityId) {
-          flag = this.goodsMsg.usable_stock > 0 && this.activeStatus === 1
-        } else {
-          flag = this.goodsMsg.usable_stock > 0
-        }
-        return flag
+        return this.buttonInfo.isShowTwoButton
       }
     },
     methods: {
-      ...cartMethods,
-      ...orderMethods,
       switchItem(item) {
-        switch (item.type) {
-          case 0:
-            wx.switchTab({url: '/pages/choiceness'})
-            break
-          case 1:
-            // this.$refs.groupList.showLink()
-            break
-          case 2:
-            if (this.$isLogin()) {
-              wx.switchTab({url: '/pages/shopping-cart'})
-            }
-            break
-        }
+        this.$emit('buttonGroupNav', item)
       },
-      async addShoppingCart() {
-        let isLogin = await this.$isLogin()
-        if (!isLogin) {
-          return
-        }
-        API.Choiceness.addShopCart({goods_sku_id: this.goodsMsg.goods_skus[0].goods_sku_id, activity_id: this.activityId}).then((res) => {
-          if (res.error === this.$ERR_OK) {
-            this.$sendMsg({
-              event_no: 1007,
-              goods_id: this.goodsId,
-              title: this.goodsMsg.name
-            })
-            this.$wechat.showToast('加入购物车成功')
-            this.setCartCount()
-          } else {
-            this.$wechat.showToast(res.message)
-          }
-        })
+      addShoppingCart() {
+        this.$emit('addShoppingCart')
       },
       instantlyBuy() {
         this.$emit('instantlyBuy')

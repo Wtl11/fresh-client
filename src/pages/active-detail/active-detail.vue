@@ -5,28 +5,35 @@
     <section class="banner-box">
       <buy-users :buyUsers="buyUsers"></buy-users>
       <header-swiper :goodsMsg="goodsMsg"></header-swiper>
-      <header-title
-        :goodsMsg="goodsMsg"
-        :activityId="activityId"
-        @kanTimeEnd="kanTimeEnd"
-      ></header-title>
+      <article class="header-title">
+        <header-title-default
+          v-if="activeType === 'DEFAULT'"
+          :goodsMsg="goodsMsg"
+        ></header-title-default>
+        <header-title-flash
+          ref="flash"
+          v-if="activeType === 'FLASH'"
+          :goodsMsg="goodsMsg"
+          :activityId="activityId"
+          @kanTimeEnd="kanTimeEnd"
+        >
+        </header-title-flash>
+      </article>
     </section>
     <header-detail :goodsMsg="goodsMsg" :activityId="activityId" @showShare="handleShowShare"></header-detail>
     <buy-record
       v-if="userImgList.length > 0"
       :userImgList="userImgList"
       :userTotal="userTotal"
-      :goodsId="goodsId"
-      :shopId="shopId"
-      :activityId="activityId"
+      @buyRecordNavTo="buyRecordNavTo"
     ></buy-record>
     <detail-image :goodsMsg="goodsMsg"></detail-image>
     <service-description></service-description>
     <button-group
-      :goodsMsg="goodsMsg"
-      :activityId="activityId"
-      :goodsId="goodsId"
+      :buttonInfo="buttonInfo"
       @instantlyBuy="instantlyBuy"
+      @buttonGroupNav="buttonGroupNav"
+      @addShoppingCart="addShoppingCart"
     ></button-group>
     <add-number ref="addNumber" :msgDetail="goodsMsg" :msgDetailInfo="buyGoodsInfo" @comfirmNumer="comfirmNumer"></add-number>
     <link-group ref="groupList" :wechatInfo="groupInfo"></link-group>
@@ -65,17 +72,19 @@
   import ShareHandler, {EVENT_CODE} from '@mixins/share-handler'
   import API from '@api'
   import {resolveQueryScene} from '@utils/common'
-  import HeaderSwiper from './header-swiper/header-swiper'
-  import BuyUsers from './buy-users/buy-users'
-  import HeaderTitle from './header-title/header-title'
-  import HeaderDetail from './header-detail/header-detail'
+  import HeaderSwiper from '@components/goods-detail-element/header-swiper/header-swiper'
+  import BuyUsers from '@components/goods-detail-element/buy-users/buy-users'
+  import HeaderTitleDefault from '@components/goods-detail-element/header-title-default/header-title-default'
+  import HeaderTitleFlash from '@components/goods-detail-element/header-title-flash/header-title-flash'
+  import HeaderDetail from '@components/goods-detail-element/header-detail/header-detail'
   import LinkGroup from '@components/link-group/link-group'
   import WePaint from '@components/we-paint/we-paint'
-  import BuyRecord from './buy-record/buy-record'
-  import DetailImage from './detail-image/detail-image'
-  import ServiceDescription from './service-description/service-description'
-  import ButtonGroup from './button-group/button-group'
+  import BuyRecord from '@components/goods-detail-element/buy-record/buy-record'
+  import DetailImage from '@components/goods-detail-element/detail-image/detail-image'
+  import ServiceDescription from '@components/goods-detail-element/service-description/service-description'
+  import ButtonGroup from '@components/goods-detail-element/button-group/button-group'
   import AddNumber from '@components/add-number/add-number'
+  import {BTN_STATUS, BTN_TEXT_CONSTANT} from './active-config'
 
   const PAGE_NAME = 'ACTIVE_DETAIL'
   const EVENT_NO_CONFIG = {
@@ -91,7 +100,8 @@
       NavigationBar,
       HeaderSwiper,
       BuyUsers,
-      HeaderTitle,
+      HeaderTitleDefault,
+      HeaderTitleFlash,
       HeaderDetail,
       LinkGroup,
       WePaint,
@@ -117,14 +127,58 @@
       }
     },
     computed: {
+      activeType() {
+        let type = 'DEFAULT'
+        if (this.activityId > 0) {
+          type = 'FLASH'
+        }
+        return type
+      },
+      // 活动状态
+      activeStatus() {
+        let active = this.goodsMsg.activity || {}
+        return +active.status
+      },
+      // 按钮文案
+      btnText() {
+        let key = this.activeStatus
+        if (this.goodsMsg.usable_stock < 1) {
+          key = 'NO_INVENTORY'
+        }
+        if (key == null) {
+          key = BTN_STATUS.DOWN
+        }
+        return BTN_TEXT_CONSTANT[key]
+      },
+      // 是否显示两个按钮
+      isShowTwoButton() {
+        let flag = null
+        if (this.activityId) {
+          flag = this.goodsMsg.usable_stock > 0 && this.activeStatus === 1
+        } else {
+          flag = this.goodsMsg.usable_stock > 0
+        }
+        return flag
+      },
+      // buttonInfo信息
+      buttonInfo() {
+        return {
+          activeStatus: this.activeStatus,
+          btnText: this.btnText,
+          isShowTwoButton: this.isShowTwoButton
+        }
+      },
+      // 二维码
       thumb_image() {
         return this.goodsMsg.thumb_image
       },
+      // 提货时间
       deliverAt() {
         return this.goodsMsg.delivery_at || ''
       }
     },
     onLoad(options) {
+      ald.aldstat.sendEvent('商品详情')
       this._initPageParams(options)
       this.getQrCode()
     },
@@ -171,15 +225,51 @@
     methods: {
       ...orderMethods,
       ...cartMethods,
+      // 添加购物车
+      async addShoppingCart() {
+        let isLogin = await this.$isLogin()
+        if (!isLogin) {
+          return
+        }
+        API.Choiceness.addShopCart({goods_sku_id: this.goodsMsg.goods_skus[0].goods_sku_id, activity_id: this.activityId}).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.$sendMsg({
+              event_no: 1007,
+              goods_id: this.goodsId,
+              title: this.goodsMsg.name
+            })
+            this.$wechat.showToast('加入购物车成功')
+            this.setCartCount()
+          } else {
+            this.$wechat.showToast(res.message)
+          }
+        })
+      },
+      // 按钮导航
+      buttonGroupNav(item) {
+        switch (item.type) {
+          case 0:
+            wx.switchTab({url: '/pages/choiceness'})
+            break
+          case 1:
+            // this.$refs.groupList.showLink()
+            break
+          case 2:
+            if (this.$isLogin()) {
+              wx.switchTab({url: '/pages/shopping-cart'})
+            }
+            break
+        }
+      },
+      // 购买记录导航
+      buyRecordNavTo() {
+        const url = `/pages/goods-record?goodsId=${this.goodsId}&shopId=${this.shopId}&activityId=${this.activityId}`
+        wx.navigateTo({url})
+      },
       // 设置群数据事件号
       _setEventNo() {
         let entryAppType = wx.getStorageSync('entryAppType')
         this.eventNo = EVENT_NO_CONFIG[entryAppType]
-      },
-      // 倒计时结束hook
-      kanTimeEnd() {
-        this._getGoodsDetailData()
-        this.getGoodsOtherInfo()
       },
       comfirmNumer(number) {
         let goodsList = this.goodsMsg.goods_skus[0]
@@ -227,6 +317,7 @@
           this._showAddNumber()
         }
       },
+      // 显示添加数量控件
       _showAddNumber() {
         this.$refs.addNumber && this.$refs.addNumber.showLink()
       },
@@ -290,20 +381,40 @@
           if (res.error === this.$ERR_OK) {
             this.goodsMsg = res.data
             this.$refs.navigationBar && this.$refs.navigationBar.setTranslucentTitle(this.goodsMsg.name)
-            if (this.eventCount > -1) {
-              this.eventCount++
-              this.$sendMsg({
-                event_no: this.eventNo,
-                goods_id: this.goodsId,
-                title: this.goodsMsg.name
-              })
-            }
+            this._sendGoodsMsg()
+            this._flashAction()
           } else {
             this.$wechat.showToast(res.message)
           }
         }).catch(e => {
           console.warn(e)
         })
+      },
+      // 限时抢购倒计时开始
+      _flashAction() {
+        this.$refs.flash && this.$refs.flash._clearTimer()
+        if (!this.activityId) return
+        if (this.activeStatus === BTN_STATUS.DOWN) {
+          return
+        }
+        let diff = this.goodsMsg.at_diff || 0
+        this.$refs.flash && this.$refs.flash._kanTimePlay(diff)
+      },
+      // 倒计时结束hook
+      kanTimeEnd() {
+        this._getGoodsDetailData()
+        this.getGoodsOtherInfo()
+      },
+      // 发送商品实践号
+      _sendGoodsMsg() {
+        if (this.eventCount > -1) {
+          this.eventCount++
+          this.$sendMsg({
+            event_no: this.eventNo,
+            goods_id: this.goodsId,
+            title: this.goodsMsg.name
+          })
+        }
       }
     }
   }
@@ -406,4 +517,9 @@
     overflow-x: hidden
     .banner-box
       position :relative
+      .header-title
+        position: absolute
+        left: 12px
+        right :@left
+        bottom: -1px
 </style>

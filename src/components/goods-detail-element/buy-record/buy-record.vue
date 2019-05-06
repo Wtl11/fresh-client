@@ -23,29 +23,15 @@
       userTotal: {
         type: Number,
         default: 0
-      },
-      goodsId: {
-        type: Number,
-        default: 0
-      },
-      shopId: {
-        type: Number,
-        default: 0
-      },
-      activityId: {
-        type: Number,
-        default: 0
       }
     },
     data() {
       return {
-
       }
     },
     methods: {
       handleNav() {
-        const url = `/pages/goods-record?goodsId=${this.goodsId}&shopId=${this.shopId}&activityId=${this.activityId}`
-        wx.navigateTo({url})
+        this.$emit('buyRecordNavTo')
       }
     }
   }

@@ -1,6 +1,6 @@
 <template>
   <div class="header-title">
-    <div class="banner-title-main" v-if="activityId > 0">
+    <div class="banner-title-main">
       <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-spxq_bg@2x.png'" mode="aspectFill" class="banner-title-bg">
       <div class="banner-main-box">
         <div class="banner-main-left">
@@ -20,19 +20,11 @@
         </div>
       </div>
     </div>
-    <div class="banner-title-type" v-if="activityId === 0">
-      <div class="left-price" :class="'corp-' + corpName + '-money'">{{goodsMsg.trade_price}}</div>
-      <div class="left-price-text">
-        <div class="price-text" :class="'corp-' + corpName + '-money'">元</div>
-        <div class="line-price-text">{{goodsMsg.original_price}}元</div>
-      </div>
-    </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import {countDownHandle} from '@utils/common'
-  import {BTN_STATUS} from '../active-status'
 
   const COMPONENT_NAME = 'HEADER_TITLE'
 
@@ -58,23 +50,6 @@
         timer: null
       }
     },
-    computed: {
-      activeStatus() {
-        let active = this.goodsMsg.activity || {}
-        return +active.status
-      }
-    },
-    watch: {
-      goodsMsg(val) {
-        this._clearTimer()
-        if (!this.activityId) return
-        if (this.activeStatus === BTN_STATUS.DOWN) {
-          return
-        }
-        let diff = val.at_diff || 0
-        this._kanTimePlay(diff)
-      }
-    },
     onHide() {
       this._clearTimer()
     },
@@ -95,7 +70,7 @@
           if (diff < 0) {
             diff = 0
           }
-          console.log(diff)
+          // console.log(diff)
           this.activityTime = countDownHandle(diff)
           if (this.activityTime.differ <= 0) {
             this._clearTimer()
@@ -117,12 +92,7 @@
   @import "~@designCommon"
 
   .header-title
-    padding: 0 12px
-    box-sizing: border-box
-    position: absolute
-    left: 0
-    bottom: -1px
-    width: 100%
+    position relative
     .banner-title-main
       padding-bottom: 13vw
       width: 100%
@@ -196,35 +166,4 @@
             color: $color-text-main
             font-family: $font-family-regular
             line-height:15px
-    .banner-title-type
-      height: 13vw
-      background: #ff6d0d
-      width: 100%
-      border-top-left-radius: 8px
-      border-top-right-radius: 8px
-      layout(row)
-      align-items: center
-      padding-left: 10px
-      box-sizing: border-box
-      .left-price
-        font-size: 30px
-        font-family: $font-family-medium
-        color:rgba(255,255,255,1)
-      .left-price-text
-        layout(row)
-        align-items: flex-end
-        .price-text
-          font-size: 22px
-          font-family: $font-family-medium
-          margin-right: 5px
-          color:rgba(255,255,255,1)
-        .line-price-text
-          font-size: $font-size-12
-          font-family: $font-family-regular
-          text-decoration: line-through
-          line-height: 1
-          color:rgba(255,255,255,0.8)
-          position :relative
-          bottom :4px
-
 </style>
