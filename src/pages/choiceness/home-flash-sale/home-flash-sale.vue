@@ -63,16 +63,6 @@
         type: Array,
         default: () => []
       },
-      // countDownTimes: {
-      //   type: Object,
-      //   default: () => {
-      //     return {
-      //       hour: '00',
-      //       minute: '00',
-      //       second: '00'
-      //     }
-      //   }
-      // },
       isShow: {
         type: Boolean,
         default: true
@@ -81,16 +71,10 @@
         type: Object,
         default: () => {}
       }
-      // scrollLeft: {
-      //   type: Number,
-      //   default: undefined
-      // }
     },
     data() {
       return {
         navigating: false,
-        // scrollPosition: 0,
-        // isIos: false,
         viewToChild: undefined
       }
     },
@@ -106,24 +90,6 @@
       navHandle() {
         const id = this.tabList[this.tabIndex].id
         wx.navigateTo({url: `/pages/flash-sale-list?id=${id}`})
-      },
-      scrollHandle(e) {
-        // this.viewToChild = undefined
-        // if (this.scrollLeft === 0) {
-        //   this.$emit('scrollEnd')
-        // }
-        // this.scrollPosition = e.target.scrollLeft
-        // 滚动加载
-        // if (this.flashArray.length < 5) return
-        // if (this.navigating) return
-        // let mixScoll = e.target.scrollWidth - e.target.scrollLeft + 50 < this.systemInfo.screenWidth
-        // if (mixScoll) {
-        //   this.navigating = true
-        //   setTimeout(() => {
-        //     this.navigating = false
-        //   }, 2000)
-        //   this.navHandle()
-        // }
       }
     }
   }

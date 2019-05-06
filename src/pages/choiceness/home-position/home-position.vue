@@ -1,9 +1,7 @@
 <template>
   <div class="home-position" id="homePosition">
     <div class="community-main" @click="handleNav">
-      <!--<div class="community-main" @click="jumpSelfPoint">-->
       <div class="community-img">
-        <!--<img v-if="(locationStatus * 1 === 1 || locationStatus * 1 === 2) && imageUrl" :src="groupInfo.head_image_url || imageUrl+'/yx-image/order/icon-colonel_head@2x.png'">-->
         <img class="p-img" mode="aspectFit" v-if="imageUrl" :src="imageUrl+'/yx-image/2.3/icon-address_sy@2x.png'">
       </div>
       <div class="community-text" v-if="locationStatus * 1 === 1 || locationStatus * 1 === 2">
@@ -11,41 +9,11 @@
       </div>
       <div class="community-text" v-else>定位中...</div>
       <img class="more-img" mode="aspectFit" v-if="imageUrl" :src="imageUrl+'/yx-image/2.3/icon-pressed_qhztd@2x.png'">
-      <!--<img v-if="imageUrl && (locationStatus * 1 === 1 || locationStatus * 1 === 2) && groupInfo.social_name"-->
-      <!--:src="imageUrl + '/yx-image/choiceness/icon-pitch@2x.png'" class="community-down">-->
     </div>
     <section class="search-wrapper" @click="handleSearch">
       <img class="s-img" mode="aspectFit" v-if="imageUrl" :src="imageUrl+'/yx-image/2.3/icon-search@2x.png'">
       <p>搜索商品</p>
     </section>
-    <!--<div class="carousel-wrapper" v-if="buyUsers.length > 0 && (locationStatus * 1 === 1 || locationStatus * 1 === 2)"-->
-         <!--:class="{'show': showBuyUser}">-->
-      <!--<div class="avatar-wrapper">-->
-        <!--<img v-if="buyUsers[showUserIndex] && buyUsers[showUserIndex].head_image_url" :src="buyUsers[showUserIndex].head_image_url" alt="">-->
-      <!--</div>-->
-      <!--<div class="content">买了{{buyUsers[showUserIndex].goods_name}}</div>-->
-    <!--</div>-->
-<!--    <section class="carousel-wrapper">-->
-<!--      <swiper-->
-<!--        v-if="buyUsers.length > 0 && (locationStatus * 1 === 1 || locationStatus * 1 === 2)"-->
-<!--        class="carousel"-->
-<!--        :autoplay="true"-->
-<!--        :interval="3000"-->
-<!--        :duration="500"-->
-<!--        circular-->
-<!--        vertical-->
-<!--      >-->
-<!--        <block v-for="(item, index) in buyUsers" :key="index">-->
-<!--          <swiper-item class="content-wrapper">-->
-<!--            <figure class="avatar-wrapper">-->
-<!--              <img v-if="item.head_image_url" lazy-load :src="item.head_image_url" alt="" class="img">-->
-<!--            </figure>-->
-<!--            <div class="text">买了{{item.goods_name}}</div>-->
-<!--          </swiper-item>-->
-<!--        </block>-->
-<!--      </swiper>-->
-<!--      <div class="place-holder"></div>-->
-<!--    </section>-->
   </div>
 </template>
 
@@ -55,23 +23,7 @@
   export default {
     name: COMPONENT_NAME,
     props: {
-      buyUsers: {
-        type: Array,
-        default: () => []
-      },
-      showUserIndex: {
-        type: Number,
-        default: 0
-      },
-      showBuyUser: {
-        type: Boolean,
-        default: false
-      },
       locationStatus: {
-        type: Object,
-        default: () => null
-      },
-      goodsListData: {
         type: Object,
         default: () => null
       },
@@ -87,11 +39,6 @@
       }
     },
     methods: {
-      jumpSelfPoint() {
-        wx.navigateTo({
-          url: `/pages/self-point`
-        })
-      },
       handleNav() {
         getApp().globalData.$groupInfo = this.groupInfo
         wx.navigateTo({
