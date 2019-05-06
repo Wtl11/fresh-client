@@ -87,6 +87,7 @@
   import {BTN_STATUS, BTN_TEXT_CONSTANT} from './active-config'
 
   const PAGE_NAME = 'ACTIVE_DETAIL'
+  const PAGE_ROUTE_NAME = 'active-detail'
   const EVENT_NO_CONFIG = {
     [SCENE_QR_CODE]: 1001,
     [SCENE_SHARE]: 1002,
@@ -207,7 +208,7 @@
       const flag = Date.now()
       return {
         title: this.goodsMsg.name,
-        path: `/pages/active-detail?id=${this.goodsId}&shopId=${shopId}&activityId=${this.activityId}&flag=${flag}`, // 商品详情
+        path: `/pages/${PAGE_ROUTE_NAME}?id=${this.goodsId}&shopId=${shopId}&activityId=${this.activityId}&flag=${flag}`, // 商品详情
         imageUrl: this.thumb_image || this.goodsMsg.goods_cover_image,
         success: (res) => {
           // 转发成功
@@ -339,7 +340,7 @@
       getQrCode(loading) {
         let shopId = wx.getStorageSync('shopId')
         // 修改创建二维码的参数
-        let path = `pages/goods-detail?g=${this.goodsId}&s=${shopId}&a=${this.activityId}`
+        let path = `pages/${PAGE_ROUTE_NAME}?g=${this.goodsId}&s=${shopId}&a=${this.activityId}`
         API.Choiceness.createQrCodeApi({path}, loading).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.shareImg = res.data.image_url
