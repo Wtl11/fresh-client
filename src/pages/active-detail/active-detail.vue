@@ -38,27 +38,11 @@
     <add-number ref="addNumber" :msgDetail="goodsMsg" :msgDetailInfo="buyGoodsInfo" @comfirmNumer="comfirmNumer"></add-number>
     <link-group ref="groupList" :wechatInfo="groupInfo"></link-group>
     <link-group ref="shareList" :linkType="2" @saveImg="_actionDrawPoster"></link-group>
-    <we-paint ref="wePaint" @drawDone="_drawPosterDone"></we-paint>
-    <article class="share-goods" id="share-goods">
-      <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-sharegoods@2x.png'" class="share-bg" mode="aspectFill">
-      <div class="share-box">
-        <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/5@1x.png'" class="share-img" mode="aspectFill">
-        <div class="share-bottom">
-          <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/5@1x.png'" class="wem-img" mode="aspectFill">
-          <div class="share-title">智利J级车厘子250g</div>
-          <div class="share-sub-title">智利J级车厘子250g</div>
-          <div class="share-group-box">团购价</div>
-          <div class="price-box">
-            <div class="share-price-number">{{goodsMsg.trade_price}}</div>
-            <div class="share-price-icon">元</div>
-            <div class="share-price-line">
-              {{goodsMsg.original_price}}元
-              <i class="share-money-line"></i>
-            </div>
-          </div>
-        </div>
-      </div>
-    </article>
+    <draw-poster
+      ref="drawPoster"
+      :goodsMsg="goodsMsg"
+      :shareImg="shareImg"
+    ></draw-poster>
   </div>
   </form>
 </template>
@@ -66,7 +50,6 @@
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import clearWatch from '@mixins/clear-watch'
-  import DrawPosterMixins from './drawPosterMixins'
   import {orderMethods, cartMethods} from '@state/helpers'
   import {SCENE_SHARE, SCENE_DEFAULT, SCENE_QR_CODE} from '@utils/contants'
   import ShareHandler, {EVENT_CODE} from '@mixins/share-handler'
@@ -78,12 +61,13 @@
   import HeaderTitleFlash from '@components/goods-detail-element/header-title-flash/header-title-flash'
   import HeaderDetail from '@components/goods-detail-element/header-detail/header-detail'
   import LinkGroup from '@components/link-group/link-group'
-  import WePaint from '@components/we-paint/we-paint'
   import BuyRecord from '@components/goods-detail-element/buy-record/buy-record'
   import DetailImage from '@components/goods-detail-element/detail-image/detail-image'
   import ServiceDescription from '@components/goods-detail-element/service-description/service-description'
+  import DrawPoster from '@components/goods-detail-element/draw-poster/draw-poster'
   import ButtonGroup from '@components/goods-detail-element/button-group/button-group'
   import AddNumber from '@components/add-number/add-number'
+
   import {BTN_STATUS, BTN_TEXT_CONSTANT} from './active-config'
 
   const PAGE_NAME = 'ACTIVE_DETAIL'
@@ -96,7 +80,7 @@
   const ald = getApp()
   export default {
     name: PAGE_NAME,
-    mixins: [clearWatch, DrawPosterMixins, ShareHandler],
+    mixins: [clearWatch, ShareHandler],
     components: {
       NavigationBar,
       HeaderSwiper,
@@ -105,12 +89,12 @@
       HeaderTitleFlash,
       HeaderDetail,
       LinkGroup,
-      WePaint,
       BuyRecord,
       DetailImage,
       ServiceDescription,
       ButtonGroup,
-      AddNumber
+      AddNumber,
+      DrawPoster
     },
     data() {
       return {
@@ -226,6 +210,16 @@
     methods: {
       ...orderMethods,
       ...cartMethods,
+      // 画商品海报
+      _actionDrawPoster() {
+        if (!this.shareImg) {
+          this.$wechat.showToast('图片生成失败，请重新尝试！')
+          this.getQrCode()
+          return
+        }
+        this.$refs.drawPoster && this.$refs.drawPoster.action()
+        this.$sendMsg({ event_no: 1005, goods_id: this.goodsId, title: this.goodsMsg.name })
+      },
       // 添加购物车
       async addShoppingCart() {
         let isLogin = await this.$isLogin()
@@ -272,6 +266,7 @@
         let entryAppType = wx.getStorageSync('entryAppType')
         this.eventNo = EVENT_NO_CONFIG[entryAppType]
       },
+      // addNumber控件确定按钮
       comfirmNumer(number) {
         let goodsList = this.goodsMsg.goods_skus[0]
         goodsList.sku_id = goodsList.goods_sku_id
@@ -423,92 +418,6 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@designCommon"
-
-  .share-goods
-    padding: 32.8vw 5.3vw 17vw
-    box-sizing: border-box
-    position: fixed
-    width: 100vw
-    height: 100vh
-    right :-100%
-    .share-bg
-      position: absolute
-      left: 0
-      top: 0
-      height: 52.5vw
-      width: 100vw
-      display: block
-      z-index: 9
-    .share-box
-      border-radius: 10px
-      background: #fff
-      box-shadow: 0 2px 11px 0 rgba(0, 0, 0, 0.10)
-      z-index: 11
-      position: relative
-      .share-img
-        display: block
-        width: 89.4vw
-        height: 89.4vw
-        border-top-left-radius: 10px
-        border-top-right-radius: 10px
-    .share-bottom
-      padding: 15px 15px 30px
-      position: relative
-    .wem-img
-      position: absolute
-      right: 15px
-      bottom: 15px
-      width: 90px
-      height: 90px
-      display: block
-    .share-title
-      font-size: $font-size-16
-      color: #1f1f1f
-      font-family: $font-family-medium
-      margin-bottom: 5px
-    .share-sub-title
-      font-size: $font-size-14
-      color: $color-text-sub
-      font-family: $font-family-regular
-      margin-bottom: 16px
-    .share-group-box
-      font-size: $font-size-14
-      color: $color-money
-      font-family: $font-family-regular
-      width: 55px
-      height: 20px
-      text-align: center
-      line-height: 20px
-      margin-bottom: -5px
-    .price-box
-      layout(row)
-      align-items: flex-end
-      .share-price-number
-        font-size: 30px
-        color: $color-money
-        font-family: $font-family-medium
-        line-height: 1
-        margin-right: 1px
-      .share-price-icon
-        font-size: $font-size-17
-        color: $color-money
-        font-family: $font-family-medium
-        line-height: 1
-        margin-right: 1px
-        padding-bottom: 2px
-      .share-price-line
-        font-size: $font-size-17
-        color: #b7b7b7
-        font-family: $font-family-regular
-        line-height: 1
-        padding-bottom: 2px
-        position: relative
-        .share-money-line
-          height: 1px
-          width: 100%
-          background: #888
-          col-center()
-
 
   .active-detail
     min-height: 100vh
