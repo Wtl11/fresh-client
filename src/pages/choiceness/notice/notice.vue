@@ -49,7 +49,7 @@
     display: flex
     .notice-content
       display: flex
-      animation: move 25s cubic-bezier(0.36, 0.35, 1, 1) infinite
+      animation: move 13s linear infinite normal
     .notice-msg-item
       font-family: $font-family-regular
       color: $color-text-main
@@ -75,7 +75,7 @@
       transform: translateX(0px)
     }
     100% {
-      transform: translateX(-1126px)
+      transform: translateX(-50%)
     }
   }
 </style>
