@@ -52,50 +52,6 @@
       :couponNumber="couponNumber"
       :isLeader="isLeader"
     ></mine-navigation>
-<!--    <ul class="button-group">-->
-<!--      <li class="button-item" v-for="(item, index) in BUTTON_GROUP" :key="index">-->
-<!--        <article class="item-wrapper" @click="navHandle(item)">-->
-<!--          <div class="item-text">{{item.isArray ? item.text[isLeader?1:0]: item.text}}</div>-->
-<!--          <p v-if="item.type === 'coupon' && couponNumber > 0" class="right-number">{{couponNumber}}张</p>-->
-<!--          <div class="item-arrow-img">-->
-<!--            <img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="img">-->
-<!--          </div>-->
-<!--        </article>-->
-<!--      </li>-->
-<!--    </ul>-->
-<!--    <div class="self-addr group">-->
-<!--      <div class="self-top">-->
-<!--        <div class="subtitle">我的自提点</div>-->
-<!--        &lt;!&ndash;<div class="switch-btn" @click="toChangeShop">&ndash;&gt;-->
-<!--          &lt;!&ndash;<div class="switch-content">切换自提点</div>&ndash;&gt;-->
-<!--          &lt;!&ndash;<img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="arrow-img">&ndash;&gt;-->
-<!--        &lt;!&ndash;</div>&ndash;&gt;-->
-<!--      </div>-->
-<!--      <div class="location-wrapper" @click="navigateLocation">-->
-<!--        <img v-if="imageUrl" :src="imageUrl + '/yx-image/mine/pic-map_bg@2x.png'" alt="" class="map">-->
-<!--        <div class="maker-wrapper">-->
-<!--          <div class="maker-content">-->
-<!--            <div class="item-wrapper">-->
-<!--              <img v-if="imageUrl" :src="imageUrl+'/yx-image/choiceness/icon-address_small@2x.png'" alt="" class="icon">-->
-<!--              <div class="text">{{detail.address}}</div>-->
-<!--            </div>-->
-<!--            <div class="item-wrapper">-->
-<!--              <img v-if="imageUrl" :src="imageUrl+'/yx-image/mine/icon-phone_samll@2x.png'" alt="" class="icon">-->
-<!--              <div class="text">{{detail.mobile}}</div>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--          <img v-if="imageUrl" :src="imageUrl+'/yx-image/mine/pic-map_triangle@2x.png'" class="maker-triangle">-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-    <!--<div class="self-addr group" @click="_goMyHosing">-->
-      <!--<div class="self-top">-->
-        <!--<div class="subtitle">{{isLeader ? '小区管理' : '我的小区'}}</div>-->
-        <!--<div class="switch-btn">-->
-          <!--<img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="arrow-img">-->
-        <!--</div>-->
-      <!--</div>-->
-    <!--</div>-->
     <div class="mine-model" v-if="showModal" :animation="maskAnimation" @click="_cancelQrCodeBox">
       <div class="model-con" :animation="modalAnimation">
         <div class="erm" @click.stop>
@@ -112,7 +68,6 @@
 
 <script type="text/ecmascript-6">
   import WePaint from '@components/we-paint/we-paint'
-  // import { mapGetters } from 'vuex'
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import CustomTabBar from '@components/custom-tab-bar/custom-tab-bar'
   import QrcodeMsg from '@components/qrcode-msg/qrcode-msg'
@@ -121,6 +76,8 @@
   import MineRTest from './mine-r-test/mine-r-test'
   import MineNavigation from './mine-navigation/mine-navigation'
   import AnimationModal from '@mixins/animation-modal'
+  import ClearWatch from '@mixins/clear-watch'
+
   const ORRDER_NAV_LIST = [
     {icon_url: '/yx-image/cart/icon-payment@2x.png', name: '待付款', id: 0, index: 1, count: 0},
     {icon_url: '/yx-image/cart/icon-delivery@2x.png', name: '待提货', id: 1, index: 2, count: 0},
@@ -129,19 +86,10 @@
     {icon_url: '/yx-image/cart/icon-order@2x.png', name: '全部', id: '', index: 0, count: 0}
   ]
 
-  // const BUTTON_GROUP = [
-  //   {text: '优惠券', url: 'coupon-mine', type: 'coupon'},
-  //   {text: ['我的小区', '小区管理'], isArray: true, isLeader: true},
-  //   {text: '团长招募', url: 'out-html?routeType=recruit-regimental', type: 'recruit'},
-  //   {text: '供应商招募', url: 'out-html?routeType=recruit-supplier', type: 'recruit'},
-  //   {text: '加盟商招募', url: 'out-html?routeType=recruit-alliance', type: 'recruit'},
-  //   {text: '常见问题', url: 'out-html?routeType=FAQ', type: 'faq'}
-  // ]
-
   export default {
     beforeCreate() {
     },
-    mixins: [AnimationModal],
+    mixins: [AnimationModal, ClearWatch],
     data() {
       return {
         userInfo: {},

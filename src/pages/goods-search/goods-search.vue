@@ -41,7 +41,6 @@
           <classify-item :item="item"></classify-item>
         </block>
       </div>
-<!--      <is-end v-if="!classifyMore && !classifyShowEmpty"></is-end>-->
       <loading-more v-if="classifyMore"></loading-more>
       <div v-if="classifyShowEmpty" class="empty-wrapper">
         <is-active-empty></is-active-empty>
@@ -53,15 +52,16 @@
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import ClassifyItem from './home-classify-item/home-classify-item'
-  // import IsEnd from '@components/is-end/is-end'
   import isActiveEmpty from '@components/is-active-empty/is-active-empty'
   import LoadingMore from '@components/loading-more/loading-more'
+  import ClearWatch from '@mixins/clear-watch'
   import API from '@api'
 
   const PAGE_NAME = 'GOODS_SEARCH'
   const MAX_HISTORY = 10
   export default {
     name: PAGE_NAME,
+    mixins: [ClearWatch],
     components: {
       NavigationBar,
       ClassifyItem,

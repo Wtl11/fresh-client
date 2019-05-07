@@ -43,6 +43,7 @@
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import PickUp from './pickup-item/pickup-item'
   import ConfirmMsg from '@components/confirm-msg/confirm-msg'
+  import ClearWatch from '@mixins/clear-watch'
   import API from '@api'
 
   const PAGE_NAME = 'CHOOSE_PICKUP'
@@ -53,7 +54,8 @@
     components: {
       NavigationBar,
       PickUp,
-      ConfirmMsg
+      ConfirmMsg,
+      ClearWatch
     },
     data() {
       return {

@@ -181,6 +181,7 @@
   import ShareHandler, {EVENT_CODE} from '@mixins/share-handler'
   import ShareTrick from '@mixins/share-trick'
   import BuyRecord from './buy-record/buy-record'
+  import ClearWatch from '@mixins/clear-watch'
 
   const PAGE_NAME = 'GOODS_DETAIL'
   const TYPEBTN = [{url: '/yx-image/goods/icon-homepage@2x.png', text: '首页', type: 0}, {url: '/yx-image/goods/icon-shopcart@2x.png', text: '购物车', type: 2}]
@@ -207,7 +208,7 @@
   }
   export default {
     name: PAGE_NAME,
-    mixins: [ShareHandler, ShareTrick],
+    mixins: [ShareHandler, ShareTrick, ClearWatch],
     components: {
       NavigationBar,
       AddNumber,

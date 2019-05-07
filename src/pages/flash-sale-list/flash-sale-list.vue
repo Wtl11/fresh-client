@@ -61,6 +61,7 @@
   import ShareHandler, {EVENT_CODE} from '@mixins/share-handler'
   import ShareTrick from '@mixins/share-trick'
   import {cartComputed} from '@state/helpers'
+  import ClearWatch from '@mixins/clear-watch'
 
   const PAGE_NAME = 'FLASH_SALE_LIST'
   const SHARE_IMG = {
@@ -76,7 +77,7 @@
 
   export default {
     name: PAGE_NAME,
-    mixins: [ShareHandler, ShareTrick],
+    mixins: [ShareHandler, ShareTrick, ClearWatch],
     components: {
       NavigationBar,
       ClassifyItem

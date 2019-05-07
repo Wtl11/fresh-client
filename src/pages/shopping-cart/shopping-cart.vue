@@ -86,10 +86,12 @@
   import GoodsItem from './goods-item/goods-item'
   import API from '@api'
   import {orderMethods, cartMethods} from '@state/helpers'
+  import ClearWatch from '@mixins/clear-watch'
 
   export default {
     beforeCreate() {
     },
+    mixins: [ClearWatch],
     data() {
       return {
         msg: '确定删除该商品吗?',

@@ -6,6 +6,9 @@ page.$mount()
 
 export default {
   config: {
-    navigationBarTitleText: '分类'
+    navigationBarTitleText: '分类',
+    usingComponents: {},
+    backgroundColorTop: '#F7F7F7',
+    backgroundColorBottom: '#F7F7F7'
   }
 }

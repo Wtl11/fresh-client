@@ -58,11 +58,13 @@
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import API from '@api'
   import {cartMethods} from '@state/helpers'
+  import ClearWatch from '@mixins/clear-watch'
 
   const PAGE_NAME = 'CLASSIFY'
 
   export default {
     name: PAGE_NAME,
+    mixins: [ClearWatch],
     data() {
       return {
         tabList: [],
@@ -320,6 +322,7 @@
     box-sizing: border-box
     transform: translateX(0)
     transition: all 0.3s
+    z-index:9999
     ::-webkit-scrollbar
       width: 0
       height: 0

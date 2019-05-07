@@ -128,8 +128,7 @@
   import ShareTrick from '@mixins/share-trick'
   import NewGuidelines from './new-guidelines/new-guidelines'
   import Notice from './notice/notice'
-  import HomeClassifyTab from './home-classify/home-classify-tab/home-classify-tab'
-  import HomeClassifyItem from './home-classify/home-classify-item/home-classify-item'
+  import HomeClassifyTab from './home-classify-tab/home-classify-tab'
   import IsEnd from '@components/is-end/is-end'
   import isActiveEmpty from '@components/is-active-empty/is-active-empty'
   import LoadingMore from '@components/loading-more/loading-more'
@@ -169,7 +168,6 @@
       NewGuidelines,
       Notice,
       HomeClassifyTab,
-      HomeClassifyItem,
       IsEnd,
       isActiveEmpty,
       LoadingMore
@@ -444,7 +442,7 @@
       async _getClassifyList(loading) {
         if (!this.classifyMore) return
         let current = this.classifyTabArray[classifyTabIndex] || {}
-        current.id = 0 // todo
+        // current.id = 0 // todo
         try {
           const data = {
             goods_category_id: current.id || 0,
@@ -502,7 +500,7 @@
       // 获取限时活动列表
       async _getFlashList(loading) {
         let data = {
-          activity_id: this.flashTabArray[flashTabIndex].id || 0
+          activity_id: (this.flashTabArray[flashTabIndex] && this.flashTabArray[flashTabIndex].id) || 0
         }
         try {
           let res = await API.FlashSale.getFlashList(data, loading)
@@ -521,17 +519,6 @@
           console.error(e)
         }
       },
-      // // 检查是否显示banner控件
-      // _checkBannerIsEmpty() {
-      //   const content = ((this.bannerInfo) || {}).content_data || {}
-      //   const list = content.list || []
-      //   if (list.length === 0) {
-      //     this.bannerIsShow = false
-      //   }
-      //   if (!list.every(val => val.image_url)) {
-      //     this.bannerIsShow = false
-      //   }
-      // },
       // 初始化地理位置
       _initLocation() {
         if (wx.getStorageSync('locationShow') * 1 === 3 || wx.getStorageSync('locationShow') * 1 === 2) {

@@ -159,11 +159,13 @@
   import CouponShareModal from './coupon-share-modal/coupon-share-modal'
   import TabItem from './tab-item'
   import OneNotify from './one-notify/one-notify'
+  import ClearWatch from '@mixins/clear-watch'
 
   const PAGE_NAME = 'REGIMENTAL_COMMANDER'
 
   export default {
     name: PAGE_NAME,
+    mixins: [ClearWatch],
     components: {
       // LinkGroup,
       NavigationBar,
