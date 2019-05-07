@@ -215,7 +215,6 @@
       },
       // 商品分类tab数组
       classifyTabArray() {
-        // console.log(this.classifyInfo)
         return (this.classifyInfo.content_data && this.classifyInfo.content_data.list) || []
       },
       // 是否显示商品分类
@@ -570,11 +569,6 @@
         if (res.error !== this.$ERR_OK) {
           this.$wechat.showToast(res.message)
         }
-        // this.groupInfo = {
-        //   head_image_url: res.data.head_image_url,
-        //   name: res.data.name,
-        //   social_name: res.data.social_name
-        // }
         this.groupInfo = res.data
       },
       // 顶部背景颜色还原
