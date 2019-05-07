@@ -1,13 +1,6 @@
 <template>
   <div class="home-classify-item" @click="jumpGoodsDetail(item)">
     <div class="goods-left">
-<!--      <img-->
-<!--        class="goods-left-img"-->
-<!--        lazy-load-->
-<!--        mode="aspectFill"-->
-<!--        v-if="imageUrl + '/yx-image/2.3/apple.png'"-->
-<!--        :src="imageUrl + '/yx-image/2.3/apple.png'"-->
-<!--      >-->
       <img
         class="goods-left-img"
         lazy-load mode="aspectFill"
