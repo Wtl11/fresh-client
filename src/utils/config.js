@@ -1,7 +1,7 @@
 import {corp} from '@utils/saas'
 const env = process.env
 const version = process.versions
-const testVersion = '/v2' // todo ai测试版本
+const testVersion = '' // todo ai测试版本
 // todo 测试专用记得更新
 const DEV = {
   api: 'http://social-shopping-api.jerryf.cn/social-shopping',

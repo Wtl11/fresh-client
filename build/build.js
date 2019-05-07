@@ -10,6 +10,7 @@ process.env.BUILD_ENV = params.environments
 process.env.VERSION = params.versions
 process.env.APPLICATION = params.applications
 console.log(params)
+
 var ora = require('ora')
 var rm = require('rimraf')
 var path = require('path')

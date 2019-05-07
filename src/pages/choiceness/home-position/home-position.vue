@@ -1,6 +1,6 @@
 <template>
   <div class="home-position" id="homePosition">
-    <div class="community-main">
+    <div class="community-main" @click="jumpSelfPoint">
       <!--<div class="community-main" @click="jumpSelfPoint">-->
       <div class="community-img">
         <!--<img v-if="(locationStatus * 1 === 1 || locationStatus * 1 === 2) && imageUrl" :src="groupInfo.head_image_url || imageUrl+'/yx-image/order/icon-colonel_head@2x.png'">-->
@@ -10,16 +10,17 @@
         <span>{{gName}}</span>
       </div>
       <div class="community-text" v-else>定位中...</div>
-      <img class="more-img" mode="aspectFit" v-if="imageUrl && false" :src="imageUrl+'/yx-image/2.3/icon-pressed_qhztd@2x.png'">
+      <img class="more-img" mode="aspectFit" v-if="imageUrl && false"
+           :src="imageUrl+'/yx-image/2.3/icon-pressed_qhztd@2x.png'">
       <!--<img v-if="imageUrl && (locationStatus * 1 === 1 || locationStatus * 1 === 2) && groupInfo.social_name"-->
       <!--:src="imageUrl + '/yx-image/choiceness/icon-pitch@2x.png'" class="community-down">-->
     </div>
     <!--<div class="carousel-wrapper" v-if="buyUsers.length > 0 && (locationStatus * 1 === 1 || locationStatus * 1 === 2)"-->
-         <!--:class="{'show': showBuyUser}">-->
-      <!--<div class="avatar-wrapper">-->
-        <!--<img v-if="buyUsers[showUserIndex] && buyUsers[showUserIndex].head_image_url" :src="buyUsers[showUserIndex].head_image_url" alt="">-->
-      <!--</div>-->
-      <!--<div class="content">买了{{buyUsers[showUserIndex].goods_name}}</div>-->
+    <!--:class="{'show': showBuyUser}">-->
+    <!--<div class="avatar-wrapper">-->
+    <!--<img v-if="buyUsers[showUserIndex] && buyUsers[showUserIndex].head_image_url" :src="buyUsers[showUserIndex].head_image_url" alt="">-->
+    <!--</div>-->
+    <!--<div class="content">买了{{buyUsers[showUserIndex].goods_name}}</div>-->
     <!--</div>-->
     <section class="carousel-wrapper">
       <swiper
@@ -73,7 +74,8 @@
       },
       groupInfo: {
         type: Object,
-        default: () => {}
+        default: () => {
+        }
       }
     },
     computed: {
@@ -84,6 +86,10 @@
     },
     methods: {
       jumpSelfPoint() {
+        const env = process.env
+        if (env !== 'test') {
+          return
+        }
         wx.navigateTo({
           url: `/pages/self-point`
         })
@@ -102,12 +108,12 @@
     padding: 0 12px
     box-sizing: border-box
     margin-bottom: 10px
-    height :27px
-    position :relative
+    height: 27px
+    position: relative
     .community-main
       layout(row)
       align-items: center
-      opacity :1
+      opacity: 1
       .community-img
         width: 15.5px
         height: 17.5px
@@ -123,30 +129,30 @@
         font-family: $font-family-medium
         min-height: $font-size-18
         margin-right: 5px
-        overflow :hidden
+        overflow: hidden
         white-space: nowrap
       .more-img
-        width :8.5px
-        height :5.5px
+        width: 8.5px
+        height: 5.5px
 
       .community-down
         width: 9px
         height: 6px
         display: block
     .carousel-wrapper
-      width :35vw
+      width: 35vw
       height: 24px
       padding: 0 9.5px 0 3px
-      background: rgba(255,255,255,1)
+      background: rgba(255, 255, 255, 1)
       border-radius: 36px
-      position :relative
-      overflow :hidden
+      position: relative
+      overflow: hidden
       .place-holder
         fill-box(absolute)
-        z-index :3
+        z-index: 3
       .carousel
-        height :100%
-        width :100%
+        height: 100%
+        width: 100%
         .content-wrapper
           layout(row)
           align-items: center
@@ -155,7 +161,7 @@
             height: 20px
             border-radius: 50%
             overflow: hidden
-            margin :0 5px 0 0
+            margin: 0 5px 0 0
             .img
               width: 100%
               height: 100%

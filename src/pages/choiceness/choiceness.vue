@@ -3,7 +3,8 @@
     <navigation-bar ref="navigationBar" :headStyle="headStyle" :titleColor="titleColor" :title="title"
                     :showArrow="false" :titleMaxLen="12" :translucent="fasle"></navigation-bar>
     <section class="top-background" :style="{height: backgroundHeight+'px'}">
-      <img class="img" :style="{backgroundColor: backgroundColor}" @load="handleLoadBackground" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/bg-homepage@2x.png'">
+      <img class="img" :style="{backgroundColor: backgroundColor}" @load="handleLoadBackground" mode="aspectFill"
+           v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/bg-homepage@2x.png'">
     </section>
     <home-position
       :buyUsers="buyUsers"
@@ -170,7 +171,7 @@
         } else {
           await this._getFlashTabList()
         }
-        // await this._getNotify() // todo
+        await this._getNotify() // todo
         // 获取tab高度
         await this._getTabPosition()
         if (!wx.getStorageSync('token')) return
@@ -306,7 +307,7 @@
         display: block
 
   .empty
-    position :relative
+    position: relative
     height: 11px
     background: #fff
 

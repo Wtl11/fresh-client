@@ -86,7 +86,6 @@ export default {
   // 抢优惠券记录
   getTakeList(data, loading = false, toast = false) {
     const url = `/api/wap/coupon-activity-manage/receive-coupon-logs/${data.packetId}`
-    data = ''
     return request.get({url, data, loading, toast})
   },
   // 团长营销优惠券包详情
@@ -99,7 +98,7 @@ export default {
     const url = `/api/wap/coupon-activity-manage/activity-coupon-detail/${id}`
     return request.get({url, undefined, loading, toast})
   },
-  // 抢优惠券
+  // 抢优惠券0
   takeCouponPacket(id, loading = true, toast) {
     const url = `/api/wap/coupon-activity-manage/receive-coupon-by-bag/${id}`
     return request.post({url, undefined, loading, toast})

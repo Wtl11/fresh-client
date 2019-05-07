@@ -6,7 +6,7 @@
         <image v-if="imageUrl" :src="imageUrl + '/yx-image/notice/pic-5_money@2x.png'" class="notice-coupon-img">
           <div class="notice-coupon-msg">
             <div class="notice-coupon-price">
-<!--              <span class="notice-coupon-icon">¥</span>-->
+              <!--              <span class="notice-coupon-icon">¥</span>-->
               <span>{{coupon.denomination}}</span>
               <span class="notice-coupon-icon">{{coupon.preferential_type == 1 ? '折': '元'}}</span>
             </div>
@@ -25,7 +25,7 @@
       </div>
       <div class="notice-title">
         <span v-for="(child, idx) in textArr" :key="idx" :class="{'notice-title-block': child.type === 'weight'}">{{child.text}}</span>
-<!--        由于供应商提供的商品未达到品质要求，导致你所购买的商品未能及时送达，我们将尽快为你 <span class="notice-title-block">退款或次日补货。</span>-->
+        <!--        由于供应商提供的商品未达到品质要求，导致你所购买的商品未能及时送达，我们将尽快为你 <span class="notice-title-block">退款或次日补货。</span>-->
       </div>
     </div>
 
@@ -57,7 +57,7 @@
     methods: {
       _getDetail() {
         API.AfterNotice.getNotifyDetail().then(res => {
-          this.showCoupon = res.data.coupon.id
+          this.showCoupon = res.data.coupon && res.data.coupon.id
           this.coupon = res.data.coupon
           this.couponText = res.data.tips
           this.textArr = res.data.text
