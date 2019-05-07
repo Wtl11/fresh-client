@@ -1,6 +1,6 @@
 <template>
-  <div v-if="isShow" class="home-flash-sale" id="homeFlashSale">
-    <section v-if="tabList.length" class="top-wrapper">
+  <div class="home-flash-sale" id="homeFlashSale">
+    <section class="top-wrapper">
       <img lazy-load class="title-img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/pic-qgtitle@2x.png'">
       <ul class="tab-wrapper">
         <li v-if="index < 2" v-for="(item, index) in tabList" :key="index" class="tab-item-wrapper" :class="{active: tabIndex === index}" @click="changeTab(item, index)">
@@ -13,7 +13,7 @@
         <img lazy-load class="more-img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/icon-pressed@2x.png'">
       </div>
     </section>
-    <section v-if="tabList.length" class="scroll-wrapper">
+    <section class="scroll-wrapper">
       <scroll-view
         class="bottom-wrapper"
         scroll-x
@@ -55,48 +55,25 @@
         type: Array,
         default: () => []
       },
-      tabIndex: {
-        type: Number,
-        default: 0
-      },
       flashArray: {
         type: Array,
         default: () => []
-      },
-      // countDownTimes: {
-      //   type: Object,
-      //   default: () => {
-      //     return {
-      //       hour: '00',
-      //       minute: '00',
-      //       second: '00'
-      //     }
-      //   }
-      // },
-      isShow: {
-        type: Boolean,
-        default: true
-      },
-      systemInfo: {
-        type: Object,
-        default: () => {}
       }
-      // scrollLeft: {
-      //   type: Number,
-      //   default: undefined
-      // }
     },
     data() {
       return {
-        navigating: false,
-        // scrollPosition: 0,
-        // isIos: false,
-        viewToChild: undefined
+        viewToChild: undefined,
+        tabIndex: 0
       }
+    },
+    onUnload() {
+      this.viewToChild = undefined
+      this.tabIndex = 0
     },
     methods: {
       changeTab(item, index) {
         if (index === this.tabIndex) return
+        this.tabIndex = index
         this.viewToChild = 'child0'
         setTimeout(() => {
           this.viewToChild = undefined
@@ -106,24 +83,6 @@
       navHandle() {
         const id = this.tabList[this.tabIndex].id
         wx.navigateTo({url: `/pages/flash-sale-list?id=${id}`})
-      },
-      scrollHandle(e) {
-        // this.viewToChild = undefined
-        // if (this.scrollLeft === 0) {
-        //   this.$emit('scrollEnd')
-        // }
-        // this.scrollPosition = e.target.scrollLeft
-        // 滚动加载
-        // if (this.flashArray.length < 5) return
-        // if (this.navigating) return
-        // let mixScoll = e.target.scrollWidth - e.target.scrollLeft + 50 < this.systemInfo.screenWidth
-        // if (mixScoll) {
-        //   this.navigating = true
-        //   setTimeout(() => {
-        //     this.navigating = false
-        //   }, 2000)
-        //   this.navHandle()
-        // }
       }
     }
   }

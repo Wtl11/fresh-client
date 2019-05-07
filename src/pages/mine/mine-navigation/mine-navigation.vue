@@ -61,30 +61,29 @@
             title: '常见问题',
             url: 'out-html?routeType=FAQ',
             fn: '_handleNav'
+          },
+          {
+            cname: 'line-box',
+            hideArrow: true
+          },
+          {
+            icon: '/yx-image/2.3/icon-colonel@2x.png',
+            title: '团长招募',
+            url: 'out-html?routeType=recruit-regimental',
+            fn: '_handleNav'
+          },
+          {
+            icon: '/yx-image/2.3/icon-supplier_me@2x.png',
+            title: '供应商招募',
+            url: 'out-html?routeType=recruit-supplier',
+            fn: '_handleNav'
+          },
+          {
+            icon: '/yx-image/2.3/icon-alliance_me@2x.png',
+            title: '加盟商招募',
+            url: 'out-html?routeType=recruit-alliance',
+            fn: '_handleNav'
           }
-          // {
-          //   styles: `height:17px;padding-bottom:0`,
-          //   cname: 'line-box',
-          //   hideArrow: true
-          // },
-          // {
-          //   icon: '/yx-image/2.3/icon-colonel@2x.png',
-          //   title: '团长招募',
-          //   url: 'out-html?routeType=recruit-regimental',
-          //   fn: '_handleNav'
-          // },
-          // {
-          //   icon: '/yx-image/2.3/icon-supplier_me@2x.png',
-          //   title: '供应商招募',
-          //   url: 'out-html?routeType=recruit-supplier',
-          //   fn: '_handleNav'
-          // },
-          // {
-          //   icon: '/yx-image/2.3/icon-alliance_me@2x.png',
-          //   title: '加盟商招募',
-          //   url: 'out-html?routeType=recruit-alliance',
-          //   fn: '_handleNav'
-          // }
         ]
       }
     },
@@ -127,30 +126,28 @@
       box-shadow: 0 4px 30px 0 rgba(17,17,17,0.06);
       border-radius: 6px;
       .nav-wrapper
-        padding :25px 0
+        padding :8.5px 0
         .item-wrapper
           layout(row,block,nowrap)
           padding-right :15px
-          padding-left :15px
-          padding-bottom :30px
+          padding-left :@padding-right
+          padding-top:16.5px
+          padding-bottom :@padding-top
           font-family: $font-family-regular
           font-size: 15px;
           color: $color-text-main
           align-items :center
           &.line-box
-            height :17px
-            padding-bottom :0
+            height :1px
+            padding: 8px 0
             position :relative
             &:after
               content: ''
-              position :absolute
-              top: -8px
+              col-center()
               left :15px
               right :@left
               height :1px
-              background:$color-line
-          &:last-child
-            padding-bottom :0
+              border-bottom :0.5px solid $color-line
           .icon-img
             width:17px
             height: @width

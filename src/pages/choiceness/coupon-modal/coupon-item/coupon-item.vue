@@ -110,13 +110,14 @@
             align-items :center
             color: #1D2023;
             .use-type
-              height :14px
-              border :1px solid #1D2023
-              border-radius :1px
-              color:#1D2023
-              font-size:10px
-              line-height :14.5px
-              padding :0 3px
+              font-family: $font-family-medium
+              height:12px;
+              border:1px solid rgba(29,32,35,0.8);
+              border-radius:2px;
+              color:#1d2023;
+              font-size:11px;
+              line-height:12.5px;
+              padding:0 2px;
             .txt
               padding-left :0.8vw
               font-family: $font-family-medium

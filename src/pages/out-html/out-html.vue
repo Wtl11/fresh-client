@@ -9,10 +9,13 @@
   // import NavigationBar from '@components/navigation-bar/navigation-bar'
   import {baseURL} from '@utils/config'
   import {corp} from '@utils/saas'
+  import ClearWatch from '@mixins/clear-watch'
+
   const PAGE_NAME = 'OUT_HTML'
 
   export default {
     name: PAGE_NAME,
+    mixins: [ClearWatch],
     data() {
       return {
         url: ''
@@ -25,7 +28,7 @@
       const chartsConfig = this.getChartsConfig(e.routeType)
       const recruit = this.recruitConfig(e.routeType)
       this.url = e.url || chartsConfig || recruit
-      console.log(this.url)
+      // console.log(this.url)
     },
     methods: {
       recruitConfig(type) {

@@ -6,7 +6,8 @@
         lazy-load
         mode="aspectFill"
         v-if="dataInfo.goods_cover_image"
-        :src="dataInfo.goods_cover_image">
+        :src="dataInfo.goods_cover_image"
+      >
       <div class="img-label">
         <img
           class="img"

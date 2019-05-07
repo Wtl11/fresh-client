@@ -1,31 +1,5 @@
 <template>
   <div class="coupon-item">
-<!--    <div class="coupon-bg">-->
-<!--      <img class="img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/pic-couponbg_my@1x.png'">-->
-<!--    </div>-->
-<!--    <div class="coupon-container">-->
-<!--      <section class="left">-->
-<!--        <div class="l-top" :class="'corp-' + corpName + '-money'" :style="{color}">-->
-<!--          <p class="number">{{dataInfo.denomination}}</p>-->
-<!--          <p class="unit">{{unit}}</p>-->
-<!--        </div>-->
-<!--        <div v-if="dataInfo.condition > 0" class="l-bottom" :style="{color}">{{dataInfo.condition_str}}</div>-->
-<!--      </section>-->
-<!--      <section class="right">-->
-<!--        <div class="info-wrapper">-->
-<!--          <div class="title" :style="{color}">{{dataInfo.coupon_name}}</div>-->
-<!--          <div class="explain-wrapper">-->
-<!--            <p class="explain" :style="{color}">{{dataInfo.range_type_desc}}</p>-->
-<!--            <p class="date" :style="{color}">有效期至{{dataInfo.end_at}}</p>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--        <div class="tool-wrapper">-->
-<!--          <div v-if="status === 1" class="button" :class="'corp-' + corpName + '-bg'" @click="useHandle">去使用</div>-->
-<!--          <img v-if="imageUrl && status === 2" class="icon-status" mode="aspectFill":src="imageUrl + '/yx-image/2.1/pic-coupon_ygq@2x.png'">-->
-<!--          <img v-if="imageUrl && status === 0" class="icon-status" mode="aspectFill":src="imageUrl + '/yx-image/2.1/pic-coupon_ysy@2x.png'">-->
-<!--        </div>-->
-<!--      </section>-->
-<!--    </div>-->
     <section class="top-wrapper">
       <img class="top-bg-img" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/pic-couponbg_myzk1.png'">
       <div class="top-container">
@@ -217,13 +191,13 @@
           align-items :center
           color: #1D2023;
           .use-type
-            height :14px
-            border :1px solid #1D2023
-            border-radius :1px
-            color:#1D2023
-            font-size:10px
-            line-height :14.5px
-            padding :0 3px
+            height:12px;
+            border:1px solid rgba(29,32,35,0.8);
+            border-radius:2px;
+            color:#1d2023;
+            font-size:11px;
+            line-height:12.5px;
+            padding:0 2px;
           .txt
             padding-left :0.8vw
             font-family: $font-family-medium

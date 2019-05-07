@@ -2,10 +2,10 @@
   <div class="mine-housing">
     <navigation-bar title="我的小区"></navigation-bar>
     <div class="hose-img-box">
-      <img :src="imageUrl + '/yx-image/group/pic-banner4@2x.png'" v-if="imageUrl && corpName === 'platform'" class="hose-img">
+      <img @load="handleLoad" :src="imageUrl + '/yx-image/group/pic-banner4@2x.png'" v-if="imageUrl && corpName === 'platform'" class="hose-img">
       <img :src="imageUrl + '/yx-image/retuan/pic-colonel_topbg@2x.png'" v-if="imageUrl && corpName === 'retuan'" class="hose-img">
     </div>
-    <div class="big-box">
+    <div v-if="showBigBox" class="big-box">
       <div class="hose-content" :style="{'transform': ' translateX('+ -(navIdx * width) +'px)'}">
         <!--登录-->
         <div class="hoseLogin">
@@ -54,7 +54,8 @@
         phoneNum: '',
         tapCode: true,
         isSet: true,
-        code: ''
+        code: '',
+        showBigBox: false
         // phoneInput: false,
         // focusInput: false
       }
@@ -67,9 +68,12 @@
       })
     },
     methods: {
+      handleLoad(e) {
+        this.showBigBox = true
+      },
       applyLeader() {
         this.$wx.navigateTo({
-          url: '/pages/apply-leader'
+          url: '/pages/out-html?routeType=recruit-regimental'
         })
       },
       // 保存二维码

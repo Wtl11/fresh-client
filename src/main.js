@@ -8,6 +8,7 @@ import '@utils/app-plugins'
 import '@utils/saas'
 import '@design'
 
+Vue.config._mpTrace = true
 Vue.config.productionTip = false
 App.mpType = 'app'
 const app = new Vue({
