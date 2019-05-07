@@ -10,9 +10,8 @@
       :groupInfo="groupInfo"
     ></home-position>
     <home-banner
-      :bigItem="bannerInfo"
-      :praiseIndex="praiseIndex"
-      :isShow="bannerIsShow"
+      v-if="bannerIsShow"
+      :bannerArray="bannerArray"
     ></home-banner>
     <notice
       v-if="isShowNotify"
@@ -20,30 +19,34 @@
     ></notice>
     <div class="empty" id="homeEmpty"></div>
     <home-flash-sale
-      :tabList="flashTabList"
-      :tabIndex="flashTabIndex"
+      v-if="flashIsShow"
+      :tabList="flashTabArray"
       :flashArray="flashArray"
-      :countDownTimes="flashCountDownTimes"
-      :isShow="flashIsShow"
-      :systemInfo="systemInfo"
       @changeTab="flashChangeTab"
     ></home-flash-sale>
-    <home-classify
-      :tabList="classifyTabList"
-      :tabIndex="classifyTabIndex"
-      :classifyArray="classifyArray"
-      :viewToItem="classifyViewToItem"
-      :styles="classifyStyles"
-      :isShow="classifyIsShow"
-      :isShowTab="classifyTabIsShow"
-      :hasMore="classifyMore"
-      :isShowEmpty="classifyShowEmpty"
-      :isShowLoadingMore="isLoading"
-      @changeTab="classifyChangeTab"
-    ></home-classify>
+    <section class="home-classify">
+      <section class="tab-wrapper">
+        <div v-if="classifyTabArray.length" class="place-holder"></div>
+        <home-classify-tab
+          id="scrollView-relative"
+          :isShow="classifyIsShow"
+          :styles="classifyStyles"
+          :tabList="classifyTabArray"
+          @changeTab="classifyChangeTab"
+        ></home-classify-tab>
+      </section>
+      <div class="classify-wrapper">
+        <block v-for="(item, index) in classifyArray" :key="index">
+          <home-classify-item :item="item"></home-classify-item>
+        </block>
+      </div>
+      <is-end v-if="!classifyMore && !classifyShowEmpty"></is-end>
+      <loading-more v-else-if="!classifyShowEmpty"></loading-more>
+      <is-active-empty v-if="classifyShowEmpty"></is-active-empty>
+    </section>
     <custom-tab-bar currentType="index"></custom-tab-bar>
     <coupon-modal ref="couponModal"></coupon-modal>
-    <new-guidelines :navigationBar="navigationBar" :titleColor="titleColor"></new-guidelines>
+    <new-guidelines ref="guidelines"></new-guidelines>
   </div>
 </template>
 
@@ -56,34 +59,36 @@
   import CouponModal from './coupon-modal/coupon-modal'
   import HomePosition from './home-position/home-position'
   import HomeBanner from './home-banner/home-banner'
-  import HomeClassify from './home-classify/home-classify'
   import HomeFlashSale from './home-flash-sale/home-flash-sale'
   import ShareHandler, {EVENT_CODE} from '@mixins/share-handler'
   import ShareTrick from '@mixins/share-trick'
   import NewGuidelines from './new-guidelines/new-guidelines'
   import Notice from './notice/notice'
+  import HomeClassifyTab from './home-classify/home-classify-tab/home-classify-tab'
+  import HomeClassifyItem from './home-classify/home-classify-item/home-classify-item'
+  import IsEnd from '@components/is-end/is-end'
+  import isActiveEmpty from '@components/is-active-empty/is-active-empty'
+  import LoadingMore from '@components/loading-more/loading-more'
 
   const ald = getApp()
   const PAGE_NAME = 'CHOICENESS'
-  const PAGE_CONFIG = {
-    'bannar': {
-      isShow: 'bannerIsShow',
-      tabList: '',
-      dataArray: 'bannerInfo'
-    },
-    'activity_fixed': {
-      isShow: 'flashIsShow',
-      tabList: 'flashTabList',
-      dataArray: ''
-    },
-    'goods_cate': {
-      isShow: 'classifyIsShow',
-      tabList: 'classifyTabList',
-      dataArray: ''
-    }
+
+  const MODULE_CONFIG = {
+    bannar: 'bannerInfo',
+    activity_fixed: 'flashInfo',
+    goods_cate: 'classifyInfo'
   }
 
   let SYSTEM_INFO = {}
+  let curShopId = ''
+  let flashTabIndex = 0
+  let classifyTabIndex = 0
+  let classifyPage = 1
+  let isLoading = false
+  let classifyTabPosition = 999999
+  let classifyScrollHeight = 9999999
+  let navigationBarHeight = 64
+  let classifyTabScrolling = false
   export default {
     name: PAGE_NAME,
     mixins: [
@@ -96,57 +101,68 @@
       CouponModal,
       HomePosition,
       HomeBanner,
-      HomeClassify,
       HomeFlashSale,
       NewGuidelines,
-      Notice
+      Notice,
+      HomeClassifyTab,
+      HomeClassifyItem,
+      IsEnd,
+      isActiveEmpty,
+      LoadingMore
     },
     data() {
       return {
         title: '赞播优鲜',
-        curShopId: '',
-        modulesList: [],
-        systemInfo: {},
-        pageScrollEvent: {},
         headStyle: `background:#73C200`,
         titleColor: `#ffffff`,
         backgroundHeight: 0,
         backgroundColor: '#73C200',
         locationStatus: null,
         groupInfo: {},
-        praiseIndex: undefined,
-        bannerInfo: undefined,
-        bannerIsShow: undefined,
-        flashTabList: undefined,
-        flashTabIndex: 0,
-        flashArray: undefined,
-        flashCountDownTimes: undefined,
-        flashIsShow: undefined,
-        flashCountDownTimer: undefined,
-        classifyTabList: [],
-        classifyTabIndex: 0,
-        classifyViewToItem: '',
-        classifyPage: 1,
+        bannerInfo: {},
+        flashInfo: {},
+        classifyInfo: {},
+        flashArray: [],
         classifyMore: true,
         classifyArray: [],
         classifyStyles: '',
-        classifyTabIsShow: false,
-        classifyTabPosition: 999999,
-        classifyScrollHeight: 9999999,
-        getScrollHeightTimer: undefined,
-        classifyIsShow: undefined,
-        classifyShowEmpty: undefined,
-        navigationBar: 0,
-        classifyTabScrolling: false,
-        isLoading: false,
-        notifyDesc: [],
-        isShowNotify: false
+        classifyShowEmpty: false,
+        notifyDesc: []
       }
     },
     computed: {
       ...jwtComputed,
       socialName() {
         return (this.groupInfo || {}).social_name || ''
+      },
+      // banner
+      bannerArray() {
+        return (this.bannerInfo.content_data && this.bannerInfo.content_data.list) || []
+      },
+      // 是否显示banner
+      bannerIsShow() {
+        return this.bannerArray.length && !this.bannerInfo.is_close
+      },
+      // 限时抢购tab
+      flashTabArray() {
+        return (this.flashInfo.content_data && this.flashInfo.content_data.list) || []
+      },
+      // 是否显示限时抢购
+      flashIsShow() {
+        return this.flashTabArray.length && !this.flashInfo.is_close && this.flashArray.length
+      },
+      // 商品分类tab数组
+      classifyTabArray() {
+        // console.log(this.classifyInfo)
+        return (this.classifyInfo.content_data && this.classifyInfo.content_data.list) || []
+      },
+      // 是否显示商品分类
+      classifyIsShow() {
+        return this.classifyTabArray.length && !this.classifyInfo.is_close
+      },
+      // 是否显示通知
+      isShowNotify() {
+        return this.notifyDesc.length
       }
     },
     watch: {
@@ -178,16 +194,17 @@
         this._getCouponModalList() // 首页弹窗
         // 获取团的信息
         this._groupInfo(false)
-        if (this.curShopId * 1 !== shopId * 1) {
+        if (curShopId * 1 !== shopId * 1) {
           this._resetGetClassifyListParams()
           await this._getModuleInfo()
-          this.curShopId = shopId
+          curShopId = shopId
         } else {
           await this._getFlashTabList()
         }
         // await this._getNotify() // todo
         // 获取tab高度
         await this._getTabPosition()
+        this.$refs.guidelines && this.$refs.guidelines.setTop(navigationBarHeight)
         if (!wx.getStorageSync('token')) return
         this.setCartCount()
       } catch (e) {
@@ -218,8 +235,8 @@
       this.setCartCount()
     },
     onReachBottom() {
-      if (this.isLoading) return
-      this.classifyPage++
+      if (isLoading) return
+      classifyPage++
       this._getClassifyList()
     },
     onShareAppMessage(res) {
@@ -238,7 +255,7 @@
       const flag = Date.now()
       return {
         title: `${this.groupInfo.social_name},次日达、直采直销，点击下单↓`,
-        path: `/pages/choiceness?shopId=${this.curShopId}&flag=${flag}`,
+        path: `/pages/choiceness?shopId=${curShopId}&flag=${flag}`,
         imageUrl: this.imageUrl + imgUrl,
         success: (res) => {
         },
@@ -267,19 +284,17 @@
         try {
           const res = await API.AfterNotice.getNotify()
           this.notifyDesc.push(res.data.desc)
-          this.isShowNotify = res && res.data.has_notify && res.data.desc
         } catch (e) {
-          this.isShowNotify = false
           console.warn(e)
         }
       },
       // 分类滚动
       _classifyScrollEvent(e) {
-        if (this.classifyTabScrolling) return
-        const currentScrollTop = e.scrollTop + this.navigationBar
-        const t10 = this.classifyScrollHeight + this.classifyTabPosition
-        const t15 = this.classifyScrollHeight + this.classifyTabPosition * 1.1
-        const t20 = this.classifyScrollHeight + this.classifyTabPosition * 1.5
+        if (classifyTabScrolling) return
+        const currentScrollTop = e.scrollTop + navigationBarHeight
+        const t10 = classifyScrollHeight + classifyTabPosition
+        const t15 = classifyScrollHeight + classifyTabPosition * 1.1
+        const t20 = classifyScrollHeight + classifyTabPosition * 1.5
         if (currentScrollTop < t10) {
           this.classifyStyles = ''
         }
@@ -290,14 +305,14 @@
           this._setClassifyStyles(0, 1)
         }
         if (currentScrollTop > t20) {
-          this._setClassifyStyles(this.classifyTabPosition, 1)
+          this._setClassifyStyles(classifyTabPosition, 1)
         }
       },
       // 设置分类滚动时的样式
       _setClassifyStyles(y, opacity, time = 300) {
         this.classifyStyles = `
           opacity:${opacity};
-          top:${this.navigationBar - this.classifyTabPosition}px;
+          top:${navigationBarHeight - classifyTabPosition}px;
           position:fixed;
           left:0;
           z-index:90;
@@ -321,16 +336,16 @@
                 let height = 0
                 res.forEach(item => {
                   if (item && item.height) {
-                    item.id === 'navigationBar' && (this.navigationBar = item.height)
+                    item.id === 'navigationBar' && (navigationBarHeight = item.height)
                     if (item.id === 'scrollView-relative') {
-                      this.classifyTabPosition = item.height
+                      classifyTabPosition = item.height
                     } else {
                       height += item.height
                     }
                   }
                 })
-                if (this.classifyScrollHeight !== height + 10) {
-                  this.classifyScrollHeight = height + 10
+                if (classifyScrollHeight !== height + 10) {
+                  classifyScrollHeight = height + 10
                 }
                 resolve()
               })
@@ -340,87 +355,66 @@
       // 获取商品分类列表
       async _getClassifyList(loading) {
         if (!this.classifyMore) return
-        let current = this.classifyTabList[this.classifyTabIndex] || {}
+        let current = this.classifyTabArray[classifyTabIndex] || {}
+        // current.id = 0 // todo
         try {
           const data = {
             goods_category_id: current.id || 0,
-            page: this.classifyPage
+            page: classifyPage
           }
-          this.isLoading = true
+          isLoading = true
           let res = await API.FlashSale.getClassifyList(data, loading)
           if (res.meta.current_page === 1) {
             this.classifyArray = res.data
             this.classifyShowEmpty = res.meta.total === 0
           } else {
+            const arr = this.classifyArray
             res.data.forEach((item) => {
-              this.classifyArray.push(item)
+              arr.push(item)
             })
-            // const arr = this.classifyArray.concat(res.data)
-            // this.classifyArray = arr
+            this.classifyArray = arr
           }
           this.classifyMore = res.meta.current_page < res.meta.last_page
           wx.nextTick(() => {
-            this.isLoading = false
+            isLoading = false
           })
         } catch (e) {
-          this.isLoading = false
+          isLoading = false
           console.error(e)
         }
       },
       // 重置参数
       _resetGetClassifyListParams() {
-        this.classifyPage = 1
+        classifyPage = 1
         this.classifyMore = true
-        this.isLoading = false // loading-more
+        isLoading = false // loading-more
       },
       // tab切换
       classifyChangeTab(index, id, e) {
-        if (this.classifyTabIndex === index) return
         if (this.classifyStyles) {
           this.classifyStyles = ''
-          this.classifyTabScrolling = true
+          classifyTabScrolling = true
           setTimeout(() => {
-            this.classifyTabScrolling = false
+            classifyTabScrolling = false
           }, 100)
           wx.pageScrollTo({
-            scrollTop: this.classifyScrollHeight - this.navigationBar,
+            scrollTop: classifyScrollHeight - navigationBarHeight,
             duration: 0
           })
         }
-        let number = this._optimizeTabViewItem(index, this.classifyTabIndex)
-        this.classifyViewToItem = `item${number}`
-        setTimeout(() => {
-          this.classifyViewToItem = ``
-        }, 100)
-        this.classifyTabIndex = index
+        classifyTabIndex = index
         this._resetGetClassifyListParams()
         this._getClassifyList(false)
       },
-      // 优化tab切换时的动画问题
-      _optimizeTabViewItem(index, lastIndex) {
-        let number = index
-        if (index < lastIndex) {
-          number = index - 2 >= 0 ? index - 2 : 0
-        } else {
-          number = index < 3 ? 0 : index - 2
-        }
-        return number
-      },
       // tab切换
       flashChangeTab(item, index) {
-        if (this.flashTabIndex === index) return
-        this.flashTabIndex = index
+        flashTabIndex = index
         this._getFlashTabList(false)
       },
       // 获取限时活动列表
       async _getFlashList(loading) {
-        if (this.flashTabList && this.flashTabList.length === 0) {
-          this.flashIsShow = false
-          return
-        }
-        if (!this.flashTabList || !this.flashTabList[this.flashTabIndex]) return
         let data = {
-          activity_id: this.flashTabList[this.flashTabIndex].id || 0
+          activity_id: this.flashTabArray[flashTabIndex].id || 0
         }
         try {
           let res = await API.FlashSale.getFlashList(data, loading)
@@ -433,23 +427,23 @@
       async _getFlashTabList(loading = false) {
         try {
           let res = await API.FlashSale.getFlashTabList('', loading)
-          this.flashTabList = res.data
+          this.flashInfo.content_data.list = res.data
           await this._getFlashList()
         } catch (e) {
           console.error(e)
         }
       },
-      // 检查是否显示banner控件
-      _checkBannerIsEmpty() {
-        const content = ((this.bannerInfo) || {}).content_data || {}
-        const list = content.list || []
-        if (list.length === 0) {
-          this.bannerIsShow = false
-        }
-        if (!list.every(val => val.image_url)) {
-          this.bannerIsShow = false
-        }
-      },
+      // // 检查是否显示banner控件
+      // _checkBannerIsEmpty() {
+      //   const content = ((this.bannerInfo) || {}).content_data || {}
+      //   const list = content.list || []
+      //   if (list.length === 0) {
+      //     this.bannerIsShow = false
+      //   }
+      //   if (!list.every(val => val.image_url)) {
+      //     this.bannerIsShow = false
+      //   }
+      // },
       // 初始化地理位置
       _initLocation() {
         if (wx.getStorageSync('locationShow') * 1 === 3 || wx.getStorageSync('locationShow') * 1 === 2) {
@@ -501,8 +495,6 @@
         if (res.error !== this.$ERR_OK) {
           this.$wechat.showToast(res.message)
         }
-        // console.log(res.data)
-        // this.groupInfo = res.data
         this.groupInfo = {
           head_image_url: res.data.head_image_url,
           name: res.data.name,
@@ -515,7 +507,7 @@
       },
       // 改变navigation状态的样式
       _changeNavigation(e) {
-        let flag = e.scrollTop < this.navigationBar
+        let flag = e.scrollTop < navigationBarHeight
         let title = flag ? '赞播优鲜' : '赞播优鲜·' + this.socialName
         let styles = flag ? `background:#73C200;transition:none` : `background:#fff;transition:none`
         this.$refs.navigationBar && this.$refs.navigationBar.setTranslucentTitle(title)
@@ -553,15 +545,8 @@
           let res = await API.FlashSale.getModuleInfo({page_name: 'index'}, loading)
           let modules = res.data.modules || []
           modules.forEach((item) => {
-            const key = PAGE_CONFIG[item.module_name]
-            if (key) {
-              let list = (item.content_data && item.content_data.list) || []
-              key.tabList && (this[key.tabList] = list)
-              key.dataArray && (this[key.dataArray] = item)
-              key.isShow && (this[key.isShow] = !item.is_close)
-            }
+            this[MODULE_CONFIG[item.module_name]] = item
           })
-          this._checkBannerIsEmpty()
           await this._getFlashList()
           await this._getClassifyList()
         } catch (e) {
@@ -590,6 +575,17 @@
         width: 100vw
         height: 100%
         display: block
+
+  .home-classify
+    width: 100%
+    background :#fff
+    position :relative
+    .tab-wrapper
+      position :relative
+      .place-holder
+        height :86px
+
+
 
   .empty
     position :relative

@@ -2,9 +2,7 @@
   <scroll-view
     class="home-classify-tab"
     :style="styles"
-    :class="{active: !isShow}"
-    v-if="tabList.length"
-    :id="id"
+    id="scrollView-relative"
     :scroll-into-view="viewToItem"
     scroll-x
     :scroll-with-animation="!isIos"
@@ -19,15 +17,9 @@
       <button formType="submit">
         <figure class="icon">
           <img class="img" mode="aspectFill" lazy-load v-if="item.image_url" :src="item.image_url">
-<!--          <img class="img" mode="aspectFill" lazy-load v-else-if="imageUrl && index === 0" :src="imageUrl + '/yx-image/2.1/icon-all@2x.png'">-->
         </figure>
         <p class="text"><span class="name">{{item.name}}</span><span class="t-name" :class="tabIndex === index ? 'active'  : ''">{{item.name}}</span></p>
       </button>
-<!--      <figure class="icon">-->
-<!--        <img class="img" mode="aspectFill" lazy-load v-if="item.image_url" :src="item.image_url">-->
-<!--        <img class="img" mode="aspectFill" lazy-load v-else-if="imageUrl && index === 0" :src="imageUrl + '/yx-image/2.1/icon-all@2x.png'">-->
-<!--      </figure>-->
-<!--      <p class="text"><span class="name">{{item.name}}</span><span class="t-name" :class="tabIndex === index ? 'active'  : ''">{{item.name}}</span></p>-->
       <div
         class="item-under-line"
         :class="tabIndex === index ? 'active'  : ''"
@@ -44,38 +36,40 @@
   export default {
     name: COMPONENT_NAME,
     props: {
-      id: {
-        type: String,
-        default: ''
-      },
-      isShow: {
-        type: Boolean,
-        default: true
-      },
-      isShowTab: {
-        type: Boolean,
-        default: false
-      },
+      // id: {
+      //   type: String,
+      //   default: 'scrollView-relative'
+      // },
+      // isShow: {
+      //   type: Boolean,
+      //   default: true
+      // },
+      // isShowTab: {
+      //   type: Boolean,
+      //   default: true
+      // },
       tabList: {
         type: Array,
         default: () => []
       },
-      viewToItem: {
-        type: String,
-        default: 'item0'
-      },
+      // viewToItem: {
+      //   type: String,
+      //   default: 'item0'
+      // },
       styles: {
         type: String,
         default: ''
-      },
-      tabIndex: {
-        type: Number,
-        default: 0
       }
+      // tabIndex: {
+      //   type: Number,
+      //   default: 0
+      // }
     },
     data() {
       return {
-        isIos: true
+        isIos: true,
+        tabIndex: 0,
+        viewToItem: ''
       }
     },
     onLoad() {
@@ -88,7 +82,24 @@
     },
     methods: {
       changeTabHandle(index, id, e) {
+        if (this.tabIndex === index) return
+        this.tabIndex = index
+        let number = this._optimizeTabViewItem(index, index)
+        this.viewToItem = `item${number}`
+        setTimeout(() => {
+          this.viewToItem = ``
+        }, 100)
         this.$emit('changeTab', index, id, e)
+      },
+      // 优化tab切换时的动画问题
+      _optimizeTabViewItem(index, lastIndex) {
+        let number = index
+        if (index < lastIndex) {
+          number = index - 2 >= 0 ? index - 2 : 0
+        } else {
+          number = index < 3 ? 0 : index - 2
+        }
+        return number
       }
     }
   }

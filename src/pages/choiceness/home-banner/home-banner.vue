@@ -1,8 +1,8 @@
 <template>
-  <div v-if="isShow" class="home-banner" id="homeBanner">
+  <div class="home-banner" id="homeBanner">
     <swiper class="banner" autoplay interval="5000" display-multiple-items="1" previous-margin="0px"
             next-margin="0px" circular @change="_setPraiseIndex">
-      <block v-for="(item,index) in bigItem.content_data.list" :key="index">
+      <block v-for="(item,index) in bannerArray" :key="index">
         <swiper-item  class="banner-item" :class="{'current-banner-active': false}">
           <img class="item-img" lazy-load mode="aspectFill" v-if="item.image_url" :src="item.image_url"
                @click="jumpDetail(item)">
@@ -15,7 +15,7 @@
       </li>
       <li class="dot">{{currentIndex}}</li>
       <li class="dot-line">/</li>
-      <li class="dot right">{{bigItem.content_data.list.length}}</li>
+      <li class="dot right">{{arrayLength}}</li>
     </ul>
   </div>
 </template>
@@ -26,28 +26,19 @@
   export default {
     name: COMPONENT_NAME,
     props: {
-      bigItem: {
-        type: Object,
-        default: () => {
-          return {
-            content_data: {
-              list: []
-            }
-          }
-        }
-      },
-      praiseIndex: {
-        type: Number,
-        default: 0
-      },
-      isShow: {
-        type: Boolean,
-        default: true
+      bannerArray: {
+        type: Array,
+        default: () => []
       }
     },
     data() {
       return {
         currentIndex: 1
+      }
+    },
+    computed: {
+      arrayLength() {
+        return this.bannerArray.length || 0
       }
     },
     methods: {
@@ -72,7 +63,6 @@
       },
       _setPraiseIndex(e) {
         this.currentIndex = e.target.current + 1
-        this.$emit('bannerChange', e.target.current)
       }
     }
   }

@@ -1,28 +1,46 @@
 <template>
   <div class="home-classify-item" @click="jumpGoodsDetail(item)">
     <div class="goods-left">
-      <img class="goods-left-img" lazy-load mode="aspectFill" v-if="item.goods_cover_image" :src="item.goods_cover_image">
-      <img class="goods-left-icon" lazy-load mode="aspectFill" v-if="imageUrl && corpName === 'platform'"
-           :src="imageUrl + '/yx-image/choiceness/icon-label@2x.png'">
-      <img class="goods-left-icon" lazy-load mode="aspectFill" v-if="imageUrl && corpName === 'retuan'"
-           :src="imageUrl + '/yx-image/retuan/icon-label@2x.png'">
+<!--      <img-->
+<!--        class="goods-left-img"-->
+<!--        lazy-load-->
+<!--        mode="aspectFill"-->
+<!--        v-if="imageUrl + '/yx-image/2.3/apple.png'"-->
+<!--        :src="imageUrl + '/yx-image/2.3/apple.png'"-->
+<!--      >-->
+      <img
+        class="goods-left-img"
+        lazy-load mode="aspectFill"
+        v-if="item.goods_cover_image"
+        :src="item.goods_cover_image"
+      >
+      <img
+        class="goods-left-icon"
+        lazy-load
+        mode="aspectFill"
+        v-if="imageUrl && corpName === 'platform'"
+        :src="imageUrl + '/yx-image/choiceness/icon-label@2x.png'"
+      >
     </div>
     <div class="goods-right">
       <div class="goods-right-top">
         <div class="title">{{item.name}}</div>
-        <div class="text-sub" v-if="item.describe" :class="item.describe ? 'has-title' : ''">{{item.describe}}</div>
-        <!--<div class="text-sales-box">-->
-        <!--<div class="text-sales">已售{{item.sale_count}}件</div>-->
-        <!--</div>-->
+        <div
+          class="text-sub"
+          v-if="item.describe"
+          :class="item.describe ? 'has-title' : ''"
+        >{{item.describe}}</div>
       </div>
       <div class="add-box">
         <div class="add-box-left">
           <section class="left">
-            <!--<div class="text-group" :class="'corp-' + corpName + '-money'">团购价</div>-->
-            <img class="text-group-img" mode="aspectFill" lazy-load v-if="imageUrl && corpName === 'platform'"
-                 :src="imageUrl + '/yx-image/choiceness/pic-price_bg@2x.png'">
-            <img class="text-group-img" mode="aspectFill" lazy-load v-if="imageUrl && corpName === 'retuan'"
-                 :src="imageUrl + '/yx-image/retuan/pic-price_rtbg@2x.png'">
+            <img
+              class="text-group-img"
+              mode="aspectFill"
+              lazy-load
+              v-if="imageUrl"
+              :src="imageUrl + '/yx-image/choiceness/pic-price_bg@2x.png'"
+            >
           </section>
           <div class="price-box">
             <div class="money" :class="'corp-' + corpName + '-money'">{{item.trade_price}}</div>

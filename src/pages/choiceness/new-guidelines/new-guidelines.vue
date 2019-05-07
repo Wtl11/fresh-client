@@ -8,12 +8,12 @@
     >
       添加「我的小程序」团购更方便<p class="triangle"></p>
     </section>
-    <article class="mask-wrapper" v-if="isShow" :animation="maskAnimation">
-      <div class="pic-wrapper" :style="{top: top + 'px'}">
-        <img class="pic-img" mode="widthFix" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/pic-xszy.png'">
-        <div class="button" @click="cancel"></div>
-      </div>
-    </article>
+<!--    <article class="mask-wrapper" v-if="isShow" :animation="maskAnimation">-->
+<!--      <div class="pic-wrapper" :style="{top: top + 'px'}">-->
+<!--        <img class="pic-img" mode="widthFix" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/pic-xszy.png'">-->
+<!--        <div class="button" @click="cancel"></div>-->
+<!--      </div>-->
+<!--    </article>-->
   </div>
 </template>
 
@@ -26,34 +26,34 @@
     name: COMPONENT_NAME,
     mixins: [AnimationModal],
     props: {
-      navigationBar: {
-        type: Number,
-        default: 0
-      },
-      titleColor: {
-        type: String,
-        default: '#000000'
-      }
+      // navigationBar: {
+      //   type: Number,
+      //   default: 0
+      // },
+      // titleColor: {
+      //   type: String,
+      //   default: '#000000'
+      // }
     },
     data() {
       return {
         top: 0,
-        isShow: false,
+        // isShow: false,
         isShowGuidelines: true
       }
     },
-    watch: {
-      navigationBar(val) {
-        // if (!this.isShowGuidelines) return
-        if (val) {
-          this.top = val + 3
-          setTimeout(() => {
-            this.isShowGuidelines = false
-            // wx.setStorageSync('showNewGuidelines', 'showNewGuidelines')
-          }, 2000)
-        }
-      }
-    },
+    // watch: {
+    //   navigationBar(val) {
+    //     // if (!this.isShowGuidelines) return
+    //     if (val) {
+    //       this.top = val + 3
+    //       setTimeout(() => {
+    //         this.isShowGuidelines = false
+    //         // wx.setStorageSync('showNewGuidelines', 'showNewGuidelines')
+    //       }, 2000)
+    //     }
+    //   }
+    // },
     onLoad() {
       // const isShowGuidelines = wx.getStorageSync('showNewGuidelines')
       // if (!isShowGuidelines) {
@@ -61,6 +61,13 @@
       // }
     },
     methods: {
+      setTop(top) {
+        this.top = top + 3
+        setTimeout(() => {
+          this.isShowGuidelines = false
+          // wx.setStorageSync('showNewGuidelines', 'showNewGuidelines')
+        }, 2000)
+      },
       show () {
         // this.isShowGuidelines = false
         // wx.setStorageSync('showNewGuidelines', 'showNewGuidelines')
@@ -85,17 +92,17 @@
         this.cancel()
       },
       cancel () {
-        wx.setNavigationBarColor({
-          frontColor: this.titleColor,
-          backgroundColor: '#ffffff',
-          animation: {
-            duration: 0,
-            timingFunc: 'easeIn'
-          }
-        })
-        this.hideAnimation(() => {
-          this.isShow = false
-        })
+        // wx.setNavigationBarColor({
+        //   frontColor: this.titleColor,
+        //   backgroundColor: '#ffffff',
+        //   animation: {
+        //     duration: 0,
+        //     timingFunc: 'easeIn'
+        //   }
+        // })
+        // this.hideAnimation(() => {
+        //   this.isShow = false
+        // })
       }
     }
   }
