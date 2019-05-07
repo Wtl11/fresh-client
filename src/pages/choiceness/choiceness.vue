@@ -284,7 +284,7 @@
       this._refreshLocation()
       this._getCouponModalList()
       this._groupInfo(false)
-      // await this._getNotify() // todo
+      await this._getNotify() // todo
       try {
         await this._getModuleInfo(false)
         // 获取tab高度
