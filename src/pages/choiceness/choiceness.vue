@@ -371,7 +371,7 @@
           if ('' + this.notifyDesc === '' + res.data.desc) {
             return
           }
-          this.notifyDesc = res.data.desc
+          this.notifyDesc = res.data.desc || this.isShowNotify.length
         } catch (e) {
           console.warn(e)
         }
