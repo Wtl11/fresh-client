@@ -6,6 +6,7 @@ page.$mount()
 
 export default {
   config: {
-    navigationBarTitleText: '&#39;&#39;'
+    navigationBarTitleText: '&#39;&#39;',
+    usingComponents: {}
   }
 }
