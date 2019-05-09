@@ -38,9 +38,9 @@
   .notice-img
     width: 27px
     height: 14px
+    margin-right: 8px
 
   .notice-msg
-    margin-left: 8px
     line-height: 1
     overflow: hidden
     white-space: nowrap

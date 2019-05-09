@@ -38,7 +38,7 @@
       </section>
       <div class="classify-wrapper">
         <block v-for="(item, index) in classifyArray" :key="index">
-<!--          <home-classify-item :item="item"></home-classify-item>-->
+          <!--          <home-classify-item :item="item"></home-classify-item>-->
           <div class="home-classify-item" @click="jumpGoodsDetail(item)">
             <div class="goods-left">
               <img
@@ -62,7 +62,8 @@
                   class="text-sub"
                   v-if="item.describe"
                   :class="item.describe ? 'has-title' : ''"
-                >{{item.describe}}</div>
+                >{{item.describe}}
+                </div>
               </div>
               <div class="add-box">
                 <div class="add-box-left">
@@ -369,7 +370,10 @@
       async _getNotify() {
         try {
           const res = await API.AfterNotice.getNotify()
-          this.notifyDesc.push(res.data.desc)
+          if (JSON.stringify(this.notifyDesc) === JSON.stringify(res.data.desc)) {
+            return
+          }
+          this.notifyDesc = res.data.desc
         } catch (e) {
           console.warn(e)
         }
@@ -552,7 +556,10 @@
       // 获取地理位置
       getLocationData() {
         let data = wx.getStorageSync('locationData')
-        API.Choiceness.getLocationDistance({longitude: data.longitude || 0, latitude: data.latitude || 0}).then((res) => {
+        API.Choiceness.getLocationDistance({
+          longitude: data.longitude || 0,
+          latitude: data.latitude || 0
+        }).then((res) => {
           if (res.error !== this.$ERR_OK) {
             return
           }
@@ -649,21 +656,23 @@
 
   .home-classify
     width: 100%
-    background :#fff
-    position :relative
+    background: #fff
+    position: relative
     .tab-wrapper
-      position :relative
+      position: relative
       .place-holder
-        height :86px
+        height: 86px
 
   .has-title
     no-wrap-plus()
+
   .add-text-sales
     font-size: $font-size-10
     font-family: $font-family-regular
     color: $color-text-sub
     margin-top: 1.5px
     text-align: center
+
   .add-box-right
     &:after
       border: none
@@ -673,7 +682,7 @@
     layout(row)
     border-bottom-1px(#e6e6e6)
     align-items: center
-    margin : 0 12px
+    margin: 0 12px
     .goods-left
       position: relative
       width: 29.33vw
@@ -763,8 +772,8 @@
             text-decoration line-through
             padding-bottom: 1px
             line-height: 1
-            position :relative
-            bottom:1px
+            position: relative
+            bottom: 1px
         .add-goods-btn
           layout(row)
           width: 75px
@@ -800,7 +809,6 @@
 
         .add-goods-btn-active
           background: #b7b7b7
-
 
   .empty
     position: relative

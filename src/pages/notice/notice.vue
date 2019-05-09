@@ -45,7 +45,7 @@
     },
     data() {
       return {
-        showCoupon: true,
+        showCoupon: false,
         coupon: {},
         couponText: '送你一张5元优惠券',
         textArr: []
