@@ -146,7 +146,7 @@
   }
 
   let SYSTEM_INFO = {}
-  let curShopId = ''
+  // let curShopId = ''
   let flashTabIndex = 0
   let classifyTabIndex = 0
   let classifyPage = 1
@@ -193,7 +193,8 @@
         classifyStyles: '',
         classifyShowEmpty: false,
         notifyDesc: [],
-        isShowNotify: false
+        isShowNotify: false,
+        curShopId: ''
       }
     },
     computed: {
@@ -232,6 +233,15 @@
       }
     },
     onLoad(options) {
+      SYSTEM_INFO = {}
+      flashTabIndex = 0
+      classifyTabIndex = 0
+      classifyPage = 1
+      isLoading = false
+      classifyTabPosition = 999999
+      classifyScrollHeight = 9999999
+      navigationBarHeight = 64
+      classifyTabScrolling = false
       this.$wechat.showLoading()
       SYSTEM_INFO = wx.getSystemInfoSync()
       this._initPageParams(options)
@@ -255,12 +265,13 @@
         this._getCouponModalList() // 首页弹窗
         // 获取团的信息
         this._groupInfo(false)
-        if (curShopId * 1 !== shopId * 1) {
+        if (this.curShopId * 1 !== shopId * 1) {
           this._resetGetClassifyListParams()
           this.bannerInfo = {} // 切换站点重置swiper
           await this._getModuleInfo()
-          curShopId = shopId
+          this.curShopId = shopId
         } else {
+          // await this._getModuleInfo()
           await this._getFlashTabList()
         }
         await this._getNotify()
@@ -317,7 +328,7 @@
       const flag = Date.now()
       return {
         title: `${this.groupInfo.social_name},次日达、直采直销，点击下单↓`,
-        path: `/pages/choiceness?shopId=${curShopId}&flag=${flag}`,
+        path: `/pages/choiceness?shopId=${this.curShopId}&flag=${flag}`,
         imageUrl: this.imageUrl + imgUrl,
         success: (res) => {
         },
@@ -518,7 +529,8 @@
       async _getFlashTabList(loading = false) {
         try {
           let res = await API.FlashSale.getFlashTabList('', loading)
-          this.flashInfo.content_data.list = res.data
+          let content = Object.assign({}, this.flashInfo.content_data, {list: res.data})
+          this.$set(this.flashInfo, 'content_data', content)
           await this._getFlashList()
         } catch (e) {
           console.error(e)
