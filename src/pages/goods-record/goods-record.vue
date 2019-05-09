@@ -126,7 +126,7 @@
       ...cartComputed,
       activeStatus() {
         let active = this.goodsMsg.activity || {}
-        return +active.status
+        return +active.status || 0
       },
       BTN_TEXT() {
         let key = this.activeStatus
@@ -136,10 +136,10 @@
         if (key == null) {
           key = BTN_STATUS.DOWN
         }
-        return BTN_TEXT_CONSTANT[key]
+        return BTN_TEXT_CONSTANT[key] || ''
       },
       isShowTwoButton() {
-        let flag = null
+        let flag = false
         if (this.activityId) {
           flag = this.goodsMsg.usable_stock > 0 && this.activeStatus === 1
         } else {

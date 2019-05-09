@@ -122,7 +122,7 @@
       // 活动状态
       activeStatus() {
         let active = this.goodsMsg.activity || {}
-        return +active.status
+        return +active.status || 0
       },
       // 按钮文案
       btnText() {
@@ -133,11 +133,11 @@
         if (key == null) {
           key = BTN_STATUS.DOWN
         }
-        return BTN_TEXT_CONSTANT[key]
+        return BTN_TEXT_CONSTANT[key] || ''
       },
       // 是否显示两个按钮
       isShowTwoButton() {
-        let flag = null
+        let flag = false
         if (this.activityId) {
           flag = this.goodsMsg.usable_stock > 0 && this.activeStatus === 1
         } else {
@@ -155,7 +155,7 @@
       },
       // 二维码
       thumb_image() {
-        return this.goodsMsg.thumb_image
+        return this.goodsMsg.thumb_image || ''
       },
       // 提货时间
       deliverAt() {
