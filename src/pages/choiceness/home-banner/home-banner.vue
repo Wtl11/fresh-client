@@ -1,6 +1,6 @@
 <template>
   <div class="home-banner" id="homeBanner">
-    <swiper class="banner" autoplay interval="5000" display-multiple-items="1" previous-margin="0px"
+    <swiper v-if="isShow" class="banner" autoplay interval="5000" display-multiple-items="1" previous-margin="0px"
             next-margin="0px" circular @change="_setPraiseIndex">
       <block v-for="(item,index) in bannerArray" :key="index">
         <swiper-item  class="banner-item" :class="{'current-banner-active': false}">
@@ -33,7 +33,8 @@
     },
     data() {
       return {
-        currentIndex: 1
+        currentIndex: 1,
+        isShow: true
       }
     },
     computed: {
@@ -63,6 +64,9 @@
       },
       _setPraiseIndex(e) {
         this.currentIndex = e.target.current + 1
+      },
+      _resetIndex() {
+        this.currentIndex = 1
       }
     }
   }

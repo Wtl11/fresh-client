@@ -11,6 +11,7 @@
       :groupInfo="groupInfo"
     ></home-position>
     <home-banner
+      ref="homeBanner"
       v-if="bannerIsShow"
       :bannerArray="bannerArray"
     ></home-banner>
@@ -256,6 +257,7 @@
         this._groupInfo(false)
         if (curShopId * 1 !== shopId * 1) {
           this._resetGetClassifyListParams()
+          this.bannerInfo = {} // 切换站点重置swiper
           await this._getModuleInfo()
           curShopId = shopId
         } else {
@@ -476,6 +478,7 @@
         classifyPage = 1
         this.classifyMore = true
         isLoading = false // loading-more
+        this.$refs.homeBanner && this.$refs.homeBanner._resetIndex()
       },
       // tab切换
       classifyChangeTab(index, id, e) {
