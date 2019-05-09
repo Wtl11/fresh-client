@@ -191,7 +191,8 @@
         classifyArray: [],
         classifyStyles: '',
         classifyShowEmpty: false,
-        notifyDesc: []
+        notifyDesc: [],
+        isShowNotify: false
       }
     },
     computed: {
@@ -222,10 +223,6 @@
       // 是否显示商品分类
       classifyIsShow() {
         return this.classifyTabArray.length && !this.classifyInfo.is_close
-      },
-      // 是否显示通知
-      isShowNotify() {
-        return this.notifyDesc.length
       }
     },
     watch: {
@@ -264,7 +261,7 @@
         } else {
           await this._getFlashTabList()
         }
-        await this._getNotify() // todo
+        await this._getNotify()
         // 获取tab高度
         await this._getTabPosition()
         this.$refs.guidelines && this.$refs.guidelines.setTop(navigationBarHeight)
@@ -285,7 +282,7 @@
       this._refreshLocation()
       this._getCouponModalList()
       this._groupInfo(false)
-      await this._getNotify() // todo
+      await this._getNotify()
       try {
         await this._getModuleInfo(false)
         // 获取tab高度
@@ -370,7 +367,8 @@
       async _getNotify() {
         try {
           const res = await API.AfterNotice.getNotify()
-          if (JSON.stringify(this.notifyDesc) === JSON.stringify(res.data.desc)) {
+          this.isShowNotify = res.data.has_notify
+          if ('' + this.notifyDesc === '' + res.data.desc) {
             return
           }
           this.notifyDesc = res.data.desc
