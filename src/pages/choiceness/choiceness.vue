@@ -1,119 +1,237 @@
 <template>
   <div class="choiceness">
-    <navigation-bar ref="navigationBar" :headStyle="headStyle" :titleColor="titleColor" :title="title"
-                    :showArrow="false" :titleMaxLen="12" :translucent="fasle"></navigation-bar>
-    <section class="top-background" :style="{height: backgroundHeight+'px'}">
-      <img class="img" :style="{backgroundColor: backgroundColor}" @load="handleLoadBackground" mode="aspectFill"
-           v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/bg-homepage@2x.png'">
-    </section>
-    <home-position
-      :locationStatus="locationStatus"
-      :groupInfo="groupInfo"
-    ></home-position>
-    <home-banner
-      ref="homeBanner"
-      v-if="bannerIsShow"
-      :bannerArray="bannerArray"
-    ></home-banner>
-    <notice
-      v-if="isShowNotify"
-      :notice="notifyDesc"
-    ></notice>
-    <div class="empty" id="homeEmpty"></div>
-    <home-flash-sale
-      v-if="flashIsShow"
-      :tabList="flashTabArray"
-      :flashArray="flashArray"
-      @changeTab="flashChangeTab"
-    ></home-flash-sale>
-    <section class="home-classify">
-      <section class="tab-wrapper">
-        <div v-if="classifyTabArray.length" class="place-holder"></div>
-        <home-classify-tab
-          id="scrollView-relative"
-          :isShow="classifyIsShow"
-          :styles="classifyStyles"
-          :tabList="classifyTabArray"
-          @changeTab="classifyChangeTab"
-        ></home-classify-tab>
-      </section>
-      <div class="classify-wrapper">
-        <block v-for="(item, index) in classifyArray" :key="index">
-          <!--          <home-classify-item :item="item"></home-classify-item>-->
-          <div class="home-classify-item" @click="jumpGoodsDetail(item)">
-            <div class="goods-left">
-              <img
-                class="goods-left-img"
-                lazy-load mode="aspectFill"
-                v-if="item.goods_cover_image"
-                :src="item.goods_cover_image"
+    <navigation-bar
+      ref="navigationBar"
+      :headStyle="headStyle"
+      :titleColor="titleColor"
+      :title="title"
+      :showArrow="false"
+      :titleMaxLen="12"
+      :translucent="fasle"
+    ></navigation-bar>
+    <article class="container">
+      <img
+        v-if="imageUrl"
+        :src="imageUrl + '/yx-image/2.3/bg-xzthd.png'"
+        class="top-background"
+        mode="widthFix"
+      >
+      <home-position
+        :locationStatus="locationStatus"
+        :groupInfo="groupInfo"
+      ></home-position>
+      <block
+        v-for="(moduleItem, moduleIndex) in moduleArray"
+        :key="moduleIndex"
+      >
+<!--        轮播图-->
+        <section
+          v-if="moduleItem.module_name === 'bannar' && moduleItem.is_close === 0"
+          class="item-wrapper">
+          <article class="home-banner">
+            <swiper
+              v-if="moduleItem.content_data && moduleItem.content_data.list && moduleItem.content_data.list.length"
+              class="banner"
+              autoplay
+              interval="5000"
+              display-multiple-items="1"
+              previous-margin="0px"
+              next-margin="0px"
+              circular
+              @change="handleSetBannerIndex">
+              <block
+                v-for="(item,index) in moduleItem.content_data.list"
+                :key="index"
               >
+                <swiper-item
+                  class="banner-item"
+                >
+                  <img
+                    class="item-img"
+                    lazy-load
+                    mode="aspectFill"
+                    v-if="item.image_url"
+                    :src="item.image_url"
+                    @click="handleBannerJump(item)"
+                  >
+                </swiper-item>
+              </block>
+            </swiper>
+            <ul class="dot-wrapper">
+              <li class="background">
+                <img
+                  lazy-load
+                  class="img"
+                  mode="aspectFill"
+                  v-if="imageUrl"
+                  :src="imageUrl + '/yx-image/2.3/pic-switch@2x.png'"
+                >
+              </li>
+              <li class="dot">{{bannerIndex}}</li>
+              <li class="dot-line">/</li>
+              <li class="dot right">{{moduleItem.content_data.list.length || 0}}</li>
+            </ul>
+          </article>
+        </section>
+<!--        限时抢购-->
+        <section
+          v-if="moduleItem.module_name === 'activity_fixed' && moduleItem.is_close === 0 && moduleItem.content_data && moduleItem.content_data.list && moduleItem.content_data.list.length && flashArray.length"
+          class="item-wrapper"
+        >
+          <div style="height: 15px"></div>
+          <div
+            class="home-flash-sale">
+            <section
+              class="top-wrapper">
               <img
-                class="goods-left-icon"
                 lazy-load
+                class="title-img"
                 mode="aspectFill"
-                v-if="imageUrl && corpName === 'platform'"
-                :src="imageUrl + '/yx-image/choiceness/icon-label@2x.png'"
+                v-if="imageUrl"
+                :src="imageUrl + '/yx-image/2.3/pic-qgtitle@2x.png'"
               >
-            </div>
-            <div class="goods-right">
-              <div class="goods-right-top">
-                <div class="title">{{item.name}}</div>
+              <ul
+                class="tab-wrapper">
+                <li
+                  v-if="index < 2"
+                  v-for="(item, index) in moduleItem.content_data.list"
+                  :key="index"
+                  class="tab-item-wrapper"
+                  :class="{active: flashTabIndex === index}"
+                  @click="handleFlashTabChange(item, index)"
+                >
+                  <p class="time">{{item.at}}</p>
+                  <p class="explain">{{item.at_str}}</p>
+                </li>
+              </ul>
+              <div
+                class="more-wrapper"
+                @click="handleJumpToFlashList(moduleItem.id)"
+              >
+                <p class="more-text">更多</p>
+                <img
+                  lazy-load
+                  class="more-img"
+                  mode="aspectFill"
+                  v-if="imageUrl"
+                  :src="imageUrl + '/yx-image/2.3/icon-pressed@2x.png'"
+                >
+              </div>
+            </section>
+            <section class="scroll-wrapper">
+              <scroll-view
+                class="bottom-wrapper"
+                scroll-x
+                :scroll-into-view="flashViewToChild"
+              >
                 <div
-                  class="text-sub"
-                  v-if="item.describe"
-                  :class="item.describe ? 'has-title' : ''"
-                >{{item.describe}}
-                </div>
-              </div>
-              <div class="add-box">
-                <div class="add-box-left">
-                  <section class="left">
-                    <img
-                      class="text-group-img"
-                      mode="aspectFill"
-                      lazy-load
-                      v-if="imageUrl"
-                      :src="imageUrl + '/yx-image/choiceness/pic-price_bg@2x.png'"
-                    >
-                  </section>
-                  <div class="price-box">
-                    <div class="money" :class="'corp-' + corpName + '-money'">{{item.trade_price}}</div>
-                    <div class="unit" :class="'corp-' + corpName + '-money'">元</div>
-                    <div class="lineation">{{item.original_price}}元</div>
-                  </div>
-                </div>
-                <div class="right">
-                  <form action="" report-submit @submit="$getFormId" @click.stop="addShoppingCart(item)">
-                    <button class="add-box-right" v-if="item.usable_stock * 1 > 0" formType="submit">
-                      <div class="add-goods-btn" :class="'corp-' + corpName + '-bg'">
-                        <div class="add-icon">
-                          <div class="add1"></div>
-                          <div class="add2"></div>
-                        </div>
-                        <div class="add-text">购物车</div>
+                  v-for="(child, idx) in flashArray"
+                  class="bottom-item-wrapper"
+                  :class="flashArray.length> 4 && idx === flashArray.length -1?'':'item-r-2vw'"
+                  :key="idx"
+                  :id="'child'+idx"
+                >
+<!--                  flash-item-->
+                  <div class="home-flash-item" @click="handleJumpToGoodsDetail(child)">
+                    <figure class="goods-wrapper">
+                      <img
+                        class="img-goods"
+                        lazy-load
+                        mode="aspectFill"
+                        v-if="child.goods_cover_image"
+                        :src="child.goods_cover_image"
+                      >
+                      <div class="img-label">
+                        <img
+                          class="img"
+                          lazy-load
+                          mode="aspectFit"
+                          v-if="imageUrl"
+                          :src="imageUrl + '/yx-image/2.3/pic-label_qg@2x.png'"
+                        >
                       </div>
-                    </button>
-                  </form>
-                  <div class="add-box-right" v-if="item.usable_stock * 1 <= 0" @click.stop>
-                    <div class="add-goods-btn add-goods-btn-active">
-                      <div class="add-text">已抢完</div>
-                    </div>
+                    </figure>
+                    <form
+                      class="bottom-wrapper"
+                      report-submit
+                      @submit="$getFormId"
+                    >
+                      <div class="title-wrapper">
+                        <p class="title">{{child.name}}</p>
+                      </div>
+                      <div class="price-wrapper">
+                        <div class="price">
+                          <p class="number">{{child.trade_price}}</p>
+                          <p class="unit">元</p>
+                          <p class="origin-price">{{child.original_price}}元</p>
+                        </div>
+                      </div>
+                    </form>
                   </div>
-                  <div class="add-text-sales">已售{{item.sale_count}}{{item.goods_units}}</div>
+                  <section
+                    v-if="flashArray.length> 4 && idx === flashArray.length -1"
+                    class="look-more"
+                  >
+                    <div
+                      class="look-wrapper"
+                      @click="handleJumpToFlashList(moduleItem.id)"
+                    >
+                      <div class="text">查看更多</div>
+                      <figure
+                        class="more-icon"
+                      >
+                        <img
+                          class="img"
+                          lazy-load
+                          mode="aspectFill"
+                          v-if="imageUrl"
+                          :src="imageUrl + '/yx-image/2.1/icon-pressed_gd@2x.png'"
+                        >
+                      </figure>
+                    </div>
+                  </section>
                 </div>
-              </div>
+              </scroll-view>
+            </section>
+          </div>
+        </section>
+<!--        通知-->
+        <article
+          v-if="moduleIndex === 0 && notifyInfo.has_notify && notifyInfo.desc"
+          class="notice"
+        >
+          <img
+            v-if="imageUrl"
+            :src="imageUrl + '/yx-image/notice/pic-notice@2x.png'"
+            class="notice-img">
+          <div class="notice-msg">
+            <div class="notice-content">
+              <block v-for="(child, idx) in 2" :key="idx">
+                <div
+                  v-for="(item, index) in notifyInfo.desc"
+                  :key="index"
+                  class="notice-msg-item"
+                >{{item}}</div>
+              </block>
             </div>
           </div>
-        </block>
-      </div>
-      <is-end v-if="!classifyMore && !classifyShowEmpty"></is-end>
-      <loading-more v-else-if="!classifyShowEmpty"></loading-more>
-      <is-active-empty v-if="classifyShowEmpty"></is-active-empty>
-    </section>
+          <span class="notice-line">|</span>
+          <navigator
+            url="/pages/notice"
+            class="notice-look"
+            hover-class="none"
+          >查看</navigator>
+        </article>
+      </block>
+      <div style="height: 1500px"></div>
+    </article>
+<!--    自定义tab-->
     <custom-tab-bar currentType="index"></custom-tab-bar>
+<!--    优惠券弹窗-->
     <coupon-modal ref="couponModal"></coupon-modal>
+<!--    添加至我的小程序-->
     <new-guidelines ref="guidelines"></new-guidelines>
+    <div class="goods-search-wrapper" :style="goodsSearchStyles"></div>
   </div>
 </template>
 
@@ -125,36 +243,32 @@
   import {resolveQueryScene} from '@utils/common'
   import CouponModal from './coupon-modal/coupon-modal'
   import HomePosition from './home-position/home-position'
-  import HomeBanner from './home-banner/home-banner'
-  import HomeFlashSale from './home-flash-sale/home-flash-sale'
   import ShareHandler, {EVENT_CODE} from '@mixins/share-handler'
   import ShareTrick from '@mixins/share-trick'
   import NewGuidelines from './new-guidelines/new-guidelines'
-  import Notice from './notice/notice'
-  import HomeClassifyTab from './home-classify-tab/home-classify-tab'
-  import IsEnd from '@components/is-end/is-end'
-  import isActiveEmpty from '@components/is-active-empty/is-active-empty'
-  import LoadingMore from '@components/loading-more/loading-more'
 
   const ald = getApp()
   const PAGE_NAME = 'CHOICENESS'
 
-  const MODULE_CONFIG = {
-    bannar: 'bannerInfo',
-    activity_fixed: 'flashInfo',
-    goods_cate: 'classifyInfo'
+  // const MODULE_CONFIG = {
+  //   bannar: 'bannerInfo',
+  //   activity_fixed: 'flashInfo',
+  //   goods_cate: 'classifyInfo'
+  // }
+
+  const MODULE_ARR_METHODS = {
+    activity_fixed: '_getFlashList'
   }
 
   let SYSTEM_INFO = {}
-  // let curShopId = ''
-  let flashTabIndex = 0
-  let classifyTabIndex = 0
-  let classifyPage = 1
-  let isLoading = false
-  let classifyTabPosition = 999999
-  let classifyScrollHeight = 9999999
-  let navigationBarHeight = 64
-  let classifyTabScrolling = false
+  // let flashTabIndex = 0
+  // let classifyTabIndex = 0
+  // let classifyPage = 1
+  // let isLoading = false
+  // let classifyTabPosition = 999999
+  // let classifyScrollHeight = 9999999
+  // let navigationBarHeight = 64
+  // let classifyTabScrolling = false
   export default {
     name: PAGE_NAME,
     mixins: [
@@ -166,66 +280,74 @@
       CustomTabBar,
       CouponModal,
       HomePosition,
-      HomeBanner,
-      HomeFlashSale,
-      NewGuidelines,
-      Notice,
-      HomeClassifyTab,
-      IsEnd,
-      isActiveEmpty,
-      LoadingMore
+      NewGuidelines
     },
     data() {
       return {
+        // 头部变色
         title: '赞播优鲜',
         headStyle: `background:#73C200`,
         titleColor: `#ffffff`,
         backgroundHeight: 0,
         backgroundColor: '#73C200',
+        navigationBarHeight: 64,
+        // 商品搜索样式
+        goodsSearchStyles: '',
+        // 头部地理位置等
         locationStatus: null,
         groupInfo: {},
-        bannerInfo: {},
-        flashInfo: {},
-        classifyInfo: {},
+        // bannerInfo: {},
+        // flashInfo: {},
+        // classifyInfo: {},
+        // classifyMore: true,
+        // classifyArray: [],
+        // classifyStyles: '',
+        // classifyShowEmpty: false,
+        // notifyDesc: [],
+        // isShowNotify: false,
+        // 当前店铺
+        curShopId: '',
+        // 模块数组
+        moduleArray: [],
+        // 轮播图
+        bannerIndex: 1,
+        // 通知
+        notifyInfo: {},
+        // 限时抢购
+        flashTabIndex: 0,
         flashArray: [],
-        classifyMore: true,
-        classifyArray: [],
-        classifyStyles: '',
-        classifyShowEmpty: false,
-        notifyDesc: [],
-        isShowNotify: false,
-        curShopId: ''
+        flashViewToChild: undefined
       }
     },
     computed: {
       ...jwtComputed,
       socialName() {
         return (this.groupInfo || {}).social_name || ''
-      },
-      // banner
-      bannerArray() {
-        return (this.bannerInfo.content_data && this.bannerInfo.content_data.list) || []
-      },
-      // 是否显示banner
-      bannerIsShow() {
-        return this.bannerArray.length && !this.bannerInfo.is_close
-      },
-      // 限时抢购tab
-      flashTabArray() {
-        return (this.flashInfo.content_data && this.flashInfo.content_data.list) || []
-      },
-      // 是否显示限时抢购
-      flashIsShow() {
-        return this.flashTabArray.length && !this.flashInfo.is_close && this.flashArray.length
-      },
-      // 商品分类tab数组
-      classifyTabArray() {
-        return (this.classifyInfo.content_data && this.classifyInfo.content_data.list) || []
-      },
-      // 是否显示商品分类
-      classifyIsShow() {
-        return this.classifyTabArray.length && !this.classifyInfo.is_close
       }
+      // // banner
+      // bannerArray() {
+      //   return (this.bannerInfo.content_data && this.bannerInfo.content_data.list) || []
+      // },
+      // // 是否显示banner
+      // bannerIsShow() {
+      //   return this.bannerArray.length && !this.bannerInfo.is_close
+      // },
+      // // 限时抢购tab
+      // flashTabArray() {
+      //   return (this.flashInfo.content_data && this.flashInfo.content_data.list) || []
+      // },
+      // // 是否显示限时抢购
+      // flashIsShow() {
+      //   return this.flashTabArray.length && !this.flashInfo.is_close && this.flashArray.length
+      // },
+      // // 商品分类tab数组
+      // classifyTabArray() {
+      //   return (this.classifyInfo.content_data && this.classifyInfo.content_data.list) || []
+      // },
+      // // 是否显示商品分类
+      // classifyIsShow() {
+      //   return this.classifyTabArray.length && !this.classifyInfo.is_close
+      // }
     },
     watch: {
       userInfo(val = {}) {
@@ -233,24 +355,30 @@
       }
     },
     onLoad(options) {
-      SYSTEM_INFO = {}
-      flashTabIndex = 0
-      classifyTabIndex = 0
-      classifyPage = 1
-      isLoading = false
-      classifyTabPosition = 999999
-      classifyScrollHeight = 9999999
-      navigationBarHeight = 64
-      classifyTabScrolling = false
-      this.$wechat.showLoading()
+      // SYSTEM_INFO = {}
+      // flashTabIndex = 0
+      // classifyTabIndex = 0
+      // classifyPage = 1
+      // isLoading = false
+      // classifyTabPosition = 999999
+      // classifyScrollHeight = 9999999
+      // navigationBarHeight = 64
+      // classifyTabScrolling = false
       SYSTEM_INFO = wx.getSystemInfoSync()
+      this.$wechat.showLoading()
       this._initPageParams(options)
       this._initLocation()
+    },
+    async onReady() {
+      // 获取tab高度
       this._initTopStyles()
+      await this._getTabPosition()
+      this.$refs.guidelines && this.$refs.guidelines.setTop(this.navigationBarHeight)
     },
     onPageScroll(e) {
-      this._changeNavigation(e)
-      this._classifyScrollEvent(e)
+      const flag = this._changeNavigation(e)
+      this._goodsSearchScrollEvent(flag)
+      // this._classifyScrollEvent(e)
     },
     async onShow() {
       this._refreshLocation()
@@ -266,18 +394,13 @@
         // 获取团的信息
         this._groupInfo(false)
         if (this.curShopId * 1 !== shopId * 1) {
-          this._resetGetClassifyListParams()
-          this.bannerInfo = {} // 切换站点重置swiper
-          await this._getModuleInfo()
           this.curShopId = shopId
-        } else {
-          // await this._getModuleInfo()
-          await this._getFlashTabList()
+          this._resetBanner()
+          this._resetFlash()
         }
-        await this._getNotify()
-        // 获取tab高度
-        await this._getTabPosition()
-        this.$refs.guidelines && this.$refs.guidelines.setTop(navigationBarHeight)
+        await this._getModuleInfo()
+        this._getAllActiveList()
+        this._getNotify()
         if (!wx.getStorageSync('token')) return
         this.setCartCount()
       } catch (e) {
@@ -291,15 +414,14 @@
       }
     },
     async onPullDownRefresh() {
-      this._resetGetClassifyListParams()
+      // this._resetGetClassifyListParams()
       this._refreshLocation()
       this._getCouponModalList()
       this._groupInfo(false)
-      await this._getNotify()
+      this._getNotify()
       try {
         await this._getModuleInfo(false)
-        // 获取tab高度
-        await this._getTabPosition()
+        this._getAllActiveList()
       } catch (e) {
         console.error(e)
       }
@@ -308,9 +430,9 @@
       this.setCartCount()
     },
     onReachBottom() {
-      if (isLoading) return
-      classifyPage++
-      this._getClassifyList()
+      // if (isLoading) return
+      // classifyPage++
+      // this._getClassifyList()
     },
     onShareAppMessage(res) {
       let imgUrl = ''
@@ -338,6 +460,109 @@
     },
     methods: {
       ...cartMethods,
+      // 页面滚动商品搜索是否显示
+      _goodsSearchScrollEvent(flag) {
+        if (!flag) {
+          this._setGoodsSearchStyles(this.navigationBarHeight, 1)
+        } else {
+          this._setGoodsSearchStyles(0, 1)
+        }
+      },
+      // 设置分类滚动时的样式
+      _setGoodsSearchStyles(y, opacity, time = 300) {
+        this.goodsSearchStyles = `
+          opacity:${opacity};
+          transform:translate3d(0,${y}px,0);
+          transition: transform ${time}ms ease-out
+        `
+      },
+      // banner页面跳转
+      handleBannerJump(item) {
+        let url = ''
+        switch (item.type) {
+          case 'mini_goods':
+            url = `/pages/goods-detail?id=${item.other_id}&activityId=${item.activity_id}`
+            break
+          case 'goods_cate':
+            url = `/pages/classify?id=${item.other_id}`
+            break
+          case 'mini_link':
+            url = `${item.url}`
+            break
+          default:
+            url = `/pages/out-html?url=${item.url}`
+            break
+        }
+        wx.navigateTo({url})
+      },
+      // 设置banner下标
+      handleSetBannerIndex(e) {
+        this.bannerIndex = e.target.current + 1
+      },
+      // 重置banner轮播图
+      _resetBanner() {
+        this.moduleArray.forEach(item => {
+          item.module_name === 'bannar' && (item.content_data.list = [])
+        })
+        this.bannerIndex = 1
+      },
+      // 跳转至商品详情页
+      handleJumpToGoodsDetail(item) {
+        wx.navigateTo({
+          url: `/pages/goods-detail?id=${item.goods_id}&activityId=${item.activity_id}`
+        })
+      },
+      // 跳转至限时抢购列表
+      handleJumpToFlashList(id) {
+        wx.navigateTo({url: `/pages/flash-sale-list?id=${id}`})
+      },
+      // 限时抢购tab切换
+      handleFlashTabChange(item, index) {
+        if (index === this.flashTabIndex) return
+        this.flashTabIndex = index
+        this.flashViewToChild = 'child0'
+        setTimeout(() => {
+          this.flashViewToChild = undefined
+        }, 100)
+        this._getFlashTabList()
+      },
+      // 重置限时活动
+      _resetFlash() {
+        this.flashArray = []
+        this.flashTabIndex = 0
+        this.flashViewToChild = undefined
+      },
+      // 获取限时活动列表
+      async _getFlashList(module, loading) {
+        if (!module || !module.content_data) return
+        let data = {
+          activity_id: module.content_data.list[this.flashTabIndex].id || 0
+        }
+        try {
+          let res = await API.FlashSale.getFlashList(data, loading)
+          this.flashArray = res.data
+        } catch (e) {
+          console.warn(e)
+        }
+      },
+      // 获取flashTab切换
+      async _getFlashTabList(loading = false) {
+        try {
+          let res = await API.FlashSale.getFlashTabList('', loading)
+          let index = this.moduleArray.findIndex(val => val.module_name === 'activity_fixed')
+          this.moduleArray[index].content_data.list = res.data
+          await this._getFlashList(this.moduleArray[index])
+        } catch (e) {
+          console.error(e)
+        }
+      },
+      // 获取所有活动的列表
+      _getAllActiveList() {
+        this.moduleArray.forEach((item) => {
+          const key = MODULE_ARR_METHODS[item.module_name]
+          key && this[key](item)
+        })
+      },
       jumpGoodsDetail(item) {
         wx.navigateTo({
           url: `/pages/goods-detail?id=${item.goods_id}&activityId=${item.activity_id}`
@@ -380,162 +605,137 @@
       async _getNotify() {
         try {
           const res = await API.AfterNotice.getNotify()
-          this.isShowNotify = res.data.has_notify
-          if ('' + this.notifyDesc === '' + res.data.desc) {
-            return
-          }
-          this.notifyDesc = res.data.desc || this.isShowNotify.length
+          // res.data.desc = '啊实打实的看撒谎大江大河的阿萨大' // todo
+          // res.data.has_notify = 1 // todo
+          this.notifyInfo = res.data
         } catch (e) {
           console.warn(e)
         }
       },
       // 分类滚动
       _classifyScrollEvent(e) {
-        if (classifyTabScrolling) return
-        const currentScrollTop = e.scrollTop + navigationBarHeight
-        const t10 = classifyScrollHeight + classifyTabPosition
-        const t15 = classifyScrollHeight + classifyTabPosition * 1.1
-        const t20 = classifyScrollHeight + classifyTabPosition * 1.5
-        if (currentScrollTop < t10) {
-          this.classifyStyles = ''
-        }
-        if (currentScrollTop > t10 && currentScrollTop < t15) {
-          this._setClassifyStyles(0, 1, 0)
-        }
-        if (currentScrollTop >= t15 && currentScrollTop <= t20) {
-          this._setClassifyStyles(0, 1)
-        }
-        if (currentScrollTop > t20) {
-          this._setClassifyStyles(classifyTabPosition, 1)
-        }
+        // if (classifyTabScrolling) return
+        // const currentScrollTop = e.scrollTop + navigationBarHeight
+        // const t10 = classifyScrollHeight + classifyTabPosition
+        // const t15 = classifyScrollHeight + classifyTabPosition * 1.1
+        // const t20 = classifyScrollHeight + classifyTabPosition * 1.5
+        // if (currentScrollTop < t10) {
+        //   this.classifyStyles = ''
+        // }
+        // if (currentScrollTop > t10 && currentScrollTop < t15) {
+        //   this._setClassifyStyles(0, 1, 0)
+        // }
+        // if (currentScrollTop >= t15 && currentScrollTop <= t20) {
+        //   this._setClassifyStyles(0, 1)
+        // }
+        // if (currentScrollTop > t20) {
+        //   this._setClassifyStyles(classifyTabPosition, 1)
+        // }
       },
-      // 设置分类滚动时的样式
-      _setClassifyStyles(y, opacity, time = 300) {
-        this.classifyStyles = `
-          opacity:${opacity};
-          top:${navigationBarHeight - classifyTabPosition}px;
-          position:fixed;
-          left:0;
-          z-index:90;
-          transform:translate3d(0,${y}px,0);
-          transition: transform ${time}ms ease-out
-        `
-      },
+      // // 设置分类滚动时的样式
+      // _setClassifyStyles(y, opacity, time = 300) {
+      //   this.classifyStyles = `
+      //     opacity:${opacity};
+      //     top:${navigationBarHeight - classifyTabPosition}px;
+      //     position:fixed;
+      //     left:0;
+      //     z-index:90;
+      //     transform:translate3d(0,${y}px,0);
+      //     transition: transform ${time}ms ease-out
+      //   `
+      // },
       // 获取tab位置信息
       _getTabPosition() {
         const query = wx.createSelectorQuery()
         return new Promise((resolve, reject) => {
           setTimeout(() => {
             query.select('#navigationBar').boundingClientRect()
-              .select('#homePosition').boundingClientRect()
-              .select('#homeBanner').boundingClientRect()
-              .select('#homeFlashSale').boundingClientRect()
-              .select('#homeEmpty').boundingClientRect()
-              .select('#scrollView-relative').boundingClientRect()
-              .select('#notice').boundingClientRect()
+              // .select('#homePosition').boundingClientRect()
+              // .select('#homeBanner').boundingClientRect()
+              // .select('#homeFlashSale').boundingClientRect()
+              // .select('#homeEmpty').boundingClientRect()
+              // .select('#scrollView-relative').boundingClientRect()
+              // .select('#notice').boundingClientRect()
               .exec(res => {
-                let height = 0
+                // let height = 0
                 res.forEach(item => {
                   if (item && item.height) {
-                    item.id === 'navigationBar' && (navigationBarHeight = item.height)
-                    if (item.id === 'scrollView-relative') {
-                      classifyTabPosition = item.height
-                    } else {
-                      height += item.height
-                    }
+                    item.id === 'navigationBar' && (this.navigationBarHeight = item.height)
+                    // if (item.id === 'scrollView-relative') {
+                    //   classifyTabPosition = item.height
+                    // } else {
+                    //   height += item.height
+                    // }
                   }
                 })
-                if (classifyScrollHeight !== height + 10) {
-                  classifyScrollHeight = height + 10
-                }
+                // if (classifyScrollHeight !== height + 10) {
+                //   classifyScrollHeight = height + 10
+                // }
                 resolve()
               })
           }, 500)
         })
       },
       // 获取商品分类列表
-      async _getClassifyList(loading) {
-        if (!this.classifyMore) return
-        let current = this.classifyTabArray[classifyTabIndex] || {}
-        // current.id = 0 // todo
-        try {
-          const data = {
-            goods_category_id: current.id || 0,
-            page: classifyPage
-          }
-          isLoading = true
-          let res = await API.FlashSale.getClassifyList(data, loading)
-          if (res.meta.current_page === 1) {
-            this.classifyArray = res.data
-            this.classifyShowEmpty = res.meta.total === 0
-          } else {
-            const arr = this.classifyArray
-            res.data.forEach((item) => {
-              arr.push(item)
-            })
-            this.classifyArray = arr
-          }
-          this.classifyMore = res.meta.current_page < res.meta.last_page
-          wx.nextTick(() => {
-            isLoading = false
-          })
-        } catch (e) {
-          isLoading = false
-          console.error(e)
-        }
-      },
-      // 重置参数
-      _resetGetClassifyListParams() {
-        classifyPage = 1
-        this.classifyMore = true
-        isLoading = false // loading-more
-        this.$refs.homeBanner && this.$refs.homeBanner._resetIndex()
-      },
-      // tab切换
-      classifyChangeTab(index, id, e) {
-        if (this.classifyStyles) {
-          this.classifyStyles = ''
-          classifyTabScrolling = true
-          setTimeout(() => {
-            classifyTabScrolling = false
-          }, 100)
-          wx.pageScrollTo({
-            scrollTop: classifyScrollHeight - navigationBarHeight,
-            duration: 0
-          })
-        }
-        classifyTabIndex = index
-        this._resetGetClassifyListParams()
-        this._getClassifyList(false)
-      },
-      // tab切换
-      flashChangeTab(item, index) {
-        flashTabIndex = index
-        this._getFlashTabList(false)
-      },
-      // 获取限时活动列表
-      async _getFlashList(loading) {
-        let data = {
-          activity_id: (this.flashTabArray[flashTabIndex] && this.flashTabArray[flashTabIndex].id) || 0
-        }
-        try {
-          let res = await API.FlashSale.getFlashList(data, loading)
-          this.flashArray = res.data
-        } catch (e) {
-          console.warn(e)
-        }
-      },
-      // 获取flashTab切换
-      async _getFlashTabList(loading = false) {
-        try {
-          let res = await API.FlashSale.getFlashTabList('', loading)
-          let content = Object.assign({}, this.flashInfo.content_data, {list: res.data})
-          this.$set(this.flashInfo, 'content_data', content)
-          await this._getFlashList()
-        } catch (e) {
-          console.error(e)
-        }
-      },
+      // async _getClassifyList(loading) {
+      //   if (!this.classifyMore) return
+      //   let current = this.classifyTabArray[classifyTabIndex] || {}
+      //   // current.id = 0 // todo
+      //   try {
+      //     const data = {
+      //       goods_category_id: current.id || 0,
+      //       page: classifyPage
+      //     }
+      //     isLoading = true
+      //     let res = await API.FlashSale.getClassifyList(data, loading)
+      //     if (res.meta.current_page === 1) {
+      //       this.classifyArray = res.data
+      //       this.classifyShowEmpty = res.meta.total === 0
+      //     } else {
+      //       const arr = this.classifyArray
+      //       res.data.forEach((item) => {
+      //         arr.push(item)
+      //       })
+      //       this.classifyArray = arr
+      //     }
+      //     this.classifyMore = res.meta.current_page < res.meta.last_page
+      //     wx.nextTick(() => {
+      //       isLoading = false
+      //     })
+      //   } catch (e) {
+      //     isLoading = false
+      //     console.error(e)
+      //   }
+      // },
+      // // 重置参数
+      // _resetGetClassifyListParams() {
+      //   classifyPage = 1
+      //   this.classifyMore = true
+      //   isLoading = false // loading-more
+      //   this.$refs.homeBanner && this.$refs.homeBanner._resetIndex()
+      // },
+      // // tab切换
+      // classifyChangeTab(index, id, e) {
+      //   if (this.classifyStyles) {
+      //     this.classifyStyles = ''
+      //     classifyTabScrolling = true
+      //     setTimeout(() => {
+      //       classifyTabScrolling = false
+      //     }, 100)
+      //     wx.pageScrollTo({
+      //       scrollTop: classifyScrollHeight - navigationBarHeight,
+      //       duration: 0
+      //     })
+      //   }
+      //   classifyTabIndex = index
+      //   this._resetGetClassifyListParams()
+      //   this._getClassifyList(false)
+      // },
+      // // tab切换
+      // flashChangeTab(item, index) {
+      //   flashTabIndex = index
+      //   this._getFlashTabList(false)
+      // },
       // 初始化地理位置
       _initLocation() {
         if (wx.getStorageSync('locationShow') * 1 === 3 || wx.getStorageSync('locationShow') * 1 === 2) {
@@ -598,7 +798,7 @@
       },
       // 改变navigation状态的样式
       _changeNavigation(e) {
-        let flag = e.scrollTop < navigationBarHeight
+        let flag = e.scrollTop < this.navigationBarHeight
         let title = flag ? '赞播优鲜' : '赞播优鲜·' + this.socialName
         let styles = flag ? `background:#73C200;transition:none` : `background:#fff;transition:none`
         this.$refs.navigationBar && this.$refs.navigationBar.setTranslucentTitle(title)
@@ -612,6 +812,7 @@
             timingFunc: 'easeIn'
           }
         })
+        return flag
       },
       // 初始化页面配置
       _initPageParams(options = {}) {
@@ -634,12 +835,7 @@
       async _getModuleInfo(loading) {
         try {
           let res = await API.FlashSale.getModuleInfo({page_name: 'index'}, loading)
-          let modules = res.data.modules || []
-          modules.forEach((item) => {
-            this[MODULE_CONFIG[item.module_name]] = item
-          })
-          await this._getFlashList()
-          await this._getClassifyList()
+          this.moduleArray = res.data.modules || []
         } catch (e) {
           console.error(e)
         }
@@ -649,183 +845,330 @@
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
+  $color-flash-background=#FFE359
+  $box-radius=4px
+  $flash-width=24vw
   @import "~@designCommon"
 
-  .choiceness
-    max-width: 100vw
-    min-height: 180vh
+  // 商品搜索
+  .goods-search-wrapper
+    height:50px
+    background: red
+    position:fixed
+    left:0;
+    right :0
+    top: 0
+    z-index:90
+    opacity :0
+  // 限时抢购-item
+  .home-flash-item
+    width :$flash-width
+    height :100%
+    .goods-wrapper
+      width :$flash-width
+      height :$flash-width
+      position :relative
+      -webkit-overflow-scrolling: touch
+      .img-goods
+        width :100%
+        height :@width
+        display :block
+        overflow :auto
+        border-radius :3px
+      .img-label
+        position :absolute
+        left :0
+        bottom:-1px
+        width: 25.5px
+        height:15.5px
+    .bottom-wrapper
+      position :relative
+      .title-wrapper
+        overflow :hidden
+        .title
+          padding-top :2px
+          font-family: $font-family-regular
+          font-size: 13px
+          color: #111111
+          no-wrap()
+      .button-group-wrapper
+        position :relative
+        z-index :10
+      .price-wrapper
+        margin-top: -3px
+        display :flex
+        color: #FF8300
+        font-family: $font-family-medium
+        position :relative
+        .price
+          flex:1
+          overflow :hidden
+          display :flex
+          .number
+            font-size: 4.533333333333333vw
+          .unit
+            position :relative
+            top:1.8vw
+            margin-left :1px
+            font-size :2.666666666666667vw
+          .origin-price
+            padding-left :1.0666666666666667vw
+            font-family: $font-family-regular
+            font-size: 2.666666666666667vw
+            color: $color-text-assist
+            line-height: @font-size
+            text-decoration :line-through
+            position :relative
+            top:2.666666666666667vw
+        .button
+          position :absolute
+          bottom :0
+          right :1.5199999999999998vw
+          width :10.666666666666668vw
+          height :@width
+          .button-img
+            position :absolute
+            bottom :0
+            right :0
+            width :6.14vw
+            height :@width
+  // 限时抢购
+  .img
+    width :100%
+    height :100%
+    display :block
+    overflow :auto
+
+  .home-flash-sale
+    padding :0 2.666666666666667vw
     background: #fff
-    overflow-x: hidden
-    position: relative
-    .top-background
-      position: absolute
-      left: 0
-      right: 0
-      top: 0
-      .img
-        width: 100vw
-        height: 100%
+    border-bottom :10px solid @background
+    position :relative
+    .scroll-wrapper
+      padding :9px
+      background :$color-flash-background
+      border-radius :0 0 $box-radius $box-radius
+      .bottom-wrapper
         display: block
+        width: 100%
+        background: $color-white
+        white-space: nowrap
+        box-sizing: border-box
+        transform: translate3d(0,0,0)
+        position :relative
+        border-radius :$box-radius $box-radius
+        &.active
+          display :none
+        ::-webkit-scrollbar
+          width: 0
+          height: 0
+          color: transparent
+        .bottom-item-wrapper
+          height :100%
+          display: inline-flex
+          position: relative
+          box-sizing :border-box
+          padding-top :8px
+          padding-bottom :5px
+          padding-left :7px
+          .look-more
+            padding-left :0
+            .look-wrapper
+              width :14.666666666666666vw
+              height :100%
+              layout()
+              justify-content :center
+              align-items :center
+              .text
+                font-family :$font-family-regular
+                color: $color-text-sub
+                font-size :13px
+                width :@font-size
+                letter-spacing :2px
+                white-space :normal
+                word-wrap: break-word
+                word-break :break-all
+              .more-icon
+                margin-top :0.9333333333333335vw
+                width :13px
+                height:@width
 
-  .home-classify
-    width: 100%
-    background: #fff
-    position: relative
-    .tab-wrapper
-      position: relative
-      .place-holder
-        height: 86px
+    .top-wrapper
+      height :45px
+      background: #F7F9FA
+      border-radius :$box-radius $box-radius 0 0
+      padding :0 11.5px 0 10px
+      layout(row,block,nowrap)
+      align-items :center
+      .title-img
+        padding-right :3.733333333333334vw
+        width :20vw
+        height :4.933333333333334vw
+      .more-wrapper
+        flex: 1
+        layout(row,block,nowrap)
+        align-items :center
+        justify-content :flex-end
+        font-family: $font-family-regular
+        font-size: 14px;
+        color: #111111;
+        .more-text
+          padding-right :5px
+        .more-img
+          width:5.5px
+          height :10.5px
+      .tab-wrapper
+        height :100%
+        layout(row,block,nowrap)
+        .tab-item-wrapper
+          width :21.866666666666667vw
+          height :100%
+          layout(column,block,nowrap)
+          justify-content :center
+          align-items :center
+          font-family: $font-family-medium
+          color: #1D2023;
+          border-radius :2px 2px 0 0
+          transition :all 0.3s
+          background :#F7F9FA
+          &.active
+            background :$color-flash-background
+          .time
+            font-size:16px
+          .explain
+            margin-top :-2px
+            font-size :10px
 
-  .has-title
-    no-wrap-plus()
-
-  .add-text-sales
-    font-size: $font-size-10
-    font-family: $font-family-regular
-    color: $color-text-sub
-    margin-top: 1.5px
-    text-align: center
-
-  .add-box-right
-    &:after
-      border: none
-
-  .home-classify-item
-    height: 37.733333333333334vw
-    layout(row)
-    border-bottom-1px(#e6e6e6)
+  // 通知
+  .notice
+    height: 44px
+    margin: 12px
+    border-1px($color-line, 4px)
+    display: flex
+    padding: 0 10px
+    box-sizing: border-box
     align-items: center
-    margin: 0 12px
-    .goods-left
-      position: relative
-      width: 29.33vw
-      height: 29.33vw
-      margin-right: 12px
-      .goods-left-img
+
+  .notice-img
+    width: 27px
+    height: 14px
+    margin-right: 8px
+
+  .notice-msg
+    line-height: 1
+    overflow: hidden
+    white-space: nowrap
+    width: 66.7vw
+    position: relative
+    display: flex
+    .notice-content
+      display: flex
+      animation: move 13s linear infinite normal
+    .notice-msg-item
+      font-family: $font-family-regular
+      color: $color-text-main
+      font-size: $font-size-14
+
+  .notice-line
+    color: #ccc
+    margin-left: 6px
+    line-height: 1
+    font-size: 12px
+    transform: translateY(-1px)
+
+  .notice-look
+    color: #FA7502
+    font-family: $font-family-regular
+    font-size: 14px
+    white-space: nowrap
+    line-height: 1
+    margin-left: 3.6vw
+
+  @keyframes move {
+    0% {
+      transform: translateX(0px)
+    }
+    100% {
+      transform: translateX(-50%)
+    }
+  }
+
+  // banner轮播图
+  .home-banner
+    height: 40vw
+    box-sizing: border-box
+    position: relative
+    border-radius: 6px !important
+    overflow: hidden !important
+    .dot-wrapper
+      position :absolute
+      right :22px
+      bottom :8px
+      width :35px
+      height :17.5px
+      layout(row,block,nowrap)
+      font-family: $font-family-regular
+      font-size: 10px;
+      color: #F1F5EB;
+      .background
+        fill-box(absolute)
+        .img
+          width :100%
+          height:@width
+          display :block
+      .dot-line
+        position :relative
+        transform :scale(0.8)
+        top:1px
+      .dot
+        position :relative
+        width :17.5px
+        height :@width
+        text-align :center
+        line-height :@height
+    .banner
+      width: 100vw
+      height: 100%
+      border-radius: 4px !important
+      transform: translateY(0)
+      overflow: hidden !important
+      .banner-item
         width: 100%
         height: 100%
-        border-radius: 3px
-        display: block
-      .goods-left-icon
-        width: 32px
-        height: 32px
-        position: absolute
-        left: -2.5px
-        top: -2.5px
-        display: block
-    .goods-right
-      flex: 1
-      overflow: hidden
-      layout()
-      justify-content: space-between
-      min-height: 29.33vw
-      .title
-        padding-top: 3px
-        font-size: $font-size-16
-        font-family: $font-family-medium
-        color: $color-text-main
-        line-height: 1
-        min-height: $font-size-18
-        margin-bottom: 2px
-        no-wrap()
-      .text-sub
-        font-size: $font-size-13
-        font-family: $font-family-regular
-        color: $color-text-sub
-        min-height: $font-size-15
-        margin-bottom: 5px
-        line-height: $font-size-16
-        box-sizing: border-box
-      .text-sales-box
+        position: relative
+        border-radius: 4px !important
+        transform: translateY(0)
+        overflow: hidden !important
         layout(row)
-        .text-sales
-          font-size: $font-size-10
-          font-family: $font-family-regular
-          color: $color-text-sub
-          margin-bottom: 11px
-          border-radius: 10px
-          height: 13px
-          line-height: 13px
-          border-1px($color-text-sub, 10px)
-          padding: 0 5px
-      .add-box
-        layout(row)
-        justify-content: space-between
         align-items: center
-        .left
-          layout(row)
-          .text-group
-            font-size: $font-size-10
-            font-family: $font-family-regular
-            height: 13px
-            line-height: 13px
-            margin-bottom: 3px
-            border-radius: 10px
-          .text-group-img
-            width: 37px
-            height: 17px
-            display: block
-        .price-box
-          layout(row)
-          align-items: flex-end
-          .money
-            font-family: $font-family-medium
-            font-size: $font-size-20
-            line-height: 1
-          .unit
-            font-family: $font-family-medium
-            font-size: $font-size-12
-            line-height: 1
-            margin-right: 2px
-            padding-bottom: 2.5px
-          .lineation
-            font-family: $font-family-regular
-            color: $color-text-assist
-            font-size: $font-size-12
-            text-decoration line-through
-            padding-bottom: 1px
-            line-height: 1
-            position: relative
-            bottom: 1px
-        .add-goods-btn
-          layout(row)
-          width: 75px
-          height: 28px
-          justify-content: center
-          align-items: center
-          border-radius: 14px
-          .add-text
-            font-size: $font-size-14
-            font-family: $font-family-regular
-            color: #fff
-          .add-icon
-            width: 11px
-            height: 11px
-            position: relative
-            margin-right: 2px
-            .add1
-              width: 11px
-              height: 1.5px
-              background-color: #fff
-              position: absolute
-              left: 0
-              top: 4.5px
-              border-radius: 30px
-            .add2
-              width: 1.5px
-              height: 11px
-              background-color: #fff
-              border-radius: 30px
-              position: absolute
-              left: 4.5px
-              top: 0
+        .item-img
+          width: 100%
+          height: 100%
+          display: block
+          border-radius: 4px !important
+          transform: translateY(0)
+          overflow: hidden !important
+          margin-left: 12px
+          margin-right :12px
 
-        .add-goods-btn-active
-          background: #b7b7b7
-
-  .empty
+  // 页面结构
+  .choiceness
+    max-width: 100vw
+    background: #73C200
+    overflow-x: hidden
     position: relative
-    height: 11px
-    background: #fff
+    .container
+      position :relative
+      min-height :86vh
+      background :#fff
+      .item-wrapper
+        position :relative
+      .top-background
+        position: absolute
+        left: 0
+        top: 0
+        width :100vw
+        display: block
+
 
 </style>

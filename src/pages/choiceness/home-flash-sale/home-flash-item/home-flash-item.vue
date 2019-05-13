@@ -28,16 +28,6 @@
           <p class="unit">元</p>
           <p class="origin-price">{{dataInfo.original_price}}元</p>
         </div>
-        <!--<button class="button" formType="submit" @click.stop="submitHandle">-->
-          <!--<figure class="button-img">-->
-            <!--<img-->
-              <!--class="img"-->
-              <!--mode="aspectFit"-->
-              <!--v-if="imageUrl"-->
-              <!--:src="imageUrl + '/yx-image/2.1/icon-shopcart copy 2@2x.png'"-->
-            <!--&gt;-->
-          <!--</figure>-->
-        <!--</button>-->
       </div>
     </form>
   </div>
