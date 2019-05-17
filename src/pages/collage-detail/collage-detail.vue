@@ -4,7 +4,7 @@
     <p class="top-text">当前社区不支持拼团活动: 国际单位社区</p>
     <p class="status-text"><img src="" alt="" class="icon">开团成功</p>
     <p class="status-tip">还差<span class="mark">1</span>人，赶紧邀请好友来拼团吧</p>
-    <p class="run-time">剩余 <span class="time-num">05</span><span class="time-num">30</span><span class="time-num">10</span></p>
+    <p class="run-time">剩余 <span class="time-num">{{timeArr[0]}}</span><span class="time-num">{{timeArr[1]}}</span><span class="time-num">{{timeArr[2]}}</span></p>
     <div class="heads">
       <div v-for="(item, index) in headArr" :key="index" class="head-box">
         <img src="" alt="" class="logo">
@@ -38,7 +38,8 @@
         headArr: [1, 2],
         orderId: 1,
         distance: true,
-        timer: ''
+        timer: '',
+        timeArr: []
       }
     },
     components: {
@@ -66,12 +67,26 @@
     onHide() {
       clearInterval(this.timer)
     },
-    onLoad() {
-      this.timer = setInterval(() => {
-
-      }, 1000)
+    onLoad(options) {
+      this.timeHandle()
     },
     methods: {
+      timeHandle() {
+        let defaultTime = new Date().getTime() + 60 * 60 * 100 * 24
+        let nowTime = new Date()
+        let timeDef = defaultTime - nowTime
+        this.timer = setInterval(() => {
+          timeDef -= 1000
+          if (timeDef >= defaultTime) {
+            clearInterval(this.timer)
+          }
+          let date = new Date(timeDef)
+          let hours = date.getHours()
+          let minutes = date.getMinutes()
+          let seconds = date.getSeconds()
+          this.timeArr = [hours, minutes, seconds]
+        }, 1000)
+      },
       btnHandle() {
         console.log(121)
       },
