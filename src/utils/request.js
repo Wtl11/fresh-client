@@ -60,8 +60,12 @@ async function checkCode(res = {}) {
   if (res.data && (res.data.code !== ERR_OK)) {
     // 可以进行switch操作，根据返回的code进行相对应的操作，然后抛异常
     console.warn(res.data.message)
+    const options = wx.getLaunchOptionsSync()
     switch (res.data.code) {
       case 13001: // 无团长权限code,跳转团长登录页面
+        if (options.path === '/pages/mine') {
+          return
+        }
         wx.redirectTo({url: '/pages/mine-housing'})
         break
       case 10003: // 活动过期，跳转活动失效页面
@@ -81,7 +85,7 @@ async function checkCode(res = {}) {
       case 13003:
         return res.data
       case 13004: // 系统升级
-        const options = wx.getLaunchOptionsSync()
+        // const options = wx.getLaunchOptionsSync()
         if (options.path === '/pages/app-update') {
           return
         }
