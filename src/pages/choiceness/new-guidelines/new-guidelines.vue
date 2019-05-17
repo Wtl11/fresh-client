@@ -139,19 +139,19 @@
     width :210px
     height :29px
     right :7px
-    background: #FFFFFF;
+    background: #73C200
     border-radius: 30px
     z-index :555
     font-family: $font-family-regular
     font-size: 13px;
-    color: #3F454B;
+    color: #FFF
     line-height :@height
     text-align: center;
     .triangle
       position :absolute
       width: 0
       height: 0
-      border: 5px solid #Fff
+      border: 5px solid #73C200
       border-left: 5px solid transparent
       border-top: 5px solid transparent
       border-right: 5px solid transparent

@@ -1,14 +1,9 @@
 <template>
   <div class="home-position" id="homePosition">
     <div class="community-main" @click="handleNav">
-      <div class="community-img">
-        <img class="p-img" mode="aspectFit" v-if="imageUrl" :src="imageUrl+'/yx-image/2.3/icon-address_sy@2x.png'">
-      </div>
-      <div class="community-text" v-if="locationStatus * 1 === 1 || locationStatus * 1 === 2">
-        <span>{{gName}}</span>
-      </div>
-      <div class="community-text" v-else>定位中...</div>
-      <img class="more-img" mode="aspectFit" v-if="imageUrl" :src="imageUrl+'/yx-image/2.3/icon-pressed_qhztd@2x.png'">
+      <img v-if="imageUrl" :src="imageUrl+'/yx-image/2.1/icon-address_sy@2x.png'" alt="" class="community-img">
+      <p class="community-text">{{gName}}</p>
+      <img class="more-img" mode="aspectFit" v-if="imageUrl" :src="imageUrl+'/yx-image/2.1/icon-pressed_qhztd@2x.png'">
     </div>
     <section class="search-wrapper" @click="handleSearch">
       <img class="s-img" mode="aspectFit" v-if="imageUrl" :src="imageUrl+'/yx-image/2.3/icon-search@2x.png'">
@@ -33,8 +28,11 @@
       }
     },
     computed: {
+      socialName() {
+        return (this.groupInfo || {}).social_name || ''
+      },
       gName() {
-        let name = (this.groupInfo && this.groupInfo.social_name) || ''
+        let name = (this.locationStatus * 1 === 1 || this.locationStatus * 1 === 2) ? this.socialName : '定位中...'
         return name.substring(0, 6) + (name.length > 6 ? '...' : '')
       }
     },
@@ -69,7 +67,7 @@
     .search-wrapper
       width :40vw
       height :27px
-      background: #FFFFFF;
+      background: #F0F0F0;
       border-radius: @height
       display :flex
       align-items :center
@@ -84,18 +82,12 @@
     .community-main
       layout(row,block,nowrap)
       align-items: center
-      opacity :1
       .community-img
         width: 15.5px
         height: 17.5px
         margin-right: 8px
-        img
-          width: 100%
-          height: 100%
-          display: block
-          border-radius: 50%
       .community-text
-        color: $color-white
+        color: #1D2023
         font-size: $font-size-16
         font-family: $font-family-medium
         min-height: $font-size-18
@@ -105,42 +97,4 @@
       .more-img
         width :8.5px
         height :5.5px
-
-      .community-down
-        width: 9px
-        height: 6px
-        display: block
-    .carousel-wrapper
-      width :35vw
-      height: 24px
-      padding: 0 9.5px 0 3px
-      background: rgba(255,255,255,1)
-      border-radius: 36px
-      position :relative
-      overflow :hidden
-      .place-holder
-        fill-box(absolute)
-        z-index :3
-      .carousel
-        height :100%
-        width :100%
-        .content-wrapper
-          layout(row)
-          align-items: center
-          .avatar-wrapper
-            width: 20px
-            height: 20px
-            border-radius: 50%
-            overflow: hidden
-            margin :0 5px 0 0
-            .img
-              width: 100%
-              height: 100%
-          .text
-            flex: 1
-            font-family: $font-family-regular
-            font-size: 12px
-            color: $color-text-main
-            no-wrap()
-
 </style>
