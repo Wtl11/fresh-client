@@ -22,12 +22,25 @@
       <span class="label">拼团时间</span>
       <span class="text">2019-12-12 12:12:12</span>
     </div>
+    <div class="recommend">
+      <p class="title">
+        <img src="https://img.jkweixin.net/defaults/yx-image/2.3/icon-ulike@2x.png" alt="" class="icon">
+        <span class="text">猜你喜欢</span>
+      </p>
+      <div class="recommend-list">
+        <div v-for="(item, index) in recommendList" :key="index" class="list-item">
+          <goods-item :item="item" @_getShopCart="_getShopCart"></goods-item>
+        </div>
+
+      </div>
+    </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import ClearWatch from '@mixins/clear-watch'
+  import GoodsItem from './goods-item/goods-item'
   import API from '@api'
   const PAGE_NAME = 'COLLAGE_DETAIL'
   export default {
@@ -39,11 +52,13 @@
         orderId: 1,
         distance: true,
         timer: '',
-        timeArr: []
+        timeArr: [],
+        recommendList: []
       }
     },
     components: {
-      NavigationBar
+      NavigationBar,
+      GoodsItem
     },
     onShareAppMessage() {
       let shopId = wx.getStorageSync('shopId')
@@ -70,6 +85,9 @@
     onLoad(options) {
       this.timeHandle()
     },
+    async onShow() {
+      await this.getCarRecommend()
+    },
     methods: {
       timeHandle() {
         let defaultTime = new Date().getTime() + 60 * 60 * 100 * 24
@@ -89,6 +107,14 @@
       },
       btnHandle() {
         console.log(121)
+      },
+      async getCarRecommend() {
+        let res = await API.Cart.getCarRecommend()
+        if (res.error !== this.$ERR_OK) {
+          this.$wechat.showToast(res.message)
+          return
+        }
+        this.recommendList = res.data
       },
       // 初始化地理位置
       _initLocation() {
@@ -231,4 +257,35 @@
 
   .progress
     padding: 0 14px
+  .recommend
+    .title
+      height: 60px
+      padding-top: 12px
+      box-sizing: border-box
+      background: #F7F7F7
+      display: flex
+      align-items: center
+      justify-content: center
+      .icon
+        width: 17px
+        height: 17px
+        margin-right: 4px
+      .text
+        font-family: $font-family-medium
+        font-size: $font-size-16
+        color: #1D2023
+    .recommend-list
+      width: 100vw
+      layout(row)
+      align-items: center
+      padding: 0 6px
+      box-sizing: border-box
+      .list-item
+        width: 50%
+        box-sizing: border-box
+        margin-bottom: 5px
+        &:nth-of-type(odd)
+          padding-right: 2.5px
+        &:nth-of-type(even)
+          padding-left: 2.5px
 </style>
