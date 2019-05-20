@@ -4,9 +4,11 @@
       <p class="nav-title">我的服务</p>
       <ul class="nav-box">
         <li v-for="(item, index) in navList" :key="index" class="item-wrapper" :class="item.cname" @click="handleClick(item)">
-          <img class="icon-img" mode="aspectFill" v-if="imageUrl && item.icon" :src="imageUrl + item.icon">
+          <div class="img-box">
+            <img class="icon-img" mode="aspectFill" v-if="imageUrl && item.icon" :src="imageUrl + item.icon">
+            <p v-if="item.hasExplain && couponNumber > 0" class="item-count">{{couponNumber}}</p>
+          </div>
           <p class="title">{{item.title}}</p>
-          <p v-if="item.hasExplain && couponNumber > 0" class="explain">{{couponNumber}}张可用</p>
         </li>
       </ul>
     </div>
@@ -65,7 +67,6 @@
             cname: 'line-box',
             icon: '/yx-image/2.4/icon-mypt_me@2x.png',
             title: '我的拼团',
-            hasExplain: true,
             url: 'my-group-buy',
             fn: '_handleNav'
           },
@@ -111,14 +112,6 @@
             title: '加盟商招募',
             url: 'out-html?routeType=recruit-alliance',
             fn: '_handleNav'
-          },
-          {
-            cname: '',
-            icon: '/yx-image/2.3/icon-coupon_me@2x.png',
-            title: '商品类目',
-            hasExplain: true,
-            url: 'activity-goods-list?activityId=2&classifyIndex=8',
-            fn: '_handleNav'
           }
         ],
         rowNavList: [
@@ -138,6 +131,7 @@
       this.isLeader && this._leaderOrderTotal()
     },
     onShow() {
+      this.isLeader = wx.getStorageSync('isLeader') || false
       this.isLeader && this._leaderOrderTotal()
     },
     methods: {
@@ -159,12 +153,10 @@
       // 获取团长订单统计
       async _leaderOrderTotal() {
         let res = await API.Leader.leaderOrderTotal()
-        console.log(res)
         if (res.error !== this.$ERR_OK) {
-          this.isLeader = wx.getStorageSync('isLeader') || false
-          // this.$wechat.showToast(res.message)
           return
         }
+        this.isLeader = wx.getStorageSync('isLeader') || false
         this.orderTotal = res.data
       },
       _navigateLocation() {
@@ -190,11 +182,13 @@
       box-shadow: 0 4px 30px 0 rgba(17,17,17,0.06);
       border-radius: 6px
       margin-bottom: 12px
+      padding-bottom: 4px
       .nav-title
-        padding: 12px $padding-left
+        padding: 10px $padding-left 4px $padding-left
         color: $color-text-main
         font-size :16px
         font-family: $font-family-bold
+        font-weight: bold
       .nav-box
         padding : 0 10px
         layout(row)
@@ -204,20 +198,34 @@
           align-items: center
           text-align: center
           width: 25%
-          height: 82px
+          height: 78px
           font-family: $font-family-regular
           font-size: 12px;
           color: $color-text-main
           &.line-box
             border-bottom-1px()
+          .img-box
+            position: relative
           .icon-img
-            width:17px
+            width:19px
             height: @width
-            margin-bottom: 12px
-          .explain
-            color: $color-text-sub
-            font-size :12px
-            padding-right :5px
+            margin-bottom: 6px
+          .item-count
+            position: absolute
+            top: -8px
+            right: -12px
+            min-width: 16px
+            text-align: center
+            height: 16px
+            line-height: 12px
+            padding: 0 3px
+            box-sizing: border-box
+            font-family: $font-family-medium
+            color: $color-white
+            font-size: $font-size-10
+            border: 1px solid $color-white
+            background: #FF3B39
+            border-radius: 50%
           .arrow-img
             display: block
             width: 7.5px
@@ -236,6 +244,7 @@
             .title
               flex: 1
               font-family: $font-family-bold
+              font-weight: bold
             .explain
               color: $color-text-sub
               font-size :12px
@@ -264,6 +273,7 @@
                 color: $color-text-main
                 font-size: 18px
                 font-family: $font-family-bold
+                font-weight: bold
                 margin-bottom: 8px
               .data-title
                 color: $color-text-sub
