@@ -32,7 +32,7 @@
           class="item-wrapper module-item">
           <article class="home-banner">
             <swiper
-              v-if="moduleItem.content_data && moduleItem.content_data.list && moduleItem.content_data.list.length"
+              v-if="moduleItem.list && moduleItem.list.length"
               class="banner"
               autoplay
               interval="5000"
@@ -42,7 +42,7 @@
               circular
               @change="handleSetBannerIndex">
               <block
-                v-for="(item,index) in moduleItem.content_data.list"
+                v-for="(item,index) in moduleItem.list"
                 :key="item.id"
               >
                 <swiper-item
@@ -71,13 +71,13 @@
               </li>
               <li class="dot">{{bannerIndex}}</li>
               <li class="dot-line">/</li>
-              <li class="dot right">{{moduleItem.content_data.list.length || 0}}</li>
+              <li class="dot right">{{moduleItem.list.length || 0}}</li>
             </ul>
           </article>
         </section>
 <!--        限时抢购-->
         <section
-          v-if="moduleItem.module_name === 'activity_fixed'&& moduleItem.content_data && moduleItem.content_data.list && moduleItem.content_data.list.length"
+          v-if="moduleItem.module_name === 'activity' && moduleItem.list && moduleItem.list.length"
           class="item-wrapper module-item"
         >
           <div class="home-flash-sale">
@@ -90,7 +90,7 @@
               >
               <ul class="tab-wrapper">
                 <li v-if="index < 2"
-                  v-for="(item, index) in moduleItem.content_data.list"
+                  v-for="(item, index) in moduleItem.list"
                   :key="index"
                   class="tab-item-wrapper"
                   :class="{active: flashTabIndex === index}"
@@ -194,19 +194,20 @@
           >查看</navigator>
         </article>
 <!--        分类列表-->
-        <ul v-if="moduleIndex === 0"
+        <ul v-if="moduleItem.module_name === 'goods_cate'"
                  class="classify-wrapper"
         >
-          <li v-for="(item, index) in classifyArray" :key="item.id"
+          <li v-for="(item, index) in moduleItem.list" :key="item.id"
               class="classify-item-wrapper"
               :class="{'m-top': index > 4}"
+              @click="handleJumpToClassify(item)"
           >
             <img  class="logo" :src="item.image_url" alt="">
             <p class="title">{{item.name}}</p>
           </li>
         </ul>
 <!--        活动模块-->
-        <article v-if="moduleIndex === 2"
+        <article v-if="moduleItem.module_name === 'activity'"
                  class="active-container"
         >
 <!--          活动tab-->
@@ -216,37 +217,57 @@
             <ul class="active-tab-container"
                 :style="goodsSearchStyles"
             >
-              <li v-for="(item, index) in 4"
+              <li v-for="(item, index) in activeTabInfo"
                   :key="index"
                   class="active-item-wrapper"
                   :class="{active: index === activeTabIndex}"
                   @click="handleActiveTabChange(index)"
               >
-                <p class="title">拼团返现{{index}}</p>
-                <p class="sub-title">专属特权</p>
+                <p class="title">{{item.title}}</p>
+                <p class="sub-title">{{item.subTitle}}</p>
               </li>
             </ul>
           </section>
 <!--          平团返现等各个活动-->
-          <block v-for="(item, index) in 4" :key="index">
+          <block v-for="(item, index) in otherActiveList" :key="index">
             <section class="panel"
                      :id="'panel' + index"
             >
               <img
                 lazy-load
                 mode="widthFix"
-                v-if="imageUrl"
+                v-if="imageUrl && item.module_name === 'groupon'"
                 :src="imageUrl + '/yx-image/2.4/pic-ptfx@2x.png'"
                 class="banner-image">
+              <img
+                lazy-load
+                mode="widthFix"
+                v-if="imageUrl && item.module_name === 'new_client'"
+                :src="imageUrl + '/yx-image/2.4/pic-xrth@2x.png'"
+                class="banner-image">
+              <img
+                lazy-load
+                mode="widthFix"
+                v-if="imageUrl && item.module_name === 'goods_hot_tag'"
+                :src="imageUrl + '/yx-image/2.4/pic-jrbk@2x.png'"
+                class="banner-image">
+              <img
+                lazy-load
+                mode="widthFix"
+                v-if="imageUrl && item.module_name === 'guess'"
+                :src="imageUrl + '/yx-image/2.4/pic-cnxh@2x.png'"
+                class="banner-image">
               <button class="share-button" open-type="share"></button>
-              <block v-for="(child, idx) in 20" :key="idx">
-                <div class="goods-wrapper">
+              <block v-for="(child, idx) in item.list" :key="idx">
+                <div class="goods-wrapper"
+                     @click="handleJumpToGoodsDetail(child)"
+                >
                   <div class="goods-item">
                     <figure class="left">
                       <img mode="aspectFill"
                            lazy-load
-                           v-if="imageUrl"
-                           :src="imageUrl + '/yx-image/wallet/5@1x.png'" alt="" class="good-image">
+                           v-if="child.goods_cover_image"
+                           :src="child.goods_cover_image" alt="" class="good-image">
                       <img
                         lazy-load
                         v-if="imageUrl"
@@ -254,21 +275,23 @@
                         class="label-icon">
                     </figure>
                     <article class="right">
-                      <p class="title">超值特惠4斤新鲜柠檬超值特惠4斤新鲜柠檬</p>
-                      <p class="sub-title">味道香甜可做各式味道香甜可做各式味道香甜可做各式</p>
-                      <span class="active-icon">拼团价{{index}}</span>
+                      <p class="title">{{child.name}}</p>
+                      <p class="sub-title">{{child.describe}}</p>
+                      <span class="active-icon">{{item.iconText}}</span>
                       <div class="money-wrapper">
-                        <p class="m-int">10</p>
-                        <p class="m-float">.8</p>
+                        <p class="m-int">{{child.tradePrice && child.tradePrice.int}}</p>
+                        <p class="m-float">{{child.tradePrice && child.tradePrice.dec}}</p>
                         <p class="m-unit">元</p>
-                        <p class="m-origin">12元</p>
+                        <p class="m-origin">{{child.original_price}}元</p>
                       </div>
                       <button formType="submit"
-                              class="button-wrapper">
+                              class="button-wrapper"
+                              @click.stop="handleGoodsButton(child, item)"
+                      >
                         <div class="button">
-                          <p class="text">去拼团</p>
+                          <p class="text">{{item.buttonText}}</p>
                         </div>
-                        <p class="sub-text">已售3303斤</p>
+                        <p class="sub-text">已售{{child.sale_count}}{{child.goods_units}}</p>
                       </button>
                     </article>
                   </div>
@@ -296,11 +319,12 @@
   import CustomTabBar from '@components/custom-tab-bar/custom-tab-bar'
   import API from '@api'
   import {cartMethods, jwtComputed} from '@state/helpers'
-  import {resolveQueryScene} from '@utils/common'
+  import {resolveQueryScene, formatCouponMoney} from '@utils/common'
   import CouponModal from './coupon-modal/coupon-modal'
   import ShareHandler, {EVENT_CODE} from '@mixins/share-handler'
   import ShareTrick from '@mixins/share-trick'
   import NewGuidelines from './new-guidelines/new-guidelines'
+  import {TAB_ARR_CONFIG} from './config'
 
   const ald = getApp()
   const PAGE_NAME = 'CHOICENESS'
@@ -358,8 +382,17 @@
         flashViewToChild: undefined,
         // 商品分类
         classifyArray: [],
+        // 活动tab
         activeTabIndex: 0,
-        activeTabInfo: []
+        activeTabInfo: [],
+        // 新人列表
+        newClientList: [],
+        // 今日爆款列表
+        todayHotList: [],
+        // 团购列表
+        groupList: [],
+        // 猜你喜欢列表
+        guessList: []
       }
     },
     computed: {
@@ -372,6 +405,17 @@
       communityName() {
         let name = (this.locationStatus * 1 === 1 || this.locationStatus * 1 === 2) ? this.socialName : '定位中...'
         return name.substring(0, 6) + (name.length > 6 ? '...' : '')
+      },
+      // 其他活动
+      otherActiveList() {
+        const arr = []
+        this.activeTabInfo.forEach(item => {
+          arr.push({
+            ...item,
+            list: this[item.dataArray]
+          })
+        })
+        return arr
       }
     },
     watch: {
@@ -389,7 +433,6 @@
       // this._getNotify()
     },
     async onReady() {
-      console.warn('onReady')
       await this._initNavigationStatus()
       this.$refs.guidelines && this.$refs.guidelines.setTop(this._navigationBarHeight)
     },
@@ -420,8 +463,11 @@
         }
         this._getNotify()
         await this._getModuleInfo()
+        this._initTabInfo()
         this._getFlashList()
         this._addMonitor()
+        this._getTodayHostList()
+        this._getNewClientList()
         if (!wx.getStorageSync('token')) return
         this.setCartCount()
       } catch (e) {
@@ -480,6 +526,58 @@
     },
     methods: {
       ...cartMethods,
+      handleJumpToClassify(item) {
+        wx.navigateTo({url: `/pages/classify?id=${item.id}`})
+      },
+      handleGoodsButton(child = {}, item = {}) {
+        console.log(child, item)
+        if (item.module_name === 'groupon') {
+          // todo
+          this.handleJumpToGoodsDetail(child)
+        } else {
+          this.addShoppingCart(child)
+        }
+      },
+      _getTodayHostList() {
+        API.Home.getTodayHotList().then(res => {
+          this.todayHotList = this._formatListPriceData(res.data)
+        })
+      },
+      _getNewClientList() {
+        API.Home.getNewClientList().then(res => {
+          this.newClientList = this._formatListPriceData(res.data)
+        })
+      },
+      _formatListPriceData(arr = []) {
+        return arr.map(item => {
+          return {
+            ...item,
+            tradePrice: formatCouponMoney(item.trade_price)
+          }
+        })
+      },
+      // 初始化活动tab
+      _initTabInfo() {
+        let arr = []
+        let module = this.moduleArray.find(val => val.module_name === 'activity') || {}
+        if (module.list) {
+          module.list.forEach(item => {
+            if (item.module_name !== 'activity_fixed') {
+              arr.push({
+                ...item,
+                ...TAB_ARR_CONFIG[item.module_name]
+                // dataArray: this[TAB_ARR_CONFIG[item.module_name].dataArray]
+              })
+            }
+          })
+        }
+        arr.push({
+          ...TAB_ARR_CONFIG['guess'],
+          module_name: 'guess'
+          // dataArray: this[TAB_ARR_CONFIG['guess'].dataArray]
+        })
+        this.activeTabInfo = arr
+      },
       // 添加监听
       _addMonitor() {
         setTimeout(() => {
@@ -490,7 +588,6 @@
           this._activeTab = wx.createIntersectionObserver()
           this._activeTab.relativeToViewport({top: -top})
           this._activeTab.observe('#activeTab', res => {
-            // console.log(res)
             let flag = res.boundingClientRect.top <= top && res.intersectionRect.top <= 0
             this.goodsSearchStyles = flag ? `
                 position:fixed;
@@ -503,16 +600,13 @@
           wx.createIntersectionObserver(undefined, {observeAll: true})
             .relativeTo('.active-tab-container')
             .observe('.panel', res => {
-              // console.log(res)
               if (res.intersectionRatio > 0 && !this._isScrolling) {
-                // console.log(res)
                 this.activeTabIndex = res.id.replace('panel', '') * 1
               }
             })
           wx.createSelectorQuery()
             .selectAll('.panel')
             .boundingClientRect(res => {
-              console.log(1)
               // this.activeTabInfo = res.map(item => {
               //   return {
               //     top: item.top - top,
@@ -520,19 +614,16 @@
               //   }
               // })
             }).exec(res => {
-              console.log(res)
-              this.activeTabInfo = res[0].map(item => {
-                return {
-                  top: item.top - top,
-                  bottom: item.bottom
+              res[0].forEach((item, index) => {
+                if (this.activeTabInfo[index]) {
+                  this.activeTabInfo[index].top = item.bottom - item.height
+                  this.activeTabInfo[index].bottom = item.bottom
                 }
               })
             })
         }, 500)
       },
       _helpObserver(e) {
-        // console.log(e.scrollTop)
-        // console.log(this.activeTabInfo)
         const scrollTop = e.scrollTop - this._navigationBarHeight
         if (this._isScrolling) return
         let index = this.activeTabInfo.findIndex(val => {
@@ -562,25 +653,6 @@
           this._isScrolling = false
         }, 400)
       },
-      // _monitorAction() {
-      //   // this._activeTab && this._activeTab.disconnect()
-      //   if (!this._navigationBarHeight) return
-      //   const navigationBarHeight = this._navigationBarHeight
-      //   const top = navigationBarHeight + 59
-      //   this._activeTab = wx.createIntersectionObserver()
-      //   this._activeTab.relativeToViewport({top: -top})
-      //   this._activeTab.observe('#activeTab', res => {
-      //     let flag = res.boundingClientRect.top <= top && res.intersectionRect.top <= 0
-      //     console.log(flag, res, top, '-------------')
-      //     this.goodsSearchStyles = flag ? `
-      //           position:fixed;
-      //           top:${navigationBarHeight}px;
-      //           left:0;
-      //           right:0;
-      //           background: #fff;
-      //         ` : ''
-      //   })
-      // },
       // 商品搜索页
       handleSearchGoods() {
         wx.navigateTo({url: `/pages/goods-search`})
@@ -598,7 +670,6 @@
             if (!this._navigationBarHeight) {
               this._navigationBarHeight = res.intersectionRect.height || 0
             }
-            console.warn(this._navigationBarHeight, res)
             let flag = res.intersectionRatio > 0
             let title = flag ? '赞播优鲜' : '赞播优鲜·' + this.socialName
             this.$refs.navigationBar && this.$refs.navigationBar.setTranslucentTitle(title)
@@ -606,14 +677,6 @@
           })
         })
       },
-      // 页面滚动商品搜索是否显示
-      // _goodsSearchScrollEvent(flag) {
-      //   if (!flag) {
-      //     this._setGoodsSearchStyles(this.navigationBarHeight, 1)
-      //   } else {
-      //     this._setGoodsSearchStyles(0, 1)
-      //   }
-      // },
       // 设置分类滚动时的样式
       _setGoodsSearchStyles(y, opacity, time = 300) {
         this.goodsSearchStyles = `
@@ -924,21 +987,6 @@
           })
         }
       },
-      // 获取地理位置
-      // getLocationData() {
-      //   let data = wx.getStorageSync('locationData')
-      //   API.Choiceness.getLocationDistance({
-      //     longitude: data.longitude || 0,
-      //     latitude: data.latitude || 0
-      //   }).then((res) => {
-      //     if (res.error !== this.$ERR_OK) {
-      //       return
-      //     }
-      //     let msgStatus = wx.getStorageSync('msgStatus')
-      //     if (msgStatus !== 4 && res.data.distance > 1000) {
-      //     }
-      //   })
-      // },
       // 获取团长的信息
       async _groupInfo(loading) {
         let res = await API.Choiceness.getGroupInfo(loading)
@@ -950,28 +998,6 @@
         }
         this.groupInfo = res.data
       },
-      // 顶部背景颜色还原
-      // handleLoadBackground(e) {
-      //   this.backgroundColor = ''
-      // },
-      // 改变navigation状态的样式
-      // _changeNavigation(e) {
-      //   let flag = e.scrollTop < this.navigationBarHeight
-      //   let title = flag ? '赞播优鲜' : '赞播优鲜·' + this.socialName
-      //   let styles = flag ? `background:#73C200;transition:none` : `background:#fff;transition:none`
-      //   this.$refs.navigationBar && this.$refs.navigationBar.setTranslucentTitle(title)
-      //   this.$refs.navigationBar && this.$refs.navigationBar.setNavigationBarBackground(styles)
-      //   this.titleColor = flag ? `#ffffff` : `#000000`
-      //   wx.setNavigationBarColor({
-      //     frontColor: this.titleColor,
-      //     backgroundColor: '#ffffff',
-      //     animation: {
-      //       duration: 0,
-      //       timingFunc: 'easeIn'
-      //     }
-      //   })
-      //   return flag
-      // },
       // 初始化页面配置
       _initPageParams(options = {}) {
         if (options.scene) {
@@ -982,19 +1008,11 @@
         }
         this.shopId && wx.setStorageSync('shopId', this.shopId)
       },
-      // 初始化头部样式
-      _initTopStyles() {
-        // this.backgroundHeight = 0.453 * SYSTEM_INFO.screenWidth + SYSTEM_INFO.statusBarHeight || 20
-        // this.$refs.navigationBar && this.$refs.navigationBar.setNavigationBarBackground(`background:#73C200;transition:none`)
-        // this.$refs.navigationBar && this.$refs.navigationBar.setTranslucentTitle('赞播优鲜')
-        // this.titleColor = `#ffffff`
-      },
       // 获取模块信息
       async _getModuleInfo(loading) {
         try {
           let res = await API.FlashSale.getModuleInfo({page_name: 'index'}, loading)
           this.moduleArray = res.data.modules || []
-          this.classifyArray = this.moduleArray.find(val => val.module_name === 'goods_cate').content_data.list // todo
         } catch (e) {
           console.error(e)
         }
@@ -1023,6 +1041,7 @@
       padding :60px 12px 0
       position :relative
       border-bottom :0px solid transparent
+      min-height :45px
       .share-button
         position:absolute;
         right:4vw
@@ -1082,7 +1101,7 @@
             .button-wrapper
               position absolute
               right :10px
-              bottom :14px
+              bottom :22px
               font-family: $font-family-regular
               text-align: center;
               .button
