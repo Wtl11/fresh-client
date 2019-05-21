@@ -211,26 +211,27 @@
         >
 <!--          活动tab-->
           <section class="active-tab-wrapper"
-                   v-if="true"
+                   id="activeTab"
           >
             <ul class="active-tab-container"
-                :class="{active: goodsSearchStyles}"
-                :style="{top:navigationBarHeight + 'px'}"
-                id="activeTab"
+                :style="goodsSearchStyles"
             >
               <li v-for="(item, index) in 4"
                   :key="index"
                   class="active-item-wrapper"
-                  :class="{active: index === 0}"
+                  :class="{active: index === activeTabIndex}"
+                  @click="handleActiveTabChange(index)"
               >
-                <p class="title">拼团返现</p>
+                <p class="title">拼团返现{{index}}</p>
                 <p class="sub-title">专属特权</p>
               </li>
             </ul>
           </section>
 <!--          平团返现等各个活动-->
           <block v-for="(item, index) in 4" :key="index">
-            <section class="panel">
+            <section class="panel"
+                     :id="'panel' + index"
+            >
               <img
                 lazy-load
                 mode="widthFix"
@@ -238,7 +239,7 @@
                 :src="imageUrl + '/yx-image/2.4/pic-ptfx@2x.png'"
                 class="banner-image">
               <button class="share-button" open-type="share"></button>
-              <block v-for="(child, idx) in 10" :key="idx">
+              <block v-for="(child, idx) in 20" :key="idx">
                 <div class="goods-wrapper">
                   <div class="goods-item">
                     <figure class="left">
@@ -255,7 +256,7 @@
                     <article class="right">
                       <p class="title">超值特惠4斤新鲜柠檬超值特惠4斤新鲜柠檬</p>
                       <p class="sub-title">味道香甜可做各式味道香甜可做各式味道香甜可做各式</p>
-                      <span class="active-icon">拼团价</span>
+                      <span class="active-icon">拼团价{{index}}</span>
                       <div class="money-wrapper">
                         <p class="m-int">10</p>
                         <p class="m-float">.8</p>
@@ -315,6 +316,7 @@
   // }
 
   // let SYSTEM_INFO = {}
+  // let __nav = 0
   export default {
     name: PAGE_NAME,
     mixins: [
@@ -328,12 +330,18 @@
       NewGuidelines
     },
     data() {
+      // this._navigationBarHeight = 0
+      // this._navigationIO = null
       return {
         // 头部变色
         title: '赞播优鲜',
+        // _navigationBarHeight: 0,
+        // __navBarHeight: 0,
+        // _navigationIO: null,
+        // _activeTab: null,
         // 商品搜索样式
         goodsSearchStyles: '',
-        navigationBarHeight: 0,
+        // navigationBarHeight: 0,
         // 头部地理位置等
         locationStatus: null,
         // 团长信息
@@ -349,7 +357,9 @@
         flashArray: [],
         flashViewToChild: undefined,
         // 商品分类
-        classifyArray: []
+        classifyArray: [],
+        activeTabIndex: 0,
+        activeTabInfo: []
       }
     },
     computed: {
@@ -379,6 +389,7 @@
       // this._getNotify()
     },
     async onReady() {
+      console.warn('onReady')
       await this._initNavigationStatus()
       this.$refs.guidelines && this.$refs.guidelines.setTop(this._navigationBarHeight)
     },
@@ -386,6 +397,7 @@
       this._navigationIO && this._navigationIO.disconnect()
     },
     onPageScroll(e) {
+      // this._helpObserver(e)
       // const flag = this._changeNavigation(e)
       // this._goodsSearchScrollEvent(flag)
       // this._classifyScrollEvent(e)
@@ -410,13 +422,6 @@
         await this._getModuleInfo()
         this._getFlashList()
         this._addMonitor()
-        // this._getAllActiveList()
-        // setTimeout(() => {
-        //   wx.createIntersectionObserver(undefined, {observeAll: true}).relativeToViewport().observe('.module-item', res => {
-        //     console.log(res, '123')
-        //   })
-        // }, 100)
-        // this._getNotify()
         if (!wx.getStorageSync('token')) return
         this.setCartCount()
       } catch (e) {
@@ -477,32 +482,105 @@
       ...cartMethods,
       // 添加监听
       _addMonitor() {
-        this._activeTab = wx.createIntersectionObserver()
-        this._activeTab.relativeToViewport({top: this._navigationBarHeight})
-        // setTimeout(() => {
-        //   this._activeTab.observe('#activeTab', res => {
-        //     console.log(res.intersectionRatio > 0)
-        //     let flag = res.intersectionRatio > 0
-        //     // this._setGoodsSearchStyles(this._navigationBarHeight, 1)
-        //     // if (!flag) {
-        //     //   this._setGoodsSearchStyles(this._navigationBarHeight, 1)
-        //     // } else {
-        //     //   this._setGoodsSearchStyles(0, 1)
-        //     // }
-        //     if (!flag) {
-        //       this.goodsSearchStyles = `
-        //         position:fixed;
-        //         top:${this._navigationBarHeight}px;
-        //         left:0;
-        //         right:0;
-        //         background: #fff
-        //       `
-        //     } else {
-        //       this.goodsSearchStyles = ''
-        //     }
-        //   })
-        // }, 200)
+        setTimeout(() => {
+          if (!this._navigationBarHeight) return
+          const navigationBarHeight = this._navigationBarHeight
+          const top = navigationBarHeight + 59
+          // this._topHeight = top
+          this._activeTab = wx.createIntersectionObserver()
+          this._activeTab.relativeToViewport({top: -top})
+          this._activeTab.observe('#activeTab', res => {
+            // console.log(res)
+            let flag = res.boundingClientRect.top <= top && res.intersectionRect.top <= 0
+            this.goodsSearchStyles = flag ? `
+                position:fixed;
+                top:${navigationBarHeight}px;
+                left:0;
+                right:0;
+                background: #fff;
+              ` : ''
+          })
+          wx.createIntersectionObserver(undefined, {observeAll: true})
+            .relativeTo('.active-tab-container')
+            .observe('.panel', res => {
+              // console.log(res)
+              if (res.intersectionRatio > 0 && !this._isScrolling) {
+                // console.log(res)
+                this.activeTabIndex = res.id.replace('panel', '') * 1
+              }
+            })
+          wx.createSelectorQuery()
+            .selectAll('.panel')
+            .boundingClientRect(res => {
+              console.log(1)
+              // this.activeTabInfo = res.map(item => {
+              //   return {
+              //     top: item.top - top,
+              //     bottom: item.bottom
+              //   }
+              // })
+            }).exec(res => {
+              console.log(res)
+              this.activeTabInfo = res[0].map(item => {
+                return {
+                  top: item.top - top,
+                  bottom: item.bottom
+                }
+              })
+            })
+        }, 500)
       },
+      _helpObserver(e) {
+        // console.log(e.scrollTop)
+        // console.log(this.activeTabInfo)
+        const scrollTop = e.scrollTop - this._navigationBarHeight
+        if (this._isScrolling) return
+        let index = this.activeTabInfo.findIndex(val => {
+          if (scrollTop >= val.top && scrollTop <= val.bottom) {
+            return true
+          }
+        })
+        if (this.activeTabIndex !== index && index > -1) {
+          this._isScrolling = true
+          this.activeTabIndex = index
+          setTimeout(() => {
+            this._isScrolling = false
+          }, 80)
+        }
+        // this.activeTabIndex = index
+      },
+      handleActiveTabChange(index) {
+        // this.activeTabIndex = index
+        if (index === this.activeTabIndex) return
+        this._isScrolling = true
+        this.activeTabIndex = index
+        wx.pageScrollTo({
+          scrollTop: this.activeTabInfo[index].top,
+          duration: 300
+        })
+        setTimeout(() => {
+          this._isScrolling = false
+        }, 400)
+      },
+      // _monitorAction() {
+      //   // this._activeTab && this._activeTab.disconnect()
+      //   if (!this._navigationBarHeight) return
+      //   const navigationBarHeight = this._navigationBarHeight
+      //   const top = navigationBarHeight + 59
+      //   this._activeTab = wx.createIntersectionObserver()
+      //   this._activeTab.relativeToViewport({top: -top})
+      //   this._activeTab.observe('#activeTab', res => {
+      //     let flag = res.boundingClientRect.top <= top && res.intersectionRect.top <= 0
+      //     console.log(flag, res, top, '-------------')
+      //     this.goodsSearchStyles = flag ? `
+      //           position:fixed;
+      //           top:${navigationBarHeight}px;
+      //           left:0;
+      //           right:0;
+      //           background: #fff;
+      //         ` : ''
+      //   })
+      // },
       // 商品搜索页
       handleSearchGoods() {
         wx.navigateTo({url: `/pages/goods-search`})
@@ -515,10 +593,12 @@
       // 初识话navigation状态
       _initNavigationStatus() {
         return new Promise((resolve, reject) => {
-          this._navigationIO = wx.createIntersectionObserver(undefined, {})
+          this._navigationIO = wx.createIntersectionObserver()
           this._navigationIO.relativeToViewport().observe('#navigationBar', res => {
-            this._navigationBarHeight = res.intersectionRect.height
-            this.navigationBarHeight = res.intersectionRect.height
+            if (!this._navigationBarHeight) {
+              this._navigationBarHeight = res.intersectionRect.height || 0
+            }
+            console.warn(this._navigationBarHeight, res)
             let flag = res.intersectionRatio > 0
             let title = flag ? '赞播优鲜' : '赞播优鲜·' + this.socialName
             this.$refs.navigationBar && this.$refs.navigationBar.setTranslucentTitle(title)
@@ -1068,11 +1148,7 @@
         width :100vw
         display :flex
         z-index :99
-        &.active
-          position :fixed
-          left:0;
-          right:0;
-          background: #FFFFFF
+        position :absolute
         .active-item-wrapper
           flex: 1
           font-family: $font-family-regular
