@@ -104,6 +104,7 @@
     padding: 0 12px
     box-sizing: border-box
     position: relative
+    margin-bottom :10px
 
     .share-wrapper
       position: absolute

@@ -125,7 +125,7 @@
                   :id="'child'+idx"
                 >
 <!--                  flash-item-->
-                  <article class="home-flash-item" @click="handleJumpToGoodsDetail(child)">
+                  <article class="home-flash-item" @click="handleJumpToGoodsDetail(child, ACTIVE_TYPE.FLASH)">
                     <figure class="goods-wrapper">
                       <img
                         class="img-goods"
@@ -270,7 +270,7 @@
               <button v-if="item.module_name !== 'guess'" class="share-button" open-type="share" :id="'share-' + item.module_name"></button>
               <block v-for="(child, idx) in item.list" :key="idx">
                 <div class="goods-wrapper"
-                     @click="handleJumpToGoodsDetail(child)"
+                     @click="handleJumpToGoodsDetail(child, item.module_name)"
                 >
                   <div class="goods-item">
                     <figure class="left">
@@ -338,6 +338,7 @@
   import ShareTrick from '@mixins/share-trick'
   import NewGuidelines from './new-guidelines/new-guidelines'
   import {TAB_ARR_CONFIG} from './config'
+  import {ACTIVE_TYPE} from '@utils/contants'
 
   const ald = getApp()
   const PAGE_NAME = 'CHOICENESS'
@@ -370,6 +371,7 @@
       // this._navigationBarHeight = 0
       // this._navigationIO = null
       return {
+        ACTIVE_TYPE,
         // 头部变色
         title: '赞播优鲜',
         // _navigationBarHeight: 0,
@@ -498,6 +500,7 @@
         }
         // 获取团的信息
         if (this.curShopId * 1 !== this.shopId * 1) {
+          this.$wechat.showLoading()
           this.curShopId = this.shopId
           this._resetBanner()
           this._resetFlash()
@@ -585,7 +588,7 @@
       },
       handleGoodsButton(child = {}, item = {}) {
         if (item.module_name === 'groupon') {
-          this.handleJumpToGoodsDetail(child)
+          this.handleJumpToGoodsDetail(child, item.module_name)
         } else {
           this.addShoppingCart(child)
         }
@@ -773,9 +776,9 @@
         this.bannerIndex = 1
       },
       // 跳转至商品详情页
-      handleJumpToGoodsDetail(item) {
+      handleJumpToGoodsDetail(item, type) {
         wx.navigateTo({
-          url: `/pages/goods-detail?id=${item.goods_id}&activityId=${item.activity_id}`
+          url: `/pages/goods-detail?id=${item.goods_id}&activityId=${item.activity_id}&activityType=${type}`
         })
       },
       // 跳转至限时抢购列表

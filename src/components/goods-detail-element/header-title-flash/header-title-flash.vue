@@ -70,7 +70,6 @@
           if (diff < 0) {
             diff = 0
           }
-          // console.log(diff)
           this.activityTime = countDownHandle(diff)
           if (this.activityTime.differ <= 0) {
             this._clearTimer()

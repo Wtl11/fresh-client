@@ -1,6 +1,6 @@
 <template>
   <div class="header-swiper">
-    <swiper class="banner" @change="bannerChange" interval="5000">
+    <swiper v-if="goodsBanner && goodsBanner.length" class="banner" @change="bannerChange" interval="5000">
       <block v-for="(item, index) in goodsBanner" :key="index">
         <swiper-item class="banner-item">
           <img :src="item.image_url + '?' + goodsMsg.image_view" class="item-img item-img-one" mode="aspectFill">
@@ -44,7 +44,9 @@
     },
     methods: {
       bannerChange(e) {
-        this.currentNum = e.target.current * 1 + 1
+        if (e.target.current) {
+          this.currentNum = e.target.current * 1 + 1
+        }
       }
     }
   }
