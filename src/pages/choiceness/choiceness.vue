@@ -77,7 +77,7 @@
         </section>
 <!--        限时抢购-->
         <section
-          v-if="moduleItem.module_name === 'activity' && moduleItem.list && moduleItem.list.length"
+          v-if="moduleItem.module_name === 'activity' && flashTabInfo.length"
           class="item-wrapper module-item"
         >
           <div class="home-flash-sale">
@@ -90,7 +90,7 @@
               >
               <ul class="tab-wrapper">
                 <li v-if="index < 2"
-                  v-for="(item, index) in moduleItem.list"
+                  v-for="(item, index) in flashTabInfo"
                   :key="index"
                   class="tab-item-wrapper"
                   :class="{active: flashTabIndex === index}"
@@ -193,7 +193,16 @@
             hover-class="none"
           >查看</navigator>
         </article>
-<!--        分类列表-->
+<!--        icon 分类-->
+        <ul v-if="moduleIndex === 0"
+            class="server-icon-wrapper"
+        >
+          <li v-for="(item, index) in serverList" :key="index" class="server-item-wrapper">
+            <img v-if="imageUrl" :src="imageUrl + item.icon" alt="" class="icon-server">
+            <p class="title">{{item.text}}</p>
+          </li>
+        </ul>
+        <!--        分类列表-->
         <ul v-if="moduleItem.module_name === 'goods_cate'"
                  class="classify-wrapper"
         >
@@ -213,9 +222,10 @@
 <!--          活动tab-->
           <section class="active-tab-wrapper"
                    id="activeTab"
+                   v-if="activeTabInfo && activeTabInfo.length > 1"
           >
             <ul class="active-tab-container"
-                :style="goodsSearchStyles"
+                :style="activeTabStyles"
             >
               <li v-for="(item, index) in activeTabInfo"
                   :key="index"
@@ -257,7 +267,7 @@
                 v-if="imageUrl && item.module_name === 'guess'"
                 :src="imageUrl + '/yx-image/2.4/pic-cnxh@2x.png'"
                 class="banner-image">
-              <button class="share-button" open-type="share"></button>
+              <button v-if="item.module_name !== 'guess'" class="share-button" open-type="share" :id="'share-' + item.module_name"></button>
               <block v-for="(child, idx) in item.list" :key="idx">
                 <div class="goods-wrapper"
                      @click="handleJumpToGoodsDetail(child)"
@@ -297,6 +307,9 @@
                   </div>
                 </div>
               </block>
+              <article v-if="item.list.length < 1" class="goods-empty">
+                <div class="empty-wrapper">{{item.module_name === 'guess'? '暂无商品' : '本活动暂未开始，可浏览其他活动哦！'}}</div>
+              </article>
             </section>
           </block>
         </article>
@@ -364,7 +377,7 @@
         // _navigationIO: null,
         // _activeTab: null,
         // 商品搜索样式
-        goodsSearchStyles: '',
+        // activeTabStyles: '',
         // navigationBarHeight: 0,
         // 头部地理位置等
         locationStatus: null,
@@ -377,6 +390,7 @@
         // 通知
         notifyInfo: {},
         // 限时抢购
+        // flashTabInfo: [],
         flashTabIndex: 0,
         flashArray: [],
         flashViewToChild: undefined,
@@ -385,6 +399,7 @@
         // 活动tab
         activeTabIndex: 0,
         activeTabInfo: [],
+        activeTabStyles: '',
         // 新人列表
         newClientList: [],
         // 今日爆款列表
@@ -392,7 +407,25 @@
         // 团购列表
         groupList: [],
         // 猜你喜欢列表
-        guessList: []
+        guessList: [],
+        serverList: [
+          {
+            text: '次日送达',
+            icon: '/yx-image/2.4/icon-lightning@2x.png'
+          },
+          {
+            text: '品控质检',
+            icon: '/yx-image/2.4/icon-ok@2x.png'
+          },
+          {
+            text: '100%售后服务',
+            icon: '/yx-image/2.4/icon-ok@2x.png'
+          },
+          {
+            text: '原产地直采',
+            icon: '/yx-image/2.4/icon-ok@2x.png'
+          }
+        ]
       }
     },
     computed: {
@@ -415,6 +448,15 @@
             list: this[item.dataArray]
           })
         })
+        return arr
+      },
+      flashTabInfo() {
+        let arr = []
+        let module = this.moduleArray.find(val => val.module_name === 'activity') || {}
+        if (module.list) {
+          module = module.list.find(val => val.module_name === 'activity_fixed') || {}
+          arr = module.list || []
+        }
         return arr
       }
     },
@@ -464,10 +506,11 @@
         this._getNotify()
         await this._getModuleInfo()
         this._initTabInfo()
-        this._getFlashList()
+        await this._getFlashList()
         this._addMonitor()
         this._getTodayHostList()
         this._getNewClientList()
+        this._getGuessList()
         if (!wx.getStorageSync('token')) return
         this.setCartCount()
       } catch (e) {
@@ -488,6 +531,10 @@
       try {
         await this._getModuleInfo(false)
         this._getFlashList()
+        this._addMonitor()
+        this._getTodayHostList()
+        this._getNewClientList()
+        this._getGuessList()
       } catch (e) {
         console.error(e)
       }
@@ -502,12 +549,19 @@
     },
     onShareAppMessage(res) {
       let imgUrl = ''
-      switch (this.corpName) {
-        case 'platform':
-          imgUrl = '/yx-image/choiceness/pic-zbyx@2x.png'
+      let moduleName = ''
+      if (res.target.id) {
+        moduleName = res.target.id.replace('share-', '')
+      }
+      switch (moduleName) {
+        case 'new_client':
+          imgUrl = '/yx-image/2.4/pic-xrth_share@2x.png'
           break
-        case 'retuan':
-          imgUrl = '/yx-image/retuan/pic-zbyx@2x.png'
+        case 'goods_hot_tag':
+          imgUrl = '/yx-image/2.4/pic-jrbp_share@2x.png'
+          break
+        case 'groupon' :
+          imgUrl = '/yx-image/2.4/pic-ptfx_share@2x.png'
           break
         default:
           imgUrl = '/yx-image/choiceness/pic-zbyx@2x.png'
@@ -516,7 +570,7 @@
       const flag = Date.now()
       return {
         title: `${this.groupInfo.social_name},次日达、直采直销，点击下单↓`,
-        path: `/pages/choiceness?shopId=${this.shopId}&flag=${flag}`,
+        path: `/pages/choiceness?shopId=${this.shopId}&moduleName=${moduleName}&flag=${flag}`,
         imageUrl: this.imageUrl + imgUrl,
         success: (res) => {
         },
@@ -530,13 +584,16 @@
         wx.navigateTo({url: `/pages/classify?id=${item.id}`})
       },
       handleGoodsButton(child = {}, item = {}) {
-        console.log(child, item)
         if (item.module_name === 'groupon') {
-          // todo
           this.handleJumpToGoodsDetail(child)
         } else {
           this.addShoppingCart(child)
         }
+      },
+      _getGuessList() {
+        API.Home.getGuessList({page: 1, limit: 10}).then(res => {
+          this.guessList = this._formatListPriceData(res.data)
+        })
       },
       _getTodayHostList() {
         API.Home.getTodayHotList().then(res => {
@@ -562,11 +619,10 @@
         let module = this.moduleArray.find(val => val.module_name === 'activity') || {}
         if (module.list) {
           module.list.forEach(item => {
-            if (item.module_name !== 'activity_fixed') {
+            if (item.module_name !== 'activity_fixed' && item.is_close < 1) {
               arr.push({
                 ...item,
                 ...TAB_ARR_CONFIG[item.module_name]
-                // dataArray: this[TAB_ARR_CONFIG[item.module_name].dataArray]
               })
             }
           })
@@ -574,13 +630,13 @@
         arr.push({
           ...TAB_ARR_CONFIG['guess'],
           module_name: 'guess'
-          // dataArray: this[TAB_ARR_CONFIG['guess'].dataArray]
         })
         this.activeTabInfo = arr
       },
       // 添加监听
       _addMonitor() {
         setTimeout(() => {
+          if (!(this.activeTabInfo && this.activeTabInfo.length > 1)) return
           if (!this._navigationBarHeight) return
           const navigationBarHeight = this._navigationBarHeight
           const top = navigationBarHeight + 59
@@ -589,7 +645,7 @@
           this._activeTab.relativeToViewport({top: -top})
           this._activeTab.observe('#activeTab', res => {
             let flag = res.boundingClientRect.top <= top && res.intersectionRect.top <= 0
-            this.goodsSearchStyles = flag ? `
+            this.activeTabStyles = flag ? `
                 position:fixed;
                 top:${navigationBarHeight}px;
                 left:0;
@@ -607,16 +663,10 @@
           wx.createSelectorQuery()
             .selectAll('.panel')
             .boundingClientRect(res => {
-              // this.activeTabInfo = res.map(item => {
-              //   return {
-              //     top: item.top - top,
-              //     bottom: item.bottom
-              //   }
-              // })
             }).exec(res => {
               res[0].forEach((item, index) => {
                 if (this.activeTabInfo[index]) {
-                  this.activeTabInfo[index].top = item.bottom - item.height
+                  this.activeTabInfo[index].top = item.bottom - item.height - top
                   this.activeTabInfo[index].bottom = item.bottom
                 }
               })
@@ -750,13 +800,14 @@
       },
       // 获取限时活动列表
       async _getFlashList(module, loading) {
-        if (!module) {
-          let index = this.moduleArray.findIndex(val => val.module_name === 'activity_fixed')
-          index > 0 && (module = this.moduleArray[index])
-        }
-        if (!module && !module.content_data) return
+        // if (!module) {
+        //   let index = this.moduleArray.findIndex(val => val.module_name === 'activity_fixed')
+        //   index > 0 && (module = this.moduleArray[index])
+        // }
+        // if (!module && !module.content_data) return
+        if (!this.flashTabInfo[this.flashTabIndex]) return
         let data = {
-          activity_id: module.content_data.list[this.flashTabIndex].id || 0
+          activity_id: this.flashTabInfo[this.flashTabIndex].id || 0
         }
         try {
           let res = await API.FlashSale.getFlashList(data, loading)
@@ -769,9 +820,9 @@
       async _getFlashTabList(loading = false) {
         try {
           let res = await API.FlashSale.getFlashTabList('', loading)
-          let index = this.moduleArray.findIndex(val => val.module_name === 'activity_fixed')
-          this.moduleArray[index].content_data.list = res.data
-          await this._getFlashList(this.moduleArray[index])
+          // let index = this.moduleArray.findIndex(val => val.module_name === 'activity_fixed')
+          this.flashTabInfo = res.data || []
+          await this._getFlashList()
         } catch (e) {
           console.error(e)
         }
@@ -1033,6 +1084,26 @@
     height :100%
     display :block
     overflow :auto
+  // 服务图标
+  .server-icon-wrapper
+    height :27px
+    padding :0 20px
+    display: flex
+    flex-wrap :nowrap
+    justify-content :space-between
+    .server-item-wrapper
+      display :flex
+      align-self :center
+      justify-content :center
+      .icon-server
+        width :11px
+        height :@width
+      .title
+        margin-left :3px
+        font-family:$font-family-regular
+        font-size: 11px
+        color: #54990F
+        line-height :11px
   // 各个活动的总容器
   .active-container
     background: linear-gradient(-180deg, #FFFFFF 0%, #F7F7F7 5%);
@@ -1048,12 +1119,25 @@
         top:5vw
         width:16.6vw
         height:6.7vw
-        background:#f00;
-    .banner-image
+      .banner-image
         position :absolute
         top:0
         left :0
         width :100vw
+      .goods-empty
+        position :relative
+        padding-bottom :10px
+        .empty-wrapper
+          height :130px
+          padding :0 10px
+          background :$color-white
+          border-radius: 4px
+          display :flex
+          align-items :center
+          justify-content :center
+          font-family :$font-family-regular
+          font-size :16px
+          color:$color-text-sub
       .goods-wrapper
         position :relative
         padding-bottom :8px
@@ -1092,7 +1176,7 @@
               align-self :flex-start
               height :14px
               background: rgba(250,117,0,0.10);
-              border: 1px solid #FA7500
+              border: 0.5px solid #FA7500
               border-radius: @height
               line-height :@height
               padding :0 5px
@@ -1169,7 +1253,7 @@
         z-index :99
         position :absolute
         .active-item-wrapper
-          flex: 1
+          width :25vw
           font-family: $font-family-regular
           display :flex
           flex-direction :column
@@ -1196,7 +1280,7 @@
 
   // 分类
   .classify-wrapper
-    padding :23px 12px 10px
+    padding :5px 12px 10px
     display :flex
     flex-wrap: wrap
     .classify-item-wrapper

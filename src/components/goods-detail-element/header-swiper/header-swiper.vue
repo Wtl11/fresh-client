@@ -36,7 +36,7 @@
         return this.goodsMsg.goods_banner_images || []
       },
       goodsBannerLength() {
-        return this.goodsBanner.length
+        return this.goodsBanner.length || 0
       }
     },
     onUnload() {

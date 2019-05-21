@@ -11,5 +11,10 @@ export default {
   getNewClientList(data, loading, toast) {
     const url = `/api/wap/activity/activity-new-client/goods-sku`
     return request.get({url, data, loading, toast})
+  },
+  // 猜你喜欢
+  getGuessList(data, loading, toast) {
+    const url = `/api/wap/recommend/goods`
+    return request.get({url, data, loading, toast})
   }
 }
