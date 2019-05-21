@@ -7,7 +7,7 @@
           <p>{{item.created_at}}</p>
           <p>{{item.status_text}}</p>
         </div>
-        <img v-if="imageUrl" :src="imageUrl+'/yx-image/2.4/pic-newlabel@2x.png'" alt="" class="leader-tips">
+        <img v-if="imageUrl" :src="imageUrl+'/yx-image/2.4/pic-pinzhu@2x.png'" alt="" class="leader-tips">
         <div class="goods-info">
           <img class="img" mode="aspectFill" :src="item.goods[0].image_url">
           <div class="info-con">

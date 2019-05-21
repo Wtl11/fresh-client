@@ -26,7 +26,11 @@
               <div class="remain">
                 <div class="txt" :class="'corp-' + corpName + '-money-text'" v-if="item.is_urgency">仅剩{{item.usable_stock}}件</div>
               </div>
-              <div class="price" :class="'corp-' + corpName + '-money'" v-if="item.trade_price"><span class="num">{{item.trade_price}}</span>元</div>
+              <div class="price" :class="'corp-' + corpName + '-money'" v-if="item.trade_price">
+                <span class="num">{{item.trade_price}}</span>
+                <span class="unit">元</span>
+                <img class="new-user-img" v-if="imageUrl" :src="imageUrl + '/yx-image/2.4/pic-newlabel@2x.png'" alt="">
+              </div>
             </div>
             <div class="right">
               <div class="number-box">
@@ -62,7 +66,7 @@
     <!--商品推荐-->
     <div class="recommend">
       <p class="title">
-        <img src="https://img.jkweixin.net/defaults/yx-image/2.3/icon-ulike@2x.png" alt="" class="icon">
+        <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/icon-ulike@2x.png'" alt="" class="icon">
         <span class="text">猜你喜欢</span>
       </p>
       <div class="recommend-list">
@@ -121,6 +125,9 @@
       await this._getShopCart()
       await this.getCarRecommend()
       this.isFirstLoad = false
+    },
+    onReachBottom() {
+      // this.page++
     },
     computed: {
       checkedGoods() {
@@ -443,7 +450,7 @@
                 line-height: 24px
                 border-1px()
           .left
-            width: 26.67vw
+            max-width: 34.67vw
             .spec
               font-family: $font-family-regular
               font-size: $font-size-14
@@ -463,12 +470,20 @@
                 box-sizing: border-box
                 border-radius: 10px
             .price
+              layout(row)
+              align-items: flex-end
               font-family: $font-family-regular
-              font-size: $font-size-12
-              line-height: 19px
               .num
                 font-family: $font-family-regular
                 font-size: $font-size-18
+                line-height: $font-size-18
+              .unit
+                font-size: $font-size-12
+                line-height: $font-size-12
+                margin:0 2px
+              .new-user-img
+                width: 31.5px
+                height: 15px
     .shop-item-opcta
       .sel-box
         opacity: .5
