@@ -1,71 +1,58 @@
 <template>
-  <div class="coupon-modal" v-if="isShow" :animation="maskAnimation">
-    <section v-if="couponArray.length > 1" class="content" @touchmove.stop>
-      <img class="img-bg"
-           mode="aspectFill"
-           v-if="imageUrl"
-           :src="imageUrl + '/yx-image/2.3/pic-lqyhqtc.png'">
+  <div class="coupon-modal" v-if="isShow" :animation="maskAnimation" @touchmove.stop>
+    <section class="content" @touchmove.stop>
       <img class="close"
            mode="aspectFill"
            v-if="imageUrl"
-           :src="imageUrl + '/yx-image/2.3/icon-deletetc@2x.png'"
+           :src="imageUrl + '/yx-image/2.4/icon-deletetc@2x.png'"
            @click="cancelHandle"
       >
-      <article class="wrapper">
-        <div class="place-box"></div>
-        <scroll-view
-          class="coupon-wrapper"
-          scroll-y
-        >
-          <div v-for="(item, index) in couponArray" :key="index" class="coupon-item-wrapper">
-            <coupon-item :dataInfo="item"></coupon-item>
-          </div>
-        </scroll-view>
-      </article>
-      <article class="button-wrapper">
-        <img class="img-bg"
-             mode="aspectFill"
-             v-if="imageUrl"
-             :src="imageUrl + '/yx-image/2.3/pic-coupontc_up.png'">
-        <p hover-class="none" class="explain" @click="navHandle">优惠券已放入账号 <span class="look">查看></span></p>
-        <img class="button"
-             mode="aspectFill"
-             v-if="imageUrl"
-             :src="imageUrl + '/yx-image/2.3/btn-touse.png'"
-             @click="submitHandle"
-        >
-      </article>
-    </section>
-    <section v-else class="content one" @touchmove.stop>
-      <img class="img-bg"
-           mode="aspectFill"
-           v-if="imageUrl"
-           :src="imageUrl + '/yx-image/2.3/pic-lqyhqtc-one.png'">
-      <img class="close"
-           mode="aspectFill"
-           v-if="imageUrl"
-           :src="imageUrl + '/yx-image/2.3/icon-deletetc@2x.png'"
-           @click="cancelHandle"
-      >
-      <article class="wrapper">
-        <div class="place-box one"></div>
-        <div
-          class="coupon-wrapper"
-        >
-          <div v-for="(item, index) in couponArray" :key="index" class="coupon-item-wrapper">
-            <coupon-item :dataInfo="item"></coupon-item>
+      <img class="top-img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.4/pic-coupontb@2x.png'">
+      <div class="coupon-con" :class="couponArray.length === 1?'one':''">
+        <div v-if="couponArray.length === 1" class="coupon-list">
+          <img class="item-bg" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.4/pic-dcoupon@2x.png'">
+          <div class="item-con">
+            <div class="price-box"><span class="price">5</span>{{couponArray[0].coupon.preferential_type === 1?'折':'元'}}</div>
+            <div class="right-box">
+              <div class="title">
+                <p class="type">{{couponArray[0].coupon.range_type_str}}</p>
+                <p class="txt">{{couponArray[0].coupon.coupon_name}}</p>
+              </div>
+              <div class="condition">有效期至 {{couponArray[0].coupon.end_at}}</div>
+            </div>
           </div>
         </div>
-      </article>
-      <article class="button-wrapper">
-        <p hover-class="none" class="explain one" @click="navHandle">优惠券已放入账号 <span class="look">查看></span></p>
-        <img class="button"
+        <scroll-view v-else class="coupon-list" scroll-y>
+          <div v-for="(item, index) in couponArray" :key="index" class="coupon-item">
+            <img class="item-bg" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.4/pic-coupon_lqtc@2x.png'">
+            <div class="item-con">
+              <div class="price-box"><span class="price">{{item.coupon.denomination}}</span>{{item.coupon.preferential_type === 1?'折':'元'}}</div>
+              <div class="right-box">
+                <div class="title">
+                  <p class="type">{{item.coupon.range_type_str}}</p>
+                  <p class="txt">{{item.coupon.coupon_name}}</p>
+                </div>
+                <div class="condition">有效期至 {{item.coupon.end_at}}</div>
+              </div>
+            </div>
+          </div>
+        </scroll-view>
+        <img class="bottom-bg"
              mode="aspectFill"
-             v-if="imageUrl"
-             :src="imageUrl + '/yx-image/2.3/btn-touse.png'"
+             v-if="imageUrl && couponArray.length > 1"
+             :src="imageUrl + '/yx-image/2.4/pic-coupontc_up@2x.png'"
              @click="submitHandle"
         >
-      </article>
+        <div class="bottom-con">
+          <p hover-class="none" class="explain" @click="navHandle">优惠券已放入账号 <span class="look">查看></span></p>
+          <img class="coupon-btn"
+               mode="aspectFill"
+               v-if="imageUrl"
+               :src="imageUrl + '/yx-image/2.4/btn-touse@2x.png'"
+               @click="submitHandle"
+          >
+        </div>
+      </div>
     </section>
   </div>
 </template>
@@ -74,6 +61,7 @@
   import AnimationModal from '@mixins/animation-modal'
   import CouponItem from './coupon-item/coupon-item'
   import API from '@api'
+  import {formatCouponMoney} from '@utils/common'
 
   const COMPONENT_NAME = 'COUPON_MODAL'
 
@@ -120,7 +108,6 @@
           return
         }
         this.isShow = true
-        this._resetStatus()
         this.showAnimation()
       },
       hide() {
@@ -128,8 +115,8 @@
           this.isShow = false
         })
       },
-      _resetStatus() {
-        // todo some thing
+      _getPrice(price) {
+        return formatCouponMoney(price)
       }
     }
   }
@@ -138,24 +125,8 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@designCommon"
 
-  .img-bg
-    fill-box(absolute)
-    display: block
-    width: 100%
-    height: 100%
-    font-size: 0
-    line-height: 0
-
-  .close
-    width: 8vw
-    height: @width
-    position: absolute
-    right: -1.3333333333333335vw
-    top: -2.66vw
-    z-index: 3
-
   .coupon-modal
-    background-color: rgba(17, 17, 17, 0.7)
+    background-color: rgba(17, 17, 17, 0.75)
     fill-box(fixed)
     z-index: 999
     display: flex
@@ -164,57 +135,137 @@
 
     .content
       position: relative
-      width: 71.33333333333334vw
-      height: 102.26666666666667vw
-      margin-top: -15%
-
-      &.one
-        height: 86.26666666666667vw
-
-      .button-wrapper
+      width: 259px
+      margin-top: -5.3333vw
+      .close
+        width: 30px
+        height: @width
         position: absolute
-        right: 1.0666666666666667vw
-        left: @right
-        bottom: 0
-        height: 27.73333333333333vw
-
-        .explain
+        right: 0
+        top: -45px
+        z-index: 3
+      .top-img
+        width: 100%
+        height: 82.5px
+        display: block
+        margin: 0
+      .coupon-con
+        margin: 0
+        box-sizing: border-box
+        width: 100%
+        height: 221px
+        padding: 12px 15px 15px
+        layout(row)
+        justify-content: center
+        background: linear-gradient(to bottom right, #9EC65A, #7eb62c)
+        border-bottom-left-radius: 6px
+        border-bottom-right-radius: 6px
+        .coupon-list
           position: relative
-          padding-top: 7.466666666666668vw
-          font-family: $font-family-regular
-          font-size: 3.2vw
-          color: #FFFFFF;
-          line-height: @font-size
-          text-align: center
+          width: 229px
+          height: 128px
+          .coupon-item
+            width: 100%
+            height: 70px
+            position: relative
+            margin-bottom: 8px
+          .item-bg
+            fill-box(absolute)
+            z-index: 1
+            width: 100%
+            height: 100%
+          .item-con
+            fill-box(absolute)
+            z-index: 2
+            box-sizing: border-box
+            width: 100%
+            height: 100%
+            padding: 0 14px
+            font-size: $font-size-14
+            layout(row)
+            justify-content: space-between
+            align-items: center
+            .price-box
+              font-family: $font-family-medium
+              font-size: $font-size-15
+              max-width: 70px
+              text-align: center
+              color: #f8612c
+              flex: 1
+              .price
+                font-size: 34px
+                font-weight: bold
+                line-height: 1
+                margin-bottom: -2px
+            .right-box
+              flex: 1
+              .title
+                layout(row,block,nowrap)
+                align-items :center
+                color: $color-text-main
+                .type
+                  font-family: $font-family-medium
+                  height:12px
+                  border:1px solid rgba(29,32,35,0.8)
+                  border-radius:2px
+                  font-size: $font-size-10
+                  padding: 0 2px
+                  layout(row)
+                  align-items: center
+                  opacity :0.8
+                .txt
+                  padding-left : 2px
+                  font-family: $font-family-medium
+                  font-size : $font-size-14
+                  no-wrap()
+              .condition
+                padding-top : 4px
+                opacity :0.8
+                font-size : $font-size-13
+                no-wrap()
+        &.one
+          height: 194.5px
+          .coupon-list
+            position: relative
+            width: 229px
+            height: 101.5px
+            .item-con
+              padding: 0 20px
+              .price-box
+                max-width: 62px
+          .title
+            padding-top : 8px
 
-          &.one
-            padding-top: 10vw
+        .bottom-bg
+          position: absolute
+          bottom: 0
+          left: 0
+          width: 100%
+          height: 98px
+          z-index: 1
+        .bottom-con
+          position: absolute
+          bottom: 0
+          left: 0
+          z-index: 2
+          width: 100%
+          height: 82px
+          layout()
+          justify-content: center
+          align-items: center
+          .explain
+            position: relative
+            margin-bottom: 7px
+            font-family: $font-family-light
+            font-size: $font-size-13
+            color: $color-white
+            line-height: @font-size
+            text-align: center
+          .coupon-btn
+            width: 150px
+            height: 32.5px
 
-          .look
-            text-decoration: underline
-
-        .button
-          position: relative
-          margin: 2.666666666666667vw auto 0
-          width: 34.66666666666667vw
-          height: 8.666666666666668vw
-          display: block
-
-      .wrapper
-        position: relative
-
-        .place-box
-          height: 44vw
-
-          &.one
-            height: 45.06666666666666vw
-
-        .coupon-wrapper
-          position: relative
-          width: 61.06666666666667vw
-          height: 40vw
-          margin: 0 auto
-
+        .coupon-list
           ::-webkit-scrollbar
             width: 0
             height: 0
@@ -260,12 +311,4 @@
 
           ::-o-scrollbar-resizer
             background-color: rgba(0, 0, 0, 0)
-
-          .coupon-item-wrapper
-            width: 100%
-            padding-bottom: 2.1333333333333333vw
-
-            &:last-child
-              padding-bottom: 8vw
-
 </style>

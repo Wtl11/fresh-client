@@ -408,7 +408,7 @@
       position: absolute
       top: 89px
       left: 0
-      z-index: 999999
+      z-index: 99
       width: $scroll-item-width
       height: 3px
       padding: 0 25px
