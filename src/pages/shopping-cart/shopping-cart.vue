@@ -229,7 +229,7 @@
       },
       jumpGoodsDetail(item) {
         let type = ''
-        if (item.activity) {
+        if (item.activity && item.activity.activity_type) {
           type = item.activity.activity_type || ''
         }
         wx.navigateTo({
