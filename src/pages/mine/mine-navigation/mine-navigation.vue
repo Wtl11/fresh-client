@@ -234,7 +234,7 @@
       .nav-row
         .item-wrapper
           layout(column)
-          padding: 16px $padding-left
+          padding: 16px 10px
           .row-con
             layout(row)
             align-items: center
@@ -242,6 +242,7 @@
             font-size: 16px
             color: $color-text-main
             .title
+              padding-left: 3px
               flex: 1
               font-family: $font-family-bold
               font-weight: bold
@@ -255,28 +256,29 @@
               height: 12.5px
               margin-right: 5px
       &.has-data
-        .item-wrapper
-          padding: 10px $padding-left
-          .data-con
-            margin-top: 10px
-            layout(row)
-            border-radius: 6px
-            background #fafafa
-            .data-box
-              height: 83px
-              layout(column, block, nowrap)
-              flex: 1
-              justify-content: center
-              align-items: center
-              text-align: center
-              .data-val
-                color: $color-text-main
-                font-size: 18px
-                font-family: $font-family-bold
-                font-weight: bold
-                margin-bottom: 8px
-              .data-title
-                color: $color-text-sub
-                font-size: 12px
+        .nav-row
+          .item-wrapper
+            padding: 10px
+            .data-con
+              margin-top: 10px
+              layout(row)
+              border-radius: 6px
+              background #fafafa
+              .data-box
+                height: 83px
+                layout(column, block, nowrap)
+                flex: 1
+                justify-content: center
+                align-items: center
+                text-align: center
+                .data-val
+                  color: $color-text-main
+                  font-size: 18px
+                  font-family: $font-family-bold
+                  font-weight: bold
+                  margin-bottom: 8px
+                .data-title
+                  color: $color-text-sub
+                  font-size: 12px
 
 </style>
