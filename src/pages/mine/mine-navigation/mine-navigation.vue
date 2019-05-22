@@ -188,7 +188,6 @@
         color: $color-text-main
         font-size :16px
         font-family: $font-family-bold
-        font-weight: bold
       .nav-box
         padding : 0 10px
         layout(row)
@@ -245,7 +244,6 @@
               padding-left: 3px
               flex: 1
               font-family: $font-family-bold
-              font-weight: bold
             .explain
               color: $color-text-sub
               font-size :12px
@@ -275,7 +273,6 @@
                   color: $color-text-main
                   font-size: 18px
                   font-family: $font-family-bold
-                  font-weight: bold
                   margin-bottom: 8px
                 .data-title
                   color: $color-text-sub
