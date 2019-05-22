@@ -144,7 +144,8 @@
                     <section class="bottom-wrapper">
                       <p class="title">{{child.name}}</p>
                       <div class="price-wrapper">
-                        <p class="number">{{child.trade_price}}</p>
+                        <p class="number">{{child.tradePrice && child.tradePrice.int}}</p>
+                        <p class="dec">{{child.tradePrice && child.tradePrice.dec}}</p>
                         <p class="unit">元</p>
                         <p class="origin-price">{{child.original_price}}元</p>
                       </div>
@@ -226,6 +227,7 @@
           >
             <ul class="active-tab-container"
                 :style="activeTabStyles"
+                :class="{active: activeTabStyles}"
             >
               <li v-for="(item, index) in activeTabInfo"
                   :key="index"
@@ -269,7 +271,7 @@
                 class="banner-image">
               <button v-if="item.module_name !== 'guess'" class="share-button" open-type="share" :id="'share-' + item.module_name"></button>
               <block v-for="(child, idx) in item.list" :key="idx">
-                <div class="goods-wrapper"
+                <div class="panel-goods-wrapper"
                      @click="handleJumpToGoodsDetail(child, item.module_name)"
                 >
                   <div class="goods-item">
@@ -298,7 +300,7 @@
                               class="button-wrapper"
                               @click.stop="handleGoodsButton(child, item)"
                       >
-                        <div class="button">
+                        <div class="button" :class="{guess: item.module_name === ACTIVE_TYPE.GUESS}">
                           <p class="text">{{item.buttonText}}</p>
                         </div>
                         <p class="sub-text">已售{{child.sale_count}}{{child.goods_units}}</p>
@@ -627,7 +629,7 @@
       },
       async _getTodayHostList() {
         try {
-          let res = await API.Home.getTodayHotList()
+          let res = await API.Home.getTodayHotList({limit: 20})
           this.todayHotList = this._formatListPriceData(res.data)
         } catch (e) {
           console.warn(e)
@@ -635,7 +637,7 @@
       },
       async _getNewClientList() {
         try {
-          let res = await API.Home.getNewClientList()
+          let res = await API.Home.getNewClientList({limit: 20})
           this.newClientList = this._formatListPriceData(res.data)
         } catch (e) {
           console.error(e)
@@ -767,20 +769,20 @@
         })
       },
       // 设置分类滚动时的样式
-      _setGoodsSearchStyles(y, opacity, time = 300) {
-        this.goodsSearchStyles = `
-          opacity:${opacity};
-          transform:translate3d(0,${y}px,0);
-          transition: transform ${time}ms ease-out;
-          position:fixed;
-          z-index:200;
-          top:0;
-          left:0;
-          right:0;
-          opacity: 0;
-          background: #fff
-        `
-      },
+      // _setGoodsSearchStyles(y, opacity, time = 300) {
+      //   this.goodsSearchStyles = `
+      //     opacity:${opacity};
+      //     transform:translate3d(0,${y}px,0);
+      //     transition: transform ${time}ms ease-out;
+      //     position:fixed;
+      //     z-index:200;
+      //     top:0;
+      //     left:0;
+      //     right:0;
+      //     opacity: 0;
+      //     background: #fff
+      //   `
+      // },
       // banner页面跳转
       handleBannerJump(item) {
         let url = ''
@@ -850,7 +852,7 @@
         }
         try {
           let res = await API.FlashSale.getFlashList(data, loading)
-          this.flashArray = res.data
+          this.flashArray = this._formatListPriceData(res.data)
         } catch (e) {
           console.warn(e)
         }
@@ -1148,7 +1150,7 @@
     background: linear-gradient(-180deg, #FFFFFF 0%, #F7F7F7 5%);
     // 各个活动面板
     .panel
-      padding :60px 12px 0
+      padding :16vw 12px 0
       position :relative
       border-bottom :0px solid transparent
       min-height :45px
@@ -1175,9 +1177,9 @@
           align-items :center
           justify-content :center
           font-family :$font-family-regular
-          font-size :16px
+          font-size :14px
           color:$color-text-sub
-      .goods-wrapper
+      .panel-goods-wrapper
         position :relative
         padding-bottom :8px
         &:last-child
@@ -1194,7 +1196,7 @@
             overflow :hidden
             height :100%
             box-sizing :border-box
-            padding : 6px 11px 9px
+            padding : 6px 11px 6px
             display :flex
             flex-direction :column
             font-family: $font-family-regular
@@ -1211,14 +1213,14 @@
               position :relative
               top:-2px
             .active-icon
-              margin-top :17px
+              margin-top :15px
               align-self :flex-start
-              height :14px
+              height :16px
               background: rgba(250,117,0,0.10);
               border: 0.5px solid #FA7500
               border-radius: @height
               line-height :@height
-              padding :0 5px
+              padding :0 6px
               font-size: 11px;
               color: #FA7500;
             .button-wrapper
@@ -1235,6 +1237,8 @@
                 font-size: 14px;
                 color: #FFFFFF;
                 background #FA7500
+                &.guess
+                  background : #73C200
               .sub-text
                 padding-top :4px
                 font-size: 11px;
@@ -1246,22 +1250,22 @@
               font-family: $font-family-medium
               color: #FA7500
               .m-int
-                font-size :20px
+                font-size :25px
               .m-float
                 position :relative
-                bottom :1px
-                font-size :14px
+                bottom :3px
+                font-size :16px
               .m-unit
                 margin-left :1px
                 position :relative
-                bottom :3px
-                font-size: 11px
+                bottom :4px
+                font-size: 12px
               .m-origin
                 margin-left :6px
                 position :relative
-                bottom :2.5px
+                bottom :3.5px
                 font-family: $font-family-regular
-                font-size: 11px;
+                font-size: 12px;
                 color: #B7B7B7;
                 text-decoration :line-through
 
@@ -1291,6 +1295,15 @@
         display :flex
         z-index :99
         position :absolute
+        &.active:after
+          content: ""
+          position: absolute
+          bottom: 0
+          right: 0
+          width: 100%
+          background: $color-background
+          transform: scaleY(.5) translateZ(0)
+          border-bottom: 1px solid $color-line
         .active-item-wrapper
           width :25vw
           font-family: $font-family-regular
@@ -1325,18 +1338,18 @@
     .classify-item-wrapper
       width :20%
       font-family: $font-family-regular
-      font-size: 12px;
+      font-size: 3.2vw
       color: #333333;
       text-align: center;
       &.m-top
         margin-top :13px
       .logo
-        width :50px
+        width :13.333333333333334vw
         height :@width
       .title
         width :100%
         no-wrap()
-        padding-top :6px
+        padding-top :5px
         padding-right :2px
         padding-left :@padding-right
   // top-搜索-定位
@@ -1434,6 +1447,10 @@
         overflow :hidden
         .number
           font-size: 4.533333333333333vw
+        .dec
+          position: relative
+          top: 0.8vw
+          font-size : 3.733333333333334vw
         .unit
           position :relative
           top:1.8vw
