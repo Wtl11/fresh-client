@@ -16,7 +16,7 @@
         <div class="good-info">
           <div formType="submit" class="top" @click.stop="jumpGoodsDetail(item)">
             <div class="title">{{item.name}}</div>
-            <button formType="submit" class="del" @click.stop="delGoodsInfo(index, item.goods_id)">
+            <button formType="submit" class="del" @click.stop="delGoodsInfo(index, item.id)">
               <img class="del-img" v-if="imageUrl" :src="imageUrl + '/yx-image/cart/icon_delete@2x.png'" alt="">
             </button>
           </div>
@@ -34,9 +34,9 @@
             </div>
             <div class="right">
               <div class="number-box">
-                <button formType="submit" class="minus" @click.stop="subNum(index, item.num, item.goods_id)">-</button>
+                <button formType="submit" class="minus" @click.stop="subNum(index, item.num, item.id)">-</button>
                 <div class="num">{{item.num}}</div>
-                <button formType="submit" class="add" @click.stop="addNum(index, item.num, item.buy_limit, item.goods_id)">+</button>
+                <button formType="submit" class="add" @click.stop="addNum(index, item.num, item.buy_limit, item.id)">+</button>
               </div>
             </div>
           </div>
@@ -134,8 +134,12 @@
       let res = this.$wx.getSystemInfoSync()
       this.height = res.statusBarHeight >= 44 ? 28 : 0
       if (!wx.getStorageSync('token')) return
-      this._getShopCart()
+      this._getShopCart(true)
       this.getCarRecommend()
+    },
+    async onShow() {
+      if (!wx.getStorageSync('token')) return
+      await this._getShopCart(false)
     },
     onReachBottom() {
       if (!this.hasMore) return
@@ -160,8 +164,8 @@
     methods: {
       ...orderMethods,
       ...cartMethods,
-      async _getShopCart() {
-        let res = await API.Cart.shopCart()
+      async _getShopCart(loading) {
+        let res = await API.Cart.shopCart(loading)
         this.$wechat.hideLoading()
         if (res.error !== this.$ERR_OK) {
           this.isShowCart = true
@@ -224,8 +228,12 @@
         this.setCartCount()
       },
       jumpGoodsDetail(item) {
+        let type = ''
+        if (item.activity) {
+          type = item.activity.activity_type || ''
+        }
         wx.navigateTo({
-          url: `/pages/goods-detail?id=${item.goods_id}&activityId=${item.activity_id}`
+          url: `/pages/goods-detail?id=${item.goods_id}&activityId=${item.activity_id}&activityType=${type}`
         })
       },
       // 点击删除按钮
