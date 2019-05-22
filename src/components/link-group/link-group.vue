@@ -1,6 +1,6 @@
 <template>
   <form action="" report-submit @submit="$getFormId">
-  <div class="link-group">
+  <div class="link-group" @click="test">
     <div class="link-box" v-show="linkShow" @touchmove.prevent="" @click.stop="hideLink"></div>
     <div class="link-bottom" :class="linkShow ? 'show' : ''">
       <div v-if="linkType === 1" class="link-tab link-tab-border" @click.stop="clipWechat">
@@ -52,9 +52,6 @@
       },
       showLink() {
         this.linkShow = true
-        // setTimeout(() => {
-        //   this.linkShow = false
-        // }, 500)
       },
       clipWechat() {
         let wechat = this.wechatInfo.wx_account
@@ -79,7 +76,6 @@
           })
       },
       saveImg() {
-        console.log(123123)
         this.$emit('saveImg')
         this.hideLink()
       }

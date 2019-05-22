@@ -46,9 +46,12 @@
       </div>
     </div>
     <section class="goods-total-wrapper">
-      <p class="name">商品总价</p>
-      <p class="price">{{beforeTotal}}</p>
-      <p>元</p>
+      <div class="total-wrapper">
+        <p class="name">商品总价</p>
+        <p class="price">{{beforeTotal}}</p>
+        <p>元</p>
+      </div>
+      <p class="new-rule-wrapper">你不符合新人特惠购买资格</p>
     </section>
     <ul class="coupon-info-wrapper" :class="'corp-' + corpName + '-money'">
       <li class="coupon-item" @click="chooseCouponHandle">
@@ -193,22 +196,29 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
  @import "~@designCommon"
+
   .goods-total-wrapper
-    padding :15.5px 12px
-    display :flex
-    align-items :center
+    padding :15.5px 12px 12px
     font-family: $font-family-regular
-    font-size: 14px
-    line-height: 1
     color: $color-text-main
     background :#fff
     border-top-1px(#e6e6e6)
     border-bottom :11px solid $color-background
-    .name
-      flex:1
-      color: #000000
-    .price
-      font-family: $font-family-medium
+    .new-rule-wrapper
+     padding-top :6px
+     font-size: 12px;
+     text-align: right;
+     color: $color-text-sub
+    .total-wrapper
+     display :flex
+     align-items :center
+     font-size: 14px
+     line-height: 1
+     .name
+       flex:1
+       color: #000000
+     .price
+       font-family: $font-family-medium
 
   .coupon-info-wrapper
     border-bottom :11px solid $color-background
