@@ -170,8 +170,9 @@
         //   this.modalAnimation = modalAnimation.export()
         //   this.isShow = false
         // }, 300)
-        this.isShow = true
-        this.showAnimation()
+        this.showAnimation(() => {
+          this.isShow = false
+        })
         this.$emit('cancel')
       }
     }
