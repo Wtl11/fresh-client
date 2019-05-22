@@ -355,7 +355,6 @@
           font-family: $font-family-medium
           color: $color-text-main
           font-size: $font-size-14
-          font-weight: bold
           no-wrap-plus(2)
         .arr-warp
           layout(row)

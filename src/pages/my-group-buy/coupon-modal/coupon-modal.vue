@@ -194,7 +194,6 @@
               flex: 1
               .price
                 font-size: 34px
-                font-weight: bold
                 line-height: 1
                 margin-bottom: -2px
             .right-box

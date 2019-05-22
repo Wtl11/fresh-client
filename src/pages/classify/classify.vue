@@ -396,7 +396,6 @@
     .item-active
       font-family: $font-family-medium
       font-size: $font-size-15
-      font-weight: bold
 
     .line-con
       box-sizing: border-box
