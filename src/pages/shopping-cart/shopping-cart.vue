@@ -122,7 +122,6 @@
         isShowNum: true,
         deliverAt: '',
         height: 0,
-        isFirstLoad: true,
         page: 1,
         limit: 10,
         hasMore: true
@@ -134,14 +133,9 @@
     onLoad() {
       let res = this.$wx.getSystemInfoSync()
       this.height = res.statusBarHeight >= 44 ? 28 : 0
-    },
-    async onShow() {
       if (!wx.getStorageSync('token')) return
-      await this._getShopCart()
-      this.page = 1
-      this.hasMore = true
-      await this.getCarRecommend()
-      this.isFirstLoad = false
+      this._getShopCart()
+      this.getCarRecommend()
     },
     onReachBottom() {
       if (!this.hasMore) return
@@ -167,13 +161,7 @@
       ...orderMethods,
       ...cartMethods,
       async _getShopCart() {
-        // let loading = false
-        // if (this.goodsList.length === 0) {
-        //   loading = true
-        // } else {
-        //   loading = false
-        // }
-        let res = await API.Cart.shopCart(this.isFirstLoad)
+        let res = await API.Cart.shopCart()
         this.$wechat.hideLoading()
         if (res.error !== this.$ERR_OK) {
           this.isShowCart = true
