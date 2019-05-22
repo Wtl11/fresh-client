@@ -53,10 +53,9 @@
               </div>
             </div>
           </div>
+          <loading-more v-if="!classifyMore"></loading-more>
           <div class="foot-ties" v-if="classifyMore && classifyList[tabInx].length !== 0">
-            <div class="left lines"></div>
-            <div class="center">再拉也没有了</div>
-            <div class="bot lines"></div>
+            <div class="center">— 再拉也没有了 —</div>
           </div>
           <div class="noting" v-if="classifyMore && classifyList[tabInx].length === 0">
             <div class="notingimg"><img class="img" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'" alt=""></div>
@@ -73,12 +72,17 @@
   import API from '@api'
   import {cartMethods} from '@state/helpers'
   import ClearWatch from '@mixins/clear-watch'
+  import LoadingMore from '@components/loading-more/loading-more'
 
   const PAGE_NAME = 'CLASSIFY'
 
   export default {
     name: PAGE_NAME,
     mixins: [ClearWatch],
+    components: {
+      NavigationBar,
+      LoadingMore
+    },
     data() {
       return {
         tabList: [],
@@ -95,9 +99,6 @@
         boxTransition: '',
         lineTranslateX: 0
       }
-    },
-    components: {
-      NavigationBar
     },
     onLoad(options) {
       let res = this.$wx.getSystemInfoSync()
@@ -172,8 +173,7 @@
           goods_category_id: id,
           limit: 10,
           page: this.classifyPage
-        }, true).then((res) => {
-          this.$wechat.hideLoading()
+        }).then((res) => {
           if (res.error !== this.$ERR_OK) {
             return
           }
@@ -368,7 +368,7 @@
     .item
       white-space: nowrap
       font-family: $font-family-regular
-      font-size: $font-size-14
+      font-size: $font-size-13
       color: $color-text-main
       text-align: center
       display: inline-block
@@ -376,10 +376,10 @@
       width: $scroll-item-width
       height: 93px
       box-sizing: border-box
-      margin-top: 6px
       transform-origin: 50%
       .text
         width: 100%
+        margin-top: 6px
         text-overflow:ellipsis
         overflow:hidden
         white-space:nowrap
@@ -395,7 +395,7 @@
 
     .item-active
       font-family: $font-family-medium
-      font-size: $font-size-16
+      font-size: $font-size-15
       font-weight: bold
 
     .line-con
