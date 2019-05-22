@@ -16,7 +16,7 @@
         <div class="good-info">
           <div formType="submit" class="top" @click.stop="jumpGoodsDetail(item)">
             <div class="title">{{item.name}}</div>
-            <button formType="submit" class="del" @click.stop="delGoodsInfo(index, item.id)">
+            <button formType="submit" class="del" @click.stop="delGoodsInfo(index, item.goods_id)">
               <img class="del-img" v-if="imageUrl" :src="imageUrl + '/yx-image/cart/icon_delete@2x.png'" alt="">
             </button>
           </div>
@@ -29,14 +29,14 @@
               <div class="price" :class="'corp-' + corpName + '-money'" v-if="item.trade_price">
                 <span class="num">{{item.trade_price}}</span>
                 <span class="unit">元</span>
-                <img class="new-user-img" v-if="imageUrl && item.activity && item.activity.activity_type === 'new_client'" :src="imageUrl + '/yx-image/2.4/pic-newlabel@2x.png'" alt="">
+                <img class="new-user-img" v-if="imageUrl && item.is_new_client === 1 && item.activity && item.activity.activity_type === 'new_client'" :src="imageUrl + '/yx-image/2.4/pic-newlabel@2x.png'" alt="">
               </div>
             </div>
             <div class="right">
               <div class="number-box">
-                <button formType="submit" class="minus" @click.stop="subNum(index, item.num, item.id)">-</button>
+                <button formType="submit" class="minus" @click.stop="subNum(index, item.num, item.goods_id)">-</button>
                 <div class="num">{{item.num}}</div>
-                <button formType="submit" class="add" @click.stop="addNum(index, item.num, item.buy_limit, item.id)">+</button>
+                <button formType="submit" class="add" @click.stop="addNum(index, item.num, item.buy_limit, item.goods_id)">+</button>
               </div>
             </div>
           </div>
@@ -73,6 +73,7 @@
         <div v-for="(item, index) in recommendList" :key="index" class="list-item">
           <goods-item :item="item" @_getShopCart="_getShopCart"></goods-item>
         </div>
+        <loading-more v-if="hasMore"></loading-more>
         <div class="foot-ties" v-if="!hasMore">
           <div class="center">— 再拉也没有了 —</div>
         </div>
@@ -93,11 +94,20 @@
   import API from '@api'
   import {orderMethods, cartMethods} from '@state/helpers'
   import ClearWatch from '@mixins/clear-watch'
+  import LoadingMore from '@components/loading-more/loading-more'
 
   export default {
     beforeCreate() {
     },
     mixins: [ClearWatch],
+    components: {
+      WePaint,
+      ConfirmMsg,
+      NavigationBar,
+      CustomTabBar,
+      GoodsItem,
+      LoadingMore
+    },
     data() {
       return {
         msg: '确定删除该商品吗?',
@@ -112,7 +122,6 @@
         isShowNum: true,
         deliverAt: '',
         height: 0,
-        isFirstLoad: true,
         page: 1,
         limit: 10,
         hasMore: true
@@ -124,15 +133,9 @@
     onLoad() {
       let res = this.$wx.getSystemInfoSync()
       this.height = res.statusBarHeight >= 44 ? 28 : 0
-    },
-    async onShow() {
       if (!wx.getStorageSync('token')) return
-      await this._getShopCart()
-      this.page = 1
-      this.hasMore = true
-      this.recommendList = []
-      await this.getCarRecommend()
-      this.isFirstLoad = false
+      this._getShopCart()
+      this.getCarRecommend()
     },
     onReachBottom() {
       if (!this.hasMore) return
@@ -158,13 +161,7 @@
       ...orderMethods,
       ...cartMethods,
       async _getShopCart() {
-        // let loading = false
-        // if (this.goodsList.length === 0) {
-        //   loading = true
-        // } else {
-        //   loading = false
-        // }
-        let res = await API.Cart.shopCart(this.isFirstLoad)
+        let res = await API.Cart.shopCart()
         this.$wechat.hideLoading()
         if (res.error !== this.$ERR_OK) {
           this.isShowCart = true
@@ -188,7 +185,12 @@
           this.$wechat.showToast(res.message)
           return
         }
-        this.recommendList = this.recommendList.concat(res.data)
+        if (this.page === 1) {
+          this.recommendList = res.data
+        } else {
+          let arr = this.recommendList.concat(res.data)
+          this.recommendList = arr
+        }
         if (this.page === 5) {
           this.hasMore = false
         }
@@ -275,13 +277,6 @@
       toChoicenessPage() {
         wx.switchTab({url: '/pages/choiceness'})
       }
-    },
-    components: {
-      WePaint,
-      ConfirmMsg,
-      NavigationBar,
-      CustomTabBar,
-      GoodsItem
     }
   }
 </script>
