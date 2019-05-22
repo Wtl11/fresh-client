@@ -312,6 +312,8 @@
               </article>
             </section>
           </block>
+          <loading-more v-if="guessHasMore"></loading-more>
+          <is-end v-if="!guessHasMore"></is-end>
         </article>
       </block>
 
@@ -339,6 +341,8 @@
   import NewGuidelines from './new-guidelines/new-guidelines'
   import {TAB_ARR_CONFIG} from './config'
   import {ACTIVE_TYPE} from '@utils/contants'
+  import IsEnd from '@components/is-end/is-end'
+  import LoadingMore from '@components/loading-more/loading-more'
 
   const ald = getApp()
   const PAGE_NAME = 'CHOICENESS'
@@ -365,7 +369,9 @@
       NavigationBar,
       CustomTabBar,
       CouponModal,
-      NewGuidelines
+      NewGuidelines,
+      IsEnd,
+      LoadingMore
     },
     data() {
       // this._navigationBarHeight = 0
@@ -616,7 +622,7 @@
           } else {
             this.guessList = this.guessList.concat(arr)
           }
-          this.guessHasMore = arr.length || this.guessPage < 6
+          this.guessHasMore = this.guessPage < 5
         }).finally(() => {
           this._isLoading = false
         })
