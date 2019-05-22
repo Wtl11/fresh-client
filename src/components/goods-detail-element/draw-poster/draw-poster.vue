@@ -18,7 +18,7 @@
         </div>
       </div>
     </div>
-    <we-paint ref="wePaint" @drawDone="_drawPosterDone"></we-paint>
+<!--    <we-paint ref="wePaint" @drawDone="_drawPosterDone"></we-paint>-->
   </article>
 </template>
 

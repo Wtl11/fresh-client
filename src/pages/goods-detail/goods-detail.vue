@@ -54,23 +54,6 @@
               </div>
             </div>
           </section>
-<!--          <header-title-default-->
-<!--            v-if="activeType === 'DEFAULT'"-->
-<!--            :goodsMsg="goodsMsg"-->
-<!--          ></header-title-default>-->
-<!--          <header-title-flash-->
-<!--            ref="flash"-->
-<!--            v-if="activeType === ACTIVE_TYPE.FLASH"-->
-<!--            :goodsMsg="goodsMsg"-->
-<!--            :activityId="activityId"-->
-<!--            @kanTimeEnd="kanTimeEnd"-->
-<!--          >-->
-<!--          </header-title-flash>-->
-<!--          <header-title-common-active-->
-<!--            v-else-->
-<!--            :activeType="activeType"-->
-<!--            :goodsMsg="goodsMsg"-->
-<!--          ></header-title-common-active>-->
         </article>
       </section>
       <header-detail :goodsMsg="goodsMsg" :activityId="activityId" @showShare="handleShowShare"></header-detail>
@@ -88,16 +71,37 @@
         @buttonGroupNav="buttonGroupNav"
         @addShoppingCart="addShoppingCart"
       ></button-group>
-      <add-number ref="addNumber" :msgDetail="goodsMsg" :msgDetailInfo="buyGoodsInfo" @comfirmNumer="comfirmNumer"></add-number>
-      <link-group ref="groupList" :wechatInfo="groupInfo"></link-group>
-      <link-group ref="shareList" :linkType="2" @saveImg="_actionDrawPoster"></link-group>
-      <draw-poster
-        v-if="activityType === ACTIVE_TYPE.DEFAULT"
-        ref="drawPoster"
-        :goodsMsg="goodsMsg"
-        :shareImg="shareImg"
-      ></draw-poster>
+<!--      <draw-poster-->
+<!--        v-if="activityType === ACTIVE_TYPE.DEFAULT"-->
+<!--        ref="drawPoster"-->
+<!--        :goodsMsg="goodsMsg"-->
+<!--        :shareImg="shareImg"-->
+<!--      ></draw-poster>-->
+      <article class="share-goods" id="share-goods">
+        <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-sharegoods@2x.png'" class="share-bg" mode="aspectFill">
+        <div class="share-box">
+          <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/5@1x.png'" class="share-img" mode="aspectFill">
+          <div class="share-bottom">
+            <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/5@1x.png'" class="wem-img" mode="aspectFill">
+            <div class="share-title">智利J级车厘子250g</div>
+            <div class="share-sub-title">智利J级车厘子250g</div>
+            <div class="share-group-box">团购价</div>
+            <div class="price-box">
+              <div class="share-price-number">{{goodsMsg.trade_price}}</div>
+              <div class="share-price-icon">元</div>
+              <div class="share-price-line">
+                {{goodsMsg.original_price}}元
+                <i class="share-money-line"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
     </div>
+    <add-number ref="addNumber" :msgDetail="goodsMsg" :msgDetailInfo="buyGoodsInfo" @comfirmNumer="comfirmNumer"></add-number>
+    <link-group ref="groupList" :wechatInfo="groupInfo"></link-group>
+    <link-group ref="shareList" :linkType="2" @saveImg="_actionDrawPoster"></link-group>
+    <we-paint ref="wePaint" @drawDone="_drawPosterDone"></we-paint>
   </form>
 </template>
 
@@ -111,17 +115,16 @@
   import {resolveQueryScene, countDownHandle} from '@utils/common'
   import HeaderSwiper from '@components/goods-detail-element/header-swiper/header-swiper'
   import BuyUsers from '@components/goods-detail-element/buy-users/buy-users'
-  // import HeaderTitleDefault from '@components/goods-detail-element/header-title-default/header-title-default'
-  // import HeaderTitleFlash from '@components/goods-detail-element/header-title-flash/header-title-flash'
   import HeaderDetail from '@components/goods-detail-element/header-detail/header-detail'
-  // import HeaderTitleCommonActive from '@components/goods-detail-element/header-title-common-active/header-title-common-active'
   import LinkGroup from '@components/link-group/link-group'
   import BuyRecord from '@components/goods-detail-element/buy-record/buy-record'
   import DetailImage from '@components/goods-detail-element/detail-image/detail-image'
   import ServiceDescription from '@components/goods-detail-element/service-description/service-description'
-  import DrawPoster from '@components/goods-detail-element/draw-poster/draw-poster'
+  // import DrawPoster from '@components/goods-detail-element/draw-poster/draw-poster'
   import ButtonGroup from '@components/goods-detail-element/button-group/button-group'
   import AddNumber from '@components/add-number/add-number'
+  import WePaint from '@components/we-paint/we-paint'
+  import base64src from '@utils/create-qr-code-wx'
   import {BTN_STATUS, BTN_TEXT_CONSTANT} from './config'
 
   const PAGE_NAME = 'ACTIVE_DETAIL'
@@ -139,8 +142,6 @@
       NavigationBar,
       HeaderSwiper,
       BuyUsers,
-      // HeaderTitleDefault,
-      // HeaderTitleFlash,
       HeaderDetail,
       LinkGroup,
       BuyRecord,
@@ -148,8 +149,8 @@
       ServiceDescription,
       ButtonGroup,
       AddNumber,
-      DrawPoster
-      // HeaderTitleCommonActive
+      // DrawPoster,
+      WePaint
     },
     data() {
       return {
@@ -308,12 +309,13 @@
       },
       // 画商品海报
       _actionDrawPoster() {
+        console.log(this.shareImg)
         if (!this.shareImg) {
           this.$wechat.showToast('图片生成失败，请重新尝试！')
           this.getQrCode()
           return
         }
-        this.$refs.drawPoster && this.$refs.drawPoster.action()
+        this.action()
         this.$sendMsg({ event_no: 1005, goods_id: this.goodsId, title: this.goodsMsg.name })
       },
       // 添加购物车
@@ -324,7 +326,6 @@
         }
         let goodsId = this.goodsMsg.goods_sku_id || this.goodsMsg.goods_skus[0].goods_sku_id
         API.Choiceness.addShopCart({goods_sku_id: goodsId, activity_id: this.activityId}).then((res) => {
-          console.log(res)
           if (res.error === this.$ERR_OK) {
             this.$sendMsg({
               event_no: 1007,
@@ -417,6 +418,7 @@
       },
       // 显示分享控件
       handleShowShare() {
+        console.log(this.activityId)
         if (this.activityId) {
           return
         }
@@ -456,7 +458,6 @@
           this.shopId = shopId
         }
         this.shopId && wx.setStorageSync('shopId', this.shopId)
-        console.warn(options.activityType, '==->')
         this._initPageType(options.activityType)
       },
       _initPageType(type = 'DEFAULT') {
@@ -479,7 +480,11 @@
       },
       // 获取商品详情
       _getGoodsDetailData() {
-        API.Choiceness.getGoodsDetail(this.goodsId, {activity_id: this.activityId}, this.isFirstLoad).then((res) => {
+        let data = {
+          activity_id: this.activityId,
+          is_hot: this.activityType === ACTIVE_TYPE.GOODS_HOT_TAG ? 1 : 0
+        }
+        API.Choiceness.getGoodsDetail(this.goodsId, data, this.isFirstLoad).then((res) => {
           this.$wechat.hideLoading()
           if (res.error === this.$ERR_OK) {
             this.goodsMsg = res.data
@@ -518,6 +523,133 @@
             title: this.goodsMsg.name
           })
         }
+      },
+      async action() {
+        let name = this.goodsMsg.name.length >= 12 ? this.goodsMsg.name.slice(0, 12) + '...' : this.goodsMsg.name
+        let subName = this.goodsMsg.describe.length >= 12 ? this.goodsMsg.describe.slice(0, 12) + '...' : this.goodsMsg.describe
+        let qrCodeIsBase64 = /base64/i.test(this.shareImg)
+        try {
+          if (qrCodeIsBase64) {
+            this.shareImg = await base64src(this.shareImg)
+          }
+        } catch (e) {
+          console.error(e)
+        }
+        let backGroundImg
+        let moneyColor
+        switch (this.corpName) {
+          case 'platform':
+            backGroundImg = this.imageUrl + '/yx-image/choiceness/pic-sharegoods@2x.png'
+            moneyColor = '#FF8300'
+            break
+          case 'retuan':
+            backGroundImg = this.imageUrl + '/yx-image/retuan/pic-sharegoods@2x.png'
+            moneyColor = '#FC4D1A'
+            break
+          default:
+            break
+        }
+        let options = {
+          canvasId: 'we-paint',
+          multiple: 1,
+          panel: {
+            el: '#share-goods'
+          },
+          els: [
+            {
+              el: '#share-goods',
+              drawType: 'rect',
+              color: '#fff'
+            },
+            {
+              el: '#share-goods > .share-bg', // 背景图
+              drawType: 'img',
+              mode: 'aspectFill',
+              source: backGroundImg
+            },
+            {
+              el: '.share-box',
+              drawType: 'rect-shadow',
+              color: '#fff',
+              shadow: [0, 2, 22, 'rgba(0,0,0,0.10)', '#fff', 0]
+            },
+            {
+              el: '.share-box > .share-img', // 图片
+              drawType: 'img',
+              source: this.goodsMsg.goods_cover_image,
+              mode: 'aspectFill'
+            },
+            {
+              el: '.share-title', // 店铺名称
+              drawType: 'text-area',
+              source: name,
+              fontSize: 16,
+              color: '#1f1f1f'
+            },
+            {
+              el: '.share-sub-title', // 签名
+              drawType: 'text-area',
+              source: subName,
+              fontSize: 14,
+              align: 'left',
+              color: '#808080'
+            },
+            {
+              el: '.share-group-box',
+              drawType: 'text-area',
+              source: '团购价',
+              fontSize: 14,
+              color: moneyColor
+            },
+            {
+              el: '.share-price-number',
+              drawType: 'text',
+              source: this.goodsMsg.trade_price,
+              fontSize: 30,
+              color: moneyColor
+            },
+            {
+              el: '.share-price-icon',
+              drawType: 'text',
+              source: '元',
+              fontSize: 17,
+              color: moneyColor
+            },
+            {
+              el: '.share-price-line',
+              drawType: 'text',
+              source: `${this.goodsMsg.original_price}元`,
+              fontSize: 17,
+              color: '#B7B7B7'
+            },
+            {
+              el: '.share-money-line',
+              drawType: 'rect',
+              color: '#b7b7b7'
+            },
+            {
+              el: '.share-bottom > .wem-img',
+              drawType: 'img',
+              source: this.shareImg,
+              unLoad: /tmp/i.test(this.shareImg)
+              // source: qrCode
+            }
+          ]
+        }
+        this.$refs.wePaint && this.$refs.wePaint.action(options, false)
+      },
+      _drawPosterDone(pic) {
+        this.pic = pic
+        // 保存到本地，并预览
+        // this.$wx.saveImageToPhotosAlbum({
+        //   filePath: pic,
+        //   success: () => {
+        //   },
+        //   fail: () => {
+        //     // 拒绝授权重新调起授权
+        //     this.$wx.openSetting()
+        //   }
+        // })
       }
     }
   }
@@ -539,6 +671,91 @@
         left: 12px
         right :@left
         bottom: -1px
+  // 画图
+  .share-goods
+    padding: 32.8vw 5.3vw 17vw
+    box-sizing: border-box
+    position: fixed
+    width: 100vw
+    height: 100vh
+    right :-100%
+    .share-bg
+      position: absolute
+      left: 0
+      top: 0
+      height: 52.5vw
+      width: 100vw
+      display: block
+      z-index: 9
+    .share-box
+      border-radius: 10px
+      background: #fff
+      box-shadow: 0 2px 11px 0 rgba(0, 0, 0, 0.10)
+      z-index: 11
+      position: relative
+      .share-img
+        display: block
+        width: 89.4vw
+        height: 89.4vw
+        border-top-left-radius: 10px
+        border-top-right-radius: 10px
+    .share-bottom
+      padding: 15px 15px 30px
+      position: relative
+    .wem-img
+      position: absolute
+      right: 15px
+      bottom: 15px
+      width: 90px
+      height: 90px
+      display: block
+    .share-title
+      font-size: $font-size-16
+      color: #1f1f1f
+      font-family: $font-family-medium
+      margin-bottom: 5px
+    .share-sub-title
+      font-size: $font-size-14
+      color: $color-text-sub
+      font-family: $font-family-regular
+      margin-bottom: 16px
+    .share-group-box
+      font-size: $font-size-14
+      color: $color-money
+      font-family: $font-family-regular
+      width: 55px
+      height: 20px
+      text-align: center
+      line-height: 20px
+      margin-bottom: -5px
+    .price-box
+      layout(row)
+      align-items: flex-end
+      .share-price-number
+        font-size: 30px
+        color: $color-money
+        font-family: $font-family-medium
+        line-height: 1
+        margin-right: 1px
+      .share-price-icon
+        font-size: $font-size-17
+        color: $color-money
+        font-family: $font-family-medium
+        line-height: 1
+        margin-right: 1px
+        padding-bottom: 2px
+      .share-price-line
+        font-size: $font-size-17
+        color: #b7b7b7
+        font-family: $font-family-regular
+        line-height: 1
+        padding-bottom: 2px
+        position: relative
+        .share-money-line
+          height: 1px
+          width: 100%
+          background: #888
+          col-center()
   // 普通商品
   .header-title-default
     height: 13vw
