@@ -41,6 +41,7 @@
     },
     onUnload() {
       this.currentNum = 1
+      this.goodsBanner = []
     },
     methods: {
       bannerChange(e) {

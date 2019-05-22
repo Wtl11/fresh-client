@@ -240,6 +240,7 @@
               </li>
             </ul>
           </section>
+          <div v-else style="height: 8px"></div>
 <!--          平团返现等各个活动-->
           <block v-for="(item, index) in otherActiveList" :key="index">
             <section class="panel"
@@ -481,12 +482,11 @@
       }
     },
     onLoad(options) {
-      // SYSTEM_INFO = wx.getSystemInfoSync()
       this.$wechat.showLoading()
       this._initPageParams(options)
       this._initLocation()
-      this._groupInfo(false)
-      // this._getNotify()
+      // this._groupInfo(false)
+      // this._getGuessList()
     },
     async onReady() {
       await this._initNavigationStatus()
@@ -497,9 +497,6 @@
     },
     onPageScroll(e) {
       this._helpObserver(e)
-      // const flag = this._changeNavigation(e)
-      // this._goodsSearchScrollEvent(flag)
-      // this._classifyScrollEvent(e)
     },
     async onShow() {
       if (this._sharing) {
@@ -517,9 +514,14 @@
         // 获取团的信息
         if (this.curShopId * 1 !== this.shopId * 1) {
           this.$wechat.showLoading()
+          wx.pageScrollTo({
+            scrollTop: 0,
+            duration: 0
+          })
           this.curShopId = this.shopId
           this._resetBanner()
           this._resetFlash()
+          this._resetGuessParams()
           this._groupInfo(false)
         }
         this._getNotify()
@@ -527,7 +529,6 @@
         this._initTabInfo()
         await Promise.all([this._getFlashList(), this._getTodayHostList(), this._getNewClientList()])
         this._addMonitor()
-        this._getGuessList()
         if (!wx.getStorageSync('token')) return
         this.setCartCount()
       } catch (e) {
@@ -542,11 +543,13 @@
     },
     async onPullDownRefresh() {
       this._refreshLocation()
+      this._resetGuessParams()
       this._getCouponModalList()
       this._groupInfo(false)
       this._getNotify()
       try {
         await this._getModuleInfo(false)
+        this._initTabInfo()
         await Promise.all([this._getFlashList(), this._getTodayHostList(), this._getNewClientList()])
         this._addMonitor()
         this._getGuessList()
@@ -614,15 +617,15 @@
       },
       _getGuessList() {
         this._isLoading = true
-        API.Home.getGuessList({page: this.guessPage, limit: 10}).then(res => {
+        const page = Math.floor(this.guessList.length / 10) + 1
+        API.Home.getGuessList({page, limit: 10}).then(res => {
           let arr = this._formatListPriceData(res.data)
           if (this.guessPage === 1) {
             this.guessList = arr
           } else if (this.guessList.length / 10 < this.guessPage) {
             this.guessList = this.guessList.concat(arr)
-            // console.log(this.guessList, '12313')
           }
-          this.guessHasMore = this.guessPage < 5
+          this.guessHasMore = arr.length
         }).finally(() => {
           this._isLoading = false
         })
@@ -696,6 +699,9 @@
               if (res.intersectionRatio > 0 && !this._isScrolling) {
                 this._isHelpScroll = false
                 this.activeTabIndex = res.id.replace('panel', '') * 1
+                if (this.activeTabInfo.length - 1 === this.activeTabIndex && this.guessList.length <= 0) {
+                  this.this._getGuessList()
+                }
               }
             })
           wx.createSelectorQuery()
@@ -841,11 +847,6 @@
       },
       // 获取限时活动列表
       async _getFlashList(module, loading) {
-        // if (!module) {
-        //   let index = this.moduleArray.findIndex(val => val.module_name === 'activity_fixed')
-        //   index > 0 && (module = this.moduleArray[index])
-        // }
-        // if (!module && !module.content_data) return
         if (!this.flashTabInfo[this.flashTabIndex]) return
         let data = {
           activity_id: this.flashTabInfo[this.flashTabIndex].id || 0
@@ -861,20 +862,12 @@
       async _getFlashTabList(loading = false) {
         try {
           let res = await API.FlashSale.getFlashTabList('', loading)
-          // let index = this.moduleArray.findIndex(val => val.module_name === 'activity_fixed')
           this.flashTabInfo = res.data || []
           await this._getFlashList()
         } catch (e) {
           console.error(e)
         }
       },
-      // 获取所有活动的列表
-      // _getAllActiveList() {
-      //   this.moduleArray.forEach((item) => {
-      //     const key = MODULE_ARR_METHODS[item.module_name]
-      //     key && this[key](item)
-      //   })
-      // },
       // 跳转-商品详情
       jumpGoodsDetail(item) {
         wx.navigateTo({
@@ -926,130 +919,6 @@
           console.warn(e)
         }
       },
-      // 分类滚动
-      _classifyScrollEvent(e) {
-        // if (classifyTabScrolling) return
-        // const currentScrollTop = e.scrollTop + navigationBarHeight
-        // const t10 = classifyScrollHeight + classifyTabPosition
-        // const t15 = classifyScrollHeight + classifyTabPosition * 1.1
-        // const t20 = classifyScrollHeight + classifyTabPosition * 1.5
-        // if (currentScrollTop < t10) {
-        //   this.classifyStyles = ''
-        // }
-        // if (currentScrollTop > t10 && currentScrollTop < t15) {
-        //   this._setClassifyStyles(0, 1, 0)
-        // }
-        // if (currentScrollTop >= t15 && currentScrollTop <= t20) {
-        //   this._setClassifyStyles(0, 1)
-        // }
-        // if (currentScrollTop > t20) {
-        //   this._setClassifyStyles(classifyTabPosition, 1)
-        // }
-      },
-      // // 设置分类滚动时的样式
-      // _setClassifyStyles(y, opacity, time = 300) {
-      //   this.classifyStyles = `
-      //     opacity:${opacity};
-      //     top:${navigationBarHeight - classifyTabPosition}px;
-      //     position:fixed;
-      //     left:0;
-      //     z-index:90;
-      //     transform:translate3d(0,${y}px,0);
-      //     transition: transform ${time}ms ease-out
-      //   `
-      // },
-      // 获取tab位置信息
-      // _getTabPosition() {
-      //   const query = wx.createSelectorQuery()
-      //   return new Promise((resolve, reject) => {
-      //     setTimeout(() => {
-      //       query.select('#navigationBar').boundingClientRect()
-      //         // .select('#homePosition').boundingClientRect()
-      //         // .select('#homeBanner').boundingClientRect()
-      //         // .select('#homeFlashSale').boundingClientRect()
-      //         // .select('#homeEmpty').boundingClientRect()
-      //         // .select('#scrollView-relative').boundingClientRect()
-      //         // .select('#notice').boundingClientRect()
-      //         .exec(res => {
-      //           // let height = 0
-      //           res.forEach(item => {
-      //             if (item && item.height) {
-      //               item.id === 'navigationBar' && (this.navigationBarHeight = item.height)
-      //               // if (item.id === 'scrollView-relative') {
-      //               //   classifyTabPosition = item.height
-      //               // } else {
-      //               //   height += item.height
-      //               // }
-      //             }
-      //           })
-      //           // if (classifyScrollHeight !== height + 10) {
-      //           //   classifyScrollHeight = height + 10
-      //           // }
-      //           resolve()
-      //         })
-      //     }, 500)
-      //   })
-      // },
-      // 获取商品分类列表
-      // async _getClassifyList(loading) {
-      //   if (!this.classifyMore) return
-      //   let current = this.classifyTabArray[classifyTabIndex] || {}
-      //   // current.id = 0 // todo
-      //   try {
-      //     const data = {
-      //       goods_category_id: current.id || 0,
-      //       page: classifyPage
-      //     }
-      //     isLoading = true
-      //     let res = await API.FlashSale.getClassifyList(data, loading)
-      //     if (res.meta.current_page === 1) {
-      //       this.classifyArray = res.data
-      //       this.classifyShowEmpty = res.meta.total === 0
-      //     } else {
-      //       const arr = this.classifyArray
-      //       res.data.forEach((item) => {
-      //         arr.push(item)
-      //       })
-      //       this.classifyArray = arr
-      //     }
-      //     this.classifyMore = res.meta.current_page < res.meta.last_page
-      //     wx.nextTick(() => {
-      //       isLoading = false
-      //     })
-      //   } catch (e) {
-      //     isLoading = false
-      //     console.error(e)
-      //   }
-      // },
-      // // 重置参数
-      // _resetGetClassifyListParams() {
-      //   classifyPage = 1
-      //   this.classifyMore = true
-      //   isLoading = false // loading-more
-      //   this.$refs.homeBanner && this.$refs.homeBanner._resetIndex()
-      // },
-      // // tab切换
-      // classifyChangeTab(index, id, e) {
-      //   if (this.classifyStyles) {
-      //     this.classifyStyles = ''
-      //     classifyTabScrolling = true
-      //     setTimeout(() => {
-      //       classifyTabScrolling = false
-      //     }, 100)
-      //     wx.pageScrollTo({
-      //       scrollTop: classifyScrollHeight - navigationBarHeight,
-      //       duration: 0
-      //     })
-      //   }
-      //   classifyTabIndex = index
-      //   this._resetGetClassifyListParams()
-      //   this._getClassifyList(false)
-      // },
-      // // tab切换
-      // flashChangeTab(item, index) {
-      //   flashTabIndex = index
-      //   this._getFlashTabList(false)
-      // },
       // 初始化地理位置
       _initLocation() {
         const locationShow = wx.getStorageSync('locationShow') * 1
@@ -1258,12 +1127,12 @@
               .m-unit
                 margin-left :1px
                 position :relative
-                bottom :4px
+                bottom :5px
                 font-size: 12px
               .m-origin
                 margin-left :6px
                 position :relative
-                bottom :3.5px
+                bottom :4px
                 font-family: $font-family-regular
                 font-size: 12px;
                 color: #B7B7B7;

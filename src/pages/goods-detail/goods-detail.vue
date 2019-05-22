@@ -4,7 +4,20 @@
       <navigation-bar ref="navigationBar" :title="msgTitle" :showArrow="true" :translucent="false"></navigation-bar>
       <section class="banner-box">
         <buy-users :buyUsers="buyUsers"></buy-users>
-        <header-swiper :goodsMsg="goodsMsg"></header-swiper>
+<!--        <header-swiper :goodsMsg="goodsMsg"></header-swiper>-->
+        <div class="header-swiper">
+          <swiper v-if="goodsBanner && goodsBanner.length" class="banner" @change="bannerChange" interval="5000">
+            <block v-for="(item, index) in goodsBanner" :key="index">
+              <swiper-item class="banner-item">
+                <img :src="item.image_url + '?' + goodsMsg.image_view" class="item-img item-img-one" mode="aspectFill">
+                <img :src="item.image_url" class="item-img item-img-two" mode="aspectFill">
+              </swiper-item>
+            </block>
+          </swiper>
+          <article class="banner-number" v-if="goodsBannerLength !== 0">
+            <div class="banner-number-box">{{currentNum}}/{{goodsBannerLength}}</div>
+          </article>
+        </div>
         <article class="header-title-wrapper">
           <section v-if="activityType === ACTIVE_TYPE.FLASH" class="header-title">
             <div class="banner-title-main">
@@ -113,7 +126,7 @@
   import ShareHandler, {EVENT_CODE} from '@mixins/share-handler'
   import API from '@api'
   import {resolveQueryScene, countDownHandle} from '@utils/common'
-  import HeaderSwiper from '@components/goods-detail-element/header-swiper/header-swiper'
+  // import HeaderSwiper from '@components/goods-detail-element/header-swiper/header-swiper'
   import BuyUsers from '@components/goods-detail-element/buy-users/buy-users'
   import HeaderDetail from '@components/goods-detail-element/header-detail/header-detail'
   import LinkGroup from '@components/link-group/link-group'
@@ -127,7 +140,7 @@
   import {BTN_STATUS, BTN_TEXT_CONSTANT} from './config'
 
   const PAGE_NAME = 'ACTIVE_DETAIL'
-  const PAGE_ROUTE_NAME = 'active-detail'
+  const PAGE_ROUTE_NAME = 'goods-detail'
   const EVENT_NO_CONFIG = {
     [SCENE_QR_CODE]: 1001,
     [SCENE_SHARE]: 1002,
@@ -139,7 +152,7 @@
     mixins: [clearWatch, ShareHandler],
     components: {
       NavigationBar,
-      HeaderSwiper,
+      // HeaderSwiper,
       BuyUsers,
       HeaderDetail,
       LinkGroup,
@@ -171,10 +184,17 @@
           minute: '00',
           second: '00'
         },
-        timer: null
+        timer: null,
+        currentNum: 1
       }
     },
     computed: {
+      goodsBanner() {
+        return this.goodsMsg.goods_banner_images || []
+      },
+      goodsBannerLength() {
+        return this.goodsBanner.length || 0
+      },
       iconText() {
         let text = ''
         switch (this.activityType) {
@@ -286,6 +306,11 @@
     methods: {
       ...orderMethods,
       ...cartMethods,
+      bannerChange(e) {
+        if (e.target.current) {
+          this.currentNum = e.target.current * 1 + 1
+        }
+      },
       _kanTimePlay(diff) {
         this.activityTime = countDownHandle(diff)
         this.timer = setTimeout(() => {
@@ -364,13 +389,31 @@
         let entryAppType = wx.getStorageSync('entryAppType')
         this.eventNo = EVENT_NO_CONFIG[entryAppType]
       },
+      _checkIsNewClient() {
+        let flag = (this.goodsList && this.goodsList.some(val => val.activity.activity_type === ACTIVE_TYPE.NEW_CLIENT))
+        if (flag) {
+          API.Global.checkIsNewCustomer().then(res => {
+            this.isShowNewCustomer = res.data.is_new_client === 0
+          })
+        }
+      },
       // addNumber控件确定按钮
-      comfirmNumer(number) {
+      async comfirmNumer(number) {
         let goodsList = this.goodsMsg.goods_skus[0]
         goodsList.sku_id = this.goodsMsg.goods_sku_id || goodsList.goods_sku_id
         goodsList.num = number
         goodsList.goods_units = this.goodsMsg.goods_units
-        const total = (goodsList.trade_price * number).toFixed(2)
+        let price = goodsList.trade_price
+        try {
+          let res = await API.Global.checkIsNewCustomer()
+          if (res.data.is_new_client === 0) {
+            price = this.goodsMsg.goods_sale_price
+            goodsList.trade_price = price
+          }
+        } catch (e) {
+          console.warn(e)
+        }
+        const total = (price * number).toFixed(2)
         goodsList.activity = this.goodsMsg.activity
         let orderInfo = {
           goodsList: new Array(goodsList),
@@ -641,15 +684,15 @@
       _drawPosterDone(pic) {
         this.pic = pic
         // 保存到本地，并预览
-        // this.$wx.saveImageToPhotosAlbum({
-        //   filePath: pic,
-        //   success: () => {
-        //   },
-        //   fail: () => {
-        //     // 拒绝授权重新调起授权
-        //     this.$wx.openSetting()
-        //   }
-        // })
+        this.$wx.saveImageToPhotosAlbum({
+          filePath: pic,
+          success: () => {
+          },
+          fail: () => {
+            // 拒绝授权重新调起授权
+            this.$wx.openSetting()
+          }
+        })
       }
     }
   }
@@ -671,6 +714,49 @@
         left: 12px
         right :@left
         bottom: -1px
+  // banner图
+  .header-swiper
+    width: 100vw
+    height: 100vw
+    position: relative
+    .banner
+      width: 100vw
+      height: 100vw
+      .banner-item
+        width: 100%
+        height: 100%
+        position: relative
+        .item-img
+          width: 100%
+          height: 100%
+          position: absolute
+          left: 0
+          top: 0
+        .item-img-one
+          z-index: 1
+        .item-img-two
+          z-index: 2
+        .play
+          all-center()
+          height: 63px
+          width: 63px
+    .banner-number
+      position: absolute
+      bottom: 13.3vw
+      left: 0
+      layout(row)
+      align-items: center
+      justify-content: center
+      width: 100%
+      .banner-number-box
+        display: inline-block
+        font-size: $font-size-12
+        background: rgba(0, 0, 0, .5)
+        color: $color-white
+        box-sizing: border-box
+        padding: 3px 8px 4px
+        border-radius: 20px
+
   // 画图
   .share-goods
     padding: 32.8vw 5.3vw 17vw
