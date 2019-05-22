@@ -1,8 +1,8 @@
 <template>
   <form action="" report-submit @submit="$getFormId">
     <div class="share-pop">
-      <div scroll-y class="share-box" v-show="show" @touchmove.prevent="" @click.stop="hide"></div>
-      <div class="share-main" :class="show ? 'show' : ''">
+      <div class="share-box" v-show="showMain" @touchmove.prevent="" @click.stop="hide"></div>
+      <div class="share-main" :class="showMain ? 'show' : ''">
         <p class="tip">拼团已发起，人满后即可发货</p>
         <div class="content">
           <p class="title">
@@ -25,15 +25,15 @@
     name: COMPONENT_NAME,
     data() {
       return {
-        show: false
+        showMain: false
       }
     },
     methods: {
       hide() {
-        this.show = false
+        this.showMain = false
       },
       show() {
-        this.show = true
+        this.showMain = true
       }
     }
   }

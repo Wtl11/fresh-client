@@ -1,47 +1,53 @@
 <template>
   <div class="collage-detail">
     <navigation-bar title="拼团详情"></navigation-bar>
+    <input type="text" v-model="status">
+    <span @click="changeStatus">确定</span>
     <p v-if="topText1" class="top-text">该活动仅支持： 国际单位社区</p>
     <p v-if="topText2" class="top-text">当前社区不支持拼团活动: 国际单位社区</p>
-    <!--商品信息-->
-    <div v-if="goodsBox" class="goods-box">
-      <div class="goods-detail">
-        <img src="" alt="" class="goods-img">
-        <div class="right-content">
-          <p class="title">超值特惠 4斤新鲜柠檬是是三三首饰所所死侍死侍</p>
-          <p class="context">脆嫩爽口，酸甜多汁，口感脆嫩，新鲜美味</p>
-          <div class="marks">
-            <span class="total">200人已拼</span>
-            <span class="count">3人团</span>
+    <div class="top-msg">
+      <!--商品信息-->
+      <div v-if="goodsBox" class="goods-box">
+        <div class="goods-detail">
+          <img src="" alt="" class="goods-img">
+          <div class="right-content">
+            <p class="title">超值特惠 4斤新鲜柠檬是是三三首饰所所死侍死侍</p>
+            <p class="context">脆嫩爽口，酸甜多汁，口感脆嫩，新鲜美味</p>
+            <div class="marks">
+              <span class="total">200人已拼</span>
+              <span class="count">3人团</span>
+            </div>
+            <p class="price">
+              <span class="money">3.8</span>
+              <span class="unit">元</span>
+            </p>
           </div>
-          <p class="price">
-            <span class="money">3.8</span>
-            <span class="unit">元</span>
-          </p>
         </div>
       </div>
-    </div>
 
-    <p v-if="statusText" class="status-text"><img :src="imageUrl + '/yx-image/collage/'+ data.icon +'@2x.png'" alt="" class="icon">{{data.statusText}}</p>
-    <p v-if="statusTip1" class="status-tip">还差<span class="mark">1</span>人，快喊邻居一起来拼团吧</p>
-    <p v-if="statusTip2" class="status-tip">仅剩<span class="mark">1</span>个名额</p>
-    <p v-if="runTime" class="run-time">剩余 <span class="time-num">{{timeArr[0]}}</span>:<span class="time-num">{{timeArr[1]}}</span>:<span class="time-num">{{timeArr[2]}}</span></p>
+      <p v-if="statusText" class="status-text" :class="{'orange': orangeStatus}"><img :src="imageUrl + '/yx-image/collage/'+ data.icon +'@2x.png'" alt="" class="icon">{{data.statusText}}</p>
+      <p v-if="statusTip1" class="status-tip">还差<span class="mark">1</span>人，快喊邻居一起来拼团吧</p>
+      <p v-if="statusTip2" class="status-tip status-tip2">仅剩<span class="mark">1</span>个名额</p>
+      <p v-if="runTime" class="run-time">剩余 <span class="time-num">{{timeArr[0]}}</span>:<span class="time-num">{{timeArr[1]}}</span>:<span class="time-num">{{timeArr[2]}}</span></p>
 
-    <!--头像-->
-    <div class="heads">
-      <div v-for="(item, index) in headArr" :key="index" class="head-box" :class="[{'small-head': headArr.length > 4}, {'has-border': false}]">
+      <!--头像-->
+      <div v-if="headShow" class="heads">
+        <div v-for="(item, index) in headArr" :key="index" class="head-box" :class="[{'small-head': headArr.length > 4}, {'has-border': false}]">
 
-        <img :src="imageUrl + '/yx-image/collage/pic-touxiang@2x.png'" alt="" class="logo">
+          <img :src="imageUrl + '/yx-image/collage/pic-touxiang@2x.png'" alt="" class="logo">
 
-        <span v-if="index === 0" class="tag">拼主</span>
+          <span v-if="index === 0" class="tag">拼主</span>
+        </div>
       </div>
-    </div>
 
-    <button class="btn" open-type="share">{{data.btn}}</button>
+      <!--<button class="btn" open-type="share">{{data.btn}}</button>-->
+      <div class="btn" @click="clickBtn">{{data.btn}}</div>
+      <p v-if="botTip" class="bot-tip">分享邻居越多，成团越快</p>
+    </div>
     <!--<div class="btn" @click="_initLocation">获取位置信息</div>-->
-    <p v-if="botTip" class="bot-tip">分享邻居越多，成团越快</p>
+
     <div v-if="goods || time" class="line"></div>
-    <div v-if="goods" class="goods">
+    <div v-if="goods" class="goods" @click="toDetail">
       <span class="label">拼团商品</span>
       <p class="text">精品油桃3公斤装，整箱...<img :src="imageUrl + '/yx-image/collage/icon-pressed@2x.png'" class="icon"></p>
     </div>
@@ -51,7 +57,7 @@
     </div>
 
     <!--进度-->
-    <div class="progress-handle">
+    <div v-if="progressShow" class="progress-handle">
       <div class="progress-bg">
         <span class="progress" :style="{width: (19 + 33.333*step) + '%'}"></span>
         <span v-for="(item, index) in progress" :key="index" :style="{left: -2 + (index * 33.333) + '%'}" class="step" :class="{'active': step >= index}">{{item}}</span>
@@ -60,7 +66,7 @@
     </div>
 
     <!--分享-->
-    <share-pop ref="shareList"></share-pop>
+    <share-pop ref="sharePop"></share-pop>
 
     <!--猜你喜欢-->
     <div v-if="recommend" class="recommend">
@@ -110,21 +116,21 @@
       status: 3,
       statusText: '拼团成功',
       btn: '查看我的订单',
-      step: 2,
+      step: 3,
       icon: 'icon-success'
     },
     {
       type: 'master',
       status: 4,
       statusText: '拼团失败',
-      btn: '查看更多拼团商品',
+      btn: '查看别的拼团',
       step: 1,
       icon: 'icon-failure'
     },
     // 已参团
     {
       type: 'customer',
-      status: 2,
+      status: 5,
       statusText: '待成团',
       btn: '邀请邻居参团',
       step: 1,
@@ -132,7 +138,7 @@
     },
     {
       type: 'customer',
-      status: 5,
+      status: 6,
       statusText: '参团成功',
       btn: '查看我的订单',
       step: 1,
@@ -140,7 +146,7 @@
     },
     {
       type: 'customer',
-      status: 6,
+      status: 7,
       statusText: '拼团成功',
       btn: '看看别的拼团',
       step: 2,
@@ -148,7 +154,7 @@
     },
     {
       type: 'customer',
-      status: 4,
+      status: 8,
       statusText: '拼团失败',
       btn: '查看更多拼团商品',
       step: 1,
@@ -156,7 +162,7 @@
     },
     {
       type: 'customer',
-      status: 7,
+      status: 9,
       statusText: '不在范围',
       btn: '查看更多拼团商品',
       step: 1,
@@ -165,7 +171,7 @@
     // 未参与
     {
       type: 'customer',
-      status: 8,
+      status: 10,
       statusText: '',
       btn: '一键参团',
       step: 1,
@@ -173,7 +179,7 @@
     },
     {
       type: 'customer',
-      status: 9,
+      status: 11,
       statusText: '该团已满',
       btn: '我来开团',
       step: '',
@@ -181,7 +187,7 @@
     },
     {
       type: 'customer',
-      status: 10,
+      status: 12,
       statusText: '该团已结束',
       btn: '看看别的拼团活动',
       step: '',
@@ -204,7 +210,8 @@
         timeArr: [],
         recommendList: [],
         step: STATUS_ARR[0].step,
-        data: STATUS_ARR[0]
+        data: STATUS_ARR[0],
+        status: 0
       }
     },
     computed: {
@@ -212,13 +219,14 @@
         return +this.data.status === 1
       },
       topText2() { // 不在范围
-        return +this.data.status === 7
+        return +this.data.status === 9
       },
       goodsBox() {
-        if (+this.data.status === 2 ||
-          +this.data.status === 3 ||
-          +this.data.status === 4 ||
-          +this.data.status === 8
+        if (+this.data.status === 5 ||
+          +this.data.status === 6 ||
+          +this.data.status === 7 ||
+          +this.data.status === 8 ||
+          +this.data.status === 10
         ) {
           return true
         }
@@ -228,8 +236,13 @@
         if (+this.data.status === 1 ||
           +this.data.status === 2 ||
           +this.data.status === 3 ||
-          +this.data.status === 9 ||
-          +this.data.status === 10
+          +this.data.status === 4 ||
+          +this.data.status === 5 ||
+          +this.data.status === 6 ||
+          +this.data.status === 7 ||
+          +this.data.status === 8 ||
+          +this.data.status === 11 ||
+          +this.data.status === 12
         ) {
           return true
         }
@@ -238,27 +251,38 @@
       statusTip1() {
         if (+this.data.status === 1 ||
           +this.data.status === 2 ||
-          +this.data.status === 4
+          +this.data.status === 4 ||
+          +this.data.status === 5 ||
+          +this.data.status === 6
         ) {
           return true
         }
         return false
       },
       statusTip2() {
-        return +this.data.status === 7
+        if (+this.data.status === 9 || +this.data.status === 10) {
+          return true
+        }
+        return false
       },
       runTime() {
         if (+this.data.status === 1 ||
           +this.data.status === 2 ||
           +this.data.status === 4 ||
-          +this.data.status === 8
+          +this.data.status === 5 ||
+          +this.data.status === 6 ||
+          +this.data.status === 9 ||
+          +this.data.status === 10
         ) {
           return true
         }
         return false
       },
+      headShow() {
+        return +this.data.status !== 12
+      },
       botTip() {
-        if (+this.data.status !== 4 && +this.data.status !== 9 && +this.data.status !== 10) {
+        if (+this.data.status !== 4 && +this.data.status !== 11 && +this.data.status !== 12) {
           return true
         }
         return false
@@ -273,13 +297,25 @@
         return false
       },
       time() {
-        if (+this.data.status !== 9 && +this.data.status !== 10) {
+        if (+this.data.status !== 11 && +this.data.status !== 12) {
+          return true
+        }
+        return false
+      },
+      progressShow() {
+        if (+this.data.status !== 11 && +this.data.status !== 12) {
           return true
         }
         return false
       },
       recommend() {
-        if (+this.data.status === 9 || +this.data.status === 10) {
+        if (+this.data.status === 11 || +this.data.status === 12) {
+          return true
+        }
+        return false
+      },
+      orangeStatus() {
+        if (+this.data.status === 4 || +this.data.status === 8 || +this.data.status === 11 || +this.data.status === 12) {
           return true
         }
         return false
@@ -320,8 +356,19 @@
       await this.getCarRecommend()
     },
     methods: {
+      changeStatus() {
+        this.data = STATUS_ARR[this.status]
+        this.step = STATUS_ARR[this.status].step
+      },
+      clickBtn() {
+        this.showShare()
+      },
       showShare() {
         this.$refs.sharePop.show()
+      },
+      toDetail() {
+        let id = this.data.id
+        wx.navigateTo({url: `/pages/goods-detail?id=${id}`})
       },
       timeHandle() {
         let defaultTime = new Date().getTime() + 60 * 60 * 100 * 24
@@ -402,9 +449,12 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@designCommon"
+  .top-msg
+    padding-bottom: 13px
   .goods-box
     background: #F7F7F7
     padding-bottom: 12px
+    margin-bottom: 7px
   .goods-detail
     padding: 15px 13px
     display: flex
@@ -477,7 +527,7 @@
     font-size: 22px
     display: flex
     align-items: center
-    margin-top: 22px
+    margin: 22px 0 31px
     justify-content: center
     .icon
       width: 35px
@@ -485,13 +535,16 @@
       border-radius: 50%
       margin-right: 4px
       background: #ccc
+  .orange
+    color: #FF8506
   .status-tip
-    margin-top: 30px
     font-size: $font-size-14
     font-family: $font-family-medium
     text-align: center
     .mark
       color: #FA7500
+  .status-tip2
+    margin-top: 30px
   .run-time
     font-family: $font-family-regular
     font-size: $font-size-14
@@ -518,6 +571,8 @@
         margin-left: 6px
   .heads
     padding: 0 12px
+    margin-top: 28px
+    margin-bottom: 25px
     display: flex
     align-items: center
     justify-content: center
@@ -525,7 +580,6 @@
       flex: 0 0 1
       height: 50px
       margin: 0 4%
-      margin-top: 28px
       border-radius: 50%
       position: relative
     .small-head
@@ -550,8 +604,7 @@
       font-family: $font-family-medium
   .btn
     margin: 0 auto
-    margin-top: 25px
-    width: 270px
+    width: 72%
     height: 45px
     line-height: 45px
     text-align: center
@@ -560,13 +613,13 @@
     font-family: $font-family-medium
     border-radius: 50px
     background: $color-main
+    margin-bottom: 12px
   .bot-tip
-    margin-top: 12px
     color: $color-text-assist
     font-size: 13px
     font-family: $font-family-regular
     text-align: center
-    margin-bottom: 15px
+    margin-bottom: 7px
   .line
     height: 10px
     background: #F7F7F7
