@@ -546,8 +546,8 @@
   .order-nav-box
     box-shadow: 0 4px 30px 0 rgba(17, 17, 17, 0.06)
     border-radius: 6px
-    margin: 17px auto 0
-    width: 93.6vw
+    /*width: 93.6vw*/
+    margin: 17px 12px 0 12px
     background: $color-white
     overflow: hidden
     position :relative
