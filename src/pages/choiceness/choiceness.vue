@@ -370,6 +370,8 @@
     data() {
       // this._navigationBarHeight = 0
       // this._navigationIO = null
+      this._isLoading = false
+      this._isHelpScroll = false
       return {
         ACTIVE_TYPE,
         // 头部变色
@@ -410,6 +412,9 @@
         groupList: [],
         // 猜你喜欢列表
         guessList: [],
+        guessPage: 1,
+        guessHasMore: true,
+        // 服务icon
         serverList: [
           {
             text: '次日送达',
@@ -484,7 +489,7 @@
       this._navigationIO && this._navigationIO.disconnect()
     },
     onPageScroll(e) {
-      // this._helpObserver(e)
+      this._helpObserver(e)
       // const flag = this._changeNavigation(e)
       // this._goodsSearchScrollEvent(flag)
       // this._classifyScrollEvent(e)
@@ -533,10 +538,13 @@
       this._getNotify()
       try {
         await this._getModuleInfo(false)
-        this._getFlashList()
+        // this._getFlashList()
+        // this._addMonitor()
+        // this._getTodayHostList()
+        // this._getNewClientList()
+        // this._getGuessList()
+        await Promise.all([this._getFlashList(), this._getTodayHostList(), this._getNewClientList()])
         this._addMonitor()
-        this._getTodayHostList()
-        this._getNewClientList()
         this._getGuessList()
       } catch (e) {
         console.error(e)
@@ -546,9 +554,11 @@
       this.setCartCount()
     },
     onReachBottom() {
-      // if (isLoading) return
-      // classifyPage++
-      // this._getClassifyList()
+      if (this._isLoading) return
+      if (this.guessHasMore) {
+        this.guessPage++
+        this._getGuessList()
+      }
     },
     onShareAppMessage(res) {
       let imgUrl = ''
@@ -593,20 +603,40 @@
           this.addShoppingCart(child)
         }
       },
+      _resetGuessParams() {
+        this.guessPage = 1
+        this.guessHasMore = true
+      },
       _getGuessList() {
-        API.Home.getGuessList({page: 1, limit: 10}).then(res => {
-          this.guessList = this._formatListPriceData(res.data)
+        this._isLoading = true
+        API.Home.getGuessList({page: this.guessPage, limit: 10}).then(res => {
+          let arr = this._formatListPriceData(res.data)
+          if (this.guessPage === 1) {
+            this.guessList = arr
+          } else {
+            this.guessList = this.guessList.concat(arr)
+          }
+          this.guessHasMore = arr.length || this.guessPage < 6
+        }).finally(() => {
+          this._isLoading = false
         })
       },
-      _getTodayHostList() {
-        API.Home.getTodayHotList().then(res => {
+      async _getTodayHostList() {
+        try {
+          let res = await API.Home.getTodayHotList()
           this.todayHotList = this._formatListPriceData(res.data)
-        })
+        } catch (e) {
+          console.warn(e)
+        }
       },
-      _getNewClientList() {
-        API.Home.getNewClientList().then(res => {
+      async _getNewClientList() {
+        try {
+          let res = await API.Home.getNewClientList()
           this.newClientList = this._formatListPriceData(res.data)
-        })
+          console.log(666)
+        } catch (e) {
+          console.error(e)
+        }
       },
       _formatListPriceData(arr = []) {
         return arr.map(item => {
@@ -643,7 +673,6 @@
           if (!this._navigationBarHeight) return
           const navigationBarHeight = this._navigationBarHeight
           const top = navigationBarHeight + 59
-          // this._topHeight = top
           this._activeTab = wx.createIntersectionObserver()
           this._activeTab.relativeToViewport({top: -top})
           this._activeTab.observe('#activeTab', res => {
@@ -659,7 +688,9 @@
           wx.createIntersectionObserver(undefined, {observeAll: true})
             .relativeTo('.active-tab-container')
             .observe('.panel', res => {
+              console.log(res)
               if (res.intersectionRatio > 0 && !this._isScrolling) {
+                this._isHelpScroll = false
                 this.activeTabIndex = res.id.replace('panel', '') * 1
               }
             })
@@ -669,7 +700,7 @@
             }).exec(res => {
               res[0].forEach((item, index) => {
                 if (this.activeTabInfo[index]) {
-                  this.activeTabInfo[index].top = item.bottom - item.height - top
+                  this.activeTabInfo[index].top = item.top - top
                   this.activeTabInfo[index].bottom = item.bottom
                 }
               })
@@ -677,13 +708,16 @@
         }, 500)
       },
       _helpObserver(e) {
-        const scrollTop = e.scrollTop - this._navigationBarHeight
+        if (!this._isHelpScroll) return
         if (this._isScrolling) return
+        const scrollTop = e.scrollTop - this._navigationBarHeight
+        // if (this._isScrolling) return
         let index = this.activeTabInfo.findIndex(val => {
           if (scrollTop >= val.top && scrollTop <= val.bottom) {
             return true
           }
         })
+        console.log(index)
         if (this.activeTabIndex !== index && index > -1) {
           this._isScrolling = true
           this.activeTabIndex = index
@@ -696,6 +730,7 @@
       handleActiveTabChange(index) {
         // this.activeTabIndex = index
         if (index === this.activeTabIndex) return
+        this._isHelpScroll = true
         this._isScrolling = true
         this.activeTabIndex = index
         wx.pageScrollTo({

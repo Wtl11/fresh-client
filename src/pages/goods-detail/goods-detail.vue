@@ -120,7 +120,6 @@
   import BuyRecord from '@components/goods-detail-element/buy-record/buy-record'
   import DetailImage from '@components/goods-detail-element/detail-image/detail-image'
   import ServiceDescription from '@components/goods-detail-element/service-description/service-description'
-  // import DrawPoster from '@components/goods-detail-element/draw-poster/draw-poster'
   import ButtonGroup from '@components/goods-detail-element/button-group/button-group'
   import AddNumber from '@components/add-number/add-number'
   import WePaint from '@components/we-paint/we-paint'
@@ -324,7 +323,7 @@
         if (!isLogin) {
           return
         }
-        let goodsId = this.goodsMsg.goods_sku_id || this.goodsMsg.goods_skus[0].goods_sku_id
+        let goodsId = this.goodsMsg.goods_skus[0].goods_sku_id
         API.Choiceness.addShopCart({goods_sku_id: goodsId, activity_id: this.activityId}).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.$sendMsg({
@@ -372,6 +371,7 @@
         goodsList.num = number
         goodsList.goods_units = this.goodsMsg.goods_units
         const total = (goodsList.trade_price * number).toFixed(2)
+        goodsList.activity = this.goodsMsg.activity
         let orderInfo = {
           goodsList: new Array(goodsList),
           total: total,

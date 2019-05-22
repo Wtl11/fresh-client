@@ -51,7 +51,7 @@
         <p class="price">{{beforeTotal}}</p>
         <p>元</p>
       </div>
-      <p class="new-rule-wrapper">你不符合新人特惠购买资格</p>
+      <p v-if="isShowNewCustomer" class="new-rule-wrapper">你不符合新人特惠购买资格</p>
     </section>
     <ul class="coupon-info-wrapper" :class="'corp-' + corpName + '-money'">
       <li class="coupon-item" @click="chooseCouponHandle">
@@ -83,6 +83,7 @@
 <script type="text/ecmascript-6">
   import {orderComputed, orderMethods} from '@state/helpers'
   import NavigationBar from '@components/navigation-bar/navigation-bar'
+  import {ACTIVE_TYPE} from '@utils/contants'
   import API from '@api'
 
   const ald = getApp()
@@ -95,7 +96,8 @@
         code: '',
         mobile: '',
         groupInfo: {},
-        userInfo: {}
+        userInfo: {},
+        isShowNewCustomer: false
       }
     },
     computed: {
@@ -108,6 +110,8 @@
       // 重置优惠券
       this.saveCoupon({})
       this._getCouponInfo()
+      this._checkIsNewClient()
+      console.log(this.goodsList)
     },
     async onShow() {
       ald.aldstat.sendEvent('去支付')
@@ -117,6 +121,14 @@
     },
     methods: {
       ...orderMethods,
+      _checkIsNewClient() {
+        let flag = (this.goodsList && this.goodsList.some(val => val.activity.activity_type === ACTIVE_TYPE.NEW_CLIENT))
+        if (flag) {
+          API.Global.checkIsNewCustomer().then(res => {
+            this.isShowNewCustomer = res.data.is_new_client === 0
+          })
+        }
+      },
       _getCouponInfo() {
         API.Coupon.getChooseList({goods: this.goodsList, is_usable: 1}).then((res) => {
           if (!res.data.length) return
