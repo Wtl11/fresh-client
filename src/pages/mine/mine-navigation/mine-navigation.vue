@@ -203,7 +203,7 @@
           font-size: 12px;
           color: $color-text-main
           &.line-box
-            border-bottom-1px()
+            border-bottom-1px(#e6e6e6)
           .img-box
             position: relative
           .icon-img

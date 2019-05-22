@@ -291,7 +291,7 @@
             font-family: $font-family-regular
             min-height: $font-size-16
             no-wrap()
-            margin-bottom: 6px
+            margin-bottom: 7px
 
           .classify-price-box
             layout(row)
