@@ -112,17 +112,16 @@
       ...cartMethods,
       async _changeTab(index, id, e) {
         if (this.tabIndex === index) return
-        this.tabIndex = index
-        let number = index < 3 ? 0 : index - 2
-        this.viewToItem = `item${number}`
-        setTimeout(() => {
-          this.viewToItem = ``
-        }, 100)
-        this._changeTabLine()
-        this.tabIndex = index
+        this._setViewToItem(index)
         this.move = e.target.offsetLeft
         this.classifyId = id
         this.getCategoryList(this.classifyId, index)
+      },
+      _setViewToItem(index = 0) {
+        this.tabIndex = index
+        let number = index < 3 ? 0 : index - 2
+        this.viewToItem = `item${number}`
+        this._changeTabLine()
       },
       _changeTabLine() {
         this.lineTranslateX = 82 * this.tabIndex
@@ -139,18 +138,12 @@
           }
           res.data.forEach((item, index) => {
             if (item.id * 1 === this.classifyId * 1) {
-              this.tabIndex = index
               if (isLoad) {
                 setTimeout(() => {
                   this.boxTransition = 'all .3s'
                 }, 50)
               }
-              if (index > 3) {
-                this.viewToItem = `item${index}`
-                this._changeTabLine()
-              } else {
-                this.viewToItem = `item0`
-              }
+              this._setViewToItem(index)
             }
           })
           this.getCategoryList(this.classifyId, this.tabIndex)
@@ -383,6 +376,7 @@
       width: $scroll-item-width
       height: 93px
       box-sizing: border-box
+      margin-top: 6px
       transform-origin: 50%
       .text
         width: 100%
@@ -402,6 +396,7 @@
     .item-active
       font-family: $font-family-medium
       font-size: $font-size-16
+      font-weight: bold
 
     .line-con
       box-sizing: border-box
