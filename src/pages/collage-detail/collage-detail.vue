@@ -1,8 +1,9 @@
 <template>
   <div class="collage-detail">
     <navigation-bar title="拼团详情"></navigation-bar>
-    <input type="text" v-model="status">
-    <span @click="changeStatus">确定</span>
+    <picker style="margin-top: 10px; border: 1px solid #eee" mode="selector" @change="changePicker" :value="status" :range="[0,1,2,3,4,5,6,7,8,9,10,11]">
+      <div class="picker">当前选择：{{status}}</div>
+    </picker>
     <p v-if="topText1" class="top-text">该活动仅支持： 国际单位社区</p>
     <p v-if="topText2" class="top-text">当前社区不支持拼团活动: 国际单位社区</p>
     <div class="top-msg">
@@ -156,7 +157,7 @@
       type: 'customer',
       status: 8,
       statusText: '拼团失败',
-      btn: '查看更多拼团商品',
+      btn: '返回商城首页',
       step: 1,
       icon: 'icon-failure'
     },
@@ -164,7 +165,7 @@
       type: 'customer',
       status: 9,
       statusText: '不在范围',
-      btn: '查看更多拼团商品',
+      btn: '返回商城首页',
       step: 1,
       icon: 'icon-failure'
     },
@@ -189,7 +190,7 @@
       type: 'customer',
       status: 12,
       statusText: '该团已结束',
-      btn: '看看别的拼团活动',
+      btn: '返回商城首页',
       step: '',
       icon: 'icon-end'
     }
@@ -349,13 +350,19 @@
       clearInterval(this.timer)
     },
     onLoad(options) {
-      console.log(options)
+      this._initLocation()
       this.timeHandle()
     },
     async onShow() {
-      await this.getCarRecommend()
+      this._refreshLocation()
+      // await this.getCarRecommend()
     },
     methods: {
+      changePicker(e) {
+        this.status = e.target.value
+        this.data = STATUS_ARR[e.target.value]
+        this.step = STATUS_ARR[e.target.value].step
+      },
       changeStatus() {
         this.data = STATUS_ARR[this.status]
         this.step = STATUS_ARR[this.status].step
@@ -371,6 +378,7 @@
         wx.navigateTo({url: `/pages/goods-detail?id=${id}`})
       },
       timeHandle() {
+        clearInterval(this.timer)
         let defaultTime = new Date().getTime() + 60 * 60 * 100 * 24
         let nowTime = new Date()
         let timeDef = defaultTime - nowTime
@@ -412,6 +420,7 @@
             },
             fail(res) {
               wx.setStorageSync('locationShow', 3)
+              wx.setStorageSync('lastPage', 'collage-detail')
               wx.navigateTo({
                 url: `/pages/open-location`
               })
@@ -423,6 +432,7 @@
       _refreshLocation() {
         this.locationStatus = wx.getStorageSync('locationShow')
         if (this.locationStatus * 1 === 3) {
+          wx.setStorageSync('lastPage', 'collage-detail')
           wx.navigateTo({
             url: `/pages/open-location`
           })
