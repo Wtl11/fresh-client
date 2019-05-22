@@ -29,7 +29,7 @@
               <div class="price" :class="'corp-' + corpName + '-money'" v-if="item.trade_price">
                 <span class="num">{{item.trade_price}}</span>
                 <span class="unit">元</span>
-                <img class="new-user-img" v-if="imageUrl" :src="imageUrl + '/yx-image/2.4/pic-newlabel@2x.png'" alt="">
+<!--                <img class="new-user-img" v-if="imageUrl" :src="imageUrl + '/yx-image/2.4/pic-newlabel@2x.png'" alt="">-->
               </div>
             </div>
             <div class="right">
@@ -73,7 +73,9 @@
         <div v-for="(item, index) in recommendList" :key="index" class="list-item">
           <goods-item :item="item" @_getShopCart="_getShopCart"></goods-item>
         </div>
-
+        <div class="foot-ties" v-if="!hasMore">
+          <div class="center">— 再拉也没有了 —</div>
+        </div>
       </div>
     </div>
     <confirm-msg ref="msg" :msg="msg" useType="double" @confirm="deleteCartGood"></confirm-msg>
@@ -110,7 +112,10 @@
         isShowNum: true,
         deliverAt: '',
         height: 0,
-        isFirstLoad: true
+        isFirstLoad: true,
+        page: 1,
+        limit: 10,
+        hasMore: true
       }
     },
     async onTabItemTap() {
@@ -123,11 +128,16 @@
     async onShow() {
       if (!wx.getStorageSync('token')) return
       await this._getShopCart()
+      this.page = 1
+      this.hasMore = true
+      this.recommendList = []
       await this.getCarRecommend()
       this.isFirstLoad = false
     },
     onReachBottom() {
-      // this.page++
+      if (!this.hasMore) return
+      this.page++
+      this.getCarRecommend()
     },
     computed: {
       checkedGoods() {
@@ -173,12 +183,15 @@
         this.setCartCount()
       },
       async getCarRecommend() {
-        let res = await API.Cart.getCarRecommend()
+        let res = await API.Cart.getCarRecommend({page: this.page, limit: this.limit})
         if (res.error !== this.$ERR_OK) {
           this.$wechat.showToast(res.message)
           return
         }
-        this.recommendList = res.data
+        this.recommendList = this.recommendList.concat(res.data)
+        if (this.page === 5) {
+          this.hasMore = false
+        }
       },
       addNum(i, num, limit, id) {
         num++
@@ -557,7 +570,26 @@
           padding-right: 2.5px
         &:nth-of-type(even)
           padding-left: 2.5px
- .test
-   background: #fff
 
+  .foot-ties
+    flex: 1
+    layout(row)
+    justify-content: center
+    align-items: center
+    height: 60px
+    box-sizing: border-box
+    padding: 20px 0
+
+    .lines
+      width: 10px
+      height: 1px
+      background: rgba(124, 132, 156, 0.20)
+      margin: 0 5px
+
+    .center
+      font-family: $font-family-regular
+      font-size: $font-size-14
+      color: rgba(152, 152, 159, 0.30)
+      text-align: justify
+      line-height: 1
 </style>

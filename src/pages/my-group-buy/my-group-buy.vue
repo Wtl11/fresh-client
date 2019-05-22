@@ -2,7 +2,7 @@
   <div class="my-group-buy">
     <navigation-bar ref="navigationBar" title="我的拼团" showArrow="true"></navigation-bar>
     <ul v-if="groupBuyList.length" class="goods-list">
-      <li class="goods-item-box" v-for="(item, index) in groupBuyList" :key="index">
+      <li class="goods-item-box" v-for="(item, index) in groupBuyList" :key="index" @click="listHandle">
         <div class="top-bar">
           <p>{{item.created_at}}</p>
           <p>{{item.status_text}}</p>
@@ -64,6 +64,15 @@
     onLoad() {
       this._getGroupBuyList()
     },
+    onShow() {
+      this.page = 1
+      this._getGroupBuyList()
+    },
+    onReachBottom() {
+      if (!this.hasMore) return
+      this.page++
+      this._getGroupBuyList()
+    },
     methods: {
       async _getGroupBuyList() {
         API.Order.getOrderListData('', this.page).then((res) => {
@@ -110,6 +119,9 @@
       // 工具-->调用子节点的方法
       _ref(key, fn, params) {
         this.$refs[key] && this.$refs[key][fn] && this.$refs[key][fn](params)
+      },
+      listHandle() {
+        // wx.navigateTo({url: `/pages/`})
       }
     }
   }
@@ -193,4 +205,25 @@
       &.btn-share
         color: $color-main
         border: 1px solid $color-main
+  .foot-ties
+    flex: 1
+    layout(row)
+    justify-content: center
+    align-items: center
+    height: 60px
+    box-sizing: border-box
+    padding: 20px 0
+
+    .lines
+      width: 10px
+      height: 1px
+      background: rgba(124, 132, 156, 0.20)
+      margin: 0 5px
+
+    .center
+      font-family: $font-family-regular
+      font-size: $font-size-14
+      color: rgba(152, 152, 159, 0.30)
+      text-align: justify
+      line-height: 1
 </style>

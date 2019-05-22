@@ -206,7 +206,7 @@
                 .type
                   font-family: $font-family-medium
                   height:12px
-                  border:1px solid rgba(29,32,35,0.8)
+                  border:1px solid rgba(29,32,35,0.75)
                   border-radius:2px
                   font-size: $font-size-10
                   padding: 0 2px

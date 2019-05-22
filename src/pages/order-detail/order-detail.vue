@@ -39,7 +39,7 @@
         <div class="extract" v-if="orderMsg.status === 1">提货单号: {{orderMsg.code}}</div>
       </div>
     </div>
-    <div class="group-status">
+    <div v-if="isGroup" class="group-status">
       <img v-if="imageUrl" :src="imageUrl+'/yx-image/2.4/icon-spellgroup@2x.png'" alt="" class="group-icon">
       <span :class="'corp-' + corpName + '-money'">[拼团中]</span>只差
       <span :class="'corp-' + corpName + '-money'">1人</span>成团，剩
@@ -152,7 +152,8 @@
         modelMsg: '确定退款吗？',
         curItem: '',
         saleText: '',
-        shareType: 0
+        shareType: 0,
+        isGroup: false
       }
     },
     onLoad(e) {
