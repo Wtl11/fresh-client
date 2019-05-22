@@ -30,9 +30,8 @@
         <section
           v-if="moduleItem.module_name === 'bannar' && moduleItem.is_close === 0"
           class="item-wrapper module-item">
-          <article class="home-banner">
+          <article v-if="moduleItem.list && moduleItem.list.length" class="home-banner">
             <swiper
-              v-if="moduleItem.list && moduleItem.list.length"
               class="banner"
               autoplay
               interval="5000"
@@ -207,7 +206,7 @@
         <ul v-if="moduleItem.module_name === 'goods_cate'"
                  class="classify-wrapper"
         >
-          <li v-for="(item, index) in moduleItem.list" :key="item.id"
+          <li v-if="index < 10" v-for="(item, index) in moduleItem.list" :key="item.id"
               class="classify-item-wrapper"
               :class="{'m-top': index > 4}"
               @click="handleJumpToClassify(item)"
@@ -310,8 +309,8 @@
                   </div>
                 </div>
               </block>
-              <article v-if="item.list.length < 1" class="goods-empty">
-                <div class="empty-wrapper">{{item.module_name === 'guess'? '暂无商品' : '本活动暂未开始，可浏览其他活动哦！'}}</div>
+              <article v-if="item.list.length < 1 && item.module_name !== 'guess' " class="goods-empty">
+                <div class="empty-wrapper">本活动暂未开始，可浏览其他活动哦！</div>
               </article>
             </section>
           </block>
@@ -350,18 +349,6 @@
   const ald = getApp()
   const PAGE_NAME = 'CHOICENESS'
 
-  // const MODULE_CONFIG = {
-  //   bannar: 'bannerInfo',
-  //   activity_fixed: 'flashInfo',
-  //   goods_cate: 'classifyInfo'
-  // }
-
-  // const MODULE_ARR_METHODS = {
-  //   activity_fixed: '_getFlashList'
-  // }
-
-  // let SYSTEM_INFO = {}
-  // let __nav = 0
   export default {
     name: PAGE_NAME,
     mixins: [
@@ -525,7 +512,9 @@
           this._groupInfo(false)
         }
         this._getNotify()
+        console.log(1)
         await this._getModuleInfo()
+        console.log(2)
         this._initTabInfo()
         await Promise.all([this._getFlashList(), this._getTodayHostList(), this._getNewClientList()])
         this._addMonitor()
@@ -734,11 +723,8 @@
             this._isScrolling = false
           }, 80)
         }
-        // this.activeTabIndex = index
       },
       handleActiveTabChange(index) {
-        // this.activeTabIndex = index
-        // if (index === this.activeTabIndex) return
         this._isHelpScroll = true
         this._isScrolling = true
         this.activeTabIndex = index
@@ -815,7 +801,7 @@
       // 重置banner轮播图
       _resetBanner() {
         this.moduleArray.forEach(item => {
-          item.module_name === 'bannar' && (item.content_data.list = [])
+          item.module_name === 'bannar' && (item.list = [])
         })
         this.bannerIndex = 1
       },

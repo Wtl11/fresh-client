@@ -58,7 +58,7 @@
     onShareAppMessage() {
       let shopId = wx.getStorageSync('leaderId') || wx.getStorageSync('shopId')
       const flag = Date.now()
-      console.warn(shopId, wx.getStorageSync('leaderId'), wx.getStorageSync('shopId'), '========团餐')
+      console.warn(shopId, wx.getStorageSync('leaderId'), wx.getStorageSync('shopId'), '========团餐') // todo
       return {
         title: this.goodsMsg.name,
         path: `/pages/goods-detail?id=${this.goodsId}&shopId=${shopId}&activityId=${this.activityId}&flag=${flag}`, // 商品详情

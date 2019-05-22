@@ -11,12 +11,11 @@
           <h3 class="title-sub">{{goodsMsg.describe}}</h3>
           <p class="money"><span class="number">{{goodsMsg.trade_price}}</span><span class="unit">元</span></p>
         </div>
-<!--        <div class="line"></div>-->
         <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/pic-line.png'" mode="aspectFill" class="line">
         <button class="share-button" open-type="share">
           <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/icon-sharexq@2x.png'" mode="aspectFill" class="share-img">
         </button>
-        <article v-if="activityId > 0" class="right-wrapper">
+        <article v-if="activityType === ACTIVE_TYPE.FLASH" class="right-wrapper">
           <p class="title">{{goodsMsg.at_diff_str}}</p>
           <div class="time-wrapper">
             <p class="time start">{{countDownTimes.hour}}</p>
@@ -40,7 +39,6 @@
           </p>
         </li>
       </ul>
-<!--      <is-end v-if="!hasMore"></is-end>-->
       <loading-more v-if="hasMore"></loading-more>
       <div style="height: 75px"></div>
     </section>
@@ -70,6 +68,7 @@
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import API from '@api'
   import {resolveQueryScene, countDownHandle} from '@utils/common'
+  import {ACTIVE_TYPE} from '@utils/contants'
   import ShareHandler, {EVENT_CODE} from '@mixins/share-handler'
   import IsEnd from '@components/is-end/is-end'
   import LoadingMore from '@components/loading-more/loading-more'
@@ -119,7 +118,9 @@
           minute: '00',
           second: '00'
         },
-        timer: null
+        timer: null,
+        activityType: '',
+        ACTIVE_TYPE
       }
     },
     computed: {
@@ -150,19 +151,20 @@
     },
     onLoad(options) {
       console.warn(options, '<-----参数---->')
-      if (options.scene) {
-        let {shopId, activityId, goodsId} = resolveQueryScene(options.scene)
-        this.goodsId = goodsId
-        this.activityId = activityId
-        this.shopId = shopId
-      } else {
-        this.goodsId = +options.goodsId || +options.id || 0
-        this.activityId = +options.activityId || 0
-        this.shopId = +options.shopId || 0
-      }
-      if (this.shopId > 0) {
-        wx.setStorageSync('shopId', this.shopId)
-      }
+      // if (options.scene) {
+      //   let {shopId, activityId, goodsId} = resolveQueryScene(options.scene)
+      //   this.goodsId = goodsId
+      //   this.activityId = activityId
+      //   this.shopId = shopId
+      // } else {
+      //   this.goodsId = +options.goodsId || +options.id || 0
+      //   this.activityId = +options.activityId || 0
+      //   this.shopId = +options.shopId || 0
+      // }
+      // if (this.shopId > 0) {
+      //   wx.setStorageSync('shopId', this.shopId)
+      // }
+      this._initPageParams(options)
     },
     onShow() {
       if (this.isSharing) {
@@ -191,7 +193,7 @@
       const flag = Date.now()
       return {
         title: this.goodsMsg.name,
-        path: `/pages/goods-record?goodsId=${this.goodsId}&shopId=${shopId}&activityId=${this.activityId}&flag=${flag}`, // 商品详情
+        path: `/pages/goods-record?goodsId=${this.goodsId}&shopId=${shopId}&activityId=${this.activityId}&activityType=${this.activityType}&flag=${flag}`, // 商品详情
         imageUrl: this.thumb_image || this.goodsMsg.goods_cover_image,
         success: (res) => {
           // 转发成功
@@ -215,27 +217,28 @@
     methods: {
       ...cartMethods,
       ...orderMethods,
-      // _kanTimePlay() {
-      //   if (!this.activityId) return
-      //   clearInterval(this.timer)
-      //   let diff = this.goodsMsg.at_diff || 0
-      //   if (this.activeStatus === BTN_STATUS.DOWN) {
-      //     return
-      //   }
-      //   this.countDownTimes = countDownHandle(diff)
-      //   this.timer = setInterval(() => {
-      //     diff--
-      //     if (diff < 0) {
-      //       diff = 0
-      //     }
-      //     this.countDownTimes = countDownHandle(diff)
-      //     console.log(this.countDownTimes, '================>')
-      //     if (this.countDownTimes.differ <= 0) {
-      //       clearInterval(this.timer)
-      //       this._getGoodsDetailData()
-      //     }
-      //   }, 1000)
-      // },
+      // 初始化页面参数
+      _initPageParams(options) {
+        this.goodsId = +options.id || +options.goodsId || 0
+        this.activityId = +options.activityId || 0
+        this.shopId = +options.shopId || 0
+        if (options.scene) {
+          let {shopId, activityId, goodsId} = resolveQueryScene(options.scene)
+          this.goodsId = goodsId
+          this.activityId = activityId
+          this.shopId = shopId
+        }
+        this.shopId && wx.setStorageSync('shopId', this.shopId)
+        this._initPageType(options.activityType)
+      },
+      _initPageType(type = 'DEFAULT') {
+        if (type === ACTIVE_TYPE.GUESS) {
+          type = ACTIVE_TYPE.DEFAULT
+        } else if (this.activityId > 0 && type === ACTIVE_TYPE.DEFAULT) {
+          type = ACTIVE_TYPE.FLASH
+        }
+        this.activityType = type
+      },
       _kanTimePlay(diff) {
         if (!this.activityId) return
         this._clearTimer()

@@ -69,7 +69,25 @@
           </section>
         </article>
       </section>
-      <header-detail :goodsMsg="goodsMsg" :activityId="activityId" @showShare="handleShowShare"></header-detail>
+      <div class="header-detail">
+        <button class="share-wrapper" formType="submit" :open-type="activityType !== ACTIVE_TYPE.DEFAULT? 'share': ''" @click="handleShowShare">
+          <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/icon-sharexq@2x.png'" mode="aspectFill" class="share-img">
+          <p class="share-text">分享</p>
+        </button>
+        <div class="info-box">
+          <article class="title-wrapper">
+            <div class="title" :class="goodsMsg.name ? 'has-title' : ''">{{goodsMsg.name}}</div>
+            <div class="has-sub-title" v-if="goodsMsg.describe">{{goodsMsg.describe}}</div>
+          </article>
+          <div class="info-sub">
+            <img v-if="imageUrl && corpName === 'platform'" :src="imageUrl + '/yx-image/choiceness/icon-fast@2x.png'" mode="aspectFill" class="info-sub-img">
+            <img v-if="imageUrl && corpName === 'retuan'" :src="imageUrl + '/yx-image/retuan/icon-fast@2x.png'" mode="aspectFill" class="info-sub-img">
+            <div class="sub-text">现在下单，预计({{goodsMsg.delivery_at}})可自提</div>
+          </div>
+          <div class="info-stock">已售<span :class="'corp-' + corpName + '-money'">{{goodsMsg.sale_count}}</span>{{goodsMsg.goods_units}}<span v-if="activityId * 1 > 0">，剩余<span :class="'corp-' + corpName + '-money'">{{goodsMsg.usable_stock}}</span>{{goodsMsg.goods_units}}</span></div>
+        </div>
+      </div>
+<!--      <header-detail :goodsMsg="goodsMsg" :activityId="activityId" @showShare="handleShowShare"></header-detail>-->
       <buy-record
         v-if="userImgList.length > 0"
         :userImgList="userImgList"
@@ -84,12 +102,6 @@
         @buttonGroupNav="buttonGroupNav"
         @addShoppingCart="addShoppingCart"
       ></button-group>
-<!--      <draw-poster-->
-<!--        v-if="activityType === ACTIVE_TYPE.DEFAULT"-->
-<!--        ref="drawPoster"-->
-<!--        :goodsMsg="goodsMsg"-->
-<!--        :shareImg="shareImg"-->
-<!--      ></draw-poster>-->
       <article class="share-goods" id="share-goods">
         <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-sharegoods@2x.png'" class="share-bg" mode="aspectFill">
         <div class="share-box">
@@ -126,7 +138,6 @@
   import ShareHandler, {EVENT_CODE} from '@mixins/share-handler'
   import API from '@api'
   import {resolveQueryScene, countDownHandle} from '@utils/common'
-  // import HeaderSwiper from '@components/goods-detail-element/header-swiper/header-swiper'
   import BuyUsers from '@components/goods-detail-element/buy-users/buy-users'
   import HeaderDetail from '@components/goods-detail-element/header-detail/header-detail'
   import LinkGroup from '@components/link-group/link-group'
@@ -152,7 +163,6 @@
     mixins: [clearWatch, ShareHandler],
     components: {
       NavigationBar,
-      // HeaderSwiper,
       BuyUsers,
       HeaderDetail,
       LinkGroup,
@@ -161,7 +171,6 @@
       ServiceDescription,
       ButtonGroup,
       AddNumber,
-      // DrawPoster,
       WePaint
     },
     data() {
@@ -333,7 +342,6 @@
       },
       // 画商品海报
       _actionDrawPoster() {
-        console.log(this.shareImg)
         if (!this.shareImg) {
           this.$wechat.showToast('图片生成失败，请重新尝试！')
           this.getQrCode()
@@ -461,8 +469,7 @@
       },
       // 显示分享控件
       handleShowShare() {
-        console.log(this.activityId)
-        if (this.activityId) {
+        if (this.activityType !== ACTIVE_TYPE.DEFAULT) {
           return
         }
         this.$refs.shareList && this.$refs.shareList.showLink()
@@ -714,6 +721,100 @@
         left: 12px
         right :@left
         bottom: -1px
+  // header-detail
+  .header-detail
+    padding: 0 12px
+    box-sizing: border-box
+    position: relative
+    margin-bottom :10px
+
+    .share-wrapper
+      position: absolute
+      right: 30px
+      top: 21px
+      z-index: 99
+
+      .share-img
+        width: 36px
+        height: @width
+        display: block
+
+      .share-text
+        padding-top: 6px
+        text-align: center
+        font-family: $font-family-regular
+        font-size: 11px;
+        color: #342903;
+
+    .info-box
+      background: $color-white
+      width: 100%
+      padding: 10px 10px 15px
+      box-sizing: border-box
+      border-radius : 0 0 8px 8px
+
+      .title-wrapper
+        position: relative
+
+        .share-wrapper
+          col-center()
+          right: 18px
+
+          .share-img
+            width: 36px
+            height: @width
+            display: block
+
+          .share-text
+            padding-top: 6px
+            text-align: center
+            font-family: $font-family-regular
+            font-size: 11px;
+            color: #342903;
+
+        .title
+          width: 71vw
+          font-size: $font-size-17
+          color: #1F1F1F
+          min-height: 20px
+          line-height: $font-size-20
+          font-family: $font-family-medium
+          no-wrap-plus()
+
+        .has-title
+          width: 71vw
+          no-wrap-plus()
+
+        .has-sub-title
+          width: 71vw
+          margin-top: 7px
+          font-family: $font-family-regular
+          font-size: $font-size-14
+          color: #808080
+          letter-spacing: 0.3px
+          word-break: break-word
+
+      .info-sub
+        layout(row)
+        align-items: center
+        margin: 10px 0 10px
+
+        .info-sub-img
+          width: 14.5px
+          height: 15.5px
+          display: block
+          margin-right: 5px
+
+        .sub-text
+          color: #9B9B9B
+          font-size: $font-size-14
+          font-family: $font-family-regular
+
+    .info-stock
+      font-size: $font-size-14
+      color: #9e9e9e
+      font-family: $font-family-regular
+
   // banner图
   .header-swiper
     width: 100vw
