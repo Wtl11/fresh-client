@@ -374,10 +374,9 @@
       LoadingMore
     },
     data() {
-      // this._navigationBarHeight = 0
-      // this._navigationIO = null
       this._isLoading = false
       this._isHelpScroll = false
+      this._sharing = false
       return {
         ACTIVE_TYPE,
         // 头部变色
@@ -501,6 +500,10 @@
       // this._classifyScrollEvent(e)
     },
     async onShow() {
+      if (this._sharing) {
+        this._sharing = false
+        return
+      }
       this._refreshLocation()
       try {
         this.shopId = wx.getStorageSync('shopId')
@@ -520,10 +523,8 @@
         this._getNotify()
         await this._getModuleInfo()
         this._initTabInfo()
-        await this._getFlashList()
+        await Promise.all([this._getFlashList(), this._getTodayHostList(), this._getNewClientList()])
         this._addMonitor()
-        this._getTodayHostList()
-        this._getNewClientList()
         this._getGuessList()
         if (!wx.getStorageSync('token')) return
         this.setCartCount()
@@ -544,11 +545,6 @@
       this._getNotify()
       try {
         await this._getModuleInfo(false)
-        // this._getFlashList()
-        // this._addMonitor()
-        // this._getTodayHostList()
-        // this._getNewClientList()
-        // this._getGuessList()
         await Promise.all([this._getFlashList(), this._getTodayHostList(), this._getNewClientList()])
         this._addMonitor()
         this._getGuessList()
@@ -567,6 +563,7 @@
       }
     },
     onShareAppMessage(res) {
+      this._sharing = true
       let imgUrl = ''
       let moduleName = ''
       if (res.target.id) {
@@ -619,8 +616,9 @@
           let arr = this._formatListPriceData(res.data)
           if (this.guessPage === 1) {
             this.guessList = arr
-          } else {
+          } else if (this.guessList.length / 10 < this.guessPage) {
             this.guessList = this.guessList.concat(arr)
+            // console.log(this.guessList, '12313')
           }
           this.guessHasMore = this.guessPage < 5
         }).finally(() => {
@@ -639,7 +637,6 @@
         try {
           let res = await API.Home.getNewClientList()
           this.newClientList = this._formatListPriceData(res.data)
-          console.log(666)
         } catch (e) {
           console.error(e)
         }
@@ -694,7 +691,6 @@
           wx.createIntersectionObserver(undefined, {observeAll: true})
             .relativeTo('.active-tab-container')
             .observe('.panel', res => {
-              console.log(res)
               if (res.intersectionRatio > 0 && !this._isScrolling) {
                 this._isHelpScroll = false
                 this.activeTabIndex = res.id.replace('panel', '') * 1
@@ -723,7 +719,6 @@
             return true
           }
         })
-        console.log(index)
         if (this.activeTabIndex !== index && index > -1) {
           this._isScrolling = true
           this.activeTabIndex = index
@@ -735,7 +730,7 @@
       },
       handleActiveTabChange(index) {
         // this.activeTabIndex = index
-        if (index === this.activeTabIndex) return
+        // if (index === this.activeTabIndex) return
         this._isHelpScroll = true
         this._isScrolling = true
         this.activeTabIndex = index
