@@ -61,7 +61,7 @@
       </div>
     </div>
 <!--    <official-account></official-account>-->
-    <div style="height: 50px"></div>
+<!--    <div style="height: 50px"></div>-->
     <custom-tab-bar currentType="mine"></custom-tab-bar>
   </div>
 </template>

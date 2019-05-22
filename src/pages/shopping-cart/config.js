@@ -7,6 +7,7 @@ page.$mount()
 
 export default {
   config: {
-    navigationBarTitleText: '购物车'
+    navigationBarTitleText: '购物车',
+    onReachBottomDistance: 50
   }
 }

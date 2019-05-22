@@ -62,6 +62,13 @@ async function checkCode(res = {}) {
     console.warn(res.data.message)
     switch (res.data.code) {
       case 13001: // 无团长权限code,跳转团长登录页面
+        wx.removeStorageSync('isLeader')
+        // eslint-disable-next-line no-undef
+        let pages = getCurrentPages()
+        let curPage = pages[pages.length - 1]
+        if (curPage.route !== 'pages/regimental-commander') {
+          return
+        }
         wx.redirectTo({url: '/pages/mine-housing'})
         break
       case 10003: // 活动过期，跳转活动失效页面
