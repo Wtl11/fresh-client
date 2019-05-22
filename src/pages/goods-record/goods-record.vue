@@ -236,6 +236,8 @@
           type = ACTIVE_TYPE.DEFAULT
         } else if (this.activityId > 0 && type === ACTIVE_TYPE.DEFAULT) {
           type = ACTIVE_TYPE.FLASH
+        } else {
+          type = ACTIVE_TYPE.DEFAULT
         }
         this.activityType = type
       },

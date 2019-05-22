@@ -86,7 +86,6 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import WePaint from '@components/we-paint/we-paint'
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import CustomTabBar from '@components/custom-tab-bar/custom-tab-bar'
   import ConfirmMsg from '@components/confirm-msg/confirm-msg'
@@ -97,11 +96,8 @@
   import LoadingMore from '@components/loading-more/loading-more'
 
   export default {
-    beforeCreate() {
-    },
     mixins: [ClearWatch],
     components: {
-      WePaint,
       ConfirmMsg,
       NavigationBar,
       CustomTabBar,
@@ -228,8 +224,10 @@
         this.setCartCount()
       },
       jumpGoodsDetail(item) {
+        console.log(item)
         let type = ''
-        if (item.activity && item.activity.activity_type) {
+        if (item.activity) {
+          console.log(item.activity)
           type = item.activity.activity_type || ''
         }
         wx.navigateTo({
