@@ -4,18 +4,18 @@
     <picker style="margin-top: 10px; border: 1px solid #eee" mode="selector" @change="changePicker" :value="status" :range="[0,1,2,3,4,5,6,7,8,9,10,11]">
       <div class="picker">当前选择：{{status}}</div>
     </picker>
-    <p v-if="topText1" class="top-text">该活动仅支持： 国际单位社区</p>
-    <p v-if="topText2" class="top-text">当前社区不支持拼团活动: 国际单位社区</p>
+    <p v-if="topText1" class="top-text">该活动仅支持： {{data.shop.social_name || '国际单位社区'}}</p>
+    <p v-if="topText2" class="top-text">当前社区不支持拼团活动: {{data.shop.social_name || '国际单位社区'}}</p>
     <div class="top-msg">
       <!--商品信息-->
       <div v-if="goodsBox" class="goods-box">
         <div class="goods-detail">
           <img src="" alt="" class="goods-img">
           <div class="right-content">
-            <p class="title">超值特惠 4斤新鲜柠檬是是三三首饰所所死侍死侍</p>
-            <p class="context">脆嫩爽口，酸甜多汁，口感脆嫩，新鲜美味</p>
+            <p class="title">{{data.goods.name || '超值特惠 4斤新鲜柠檬是是三三首饰所所死侍死侍'}}</p>
+            <p class="context">{{data.goods.describe || '脆嫩爽口，酸甜多汁，口感脆嫩，新鲜美味'}}</p>
             <div class="marks">
-              <span class="total">200人已拼</span>
+              <span class="total">{{data.goods.spell_count || 200}}人已拼</span>
               <span class="count">3人团</span>
             </div>
             <p class="price">
@@ -212,7 +212,43 @@
         recommendList: [],
         step: STATUS_ARR[0].step,
         data: STATUS_ARR[0],
-        status: 0
+        status: 0,
+        msg: {
+          groupon_id: 46,
+          groupon_status_describe: '拼团成功',
+          groupon_person_limit: 2,
+          start_groupon_at: '2019-05-17 15:53:38',
+          spell_groupon_at: '2019-05-17 15:55:02',
+          surplus_seconds: 0,
+          surplus_number: 0,
+          groupon_people: [
+            {
+              avatar: 'https://wx.qlogo.cn/mmopen/vi_32/nWbmOQibT41icqJ3JeDKlUH38CoYEOEQXTeCmvr2lY3ibTgnu8HKLl9Js4FCMfpNsysiaj7wD4fo9HXkfy1jgTyxaw/132',
+              nickname: 'Lemonice',
+              is_main: 1,
+              is_payed: 1
+            },
+            {
+              avatar: 'https://wx.qlogo.cn/mmopen/vi_32/fcOwTyiac1SwZKCpSMVDGjWHSVGAs6wqHDGvItiaVBXWP8yricFq8vqAfglCRHCOMdEKKkkNT7pwbvxIbGR5WHnNw/132',
+              nickname: 'TING-紫',
+              is_main: 0,
+              is_payed: 1
+            }
+          ],
+          goods: {
+            goods_id: 2,
+            goods_sku_id: 2,
+            name: '青芒果',
+            describe: '5',
+            goods_units: '斤',
+            trade_price: '158.00',
+            original_price: '200.00',
+            goods_cover_image: 'http://social-shopping-api-1254297111.picgz.myqcloud.com/1/2018/12/18/154510444727561.png',
+            total_stock: 100,
+            usable_stock: 100,
+            sale_count: 100
+          }
+        }
       }
     },
     computed: {
@@ -351,13 +387,53 @@
     },
     onLoad(options) {
       this._initLocation()
-      this.timeHandle()
+      // this.timeHandle()
+      this.orderId = options.query.orderId || ''
+      this.id = options.query.id || ''
+      // this.getGrouponDetail()
     },
     async onShow() {
       this._refreshLocation()
       // await this.getCarRecommend()
     },
     methods: {
+      getGrouponDetail() {
+        API.Groupon.getGrouponDetail({id: this.id, order_id: this.orderId})
+          .then(res => {
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              return
+            }
+            this.data = res.data
+          })
+      },
+      checkGroupon() {
+        API.Groupon.checkGroupon({
+          activity_id: this.activityId,
+          goods_sku_id: this.goodsSkuId,
+          groupon_id: this.grouponId,
+          num: this.num,
+          longitude: this.longitude,
+          latitude: this.latitude
+        })
+          .then(res => {
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              return
+            }
+            console.log(111)
+          })
+      },
+      getDistance() {
+        API.Groupon.getDistance({longitude: this.longitude, latitude: this.latitude})
+          .then(res => {
+            if (res.error !== this.$ERR_OK) {
+              this.$toast.show(res.message)
+              return
+            }
+            console.log(111)
+          })
+      },
       changePicker(e) {
         this.status = e.target.value
         this.data = STATUS_ARR[e.target.value]
@@ -420,7 +496,7 @@
             },
             fail(res) {
               wx.setStorageSync('locationShow', 3)
-              wx.setStorageSync('lastPage', 'collage-detail')
+              // wx.setStorageSync('lastPage', 'collage-detail')
               wx.navigateTo({
                 url: `/pages/open-location`
               })
@@ -432,7 +508,7 @@
       _refreshLocation() {
         this.locationStatus = wx.getStorageSync('locationShow')
         if (this.locationStatus * 1 === 3) {
-          wx.setStorageSync('lastPage', 'collage-detail')
+          // wx.setStorageSync('lastPage', 'collage-detail')
           wx.navigateTo({
             url: `/pages/open-location`
           })
