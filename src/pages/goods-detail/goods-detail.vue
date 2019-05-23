@@ -47,6 +47,31 @@
               <div class="line-price-text">{{goodsMsg.original_price}}元</div>
             </div>
           </section>
+          <section v-else-if="activityType === ACTIVE_TYPE.GROUP_ON"
+                   class="header-title active-common group"
+          >
+            <div class="banner-title-main">
+              <div class="banner-main-box">
+                <div class="banner-main-left">
+                  <div class="left-price">{{goodsMsg.trade_price}}</div>
+                  <div class="left-price-text">元</div>
+                  <div class="left-price-line">
+                    <div class="line-price-top">
+                      <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-qgj@2x.png'" class="text-img" mode="aspectFill">
+                      <div class="text">{{iconText}}</div>
+                    </div>
+                    <div class="line-price-box">{{goodsMsg.original_price}}元</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <figure class="icon-wrapper">
+              <div class="left">
+                <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.4/icon-persont@2x.png'" class="left-icon">
+              </div>
+              <p class="right">{{limitPerson}}人拼</p>
+            </figure>
+          </section>
           <section v-else-if="activityType !== ACTIVE_TYPE.FLASH"
                    class="header-title active-common"
           >
@@ -84,6 +109,30 @@
             <div class="sub-text">现在下单，预计({{goodsMsg.delivery_at}})可自提</div>
           </div>
           <div class="info-stock">已售<span :class="'corp-' + corpName + '-money'">{{goodsMsg.sale_count}}</span>{{goodsMsg.goods_units}}<span v-if="activityId * 1 > 0">，剩余<span :class="'corp-' + corpName + '-money'">{{goodsMsg.usable_stock}}</span>{{goodsMsg.goods_units}}</span></div>
+        </div>
+      </div>
+      <!--拼团列表-->
+      <div class="collage-box">
+        <div class="title">200位邻居正在拼单，可直接参与</div>
+        <swiper v-if="collageList.length"  class="collage-scroll" autoplay circular :vertical="true" interval="5000" :display-multiple-items="2">
+          <block v-for="(item, index) in collageList" :key="index">
+            <swiper-item class="collage-content">
+              <div class="left">
+                <img :src="imageUrl + '/yx-image/2.1/default_avatar@2x.png'" alt="" class="logo">
+                <span class="name">张三丰</span>
+              </div>
+              <div class="right">
+                <div class="context">
+                  <p class="text">还差<span class="color">1人</span>拼成</p>
+                  <span class="time">剩余10:20:30</span>
+                </div>
+                <navigator url="/pages/collage-detail" open-type="navigate" class="go-collage">去参团</navigator>
+              </div>
+            </swiper-item>
+          </block>
+        </swiper>
+        <div class="collage-scroll" v-if="!collageList.length">
+          <div class="nothing">暂无参团信息~</div>
         </div>
       </div>
       <buy-record
@@ -194,10 +243,17 @@
           second: '00'
         },
         timer: null,
-        currentNum: 1
+        currentNum: 1,
+        collageList: [1, 2, 3, 4, 5]
       }
     },
     computed: {
+      activityInfo() {
+        return this.goodsMsg.activity || {}
+      },
+      limitPerson() {
+        return (this.activityInfo.config || {}).person_limit || 0
+      },
       goodsBanner() {
         return this.goodsMsg.goods_banner_images || []
       },
@@ -254,7 +310,10 @@
           btnText: this.btnText,
           isShowTwoButton: this.isShowTwoButton,
           tradePrice: this.goodsMsg.trade_price,
-          salePrice: this.goodsMsg.goods_sale_price
+          salePrice: this.goodsMsg.goods_sale_price,
+          base_usable_stock: this.goodsMsg.base_usable_stock, // 非活动库存
+          usable_stock: this.goodsMsg.usable_stock, // 库存
+          tipTop: this.tipTop
         }
       },
       // 二维码
@@ -750,6 +809,68 @@
         left: 12px
         right :@left
         bottom: -1px
+  // 参团列表
+  .collage-box
+    padding: 0 10px
+    background: $color-white
+    border-radius: 8px
+    box-sizing: border-box
+    margin: 0 12px 10px
+    box-shadow: 0 2px 15px 0 rgba(17, 17, 17, 0.06)
+    .title
+      height: 50px
+      line-height: 50px
+      color: #1D2023
+      font-size: $font-size-14
+      font-family: $font-family-medium
+      border-bottom-1px(#ECEDF1)
+    .collage-scroll
+      height: 112px
+      padding: 4px 0
+      overflow: hidden
+      .nothing
+        text-align: center
+        padding-top: 50px
+        font-family: $font-family-regular
+        font-size: $font-size-16
+    .collage-content
+      display: flex
+      align-items: center
+      justify-content: space-between
+      .left
+        display: flex
+        align-items: center
+      .logo
+        width: 40px
+        height: 40px
+        border-radius: 50%
+      .name
+        font-family: $font-family-regular
+        font-size: $font-size-14
+        color: #1D2023
+        margin-left: 10px
+      .right
+        display: flex
+        align-itmes: center
+      .context
+        font-size: $font-size-12
+        color: #1D2023
+        font-family: $font-family-regular
+        .color
+          color: #FA7500
+        .time
+          margin-top: 5px
+      .go-collage
+        width: 75px
+        height: 30px
+        font-family: $font-family-regular
+        font-size: $font-size-14
+        margin-left: 15px
+        line-height: 30px
+        text-align: center
+        border-radius: 30px
+        color: $color-white
+        background: $color-main
   // header-detail
   .header-detail
     padding: 0 12px
@@ -1006,12 +1127,37 @@
   // 限时抢购-title
     .header-title
       position relative
+      .icon-wrapper
+        col-center()
+        right:15px
+        width :61px
+        height :19px
+        border :0.5px solid $color-white
+        layout(row,block,nowrap)
+        .right
+          padding-left :4px
+          font-family: $font-family-medium
+          font-size: 13px;
+          color: #FFFFFF;
+        .left
+          width :19px
+          height :@width
+          background :$color-white
+          display :flex
+          justify-content :center
+          align-items :center
+          .left-icon
+            display :block
+            width :11px
+            height :10.5px
       &.active-common
         height: 13vw
         background: #ff6d0d
         width: 100%
         border-top-left-radius: 8px
         border-top-right-radius: 8px
+      &.group
+        background: linear-gradient(90deg, #FD4C46 0%, #FB6C21 100%);
       .banner-title-main
         padding-bottom: 13vw
         width: 100%

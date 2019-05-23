@@ -5,5 +5,10 @@ export default {
   checkIsNewCustomer(data = null, loading = false, toast = false) {
     const url = `/api/wap/check-new-client`
     return request.get({url, data, loading, toast})
+  },
+  // 当前位置离自提点距离判断[v2.4.1.2]
+  checkShopDistance(data = null, loading = false, toast = false) {
+    const url = `/api/wap/shop-distance-judge`
+    return request.get({url, data, loading, toast})
   }
 }

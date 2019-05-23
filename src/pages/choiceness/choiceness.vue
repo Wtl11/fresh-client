@@ -860,12 +860,12 @@
           console.error(e)
         }
       },
-      // 跳转-商品详情
-      jumpGoodsDetail(item) {
-        wx.navigateTo({
-          url: `/pages/goods-detail?id=${item.goods_id}&activityId=${item.activity_id}`
-        })
-      },
+      // // 跳转-商品详情
+      // jumpGoodsDetail(item) {
+      //   wx.navigateTo({
+      //     url: `/pages/goods-detail?id=${item.goods_id}&activityId=${item.activity_id}`
+      //   })
+      // },
       // 添加购物车
       async addShoppingCart(item) {
         let isLogin = await this.$isLogin()
