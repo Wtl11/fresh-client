@@ -29,6 +29,7 @@
 <!--        轮播图-->
         <section
           v-if="moduleItem.module_name === 'bannar' && moduleItem.is_close === 0"
+          id="banner"
           class="item-wrapper banner module-item">
           <article v-if="moduleItem.list && moduleItem.list.length" class="home-banner">
             <swiper
@@ -78,6 +79,7 @@
         <section
           v-if="moduleItem.module_name === 'activity' && flashTabInfo.length"
           class="item-wrapper module-item"
+          id="flashSale"
         >
           <div class="home-flash-sale">
             <section class="top-wrapper">
@@ -169,7 +171,8 @@
         </section>
 <!--        通知-->
         <article v-if="moduleIndex === 0 && notifyInfo.has_notify && notifyInfo.desc"
-          class="notice"
+                 class="notice"
+                 id="notice"
         >
           <img
             v-if="imageUrl"
@@ -196,6 +199,7 @@
 <!--        icon 分类-->
         <ul v-if="moduleIndex === 0"
             class="server-icon-wrapper"
+            id="server-icon-wrapper"
         >
           <li v-for="(item, index) in serverList" :key="index" class="server-item-wrapper">
             <img v-if="imageUrl" :src="imageUrl + item.icon" alt="" class="icon-server">
@@ -204,7 +208,8 @@
         </ul>
         <!--        分类列表-->
         <ul v-if="moduleItem.module_name === 'goods_cate'"
-                 class="classify-wrapper"
+            class="classify-wrapper"
+            id="classify-wrapper"
         >
           <li v-if="index < 10" v-for="(item, index) in moduleItem.list" :key="item.id"
               class="classify-item-wrapper"
@@ -492,7 +497,7 @@
       wx.setStorageSync('homeData', this.$data, {curShopId: ''})
     },
     onPageScroll(e) {
-      this._helpObserver(e)
+      // this._helpObserver(e)
     },
     async onShow() {
       if (this._sharing) {
@@ -635,7 +640,6 @@
         try {
           let res = await API.Home.getGroupList({limit: 20})
           this.groupList = this._formatListPriceData(res.data)
-          console.log(this.groupList)
         } catch (e) {
           console.warn(e)
         }
@@ -714,18 +718,54 @@
                 }
               }
             })
-          wx.createSelectorQuery()
-            .selectAll('.panel')
-            .boundingClientRect(res => {
-            }).exec(res => {
-              res[0].forEach((item, index) => {
-                if (this.activeTabInfo[index]) {
-                  this.activeTabInfo[index].top = item.top - top
-                  this.activeTabInfo[index].bottom = item.bottom
-                }
-              })
-            })
+          this._initDomPosition()
         }, 500)
+      },
+      _initDomPosition() {
+        wx.createSelectorQuery()
+          .select('#homePosition')
+          .boundingClientRect()
+          .select('#banner')
+          .boundingClientRect()
+          .select('#server-icon-wrapper')
+          .boundingClientRect()
+          .select('#notice')
+          .boundingClientRect()
+          .select('#classify-wrapper')
+          .boundingClientRect()
+          .select('#flashSale')
+          .boundingClientRect()
+          .selectAll('.panel')
+          .boundingClientRect()
+          .exec((arr) => {
+            let sliceArr = arr.slice(0, -1)
+            let panels = arr.slice(-1)[0]
+            let heightArr = sliceArr.map(item => {
+              return item ? item.height : 0
+            })
+            let totals = heightArr.reduce((total, num) => {
+              return total + num
+            })
+            let panelsTop = totals
+            panels.forEach((item, index) => {
+              if (this.activeTabInfo[index]) {
+                let sliceArr = panels.slice(0, index)
+                let heightArr = sliceArr.map(item => {
+                  return item ? item.height : 0
+                })
+                let heightTotal
+                if (heightArr.length) {
+                  heightTotal = heightArr.reduce((total, num) => {
+                    return total + num
+                  })
+                } else {
+                  heightTotal = 0
+                }
+                this.activeTabInfo[index].top = heightTotal + panelsTop
+                this.activeTabInfo[index].bottom = heightTotal + panelsTop + item.height
+              }
+            })
+          })
       },
       _helpObserver(e) {
         if (!this._isHelpScroll) return
@@ -751,7 +791,7 @@
         this.activeTabIndex = index
         wx.pageScrollTo({
           scrollTop: this.activeTabInfo[index].top,
-          duration: 300
+          duration: 0
         })
         setTimeout(() => {
           this._isScrolling = false
