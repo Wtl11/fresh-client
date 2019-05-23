@@ -11,17 +11,31 @@
     </div>
     <div class="big-box">
       <div class="order-big-box" :style="{'transform': ' translateX('+ -(tabIdx * 100) +'vw)'}">
-        <div class="order-item-list" :class="tabIdx * 1 === 0 ? '' : 'order-item-list-active'">
-          <div class="order-list" v-if="list0.length > 0">
-            <div class="order-item" v-for="(item, index) in list0" :key="index" @click="jumpDetail(item)">
+        <div v-for="(list, index) in orderListArr" :key="index" class="order-item-list" :class="tabIdx * 1 === index ? '' : 'order-item-list-height70'">
+          <div class="order-list" v-if="list.data.length > 0">
+            <div v-for="(item, itemIndex) in list.data" :key="itemIndex" @click="jumpDetail(item)" class="order-item">
               <div class="top">
                 <div class="group-name">{{item.social_name}}</div>
                 <div class="status" :class="'corp-' + corpName + '-money'">{{item.status_text}}</div>
               </div>
               <div class="center">
+                <p v-if="isGroup" class="group-status">
+                  <img v-if="imageUrl" :src="imageUrl+'/yx-image/2.4/icon-spellgroup@2x.png'" alt="" class="group-icon">
+                  <template v-if="item.at_countdown">
+                    <span :class="'corp-' + corpName + '-money'">[拼团中]</span>只差
+                    <span :class="'corp-' + corpName + '-money'">1人</span>成团，剩
+                    <span :class="'corp-' + corpName + '-money'">{{item.at_countdown.hour}}:{{item.at_countdown.minute}}:{{item.at_countdown.second}}</span>结束
+                  </template>
+                </p>
                 <div class="goods-list">
-                  <div class="goods-img-list">
-                    <img v-for="(items, indx) in item.goods" :key="indx" v-if="indx < 4" class="goods-img" mode="aspectFill" :src="items.image_url" alt="">
+                  <template v-if="isGroup">
+                    <div class="goods-img-list">
+                      <img class="goods-img" mode="aspectFill" :src="item.goods[0].image_url" alt="">
+                    </div>
+                    <div class="goods-name">{{item.goods[0].goods_name}}</div>
+                  </template>
+                  <div v-else class="goods-img-list">
+                    <img v-for="(img, imgIndex) in item.goods" :key="imgIndex" v-if="imgIndex < 4" class="goods-img" mode="aspectFill" :src="img.image_url" alt="">
                     <div class="img-item" v-if="item.goods.length > 4">
                       <div class="circle"></div>
                       <div class="circle"></div>
@@ -29,120 +43,17 @@
                     </div>
                   </div>
                   <div class="arr-warp">
-                    <div class="all-number">共{{item.goods.length}}件</div>
                     <div class="arrlow"><img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="arr"></div>
                   </div>
                 </div>
               </div>
               <div class="bot">
                 <div class="time">{{item.created_at}}</div>
-                <div class="payment"><span class="actual">实付：</span><span class="sum">{{item.total}}</span><span class="principal">元</span></div>
+                <div class="payment"><span class="goods-count">共{{item.goods.length}}件商品</span><span class="actual">总计：</span><span class="sum">{{item.total}}</span><span class="principal">元</span></div>
               </div>
             </div>
           </div>
-          <div class="noting" v-if="list0.length === 0 && more0">
-            <div class="notingimg"><img class="img" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'" alt=""></div>
-            <div class="txt">空空如也</div>
-          </div>
-        </div>
-        <div class="order-item-list" :class="tabIdx * 1 === 1 ? '' : 'order-item-list-active'">
-          <div class="order-list" v-if="list1.length > 0">
-            <div class="order-item" v-for="(item, index) in list1" :key="index" @click="jumpDetail(item)">
-              <div class="top">
-                <div class="group-name">{{item.social_name}}</div>
-                <div class="status" :class="'corp-' + corpName + '-money'">{{item.status_text}}</div>
-              </div>
-              <div class="center">
-                <div class="goods-list">
-                  <div class="goods-img-list">
-                    <img v-for="(items, indx) in item.goods" :key="indx" v-if="indx < 4" class="goods-img" mode="aspectFill" :src="items.image_url" alt="">
-                    <div class="img-item" v-if="item.goods.length > 4">
-                      <div class="circle"></div>
-                      <div class="circle"></div>
-                      <div class="circle"></div>
-                    </div>
-                  </div>
-                  <div class="arr-warp">
-                    <div class="all-number">共{{item.goods.length}}件</div>
-                    <div class="arrlow"><img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="arr"></div>
-                  </div>
-                </div>
-              </div>
-              <div class="bot">
-                <div class="time">{{item.created_at}}</div>
-                <div class="payment"><span class="actual">实付：</span><span class="sum">{{item.total}}</span><span class="principal">元</span></div>
-              </div>
-            </div>
-          </div>
-          <div class="noting" v-if="list1.length === 0 && more1">
-            <div class="notingimg"><img class="img" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'" alt=""></div>
-            <div class="txt">空空如也</div>
-          </div>
-        </div>
-        <div class="order-item-list" :class="tabIdx * 1 === 2 ? '' : 'order-item-list-active'">
-          <div class="order-list" v-if="list2.length > 0">
-            <div class="order-item" v-for="(item, index) in list2" :key="index" @click="jumpDetail(item)">
-              <div class="top">
-                <div class="group-name">{{item.social_name}}</div>
-                <div class="status" :class="'corp-' + corpName + '-money'">{{item.status_text}}</div>
-              </div>
-              <div class="center">
-                <div class="goods-list">
-                  <div class="goods-img-list">
-                    <img v-for="(items, indx) in item.goods" :key="indx" v-if="indx < 4" class="goods-img" mode="aspectFill" :src="items.image_url" alt="">
-                    <div class="img-item" v-if="item.goods.length > 4">
-                      <div class="circle"></div>
-                      <div class="circle"></div>
-                      <div class="circle"></div>
-                    </div>
-                  </div>
-                  <div class="arr-warp">
-                    <div class="all-number">共{{item.goods.length}}件</div>
-                    <div class="arrlow"><img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="arr"></div>
-                  </div>
-                </div>
-              </div>
-              <div class="bot">
-                <div class="time">{{item.created_at}}</div>
-                <div class="payment"><span class="actual">实付：</span><span class="sum">{{item.total}}</span><span class="principal">元</span></div>
-              </div>
-            </div>
-          </div>
-          <div class="noting" v-if="list2.length === 0 && more2">
-            <div class="notingimg"><img class="img" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'" alt=""></div>
-            <div class="txt">空空如也</div>
-          </div>
-        </div>
-        <div class="order-item-list" :class="tabIdx * 1 === 3 ? '' : 'order-item-list-active'">
-          <div class="order-list" v-if="list3.length > 0">
-            <div class="order-item" v-for="(item, index) in list3" :key="index" @click="jumpDetail(item)">
-              <div class="top">
-                <div class="group-name">{{item.social_name}}</div>
-                <div class="status" :class="'corp-' + corpName + '-money'">{{item.status_text}}</div>
-              </div>
-              <div class="center">
-                <div class="goods-list">
-                  <div class="goods-img-list">
-                    <img v-for="(items, indx) in item.goods" :key="indx" v-if="indx < 4" class="goods-img" mode="aspectFill" :src="items.image_url" alt="">
-                    <div class="img-item" v-if="item.goods.length > 4">
-                      <div class="circle"></div>
-                      <div class="circle"></div>
-                      <div class="circle"></div>
-                    </div>
-                  </div>
-                  <div class="arr-warp">
-                    <div class="all-number">共{{item.goods.length}}件</div>
-                    <div class="arrlow"><img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="arr"></div>
-                  </div>
-                </div>
-              </div>
-              <div class="bot">
-                <div class="time">{{item.created_at}}</div>
-                <div class="payment"><span class="actual">实付：</span><span class="sum">{{item.total}}</span><span class="principal">元</span></div>
-              </div>
-            </div>
-          </div>
-          <div class="noting" v-if="list3.length === 0 && more3">
+          <div class="noting" v-if="list.data.length === 0 && !list.hasMore">
             <div class="notingimg"><img class="img" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'" alt=""></div>
             <div class="txt">空空如也</div>
           </div>
@@ -157,8 +68,15 @@
   import WePaint from '@components/we-paint/we-paint'
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import API from '@api'
+  import {countDownHandle} from '@utils/common'
 
   const NAVLIST = [{id: 1, name: '全部', status: ''}, {id: 2, name: '待付款', status: 0}, {id: 3, name: '待提货', status: 1}, {id: 4, name: '已完成', status: 2}]
+  const ORDER_LIST_ARR = [
+    { page: 1, data: [], hasMore: true },
+    { page: 1, data: [], hasMore: true },
+    { page: 1, data: [], hasMore: true },
+    { page: 1, data: [], hasMore: true }
+  ]
 
   export default {
     components: {
@@ -168,23 +86,12 @@
     data() {
       return {
         navList: NAVLIST,
-        orderList: [],
+        orderListArr: ORDER_LIST_ARR,
         tabIdx: 0,
         status: '',
         orderPage: 1,
         orderMore: false,
-        page0: 1,
-        list0: [],
-        more0: false,
-        page1: 1,
-        list1: [],
-        more1: false,
-        page2: 1,
-        list2: [],
-        more2: false,
-        page3: 1,
-        list3: [],
-        more3: false
+        isGroup: false
       }
     },
     onLoad(e) {
@@ -194,14 +101,18 @@
     onShow() {
       this.getOrderList(this.tabIdx)
     },
+    onUnload() {
+      this.groupTimer && clearInterval(this.groupTimer)
+    },
+    onHide() {
+      this.groupTimer && clearInterval(this.groupTimer)
+    },
     onReachBottom() {
       this.getMoreOrderList(this.tabIdx)
     },
     methods: {
-      getOrderList(tabIdx) {
-        this['page' + tabIdx] = 1
-        this['more' + tabIdx] = false
-        let status
+      getStatus(tabIdx) {
+        let status = ''
         switch (tabIdx * 1) {
           case 0:
             status = ''
@@ -216,50 +127,64 @@
             status = 2
             break
         }
-        API.Order.getOrderListData(status, this['page' + tabIdx]).then((res) => {
+        return status
+      },
+      getOrderList(tabIdx) {
+        let ol = this.orderListArr[tabIdx]
+        ol.page = 1
+        ol.hasMore = true
+        let status = this.getStatus(tabIdx)
+        API.Order.getOrderListData(status, 1).then((res) => {
           if (res.error === this.$ERR_OK) {
-            this['list' + tabIdx] = res.data
+            for (let v of res.data) {
+              v.at_diff = 33 + parseInt((Math.random() * 100))
+              v.at_countdown = countDownHandle(v.at_diff)
+            }
+            ol.data = res.data
             this._isMoreList(tabIdx, res)
+            this._startTimer()
           } else {
             this.$wechat.showToast(res.message)
           }
         })
       },
       getMoreOrderList(tabIdx) {
-        if (this['more' + tabIdx]) {
+        let ol = this.orderListArr[tabIdx]
+        if (!ol.hasMore) {
           return
         }
-        let status
-        switch (tabIdx * 1) {
-          case 0:
-            status = ''
-            break
-          case 1:
-            status = 0
-            break
-          case 2:
-            status = 1
-            break
-          case 3:
-            status = 2
-            break
-        }
-        API.Order.getOrderListData(status, this['page' + tabIdx]).then((res) => {
+        let status = this.getStatus(tabIdx)
+        ol.page += 1
+        API.Order.getOrderListData(status, ol.page).then((res) => {
           if (res.error === this.$ERR_OK) {
-            this['list' + tabIdx] = this['list' + tabIdx].concat(res.data)
+            ol.data = ol.data.concat(res.data)
             this._isMoreList(tabIdx, res)
           } else {
             this.$wechat.showToast(res.message)
           }
         })
       },
+      _startTimer() {
+        this.groupTimer = setInterval(() => {
+          let clearT = true
+          for (let item of this.orderListArr[this.tabIdx].data) {
+            if (item.at_diff && item.at_diff !== 0) {
+              item.at_diff--
+              item.at_countdown = countDownHandle(item.at_diff)
+              clearT = false
+            }
+          }
+          clearT && clearInterval(this.groupTimer)
+        }, 1000)
+      },
       _isMoreList(tabIdx, res) {
-        this['page' + tabIdx]++
-        if (this['list' + tabIdx].length >= res.meta.total * 1) {
-          this['more' + tabIdx] = true
+        let ol = this.orderListArr[tabIdx]
+        if (ol.data.length >= res.meta.total * 1) {
+          ol.hasMore = false
         }
       },
       selectIndex(item, index) {
+        this.groupTimer && clearInterval(this.groupTimer)
         this.status = item.status
         this.tabIdx = index
         this.getOrderList(this.tabIdx)
@@ -384,12 +309,25 @@
                 color: $color-sub
                 font-size: $font-size-16
       .center
+        padding: 15px 3.2vw
         border-bottom-1px($color-line)
+        .group-status
+          margin-bottom : 8px
+          height: 22px
+          font-size: $font-size-14
+          font-family: $font-family-regular
+          layout(row)
+          align-items :center
+
+          .group-icon
+            width: 15px
+            height: @width
+            margin-right :4px
         .goods-list
           layout(row)
           align-items: center
           justify-content: space-between
-          padding: 15px 3.2vw
+
           .goods-img-list
             layout(row)
             align-items: center
@@ -411,13 +349,16 @@
                 border-radius: 50%
                 &:nth-child(2)
                   margin: 0 5px
+        .goods-name
+          flex: 1
+          text-align: left
+          font-family: $font-family-medium
+          color: $color-text-main
+          font-size: $font-size-14
+          no-wrap-plus(2)
         .arr-warp
           layout(row)
           align-items: center
-          .all-number
-            font-family: $font-family-regular
-            font-size: $font-size-12
-            color: $color-text-sub
           .arrlow
             width: 7.5px
             height: 12.5px
@@ -435,21 +376,23 @@
         justify-content: space-between
         .time
           font-family: $font-family-regular
-          font-size: $font-size-14
-          color: #000000
+          font-size: $font-size-13
+          color: $color-text-sub
         .payment
+          color: #000000
+          .goods-count
+            font-family: $font-family-regular
+            font-size: $font-size-13
+            margin-right: 5px
           .actual
             font-family: $font-family-medium
             font-size: $font-size-14
-            color: #000000
           .sum
             font-family: $font-family-medium
-            font-size: $font-size-18
-            color: #000000
+            font-size: $font-size-15
           .principal
             font-family: $font-family-medium
             font-size: $font-size-12
-            color: #000000
 
   .noting
     text-align: center
@@ -479,6 +422,6 @@
       .order-item-list
         width: 100vw
         box-sizing: border-box
-      .order-item-list-active
+      .order-item-list-height70
         height: 70vh
 </style>

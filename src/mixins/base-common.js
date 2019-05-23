@@ -32,7 +32,7 @@ export default {
       if (!this.$mp) return
       let url = this.$getUrl()
       // 记录页面栈
-      if (!url || url.includes('pages/lost') || url.includes('pages/error')) {
+      if (!url || url.includes('pages/lost') || url.includes('pages/error') || url.includes('pages/open-location')) {
         return
       }
       this.$wx.setStorageSync('errorUrl', url)

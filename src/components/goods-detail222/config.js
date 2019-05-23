@@ -1,12 +1,13 @@
+// 商品详情
 import Vue from 'vue'
-import Page from './active-detail'
+import Page from './goods-detail'
 
 const page = new Vue(Page)
 page.$mount()
 
 export default {
   config: {
-    navigationBarTitleText: '&#39;&#39;',
+    navigationBarTitleText: 'GOODS_DETAIL',
     usingComponents: {}
   }
 }

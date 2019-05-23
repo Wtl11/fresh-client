@@ -16,12 +16,6 @@
       </div>
       <div class="info-stock">已售<span :class="'corp-' + corpName + '-money'">{{goodsMsg.sale_count}}</span>{{goodsMsg.goods_units}}<span v-if="activityId * 1 > 0">，剩余<span :class="'corp-' + corpName + '-money'">{{goodsMsg.usable_stock}}</span>{{goodsMsg.goods_units}}</span></div>
     </div>
-    <div class="safeguard-box">
-      <div class="safeguard-item" v-for="(item, index) in safeList" v-bind:key="index">
-        <img v-if="imageUrl" :src="imageUrl + item.url" mode="aspectFill" class="icon">
-        <div class="text">{{item.text}}</div>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -104,6 +98,7 @@
     padding: 0 12px
     box-sizing: border-box
     position: relative
+    margin-bottom :10px
 
     .share-wrapper
       position: absolute
@@ -128,6 +123,7 @@
       width: 100%
       padding: 10px 10px 15px
       box-sizing: border-box
+      border-radius : 0 0 8px 8px
 
       .title-wrapper
         position: relative

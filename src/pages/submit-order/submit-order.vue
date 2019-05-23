@@ -46,9 +46,12 @@
       </div>
     </div>
     <section class="goods-total-wrapper">
-      <p class="name">商品总价</p>
-      <p class="price">{{beforeTotal}}</p>
-      <p>元</p>
+      <div class="total-wrapper">
+        <p class="name">商品总价</p>
+        <p class="price">{{beforeTotal}}</p>
+        <p>元</p>
+      </div>
+      <p v-if="isShowNewCustomer" class="new-rule-wrapper">你不符合新人特惠购买资格</p>
     </section>
     <ul class="coupon-info-wrapper" :class="'corp-' + corpName + '-money'">
       <li class="coupon-item" @click="chooseCouponHandle">
@@ -80,6 +83,7 @@
 <script type="text/ecmascript-6">
   import {orderComputed, orderMethods} from '@state/helpers'
   import NavigationBar from '@components/navigation-bar/navigation-bar'
+  import {ACTIVE_TYPE} from '@utils/contants'
   import API from '@api'
 
   const ald = getApp()
@@ -92,7 +96,8 @@
         code: '',
         mobile: '',
         groupInfo: {},
-        userInfo: {}
+        userInfo: {},
+        isShowNewCustomer: false
       }
     },
     computed: {
@@ -105,6 +110,8 @@
       // 重置优惠券
       this.saveCoupon({})
       this._getCouponInfo()
+      this._checkIsNewClient()
+      console.log(this.goodsList)
     },
     async onShow() {
       ald.aldstat.sendEvent('去支付')
@@ -114,6 +121,14 @@
     },
     methods: {
       ...orderMethods,
+      _checkIsNewClient() {
+        let flag = (this.goodsList && this.goodsList.some(val => val.activity.activity_type === ACTIVE_TYPE.NEW_CLIENT))
+        if (flag) {
+          API.Global.checkIsNewCustomer().then(res => {
+            this.isShowNewCustomer = res.data.is_new_client === 0
+          })
+        }
+      },
       _getCouponInfo() {
         API.Coupon.getChooseList({goods: this.goodsList, is_usable: 1}).then((res) => {
           if (!res.data.length) return
@@ -131,12 +146,20 @@
           })
       },
       async goPay() {
+        let url = this.goodsList[0].url || ''
+        let source = this.goodsList[0].source || ''
+        let longitude = this.goodsList[0].longitude || ''
+        let latitude = this.goodsList[0].latitude || ''
         let orderInfo = {
           goods: this.goodsList,
           nickname: this.userInfo.nickname,
           mobile: this.mobile,
           customer_coupon_id: this.couponInfo.customer_coupon_id || 0,
-          open_gid: wx.getStorageSync('openGId') || 0
+          open_gid: wx.getStorageSync('openGId') || 0,
+          url,
+          source,
+          latitude,
+          longitude
         }
         this.userInfo.mobile = this.mobile
         this.$wechat.setStorage('userInfo', this.userInfo)
@@ -193,22 +216,29 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
  @import "~@designCommon"
+
   .goods-total-wrapper
-    padding :15.5px 12px
-    display :flex
-    align-items :center
+    padding :15.5px 12px 12px
     font-family: $font-family-regular
-    font-size: 14px
-    line-height: 1
     color: $color-text-main
     background :#fff
     border-top-1px(#e6e6e6)
     border-bottom :11px solid $color-background
-    .name
-      flex:1
-      color: #000000
-    .price
-      font-family: $font-family-medium
+    .new-rule-wrapper
+     padding-top :6px
+     font-size: 12px;
+     text-align: right;
+     color: $color-text-sub
+    .total-wrapper
+     display :flex
+     align-items :center
+     font-size: 14px
+     line-height: 1
+     .name
+       flex:1
+       color: #000000
+     .price
+       font-family: $font-family-medium
 
   .coupon-info-wrapper
     border-bottom :11px solid $color-background

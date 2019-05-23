@@ -7,7 +7,7 @@ const base64src = function(base64data) {
     if (!format) {
       reject(new Error('ERROR_BASE64SRC_PARSE'))
     }
-    const filePath = `${wx.env.USER_DATA_PATH}/${FILE_BASE_NAME}.${format}`
+    const filePath = `${wx.env.USER_DATA_PATH}/${FILE_BASE_NAME + Date.now()}.${format}`
     const buffer = wx.base64ToArrayBuffer(bodyData)
     fsm.writeFile({
       filePath,

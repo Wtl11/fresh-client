@@ -1,7 +1,6 @@
 <template>
-  <section class="buy-users">
+  <section v-if="buyUsers.length" class="buy-users">
     <swiper
-      v-if="buyUsers.length"
       class="carousel"
       :autoplay="true"
       :interval="3000"
