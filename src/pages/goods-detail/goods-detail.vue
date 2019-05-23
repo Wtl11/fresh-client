@@ -133,7 +133,7 @@
       <!--拼团列表-->
       <div v-if="activityType === ACTIVE_TYPE.GROUP_ON" class="collage-box">
         <div class="title">{{collageTotal}}位邻居正在拼单，可直接参与</div>
-        <swiper v-if="collageList.length"  class="collage-scroll" autoplay circular :vertical="true" interval="5000" :display-multiple-items="2">
+        <swiper v-if="collageList.length > 1"  class="collage-scroll" autoplay circular :vertical="true" interval="5000" :display-multiple-items="2">
           <block v-for="(item, index) in collageList" :key="index">
             <swiper-item class="collage-content">
               <div class="left">
@@ -150,6 +150,23 @@
             </swiper-item>
           </block>
         </swiper>
+        <article v-if="collageList.length === 1"  class="collage-scroll single">
+          <block v-for="(item, index) in collageList" :key="index">
+            <section class="collage-content">
+              <div class="left">
+                <img :src="item.avatar" alt="" class="logo">
+                <span class="name">{{item.nickname}}</span>
+              </div>
+              <div class="right">
+                <div class="context">
+                  <p class="text">还差<span class="color">{{item.surplus_number}}人</span>拼成</p>
+                  <span v-if="item.diff" class="time">剩余{{item.diff.hour}}:{{item.diff.minute}}:{{item.diff.second}}</span>
+                </div>
+                <button formType="submit" class="go-collage" @click="jumpToCollage(item)">去参团</button>
+              </div>
+            </section>
+          </block>
+        </article>
         <div class="collage-scroll" v-if="!collageList.length">
           <div class="nothing">暂无参团信息~</div>
         </div>
@@ -574,7 +591,7 @@
       },
       // 购买记录导航
       buyRecordNavTo() {
-        const url = `/pages/goods-record?goodsId=${this.goodsId}&shopId=${this.shopId}&activityId=${this.activityId}`
+        const url = `/pages/goods-record?goodsId=${this.goodsId}&shopId=${this.shopId}&activityId=${this.activityId}&activityType=${this.activityType}`
         wx.navigateTo({url})
       },
       // 设置群数据事件号
@@ -996,6 +1013,8 @@
       height: 112px
       padding: 4px 0
       overflow: hidden
+      &.single
+        height :56px
       .nothing
         text-align: center
         padding-top: 50px

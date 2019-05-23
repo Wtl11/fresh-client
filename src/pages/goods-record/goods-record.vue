@@ -110,7 +110,6 @@
     },
     data() {
       return {
-        thumb_image: '',
         isFirstLoad: true,
         goodsMsg: {},
         shopId: 0,
