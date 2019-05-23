@@ -14,7 +14,7 @@
   import NavigationBar from '@components/navigation-bar/navigation-bar'
 
   const PAGE_NAME = 'LOST'
-
+  const TAB_REG = /(pages\/choiceness)|(pages\/shopping-cart)|(pages\/mine)/g
   export default {
     name: PAGE_NAME,
     data() {
@@ -29,13 +29,12 @@
               success(res) {
                 wx.setStorageSync('locationData', res)
                 wx.setStorageSync('locationShow', 1)
-                if (wx.getStorageSync('lastPage')) {
-                  wx.navigateTo({url: wx.getStorageSync('lastPage')})
-                  wx.removeStorage('lastPage')
+                let path = wx.getStorageSync('errorUrl')
+                let url = `/${path}`
+                if (TAB_REG.test(path)) {
+                  wx.switchTab({url})
                 } else {
-                  wx.switchTab({
-                    url: `/pages/choiceness`
-                  })
+                  wx.navigateTo({url})
                 }
               }
             })

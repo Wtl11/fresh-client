@@ -270,15 +270,15 @@
       ald.aldstat.sendEvent('商品详情')
       this._initPageParams(options)
       this.getQrCode()
-      // this._getLocation()
     },
     onShow() {
-      this._setEventNo()
-      this._getBuyUsers()
+      this._getLocation()
       this._getGoodsDetailData()
       this.getUserImgList()
       this.getGoodsOtherInfo()
       this.setCartCount()
+      this._setEventNo()
+      this._getBuyUsers()
       this.$$shareHandler({
         event: EVENT_CODE.GOODS_DETAIL,
         activityId: this.activityId,
@@ -432,6 +432,10 @@
             goodsList.trade_price = price
           } else {
             goodsList.url = `/pages/collage-detail`
+            goodsList.source = 'c_groupon'
+            goodsList.groupon_id = 0
+            goodsList.latitude = this.latitude
+            goodsList.longitude = this.longitude
           }
         }
         const total = (price * number).toFixed(2)
