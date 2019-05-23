@@ -8,41 +8,41 @@
     <p v-if="topText2" class="top-text">当前社区不支持拼团活动: {{data.shop.social_name || '国际单位社区'}}</p>
     <div class="top-msg">
       <!--商品信息-->
-      <div v-if="goodsBox" class="goods-box">
+      <div v-if="goodsBox" class="goods-box" @click="toDetail">
         <div class="goods-detail">
-          <img src="" alt="" class="goods-img">
+          <img :src="data.goods.goods_cover_image" alt="" class="goods-img">
           <div class="right-content">
             <p class="title">{{data.goods.name || '超值特惠 4斤新鲜柠檬是是三三首饰所所死侍死侍'}}</p>
             <p class="context">{{data.goods.describe || '脆嫩爽口，酸甜多汁，口感脆嫩，新鲜美味'}}</p>
             <div class="marks">
               <span class="total">{{data.goods.spell_count || 200}}人已拼</span>
-              <span class="count">3人团</span>
+              <span class="count">{{data.groupon_person_limit || 2}}人团</span>
             </div>
             <p class="price">
-              <span class="money">3.8</span>
-              <span class="unit">元</span>
+              <span class="money">{{data.goods.trade_price || '10'}}</span>
+              <span class="unit">{{data.goods.goods_units || '元'}}</span>
             </p>
           </div>
         </div>
       </div>
 
-      <p v-if="statusText" class="status-text" :class="{'orange': orangeStatus}"><img :src="imageUrl + '/yx-image/collage/'+ data.icon +'@2x.png'" alt="" class="icon">{{data.statusText}}</p>
-      <p v-if="statusTip1" class="status-tip">还差<span class="mark">1</span>人，快喊邻居一起来拼团吧</p>
-      <p v-if="statusTip2" class="status-tip status-tip2">仅剩<span class="mark">1</span>个名额</p>
+      <p v-if="statusText" class="status-text" :class="{'orange': orangeStatus}"><img :src="imageUrl + '/yx-image/collage/'+ msg[status].icon +'@2x.png'" alt="" class="icon">{{data.groupon_aggregate_status.status_str}}</p>
+      <p v-if="statusTip1" class="status-tip">还差<span class="mark">{{data.surplus_number}}</span>人，快喊邻居一起来拼团吧</p>
+      <p v-if="statusTip2" class="status-tip status-tip2">仅剩<span class="mark">{{data.surplus_number}}</span>个名额</p>
       <p v-if="runTime" class="run-time">剩余 <span class="time-num">{{timeArr[0]}}</span>:<span class="time-num">{{timeArr[1]}}</span>:<span class="time-num">{{timeArr[2]}}</span></p>
 
       <!--头像-->
       <div v-if="headShow" class="heads">
-        <div v-for="(item, index) in headArr" :key="index" class="head-box" :class="[{'small-head': headArr.length > 4}, {'has-border': false}]">
+        <div v-for="(item, index) in data.groupon_people" :key="index" class="head-box" :class="[{'small-head': data.groupon_people.length > 4}, {'has-border': item.is_payed}]">
 
-          <img :src="imageUrl + '/yx-image/collage/pic-touxiang@2x.png'" alt="" class="logo">
+          <img :src="item.avatar" alt="" class="logo">
 
-          <span v-if="index === 0" class="tag">拼主</span>
+          <span v-if="item.is_main" class="tag">拼主</span>
         </div>
       </div>
 
       <!--<button class="btn" open-type="share">{{data.btn}}</button>-->
-      <div class="btn" @click="clickBtn">{{data.btn}}</div>
+      <div class="btn" @click="clickBtn">{{msg[status].btn}}</div>
       <p v-if="botTip" class="bot-tip">分享邻居越多，成团越快</p>
     </div>
     <!--<div class="btn" @click="_initLocation">获取位置信息</div>-->
@@ -54,7 +54,7 @@
     </div>
     <div v-if="time" class="time">
       <span class="label">拼团时间</span>
-      <span class="text">2019-12-12 12:12:12</span>
+      <span class="text">{{data.start_groupon_at}}</span>
     </div>
 
     <!--进度-->
@@ -90,109 +90,87 @@
   import ClearWatch from '@mixins/clear-watch'
   import GoodsItem from './goods-item/goods-item'
   import SharePop from './share-pop/share-pop'
+  import {ACTIVE_TYPE} from '@utils/contants'
   import { formatNumber } from '@utils/common'
   import API from '@api'
   const PAGE_NAME = 'COLLAGE_DETAIL'
 
+  // 3开团成功 7参团成功 9不在范围 为自定义状态。
   const STATUS_ARR = [
     // 拼主
     {
-      type: 'master',
       status: 1,
-      statusText: '开团成功',
-      btn: '邀请邻居参团',
-      step: 1,
-      icon: 'icon-success'
-    },
-    {
-      type: 'master',
-      status: 2,
-      statusText: '待成团',
-      btn: '邀请邻居参团',
-      step: 1,
-      icon: 'icon-success'
-    },
-    {
-      type: 'master',
-      status: 3,
       statusText: '拼团成功',
       btn: '查看我的订单',
-      step: 3,
       icon: 'icon-success'
     },
     {
-      type: 'master',
-      status: 4,
+      status: 2,
       statusText: '拼团失败',
       btn: '查看别的拼团',
-      step: 1,
       icon: 'icon-failure'
+    },
+    {
+      status: 3,
+      statusText: '开团成功',
+      btn: '邀请邻居参团',
+      icon: 'icon-success'
+    },
+    {
+      status: 4,
+      statusText: '待成团',
+      btn: '邀请邻居参团',
+      icon: 'icon-success'
     },
     // 已参团
     {
-      type: 'customer',
       status: 5,
-      statusText: '待成团',
-      btn: '邀请邻居参团',
-      step: 1,
-      icon: 'icon-success'
-    },
-    {
-      type: 'customer',
-      status: 6,
-      statusText: '参团成功',
-      btn: '查看我的订单',
-      step: 1,
-      icon: 'icon-success'
-    },
-    {
-      type: 'customer',
-      status: 7,
       statusText: '拼团成功',
       btn: '看看别的拼团',
-      step: 2,
       icon: 'icon-success'
     },
     {
-      type: 'customer',
-      status: 8,
+      status: 6,
       statusText: '拼团失败',
       btn: '返回商城首页',
-      step: 1,
       icon: 'icon-failure'
     },
     {
-      type: 'customer',
+      status: 7,
+      statusText: '参团成功',
+      btn: '查看我的订单',
+      icon: 'icon-success'
+    },
+    {
+      status: 8,
+      statusText: '待成团',
+      btn: '邀请邻居参团',
+      icon: 'icon-success'
+    },
+    {
       status: 9,
       statusText: '不在范围',
       btn: '返回商城首页',
-      step: 1,
       icon: 'icon-failure'
     },
     // 未参与
     {
-      type: 'customer',
       status: 10,
-      statusText: '',
-      btn: '一键参团',
-      step: 1,
-      icon: ''
-    },
-    {
-      type: 'customer',
-      status: 11,
       statusText: '该团已满',
       btn: '我来开团',
-      step: '',
       icon: 'icon-end'
     },
     {
-      type: 'customer',
-      status: 12,
+      status: 11,
       statusText: '该团已结束',
       btn: '返回商城首页',
-      step: '',
       icon: 'icon-end'
+    },
+    {
+      status: 13,
+      statusText: '',
+      btn: '一键参团',
+      icon: ''
     }
   ]
 
@@ -202,25 +180,32 @@
     data() {
       return {
         statusArr: STATUS_ARR,
-        headArr: [1, 2],
         progress: [1, 2, 3, 4],
         text: ['开团', '邀请邻居', '拼团成功', '拼团返券'],
         orderId: 1,
+        id: 1,
         distance: true,
         timer: '',
         timeArr: [],
         recommendList: [],
-        step: STATUS_ARR[0].step,
-        data: STATUS_ARR[0],
-        status: 0,
-        msg: {
+        step: 2,
+        msg: STATUS_ARR,
+        status: 5,
+        activeType: ACTIVE_TYPE,
+        data: {
+          id: 1,
           groupon_id: 46,
-          groupon_status_describe: '拼团成功',
+          groupon_status: 1,
+          groupon_step: 2,
           groupon_person_limit: 2,
           start_groupon_at: '2019-05-17 15:53:38',
           spell_groupon_at: '2019-05-17 15:55:02',
-          surplus_seconds: 0,
+          surplus_seconds: 10000,
           surplus_number: 0,
+          groupon_aggregate_status: {
+            status: 10,
+            status_str: '该团已满'
+          },
           groupon_people: [
             {
               avatar: 'https://wx.qlogo.cn/mmopen/vi_32/nWbmOQibT41icqJ3JeDKlUH38CoYEOEQXTeCmvr2lY3ibTgnu8HKLl9Js4FCMfpNsysiaj7wD4fo9HXkfy1jgTyxaw/132',
@@ -247,112 +232,122 @@
             total_stock: 100,
             usable_stock: 100,
             sale_count: 100
+          },
+          shop: {
+            shop_id: 1,
+            social_name: '白云国际单位',
+            name: '白云测试',
+            notice: '大家10:00-10:30或16:00-16:30可取货。',
+            province: '天津市',
+            city: '天津市',
+            district: '河西区',
+            address: '黄园路 国际单位 A5'
           }
         }
       }
     },
     computed: {
       topText1() { // 开团成功
-        return +this.data.status === 1
+        return +this.status === 1
       },
       topText2() { // 不在范围
-        return +this.data.status === 9
+        return +this.status === 9 && this.distance
       },
       goodsBox() {
-        if (+this.data.status === 5 ||
-          +this.data.status === 6 ||
-          +this.data.status === 7 ||
-          +this.data.status === 8 ||
-          +this.data.status === 10
+        if (+this.status === 5 ||
+          +this.status === 6 ||
+          +this.status === 7 ||
+          +this.status === 8 ||
+          +this.status === 10
         ) {
           return true
         }
         return false
       },
       statusText() {
-        if (+this.data.status === 1 ||
-          +this.data.status === 2 ||
-          +this.data.status === 3 ||
-          +this.data.status === 4 ||
-          +this.data.status === 5 ||
-          +this.data.status === 6 ||
-          +this.data.status === 7 ||
-          +this.data.status === 8 ||
-          +this.data.status === 11 ||
-          +this.data.status === 12
+        if (+this.status === 1 ||
+          +this.status === 2 ||
+          +this.status === 3 ||
+          +this.status === 4 ||
+          +this.status === 5 ||
+          +this.status === 6 ||
+          +this.status === 7 ||
+          +this.status === 8 ||
+          +this.status === 11 ||
+          +this.status === 12
         ) {
           return true
         }
         return false
       },
       statusTip1() {
-        if (+this.data.status === 1 ||
-          +this.data.status === 2 ||
-          +this.data.status === 4 ||
-          +this.data.status === 5 ||
-          +this.data.status === 6
+        if (+this.status === 1 ||
+          +this.status === 2 ||
+          +this.status === 4 ||
+          +this.status === 5 ||
+          +this.status === 6
         ) {
           return true
         }
         return false
       },
       statusTip2() {
-        if (+this.data.status === 9 || +this.data.status === 10) {
+        if (+this.status === 9 || +this.status === 10) {
           return true
         }
         return false
       },
       runTime() {
-        if (+this.data.status === 1 ||
-          +this.data.status === 2 ||
-          +this.data.status === 4 ||
-          +this.data.status === 5 ||
-          +this.data.status === 6 ||
-          +this.data.status === 9 ||
-          +this.data.status === 10
+        if (+this.status === 1 ||
+          +this.status === 2 ||
+          +this.status === 4 ||
+          +this.status === 5 ||
+          +this.status === 6 ||
+          +this.status === 9 ||
+          +this.status === 10
         ) {
           return true
         }
         return false
       },
       headShow() {
-        return +this.data.status !== 12
+        return +this.status !== 12
       },
       botTip() {
-        if (+this.data.status !== 4 && +this.data.status !== 11 && +this.data.status !== 12) {
+        if (+this.status !== 4 && +this.status !== 11 && +this.status !== 12) {
           return true
         }
         return false
       },
       goods() {
-        if (+this.data.status === 1 ||
-          +this.data.status === 3 ||
-          +this.data.status === 4
+        if (+this.status === 1 ||
+          +this.status === 3 ||
+          +this.status === 4
         ) {
           return true
         }
         return false
       },
       time() {
-        if (+this.data.status !== 11 && +this.data.status !== 12) {
+        if (+this.status !== 11 && +this.status !== 12) {
           return true
         }
         return false
       },
       progressShow() {
-        if (+this.data.status !== 11 && +this.data.status !== 12) {
+        if (+this.status !== 11 && +this.status !== 12) {
           return true
         }
         return false
       },
       recommend() {
-        if (+this.data.status === 11 || +this.data.status === 12) {
+        if (+this.status === 11 || +this.status === 12) {
           return true
         }
         return false
       },
       orangeStatus() {
-        if (+this.data.status === 4 || +this.data.status === 8 || +this.data.status === 11 || +this.data.status === 12) {
+        if (+this.status === 4 || +this.status === 8 || +this.status === 11 || +this.status === 12) {
           return true
         }
         return false
@@ -387,13 +382,14 @@
     },
     onLoad(options) {
       this._initLocation()
-      // this.timeHandle()
-      this.orderId = options.query.orderId || ''
-      this.id = options.query.id || ''
+      this.timeHandle()
+      this.orderId = options.orderId || ''
+      this.id = options.id || ''
+      console.log(this.data)
       // this.getGrouponDetail()
     },
     async onShow() {
-      this._refreshLocation()
+      // this._refreshLocation()
       // await this.getCarRecommend()
     },
     methods: {
@@ -436,8 +432,6 @@
       },
       changePicker(e) {
         this.status = e.target.value
-        this.data = STATUS_ARR[e.target.value]
-        this.step = STATUS_ARR[e.target.value].step
       },
       changeStatus() {
         this.data = STATUS_ARR[this.status]
@@ -450,28 +444,21 @@
         this.$refs.sharePop.show()
       },
       toDetail() {
-        let id = this.data.id
-        wx.navigateTo({url: `/pages/goods-detail?id=${id}`})
+        wx.navigateTo({url: `/pages/goods-detail?id=${this.data.goods.goods_id}&activityId=${this.data.goods.activity_id}&activityType=${this.activeType}`})
       },
       timeHandle() {
         clearInterval(this.timer)
-        let defaultTime = new Date().getTime() + 60 * 60 * 100 * 24
-        let nowTime = new Date()
-        let timeDef = defaultTime - nowTime
+        let timeDef = this.data.surplus_seconds
         this.timer = setInterval(() => {
-          timeDef -= 1000
-          if (timeDef >= defaultTime) {
+          timeDef -= 1
+          if (+timeDef === 0) {
             clearInterval(this.timer)
           }
-          let date = new Date(timeDef)
-          let hours = formatNumber(date.getHours())
-          let minutes = formatNumber(date.getMinutes())
-          let seconds = formatNumber(date.getSeconds())
+          let hours = formatNumber(Math.floor(timeDef / 60 / 60 % 60))
+          let minutes = formatNumber(Math.floor(timeDef / 60 % 60))
+          let seconds = formatNumber(Math.floor(timeDef % 60))
           this.timeArr = [hours, minutes, seconds]
         }, 1000)
-      },
-      btnHandle() {
-        console.log(121)
       },
       async getCarRecommend() {
         let res = await API.Cart.getCarRecommend()
@@ -488,7 +475,6 @@
           let that = this
           wx.getLocation({
             async success(res) {
-              console.log(res)
               wx.setStorageSync('locationData', res)
               wx.setStorageSync('locationShow', 1)
               that.locationStatus = 1
