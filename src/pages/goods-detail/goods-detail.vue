@@ -409,24 +409,33 @@
         }
       },
       // addNumber控件确定按钮
-      async comfirmNumer(number) {
+      async comfirmNumer(number, type) {
         let goodsList = this.goodsMsg.goods_skus[0]
         goodsList.sku_id = this.goodsMsg.goods_sku_id || goodsList.goods_sku_id
         goodsList.num = number
         goodsList.goods_units = this.goodsMsg.goods_units
         let price = goodsList.trade_price
-        try {
-          let res = await API.Global.checkIsNewCustomer()
-          if (res.data.is_new_client === 0) {
+        if (this.activityType === ACTIVE_TYPE.NEW_CLIENT) {
+          try {
+            let res = await API.Global.checkIsNewCustomer()
+            if (res.data.is_new_client === 0) {
+              price = this.goodsMsg.goods_sale_price
+              goodsList.trade_price = price
+            }
+          } catch (e) {
+            console.warn(e)
+          }
+        }
+        if (this.activityType === ACTIVE_TYPE.GROUP_ON) {
+          if (type) {
             price = this.goodsMsg.goods_sale_price
             goodsList.trade_price = price
+          } else {
+            goodsList.url = `/pages/collage-detail`
           }
-        } catch (e) {
-          console.warn(e)
         }
         const total = (price * number).toFixed(2)
         goodsList.activity = this.goodsMsg.activity
-        // goodsList.url = `/pages/`
         let orderInfo = {
           goodsList: new Array(goodsList),
           total: total,

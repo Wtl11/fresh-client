@@ -120,8 +120,8 @@
         }
       },
       comfirmNumer() {
+        this.$emit('comfirmNumer', this.orderNum, this.currentType)
         this.hideLink()
-        this.$emit('comfirmNumer', this.orderNum)
       }
     }
   }
