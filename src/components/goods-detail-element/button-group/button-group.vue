@@ -1,5 +1,7 @@
 <template>
-  <div class="button-group">
+<!--  团购-->
+  <form action="" report-submit @submit="$getFormId">
+  <div v-if="ACTIVE_TYPE.GROUP_ON === activityType" class="button-group">
     <div class="hlep-btn">
       <button formType="submit" class="hlep-btn-box" v-for="(item, index) in typeBtn" :key="index" @click.stop="switchItem(item)">
         <div class="hlep-top">
@@ -9,18 +11,37 @@
         <div class="hlep-bottom">{{item.text}}</div>
       </button>
     </div>
-    <form action="" report-submit @submit="$getFormId">
+      <button class="common-btn group left" formType="submit" @click="instantlyBuy('goods_sale_price')">
+        <p class="money">¥{{buttonInfo.salePrice}}元</p>
+        <p class="text">单独购买</p>
+      </button>
+      <button class="common-btn group right"  formType="submit" @click="instantlyBuy">
+        <p class="money">¥{{buttonInfo.tradePrice}}元</p>
+        <p class="text">发起团购</p>
+      </button>
+<!--    <div v-if="!isShowTwoButton" class="goods-btn goods-btn-assint">{{btnText}}</div>-->
+  </div>
+<!--  一般-->
+  <div v-else class="button-group">
+    <div class="hlep-btn">
+      <button formType="submit" class="hlep-btn-box" v-for="(item, index) in typeBtn" :key="index" @click.stop="switchItem(item)">
+        <div class="hlep-top">
+          <img v-if="imageUrl" :src="imageUrl + item.url" class="detail-img" mode="aspectFill">
+          <div class="help-number" v-if="index * 1 === 1 && count * 1 >= 1">{{count * 1 > 99 ? 99 : count}}</div>
+        </div>
+        <div class="hlep-bottom">{{item.text}}</div>
+      </button>
+    </div>
       <button v-if="isShowTwoButton" class="goods-btn goods-btn-active" formType="submit" @click="addShoppingCart">加入购物车</button>
-    </form>
-    <form action="" class="lost" report-submit @submit="$getFormId">
       <button v-if="isShowTwoButton" class="goods-btn" :class="'corp-' + corpName + '-bg'" formType="submit" @click="instantlyBuy">立即购买</button>
-    </form>
     <div v-if="!isShowTwoButton" class="goods-btn goods-btn-assint">{{btnText}}</div>
   </div>
+  </form>
 </template>
 
 <script type="text/ecmascript-6">
   import {cartComputed} from '@state/helpers'
+  import {ACTIVE_TYPE} from '@utils/contants'
 
   const COMPONENT_NAME = 'BUTTON_GROUP'
   const TYPE_BTN = [
@@ -34,10 +55,15 @@
       buttonInfo: {
         type: Object,
         default: () => {}
+      },
+      activityType: {
+        type: String,
+        default: ACTIVE_TYPE.DEFAULT
       }
     },
     data() {
       return {
+        ACTIVE_TYPE,
         typeBtn: TYPE_BTN
       }
     },
@@ -60,8 +86,8 @@
       addShoppingCart() {
         this.$emit('addShoppingCart')
       },
-      instantlyBuy() {
-        this.$emit('instantlyBuy')
+      instantlyBuy(type = '') {
+        this.$emit('instantlyBuy', type)
       }
     }
   }
@@ -70,6 +96,32 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@designCommon"
 
+  button
+    reset-button()
+
+  .common-btn
+    width: 35vw
+    height: 55px
+    text-align: center
+    font-size: $font-size-14
+    font-family: $font-family-regular
+    &.group
+      layout()
+      justify-content :center
+      align-items :center
+      .money
+        font-family :$font-family-medium
+        display :flex
+        font-size :16px
+      .text
+        font-size :12px
+        padding-top :3px
+    &.right
+      background:#73C200
+      color: #fff
+    &.left
+      background :#FFE500
+      color: $color-text-main
   .button-group
     position: fixed
     left: 0

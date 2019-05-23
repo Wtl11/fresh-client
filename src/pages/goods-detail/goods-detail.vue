@@ -4,7 +4,6 @@
       <navigation-bar ref="navigationBar" :title="msgTitle" :showArrow="true" :translucent="false"></navigation-bar>
       <section class="banner-box">
         <buy-users :buyUsers="buyUsers"></buy-users>
-<!--        <header-swiper :goodsMsg="goodsMsg"></header-swiper>-->
         <div class="header-swiper">
           <swiper v-if="goodsBanner && goodsBanner.length" class="banner" @change="bannerChange" interval="5000">
             <block v-for="(item, index) in goodsBanner" :key="index">
@@ -87,7 +86,6 @@
           <div class="info-stock">已售<span :class="'corp-' + corpName + '-money'">{{goodsMsg.sale_count}}</span>{{goodsMsg.goods_units}}<span v-if="activityId * 1 > 0">，剩余<span :class="'corp-' + corpName + '-money'">{{goodsMsg.usable_stock}}</span>{{goodsMsg.goods_units}}</span></div>
         </div>
       </div>
-<!--      <header-detail :goodsMsg="goodsMsg" :activityId="activityId" @showShare="handleShowShare"></header-detail>-->
       <buy-record
         v-if="userImgList.length > 0"
         :userImgList="userImgList"
@@ -98,6 +96,7 @@
       <service-description></service-description>
       <button-group
         :buttonInfo="buttonInfo"
+        :activityType="activityType"
         @instantlyBuy="instantlyBuy"
         @buttonGroupNav="buttonGroupNav"
         @addShoppingCart="addShoppingCart"
@@ -149,6 +148,7 @@
   import WePaint from '@components/we-paint/we-paint'
   import base64src from '@utils/create-qr-code-wx'
   import {BTN_STATUS, BTN_TEXT_CONSTANT} from './config'
+  import GoodsDetailMixins from '@mixins/goods-detail'
 
   const PAGE_NAME = 'ACTIVE_DETAIL'
   const PAGE_ROUTE_NAME = 'goods-detail'
@@ -160,7 +160,7 @@
   const ald = getApp()
   export default {
     name: PAGE_NAME,
-    mixins: [clearWatch, ShareHandler],
+    mixins: [clearWatch, ShareHandler, GoodsDetailMixins],
     components: {
       NavigationBar,
       BuyUsers,
@@ -252,7 +252,9 @@
         return {
           activeStatus: this.activeStatus,
           btnText: this.btnText,
-          isShowTwoButton: this.isShowTwoButton
+          isShowTwoButton: this.isShowTwoButton,
+          tradePrice: this.goodsMsg.trade_price,
+          salePrice: this.goodsMsg.goods_sale_price
         }
       },
       // 二维码
@@ -268,6 +270,7 @@
       ald.aldstat.sendEvent('商品详情')
       this._initPageParams(options)
       this.getQrCode()
+      // this._getLocation()
     },
     onShow() {
       this._setEventNo()
@@ -423,6 +426,7 @@
         }
         const total = (price * number).toFixed(2)
         goodsList.activity = this.goodsMsg.activity
+        // goodsList.url = `/pages/`
         let orderInfo = {
           goodsList: new Array(goodsList),
           total: total,
@@ -442,7 +446,7 @@
         })
       },
       // 执行购买
-      async instantlyBuy() {
+      async instantlyBuy(type) {
         let isLogin = await this.$isLogin()
         if (!isLogin) {
           return
@@ -454,18 +458,18 @@
           return
         }
         if (this.buyGoodsInfo.person_day_buy_limit * 1 === -1) {
-          this._showAddNumber()
+          this._showAddNumber(type)
           return
         }
         if (this.buyGoodsInfo.person_day_buy_count >= this.buyGoodsInfo.person_day_buy_limit) {
           this.$wechat.showToast(`该商品限购${this.buyGoodsInfo.person_day_buy_limit}件，您不能再购买了`)
         } else {
-          this._showAddNumber()
+          this._showAddNumber(type)
         }
       },
       // 显示添加数量控件
-      _showAddNumber() {
-        this.$refs.addNumber && this.$refs.addNumber.showLink()
+      _showAddNumber(type) {
+        this.$refs.addNumber && this.$refs.addNumber.showLink(type)
       },
       // 显示分享控件
       handleShowShare() {
@@ -498,6 +502,9 @@
       },
       // 初始化页面参数
       _initPageParams(options) {
+        if (!options) {
+          options = this.$mp.appOptions.query
+        }
         this.goodsId = +options.id || +options.goodsId || 0
         this.activityId = +options.activityId || 0
         this.shopId = +options.shopId || 0
@@ -511,14 +518,21 @@
         this._initPageType(options.activityType)
       },
       _initPageType(type = 'DEFAULT') {
+        let count = 0
         if (type === ACTIVE_TYPE.GUESS) {
           type = ACTIVE_TYPE.DEFAULT
-        } else if (this.activityId > 0 && type === ACTIVE_TYPE.DEFAULT) {
+        } else if ((this.activityId > 0 && type === ACTIVE_TYPE.DEFAULT) || type === ACTIVE_TYPE.FLASH) {
           type = ACTIVE_TYPE.FLASH
         } else {
-          type = ACTIVE_TYPE.DEFAULT
+          for (let [, val] of Object.entries(ACTIVE_TYPE)) {
+            if (type === val) {
+              count++
+              type = val
+              break
+            }
+          }
         }
-        this.activityType = type
+        this.activityType = count ? type : ACTIVE_TYPE.DEFAULT
       },
       // 获取购买者的用户信息
       _getBuyUsers() {

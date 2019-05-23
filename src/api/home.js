@@ -16,5 +16,10 @@ export default {
   getGuessList(data, loading = false, toast) {
     const url = `/api/wap/recommend/goods`
     return request.get({url, data, loading, toast})
+  },
+  // 拼团活动
+  getGroupList(data, loading = false, toast) {
+    const url = `/api/wap/activity/activity-groupon-goods`
+    return request.get({url, data, loading, toast})
   }
 }

@@ -10,7 +10,7 @@
         <div class="goods-info-right">
           <div class="title">{{msgDetail.name}}</div>
           <div class="order-price-box">
-            <div class="price-small">{{msgDetail.trade_price}}</div>
+            <div class="price-small">{{tradePrice}}</div>
             <div class="price-icon">元</div>
             <div class="price-line">{{msgDetail.original_price}}元</div>
           </div>
@@ -63,19 +63,29 @@
       return {
         showOrderNum: true,
         linkShow: false,
-        orderNum: 1
+        orderNum: 1,
+        currentType: ''
       }
     },
     computed: {
+      tradePrice() {
+        return this.msgDetail[this.currentType || 'trade_price'] || ''
+      },
       orderTotal() {
-        return (this.msgDetail.trade_price * this.orderNum).toFixed(2)
+        return (this.tradePrice * this.orderNum).toFixed(2)
       }
     },
     methods: {
       hideLink() {
         this.linkShow = false
+        this.currentType = ''
+        this.orderNum = 1
+        this.showOrderNum = true
       },
-      showLink() {
+      showLink(type = '') {
+        if (typeof type === 'string' && type) {
+          this.currentType = type
+        }
         this.linkShow = true
         this.orderNum = 1
       },

@@ -29,7 +29,7 @@
 <!--        轮播图-->
         <section
           v-if="moduleItem.module_name === 'bannar' && moduleItem.is_close === 0"
-          class="item-wrapper module-item">
+          class="item-wrapper banner module-item">
           <article v-if="moduleItem.list && moduleItem.list.length" class="home-banner">
             <swiper
               class="banner"
@@ -522,7 +522,7 @@
           this._getNotify()
           await this._getModuleInfo()
           this._initTabInfo()
-          await Promise.all([this._getFlashList(), this._getTodayHostList(), this._getNewClientList()])
+          await Promise.all([this._getFlashList(), this._getTodayHostList(), this._getNewClientList(), this._getGroupList()])
           this._addMonitor()
         }
         // this._getNotify()
@@ -551,7 +551,7 @@
       try {
         await this._getModuleInfo(false)
         this._initTabInfo()
-        await Promise.all([this._getFlashList(), this._getTodayHostList(), this._getNewClientList()])
+        await Promise.all([this._getFlashList(), this._getTodayHostList(), this._getNewClientList(), this._getGroupList()])
         this._addMonitor()
         this._getGuessList()
       } catch (e) {
@@ -630,6 +630,15 @@
         }).finally(() => {
           this._isLoading = false
         })
+      },
+      async _getGroupList() {
+        try {
+          let res = await API.Home.getGroupList({limit: 20})
+          this.groupList = this._formatListPriceData(res.data)
+          console.log(this.groupList)
+        } catch (e) {
+          console.warn(e)
+        }
       },
       async _getTodayHostList() {
         try {
@@ -772,21 +781,6 @@
           })
         })
       },
-      // 设置分类滚动时的样式
-      // _setGoodsSearchStyles(y, opacity, time = 300) {
-      //   this.goodsSearchStyles = `
-      //     opacity:${opacity};
-      //     transform:translate3d(0,${y}px,0);
-      //     transition: transform ${time}ms ease-out;
-      //     position:fixed;
-      //     z-index:200;
-      //     top:0;
-      //     left:0;
-      //     right:0;
-      //     opacity: 0;
-      //     background: #fff
-      //   `
-      // },
       // banner页面跳转
       handleBannerJump(item) {
         let url = ''
@@ -1541,6 +1535,8 @@
       position :relative
       .item-wrapper
         position :relative
+        &.banner
+          height :40vw
       .top-background
         position: absolute
         left: 0
