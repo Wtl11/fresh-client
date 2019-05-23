@@ -3,7 +3,6 @@
     <div class="active-detail">
       <navigation-bar ref="navigationBar" :title="msgTitle" :showArrow="true" :translucent="false"></navigation-bar>
       <section class="banner-box">
-<!--        <buy-users :buyUsers="buyUsers"></buy-users>-->
         <section v-if="buyUsers.length" class="buy-users">
           <swiper
             class="carousel"
@@ -206,8 +205,8 @@
   import ShareHandler, {EVENT_CODE} from '@mixins/share-handler'
   import API from '@api'
   import {resolveQueryScene, countDownHandle} from '@utils/common'
-  import BuyUsers from '@components/goods-detail-element/buy-users/buy-users'
-  import HeaderDetail from '@components/goods-detail-element/header-detail/header-detail'
+  // import BuyUsers from '@components/goods-detail-element/buy-users/buy-users'
+  // import HeaderDetail from '@components/goods-detail-element/header-detail/header-detail'
   import LinkGroup from '@components/link-group/link-group'
   import BuyRecord from '@components/goods-detail-element/buy-record/buy-record'
   import DetailImage from '@components/goods-detail-element/detail-image/detail-image'
@@ -232,8 +231,8 @@
     mixins: [clearWatch, ShareHandler, GoodsDetailMixins],
     components: {
       NavigationBar,
-      BuyUsers,
-      HeaderDetail,
+      // BuyUsers,
+      // HeaderDetail,
       LinkGroup,
       BuyRecord,
       DetailImage,
@@ -772,7 +771,6 @@
       },
       // 限时抢购倒计时开始
       _flashAction() {
-        this.$refs.flash && this.$refs.flash._clearTimer()
         if (this._activityType !== ACTIVE_TYPE.FLASH) return
         if (this.activeStatus === BTN_STATUS.DOWN) {
           return
