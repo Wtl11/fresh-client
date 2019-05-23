@@ -439,6 +439,7 @@
       // 社区名称-定位
       communityName() {
         let name = (this.locationStatus * 1 === 1 || this.locationStatus * 1 === 2) ? this.socialName : '定位中...'
+        console.warn(name, '--=->')
         return name.substring(0, 6) + (name.length > 6 ? '...' : '')
       },
       // 其他活动
@@ -469,7 +470,12 @@
       }
     },
     onLoad(options) {
+      console.warn(options, '<==home==>')
       this.$wechat.showLoading()
+      let data = wx.getStorageSync('homeData')
+      if (data) {
+        Object.assign(this, data)
+      }
       this._initPageParams(options)
       this._initLocation()
       // this._groupInfo(false)
@@ -481,6 +487,9 @@
     },
     onUnload() {
       this._navigationIO && this._navigationIO.disconnect()
+    },
+    onHide() {
+      wx.setStorageSync('homeData', this.$data, {curShopId: ''})
     },
     onPageScroll(e) {
       this._helpObserver(e)
@@ -510,14 +519,17 @@
           this._resetFlash()
           this._resetGuessParams()
           this._groupInfo(false)
+          this._getNotify()
+          await this._getModuleInfo()
+          this._initTabInfo()
+          await Promise.all([this._getFlashList(), this._getTodayHostList(), this._getNewClientList()])
+          this._addMonitor()
         }
-        this._getNotify()
-        console.log(1)
-        await this._getModuleInfo()
-        console.log(2)
-        this._initTabInfo()
-        await Promise.all([this._getFlashList(), this._getTodayHostList(), this._getNewClientList()])
-        this._addMonitor()
+        // this._getNotify()
+        // await this._getModuleInfo()
+        // this._initTabInfo()
+        // await Promise.all([this._getFlashList(), this._getTodayHostList(), this._getNewClientList()])
+        // this._addMonitor()
         if (!wx.getStorageSync('token')) return
         this.setCartCount()
       } catch (e) {
@@ -579,7 +591,7 @@
       }
       const flag = Date.now()
       return {
-        title: `${this.groupInfo.social_name},次日达、直采直销，点击下单↓`,
+        title: `${this.socialName},次日达、直采直销，点击下单↓`,
         path: `/pages/choiceness?shopId=${this.shopId}&moduleName=${moduleName}&flag=${flag}`,
         imageUrl: this.imageUrl + imgUrl,
         success: (res) => {
