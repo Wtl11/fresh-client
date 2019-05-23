@@ -1,6 +1,6 @@
 <template>
   <div class="lost">
-    <navigation-bar title="选择自提点"></navigation-bar>
+    <navigation-bar title="开启定位"></navigation-bar>
     <div class="img-box">
       <img :src="imageUrl + '/yx-image/order/pic-address@2x.png'" v-if="imageUrl" class="error-img">
       <p class="text">亲，我们未获得您的位置信息</p>
@@ -29,9 +29,14 @@
               success(res) {
                 wx.setStorageSync('locationData', res)
                 wx.setStorageSync('locationShow', 1)
-                wx.switchTab({
-                  url: `/pages/choiceness`
-                })
+                if (wx.getStorageSync('lastPage')) {
+                  wx.navigateTo({url: wx.getStorageSync('lastPage')})
+                  wx.removeStorage('lastPage')
+                } else {
+                  wx.switchTab({
+                    url: `/pages/choiceness`
+                  })
+                }
               }
             })
           }
