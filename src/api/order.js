@@ -72,5 +72,15 @@ export default {
   reqSaleOrderDetail(id, data, loading = false) {
     let url = `/api/wap/customer-after-sale-orders/${id}`
     return request.get(url, data, loading)
+  },
+  /**
+   * 我的拼团
+   * @param id
+   * @param loading
+   * @returns {*}
+   */
+  getGroupList(data, loading = false) {
+    let url = `/api/wap/activity/activity-groupon-customer-list`
+    return request.get(url, data, loading)
   }
 }

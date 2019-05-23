@@ -1,24 +1,26 @@
 <template>
   <div class="my-group-buy">
     <navigation-bar ref="navigationBar" title="我的拼团" showArrow="true"></navigation-bar>
-    <ul v-if="groupBuyList.length" class="goods-list">
-      <li class="goods-item-box" v-for="(item, index) in groupBuyList" :key="index" @click="listHandle">
+    <ul v-if="groupBuyList.length > 0" class="goods-list">
+      <li class="goods-item-box" v-for="(item, index) in groupBuyList" :key="index" @click="listHandle(item)">
         <div class="top-bar">
           <p>{{item.created_at}}</p>
-          <p>{{item.status_text}}</p>
+          <p :class="item.groupon_status === 0 ? 'corp-' + corpName + '-money' : ''">{{item.groupon_status_str}}</p>
+<!--          <p>待分享，差{{item.surplus_number}}人</p>-->
         </div>
         <img v-if="imageUrl" :src="imageUrl+'/yx-image/2.4/pic-pinzhu@2x.png'" alt="" class="leader-tips">
         <div class="goods-info">
-          <img class="img" mode="aspectFill" :src="item.goods[0].image_url">
+          <img class="img" mode="aspectFill" :src="item.goods.goods_cover_image">
           <div class="info-con">
-            <div class="goods-name">{{item.goods[0].goods_name}}</div>
+            <div class="goods-name">{{item.goods.name}}</div>
             <div :class="'corp-' + corpName + '-money'">
-              <div class="group-num">2人团</div>
+              <div class="group-num">{{item.groupon_person_limit}}人团</div>
             </div>
-            <div :class="'corp-' + corpName + '-money'" class="goods-price"><span class="price-num">18.8</span>元</div>
+            <div :class="'corp-' + corpName + '-money'" class="goods-price"><span class="price-num">{{item.goods.trade_price}}</span>元</div>
           </div>
         </div>
-        <div class="goods-btn" :class="item.status === 1?'btn-share':''">{{btnArr[0]}}</div>
+        <div v-if="item.groupon_status === 0" class="goods-btn btn-share">邀请邻居</div>
+        <div v-else class="goods-btn">拼团详情</div>
       </li>
       <li class="foot-ties" v-if="!hasMore && !isShowEmpty">
         <div class="lines left"></div>
@@ -61,9 +63,6 @@
       }
     },
     computed: {},
-    onLoad() {
-      this._getGroupBuyList()
-    },
     onShow() {
       this.page = 1
       this._getGroupBuyList()
@@ -75,13 +74,23 @@
     },
     methods: {
       async _getGroupBuyList() {
-        API.Order.getOrderListData('', this.page).then((res) => {
+        API.Order.getGroupList({page: this.page}).then((res) => {
           if (res.error === this.$ERR_OK) {
-            this.groupBuyList = this.groupBuyList.concat(res.data)
+            if (this.page === 1) {
+              this.groupBuyList = res.data
+            } else {
+              this.groupBuyList = this.groupBuyList.concat(res.data)
+            }
+            if (res.data.length <= 0 && res.meta.total <= 0) {
+              this.isShowEmpty = true
+            }
+            if (this.groupBuyList.length >= res.meta.total) {
+              this.hasMore = false
+            }
+            res.coupon && res.coupon.length > 0 && this._getCouponList()
           } else {
             this.$wechat.showToast(res.message)
           }
-          this._getCouponList()
         })
       },
       async _getCouponList() {
@@ -120,8 +129,8 @@
       _ref(key, fn, params) {
         this.$refs[key] && this.$refs[key][fn] && this.$refs[key][fn](params)
       },
-      listHandle() {
-        // wx.navigateTo({url: `/pages/`})
+      listHandle(item) {
+        item.id && wx.navigateTo({url: `/pages/collage-detail?id=${item.id}`})
       }
     }
   }
@@ -226,4 +235,19 @@
       color: rgba(152, 152, 159, 0.30)
       text-align: justify
       line-height: 1
+  .noting
+    text-align: center
+    margin-top: 106px
+    .noting-img
+      width: 116px
+      height: 110px
+      margin: 0 auto 15px
+      .img
+        display: block
+        width: 100%
+        height: 100%
+    .txt
+      font-family: $font-family-regular
+      font-size: $font-size-14
+      color: $color-text-sub
 </style>

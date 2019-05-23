@@ -224,10 +224,8 @@
         this.setCartCount()
       },
       jumpGoodsDetail(item) {
-        console.log(item)
         let type = ''
         if (item.activity) {
-          console.log(item.activity)
           type = item.activity.activity_type || ''
         }
         wx.navigateTo({
