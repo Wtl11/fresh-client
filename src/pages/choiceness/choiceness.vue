@@ -778,7 +778,7 @@
         let scrollTop = viewport.scrollTop + panel.top - (this._navigationBarHeight + 59 - 5)
         wx.pageScrollTo({
           scrollTop,
-          duration: Math.abs(viewport.scrollTop - scrollTop) < 400 ? 0 : 300
+          duration: Math.abs(viewport.scrollTop - scrollTop) < 600 ? 0 : 300
         })
         setTimeout(() => {
           this._isScrolling = false
@@ -840,6 +840,7 @@
       },
       // 跳转至商品详情页
       handleJumpToGoodsDetail(item, type) {
+        console.log(item)
         wx.navigateTo({
           url: `/pages/goods-detail?id=${item.goods_id}&activityId=${item.activity_id}&activityType=${type}`
         })
@@ -1313,7 +1314,7 @@
           font-size: 4.533333333333333vw
         .dec
           position: relative
-          top: 0.8vw
+          top: 1.1vw
           font-size : 3.733333333333334vw
         .unit
           position :relative
