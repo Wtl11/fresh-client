@@ -221,9 +221,7 @@
   import {SCENE_SHARE, SCENE_DEFAULT, SCENE_QR_CODE, ACTIVE_TYPE} from '@utils/contants'
   import ShareHandler, {EVENT_CODE} from '@mixins/share-handler'
   import API from '@api'
-  import {resolveQueryScene, countDownHandle} from '@utils/common'
-  // import BuyUsers from '@components/goods-detail-element/buy-users/buy-users'
-  // import HeaderDetail from '@components/goods-detail-element/header-detail/header-detail'
+  import {resolveQueryScene, countDownHandle, isEmptyObject} from '@utils/common'
   import LinkGroup from '@components/link-group/link-group'
   import BuyRecord from '@components/goods-detail-element/buy-record/buy-record'
   import DetailImage from '@components/goods-detail-element/detail-image/detail-image'
@@ -248,8 +246,6 @@
     mixins: [clearWatch, ShareHandler, GoodsDetailMixins],
     components: {
       NavigationBar,
-      // BuyUsers,
-      // HeaderDetail,
       LinkGroup,
       BuyRecord,
       DetailImage,
@@ -364,10 +360,12 @@
     },
     onLoad(options) {
       ald.aldstat.sendEvent('商品详情')
-      this._initPageParams(options)
-      this.getQrCode()
+      // this._initPageParams(options)
+      // this.getQrCode()
     },
     onShow() {
+      this._initPageParams()
+      this.getQrCode()
       this._getLocation()
       this._getGoodsDetailData()
       this.getUserImgList()
@@ -459,27 +457,30 @@
           this.$wechat.showToast(this.tipTop)
           return
         }
+        this.instantlyBuy('goods_sale_price')
         let flag = await this._checkAbleCreateGroup(item.grouon_id)
         if (flag) {
-          let goodsList = this.goodsMsg.goods_skus[0]
-          goodsList.sku_id = this.goodsMsg.goods_sku_id || goodsList.goods_sku_id
-          goodsList.num = 1
-          goodsList.goods_units = this.goodsMsg.goods_units
-          let price = goodsList.trade_price
-          goodsList.url = `/pages/collage-detail`
-          goodsList.source = 'c_groupon'
-          goodsList.groupon_id = item.grouon_id
-          goodsList.latitude = this.latitude
-          goodsList.longitude = this.longitude
-          const total = (price * goodsList.num).toFixed(2)
-          goodsList.activity = this.goodsMsg.activity
-          let orderInfo = {
-            goodsList: new Array(goodsList),
-            total: total,
-            deliverAt: this.deliverAt
-          }
-          this.setOrderInfo(orderInfo)
-          wx.navigateTo({url: `/pages/submit-order`})
+          this.instantlyBuy('goods_sale_price')
+          this.joinGroupId = item.grouon_id
+          // let goodsList = this.goodsMsg.goods_skus[0]
+          // goodsList.sku_id = this.goodsMsg.goods_sku_id || goodsList.goods_sku_id
+          // goodsList.num = 1
+          // goodsList.goods_units = this.goodsMsg.goods_units
+          // let price = goodsList.trade_price
+          // goodsList.url = `/pages/collage-detail`
+          // goodsList.source = 'c_groupon'
+          // goodsList.groupon_id = item.grouon_id
+          // goodsList.latitude = this.latitude
+          // goodsList.longitude = this.longitude
+          // const total = (price * goodsList.num).toFixed(2)
+          // goodsList.activity = this.goodsMsg.activity
+          // let orderInfo = {
+          //   goodsList: new Array(goodsList),
+          //   total: total,
+          //   deliverAt: this.deliverAt
+          // }
+          // this.setOrderInfo(orderInfo)
+          // wx.navigateTo({url: `/pages/submit-order`})
         }
       },
       _getUnGroupList() {
@@ -634,7 +635,7 @@
           } else {
             goodsList.url = `/pages/collage-detail`
             goodsList.source = 'c_groupon'
-            goodsList.groupon_id = 0
+            goodsList.groupon_id = this.joinGroupId || 0
             goodsList.latitude = this.latitude
             goodsList.longitude = this.longitude
           }
@@ -721,9 +722,18 @@
       },
       // 初始化页面参数
       _initPageParams(options) {
-        if (!options) {
-          options = this.$mp.appOptions.query
-        }
+        // isEmptyObject(this.$mp.appOptions.query)
+        // isEmptyObject(this.$mp.query)
+        // if (!options) {
+        //   options = this.$mp.appOptions.query
+        // }
+        // if (isEmptyObject(this.$mp.query)) {
+        //
+        // } else {
+        //
+        // }
+        options = isEmptyObject(this.$mp.query) ? this.$mp.appOptions.query : this.$mp.query
+        console.log(this)
         this.goodsId = +options.id || +options.goodsId || 0
         this.activityId = +options.activityId || 0
         this.shopId = +options.shopId || 0
