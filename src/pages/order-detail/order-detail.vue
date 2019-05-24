@@ -174,7 +174,7 @@
         return floatAccAdd(this.orderMsg.total, this.orderMsg.promote_price)
       },
       isGroup() {
-        return (this.orderMsg.groupon && this.orderMsg.groupon.pay_status !== 0) || false
+        return (this.orderMsg.groupon && this.orderMsg.groupon.pay_status === 1) || false
       }
     },
     onLoad(e) {
