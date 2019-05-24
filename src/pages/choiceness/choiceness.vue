@@ -29,6 +29,7 @@
 <!--        轮播图-->
         <section
           v-if="moduleItem.module_name === 'bannar' && moduleItem.is_close === 0"
+          id="banner"
           class="item-wrapper banner module-item">
           <article v-if="moduleItem.list && moduleItem.list.length" class="home-banner">
             <swiper
@@ -78,6 +79,7 @@
         <section
           v-if="moduleItem.module_name === 'activity' && flashTabInfo.length"
           class="item-wrapper module-item"
+          id="flashSale"
         >
           <div class="home-flash-sale">
             <section class="top-wrapper">
@@ -169,7 +171,8 @@
         </section>
 <!--        通知-->
         <article v-if="moduleIndex === 0 && notifyInfo.has_notify && notifyInfo.desc"
-          class="notice"
+                 class="notice"
+                 id="notice"
         >
           <img
             v-if="imageUrl"
@@ -196,6 +199,7 @@
 <!--        icon 分类-->
         <ul v-if="moduleIndex === 0"
             class="server-icon-wrapper"
+            id="server-icon-wrapper"
         >
           <li v-for="(item, index) in serverList" :key="index" class="server-item-wrapper">
             <img v-if="imageUrl" :src="imageUrl + item.icon" alt="" class="icon-server">
@@ -204,7 +208,8 @@
         </ul>
         <!--        分类列表-->
         <ul v-if="moduleItem.module_name === 'goods_cate'"
-                 class="classify-wrapper"
+            class="classify-wrapper"
+            id="classify-wrapper"
         >
           <li v-if="index < 10" v-for="(item, index) in moduleItem.list" :key="item.id"
               class="classify-item-wrapper"
@@ -326,6 +331,7 @@
     <coupon-modal ref="couponModal"></coupon-modal>
 <!--    添加至我的小程序-->
     <new-guidelines ref="guidelines"></new-guidelines>
+    <distance-check ref="distance"></distance-check>
 <!--    <div class="goods-search-wrapper" :style="goodsSearchStyles"></div>-->
   </div>
   </form>
@@ -341,6 +347,7 @@
   import ShareHandler, {EVENT_CODE} from '@mixins/share-handler'
   import ShareTrick from '@mixins/share-trick'
   import NewGuidelines from './new-guidelines/new-guidelines'
+  import DistanceCheck from './distance-check/distance-check'
   import {TAB_ARR_CONFIG} from './config'
   import {ACTIVE_TYPE} from '@utils/contants'
   import IsEnd from '@components/is-end/is-end'
@@ -361,7 +368,8 @@
       CouponModal,
       NewGuidelines,
       IsEnd,
-      LoadingMore
+      LoadingMore,
+      DistanceCheck
     },
     data() {
       this._isLoading = false
@@ -427,7 +435,9 @@
             text: '原产地直采',
             icon: '/yx-image/2.4/icon-ok@2x.png'
           }
-        ]
+        ],
+        latitude: 0,
+        longitude: 0
       }
     },
     computed: {
@@ -439,7 +449,6 @@
       // 社区名称-定位
       communityName() {
         let name = (this.locationStatus * 1 === 1 || this.locationStatus * 1 === 2) ? this.socialName : '定位中...'
-        console.warn(name, '--=->')
         return name.substring(0, 6) + (name.length > 6 ? '...' : '')
       },
       // 其他活动
@@ -487,12 +496,21 @@
     },
     onUnload() {
       this._navigationIO && this._navigationIO.disconnect()
-    },
-    onHide() {
+      this.bannerIndex = 0
+      this.activeTabStyles = ''
+      this.flashTabIndex = 0
+      this.activeTabIndex = 0
+      this.flashViewToChild = undefined
+      this.guessPage = 1
+      this.guessHasMore = true
+      this.latitude = 0
+      this.longitude = 0
       wx.setStorageSync('homeData', this.$data, {curShopId: ''})
     },
+    onHide() {
+    },
     onPageScroll(e) {
-      this._helpObserver(e)
+      // this._helpObserver(e)
     },
     async onShow() {
       if (this._sharing) {
@@ -524,6 +542,7 @@
           this._initTabInfo()
           await Promise.all([this._getFlashList(), this._getTodayHostList(), this._getNewClientList(), this._getGroupList()])
           this._addMonitor()
+          this._getLocation()
         }
         // this._getNotify()
         // await this._getModuleInfo()
@@ -635,7 +654,6 @@
         try {
           let res = await API.Home.getGroupList({limit: 20})
           this.groupList = this._formatListPriceData(res.data)
-          console.log(this.groupList)
         } catch (e) {
           console.warn(e)
         }
@@ -714,18 +732,54 @@
                 }
               }
             })
-          wx.createSelectorQuery()
-            .selectAll('.panel')
-            .boundingClientRect(res => {
-            }).exec(res => {
-              res[0].forEach((item, index) => {
-                if (this.activeTabInfo[index]) {
-                  this.activeTabInfo[index].top = item.top - top
-                  this.activeTabInfo[index].bottom = item.bottom
-                }
-              })
-            })
+          this._initDomPosition()
         }, 500)
+      },
+      _initDomPosition() {
+        wx.createSelectorQuery()
+          .select('#homePosition')
+          .boundingClientRect()
+          .select('#banner')
+          .boundingClientRect()
+          .select('#server-icon-wrapper')
+          .boundingClientRect()
+          .select('#notice')
+          .boundingClientRect()
+          .select('#classify-wrapper')
+          .boundingClientRect()
+          .select('#flashSale')
+          .boundingClientRect()
+          .selectAll('.panel')
+          .boundingClientRect()
+          .exec((arr) => {
+            let sliceArr = arr.slice(0, -1)
+            let panels = arr.slice(-1)[0]
+            let heightArr = sliceArr.map(item => {
+              return item ? item.height : 0
+            })
+            let totals = heightArr.reduce((total, num) => {
+              return total + num
+            })
+            let panelsTop = totals
+            panels.forEach((item, index) => {
+              if (this.activeTabInfo[index]) {
+                let sliceArr = panels.slice(0, index)
+                let heightArr = sliceArr.map(item => {
+                  return item ? item.height : 0
+                })
+                let heightTotal
+                if (heightArr.length) {
+                  heightTotal = heightArr.reduce((total, num) => {
+                    return total + num
+                  })
+                } else {
+                  heightTotal = 0
+                }
+                this.activeTabInfo[index].top = heightTotal + panelsTop
+                this.activeTabInfo[index].bottom = heightTotal + panelsTop + item.height
+              }
+            })
+          })
       },
       _helpObserver(e) {
         if (!this._isHelpScroll) return
@@ -751,7 +805,7 @@
         this.activeTabIndex = index
         wx.pageScrollTo({
           scrollTop: this.activeTabInfo[index].top,
-          duration: 300
+          duration: 0
         })
         setTimeout(() => {
           this._isScrolling = false
@@ -860,12 +914,12 @@
           console.error(e)
         }
       },
-      // 跳转-商品详情
-      jumpGoodsDetail(item) {
-        wx.navigateTo({
-          url: `/pages/goods-detail?id=${item.goods_id}&activityId=${item.activity_id}`
-        })
-      },
+      // // 跳转-商品详情
+      // jumpGoodsDetail(item) {
+      //   wx.navigateTo({
+      //     url: `/pages/goods-detail?id=${item.goods_id}&activityId=${item.activity_id}`
+      //   })
+      // },
       // 添加购物车
       async addShoppingCart(item) {
         let isLogin = await this.$isLogin()
@@ -929,6 +983,26 @@
               })
             }
           })
+        }
+      },
+      // 获取地理位置
+      async _getLocation() {
+        if (this.latitude && this.longitude) return
+        try {
+          let res = await this.$wechat.getLocation()
+          this.longitude = res.longitude
+          this.latitude = res.latitude
+          if (!this.latitude || !this.longitude) {
+            wx.navigateTo({url: `/pages/open-location`})
+          } else {
+            res = await API.Global.checkShopDistance({longitude: this.longitude, latitude: this.latitude})
+            // this.tipTop = res.data.distance_judge === 0 ? '' : `当前位置${name}社区不参与拼团活动`
+            if (res.data.distance_judge === 0) {
+              this.$refs.distance && this.$refs.distance.setTop(this._navigationBarHeight + 30)
+            }
+          }
+        } catch (e) {
+          wx.navigateTo({url: `/pages/open-location`})
         }
       },
       // 更新地理位置

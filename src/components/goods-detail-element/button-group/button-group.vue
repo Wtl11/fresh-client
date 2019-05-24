@@ -2,6 +2,7 @@
 <!--  团购-->
   <form action="" report-submit @submit="$getFormId">
   <div v-if="ACTIVE_TYPE.GROUP_ON === activityType" class="button-group">
+    <section v-if="buttonInfo.tipTop" class="tip-top">{{buttonInfo.tipTop}}</section>
     <div class="hlep-btn">
       <button formType="submit" class="hlep-btn-box" v-for="(item, index) in typeBtn" :key="index" @click.stop="switchItem(item)">
         <div class="hlep-top">
@@ -11,15 +12,17 @@
         <div class="hlep-bottom">{{item.text}}</div>
       </button>
     </div>
-      <button class="common-btn group left" formType="submit" @click="instantlyBuy('goods_sale_price')">
+      <button v-if="showLeftButton" class="common-btn group left" formType="submit" @click="instantlyBuy('goods_sale_price')">
         <p class="money">¥{{buttonInfo.salePrice}}元</p>
         <p class="text">单独购买</p>
       </button>
-      <button class="common-btn group right"  formType="submit" @click="instantlyBuy">
+      <div v-else-if="activeStatus === 1" class="common-btn over">已抢完</div>
+      <button v-if="showRightButton" class="common-btn group right" :class="{disable: buttonInfo.tipTop}"  formType="submit" @click="handleGroupBuy">
         <p class="money">¥{{buttonInfo.tradePrice}}元</p>
         <p class="text">发起团购</p>
       </button>
-<!--    <div v-if="!isShowTwoButton" class="goods-btn goods-btn-assint">{{btnText}}</div>-->
+    <div v-else-if="activeStatus === 1" class="common-btn over">已抢完</div>
+    <div v-if="!showRightButton && !showLeftButton" class="goods-btn goods-btn-assint">{{btnText}}</div>
   </div>
 <!--  一般-->
   <div v-else class="button-group">
@@ -77,6 +80,12 @@
       },
       isShowTwoButton() {
         return this.buttonInfo.isShowTwoButton
+      },
+      showLeftButton() {
+        return this.activeStatus === 1 && this.buttonInfo.base_usable_stock > 0
+      },
+      showRightButton() {
+        return this.activeStatus === 1 && this.buttonInfo.usable_stock > 0
       }
     },
     methods: {
@@ -88,6 +97,13 @@
       },
       instantlyBuy(type = '') {
         this.$emit('instantlyBuy', type)
+      },
+      handleGroupBuy() {
+        if (this.buttonInfo.tipTop) {
+          this.$wechat.showToast(this.buttonInfo.tipTop)
+          return
+        }
+        this.$emit('instantlyBuy')
       }
     }
   }
@@ -105,6 +121,15 @@
     text-align: center
     font-size: $font-size-14
     font-family: $font-family-regular
+    &.disable
+      background: #B7B7B7 !important
+    &.over
+      layout()
+      justify-content :center
+      align-items :center
+      font-size :14px
+      background: #B7B7B7
+      color: $color-white
     &.group
       layout()
       justify-content :center
@@ -122,6 +147,20 @@
     &.left
       background :#FFE500
       color: $color-text-main
+  .tip-top
+    position absolute
+    height :40px
+    top:-39px
+    left :0
+    right :0
+    background: #FFEBD6
+    padding :0 12px
+    line-height :@height
+    font-family: $font-family-regular
+    font-size: 15px;
+    color: #FA7500;
+    z-index :115
+    no-wrap()
   .button-group
     position: fixed
     left: 0
@@ -179,6 +218,7 @@
       font-size: $font-size-14
       font-family: $font-family-regular
       color: #fff
+      background:#73C200
       &:after
         border: none
     .goods-btn-active

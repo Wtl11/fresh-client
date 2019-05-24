@@ -46,7 +46,7 @@ export default {
 
   // 购物车 猜你喜欢
   getCarRecommend(data = null, loading = false) {
-    const url = `/api/wap/recommend/goods`
+    const url = `/api/backend/recommend/goods`
     return request.get(url, data, loading)
   }
 }
