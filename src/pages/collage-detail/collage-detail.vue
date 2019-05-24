@@ -44,7 +44,7 @@
       <!--<button class="btn" open-type="share">{{data.btn}}</button>-->
       <div v-if="btnShow === 1"  class="btn" @click="clickBtn">邀请邻居参团</div>
       <div v-if="btnShow === 2" class="btn" @click="clickBtn">查看我的订单</div>
-      <div v-if="btnShow === 3" class="btn" @click="clickBtn">返回首页</div>
+      <div v-if="btnShow === 3" class="btn" @click="clickBtn">返回商城首页</div>
       <div v-if="btnShow === 4" class="btn" @click="clickBtn">一键参团</div>
       <div v-if="btnShow === 5" class="btn" @click="clickBtn">我来开团</div>
       <p v-if="btnShow === 1" class="bot-tip">分享邻居越多，成团越快</p>
@@ -54,7 +54,7 @@
     <div v-if="goods || time" class="line"></div>
     <div v-if="goods" class="goods" @click="toDetail">
       <span class="label">拼团商品</span>
-      <p class="text">精品油桃3公斤装，整箱...<img :src="imageUrl + '/yx-image/collage/icon-pressed@2x.png'" class="icon"></p>
+      <p class="text">{{data.goods.name}}<img :src="imageUrl + '/yx-image/collage/icon-pressed@2x.png'" class="icon"></p>
     </div>
     <div v-if="time" class="time">
       <span class="label">拼团时间</span>
@@ -62,7 +62,7 @@
     </div>
 
     <!--进度-->
-    <div v-if=" " class="progress-handle">
+    <div v-if="progressShow" class="progress-handle">
       <div class="progress-bg">
         <span class="progress" :style="{width: (19 + 33.333*(step-1)) + '%'}"></span>
         <span v-for="(item, index) in progress" :key="index" :style="{left: -2 + (index * 33.333) + '%'}" class="step" :class="{'active': (step-1) >= index}">{{item}}</span>
@@ -180,9 +180,9 @@
         activeType: ACTIVE_TYPE,
         orderId: 1,
         id: 1,
-        status: 1,
-        isGroup: 0,
-        isMain: 0,
+        status: 0,
+        isGroup: 1,
+        isMain: 1,
         distance: true, // true范围内
         step: 1,
         statusNum: 1,
@@ -278,11 +278,9 @@
         return false
       },
       statusTip2() {
-        // 没参团 不在范围、一键参团
-        if (!this.isGroup) {
-          if (!this.distence || +this.status === 0) {
-            return true
-          }
+        // 一键参团
+        if (!this.isGroup && this.distance && +this.status === 0) {
+          return true
         }
         return false
       },
@@ -384,10 +382,10 @@
     onShareAppMessage() {
       let shopId = wx.getStorageSync('shopId')
       const flag = Date.now()
-      console.log(`/pages/share-order?id=${this.id}&shopId=${shopId}`)
+      console.log(`/pages/collage-detail?id=${this.id}&shopId=${shopId}`)
       return {
         title: `【${this.data.goods.name}】`,
-        path: `/pages/share-order?id=${this.id}&shopId=${shopId}&flag=${flag}`,
+        path: `/pages/collage-detail?id=${this.id}&shopId=${shopId}&flag=${flag}`,
         // imageUrl: `${this.imageUrl}/yx-image/order/pic-share_order@2x.png`,
         imageUrl: `${this.data.goods.goods_cover_image}`,
         success: (res) => {
@@ -415,34 +413,36 @@
       // this._initLocation()
       this.orderId = (options && options.orderId) || ''
       this.id = (options && options.id) || ''
+      if (options.shopId) {
+        wx.setStorage('shopId', options.shopId)
+      }
     },
     async onShow() {
       this.timeHandle()
-      // this.getGrouponDetail()
+      this.getGrouponDetail()
       // this._refreshLocation()
       if (!this.isGroup && +this.status === 1) {
         this.getCarRecommend()
       }
       // await this.getCarRecommend()
-      if (this.status < 3) {
-        this.statusNum = this.status
-      }
-      if (this.orderId && this.isMain) {
-        this.statusNum = 3
-      } else if (this.orderId && !this.isMain) {
-        this.statusNum = 4
-      } else if (!this.isGroup && +this.data.surplus_seconds === 0) {
-        this.statusNum = 7
-      } else if (!this.isGroup && +this.status === 1) {
-        this.statusNum = 6
-      } else if (!this.isGroup && +this.status === 0) {
-        this.statusNum = 8
-      }
+      // if (this.status < 3) {
+      //   this.statusNum = this.status
+      // }
+      // if (this.orderId && this.isMain) {
+      //   this.statusNum = 3
+      // } else if (this.orderId && !this.isMain) {
+      //   this.statusNum = 4
+      // } else if (!this.isGroup && +this.data.surplus_seconds === 0) {
+      //   this.statusNum = 7
+      // } else if (!this.isGroup && +this.status === 1) {
+      //   this.statusNum = 6
+      // } else if (!this.isGroup && +this.status === 0) {
+      //   this.statusNum = 8
+      // }
       // if (!this.isGroup && this.distence) {
       //   this.statusNum = 5
       // }
       // dfgdg
-      console.log(this.statusNum)
     },
     methods: {
       ...orderMethods,
@@ -459,7 +459,7 @@
             this.isMain = res.data.is_group_main
             this.isGroup = res.data.is_spell_group
             this.status = res.data.groupon_status
-            this.isActivityEnd = res.isActivityEnd
+            this.isActivityEnd = res.data.isActivityEnd
             this.step = res.data.step
             if (!this.isGroup) {
               this._initLocation()
@@ -474,8 +474,6 @@
               this.statusNum = 3
             } else if (this.orderId && !this.isMain) {
               this.statusNum = 4
-            } else if (!this.isGroup && !this.distence) {
-              this.statusNum = 5
             } else if (!this.isGroup && +this.data.surplus_seconds === 0) {
               this.statusNum = 7
             } else if (!this.isGroup && +this.status === 1) {
@@ -483,6 +481,9 @@
             } else if (!this.isGroup && +this.status === 0) {
               this.statusNum = 8
             }
+            // if (!this.isGroup && !this.distence) {
+            //   this.statusNum = 5
+            // }
           })
       },
       // 参团时判断是否符合参团标准
@@ -502,37 +503,28 @@
             return true
           })
       },
-      getDistance() {
-        API.Groupon.getDistance({longitude: this.longitude, latitude: this.latitude})
-          .then(res => {
-            if (res.error !== this.$ERR_OK) {
-              this.$toast.show(res.message)
-              return
-            }
-            console.log(111)
-          })
-      },
       changePicker(e) {
         this.status = e.target.value
       },
       async clickBtn() {
         let status = +this.status
-        if (this.isGroup && status === 0) {
+        if (this.btnShow === 1) {
+          console.log(1)
           // -----------------
           // 参团了拼团进行中可分享
           this.showShare()
-        } else if ((this.isGroup && this.orderId) || (this.isMain && status === 1)) {
+        } else if (this.btnShow === 2) {
+          console.log(2)
           // -----------------
           // 参团成功或者拼主拼团成功跳转去我的订单
           wx.navigateTo({url: `/pages/order-list?id=&index=0`})
-        } else if (
-          status === 2 ||
-          (!this.isGroup && (!this.distance || +this.data.surplus_seconds === 0))
-        ) {
+        } else if (this.btnShow === 3) {
+          console.log(3)
           // -----------------
           // 返回首页
-          wx.navigateTo({url: `/pages/choiceness`})
+          wx.switchTab({url: '/pages/choiceness'})
         } else if (!this.isGroup && status === 0) {
+          console.log(4)
           // -----------------
           // 一键参团
           let goodsList = this.data.goods
@@ -556,13 +548,16 @@
           this.setOrderInfo(orderInfo)
           wx.navigateTo({url: `/pages/submit-order`})
         } else if (!this.isGroup && status === 1) {
+          console.log(5)
           // -----------------
           // 我来开团
           wx.navigateTo({url: `/pages/goods-detail?id=${this.data.goods.goods_id}&activityId=${this.data.activity.activity_id}&activityType=${this.activeType}`})
+        } else {
+          console.log(6)
         }
       },
       showShare() {
-        this.$refs.sharePop.show(this.data.surplus_number, this.data.shop.social_name)
+        this.$refs.sharePop.show(this.data.surplus_number, this.data.shop.social_name, this.data.groupon_person_limit)
       },
       toDetail() {
         wx.navigateTo({url: `/pages/goods-detail?id=${this.data.goods.goods_id}&activityId=${this.data.activity.activity_id}&activityType=${this.activeType}`})

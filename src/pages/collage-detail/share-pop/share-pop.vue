@@ -11,7 +11,7 @@
           <button open-type="share" class="share-btn" @click.stop="hide">
             <img v-if="imageUrl" :src="imageUrl + '/yx-image/collage/pic-wechat@2x.png'" alt="" class="img">
           </button>
-          <p class="text">邀请邻居进度 <span class="color">1/2</span></p>
+          <p class="text">邀请邻居进度 <span class="color">{{num}}/{{total}}</span></p>
         </div>
       </div>
     </div>
@@ -27,16 +27,18 @@
       return {
         showMain: false,
         num: '',
-        name: ''
+        name: '',
+        total: ''
       }
     },
     methods: {
       hide() {
         this.showMain = false
       },
-      show(num, name) {
+      show(num, name, total) {
         this.num = num || 0
         this.name = name || ''
+        this.total = total || 0
         this.showMain = true
       }
     }
