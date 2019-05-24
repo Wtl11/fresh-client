@@ -36,7 +36,7 @@
             <img v-if="imageUrl" class="icon-img"
                  :src="imageUrl+'/yx-image/2.4/icon_refund_xq@2x.png'" alt="">
           </div>
-          <div class="statu-txt">{{orderMsg.status_text}}</div>
+          <div class="statu-txt">{{orderMsg.status === 11 || orderMsg.status_text === '活动中' ? '已付款' : orderMsg.status_text}}</div>
         </div>
         <div v-if="orderMsg.status * 1 === 0 && payTime" class="pay-countdown">剩余：{{payTime}}</div>
         <div class="extract" v-if="orderMsg.status === 2">提货单号: {{orderMsg.code}}</div>

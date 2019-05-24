@@ -35,7 +35,9 @@
             <swiper class="banner" autoplay interval="5000" vertical="true" circular @change="_setPraiseIndex">
               <block v-for="(item, index) in lastOrderList" :key="item.id">
                 <swiper-item class="banner-item" @click="jumpOrderDetail(item)">
-                  <img class="banner-item-img" v-if="item.image_url" :src="item.image_url">
+                  <div class="banner-img-box">
+                    <img class="banner-item-img" v-if="item.image_url" :src="item.image_url">
+                  </div>
                   <div class="banner-text-box">
                     <div class="banner-text-status" :class="'corp-' + corpName + '-text'">{{item.status_str}}</div>
                     <div class="banner-text-time">{{item.text}}</div>
@@ -583,12 +585,18 @@
             overflow: hidden !important
             layout(row)
             align-items: center
-            .banner-item-img
+            .banner-img-box
               width: 44px
               height: 44px
               display: block
               margin-right: 10px
               border-radius: 3px
+              text-align: center
+              overflow: hidden
+            .banner-item-img
+              width: 100%
+              height: 100%
+              display: block
             .banner-text-status
               font-size: $font-size-14
               font-family: $font-family-regular
