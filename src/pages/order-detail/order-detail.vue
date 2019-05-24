@@ -39,7 +39,7 @@
         <div class="extract" v-if="orderMsg.status === 1">提货单号: {{orderMsg.code}}</div>
       </div>
     </div>
-    <div v-if="isGroup" class="group-status" @click.stop="goToGroupBuy">
+    <div v-if="isGroup" class="group-status" @click.stop="goToGroupBuy(orderMsg)">
       <img v-if="imageUrl" :src="imageUrl+'/yx-image/2.4/icon-spellgroup@2x.png'" alt="" class="group-icon">
       <span :class="'corp-' + corpName + '-money'">[{{orderMsg.groupon.groupon_status_str}}]</span>
       <template v-if="orderMsg.groupon.groupon_status === 0 && orderMsg.groupon.surplus_seconds && orderMsg.at_countdown">
@@ -339,10 +339,8 @@
           }
         }, 1000)
       },
-      goToGroupBuy() {
-        wx.navigateTo({
-          url: `/pages/my-group-buy`
-        })
+      goToGroupBuy(item) {
+        item.groupon && wx.navigateTo({url: `/pages/collage-detail?id=${item.groupon.id}`})
       },
       jumpGoodsDetail(item) {
         wx.navigateTo({

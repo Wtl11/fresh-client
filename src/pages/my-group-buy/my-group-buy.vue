@@ -87,42 +87,22 @@
             if (this.groupBuyList.length >= res.meta.total) {
               this.hasMore = false
             }
-            res.coupon && res.coupon.length > 0 && this._getCouponList()
+            res.coupon && res.coupon.length > 0 && this._getCouponList(res.coupon)
           } else {
             this.$wechat.showToast(res.message)
           }
         })
       },
-      async _getCouponList() {
-        let couponArr = [
-          {
-            coupon: {
-              preferential_type: 2,
-              range_type_str: '通用',
-              coupon_name: '满200元减50元',
-              end_at: '2019-5-30',
-              denomination: 50
-            }
-          },
-          {
-            coupon: {
-              preferential_type: 1,
-              range_type_str: '通用',
-              coupon_name: '满100元减10元',
-              end_at: '2019-5-31',
-              denomination: 7
-            }
-          },
-          {
-            coupon: {
-              preferential_type: 2,
-              range_type_str: '通用',
-              coupon_name: '满10元减9元',
-              end_at: '2019-5-31',
-              denomination: 7
-            }
-          }
-        ]
+      async _getCouponList(couponArr) {
+        // let couponArr = [
+        //   {
+        //     preferential_type: 2,
+        //     range_type_str: '通用',
+        //     coupon_name: '满10元减9元',
+        //     end_at: '2019-5-31',
+        //     denomination: 7
+        //   }
+        // ]
         couponArr && this._ref('couponModal', 'show', couponArr)
       },
       // 工具-->调用子节点的方法

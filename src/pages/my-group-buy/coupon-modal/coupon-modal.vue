@@ -12,13 +12,13 @@
         <div v-if="couponArray.length === 1" class="coupon-list">
           <img class="item-bg" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.4/pic-dcoupon@2x.png'">
           <div class="item-con">
-            <div class="price-box"><span class="price">5</span>{{couponArray[0].coupon.preferential_type === 1?'折':'元'}}</div>
+            <div class="price-box"><span class="price">{{couponArray[0].denomination}}</span>{{couponArray[0].preferential_type === 1?'折':'元'}}</div>
             <div class="right-box">
               <div class="title">
-                <p class="type">{{couponArray[0].coupon.range_type_str}}</p>
-                <p class="txt">{{couponArray[0].coupon.coupon_name}}</p>
+                <p class="type">{{couponArray[0].range_type_str}}</p>
+                <p class="txt">{{couponArray[0].coupon_name}}</p>
               </div>
-              <div class="condition">有效期至 {{couponArray[0].coupon.end_at}}</div>
+              <div class="condition">有效期至 {{couponArray[0].end_at}}</div>
             </div>
           </div>
         </div>
@@ -26,13 +26,13 @@
           <div v-for="(item, index) in couponArray" :key="index" class="coupon-item">
             <img class="item-bg" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.4/pic-coupon_lqtc@2x.png'">
             <div class="item-con">
-              <div class="price-box"><span class="price">{{item.coupon.denomination}}</span>{{item.coupon.preferential_type === 1?'折':'元'}}</div>
+              <div class="price-box"><span class="price">{{item.denomination}}</span>{{item.preferential_type === 1?'折':'元'}}</div>
               <div class="right-box">
                 <div class="title">
-                  <p class="type">{{item.coupon.range_type_str}}</p>
-                  <p class="txt">{{item.coupon.coupon_name}}</p>
+                  <p class="type">{{item.range_type_str}}</p>
+                  <p class="txt">{{item.coupon_name}}</p>
                 </div>
-                <div class="condition">有效期至 {{item.coupon.end_at}}</div>
+                <div class="condition">有效期至 {{item.end_at}}</div>
               </div>
             </div>
           </div>
@@ -60,7 +60,6 @@
 <script type="text/ecmascript-6">
   import AnimationModal from '@mixins/animation-modal'
   import CouponItem from './coupon-item/coupon-item'
-  import API from '@api'
   import {formatCouponMoney} from '@utils/common'
 
   const COMPONENT_NAME = 'COUPON_MODAL'
@@ -78,26 +77,16 @@
       }
     },
     methods: {
-      _targetList() {
-        let arr = this.couponArray.map((item) => {
-          return item.coupon_activity_id || 0
-        })
-        API.Coupon.targetModal({coupon_activity_ids: arr}).catch(e => {
-          console.error(e)
-        })
-      },
       navHandle() {
-        this._targetList()
         this.hide()
         wx.navigateTo({url: '/pages/coupon-mine'})
       },
       cancelHandle() {
-        this._targetList()
         this.hide()
       },
       submitHandle() {
-        this._targetList()
         this.hide()
+        wx.switchTab({ url: '/pages/choiceness' })
       },
       show(arr = []) {
         if (!arr.length) {
