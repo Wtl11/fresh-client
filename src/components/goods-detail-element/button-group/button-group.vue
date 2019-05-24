@@ -2,7 +2,7 @@
 <!--  团购-->
   <form action="" report-submit @submit="$getFormId">
   <div v-if="ACTIVE_TYPE.GROUP_ON === activityType" class="button-group">
-    <section v-if="tipTop" class="tip-top">{{tipTop}}</section>
+    <section v-if="buttonInfo.tipTop" class="tip-top">{{buttonInfo.tipTop}}</section>
     <div class="hlep-btn">
       <button formType="submit" class="hlep-btn-box" v-for="(item, index) in typeBtn" :key="index" @click.stop="switchItem(item)">
         <div class="hlep-top">
@@ -17,7 +17,7 @@
         <p class="text">单独购买</p>
       </button>
       <div v-else-if="activeStatus === 1" class="common-btn over">已抢完</div>
-      <button v-if="showRightButton" class="common-btn group right"  formType="submit" @click="instantlyBuy">
+      <button v-if="showRightButton" class="common-btn group right" :class="{disable: buttonInfo.tipTop}"  formType="submit" @click="handleGroupBuy">
         <p class="money">¥{{buttonInfo.tradePrice}}元</p>
         <p class="text">发起团购</p>
       </button>
@@ -97,6 +97,13 @@
       },
       instantlyBuy(type = '') {
         this.$emit('instantlyBuy', type)
+      },
+      handleGroupBuy() {
+        if (this.buttonInfo.tipTop) {
+          this.$wechat.showToast(this.buttonInfo.tipTop)
+          return
+        }
+        this.$emit('instantlyBuy')
       }
     }
   }
@@ -114,6 +121,8 @@
     text-align: center
     font-size: $font-size-14
     font-family: $font-family-regular
+    &.disable
+      background: #B7B7B7 !important
     &.over
       layout()
       justify-content :center
@@ -151,6 +160,7 @@
     font-size: 15px;
     color: #FA7500;
     z-index :115
+    no-wrap()
   .button-group
     position: fixed
     left: 0
@@ -208,6 +218,7 @@
       font-size: $font-size-14
       font-family: $font-family-regular
       color: #fff
+      background:#73C200
       &:after
         border: none
     .goods-btn-active

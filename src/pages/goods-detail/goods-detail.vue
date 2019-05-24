@@ -3,7 +3,26 @@
     <div class="active-detail">
       <navigation-bar ref="navigationBar" :title="msgTitle" :showArrow="true" :translucent="false"></navigation-bar>
       <section class="banner-box">
-        <buy-users :buyUsers="buyUsers"></buy-users>
+        <section v-if="buyUsers.length" class="buy-users">
+          <swiper
+            class="carousel"
+            :autoplay="true"
+            :interval="3000"
+            :duration="500"
+            circular
+            vertical
+          >
+            <block v-for="(item, index) in buyUsers" :key="index">
+              <swiper-item class="content-wrapper">
+                <figure class="avatar-wrapper">
+                  <img v-if="item.avatar" :src="item.avatar" alt="" class="img">
+                </figure>
+                <div class="text">{{item.text}}</div>
+              </swiper-item>
+            </block>
+          </swiper>
+          <div class="place-holder"></div>
+        </section>
         <div class="header-swiper">
           <swiper v-if="goodsBanner && goodsBanner.length" class="banner" @change="bannerChange" interval="5000">
             <block v-for="(item, index) in goodsBanner" :key="index">
@@ -112,25 +131,42 @@
         </div>
       </div>
       <!--拼团列表-->
-      <div class="collage-box">
-        <div class="title">200位邻居正在拼单，可直接参与</div>
-        <swiper v-if="collageList.length"  class="collage-scroll" autoplay circular :vertical="true" interval="5000" :display-multiple-items="2">
+      <div v-if="activityType === ACTIVE_TYPE.GROUP_ON" class="collage-box">
+        <div class="title">{{collageTotal}}位邻居正在拼单，可直接参与</div>
+        <swiper v-if="collageList.length > 1"  class="collage-scroll" autoplay circular :vertical="true" interval="5000" :display-multiple-items="2">
           <block v-for="(item, index) in collageList" :key="index">
             <swiper-item class="collage-content">
               <div class="left">
-                <img :src="imageUrl + '/yx-image/2.1/default_avatar@2x.png'" alt="" class="logo">
-                <span class="name">张三丰</span>
+                <img :src="item.avatar" alt="" class="logo">
+                <span class="name">{{item.nickname}}</span>
               </div>
               <div class="right">
                 <div class="context">
-                  <p class="text">还差<span class="color">1人</span>拼成</p>
-                  <span class="time">剩余10:20:30</span>
+                  <p class="text">还差<span class="color">{{item.surplus_number}}人</span>拼成</p>
+                  <span v-if="item.diff" class="time">剩余{{item.diff.hour}}:{{item.diff.minute}}:{{item.diff.second}}</span>
                 </div>
-                <navigator url="/pages/collage-detail" open-type="navigate" class="go-collage">去参团</navigator>
+                <button formType="submit" class="go-collage" @click="jumpToCollage(item)">去参团</button>
               </div>
             </swiper-item>
           </block>
         </swiper>
+        <article v-if="collageList.length === 1"  class="collage-scroll single">
+          <block v-for="(item, index) in collageList" :key="index">
+            <section class="collage-content">
+              <div class="left">
+                <img :src="item.avatar" alt="" class="logo">
+                <span class="name">{{item.nickname}}</span>
+              </div>
+              <div class="right">
+                <div class="context">
+                  <p class="text">还差<span class="color">{{item.surplus_number}}人</span>拼成</p>
+                  <span v-if="item.diff" class="time">剩余{{item.diff.hour}}:{{item.diff.minute}}:{{item.diff.second}}</span>
+                </div>
+                <button formType="submit" class="go-collage" @click="jumpToCollage(item)">去参团</button>
+              </div>
+            </section>
+          </block>
+        </article>
         <div class="collage-scroll" v-if="!collageList.length">
           <div class="nothing">暂无参团信息~</div>
         </div>
@@ -186,8 +222,8 @@
   import ShareHandler, {EVENT_CODE} from '@mixins/share-handler'
   import API from '@api'
   import {resolveQueryScene, countDownHandle} from '@utils/common'
-  import BuyUsers from '@components/goods-detail-element/buy-users/buy-users'
-  import HeaderDetail from '@components/goods-detail-element/header-detail/header-detail'
+  // import BuyUsers from '@components/goods-detail-element/buy-users/buy-users'
+  // import HeaderDetail from '@components/goods-detail-element/header-detail/header-detail'
   import LinkGroup from '@components/link-group/link-group'
   import BuyRecord from '@components/goods-detail-element/buy-record/buy-record'
   import DetailImage from '@components/goods-detail-element/detail-image/detail-image'
@@ -212,8 +248,8 @@
     mixins: [clearWatch, ShareHandler, GoodsDetailMixins],
     components: {
       NavigationBar,
-      BuyUsers,
-      HeaderDetail,
+      // BuyUsers,
+      // HeaderDetail,
       LinkGroup,
       BuyRecord,
       DetailImage,
@@ -244,7 +280,8 @@
         },
         timer: null,
         currentNum: 1,
-        collageList: [1, 2, 3, 4, 5]
+        collageList: [],
+        collageTotal: 0
       }
     },
     computed: {
@@ -347,6 +384,7 @@
     },
     onHide() {
       this._clearTimer()
+      clearInterval(this._groupTimer)
     },
     onUnload() {
       this.$refs.navigationBar && this.$refs.navigationBar._initHeadStyle()
@@ -377,6 +415,108 @@
     methods: {
       ...orderMethods,
       ...cartMethods,
+      _getFinishGroupList() {
+        if (this.activityType !== ACTIVE_TYPE.GROUP_ON) return
+        let data = {
+          activity_id: this.goodsMsg.activity_id,
+          goods_id: this.goodsMsg.goods_id,
+          page: 1,
+          limit: 20
+        }
+        API.Global.getFinishGroupList(data).then(res => {
+          this.buyUsers = res.data.map(item => {
+            return {
+              avatar: item.avatar,
+              text: `${item.nickname}${item.groupon_at}拼单成功`
+            }
+          })
+        })
+      },
+      async _checkAbleCreateGroup(groupId = 0, num = 1) {
+        try {
+          let data = {
+            activity_id: this.goodsMsg.activity_id,
+            goods_sku_id: this.goodsMsg.goods_skus[0].goods_sku_id,
+            groupon_id: groupId,
+            num,
+            longitude: this.longitude,
+            latitude: this.latitude
+          }
+          const res = await API.Global.checkAbleCreateGroup(data)
+          if (res.error === this.$ERR_OK) {
+            return true
+          } else {
+            this.$wechat.showToast(res.message)
+          }
+          return true
+        } catch (e) {
+          e && this.$wechat.showToast(e.message)
+          console.warn(e)
+        }
+      },
+      async jumpToCollage(item) {
+        if (this.tipTop) {
+          this.$wechat.showToast(this.tipTop)
+          return
+        }
+        let flag = await this._checkAbleCreateGroup(item.grouon_id)
+        if (flag) {
+          let goodsList = this.goodsMsg.goods_skus[0]
+          goodsList.sku_id = this.goodsMsg.goods_sku_id || goodsList.goods_sku_id
+          goodsList.num = 1
+          goodsList.goods_units = this.goodsMsg.goods_units
+          let price = goodsList.trade_price
+          goodsList.url = `/pages/collage-detail`
+          goodsList.source = 'c_groupon'
+          goodsList.groupon_id = item.grouon_id
+          goodsList.latitude = this.latitude
+          goodsList.longitude = this.longitude
+          const total = (price * goodsList.num).toFixed(2)
+          goodsList.activity = this.goodsMsg.activity
+          let orderInfo = {
+            goodsList: new Array(goodsList),
+            total: total,
+            deliverAt: this.deliverAt
+          }
+          this.setOrderInfo(orderInfo)
+          wx.navigateTo({url: `/pages/submit-order`})
+        }
+      },
+      _getUnGroupList() {
+        if (this.activityType !== ACTIVE_TYPE.GROUP_ON) return
+        let data = {
+          activity_id: this.goodsMsg.activity_id,
+          goods_id: this.goodsMsg.goods_id,
+          page: 1,
+          limit: 10
+        }
+        API.Global.getUnGroupList(data).then(res => {
+          this.collageList = res.data
+          this.collageTotal = res.meta.total
+          this._groupRunTime()
+        })
+      },
+      _groupRunTime(arr) {
+        this.collageList.forEach(item => {
+          item.diff = countDownHandle(item.surplus_seconds)
+        })
+        clearInterval(this._groupTimer)
+        this._groupTimer = setInterval(() => {
+          if (this.collageList.length <= 0) {
+            clearInterval(this._groupTimer)
+            return
+          }
+          this.collageList.forEach(item => {
+            if (item.surplus_seconds <= 0) {
+              item.surplus_seconds = 0
+              this._getUnGroupList()
+              return
+            }
+            item.surplus_seconds--
+            item.diff = countDownHandle(item.surplus_seconds)
+          })
+        }, 1000)
+      },
       bannerChange(e) {
         if (e.target.current) {
           this.currentNum = e.target.current * 1 + 1
@@ -451,7 +591,7 @@
       },
       // 购买记录导航
       buyRecordNavTo() {
-        const url = `/pages/goods-record?goodsId=${this.goodsId}&shopId=${this.shopId}&activityId=${this.activityId}`
+        const url = `/pages/goods-record?goodsId=${this.goodsId}&shopId=${this.shopId}&activityId=${this.activityId}&activityType=${this.activityType}`
         wx.navigateTo({url})
       },
       // 设置群数据事件号
@@ -470,7 +610,7 @@
       // addNumber控件确定按钮
       async comfirmNumer(number, type) {
         let goodsList = this.goodsMsg.goods_skus[0]
-        goodsList.sku_id = this.goodsMsg.goods_sku_id || goodsList.goods_sku_id
+        goodsList.sku_id = goodsList.goods_sku_id
         goodsList.num = number
         goodsList.goods_units = this.goodsMsg.goods_units
         let price = goodsList.trade_price
@@ -486,6 +626,8 @@
           }
         }
         if (this.activityType === ACTIVE_TYPE.GROUP_ON) {
+          let flag = await this._checkAbleCreateGroup(0, number)
+          if (!flag) return
           if (type) {
             price = this.goodsMsg.goods_sale_price
             goodsList.trade_price = price
@@ -608,12 +750,18 @@
       },
       // 获取购买者的用户信息
       _getBuyUsers() {
+        if (this.activityType === ACTIVE_TYPE.GROUP_ON) return
         API.Choiceness.getUserImg({limit: 20}).then((res) => {
           if (res.error !== this.$ERR_OK) {
             this.$wechat.showToast(res.message)
             return
           }
-          this.buyUsers = res.data
+          this.buyUsers = res.data.map(item => {
+            return {
+              avatar: item.head_image_url,
+              text: `买了${item.goods_name}`
+            }
+          })
         })
       },
       // 获取商品详情
@@ -629,6 +777,8 @@
             this.$refs.navigationBar && this.$refs.navigationBar.setTranslucentTitle(this.goodsMsg.name)
             this._sendGoodsMsg()
             this._flashAction()
+            this._getUnGroupList()
+            this._getFinishGroupList()
           } else {
             this.$wechat.showToast(res.message)
           }
@@ -638,7 +788,6 @@
       },
       // 限时抢购倒计时开始
       _flashAction() {
-        this.$refs.flash && this.$refs.flash._clearTimer()
         if (this._activityType !== ACTIVE_TYPE.FLASH) return
         if (this.activeStatus === BTN_STATUS.DOWN) {
           return
@@ -809,6 +958,42 @@
         left: 12px
         right :@left
         bottom: -1px
+  // 购买记录
+  .buy-users
+    width :35vw
+    height: 24px
+    padding: 0 9.5px 0 3px
+    background: rgba(17,17,17,0.6)
+    border-radius: 36px
+    position :absolute
+    top:10px
+    left :8px
+    z-index :80
+    overflow :hidden
+    .place-holder
+      fill-box(absolute)
+      z-index :3
+    .carousel
+      height :100%
+      width :100%
+      .content-wrapper
+        layout(row)
+        align-items: center
+        .avatar-wrapper
+          width: 20px
+          height: 20px
+          border-radius: 50%
+          overflow: hidden
+          margin :0 6px 0 0
+          .img
+            width: 100%
+            height: 100%
+        .text
+          flex: 1
+          font-family: $font-family-regular
+          font-size: 12px
+          color: #fff
+          no-wrap()
   // 参团列表
   .collage-box
     padding: 0 10px
@@ -828,6 +1013,8 @@
       height: 112px
       padding: 4px 0
       overflow: hidden
+      &.single
+        height :56px
       .nothing
         text-align: center
         padding-top: 50px
