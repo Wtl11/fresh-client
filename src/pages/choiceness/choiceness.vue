@@ -387,7 +387,7 @@
         // activeTabStyles: '',
         // navigationBarHeight: 0,
         // 头部地理位置等
-        locationStatus: null,
+        // locationStatus: null,
         // 团长信息
         groupInfo: {},
         // 模块数组
@@ -448,7 +448,7 @@
       },
       // 社区名称-定位
       communityName() {
-        let name = (this.locationStatus * 1 === 1 || this.locationStatus * 1 === 2) ? this.socialName : '定位中...'
+        let name = (!this.latitude || !this.longitude) ? '定位中...' : this.socialName
         return name.substring(0, 6) + (name.length > 6 ? '...' : '')
       },
       // 其他活动
@@ -486,7 +486,7 @@
         Object.assign(this, data)
       }
       this._initPageParams(options)
-      this._initLocation()
+      // this._initLocation()
       // this._groupInfo(false)
       // this._getGuessList()
     },
@@ -517,7 +517,7 @@
         this._sharing = false
         return
       }
-      this._refreshLocation()
+      // this._refreshLocation()
       try {
         this.shopId = wx.getStorageSync('shopId')
         if (!this.shopId) {
@@ -533,6 +533,7 @@
             duration: 0
           })
           this.curShopId = this.shopId
+          this._resetLocation()
           this._resetBanner()
           this._resetFlash()
           this._resetGuessParams()
@@ -542,8 +543,8 @@
           this._initTabInfo()
           await Promise.all([this._getFlashList(), this._getTodayHostList(), this._getNewClientList(), this._getGroupList()])
           this._addMonitor()
-          this._getLocation()
         }
+        this._getLocation()
         // this._getNotify()
         // await this._getModuleInfo()
         // this._initTabInfo()
@@ -581,9 +582,11 @@
       this.setCartCount()
     },
     onReachBottom() {
-      if (this._isLoading) return
       if (this.guessHasMore) {
         this.guessPage++
+        if (this.guessList.length === 0) {
+          this.guessPage = 1
+        }
         this._getGuessList()
       }
     },
@@ -621,6 +624,10 @@
     },
     methods: {
       ...cartMethods,
+      _resetLocation() {
+        this.latitude = 0
+        this.longitude = 0
+      },
       handleJumpToClassify(item) {
         wx.navigateTo({url: `/pages/classify?id=${item.id}`})
       },
@@ -636,13 +643,14 @@
         this.guessHasMore = true
       },
       _getGuessList() {
+        if (this._isLoading) return
         this._isLoading = true
-        const page = Math.floor(this.guessList.length / 10) + 1
+        const page = this.guessPage
         API.Home.getGuessList({page, limit: 10}).then(res => {
           let arr = this._formatListPriceData(res.data)
           if (this.guessPage === 1) {
             this.guessList = arr
-          } else if (this.guessList.length / 10 < this.guessPage) {
+          } else {
             this.guessList = this.guessList.concat(arr)
           }
           this.guessHasMore = arr.length
@@ -727,12 +735,13 @@
               if (res.intersectionRatio > 0 && !this._isScrolling) {
                 this._isHelpScroll = false
                 this.activeTabIndex = res.id.replace('panel', '') * 1
-                if (this.activeTabInfo.length - 1 === this.activeTabIndex && this.guessList.length <= 0) {
-                  this.this._getGuessList()
-                }
+                // console.log(this.activeTabInfo.length, this.activeTabIndex)
+                // if (this.activeTabInfo.length - 1 === this.activeTabIndex && this.guessPage === 1) {
+                //   this._getGuessList()
+                // }
               }
             })
-          this._initDomPosition()
+          // this._initDomPosition()
         }, 500)
       },
       _initDomPosition() {
@@ -831,6 +840,7 @@
             let flag = res.intersectionRatio > 0
             let title = flag ? '赞播优鲜' : '赞播优鲜·' + this.socialName
             this.$refs.navigationBar && this.$refs.navigationBar.setTranslucentTitle(title)
+            this.$refs.distance && this.$refs.distance.hide()
             resolve()
           })
         })
@@ -914,12 +924,6 @@
           console.error(e)
         }
       },
-      // // 跳转-商品详情
-      // jumpGoodsDetail(item) {
-      //   wx.navigateTo({
-      //     url: `/pages/goods-detail?id=${item.goods_id}&activityId=${item.activity_id}`
-      //   })
-      // },
       // 添加购物车
       async addShoppingCart(item) {
         let isLogin = await this.$isLogin()
@@ -965,26 +969,26 @@
           console.warn(e)
         }
       },
-      // 初始化地理位置
-      _initLocation() {
-        const locationShow = wx.getStorageSync('locationShow') * 1
-        if (locationShow !== 3 || locationShow !== 2) {
-          let that = this
-          wx.getLocation({
-            async success(res) {
-              wx.setStorageSync('locationData', res)
-              wx.setStorageSync('locationShow', 1)
-              that.locationStatus = 1
-            },
-            fail(res) {
-              wx.setStorageSync('locationShow', 3)
-              wx.navigateTo({
-                url: `/pages/open-location`
-              })
-            }
-          })
-        }
-      },
+      // // 初始化地理位置
+      // _initLocation() {
+      //   const locationShow = wx.getStorageSync('locationShow') * 1
+      //   if (locationShow !== 3 || locationShow !== 2) {
+      //     let that = this
+      //     wx.getLocation({
+      //       async success(res) {
+      //         wx.setStorageSync('locationData', res)
+      //         wx.setStorageSync('locationShow', 1)
+      //         that.locationStatus = 1
+      //       },
+      //       fail(res) {
+      //         wx.setStorageSync('locationShow', 3)
+      //         wx.navigateTo({
+      //           url: `/pages/open-location`
+      //         })
+      //       }
+      //     })
+      //   }
+      // },
       // 获取地理位置
       async _getLocation() {
         if (this.latitude && this.longitude) return
@@ -997,7 +1001,7 @@
           } else {
             res = await API.Global.checkShopDistance({longitude: this.longitude, latitude: this.latitude})
             // this.tipTop = res.data.distance_judge === 0 ? '' : `当前位置${name}社区不参与拼团活动`
-            if (res.data.distance_judge === 0) {
+            if (res.data.distance_judge !== 0) {
               this.$refs.distance && this.$refs.distance.setTop(this._navigationBarHeight + 30)
             }
           }
@@ -1005,15 +1009,15 @@
           wx.navigateTo({url: `/pages/open-location`})
         }
       },
-      // 更新地理位置
-      _refreshLocation() {
-        this.locationStatus = wx.getStorageSync('locationShow')
-        if (this.locationStatus * 1 === 3) {
-          wx.navigateTo({
-            url: `/pages/open-location`
-          })
-        }
-      },
+      // // 更新地理位置
+      // _refreshLocation() {
+      //   this.locationStatus = wx.getStorageSync('locationShow')
+      //   if (this.locationStatus * 1 === 3) {
+      //     wx.navigateTo({
+      //       url: `/pages/open-location`
+      //     })
+      //   }
+      // },
       // 获取团长的信息
       async _groupInfo(loading) {
         let res = await API.Choiceness.getGroupInfo(loading)

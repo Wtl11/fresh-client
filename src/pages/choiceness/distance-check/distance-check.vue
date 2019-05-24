@@ -19,13 +19,19 @@
     data() {
       return {
         top: 0,
-        // isShow: false,
         isShowGuidelines: true
       }
     },
     methods: {
       setTop(top) {
         this.top = top + 3
+        this.isShowGuidelines = true
+        setTimeout(() => {
+          this.hide()
+        }, 2000)
+      },
+      hide() {
+        this.isShowGuidelines = false
       }
     }
   }

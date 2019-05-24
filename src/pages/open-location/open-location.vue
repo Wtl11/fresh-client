@@ -27,8 +27,8 @@
           if (data.authSetting['scope.userLocation']) {
             wx.getLocation({
               success(res) {
-                wx.setStorageSync('locationData', res)
-                wx.setStorageSync('locationShow', 1)
+                // wx.setStorageSync('locationData', res)
+                // wx.setStorageSync('locationShow', 1)
                 let path = wx.getStorageSync('errorUrl')
                 let url = `/${path}`
                 if (TAB_REG.test(path)) {
