@@ -3,10 +3,10 @@
     <div class="share-pop">
       <div class="share-box" v-show="showMain" @touchmove.prevent="" @click.stop="hide"></div>
       <div class="share-main" :class="showMain ? 'show' : ''">
-        <p class="tip">拼团已发起，人满后即可发货</p>
+        <p class="tip">拼团已发起，人满后即可成团</p>
         <div class="content">
           <p class="title">
-            还差 <span class="color">1</span>人，赶快邀请 <span class="color">国际单位</span>社区邻居来参团吧
+            还差 <span class="color">{{num}}</span>人，赶快邀请 <span class="color">{{name}}</span>社区邻居来参团吧
           </p>
           <button open-type="share" class="share-btn" @click.stop="hide">
             <img :src="imageUrl + '/yx-image/collage/pic-wechat@2x.png'" alt="" class="img">
@@ -25,14 +25,18 @@
     name: COMPONENT_NAME,
     data() {
       return {
-        showMain: false
+        showMain: false,
+        num: '',
+        name: ''
       }
     },
     methods: {
       hide() {
         this.showMain = false
       },
-      show() {
+      show(num, name) {
+        this.num = num || 0
+        this.name = name || ''
         this.showMain = true
       }
     }
