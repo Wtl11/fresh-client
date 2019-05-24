@@ -39,11 +39,14 @@
         <div class="extract" v-if="orderMsg.status === 1">提货单号: {{orderMsg.code}}</div>
       </div>
     </div>
-    <div v-if="isGroup" class="group-status">
+    <div v-if="isGroup" class="group-status" @click.stop="goToGroupBuy">
       <img v-if="imageUrl" :src="imageUrl+'/yx-image/2.4/icon-spellgroup@2x.png'" alt="" class="group-icon">
-      <span :class="'corp-' + corpName + '-money'">[拼团中]</span>只差
-      <span :class="'corp-' + corpName + '-money'">1人</span>成团，剩
-      <span :class="'corp-' + corpName + '-money'">02:21:12</span>结束
+      <span :class="'corp-' + corpName + '-money'">[{{orderMsg.groupon.groupon_status_str}}]</span>
+      <template v-if="orderMsg.groupon.groupon_status === 0 && orderMsg.groupon.surplus_seconds && orderMsg.at_countdown">
+        只差
+        <span :class="'corp-' + corpName + '-money'">{{orderMsg.groupon.surplus_number}}人</span>成团，剩
+        <span :class="'corp-' + corpName + '-money'">{{orderMsg.at_countdown.hour}}:{{orderMsg.at_countdown.minute}}:{{orderMsg.at_countdown.second}}</span>结束
+      </template>
       <img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="arrow">
     </div>
     <div class="address-info">
@@ -62,7 +65,7 @@
     <div class="order-list">
       <div class="order-item">
         <div class="goods-item" v-for="(item, index) in orderMsg.goods" :key="index">
-          <div class="goods-info-box">
+          <div class="goods-info-box" @click.stop="jumpGoodsDetail(item)">
             <img class="goods-img" mode="aspectFill" :src="item.image_url" alt="">
             <div class="goods-info">
               <div class="tit">
@@ -94,7 +97,7 @@
       <p class="name">实付金额</p>
       <p :class="'corp-' + corpName + '-money'"><span class="price">{{orderMsg.total}}</span>元</p>
     </section>
-    <ul class="coupon-info-wrapper" :class="'corp-' + corpName + '-money'">
+    <ul v-if="!isGroup" class="coupon-info-wrapper" :class="'corp-' + corpName + '-money'">
       <li class="coupon-item">
         <p class="name">使用优惠券</p>
         <p v-if="orderMsg.promote_price > 0" class="price">-{{orderMsg.promote_price}}</p>
@@ -136,7 +139,7 @@
   import ConfirmMsg from '@components/confirm-msg/confirm-msg'
   import API from '@api'
   import {oauthComputed, orderMethods} from '@state/helpers'
-  import {floatAccAdd} from '@utils/common'
+  import {floatAccAdd, countDownHandle} from '@utils/common'
 
   export default {
     data() {
@@ -152,19 +155,32 @@
         modelMsg: '确定退款吗？',
         curItem: '',
         saleText: '',
-        shareType: 0,
-        isGroup: false
+        shareType: 0
+      }
+    },
+    components: {
+      NavigationBar,
+      LinkGroup,
+      ConfirmMsg
+    },
+    computed: {
+      ...oauthComputed,
+      originTotal() {
+        return floatAccAdd(this.orderMsg.total, this.orderMsg.promote_price)
+      },
+      isGroup() {
+        return (this.orderMsg.groupon && this.orderMsg.groupon.groupon_id) || false
       }
     },
     onLoad(e) {
       this.orderId = e.id
       this.getGoodsDetailData()
     },
-    computed: {
-      ...oauthComputed,
-      originTotal() {
-        return floatAccAdd(this.orderMsg.total, this.orderMsg.promote_price)
-      }
+    onUnload() {
+      this.groupTimer && clearInterval(this.groupTimer)
+    },
+    onHide() {
+      this.groupTimer && clearInterval(this.groupTimer)
     },
     methods: {
       ...orderMethods,
@@ -259,10 +275,27 @@
             if (this.orderMsg.status * 1 === 0) {
               this.getActiveEndTime(this.orderMsg.remind_timestamp)
             }
+            let groupon = res.data.groupon
+            if (this.isGroup && groupon && groupon.surplus_seconds) {
+              res.data.at_countdown = countDownHandle(groupon.surplus_seconds)
+              this._setGroupTimer()
+            }
           } else {
             this.$wechat.showToast(res.message)
           }
         })
+      },
+      _setGroupTimer() {
+        this.groupTimer = setInterval(() => {
+          let surplusSeconds = this.orderMsg.groupon.surplus_seconds
+          if (surplusSeconds && surplusSeconds !== 0) {
+            surplusSeconds--
+            this.orderMsg.at_countdown = countDownHandle(surplusSeconds)
+            this.orderMsg.groupon.surplus_seconds = surplusSeconds
+          } else {
+            clearInterval(this.groupTimer)
+          }
+        }, 1000)
       },
       _groupTimeCheckoutNoDay(time) {
         // let nowSecond = parseInt(Date.now() / 1000)
@@ -305,12 +338,17 @@
             clearInterval(this.timer)
           }
         }, 1000)
+      },
+      goToGroupBuy() {
+        wx.navigateTo({
+          url: `/pages/my-group-buy`
+        })
+      },
+      jumpGoodsDetail(item) {
+        wx.navigateTo({
+          url: `/pages/goods-detail?id=${item.goods_id}`
+        })
       }
-    },
-    components: {
-      NavigationBar,
-      LinkGroup,
-      ConfirmMsg
     }
   }
 </script>

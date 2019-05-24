@@ -19,16 +19,17 @@
                 <div class="status" :class="'corp-' + corpName + '-money'">{{item.status_text}}</div>
               </div>
               <div class="center">
-                <p v-if="isGroup" class="group-status">
+                <p v-if="item.groupon && item.groupon.groupon_id" class="group-status">
                   <img v-if="imageUrl" :src="imageUrl+'/yx-image/2.4/icon-spellgroup@2x.png'" alt="" class="group-icon">
-                  <template v-if="item.at_countdown">
-                    <span :class="'corp-' + corpName + '-money'">[拼团中]</span>只差
-                    <span :class="'corp-' + corpName + '-money'">1人</span>成团，剩
+                  <span :class="'corp-' + corpName + '-money'">[{{item.groupon.groupon_status_str}}]</span>
+                  <template v-if="item.groupon.groupon_status === 0 && item.groupon.surplus_seconds && item.at_countdown">
+                    只差
+                    <span :class="'corp-' + corpName + '-money'">{{item.groupon.surplus_number}}人</span>成团，剩
                     <span :class="'corp-' + corpName + '-money'">{{item.at_countdown.hour}}:{{item.at_countdown.minute}}:{{item.at_countdown.second}}</span>结束
                   </template>
                 </p>
                 <div class="goods-list">
-                  <template v-if="isGroup">
+                  <template v-if="item.groupon && item.groupon.groupon_id">
                     <div class="goods-img-list">
                       <img class="goods-img" mode="aspectFill" :src="item.goods[0].image_url" alt="">
                     </div>
@@ -71,6 +72,7 @@
   import {countDownHandle} from '@utils/common'
 
   const NAVLIST = [{id: 1, name: '全部', status: ''}, {id: 2, name: '待付款', status: 0}, {id: 3, name: '待提货', status: 1}, {id: 4, name: '已完成', status: 2}]
+  const GROUP_STATUS_ARR = [{name: '拼团中'}, {name: '拼团成功'}, {name: '拼团失败'}, {name: '拼团失败'}, {name: '拼团失败'}]
   const ORDER_LIST_ARR = [
     { page: 1, data: [], hasMore: true },
     { page: 1, data: [], hasMore: true },
@@ -86,12 +88,12 @@
     data() {
       return {
         navList: NAVLIST,
+        groupStatusArr: GROUP_STATUS_ARR,
         orderListArr: ORDER_LIST_ARR,
         tabIdx: 0,
         status: '',
         orderPage: 1,
-        orderMore: false,
-        isGroup: false
+        orderMore: false
       }
     },
     onLoad(e) {
@@ -108,9 +110,12 @@
       this.groupTimer && clearInterval(this.groupTimer)
     },
     onReachBottom() {
-      this.getMoreOrderList(this.tabIdx)
+      this.getOrderList(this.tabIdx, true)
     },
     methods: {
+      getStatusName(status) {
+        return this.groupStatusArr[status] || '试试'
+      },
       getStatus(tabIdx) {
         let status = ''
         switch (tabIdx * 1) {
@@ -129,36 +134,34 @@
         }
         return status
       },
-      getOrderList(tabIdx) {
+      getOrderList(tabIdx, getMore = false) {
         let ol = this.orderListArr[tabIdx]
-        ol.page = 1
-        ol.hasMore = true
+        if (getMore) {
+          if (!ol.hasMore) {
+            return
+          }
+          ol.page += 1
+        } else {
+          ol.page = 1
+          ol.hasMore = true
+        }
         let status = this.getStatus(tabIdx)
         API.Order.getOrderListData(status, 1).then((res) => {
           if (res.error === this.$ERR_OK) {
-            for (let v of res.data) {
-              v.at_diff = 33 + parseInt((Math.random() * 100))
-              v.at_countdown = countDownHandle(v.at_diff)
+            for (let order of res.data) {
+              if (order.groupon && order.groupon.surplus_seconds) {
+                order.at_countdown = countDownHandle(order.groupon.surplus_seconds)
+              }
             }
-            ol.data = res.data
-            this._isMoreList(tabIdx, res)
+            if (getMore) {
+              ol.data = ol.data.concat(res.data)
+            } else {
+              ol.data = res.data
+            }
             this._startTimer()
-          } else {
-            this.$wechat.showToast(res.message)
-          }
-        })
-      },
-      getMoreOrderList(tabIdx) {
-        let ol = this.orderListArr[tabIdx]
-        if (!ol.hasMore) {
-          return
-        }
-        let status = this.getStatus(tabIdx)
-        ol.page += 1
-        API.Order.getOrderListData(status, ol.page).then((res) => {
-          if (res.error === this.$ERR_OK) {
-            ol.data = ol.data.concat(res.data)
-            this._isMoreList(tabIdx, res)
+            if (ol.data.length >= res.meta.total * 1) {
+              ol.hasMore = false
+            }
           } else {
             this.$wechat.showToast(res.message)
           }
@@ -168,20 +171,16 @@
         this.groupTimer = setInterval(() => {
           let clearT = true
           for (let item of this.orderListArr[this.tabIdx].data) {
-            if (item.at_diff && item.at_diff !== 0) {
-              item.at_diff--
-              item.at_countdown = countDownHandle(item.at_diff)
+            let surplusSeconds = item.groupon.surplus_seconds
+            if (surplusSeconds && surplusSeconds !== 0) {
+              surplusSeconds--
+              item.at_countdown = countDownHandle(surplusSeconds)
+              item.groupon.surplus_seconds = surplusSeconds
               clearT = false
             }
           }
           clearT && clearInterval(this.groupTimer)
         }, 1000)
-      },
-      _isMoreList(tabIdx, res) {
-        let ol = this.orderListArr[tabIdx]
-        if (ol.data.length >= res.meta.total * 1) {
-          ol.hasMore = false
-        }
       },
       selectIndex(item, index) {
         this.groupTimer && clearInterval(this.groupTimer)
