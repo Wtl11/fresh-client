@@ -541,18 +541,16 @@
           this._resetBanner()
           this._resetFlash()
           this._resetGuessParams()
-          this._getNotify()
-          await this._getModuleInfo()
-          this._initTabInfo()
-          this._addMonitor()
-          this._getFlashList()
-          this._getTodayHostList()
-          this._getNewClientList()
-          this._getGroupList()
-          // await Promise.all([this._getFlashList(), this._getTodayHostList(), this._getNewClientList(), this._getGroupList()])
-          // this._addMonitor()
         }
         this._getLocation()
+        this._getNotify()
+        await this._getModuleInfo()
+        this._initTabInfo()
+        this._addMonitor()
+        this._getFlashList()
+        this._getTodayHostList()
+        this._getNewClientList()
+        this._getGroupList()
         if (!wx.getStorageSync('token')) return
         this.setCartCount()
       } catch (e) {
@@ -574,8 +572,11 @@
       try {
         await this._getModuleInfo(false)
         this._initTabInfo()
-        await Promise.all([this._getFlashList(), this._getTodayHostList(), this._getNewClientList(), this._getGroupList()])
         this._addMonitor()
+        this._getFlashList()
+        this._getTodayHostList()
+        this._getNewClientList()
+        this._getGroupList()
       } catch (e) {
         console.error(e)
       }
@@ -752,52 +753,52 @@
           // this._initDomPosition()
         }, 500)
       },
-      _initDomPosition() {
-        wx.createSelectorQuery()
-          .select('#homePosition')
-          .boundingClientRect()
-          .select('#banner')
-          .boundingClientRect()
-          .select('#server-icon-wrapper')
-          .boundingClientRect()
-          .select('#notice')
-          .boundingClientRect()
-          .select('#classify-wrapper')
-          .boundingClientRect()
-          .select('#flashSale')
-          .boundingClientRect()
-          .selectAll('.panel')
-          .boundingClientRect()
-          .exec((arr) => {
-            let sliceArr = arr.slice(0, -1)
-            let panels = arr.slice(-1)[0]
-            let heightArr = sliceArr.map(item => {
-              return item ? item.height : 0
-            })
-            let totals = heightArr.reduce((total, num) => {
-              return total + num
-            })
-            let panelsTop = totals
-            panels.forEach((item, index) => {
-              if (this.activeTabInfo[index]) {
-                let sliceArr = panels.slice(0, index)
-                let heightArr = sliceArr.map(item => {
-                  return item ? item.height : 0
-                })
-                let heightTotal
-                if (heightArr.length) {
-                  heightTotal = heightArr.reduce((total, num) => {
-                    return total + num
-                  })
-                } else {
-                  heightTotal = 0
-                }
-                this.activeTabInfo[index].top = heightTotal + panelsTop
-                this.activeTabInfo[index].bottom = heightTotal + panelsTop + item.height
-              }
-            })
-          })
-      },
+      // _initDomPosition() {
+      //   wx.createSelectorQuery()
+      //     .select('#homePosition')
+      //     .boundingClientRect()
+      //     .select('#banner')
+      //     .boundingClientRect()
+      //     .select('#server-icon-wrapper')
+      //     .boundingClientRect()
+      //     .select('#notice')
+      //     .boundingClientRect()
+      //     .select('#classify-wrapper')
+      //     .boundingClientRect()
+      //     .select('#flashSale')
+      //     .boundingClientRect()
+      //     .selectAll('.panel')
+      //     .boundingClientRect()
+      //     .exec((arr) => {
+      //       let sliceArr = arr.slice(0, -1)
+      //       let panels = arr.slice(-1)[0]
+      //       let heightArr = sliceArr.map(item => {
+      //         return item ? item.height : 0
+      //       })
+      //       let totals = heightArr.reduce((total, num) => {
+      //         return total + num
+      //       })
+      //       let panelsTop = totals
+      //       panels.forEach((item, index) => {
+      //         if (this.activeTabInfo[index]) {
+      //           let sliceArr = panels.slice(0, index)
+      //           let heightArr = sliceArr.map(item => {
+      //             return item ? item.height : 0
+      //           })
+      //           let heightTotal
+      //           if (heightArr.length) {
+      //             heightTotal = heightArr.reduce((total, num) => {
+      //               return total + num
+      //             })
+      //           } else {
+      //             heightTotal = 0
+      //           }
+      //           this.activeTabInfo[index].top = heightTotal + panelsTop
+      //           this.activeTabInfo[index].bottom = heightTotal + panelsTop + item.height
+      //         }
+      //       })
+      //     })
+      // },
       _helpObserver(e) {
         if (!this._isHelpScroll) return
         if (this._isScrolling) return
