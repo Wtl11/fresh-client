@@ -301,7 +301,7 @@
         let text = ''
         switch (this.activityType) {
           case ACTIVE_TYPE.GROUP_ON :
-            text = '团购价'
+            text = '拼团价'
             break
           case ACTIVE_TYPE.NEW_CLIENT:
             text = '新人价'

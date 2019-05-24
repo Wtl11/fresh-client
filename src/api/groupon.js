@@ -30,5 +30,15 @@ export default {
   getDistance(data, loading = false) {
     let url = '/api/wap/shop-distance'
     return request.get(url, data, loading)
+  },
+  /**
+   * 分享图
+   * @param goods_id,activity_id
+   * @param loading
+   * @returns {*}
+   */
+  getShareImage(data, loading = false) {
+    let url = 'api/wap/goods/goods-share-image'
+    return request.get(url, data, loading)
   }
 }

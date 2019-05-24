@@ -266,7 +266,9 @@
         font-size: $font-size-20
         line-height: 1
       .icon
-        padding-bottom: 3px
+        position :relative
+        padding-left :2px
+        top:1px
         font-family: $font-family-medium
         font-size: $font-size-12
   .subimit-btn
