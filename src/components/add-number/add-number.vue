@@ -93,6 +93,15 @@
         if (this.orderNum > 0) {
           this.showOrderNum = false
         }
+        // 团购单买
+        if (this.currentType === 'goods_sale_price') {
+          if (this.orderNum >= this.msgDetail.base_usable_stock) {
+            this.$wechat.showToast(`该商品库存不足`)
+            return
+          }
+          this.orderNum++
+          return
+        }
         // 显示抢购限购数量
         let limitAll = +this.msgDetailInfo.person_all_buy_limit
         let buyAll = +this.msgDetailInfo.person_all_buy_count

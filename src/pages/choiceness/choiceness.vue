@@ -334,7 +334,6 @@
 <!--    添加至我的小程序-->
     <new-guidelines ref="guidelines"></new-guidelines>
     <distance-check ref="distance"></distance-check>
-<!--    <div class="goods-search-wrapper" :style="goodsSearchStyles"></div>-->
   </div>
   </form>
 </template>
@@ -381,15 +380,6 @@
         ACTIVE_TYPE,
         // 头部变色
         title: '赞播优鲜',
-        // _navigationBarHeight: 0,
-        // __navBarHeight: 0,
-        // _navigationIO: null,
-        // _activeTab: null,
-        // 商品搜索样式
-        // activeTabStyles: '',
-        // navigationBarHeight: 0,
-        // 头部地理位置等
-        // locationStatus: null,
         // 团长信息
         groupInfo: {},
         // 模块数组
@@ -743,62 +733,11 @@
               if (res.intersectionRatio > 0 && !this._isScrolling) {
                 this._isHelpScroll = false
                 this.activeTabIndex = res.id.replace('panel', '') * 1
-                console.log(res)
-                // console.log(this.activeTabInfo.length, this.activeTabIndex)
-                // if (this.activeTabInfo.length - 1 === this.activeTabIndex && this.guessPage === 1) {
-                //   this._getGuessList()
-                // }
               }
             })
           // this._initDomPosition()
         }, 500)
       },
-      // _initDomPosition() {
-      //   wx.createSelectorQuery()
-      //     .select('#homePosition')
-      //     .boundingClientRect()
-      //     .select('#banner')
-      //     .boundingClientRect()
-      //     .select('#server-icon-wrapper')
-      //     .boundingClientRect()
-      //     .select('#notice')
-      //     .boundingClientRect()
-      //     .select('#classify-wrapper')
-      //     .boundingClientRect()
-      //     .select('#flashSale')
-      //     .boundingClientRect()
-      //     .selectAll('.panel')
-      //     .boundingClientRect()
-      //     .exec((arr) => {
-      //       let sliceArr = arr.slice(0, -1)
-      //       let panels = arr.slice(-1)[0]
-      //       let heightArr = sliceArr.map(item => {
-      //         return item ? item.height : 0
-      //       })
-      //       let totals = heightArr.reduce((total, num) => {
-      //         return total + num
-      //       })
-      //       let panelsTop = totals
-      //       panels.forEach((item, index) => {
-      //         if (this.activeTabInfo[index]) {
-      //           let sliceArr = panels.slice(0, index)
-      //           let heightArr = sliceArr.map(item => {
-      //             return item ? item.height : 0
-      //           })
-      //           let heightTotal
-      //           if (heightArr.length) {
-      //             heightTotal = heightArr.reduce((total, num) => {
-      //               return total + num
-      //             })
-      //           } else {
-      //             heightTotal = 0
-      //           }
-      //           this.activeTabInfo[index].top = heightTotal + panelsTop
-      //           this.activeTabInfo[index].bottom = heightTotal + panelsTop + item.height
-      //         }
-      //       })
-      //     })
-      // },
       _helpObserver(e) {
         if (!this._isHelpScroll) return
         if (this._isScrolling) return
@@ -839,7 +778,7 @@
         let scrollTop = viewport.scrollTop + panel.top - (this._navigationBarHeight + 59 - 5)
         wx.pageScrollTo({
           scrollTop,
-          duration: 300
+          duration: Math.abs(viewport.scrollTop - scrollTop) < 400 ? 0 : 300
         })
         setTimeout(() => {
           this._isScrolling = false
@@ -851,7 +790,6 @@
       },
       // 切换社群
       handleChangeCommunity() {
-        // getApp().globalData.$groupInfo = this.groupInfo
         wx.navigateTo({url: `/pages/choose-pickup`})
       },
       // 初识话navigation状态
@@ -994,26 +932,6 @@
           console.warn(e)
         }
       },
-      // // 初始化地理位置
-      // _initLocation() {
-      //   const locationShow = wx.getStorageSync('locationShow') * 1
-      //   if (locationShow !== 3 || locationShow !== 2) {
-      //     let that = this
-      //     wx.getLocation({
-      //       async success(res) {
-      //         wx.setStorageSync('locationData', res)
-      //         wx.setStorageSync('locationShow', 1)
-      //         that.locationStatus = 1
-      //       },
-      //       fail(res) {
-      //         wx.setStorageSync('locationShow', 3)
-      //         wx.navigateTo({
-      //           url: `/pages/open-location`
-      //         })
-      //       }
-      //     })
-      //   }
-      // },
       // 获取地理位置
       async _getLocation() {
         if (this.latitude && this.longitude) return
@@ -1034,26 +952,6 @@
           wx.navigateTo({url: `/pages/open-location`})
         }
       },
-      // // 更新地理位置
-      // _refreshLocation() {
-      //   this.locationStatus = wx.getStorageSync('locationShow')
-      //   if (this.locationStatus * 1 === 3) {
-      //     wx.navigateTo({
-      //       url: `/pages/open-location`
-      //     })
-      //   }
-      // },
-      // 获取团长的信息
-      // async _groupInfo(loading) {
-      //   let res = await API.Choiceness.getGroupInfo(loading)
-      //   if (loading) {
-      //     this.$wechat.hideLoading()
-      //   }
-      //   if (res.error !== this.$ERR_OK) {
-      //     this.$wechat.showToast(res.message)
-      //   }
-      //   this.groupInfo = res.data
-      // },
       // 初始化页面配置
       _initPageParams(options = {}) {
         if (options.scene) {

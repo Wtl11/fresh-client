@@ -54,7 +54,7 @@
       <p v-if="isShowNewCustomer" class="new-rule-wrapper">你不符合新人特惠购买资格</p>
     </section>
     <ul class="coupon-info-wrapper" :class="'corp-' + corpName + '-money'">
-      <li v-if="isGroupModal" class="coupon-item" @click="chooseCouponHandle">
+      <li v-if="isGroupModal" class="coupon-item">
         <p class="name">使用优惠券</p>
         <p class="price-disable">该商品不支持使用优惠券</p>
       </li>
