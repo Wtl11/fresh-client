@@ -133,7 +133,7 @@
       <!--拼团列表-->
       <div v-if="activityType === ACTIVE_TYPE.GROUP_ON" class="collage-box">
         <div class="title">{{collageTotal}}位邻居正在拼单，可直接参与</div>
-        <swiper v-if="collageList.length > 1"  class="collage-scroll" autoplay circular :vertical="true" interval="5000" :display-multiple-items="2">
+        <swiper v-if="collageList.length > 1"  class="collage-scroll" autoplay circular :vertical="groupAutoScroll" interval="5000" :display-multiple-items="2">
           <block v-for="(item, index) in collageList" :key="index">
             <swiper-item class="collage-content">
               <div class="left">
@@ -207,7 +207,7 @@
         </div>
       </article>
     </div>
-    <add-number ref="addNumber" :msgDetail="goodsMsg" :msgDetailInfo="buyGoodsInfo" @comfirmNumer="comfirmNumer"></add-number>
+    <add-number ref="addNumber" :msgDetail="goodsMsg" :msgDetailInfo="buyGoodsInfo" @comfirmNumer="comfirmNumer" @hide="handleHideAddNumber"></add-number>
     <link-group ref="groupList" :wechatInfo="groupInfo"></link-group>
     <link-group ref="shareList" :linkType="2" @saveImg="_actionDrawPoster"></link-group>
     <we-paint ref="wePaint" @drawDone="_drawPosterDone"></we-paint>
@@ -277,7 +277,8 @@
         timer: null,
         currentNum: 1,
         collageList: [],
-        collageTotal: 0
+        collageTotal: 0,
+        groupAutoScroll: true
       }
     },
     computed: {
@@ -452,16 +453,19 @@
           console.warn(e)
         }
       },
+      handleHideAddNumber() {
+        this.joinGroupId = undefined
+      },
       async jumpToCollage(item) {
         if (this.tipTop) {
           this.$wechat.showToast(this.tipTop)
           return
         }
-        this.instantlyBuy('goods_sale_price')
         let flag = await this._checkAbleCreateGroup(item.grouon_id)
         if (flag) {
-          this.instantlyBuy('goods_sale_price')
+          this.instantlyBuy()
           this.joinGroupId = item.grouon_id
+          this.groupAutoScroll = false
           // let goodsList = this.goodsMsg.goods_skus[0]
           // goodsList.sku_id = this.goodsMsg.goods_sku_id || goodsList.goods_sku_id
           // goodsList.num = 1
@@ -627,6 +631,7 @@
           }
         }
         if (this.activityType === ACTIVE_TYPE.GROUP_ON) {
+          this.groupAutoScroll = true
           let flag = await this._checkAbleCreateGroup(0, number)
           if (!flag) return
           if (type) {

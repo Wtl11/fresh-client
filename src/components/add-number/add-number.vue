@@ -81,6 +81,7 @@
         this.currentType = ''
         this.orderNum = 1
         this.showOrderNum = true
+        this.$emit('hide')
       },
       showLink(type = '') {
         if (typeof type === 'string' && type) {
