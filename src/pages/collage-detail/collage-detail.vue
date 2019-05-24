@@ -33,10 +33,10 @@
 
       <!--头像-->
       <div v-if="headShow" class="heads">
-        <div v-for="(item, index) in data.groupon_people" :key="index" class="head-box" :class="[{'small-head': data.groupon_people.length > 4}, {'has-border': item.is_payed}]">
+        <div v-for="(item, index) in grouponHead" :key="index" class="head-box" :class="[{'small-head': grouponHead.length > 4}, {'has-border': item.avatar}]">
 
-          <img :src="item.avatar" alt="" class="logo">
-
+          <img v-if="item.avatar" :src="item.avatar" alt="" class="logo">
+          <img v-else :src="imageUrl + '/yx-image/collage/pic-touxiang@2x.png'" alt="" class="logo">
           <span v-if="item.is_main" class="tag">拼主</span>
         </div>
       </div>
@@ -175,70 +175,19 @@
         orderId: 1,
         id: 1,
         status: 0,
-        isGroup: 0,
-        isMain: 0,
-        distance: false, // true范围内
+        isGroup: 1,
+        isMain: 1,
+        distance: true, // true范围内
         step: 1,
         statusNum: 1,
         isActivityEnd: 0,
         shareImage: '',
+        grouponHead: [{}, {}],
         data: {
-          id: 1,
-          groupon_id: 46,
-          groupon_status: 1,
-          groupon_step: 2,
-          groupon_person_limit: 2,
-          start_groupon_at: '2019-05-17 15:53:38',
-          spell_groupon_at: '2019-05-17 15:55:02',
-          surplus_seconds: 10000,
-          surplus_number: 0,
-          is_spell_group: 1,
-          is_group_main: 1,
-          groupon_people: [
-            {
-              avatar: 'https://wx.qlogo.cn/mmopen/vi_32/nWbmOQibT41icqJ3JeDKlUH38CoYEOEQXTeCmvr2lY3ibTgnu8HKLl9Js4FCMfpNsysiaj7wD4fo9HXkfy1jgTyxaw/132',
-              nickname: 'Lemonice',
-              is_main: 1,
-              is_payed: 1
-            },
-            {
-              avatar: 'https://wx.qlogo.cn/mmopen/vi_32/fcOwTyiac1SwZKCpSMVDGjWHSVGAs6wqHDGvItiaVBXWP8yricFq8vqAfglCRHCOMdEKKkkNT7pwbvxIbGR5WHnNw/132',
-              nickname: 'TING-紫',
-              is_main: 0,
-              is_payed: 1
-            }
-          ],
-          activity: {
-            activity_id: 247,
-            activity_name: '测试的拼团活动',
-            activity_desc: '',
-            activity_type: 'groupon',
-            start_at: '2019-05-14 10:30:00',
-            end_at: '2019-06-13 17:30:00'
-          },
-          goods: {
-            goods_id: 3489,
-            goods_sku_id: 2,
-            name: '青芒果',
-            describe: '5',
-            goods_units: '斤',
-            trade_price: '158.00',
-            original_price: '200.00',
-            goods_cover_image: 'http://social-shopping-api-1254297111.picgz.myqcloud.com/1/2018/12/18/154510444727561.png',
-            total_stock: 100,
-            usable_stock: 100,
-            sale_count: 100
-          },
-          shop: {
-            shop_id: 1,
-            social_name: '白云国际单位',
-            name: '白云测试',
-            notice: '大家10:00-10:30或16:00-16:30可取货。',
-            province: '天津市',
-            city: '天津市',
-            district: '河西区',
-            address: '黄园路 国际单位 A5'
-          }
+          groupon_people: [],
+          goods: {},
+          shop: {},
+          activity: {}
         }
       }
     },
@@ -448,6 +397,13 @@
         this.isActivityEnd = res.data.isActivityEnd
         this.step = res.data.groupon_step
         this.timeHandle() // 跑倒计时
+        // 初始头像
+        let arr = new Array(res.data.groupon_person_limit).fill({})
+        res.data.groupon_people.map((item, index) => {
+          arr[index] = item
+        })
+        this.grouponHead = arr
+        // 没参团先获取定位信息
         if (!this.isGroup) {
           this._initLocation()
         }
@@ -675,7 +631,7 @@
     .goods-img
       width: 105px
       height: 105px
-      background: #eee
+      background: #fafafa
       border-radius: 2px
       object-fit: cover
     .right-content
