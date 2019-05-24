@@ -68,7 +68,7 @@ export const actions = {
           success (res) {
             setTimeout(() => {
               if (orderInfo.url) {
-                wx.redirectTo({url: `${orderInfo.url}?orderId=${orderId}&&type=0&total=${state.total}`})
+                wx.redirectTo({url: `${orderInfo.url}?orderId=${orderId}`})
               } else {
                 wx.redirectTo({url: `/pages/pay-result?orderId=${orderId}&&type=0&total=${state.total}`})
               }
