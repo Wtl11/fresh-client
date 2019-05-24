@@ -16,7 +16,7 @@
             <div v-for="(item, itemIndex) in list.data" :key="itemIndex" @click="jumpDetail(item)" class="order-item">
               <div class="top">
                 <div class="group-name">{{item.social_name}}</div>
-                <div class="status" :class="'corp-' + corpName + '-money'">{{item.status_text}}</div>
+                <div class="status" :class="'corp-' + corpName + '-money'">{{item.status === 11 || item.status_text === '活动中' ? '已付款' : item.status_text}}</div>
               </div>
               <div class="center">
                 <p v-if="item.groupon.pay_status !== 0 && item.groupon && item.groupon.groupon_status_str" class="group-status">
