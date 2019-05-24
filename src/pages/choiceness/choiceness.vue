@@ -331,6 +331,7 @@
     <coupon-modal ref="couponModal"></coupon-modal>
 <!--    添加至我的小程序-->
     <new-guidelines ref="guidelines"></new-guidelines>
+    <distance-check ref="distance"></distance-check>
 <!--    <div class="goods-search-wrapper" :style="goodsSearchStyles"></div>-->
   </div>
   </form>
@@ -346,6 +347,7 @@
   import ShareHandler, {EVENT_CODE} from '@mixins/share-handler'
   import ShareTrick from '@mixins/share-trick'
   import NewGuidelines from './new-guidelines/new-guidelines'
+  import DistanceCheck from './distance-check/distance-check'
   import {TAB_ARR_CONFIG} from './config'
   import {ACTIVE_TYPE} from '@utils/contants'
   import IsEnd from '@components/is-end/is-end'
@@ -366,7 +368,8 @@
       CouponModal,
       NewGuidelines,
       IsEnd,
-      LoadingMore
+      LoadingMore,
+      DistanceCheck
     },
     data() {
       this._isLoading = false
@@ -432,7 +435,9 @@
             text: '原产地直采',
             icon: '/yx-image/2.4/icon-ok@2x.png'
           }
-        ]
+        ],
+        latitude: 0,
+        longitude: 0
       }
     },
     computed: {
@@ -444,7 +449,6 @@
       // 社区名称-定位
       communityName() {
         let name = (this.locationStatus * 1 === 1 || this.locationStatus * 1 === 2) ? this.socialName : '定位中...'
-        console.warn(name, '--=->')
         return name.substring(0, 6) + (name.length > 6 ? '...' : '')
       },
       // 其他活动
@@ -492,9 +496,18 @@
     },
     onUnload() {
       this._navigationIO && this._navigationIO.disconnect()
+      this.bannerIndex = 0
+      this.activeTabStyles = ''
+      this.flashTabIndex = 0
+      this.activeTabIndex = 0
+      this.flashViewToChild = undefined
+      this.guessPage = 1
+      this.guessHasMore = true
+      this.latitude = 0
+      this.longitude = 0
+      wx.setStorageSync('homeData', this.$data, {curShopId: ''})
     },
     onHide() {
-      wx.setStorageSync('homeData', this.$data, {curShopId: ''})
     },
     onPageScroll(e) {
       // this._helpObserver(e)
@@ -529,6 +542,7 @@
           this._initTabInfo()
           await Promise.all([this._getFlashList(), this._getTodayHostList(), this._getNewClientList(), this._getGroupList()])
           this._addMonitor()
+          this._getLocation()
         }
         // this._getNotify()
         // await this._getModuleInfo()
@@ -969,6 +983,26 @@
               })
             }
           })
+        }
+      },
+      // 获取地理位置
+      async _getLocation() {
+        if (this.latitude && this.longitude) return
+        try {
+          let res = await this.$wechat.getLocation()
+          this.longitude = res.longitude
+          this.latitude = res.latitude
+          if (!this.latitude || !this.longitude) {
+            wx.navigateTo({url: `/pages/open-location`})
+          } else {
+            res = await API.Global.checkShopDistance({longitude: this.longitude, latitude: this.latitude})
+            // this.tipTop = res.data.distance_judge === 0 ? '' : `当前位置${name}社区不参与拼团活动`
+            if (res.data.distance_judge === 0) {
+              this.$refs.distance && this.$refs.distance.setTop(this._navigationBarHeight + 30)
+            }
+          }
+        } catch (e) {
+          wx.navigateTo({url: `/pages/open-location`})
         }
       },
       // 更新地理位置
