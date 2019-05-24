@@ -159,7 +159,7 @@
       console.warn(`/pages/flash-sale-list?id=${this.currentObj.id}&shopId=${shopId}`)
       console.log(this.socialName)
       return {
-        title: this.socialName + SHARE_IMG[status].title,
+        title: this.socialName + '-' + SHARE_IMG[status].title,
         path: `/pages/flash-sale-list?id=${this.currentObj.id}&shopId=${shopId}&flag=${flag}`,
         imageUrl: this.imageUrl + SHARE_IMG[status].img
       }

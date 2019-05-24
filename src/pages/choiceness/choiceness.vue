@@ -247,7 +247,9 @@
           <div v-else style="height: 8px"></div>
 <!--          平团返现等各个活动-->
           <block v-for="(item, index) in otherActiveList" :key="index">
-            <section v-if="activeTabInfo[index].is_close === 0 || index === activeTabInfo.length - 1" class="panel"
+            <section v-if="activeTabInfo[index].is_close === 0 || index === activeTabInfo.length - 1"
+                     class="panel"
+                     :class="{guess: index === activeTabInfo.length - 1}"
                      :id="'panel' + index"
             >
               <img
@@ -512,6 +514,7 @@
     onHide() {
     },
     onPageScroll(e) {
+      // console.log(e)
       // this._helpObserver(e)
     },
     async onShow() {
@@ -541,8 +544,13 @@
           this._getNotify()
           await this._getModuleInfo()
           this._initTabInfo()
-          await Promise.all([this._getFlashList(), this._getTodayHostList(), this._getNewClientList(), this._getGroupList()])
           this._addMonitor()
+          this._getFlashList()
+          this._getTodayHostList()
+          this._getNewClientList()
+          this._getGroupList()
+          // await Promise.all([this._getFlashList(), this._getTodayHostList(), this._getNewClientList(), this._getGroupList()])
+          // this._addMonitor()
         }
         this._getLocation()
         if (!wx.getStorageSync('token')) return
@@ -588,26 +596,31 @@
       this._sharing = true
       let imgUrl = ''
       let moduleName = ''
+      let title = ``
       if (res.target.id) {
         moduleName = res.target.id.replace('share-', '')
       }
       switch (moduleName) {
         case 'new_client':
           imgUrl = '/yx-image/2.4/pic-xrth_share@2x.png'
+          title = `${this.socialName}-赞播优鲜社区团购`
           break
         case 'goods_hot_tag':
           imgUrl = '/yx-image/2.4/pic-jrbp_share@2x.png'
+          title = `${this.socialName}-赞播优鲜社区团购`
           break
         case 'groupon' :
           imgUrl = '/yx-image/2.4/pic-ptfx_share@2x.png'
+          title = `${this.socialName}-赞播优鲜社区团购`
           break
         default:
           imgUrl = '/yx-image/choiceness/pic-zbyx@2x.png'
+          title = `${this.socialName},次日达、直采直销，点击下单↓`
           break
       }
       const flag = Date.now()
       return {
-        title: `${this.socialName},次日达、直采直销，点击下单↓`,
+        title,
         path: `/pages/choiceness?shopId=${this.shopId}&moduleName=${moduleName}&flag=${flag}`,
         imageUrl: this.imageUrl + imgUrl,
         success: (res) => {
@@ -729,13 +742,14 @@
               if (res.intersectionRatio > 0 && !this._isScrolling) {
                 this._isHelpScroll = false
                 this.activeTabIndex = res.id.replace('panel', '') * 1
+                console.log(res)
                 // console.log(this.activeTabInfo.length, this.activeTabIndex)
                 // if (this.activeTabInfo.length - 1 === this.activeTabIndex && this.guessPage === 1) {
                 //   this._getGuessList()
                 // }
               }
             })
-          this._initDomPosition()
+          // this._initDomPosition()
         }, 500)
       },
       _initDomPosition() {
@@ -802,13 +816,29 @@
           }, 80)
         }
       },
-      handleActiveTabChange(index) {
+      async handleActiveTabChange(index) {
         this._isHelpScroll = true
         this._isScrolling = true
         this.activeTabIndex = index
+        let viewport = await new Promise((resolve, reject) => {
+          wx.createSelectorQuery()
+            .selectViewport()
+            .scrollOffset(res => {
+              resolve(res)
+            }).exec()
+        })
+        let panel = await new Promise((resolve, reject) => {
+          wx.createSelectorQuery()
+            .select(`#panel${index}`)
+            .boundingClientRect(res => {
+              resolve(res)
+            })
+            .exec()
+        })
+        let scrollTop = viewport.scrollTop + panel.top - (this._navigationBarHeight + 59 - 5)
         wx.pageScrollTo({
-          scrollTop: this.activeTabInfo[index].top,
-          duration: 0
+          scrollTop,
+          duration: 300
         })
         setTimeout(() => {
           this._isScrolling = false
@@ -994,7 +1024,6 @@
             wx.navigateTo({url: `/pages/open-location`})
           } else {
             res = await API.Global.checkShopDistance({longitude: this.longitude, latitude: this.latitude})
-            // this.tipTop = res.data.distance_judge === 0 ? '' : `当前位置${name}社区不参与拼团活动`
             this.groupInfo = res.data.shop
             if (res.data.distance_judge !== 0) {
               this.$refs.distance && this.$refs.distance.setTop(this._navigationBarHeight + 30)
@@ -1088,6 +1117,8 @@
       position :relative
       border-bottom :0px solid transparent
       min-height :45px
+      &.guess
+        min-height :100vw
       .share-button
         position:absolute;
         right:4vw

@@ -14,7 +14,7 @@ export default {
     backgroundColorBottom: '#FFFFFF',
     navigationBarTextStyle: 'black',
     backgroundTextStyle: 'dark',
-    onReachBottomDistance: 50,
+    onReachBottomDistance: 150,
     usingComponents: {}
   }
 }
