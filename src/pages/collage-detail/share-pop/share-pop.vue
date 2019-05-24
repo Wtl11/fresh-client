@@ -9,7 +9,7 @@
             还差 <span class="color">{{num}}</span>人，赶快邀请 <span class="color">{{name}}</span>社区邻居来参团吧
           </p>
           <button open-type="share" class="share-btn" @click.stop="hide">
-            <img :src="imageUrl + '/yx-image/collage/pic-wechat@2x.png'" alt="" class="img">
+            <img v-if="imageUrl" :src="imageUrl + '/yx-image/collage/pic-wechat@2x.png'" alt="" class="img">
           </button>
           <p class="text">邀请邻居进度 <span class="color">1/2</span></p>
         </div>
