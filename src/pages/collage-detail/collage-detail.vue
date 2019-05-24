@@ -42,15 +42,19 @@
       </div>
 
       <!--<button class="btn" open-type="share">{{data.btn}}</button>-->
-      <div class="btn" @click="clickBtn">{{msg[statusNum].btn}}</div>
-      <p v-if="botTip" class="bot-tip">分享邻居越多，成团越快</p>
+      <div v-if="btnShow === 1"  class="btn" @click="clickBtn">邀请邻居参团</div>
+      <div v-if="btnShow === 2" class="btn" @click="clickBtn">查看我的订单</div>
+      <div v-if="btnShow === 3" class="btn" @click="clickBtn">返回商城首页</div>
+      <div v-if="btnShow === 4" class="btn" @click="clickBtn">一键参团</div>
+      <div v-if="btnShow === 5" class="btn" @click="clickBtn">我来开团</div>
+      <p v-if="btnShow === 1" class="bot-tip">分享邻居越多，成团越快</p>
     </div>
     <!--<div class="btn" @click="_initLocation">获取位置信息</div>-->
 
     <div v-if="goods || time" class="line"></div>
     <div v-if="goods" class="goods" @click="toDetail">
       <span class="label">拼团商品</span>
-      <p class="text">精品油桃3公斤装，整箱...<img :src="imageUrl + '/yx-image/collage/icon-pressed@2x.png'" class="icon"></p>
+      <p class="text">{{data.goods.name}}<img :src="imageUrl + '/yx-image/collage/icon-pressed@2x.png'" class="icon"></p>
     </div>
     <div v-if="time" class="time">
       <span class="label">拼团时间</span>
@@ -95,6 +99,7 @@
   import SharePop from './share-pop/share-pop'
   import {ACTIVE_TYPE} from '@utils/contants'
   import { formatNumber } from '@utils/common'
+  import {orderMethods} from '@state/helpers'
   import LoadingMore from '@components/loading-more/loading-more'
   import API from '@api'
   const PAGE_NAME = 'COLLAGE_DETAIL'
@@ -116,7 +121,7 @@
     {
       status: 2,
       statusText: '拼团失败',
-      btn: '查看别的拼团',
+      btn: '返回商城首页',
       icon: 'icon-failure'
     },
     {
@@ -178,9 +183,10 @@
         status: 0,
         isGroup: 1,
         isMain: 1,
-        distance: true, // 没超出范围
+        distance: true, // true范围内
         step: 1,
-        statusNum: 0,
+        statusNum: 1,
+        isActivityEnd: 1,
         data: {
           id: 1,
           groupon_id: 46,
@@ -235,23 +241,18 @@
     },
     computed: {
       topText1() { // 开团成功
-        return this.orderId
+        return this.orderId && this.isMain
       },
       topText2() { // 不在范围
-        return !this.distance && !this.isGroup && this.status === 0
+        return !this.isGroup && !this.distance
       },
       goodsBox() {
         // 参团非拼主、未参团一键参团
-        if (this.isGroup) {
-          if (!this.isMain) {
-            return true
-          }
-        } else {
-          if (+this.status === 0 && this.distance) {
-            return true
-          }
+        if (this.orderId) return false
+        if (!this.isGroup && (+this.status === 1 || this.isActivityEnd)) { // todo
+          return false
         }
-        return false
+        return true
       },
       statusText() {
         // 一键参团、不在范围
@@ -277,17 +278,16 @@
         return false
       },
       statusTip2() {
-        // 没参团 不在范围、一键参团
-        if (!this.isGroup) {
-          if (!this.distence || +this.status === 0) {
-            return true
-          }
+        // 一键参团
+        if (!this.isGroup && this.distance && +this.status === 0) {
+          return true
         }
         return false
       },
       runTime() {
         // 拼主开团成功、拼主待成团、拼主拼团失败
         // 参团者参团成功、参团者待成团
+        // 未参团者一键参团
         if (this.isMain) {
           if (this.orderId || +this.status === 0 || +this.status === 2) {
             return true
@@ -296,6 +296,8 @@
           if (+this.status === 0) {
             return true
           }
+        } else if (!this.isGroup && +this.status === 0) {
+          return true
         }
         return false
       },
@@ -306,37 +308,49 @@
         }
         return true
       },
+      btnShow() {
+        if (this.isGroup && +this.status === 0) {
+          return 1
+        }
+        if (this.isGroup && +this.status === 1) {
+          return 2
+        }
+        if (!this.isGroup && this.distance && +this.status === 0 && !this.isActivityEnd) {
+          return 4
+        }
+        if (!this.isGroup && this.distance && +this.status === 1 && !this.isActivityEnd) {
+          return 5
+        }
+        if ((this.isGroup && +this.status === 2) || (!this.isGroup && !this.distance) || (!this.isGroup && this.distance && this.isActivityEnd)) {
+          return 3
+        }
+        return 0
+      },
       botTip() {
         // 拼主没有拼团失败、未参团者看到拼团没结束、未参团者看到拼团没满
-        if ((this.isMain && +this.status !== 2) && (!this.isMain && this.isGroup && +this.status === 0)) {
-          return true
+        if (!this.isMain && !this.isGroup && +this.status === 1) {
+          return false
         }
-        return false
+        return true
       },
       goods() {
-        // 拼主开团成功、拼主拼团成功、拼主拼团失败
-        if (this.isMain) {
-          if (+this.status === 1 || +this.status === 2) {
-            return true
-          }
+        // 开团成功、参团成功
+        if (this.orderId) {
+          return true
         }
         return false
       },
       time() {
         // 不是未参团看到人满、不是未参团看到结束
-        if (!this.isGroup) {
-          if (+this.status !== 0) {
-            return false
-          }
+        if (!this.isGroup && +this.status !== 0) {
+          return false
         }
         return true
       },
       progressShow() {
         // 不是未参团看到人满、不是未参团看到结束
-        if (!this.isGroup) {
-          if (+this.status !== 0) {
-            return false
-          }
+        if (!this.isGroup && +this.status !== 0) {
+          return false
         }
         return true
       },
@@ -368,10 +382,10 @@
     onShareAppMessage() {
       let shopId = wx.getStorageSync('shopId')
       const flag = Date.now()
-      console.log(`/pages/share-order?id=${this.id}&shopId=${shopId}`)
+      console.log(`/pages/collage-detail?id=${this.id}&shopId=${shopId}`)
       return {
         title: `【${this.data.goods.name}】`,
-        path: `/pages/share-order?id=${this.id}&shopId=${shopId}&flag=${flag}`,
+        path: `/pages/collage-detail?id=${this.id}&shopId=${shopId}&flag=${flag}`,
         // imageUrl: `${this.imageUrl}/yx-image/order/pic-share_order@2x.png`,
         imageUrl: `${this.data.goods.goods_cover_image}`,
         success: (res) => {
@@ -383,9 +397,11 @@
       }
     },
     onReachBottom() {
-      if (!this.hasMore) return
-      this.page++
-      this.getCarRecommend()
+      if (!this.isGroup && +this.status === 1) {
+        if (!this.hasMore) return
+        this.page++
+        this.getCarRecommend()
+      }
     },
     onUnload() {
       clearInterval(this.timer)
@@ -395,16 +411,41 @@
     },
     onLoad(options) {
       // this._initLocation()
-      this.timeHandle()
-      this.orderId = options.orderId || ''
-      this.id = options.id || ''
+      this.orderId = (options && options.orderId) || ''
+      this.id = (options && options.id) || ''
+      if (options.shopId) {
+        wx.setStorage('shopId', options.shopId)
+      }
     },
     async onShow() {
+      this.timeHandle()
       this.getGrouponDetail()
       // this._refreshLocation()
+      if (!this.isGroup && +this.status === 1) {
+        this.getCarRecommend()
+      }
       // await this.getCarRecommend()
+      // if (this.status < 3) {
+      //   this.statusNum = this.status
+      // }
+      // if (this.orderId && this.isMain) {
+      //   this.statusNum = 3
+      // } else if (this.orderId && !this.isMain) {
+      //   this.statusNum = 4
+      // } else if (!this.isGroup && +this.data.surplus_seconds === 0) {
+      //   this.statusNum = 7
+      // } else if (!this.isGroup && +this.status === 1) {
+      //   this.statusNum = 6
+      // } else if (!this.isGroup && +this.status === 0) {
+      //   this.statusNum = 8
+      // }
+      // if (!this.isGroup && this.distence) {
+      //   this.statusNum = 5
+      // }
+      // dfgdg
     },
     methods: {
+      ...orderMethods,
       // 拼团详情
       getGrouponDetail() {
         API.Groupon.getGrouponDetail({id: this.id, order_id: this.orderId})
@@ -418,14 +459,13 @@
             this.isMain = res.data.is_group_main
             this.isGroup = res.data.is_spell_group
             this.status = res.data.groupon_status
+            this.isActivityEnd = res.data.isActivityEnd
             this.step = res.data.step
             if (!this.isGroup) {
               this._initLocation()
             }
-            if (!this.isGroup) {
-              if (+this.status === 1) {
-                this.getCarRecommend()
-              }
+            if (!this.isGroup && +this.status === 1) {
+              this.getCarRecommend()
             }
             if (this.status < 3) {
               this.statusNum = this.status
@@ -434,8 +474,6 @@
               this.statusNum = 3
             } else if (this.orderId && !this.isMain) {
               this.statusNum = 4
-            } else if (!this.isGroup && !this.distence) {
-              this.statusNum = 5
             } else if (!this.isGroup && +this.data.surplus_seconds === 0) {
               this.statusNum = 7
             } else if (!this.isGroup && +this.status === 1) {
@@ -443,67 +481,83 @@
             } else if (!this.isGroup && +this.status === 0) {
               this.statusNum = 8
             }
+            // if (!this.isGroup && !this.distence) {
+            //   this.statusNum = 5
+            // }
           })
       },
       // 参团时判断是否符合参团标准
       checkGroupon() {
         API.Groupon.checkGroupon({
-          activity_id: this.data.activity.activityId,
-          goods_sku_id: this.data.goods.goodsSkuId,
-          groupon_id: this.data.goods.grouponId,
+          activity_id: this.data.activity.activity_id,
+          goods_sku_id: this.data.goods.goods_sku_id,
+          groupon_id: this.data.goods.groupon_id,
           longitude: this.longitude,
           latitude: this.latitude
         })
           .then(res => {
             if (res.error !== this.$ERR_OK) {
               this.$toast.show(res.message)
-              return
+              return false
             }
-            console.log(111)
-          })
-      },
-      getDistance() {
-        API.Groupon.getDistance({longitude: this.longitude, latitude: this.latitude})
-          .then(res => {
-            if (res.error !== this.$ERR_OK) {
-              this.$toast.show(res.message)
-              return
-            }
-            console.log(111)
+            return true
           })
       },
       changePicker(e) {
         this.status = e.target.value
       },
-      clickBtn() {
+      async clickBtn() {
         let status = +this.status
-        if (this.isGroup && status === 0) {
-          //
+        if (this.btnShow === 1) {
+          console.log(1)
+          // -----------------
           // 参团了拼团进行中可分享
           this.showShare()
-        } else if ((this.isGroup && this.orderId) || (this.isMain && status === 1)) {
-          //
+        } else if (this.btnShow === 2) {
+          console.log(2)
+          // -----------------
           // 参团成功或者拼主拼团成功跳转去我的订单
-          wx.navigateTo({url: `/pages/my-order`})
-        } else if (
-          status === 2 ||
-          (this.isGroup && !this.isMain && status === 1) ||
-          (!this.isGroup && (!this.distance || +this.data.surplus_seconds === 0))
-        ) {
-          //
-          wx.navigateTo({url: `/pages/choiceness`})
+          wx.navigateTo({url: `/pages/order-list?id=&index=0`})
+        } else if (this.btnShow === 3) {
+          console.log(3)
+          // -----------------
+          // 返回首页
+          wx.switchTab({url: '/pages/choiceness'})
         } else if (!this.isGroup && status === 0) {
-          //
+          console.log(4)
+          // -----------------
           // 一键参团
-          wx.navigateTo({url: `/pages/choiceness`})
+          let goodsList = this.data.goods
+          goodsList.sku_id = goodsList.goods_sku_id
+          goodsList.num = 1
+          let price = goodsList.trade_price
+          let flag = await this.checkGroupon()
+          console.log(flag, 'flag')
+          if (!flag) return
+          goodsList.url = `/pages/collage-detail`
+          goodsList.source = 'c_groupon'
+          goodsList.groupon_id = this.data.groupon_id
+          goodsList.latitude = this.latitude
+          goodsList.longitude = this.longitude
+          const total = (price * goodsList.num).toFixed(2)
+          goodsList.activity = this.data.activity
+          let orderInfo = {
+            goodsList: new Array(goodsList),
+            total: total
+          }
+          this.setOrderInfo(orderInfo)
+          wx.navigateTo({url: `/pages/submit-order`})
         } else if (!this.isGroup && status === 1) {
-          //
+          console.log(5)
+          // -----------------
           // 我来开团
           wx.navigateTo({url: `/pages/goods-detail?id=${this.data.goods.goods_id}&activityId=${this.data.activity.activity_id}&activityType=${this.activeType}`})
+        } else {
+          console.log(6)
         }
       },
       showShare() {
-        this.$refs.sharePop.show(this.data.surplus_number, this.data.shop.social_name)
+        this.$refs.sharePop.show(this.data.surplus_number, this.data.shop.social_name, this.data.groupon_person_limit)
       },
       toDetail() {
         wx.navigateTo({url: `/pages/goods-detail?id=${this.data.goods.goods_id}&activityId=${this.data.activity.activity_id}&activityType=${this.activeType}`})
@@ -524,7 +578,7 @@
         }, 1000)
       },
       async getCarRecommend() {
-        let res = await API.Cart.getCarRecommend({page: this.page, limit: this.limit})
+        let res = await API.Cart.getCarRecommend({page: this.page, limit: 10})
         if (res.error !== this.$ERR_OK) {
           this.$wechat.showToast(res.message)
           return
