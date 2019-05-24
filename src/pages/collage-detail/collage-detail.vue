@@ -42,7 +42,7 @@
       </div>
 
       <!--<button class="btn" open-type="share">{{data.btn}}</button>-->
-      <div class="btn" @click="clickBtn">{{statusText || msg[statusNum].btn}}</div>
+      <div class="btn" @click="clickBtn">{{msg[statusNum].btn}}</div>
       <p v-if="botTip" class="bot-tip">分享邻居越多，成团越快</p>
     </div>
     <!--<div class="btn" @click="_initLocation">获取位置信息</div>-->
@@ -257,7 +257,7 @@
         // 一键参团、不在范围
         if (!this.isGroup && +this.status === 0 && this.distance) {
           return false
-        } else if (this.distance) {
+        } else if (!this.distance) {
           return false
         }
         return true
@@ -400,7 +400,7 @@
       this.id = options.id || ''
     },
     async onShow() {
-      // this.getGrouponDetail()
+      this.getGrouponDetail()
       // this._refreshLocation()
       // await this.getCarRecommend()
     },
@@ -422,9 +422,15 @@
             if (!this.isGroup) {
               this._initLocation()
             }
+            if (!this.isGroup) {
+              if (+this.status === 1) {
+                this.getCarRecommend()
+              }
+            }
             if (this.status < 3) {
               this.statusNum = this.status
-            } else if (this.orderId && this.isMain) {
+            }
+            if (this.orderId && this.isMain) {
               this.statusNum = 3
             } else if (this.orderId && !this.isMain) {
               this.statusNum = 4
