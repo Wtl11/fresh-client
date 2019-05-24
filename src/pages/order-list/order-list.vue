@@ -19,7 +19,7 @@
                 <div class="status" :class="'corp-' + corpName + '-money'">{{item.status_text}}</div>
               </div>
               <div class="center">
-                <p v-if="item.groupon && item.groupon.groupon_id" class="group-status">
+                <p v-if="item.groupon.pay_status !== 0 && item.groupon && item.groupon.groupon_status_str" class="group-status">
                   <img v-if="imageUrl" :src="imageUrl+'/yx-image/2.4/icon-spellgroup@2x.png'" alt="" class="group-icon">
                   <span :class="'corp-' + corpName + '-money'">[{{item.groupon.groupon_status_str}}]</span>
                   <template v-if="item.groupon.groupon_status === 0 && item.groupon.surplus_seconds && item.at_countdown">
@@ -168,6 +168,7 @@
         })
       },
       _startTimer() {
+        this.groupTimer && clearInterval(this.groupTimer)
         this.groupTimer = setInterval(() => {
           let clearT = true
           for (let item of this.orderListArr[this.tabIdx].data) {

@@ -32,6 +32,10 @@
             <img v-if="imageUrl && corpName === 'platform'" class="icon-img"
                  :src="imageUrl+'/yx-image/cart/icon-payment_xq@2x.png'" alt="">
           </div>
+          <div class="icon" v-if="orderMsg.status * 1 === 11">
+            <img v-if="imageUrl" class="icon-img"
+                 :src="imageUrl+'/yx-image/2.4/icon_refund_xq@2x.png'" alt="">
+          </div>
           <div class="statu-txt">{{orderMsg.status_text}}</div>
         </div>
         <div v-if="orderMsg.status * 1 === 0 && payTime" class="pay-countdown">剩余：{{payTime}}</div>
@@ -42,10 +46,10 @@
     <div v-if="isGroup" class="group-status" @click.stop="goToGroupBuy(orderMsg)">
       <img v-if="imageUrl" :src="imageUrl+'/yx-image/2.4/icon-spellgroup@2x.png'" alt="" class="group-icon">
       <span :class="'corp-' + corpName + '-money'">[{{orderMsg.groupon.groupon_status_str}}]</span>
-      <template v-if="orderMsg.groupon.groupon_status === 0 && orderMsg.groupon.surplus_seconds && orderMsg.at_countdown">
+      <template v-if="orderMsg.groupon.groupon_status === 0 && orderMsg.groupon.surplus_seconds && at_countdown">
         只差
         <span :class="'corp-' + corpName + '-money'">{{orderMsg.groupon.surplus_number}}人</span>成团，剩
-        <span :class="'corp-' + corpName + '-money'">{{orderMsg.at_countdown.hour}}:{{orderMsg.at_countdown.minute}}:{{orderMsg.at_countdown.second}}</span>结束
+        <span :class="'corp-' + corpName + '-money'">{{at_countdown.hour}}:{{at_countdown.minute}}:{{at_countdown.second}}</span>结束
       </template>
       <img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="arrow">
     </div>
@@ -65,7 +69,7 @@
     <div class="order-list">
       <div class="order-item">
         <div class="goods-item" v-for="(item, index) in orderMsg.goods" :key="index">
-          <div class="goods-info-box" @click.stop="jumpGoodsDetail(item)">
+          <div class="goods-info-box">
             <img class="goods-img" mode="aspectFill" :src="item.image_url" alt="">
             <div class="goods-info">
               <div class="tit">
@@ -155,7 +159,8 @@
         modelMsg: '确定退款吗？',
         curItem: '',
         saleText: '',
-        shareType: 0
+        shareType: 0,
+        at_countdown: {hour: 0, minute: 0, second: 0}
       }
     },
     components: {
@@ -169,11 +174,13 @@
         return floatAccAdd(this.orderMsg.total, this.orderMsg.promote_price)
       },
       isGroup() {
-        return (this.orderMsg.groupon && this.orderMsg.groupon.groupon_id) || false
+        return (this.orderMsg.groupon && this.orderMsg.groupon.pay_status !== 0) || false
       }
     },
     onLoad(e) {
       this.orderId = e.id
+    },
+    onShow() {
       this.getGoodsDetailData()
     },
     onUnload() {
@@ -277,7 +284,7 @@
             }
             let groupon = res.data.groupon
             if (this.isGroup && groupon && groupon.surplus_seconds) {
-              res.data.at_countdown = countDownHandle(groupon.surplus_seconds)
+              this.at_countdown = countDownHandle(groupon.surplus_seconds)
               this._setGroupTimer()
             }
           } else {
@@ -286,11 +293,12 @@
         })
       },
       _setGroupTimer() {
+        this.groupTimer && clearInterval(this.groupTimer)
         this.groupTimer = setInterval(() => {
           let surplusSeconds = this.orderMsg.groupon.surplus_seconds
           if (surplusSeconds && surplusSeconds !== 0) {
             surplusSeconds--
-            this.orderMsg.at_countdown = countDownHandle(surplusSeconds)
+            this.at_countdown = countDownHandle(surplusSeconds)
             this.orderMsg.groupon.surplus_seconds = surplusSeconds
           } else {
             clearInterval(this.groupTimer)
