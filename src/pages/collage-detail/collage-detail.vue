@@ -575,8 +575,8 @@
           async success(res) {
             wx.setStorageSync('locationData', res)
             wx.setStorageSync('locationShow', 1)
-            this.latitude = res.latitude
-            this.longitude = res.longitude
+            that.latitude = res.latitude
+            that.longitude = res.longitude
             that.locationStatus = 1
             that.getLocationData()
           },
