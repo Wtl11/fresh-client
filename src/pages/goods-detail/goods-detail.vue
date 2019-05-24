@@ -666,6 +666,11 @@
           return
         }
         ald.aldstat.sendEvent('立即购买')
+        // 团购单买
+        if (type === 'goods_sale_price') {
+          this._showAddNumber(type)
+          return
+        }
         // 显示抢购限购数量
         if (this.buyGoodsInfo.person_all_buy_limit * 1 !== -1 && this.buyGoodsInfo.person_all_buy_count >= this.buyGoodsInfo.person_all_buy_limit) {
           this.$wechat.showToast(`该商品限购${this.buyGoodsInfo.person_all_buy_limit}件，您不能再购买了`)
