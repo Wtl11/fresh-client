@@ -428,9 +428,9 @@
         this.getCarRecommend()
       }
       // await this.getCarRecommend()
-      if (this.status < 3) {
-        this.statusNum = this.status
-      }
+      // if (this.status < 3) {
+      //   this.statusNum = this.status
+      // }
       // if (this.orderId && this.isMain) {
       //   this.statusNum = 3
       // } else if (this.orderId && !this.isMain) {
