@@ -411,23 +411,26 @@
     },
     onLoad(options) {
       // this._initLocation()
-      this.orderId = (options && options.orderId) || ''
-      this.id = (options && options.id) || ''
+      if (!options) {
+        options = this.$mp.appOptions.query
+      }
+      this.orderId = options.orderId || ''
+      this.id = options.id || ''
       if (options.shopId) {
-        wx.setStorage('shopId', options.shopId)
+        wx.setStorageSync('shopId', options.shopId)
       }
     },
     async onShow() {
+      await this.getGrouponDetail()
       this.timeHandle()
-      this.getGrouponDetail()
       // this._refreshLocation()
       if (!this.isGroup && +this.status === 1) {
         this.getCarRecommend()
       }
       // await this.getCarRecommend()
-      // if (this.status < 3) {
-      //   this.statusNum = this.status
-      // }
+      if (this.status < 3) {
+        this.statusNum = this.status
+      }
       // if (this.orderId && this.isMain) {
       //   this.statusNum = 3
       // } else if (this.orderId && !this.isMain) {
@@ -442,7 +445,6 @@
       // if (!this.isGroup && this.distence) {
       //   this.statusNum = 5
       // }
-      // dfgdg
     },
     methods: {
       ...orderMethods,
@@ -460,7 +462,7 @@
             this.isGroup = res.data.is_spell_group
             this.status = res.data.groupon_status
             this.isActivityEnd = res.data.isActivityEnd
-            this.step = res.data.step
+            this.step = res.data.groupon_step
             if (!this.isGroup) {
               this._initLocation()
             }
