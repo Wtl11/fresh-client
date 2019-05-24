@@ -19,7 +19,7 @@
             <div :class="'corp-' + corpName + '-money'" class="goods-price"><span class="price-num">{{item.goods.trade_price}}</span>元</div>
           </div>
         </div>
-        <button v-if="item.groupon_status === 0" class="goods-btn share-button" open-type="share" :id="index" @click.stop="shareGroup">邀请邻居</button>
+        <button v-if="item.groupon_status === 0" class="goods-btn share-button" :id="index" @click.stop="shareGroup(item)">邀请邻居</button>
         <div v-else class="goods-btn">拼团详情</div>
       </li>
       <li class="foot-ties" v-if="!hasMore && !isShowEmpty">
@@ -35,6 +35,7 @@
       <div class="txt">空空如也</div>
     </section>
     <coupon-modal ref="couponModal"></coupon-modal>
+    <share-pop ref="sharePop"></share-pop>
   </div>
 </template>
 
@@ -42,6 +43,7 @@
   import API from '@api'
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import CouponModal from './coupon-modal/coupon-modal'
+  import SharePop from '../collage-detail/share-pop/share-pop'
 
   const PAGE_NAME = 'MY_GROUP_BUY'
   const BTN_ARR = ['拼团详情', '邀请邻居']
@@ -50,7 +52,8 @@
     name: PAGE_NAME,
     components: {
       NavigationBar,
-      CouponModal
+      CouponModal,
+      SharePop
     },
     data() {
       return {
@@ -59,7 +62,8 @@
         isShowEmpty: false,
         page: 1,
         limit: 10,
-        btnArr: BTN_ARR
+        btnArr: BTN_ARR,
+        shareData: {}
       }
     },
     computed: {},
@@ -73,14 +77,12 @@
       this._getGroupBuyList()
     },
     onShareAppMessage(e) {
-      let index = e.target.id
-      let groupData = this.groupBuyList[index]
       let shopId = wx.getStorageSync('shopId')
       const flag = Date.now()
       return {
-        title: `【${groupData.goods.name}】`,
-        path: `/pages/collage-detail?id=${groupData.id}&shopId=${shopId}&flag=${flag}`,
-        imageUrl: `${groupData.goods.goods_cover_image}`,
+        title: `【${this.shareData.name}】`,
+        path: `/pages/collage-detail?id=${this.shareData.id}&shopId=${shopId}&flag=${flag}`,
+        imageUrl: `${this.shareData.img}`,
         success: (res) => {},
         fail: (res) => {}
       }
@@ -125,7 +127,24 @@
       listHandle(item) {
         item.id && wx.navigateTo({url: `/pages/collage-detail?id=${item.id}`})
       },
-      shareGroup() {}
+      shareGroup(item) {
+        this.shareData = {
+          img: item.goods.goods_cover_image,
+          name: item.goods.name,
+          id: item.id
+        }
+        this._getShareImg(item)
+        this.$refs.sharePop.show(item.surplus_number, item.shop.social_name, item.groupon_person_limit)
+      },
+      _getShareImg(item) {
+        API.Groupon.getShareImage({goods_id: item.goods.goods_id, activity_id: item.activity_id}).then((res) => {
+          if (res.error === this.$ERR_OK && res.data.thumb_image) {
+            this.shareData.img = res.data.thumb_image
+          } else {
+            this.shareData.img = item.goods.goods_cover_image
+          }
+        })
+      }
     }
   }
 </script>

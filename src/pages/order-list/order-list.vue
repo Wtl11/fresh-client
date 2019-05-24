@@ -29,7 +29,7 @@
                   </template>
                 </p>
                 <div class="goods-list">
-                  <template v-if="item.groupon && item.groupon.groupon_id">
+                  <template v-if="item.goods.length === 1">
                     <div class="goods-img-list">
                       <img class="goods-img" mode="aspectFill" :src="item.goods[0].image_url" alt="">
                     </div>
