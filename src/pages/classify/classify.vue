@@ -183,7 +183,7 @@
       },
       _isUpList(res) {
         this.classifyPage++
-        if (this.classifyList[this.tabIndex].length >= res.meta.total * 1) {
+        if (this.classifyList[this.tabIndex] && (this.classifyList[this.tabIndex].length >= res.meta.total * 1)) {
           this.classifyMore = true
         }
       },

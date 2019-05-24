@@ -19,7 +19,7 @@
             <div :class="'corp-' + corpName + '-money'" class="goods-price"><span class="price-num">{{item.goods.trade_price}}</span>元</div>
           </div>
         </div>
-        <div v-if="item.groupon_status === 0" class="goods-btn btn-share">邀请邻居</div>
+        <button v-if="item.groupon_status === 0" class="goods-btn share-button" open-type="share" :id="index" @click.stop="shareGroup">邀请邻居</button>
         <div v-else class="goods-btn">拼团详情</div>
       </li>
       <li class="foot-ties" v-if="!hasMore && !isShowEmpty">
@@ -72,6 +72,19 @@
       this.page++
       this._getGroupBuyList()
     },
+    onShareAppMessage(e) {
+      let index = e.target.id
+      let groupData = this.groupBuyList[index]
+      let shopId = wx.getStorageSync('shopId')
+      const flag = Date.now()
+      return {
+        title: `【${groupData.goods.name}】`,
+        path: `/pages/collage-detail?id=${groupData.id}&shopId=${shopId}&flag=${flag}`,
+        imageUrl: `${groupData.goods.goods_cover_image}`,
+        success: (res) => {},
+        fail: (res) => {}
+      }
+    },
     methods: {
       async _getGroupBuyList() {
         API.Order.getGroupList({page: this.page}).then((res) => {
@@ -111,7 +124,8 @@
       },
       listHandle(item) {
         item.id && wx.navigateTo({url: `/pages/collage-detail?id=${item.id}`})
-      }
+      },
+      shareGroup() {}
     }
   }
 </script>
@@ -185,13 +199,14 @@
       right: 15px
       width: 80px
       height: 30px
-      line-height: 30px
+      line-height: 28px
+      padding: 0
       text-align: center
       color: $color-text-sub
       font-size: $font-size-14
       border: 1px solid $color-line
       border-radius: 15px
-      &.btn-share
+      &.share-button
         color: $color-main
         border: 1px solid $color-main
   .foot-ties
