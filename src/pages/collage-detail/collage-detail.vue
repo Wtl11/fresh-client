@@ -178,7 +178,7 @@
         isMain: 1,
         distance: true, // true范围内
         step: 1,
-        statusNum: 1,
+        statusNum: 0,
         isActivityEnd: 0,
         shareImage: '',
         grouponHead: [{}, {}],
@@ -489,7 +489,7 @@
           // -----------参团了拼团进行中可分享
           this.showShare()
         } else if (this.btnShow === 2) {
-          console.log(2)
+          // console.log(2)
           // -----------参团成功或者拼主拼团成功跳转去我的订单
           wx.navigateTo({url: `/pages/order-list?id=&index=0`})
         } else if (this.btnShow === 3) {
@@ -536,10 +536,11 @@
       timeHandle() {
         clearInterval(this.timer)
         let timeDef = this.data.surplus_seconds
+        if (timeDef <= 0) return
         this.timeArr = [formatNumber(Math.floor(timeDef / 60 / 60 % 60)), formatNumber(Math.floor(timeDef / 60 % 60)), formatNumber(Math.floor(timeDef % 60))]
         this.timer = setInterval(() => {
           timeDef -= 1
-          if (+timeDef === 0) {
+          if (+timeDef <= 0) {
             clearInterval(this.timer)
             this.getGrouponDetail()
           }
