@@ -451,7 +451,7 @@
         API.Groupon.getGrouponDetail({id: this.id, order_id: this.orderId})
           .then(res => {
             if (res.error !== this.$ERR_OK) {
-              this.$toast.show(res.message)
+              this.$wechat.showToast(res.message)
               return
             }
             this.data = res.data
@@ -497,7 +497,7 @@
         })
           .then(res => {
             if (res.error !== this.$ERR_OK) {
-              this.$toast.show(res.message)
+              this.$wechat.showToast(res.message)
               return false
             }
             return true
