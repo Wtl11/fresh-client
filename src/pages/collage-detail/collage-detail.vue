@@ -199,7 +199,7 @@
       },
       goodsBox() {
         // 参团非拼主、未参团一键参团
-        if (this.orderId) return false
+        if (this.orderId && +this.status !== 1) return false
         if (!this.isGroup && (+this.status === 1 || this.isActivityEnd)) { // todo
           return false
         }
@@ -225,9 +225,10 @@
           if (+this.status === 0) {
             return true
           }
-        } else if (!this.isGroup && +this.status === 0) {
-          return true
         }
+        // else if (!this.isGroup && +this.status === 0) {
+        //   return true
+        // }
         return false
       },
       statusTip2() {
@@ -288,7 +289,7 @@
       },
       goods() {
         // 开团成功、参团成功
-        if (this.orderId) {
+        if (this.orderId && +this.status !== 1) {
           return true
         }
         return false
@@ -339,6 +340,7 @@
         // imageUrl: `${this.imageUrl}/yx-image/order/pic-share_order@2x.png`,
         imageUrl: `${this.shareImage}`,
         success: (res) => {
+          console.warn(`/pages/collage-detail?id=${this.id}&shopId=${shopId}&flag=${flag}`)
           // 转发成功
         },
         fail: (res) => {
@@ -364,6 +366,7 @@
       if (!option) {
         option = this.$mp.appOptions.query
       }
+      console.warn('options:', option)
       this.orderId = option.orderId || ''
       this.id = option.id || ''
       if (option.shopId) {
@@ -372,7 +375,7 @@
     },
     async onShow() {
       await this.getGrouponDetail()
-      // this.getShareImage()
+      this.getShareImage()
       if (!this.isGroup && +this.status === 1) {
         this.getCarRecommend()
       }
@@ -393,8 +396,9 @@
         this.isMain = res.data.is_group_main
         this.isGroup = res.data.is_spell_group
         this.status = res.data.groupon_status
-        this.isActivityEnd = res.data.isActivityEnd
+        this.isActivityEnd = res.data.activity.is_activity_end
         this.step = res.data.groupon_step
+        console.log('step:', this.step, ' status:', this.status, ' isActivityEnd:', this.isActivityEnd, ' isGroup:', this.isGroup, ' isMain', this.isMain)
         this.timeHandle() // 跑倒计时
         // 初始头像
         let arr = new Array(res.data.groupon_person_limit).fill({})
@@ -414,7 +418,7 @@
         }
         if (this.orderId && this.isMain) {
           this.statusNum = 3
-        } else if (this.orderId && !this.isMain) {
+        } else if (this.orderId && !this.isMain && +this.status === 0) {
           this.statusNum = 4
         } else if (!this.isGroup && this.isActivityEnd) {
           this.statusNum = 7
@@ -440,7 +444,7 @@
         }
         if (this.orderId && this.isMain) {
           this.statusNum = 3
-        } else if (this.orderId && !this.isMain) {
+        } else if (this.orderId && !this.isMain && +this.status === 0) {
           this.statusNum = 4
         } else if (!this.isGroup && this.isActivityEnd) {
           this.statusNum = 7
@@ -834,6 +838,7 @@
       position: absolute
       left: 0
       top: 0
+      max-width: 275px
     .step
       width: 14px
       height: 14px
