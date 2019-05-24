@@ -4,22 +4,22 @@
     <!--<picker style="margin-top: 10px; border: 1px solid #eee" mode="selector" @change="changePicker" :value="status" :range="[0,1,2,3,4,5,6,7,8,9,10,11]">
       <div class="picker">当前选择：{{status}}</div>
     </picker>-->
-    <p v-if="topText1" class="top-text">该活动仅支持： {{data.shop.social_name || '国际单位社区'}}</p>
-    <p v-if="topText2" class="top-text">当前社区不支持拼团活动: {{data.shop.social_name || '国际单位社区'}}</p>
+    <p v-if="topText1" class="top-text">该活动仅支持： {{data.shop.social_name}}</p>
+    <p v-if="topText2" class="top-text">当前社区不支持拼团活动: {{data.shop.social_name}}</p>
     <div class="top-msg">
       <!--商品信息-->
       <div v-if="goodsBox" class="goods-box" @click="toDetail">
         <div class="goods-detail">
           <img :src="data.goods.goods_cover_image" alt="" class="goods-img">
           <div class="right-content">
-            <p class="title">{{data.goods.name || '超值特惠 4斤新鲜柠檬是是三三首饰所所死侍死侍'}}</p>
-            <p class="context">{{data.goods.describe || '脆嫩爽口，酸甜多汁，口感脆嫩，新鲜美味'}}</p>
+            <p class="title">{{data.goods.name}}</p>
+            <p class="context">{{data.goods.describe}}</p>
             <div class="marks">
-              <span class="total">{{data.goods.spell_count || 200}}人已拼</span>
-              <span class="count">{{data.groupon_person_limit || 2}}人团</span>
+              <span class="total">{{data.goods.spell_count}}人已拼</span>
+              <span class="count">{{data.groupon_person_limit}}人团</span>
             </div>
             <p class="price">
-              <span class="money">{{data.goods.trade_price || '10'}}</span>
+              <span class="money">{{data.goods.trade_price}}</span>
               <span class="unit">元</span>
             </p>
           </div>
@@ -177,7 +177,7 @@
         msg: STATUS_ARR,
         page: 1,
         hasMore: true,
-        activeType: ACTIVE_TYPE,
+        activeType: ACTIVE_TYPE.GROUP_ON,
         orderId: 1,
         id: 1,
         status: 0,
