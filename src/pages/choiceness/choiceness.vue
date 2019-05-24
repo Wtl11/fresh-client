@@ -668,16 +668,16 @@
       },
       async _getTodayHostList() {
         try {
-          let res = await API.Home.getTodayHotList({limit: 20})
-          this.todayHotList = this._formatListPriceData(res.data)
+          // let res = await API.Home.getTodayHotList({limit: 20})
+          // this.todayHotList = this._formatListPriceData(res.data)
         } catch (e) {
           console.warn(e)
         }
       },
       async _getNewClientList() {
         try {
-          let res = await API.Home.getNewClientList({limit: 20})
-          this.newClientList = this._formatListPriceData(res.data)
+          // let res = await API.Home.getNewClientList({limit: 20})
+          // this.newClientList = this._formatListPriceData(res.data)
         } catch (e) {
           console.error(e)
         }
@@ -741,7 +741,7 @@
                 // }
               }
             })
-          // this._initDomPosition()
+          this._initDomPosition()
         }, 500)
       },
       _initDomPosition() {
