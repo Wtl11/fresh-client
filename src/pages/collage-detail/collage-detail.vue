@@ -1,5 +1,5 @@
 <template>
-  <div class="collage-detail">
+  <div v-if="status !== -1" class="collage-detail">
     <navigation-bar title="拼团详情"></navigation-bar>
     <!--<picker style="margin-top: 10px; border: 1px solid #eee" mode="selector" @change="changePicker" :value="status" :range="[0,1,2,3,4,5,6,7,8,9,10,11]">
       <div class="picker">当前选择：{{status}}</div>
@@ -177,7 +177,7 @@
         activeType: ACTIVE_TYPE.GROUP_ON,
         orderId: 1,
         id: 1,
-        status: 0,
+        status: -1,
         isGroup: 1,
         isMain: 1,
         distance: true, // true范围内
@@ -369,19 +369,23 @@
       clearInterval(this.timer)
     },
     onLoad(options) {
-      let option = options
-      if (!option) {
-        option = isEmptyObject(this.$mp.query) ? this.$mp.appOptions.query : this.$mp.query
-      }
-      console.warn('options:', option)
-      this.orderId = option.orderId || ''
-      this.id = option.id || ''
-      if (option.shopId) {
-        wx.setStorageSync('shopId', option.shopId)
-      }
+      // let option = options
+      // if (!option) {
+      //   option = isEmptyObject(this.$mp.query) ? this.$mp.appOptions.query : this.$mp.query
+      // }
+      // console.warn('options:', option)
+      // this.orderId = option.orderId || ''
+      // this.id = option.id || ''
+      // if (option.shopId) {
+      //   wx.setStorageSync('shopId', option.shopId)
+      // }
     },
     async onShow() {
       let option = isEmptyObject(this.$mp.query) ? this.$mp.appOptions.query : this.$mp.query
+      this.id = option.id || option.orderId
+      if (option.shopId) {
+        wx.setStorageSync('shopId', option.shopId)
+      }
       this.orderId = option.orderId || ''
       this.id = option.id || ''
       await this.getGrouponDetail()
@@ -389,6 +393,7 @@
       if (!this.isGroup && +this.status === 1) {
         this.getCarRecommend()
       }
+      this.getGoodsOtherInfo()
       // this.initStatus()
       // this._refreshLocation()
     },
@@ -548,7 +553,7 @@
         } else if (!this.isGroup && status === 0) {
           // console.log(4)
           // -----------一键参团
-
+          this._showAddNumber()
         } else if (!this.isGroup && status === 1) {
           // console.log(5)
           // -----------我来开团

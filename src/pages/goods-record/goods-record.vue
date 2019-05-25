@@ -74,7 +74,6 @@
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import API from '@api'
-  import {resolveQueryScene, countDownHandle} from '@utils/common'
   import {ACTIVE_TYPE} from '@utils/contants'
   import ShareHandler, {EVENT_CODE} from '@mixins/share-handler'
   import IsEnd from '@components/is-end/is-end'
@@ -83,6 +82,7 @@
   import AddNumber from '@components/add-number/add-number'
   import GoodsDetailMixins from '@mixins/goods-detail'
   import ButtonGroup from '@components/goods-detail-element/button-group/button-group'
+  import {resolveQueryScene, countDownHandle, isEmptyObject} from '@utils/common'
 
   const PAGE_NAME = 'GOODS_RECORD'
   const TYPEBTN = [{url: '/yx-image/goods/icon-homepage@2x.png', text: '首页', type: 0}, {url: '/yx-image/goods/icon-shopcart@2x.png', text: '购物车', type: 2}]
@@ -240,7 +240,7 @@
       // 初始化页面参数
       _initPageParams(options) {
         if (!options) {
-          options = this.$mp.appOptions.query
+          options = isEmptyObject(this.$mp.query) ? this.$mp.appOptions.query : this.$mp.query
         }
         this.goodsId = +options.id || +options.goodsId || 0
         this.activityId = +options.activityId || 0
@@ -436,6 +436,11 @@
       async instantlyBuy(type) {
         let isLogin = await this.$isLogin()
         if (!isLogin) {
+          return
+        }
+        // 团购单买
+        if (type === 'goods_sale_price') {
+          this._showAddNumber(type)
           return
         }
         // 显示抢购限购数量

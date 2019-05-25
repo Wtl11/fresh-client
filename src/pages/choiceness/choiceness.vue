@@ -935,7 +935,7 @@
       },
       // 获取地理位置
       async _getLocation() {
-        if (this.latitude && this.longitude) return
+        // if (this.latitude && this.longitude) return
         try {
           let res = await this.$wechat.getLocation()
           this.longitude = res.longitude

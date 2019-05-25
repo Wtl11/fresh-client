@@ -1015,7 +1015,10 @@
       display: flex
       align-items: center
       justify-content: space-between
+      height :100%
       .left
+        flex: 1
+        overflow :hidden
         display: flex
         align-items: center
       .logo
@@ -1023,14 +1026,19 @@
         height: 40px
         border-radius: 50%
       .name
+        flex: 1
+        white-space: nowrap
+        overflow :hidden
+        text-overflow :ellipsis
         font-family: $font-family-regular
         font-size: $font-size-14
         color: #1D2023
-        margin-left: 10px
+        margin:0 10px
       .right
         display: flex
         align-itmes: center
       .context
+        width :72px
         font-size: $font-size-12
         color: #1D2023
         font-family: $font-family-regular
