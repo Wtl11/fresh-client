@@ -141,6 +141,7 @@
       icon: 'icon-success'
     },
     // 未参与
+    {},
     {
       status: 6,
       statusText: '该团已满',
@@ -213,7 +214,7 @@
       },
       statusText() {
         // 一键参团、不在范围
-        if (!this.isGroup && +this.status === 0 && this.distance) {
+        if (!this.isGroup && +this.status === 0 && this.distance && !this.isActivityEnd) {
           return false
         } else if (!this.isGroup && +this.status === 0 && !this.distance) {
           return false
@@ -239,7 +240,7 @@
       },
       statusTip2() {
         // 一键参团
-        if (!this.isGroup && this.distance && +this.status === 0) {
+        if (!this.isGroup && this.distance && +this.status === 0 && !this.isActivityEnd) {
           return true
         }
         return false
@@ -256,7 +257,7 @@
           if (+this.status === 0) {
             return true
           }
-        } else if (!this.isGroup && +this.status === 0) {
+        } else if (!this.isGroup && +this.status === 0 && !this.isActivityEnd) {
           return true
         }
         return false
@@ -302,21 +303,21 @@
       },
       time() {
         // 不是未参团看到人满、不是未参团看到结束
-        if (!this.isGroup && +this.status === 1) {
+        if ((!this.isGroup && +this.status === 1) || (!this.isGroup && this.isActivityEnd)) {
           return false
         }
         return true
       },
       progressShow() {
         // 不是未参团看到人满、不是未参团看到结束
-        if (!this.isGroup && +this.status === 1) {
+        if ((!this.isGroup && +this.status === 1) || (!this.isGroup && this.isActivityEnd)) {
           return false
         }
         return true
       },
       recommend() {
         // 未参团 看到人满或结束
-        if (!this.isGroup && +this.status === 1) {
+        if ((!this.isGroup && +this.status === 1) || (!this.isGroup && this.isActivityEnd)) {
           return true
         }
         return false
@@ -325,7 +326,7 @@
         // 拼团失败、未参团看到拼团成功了的团
         if (+this.status === 2) {
           return true
-        } else if (+this.status === 1 && !this.isGroup) {
+        } else if ((+this.status === 1 && !this.isGroup) || ((!this.isGroup && this.isActivityEnd))) {
           return true
         }
         return false
@@ -390,7 +391,7 @@
       this.id = option.id || ''
       await this.getGrouponDetail()
       this.getShareImage()
-      if (!this.isGroup && +this.status === 1) {
+      if ((!this.isGroup && +this.status === 1) || (!this.isGroup && this.isActivityEnd)) {
         this.getCarRecommend()
       }
       this.getGoodsOtherInfo()
@@ -427,7 +428,7 @@
         if (!this.isGroup) {
           this._initLocation()
         }
-        if (!this.isGroup && +this.status === 1) {
+        if ((!this.isGroup && +this.status === 1) || (!this.isGroup && this.isActivityEnd)) {
           this.getCarRecommend()
         }
         if (this.status < 3) {
