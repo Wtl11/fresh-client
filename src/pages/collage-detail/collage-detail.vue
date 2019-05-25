@@ -633,16 +633,17 @@
       // 根据地理位置判断范围
       getLocationData() {
         let data = wx.getStorageSync('locationData')
-        API.Choiceness.getLocationDistance({
+        API.Global.checkShopDistance({
           longitude: data.longitude || 0,
           latitude: data.latitude || 0
         }).then((res) => {
-          if (res.error !== this.$ERR_OK) {
-            return
-          }
-          if (res.data.distance > 1000) {
-            this.distance = false
-          }
+          // if (res.error !== this.$ERR_OK) {
+          //   return
+          // }
+          // if (res.data.distance > 1000) {
+          //   this.distance = false
+          // }
+          this.distance = res.data.distance_judge === 0
         })
       }
     }

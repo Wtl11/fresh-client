@@ -266,7 +266,7 @@ export function formatCouponMoney (money = '') {
 
 // 判断是否为空对象
 export function isEmptyObject(obj = {}) {
-  for (var key in obj) {
+  for (let key in obj) {
     return false // 返回false，不为空对象
   }
   return true // 返回true，为空对象

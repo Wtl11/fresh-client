@@ -453,8 +453,10 @@
           console.warn(e)
         }
       },
+      // 关闭
       handleHideAddNumber() {
         this.joinGroupId = undefined
+        this.groupAutoScroll = true
       },
       async jumpToCollage(item) {
         if (this.tipTop) {
@@ -466,25 +468,6 @@
           this.instantlyBuy()
           this.joinGroupId = item.grouon_id
           this.groupAutoScroll = false
-          // let goodsList = this.goodsMsg.goods_skus[0]
-          // goodsList.sku_id = this.goodsMsg.goods_sku_id || goodsList.goods_sku_id
-          // goodsList.num = 1
-          // goodsList.goods_units = this.goodsMsg.goods_units
-          // let price = goodsList.trade_price
-          // goodsList.url = `/pages/collage-detail`
-          // goodsList.source = 'c_groupon'
-          // goodsList.groupon_id = item.grouon_id
-          // goodsList.latitude = this.latitude
-          // goodsList.longitude = this.longitude
-          // const total = (price * goodsList.num).toFixed(2)
-          // goodsList.activity = this.goodsMsg.activity
-          // let orderInfo = {
-          //   goodsList: new Array(goodsList),
-          //   total: total,
-          //   deliverAt: this.deliverAt
-          // }
-          // this.setOrderInfo(orderInfo)
-          // wx.navigateTo({url: `/pages/submit-order`})
         }
       },
       _getUnGroupList() {
@@ -631,7 +614,6 @@
           }
         }
         if (this.activityType === ACTIVE_TYPE.GROUP_ON) {
-          this.groupAutoScroll = true
           let flag = await this._checkAbleCreateGroup(0, number)
           if (!flag) return
           if (type) {
@@ -727,18 +709,7 @@
       },
       // 初始化页面参数
       _initPageParams(options) {
-        // isEmptyObject(this.$mp.appOptions.query)
-        // isEmptyObject(this.$mp.query)
-        // if (!options) {
-        //   options = this.$mp.appOptions.query
-        // }
-        // if (isEmptyObject(this.$mp.query)) {
-        //
-        // } else {
-        //
-        // }
         options = isEmptyObject(this.$mp.query) ? this.$mp.appOptions.query : this.$mp.query
-        console.log(this)
         this.goodsId = +options.id || +options.goodsId || 0
         this.activityId = +options.activityId || 0
         this.shopId = +options.shopId || 0
