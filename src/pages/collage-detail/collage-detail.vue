@@ -26,7 +26,7 @@
         </div>
       </div>
 
-      <p v-if="statusText" class="status-text" :class="{'orange': orangeStatus}"><img :src="imageUrl + '/yx-image/collage/'+ msg[statusNum].icon +'@2x.png'" alt="" class="icon">{{msg[statusNum].statusText}}</p>
+      <p v-if="statusText" class="status-text" :class="{'orange': orangeStatus}"><img v-if="imageUrl" :src="imageUrl + '/yx-image/collage/'+ msg[statusNum].icon +'@2x.png'" alt="" class="icon">{{msg[statusNum].statusText}}</p>
       <p v-if="statusTip1" class="status-tip" :class="{'tip-top': topText2}">还差<span class="mark">{{data.surplus_number}}</span>人，快喊邻居一起来拼团吧</p>
       <p v-if="statusTip2" class="status-tip status-tip2">仅剩<span class="mark">{{data.surplus_number}}</span>个名额</p>
       <p v-if="runTime" class="run-time">剩余 <span class="time-num">{{timeArr[0]}}</span>:<span class="time-num">{{timeArr[1]}}</span>:<span class="time-num">{{timeArr[2]}}</span></p>
@@ -73,6 +73,9 @@
     <!--分享-->
     <share-pop ref="sharePop"></share-pop>
 
+    <!--一键参团修改数量-->
+    <add-number ref="addNumber" :msgDetail="goodsMsg" :msgDetailInfo="buyGoodsInfo" @comfirmNumer="comfirmNumer"></add-number>
+
     <!--猜你喜欢-->
     <div v-if="recommend" class="recommend">
       <p class="title">
@@ -97,8 +100,9 @@
   import ClearWatch from '@mixins/clear-watch'
   import GoodsItem from './goods-item/goods-item'
   import SharePop from './share-pop/share-pop'
+  import AddNumber from '@components/add-number/add-number'
   import {ACTIVE_TYPE} from '@utils/contants'
-  import { formatNumber } from '@utils/common'
+  import { formatNumber, isEmptyObject } from '@utils/common'
   import {orderMethods} from '@state/helpers'
   import LoadingMore from '@components/loading-more/loading-more'
   import API from '@api'
@@ -178,10 +182,12 @@
         isMain: 1,
         distance: true, // true范围内
         step: 1,
-        statusNum: 1,
+        statusNum: 0,
         isActivityEnd: 0,
         shareImage: '',
         grouponHead: [{}, {}],
+        goodsMsg: {},
+        buyGoodsInfo: {},
         data: {
           groupon_people: [],
           goods: {},
@@ -329,7 +335,8 @@
       NavigationBar,
       GoodsItem,
       SharePop,
-      LoadingMore
+      LoadingMore,
+      AddNumber
     },
     onShareAppMessage() {
       let shopId = wx.getStorageSync('shopId')
@@ -364,7 +371,7 @@
     onLoad(options) {
       let option = options
       if (!option) {
-        option = this.$mp.appOptions.query
+        option = isEmptyObject(this.$mp.query) ? this.$mp.appOptions.query : this.$mp.query
       }
       console.warn('options:', option)
       this.orderId = option.orderId || ''
@@ -374,6 +381,9 @@
       }
     },
     async onShow() {
+      let option = isEmptyObject(this.$mp.query) ? this.$mp.appOptions.query : this.$mp.query
+      this.orderId = option.orderId || ''
+      this.id = option.id || ''
       await this.getGrouponDetail()
       this.getShareImage()
       if (!this.isGroup && +this.status === 1) {
@@ -398,6 +408,8 @@
         this.status = res.data.groupon_status
         this.isActivityEnd = res.data.activity.is_activity_end
         this.step = res.data.groupon_step
+        this.goodsMsg = res.data.goods
+        this.activityId = res.data.activity.activity_id
         console.log('step:', this.step, ' status:', this.status, ' isActivityEnd:', this.isActivityEnd, ' isGroup:', this.isGroup, ' isMain', this.isMain)
         this.timeHandle() // 跑倒计时
         // 初始头像
@@ -429,7 +441,7 @@
         }
       },
       getShareImage() {
-        API.Groupon.getShareImage({activity_id: this.data.activity.activity_id, goods_id: this.data.goods.goods_id})
+        API.Groupon.getShareImage({activity_id: this.activityId, goods_id: this.data.goods.goods_id})
           .then(res => {
             if (res.error !== this.$ERR_OK) {
               this.$wechat.showToast(res.message)
@@ -437,6 +449,43 @@
             }
             this.shareImage = res.data.thumb_image
           })
+      },
+      // 显示添加数量控件
+      _showAddNumber() {
+        this.$refs.addNumber && this.$refs.addNumber.showLink('')
+      },
+      // 获取用户的购买信息
+      getGoodsOtherInfo() {
+        API.Choiceness.getGoodsBuyInfo(this.data.goods.goods_id, {activity_id: this.activityId}).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.buyGoodsInfo = res.data
+          } else {
+            this.$wechat.showToast(res.message)
+          }
+        })
+      },
+      // addNumber控件确定按钮
+      async comfirmNumer(number, type) {
+        let goodsList = this.data.goods
+        goodsList.sku_id = goodsList.goods_sku_id
+        goodsList.num = number
+        let price = goodsList.trade_price
+        let flag = await this.checkGroupon()
+        // console.log(flag, 'flag')
+        if (!flag) return
+        goodsList.url = `/pages/collage-detail`
+        goodsList.source = 'c_groupon'
+        goodsList.groupon_id = this.data.groupon_id
+        goodsList.latitude = this.latitude
+        goodsList.longitude = this.longitude
+        const total = (price * number).toFixed(2)
+        goodsList.activity = this.data.activity
+        let orderInfo = {
+          goodsList: new Array(goodsList),
+          total: total
+        }
+        this.setOrderInfo(orderInfo)
+        wx.navigateTo({url: `/pages/submit-order`})
       },
       initStatus() {
         if (this.status < 3) {
@@ -461,7 +510,7 @@
       // 参团时判断是否符合参团标准
       async checkGroupon() {
         let data = {
-          activity_id: this.data.activity.activity_id,
+          activity_id: this.activityId,
           goods_sku_id: this.data.goods.goods_sku_id,
           groupon_id: this.data.goods.groupon_id,
           longitude: this.longitude,
@@ -489,7 +538,7 @@
           // -----------参团了拼团进行中可分享
           this.showShare()
         } else if (this.btnShow === 2) {
-          console.log(2)
+          // console.log(2)
           // -----------参团成功或者拼主拼团成功跳转去我的订单
           wx.navigateTo({url: `/pages/order-list?id=&index=0`})
         } else if (this.btnShow === 3) {
@@ -499,30 +548,11 @@
         } else if (!this.isGroup && status === 0) {
           // console.log(4)
           // -----------一键参团
-          let goodsList = this.data.goods
-          goodsList.sku_id = goodsList.goods_sku_id
-          goodsList.num = 1
-          let price = goodsList.trade_price
-          let flag = await this.checkGroupon()
-          // console.log(flag, 'flag')
-          if (!flag) return
-          goodsList.url = `/pages/collage-detail`
-          goodsList.source = 'c_groupon'
-          goodsList.groupon_id = this.data.groupon_id
-          goodsList.latitude = this.latitude
-          goodsList.longitude = this.longitude
-          const total = (price * goodsList.num).toFixed(2)
-          goodsList.activity = this.data.activity
-          let orderInfo = {
-            goodsList: new Array(goodsList),
-            total: total
-          }
-          this.setOrderInfo(orderInfo)
-          wx.navigateTo({url: `/pages/submit-order`})
+
         } else if (!this.isGroup && status === 1) {
           // console.log(5)
           // -----------我来开团
-          wx.navigateTo({url: `/pages/goods-detail?id=${this.data.goods.goods_id}&activityId=${this.data.activity.activity_id}&activityType=${this.activeType}`})
+          wx.navigateTo({url: `/pages/goods-detail?id=${this.data.goods.goods_id}&activityId=${this.activityId}&activityType=${this.activeType}`})
         } else {
           // console.log(6)
         }
@@ -531,15 +561,16 @@
         this.$refs.sharePop.show(this.data.surplus_number, this.data.shop.social_name, this.data.groupon_person_limit)
       },
       toDetail() {
-        wx.navigateTo({url: `/pages/goods-detail?id=${this.data.goods.goods_id}&activityId=${this.data.activity.activity_id}&activityType=${this.activeType}`})
+        wx.navigateTo({url: `/pages/goods-detail?id=${this.data.goods.goods_id}&activityId=${this.activityId}&activityType=${this.activeType}`})
       },
       timeHandle() {
         clearInterval(this.timer)
         let timeDef = this.data.surplus_seconds
+        if (timeDef <= 0) return
         this.timeArr = [formatNumber(Math.floor(timeDef / 60 / 60 % 60)), formatNumber(Math.floor(timeDef / 60 % 60)), formatNumber(Math.floor(timeDef % 60))]
         this.timer = setInterval(() => {
           timeDef -= 1
-          if (+timeDef === 0) {
+          if (+timeDef <= 0) {
             clearInterval(this.timer)
             this.getGrouponDetail()
           }
@@ -574,8 +605,8 @@
           async success(res) {
             wx.setStorageSync('locationData', res)
             wx.setStorageSync('locationShow', 1)
-            this.latitude = res.latitude
-            this.longitude = res.longitude
+            that.latitude = res.latitude
+            that.longitude = res.longitude
             that.locationStatus = 1
             that.getLocationData()
           },
