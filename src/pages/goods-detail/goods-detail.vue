@@ -723,21 +723,12 @@
         this._initPageType(options.activityType)
       },
       _initPageType(type = 'DEFAULT') {
-        let count = 0
         if (type === ACTIVE_TYPE.GUESS) {
           type = ACTIVE_TYPE.DEFAULT
         } else if ((this.activityId > 0 && type === ACTIVE_TYPE.DEFAULT) || type === ACTIVE_TYPE.FLASH) {
           type = ACTIVE_TYPE.FLASH
-        } else {
-          for (let [, val] of Object.entries(ACTIVE_TYPE)) {
-            if (type === val) {
-              count++
-              type = val
-              break
-            }
-          }
         }
-        this.activityType = count ? type : ACTIVE_TYPE.DEFAULT
+        this.activityType = type || ACTIVE_TYPE.DEFAULT
       },
       // 获取购买者的用户信息
       _getBuyUsers() {
@@ -779,7 +770,7 @@
       },
       // 限时抢购倒计时开始
       _flashAction() {
-        if (this._activityType !== ACTIVE_TYPE.FLASH) return
+        if (this.activityType !== ACTIVE_TYPE.FLASH) return
         if (this.activeStatus === BTN_STATUS.DOWN) {
           return
         }

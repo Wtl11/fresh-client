@@ -42,24 +42,6 @@
       <loading-more v-if="hasMore"></loading-more>
       <div style="height: 75px"></div>
     </section>
-<!--    <div class="fixed-btn">-->
-<!--      <div class="hlep-btn">-->
-<!--        <button formType="submit" class="hlep-btn-box" v-for="(item, index) in typeBtn" :key="index" @click.stop="switchItem(item)">-->
-<!--          <div class="hlep-top">-->
-<!--            <img v-if="imageUrl" :src="imageUrl + item.url" class="detail-img" mode="aspectFill">-->
-<!--            <div class="help-number" v-if="index * 1 === 1 && count * 1 >= 1">{{count * 1 > 99 ? 99 : count}}</div>-->
-<!--          </div>-->
-<!--          <div class="hlep-bottom">{{item.text}}</div>-->
-<!--        </button>-->
-<!--      </div>-->
-<!--      <form action="" report-submit @submit="$getFormId">-->
-<!--        <button v-if="isShowTwoButton" class="goods-btn goods-btn-active" formType="submit" @click="addShoppingCart">加入购物车</button>-->
-<!--      </form>-->
-<!--      <form action="" class="lost" report-submit @submit="$getFormId">-->
-<!--        <button v-if="isShowTwoButton" class="goods-btn" :class="'corp-' + corpName + '-bg'" formType="submit" @click="instantlyBuy">立即购买</button>-->
-<!--      </form>-->
-<!--      <div v-if="!isShowTwoButton" class="goods-btn goods-btn-assint">{{BTN_TEXT}}</div>-->
-<!--    </div>-->
     <button-group
       :buttonInfo="buttonInfo"
       :activityType="activityType"
@@ -192,10 +174,8 @@
         return
       }
       this._getLocation()
-      // this._resetReqListParams()
       this._getGoodsDetailData()
       this.getGoodsOtherInfo()
-      // this._getList()
       this.$$shareHandler({
         event: EVENT_CODE.GOODS_DETAIL,
         activityId: this.activityId,
@@ -255,21 +235,12 @@
         this._initPageType(options.activityType)
       },
       _initPageType(type = 'DEFAULT') {
-        let count = 0
         if (type === ACTIVE_TYPE.GUESS) {
           type = ACTIVE_TYPE.DEFAULT
         } else if ((this.activityId > 0 && type === ACTIVE_TYPE.DEFAULT) || type === ACTIVE_TYPE.FLASH) {
           type = ACTIVE_TYPE.FLASH
-        } else {
-          for (let [, val] of Object.entries(ACTIVE_TYPE)) {
-            if (type === val) {
-              count++
-              type = val
-              break
-            }
-          }
         }
-        this.activityType = count ? type : ACTIVE_TYPE.DEFAULT
+        this.activityType = type || ACTIVE_TYPE.DEFAULT
       },
       _kanTimePlay(diff) {
         this._clearTimer()
@@ -360,7 +331,7 @@
       },
       // 限时抢购倒计时开始
       _flashAction() {
-        if (this._activityType !== ACTIVE_TYPE.FLASH) return
+        if (this.activityType !== ACTIVE_TYPE.FLASH) return
         if (this.activeStatus === BTN_STATUS.DOWN) {
           return
         }
@@ -582,73 +553,6 @@
         padding :0 2px
         position :relative
         bottom :1px
-
-  .fixed-btn
-    position: fixed
-    left: 0
-    bottom: 0
-    height: 55px
-    width: 100%
-    background: #fff
-    layout(row)
-    z-index: 111
-    .hlep-btn
-      width: 30vw
-      height: 55px
-      layout(row)
-      border-top-1px(#E6E6E6)
-      .hlep-btn-box
-        width: 50%
-        layout()
-        justify-content: center
-        align-items: center
-        .hlep-top
-          width: 20px
-          height: 20px
-          margin-bottom: 8px
-          position: relative
-          .detail-img
-            width: 100%
-            height: 100%
-            display: block
-          .help-number
-            position: absolute
-            top: -5px
-            right: -7px
-            min-width: 16px
-            text-align: center
-            height: 16px
-            line-height: 14px
-            padding: 0 3px
-            box-sizing: border-box
-            font-family: $font-family-medium
-            color: $color-white
-            font-size: $font-size-10
-            border: 1px solid $color-white
-            background: #FF3B39
-            border-radius: 50%
-        .hlep-bottom
-          font-size: $font-size-10
-          font-family: $font-family-regular
-          color: $color-text-main
-          line-height: 1
-    .goods-btn
-      width: 35vw
-      line-height: 55px
-      height: 55px
-      text-align: center
-      font-size: $font-size-14
-      font-family: $font-family-regular
-      color: #fff
-      &:after
-        border: none
-    .goods-btn-active
-      color: $color-text-main
-      background: $color-tag
-    .goods-btn-assint
-      color: #fff
-      background: $color-text-assist
-      width: 70vw
 
   .panel
     background: #FFFFFF;
