@@ -109,12 +109,12 @@
         })
       },
       async _getCouponList(couponArr) {
-        // let couponArr = [
+        // couponArr = [
         //   {
         //     preferential_type: 2,
         //     range_type_str: '通用',
         //     coupon_name: '满10元减9元',
-        //     end_at: '2019-5-31',
+        //     end_at_day: '2019-5-31',
         //     denomination: 7
         //   }
         // ]

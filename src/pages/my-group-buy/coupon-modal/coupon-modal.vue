@@ -187,6 +187,7 @@
                 margin-bottom: -2px
             .right-box
               flex: 1
+              overflow: hidden
               .title
                 layout(row,block,nowrap)
                 align-items :center
