@@ -1,6 +1,6 @@
 <template>
   <div class="lost">
-    <navigation-bar title="选择自提点"></navigation-bar>
+    <navigation-bar title="开启定位"></navigation-bar>
     <div class="img-box">
       <img :src="imageUrl + '/yx-image/order/pic-address@2x.png'" v-if="imageUrl" class="error-img">
       <p class="text">亲，我们未获得您的位置信息</p>
@@ -14,7 +14,7 @@
   import NavigationBar from '@components/navigation-bar/navigation-bar'
 
   const PAGE_NAME = 'LOST'
-
+  const TAB_REG = /(pages\/choiceness)|(pages\/shopping-cart)|(pages\/mine)/g
   export default {
     name: PAGE_NAME,
     data() {
@@ -27,11 +27,15 @@
           if (data.authSetting['scope.userLocation']) {
             wx.getLocation({
               success(res) {
-                wx.setStorageSync('locationData', res)
-                wx.setStorageSync('locationShow', 1)
-                wx.switchTab({
-                  url: `/pages/choiceness`
-                })
+                // wx.setStorageSync('locationData', res)
+                // wx.setStorageSync('locationShow', 1)
+                let path = wx.getStorageSync('errorUrl')
+                let url = `/${path}`
+                if (TAB_REG.test(path)) {
+                  wx.switchTab({url})
+                } else {
+                  wx.navigateTo({url})
+                }
               }
             })
           }

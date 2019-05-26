@@ -25,7 +25,7 @@ class Request {
             }
             // 错误处理
             if (!res || res.error == null) {
-              toast && wechat.showToast('系统异常.')
+              toast && wechat.showToast('网络异常.')
               throw new Error('' + res)
             }
             // toast处理

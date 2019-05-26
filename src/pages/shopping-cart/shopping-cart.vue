@@ -26,7 +26,11 @@
               <div class="remain">
                 <div class="txt" :class="'corp-' + corpName + '-money-text'" v-if="item.is_urgency">仅剩{{item.usable_stock}}件</div>
               </div>
-              <div class="price" :class="'corp-' + corpName + '-money'" v-if="item.trade_price"><span class="num">{{item.trade_price}}</span>元</div>
+              <div class="price" :class="'corp-' + corpName + '-money'" v-if="item.trade_price">
+                <span class="num">{{item.trade_price}}</span>
+                <span class="unit">元</span>
+                <img class="new-user-img" v-if="imageUrl && item.is_new_client === 1 && item.activity && item.activity.activity_type === 'new_client'" :src="imageUrl + '/yx-image/2.4/pic-newlabel@2x.png'" alt="">
+              </div>
             </div>
             <div class="right">
               <div class="number-box">
@@ -62,14 +66,17 @@
     <!--商品推荐-->
     <div class="recommend">
       <p class="title">
-        <img src="https://img.jkweixin.net/defaults/yx-image/2.3/icon-ulike@2x.png" alt="" class="icon">
+        <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/icon-ulike@2x.png'" alt="" class="icon">
         <span class="text">猜你喜欢</span>
       </p>
       <div class="recommend-list">
         <div v-for="(item, index) in recommendList" :key="index" class="list-item">
           <goods-item :item="item" @_getShopCart="_getShopCart"></goods-item>
         </div>
-
+        <loading-more v-if="hasMore"></loading-more>
+        <div class="foot-ties" v-if="!hasMore">
+          <div class="center">— 再拉也没有了 —</div>
+        </div>
       </div>
     </div>
     <confirm-msg ref="msg" :msg="msg" useType="double" @confirm="deleteCartGood"></confirm-msg>
@@ -79,7 +86,6 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import WePaint from '@components/we-paint/we-paint'
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import CustomTabBar from '@components/custom-tab-bar/custom-tab-bar'
   import ConfirmMsg from '@components/confirm-msg/confirm-msg'
@@ -87,11 +93,17 @@
   import API from '@api'
   import {orderMethods, cartMethods} from '@state/helpers'
   import ClearWatch from '@mixins/clear-watch'
+  import LoadingMore from '@components/loading-more/loading-more'
 
   export default {
-    beforeCreate() {
-    },
     mixins: [ClearWatch],
+    components: {
+      ConfirmMsg,
+      NavigationBar,
+      CustomTabBar,
+      GoodsItem,
+      LoadingMore
+    },
     data() {
       return {
         msg: '确定删除该商品吗?',
@@ -106,7 +118,9 @@
         isShowNum: true,
         deliverAt: '',
         height: 0,
-        isFirstLoad: true
+        page: 1,
+        limit: 10,
+        hasMore: true
       }
     },
     async onTabItemTap() {
@@ -115,12 +129,18 @@
     onLoad() {
       let res = this.$wx.getSystemInfoSync()
       this.height = res.statusBarHeight >= 44 ? 28 : 0
+      if (!wx.getStorageSync('token')) return
+      this._getShopCart(true)
+      this.getCarRecommend()
     },
     async onShow() {
       if (!wx.getStorageSync('token')) return
-      await this._getShopCart()
-      await this.getCarRecommend()
-      this.isFirstLoad = false
+      await this._getShopCart(false)
+    },
+    onReachBottom() {
+      if (!this.hasMore) return
+      this.page++
+      this.getCarRecommend()
     },
     computed: {
       checkedGoods() {
@@ -140,14 +160,8 @@
     methods: {
       ...orderMethods,
       ...cartMethods,
-      async _getShopCart() {
-        // let loading = false
-        // if (this.goodsList.length === 0) {
-        //   loading = true
-        // } else {
-        //   loading = false
-        // }
-        let res = await API.Cart.shopCart(this.isFirstLoad)
+      async _getShopCart(loading) {
+        let res = await API.Cart.shopCart(loading)
         this.$wechat.hideLoading()
         if (res.error !== this.$ERR_OK) {
           this.isShowCart = true
@@ -166,12 +180,20 @@
         this.setCartCount()
       },
       async getCarRecommend() {
-        let res = await API.Cart.getCarRecommend()
+        let res = await API.Cart.getCarRecommend({page: this.page, limit: this.limit})
         if (res.error !== this.$ERR_OK) {
           this.$wechat.showToast(res.message)
           return
         }
-        this.recommendList = res.data
+        if (this.page === 1) {
+          this.recommendList = res.data
+        } else {
+          let arr = this.recommendList.concat(res.data)
+          this.recommendList = arr
+        }
+        if (this.page === 5) {
+          this.hasMore = false
+        }
       },
       addNum(i, num, limit, id) {
         num++
@@ -202,8 +224,12 @@
         this.setCartCount()
       },
       jumpGoodsDetail(item) {
+        let type = ''
+        if (item.activity) {
+          type = item.activity.activity_type || ''
+        }
         wx.navigateTo({
-          url: `/pages/goods-detail?id=${item.goods_id}&activityId=${item.activity_id}`
+          url: `/pages/goods-detail?id=${item.goods_id}&activityId=${item.activity_id}&activityType=${type}`
         })
       },
       // 点击删除按钮
@@ -255,13 +281,6 @@
       toChoicenessPage() {
         wx.switchTab({url: '/pages/choiceness'})
       }
-    },
-    components: {
-      WePaint,
-      ConfirmMsg,
-      NavigationBar,
-      CustomTabBar,
-      GoodsItem
     }
   }
 </script>
@@ -443,7 +462,7 @@
                 line-height: 24px
                 border-1px()
           .left
-            width: 26.67vw
+            max-width: 34.67vw
             .spec
               font-family: $font-family-regular
               font-size: $font-size-14
@@ -463,12 +482,20 @@
                 box-sizing: border-box
                 border-radius: 10px
             .price
+              layout(row)
+              align-items: flex-end
               font-family: $font-family-regular
-              font-size: $font-size-12
-              line-height: 19px
               .num
                 font-family: $font-family-regular
                 font-size: $font-size-18
+                line-height: $font-size-18
+              .unit
+                font-size: $font-size-12
+                line-height: $font-size-12
+                margin:0 2px
+              .new-user-img
+                width: 31.5px
+                height: 15px
     .shop-item-opcta
       .sel-box
         opacity: .5
@@ -542,7 +569,26 @@
           padding-right: 2.5px
         &:nth-of-type(even)
           padding-left: 2.5px
- .test
-   background: #fff
 
+  .foot-ties
+    flex: 1
+    layout(row)
+    justify-content: center
+    align-items: center
+    height: 60px
+    box-sizing: border-box
+    padding: 20px 0
+
+    .lines
+      width: 10px
+      height: 1px
+      background: rgba(124, 132, 156, 0.20)
+      margin: 0 5px
+
+    .center
+      font-family: $font-family-regular
+      font-size: $font-size-14
+      color: rgba(152, 152, 159, 0.30)
+      text-align: justify
+      line-height: 1
 </style>

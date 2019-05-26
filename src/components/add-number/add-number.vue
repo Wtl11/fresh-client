@@ -10,7 +10,7 @@
         <div class="goods-info-right">
           <div class="title">{{msgDetail.name}}</div>
           <div class="order-price-box">
-            <div class="price-small">{{msgDetail.trade_price}}</div>
+            <div class="price-small">{{tradePrice}}</div>
             <div class="price-icon">元</div>
             <div class="price-line">{{msgDetail.original_price}}元</div>
           </div>
@@ -63,25 +63,45 @@
       return {
         showOrderNum: true,
         linkShow: false,
-        orderNum: 1
+        orderNum: 1,
+        currentType: ''
       }
     },
     computed: {
+      tradePrice() {
+        return this.msgDetail[this.currentType || 'trade_price'] || ''
+      },
       orderTotal() {
-        return (this.msgDetail.trade_price * this.orderNum).toFixed(2)
+        return (this.tradePrice * this.orderNum).toFixed(2)
       }
     },
     methods: {
       hideLink() {
         this.linkShow = false
+        this.currentType = ''
+        this.orderNum = 1
+        this.showOrderNum = true
+        this.$emit('hide')
       },
-      showLink() {
+      showLink(type = '') {
+        if (typeof type === 'string' && type) {
+          this.currentType = type
+        }
         this.linkShow = true
         this.orderNum = 1
       },
       addNum() {
         if (this.orderNum > 0) {
           this.showOrderNum = false
+        }
+        // 团购单买
+        if (this.currentType === 'goods_sale_price') {
+          if (this.orderNum >= this.msgDetail.base_usable_stock) {
+            this.$wechat.showToast(`该商品库存不足`)
+            return
+          }
+          this.orderNum++
+          return
         }
         // 显示抢购限购数量
         let limitAll = +this.msgDetailInfo.person_all_buy_limit
@@ -110,8 +130,8 @@
         }
       },
       comfirmNumer() {
+        this.$emit('comfirmNumer', this.orderNum, this.currentType)
         this.hideLink()
-        this.$emit('comfirmNumer', this.orderNum)
       }
     }
   }
@@ -256,7 +276,9 @@
         font-size: $font-size-20
         line-height: 1
       .icon
-        padding-bottom: 3px
+        position :relative
+        padding-left :2px
+        top:1px
         font-family: $font-family-medium
         font-size: $font-size-12
   .subimit-btn

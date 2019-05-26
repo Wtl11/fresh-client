@@ -11,12 +11,11 @@
           <h3 class="title-sub">{{goodsMsg.describe}}</h3>
           <p class="money"><span class="number">{{goodsMsg.trade_price}}</span><span class="unit">元</span></p>
         </div>
-<!--        <div class="line"></div>-->
         <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/pic-line.png'" mode="aspectFill" class="line">
         <button class="share-button" open-type="share">
           <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/icon-sharexq@2x.png'" mode="aspectFill" class="share-img">
         </button>
-        <article v-if="activityId > 0" class="right-wrapper">
+        <article v-if="activityType === ACTIVE_TYPE.FLASH" class="right-wrapper">
           <p class="title">{{goodsMsg.at_diff_str}}</p>
           <div class="time-wrapper">
             <p class="time start">{{countDownTimes.hour}}</p>
@@ -40,28 +39,16 @@
           </p>
         </li>
       </ul>
-<!--      <is-end v-if="!hasMore"></is-end>-->
       <loading-more v-if="hasMore"></loading-more>
       <div style="height: 75px"></div>
     </section>
-    <div class="fixed-btn">
-      <div class="hlep-btn">
-        <button formType="submit" class="hlep-btn-box" v-for="(item, index) in typeBtn" :key="index" @click.stop="switchItem(item)">
-          <div class="hlep-top">
-            <img v-if="imageUrl" :src="imageUrl + item.url" class="detail-img" mode="aspectFill">
-            <div class="help-number" v-if="index * 1 === 1 && count * 1 >= 1">{{count * 1 > 99 ? 99 : count}}</div>
-          </div>
-          <div class="hlep-bottom">{{item.text}}</div>
-        </button>
-      </div>
-      <form action="" report-submit @submit="$getFormId">
-        <button v-if="isShowTwoButton" class="goods-btn goods-btn-active" formType="submit" @click="addShoppingCart">加入购物车</button>
-      </form>
-      <form action="" class="lost" report-submit @submit="$getFormId">
-        <button v-if="isShowTwoButton" class="goods-btn" :class="'corp-' + corpName + '-bg'" formType="submit" @click="instantlyBuy">立即购买</button>
-      </form>
-      <div v-if="!isShowTwoButton" class="goods-btn goods-btn-assint">{{BTN_TEXT}}</div>
-    </div>
+    <button-group
+      :buttonInfo="buttonInfo"
+      :activityType="activityType"
+      @instantlyBuy="instantlyBuy"
+      @buttonGroupNav="buttonGroupNav"
+      @addShoppingCart="addShoppingCart"
+    ></button-group>
     <add-number ref="addNumber" :msgDetail="goodsMsg" :msgDetailInfo="buyGoodsInfo" @comfirmNumer="comfirmNumer"></add-number>
   </div>
 </template>
@@ -69,12 +56,15 @@
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import API from '@api'
-  import {resolveQueryScene, countDownHandle} from '@utils/common'
+  import {ACTIVE_TYPE} from '@utils/contants'
   import ShareHandler, {EVENT_CODE} from '@mixins/share-handler'
   import IsEnd from '@components/is-end/is-end'
   import LoadingMore from '@components/loading-more/loading-more'
   import {orderMethods, cartMethods, cartComputed} from '@state/helpers'
   import AddNumber from '@components/add-number/add-number'
+  import GoodsDetailMixins from '@mixins/goods-detail'
+  import ButtonGroup from '@components/goods-detail-element/button-group/button-group'
+  import {resolveQueryScene, countDownHandle, isEmptyObject} from '@utils/common'
 
   const PAGE_NAME = 'GOODS_RECORD'
   const TYPEBTN = [{url: '/yx-image/goods/icon-homepage@2x.png', text: '首页', type: 0}, {url: '/yx-image/goods/icon-shopcart@2x.png', text: '购物车', type: 2}]
@@ -92,16 +82,16 @@
   }
   export default {
     name: PAGE_NAME,
-    mixins: [ShareHandler],
+    mixins: [ShareHandler, GoodsDetailMixins],
     components: {
       NavigationBar,
       IsEnd,
       LoadingMore,
-      AddNumber
+      AddNumber,
+      ButtonGroup
     },
     data() {
       return {
-        thumb_image: '',
         isFirstLoad: true,
         goodsMsg: {},
         shopId: 0,
@@ -119,16 +109,19 @@
           minute: '00',
           second: '00'
         },
-        timer: null
+        timer: null,
+        activityType: '',
+        ACTIVE_TYPE
       }
     },
     computed: {
       ...cartComputed,
       activeStatus() {
         let active = this.goodsMsg.activity || {}
-        return +active.status
+        return +active.status || 0
       },
-      BTN_TEXT() {
+      // 按钮文案
+      btnText() {
         let key = this.activeStatus
         if (this.goodsMsg.usable_stock < 1) {
           key = 'NO_INVENTORY'
@@ -136,33 +129,43 @@
         if (key == null) {
           key = BTN_STATUS.DOWN
         }
-        return BTN_TEXT_CONSTANT[key]
+        return BTN_TEXT_CONSTANT[key] || ''
       },
       isShowTwoButton() {
-        let flag = null
+        let flag = false
         if (this.activityId) {
           flag = this.goodsMsg.usable_stock > 0 && this.activeStatus === 1
         } else {
           flag = this.goodsMsg.usable_stock > 0
         }
         return flag
+      },
+      // buttonInfo信息
+      buttonInfo() {
+        return {
+          activeStatus: this.activeStatus,
+          btnText: this.btnText,
+          isShowTwoButton: this.isShowTwoButton,
+          tradePrice: this.goodsMsg.trade_price,
+          salePrice: this.goodsMsg.goods_sale_price,
+          base_usable_stock: this.goodsMsg.base_usable_stock, // 非活动库存
+          usable_stock: this.goodsMsg.usable_stock, // 库存
+          tipTop: this.tipTop
+        }
+      },
+      // 二维码
+      thumb_image() {
+        return this.goodsMsg.thumb_image || ''
+      },
+      // 提货时间
+      deliverAt() {
+        return this.goodsMsg.delivery_at || ''
       }
     },
     onLoad(options) {
       console.warn(options, '<-----参数---->')
-      if (options.scene) {
-        let {shopId, activityId, goodsId} = resolveQueryScene(options.scene)
-        this.goodsId = goodsId
-        this.activityId = activityId
-        this.shopId = shopId
-      } else {
-        this.goodsId = +options.goodsId || +options.id || 0
-        this.activityId = +options.activityId || 0
-        this.shopId = +options.shopId || 0
-      }
-      if (this.shopId > 0) {
-        wx.setStorageSync('shopId', this.shopId)
-      }
+      this._initPageParams(options)
+      this._getList(false)
     },
     onShow() {
       if (this.isSharing) {
@@ -170,10 +173,9 @@
         this._getGoodsDetailData()
         return
       }
-      this._resetReqListParams()
+      this._getLocation()
       this._getGoodsDetailData()
       this.getGoodsOtherInfo()
-      this._getList()
       this.$$shareHandler({
         event: EVENT_CODE.GOODS_DETAIL,
         activityId: this.activityId,
@@ -191,7 +193,7 @@
       const flag = Date.now()
       return {
         title: this.goodsMsg.name,
-        path: `/pages/goods-record?goodsId=${this.goodsId}&shopId=${shopId}&activityId=${this.activityId}&flag=${flag}`, // 商品详情
+        path: `/pages/goods-record?goodsId=${this.goodsId}&shopId=${shopId}&activityId=${this.activityId}&activityType=${this.activityType}&flag=${flag}`, // 商品详情
         imageUrl: this.thumb_image || this.goodsMsg.goods_cover_image,
         success: (res) => {
           // 转发成功
@@ -215,31 +217,33 @@
     methods: {
       ...cartMethods,
       ...orderMethods,
-      // _kanTimePlay() {
-      //   if (!this.activityId) return
-      //   clearInterval(this.timer)
-      //   let diff = this.goodsMsg.at_diff || 0
-      //   if (this.activeStatus === BTN_STATUS.DOWN) {
-      //     return
-      //   }
-      //   this.countDownTimes = countDownHandle(diff)
-      //   this.timer = setInterval(() => {
-      //     diff--
-      //     if (diff < 0) {
-      //       diff = 0
-      //     }
-      //     this.countDownTimes = countDownHandle(diff)
-      //     console.log(this.countDownTimes, '================>')
-      //     if (this.countDownTimes.differ <= 0) {
-      //       clearInterval(this.timer)
-      //       this._getGoodsDetailData()
-      //     }
-      //   }, 1000)
-      // },
+      // 初始化页面参数
+      _initPageParams(options) {
+        if (!options) {
+          options = isEmptyObject(this.$mp.query) ? this.$mp.appOptions.query : this.$mp.query
+        }
+        this.goodsId = +options.id || +options.goodsId || 0
+        this.activityId = +options.activityId || 0
+        this.shopId = +options.shopId || 0
+        if (options.scene) {
+          let {shopId, activityId, goodsId} = resolveQueryScene(options.scene)
+          this.goodsId = goodsId
+          this.activityId = activityId
+          this.shopId = shopId
+        }
+        this.shopId && wx.setStorageSync('shopId', this.shopId)
+        this._initPageType(options.activityType)
+      },
+      _initPageType(type = 'DEFAULT') {
+        if (type === ACTIVE_TYPE.GUESS) {
+          type = ACTIVE_TYPE.DEFAULT
+        } else if ((this.activityId > 0 && type === ACTIVE_TYPE.DEFAULT) || type === ACTIVE_TYPE.FLASH) {
+          type = ACTIVE_TYPE.FLASH
+        }
+        this.activityType = type || ACTIVE_TYPE.DEFAULT
+      },
       _kanTimePlay(diff) {
-        if (!this.activityId) return
         this._clearTimer()
-        // let diff = this.goodsMsg.at_diff || 0
         if (this.activeStatus === BTN_STATUS.DOWN) {
           return
         }
@@ -294,19 +298,45 @@
         return name
       },
       _getGoodsDetailData() {
-        API.Choiceness.getGoodsDetail(this.goodsId, {activity_id: this.activityId}, this.isFirstLoad).then((res) => {
+        let data = {
+          activity_id: this.activityId,
+          is_hot: this.activityType === ACTIVE_TYPE.GOODS_HOT_TAG ? 1 : 0
+        }
+        API.Choiceness.getGoodsDetail(this.goodsId, data, this.isFirstLoad).then((res) => {
           this.$wechat.hideLoading()
-          this.isFirstLoad = false
           if (res.error === this.$ERR_OK) {
-            let goodDetail = res.data
-            this.goodsMsg = goodDetail
-            this.thumb_image = goodDetail.thumb_image
-            let diff = this.goodsMsg.at_diff || 0
-            this._kanTimePlay(diff)
+            this.goodsMsg = res.data
+            this._flashAction()
+            // this._getUnGroupList()
+            // this._getFinishGroupList()
           } else {
             this.$wechat.showToast(res.message)
           }
+        }).catch(e => {
+          console.warn(e)
         })
+        // API.Choiceness.getGoodsDetail(this.goodsId, {activity_id: this.activityId}, this.isFirstLoad).then((res) => {
+        //   this.$wechat.hideLoading()
+        //   this.isFirstLoad = false
+        //   if (res.error === this.$ERR_OK) {
+        //     let goodDetail = res.data
+        //     this.goodsMsg = goodDetail
+        //     this.thumb_image = goodDetail.thumb_image
+        //     let diff = this.goodsMsg.at_diff || 0
+        //     this._kanTimePlay(diff)
+        //   } else {
+        //     this.$wechat.showToast(res.message)
+        //   }
+        // })
+      },
+      // 限时抢购倒计时开始
+      _flashAction() {
+        if (this.activityType !== ACTIVE_TYPE.FLASH) return
+        if (this.activeStatus === BTN_STATUS.DOWN) {
+          return
+        }
+        let diff = this.goodsMsg.at_diff || 0
+        this._kanTimePlay(diff)
       },
       getGoodsOtherInfo() {
         API.Choiceness.getGoodsBuyInfo(this.goodsId, {activity_id: this.activityId}).then((res) => {
@@ -317,12 +347,33 @@
           }
         })
       },
+      // async addShoppingCart() {
+      //   let isLogin = await this.$isLogin()
+      //   if (!isLogin) {
+      //     return
+      //   }
+      //   API.Choiceness.addShopCart({goods_sku_id: this.goodsMsg.goods_skus[0].goods_sku_id, activity_id: this.activityId}).then((res) => {
+      //     if (res.error === this.$ERR_OK) {
+      //       this.$sendMsg({
+      //         event_no: 1007,
+      //         goods_id: this.goodsId,
+      //         title: this.goodsMsg.name
+      //       })
+      //       this.$wechat.showToast('加入购物车成功')
+      //       this.setCartCount()
+      //     } else {
+      //       this.$wechat.showToast(res.message)
+      //     }
+      //   })
+      // },
+      // 添加购物车
       async addShoppingCart() {
         let isLogin = await this.$isLogin()
         if (!isLogin) {
           return
         }
-        API.Choiceness.addShopCart({goods_sku_id: this.goodsMsg.goods_skus[0].goods_sku_id, activity_id: this.activityId}).then((res) => {
+        let goodsId = this.goodsMsg.goods_skus[0].goods_sku_id
+        API.Choiceness.addShopCart({goods_sku_id: goodsId, activity_id: this.activityId}).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.$sendMsg({
               event_no: 1007,
@@ -336,13 +387,14 @@
           }
         })
       },
-      switchItem(item) {
+      // 按钮导航
+      buttonGroupNav(item) {
         switch (item.type) {
           case 0:
             wx.switchTab({url: '/pages/choiceness'})
             break
           case 1:
-            this.$refs.groupList.showLink()
+            // this.$refs.groupList.showLink()
             break
           case 2:
             if (this.$isLogin()) {
@@ -351,9 +403,15 @@
             break
         }
       },
-      async instantlyBuy() {
+      // 执行购买
+      async instantlyBuy(type) {
         let isLogin = await this.$isLogin()
         if (!isLogin) {
+          return
+        }
+        // 团购单买
+        if (type === 'goods_sale_price') {
+          this._showAddNumber(type)
           return
         }
         // 显示抢购限购数量
@@ -362,21 +420,53 @@
           return
         }
         if (this.buyGoodsInfo.person_day_buy_limit * 1 === -1) {
-          this.$refs.addNumber.showLink()
+          this._showAddNumber(type)
           return
         }
         if (this.buyGoodsInfo.person_day_buy_count >= this.buyGoodsInfo.person_day_buy_limit) {
           this.$wechat.showToast(`该商品限购${this.buyGoodsInfo.person_day_buy_limit}件，您不能再购买了`)
         } else {
-          this.$refs.addNumber.showLink()
+          this._showAddNumber(type)
         }
       },
-      comfirmNumer(number) {
+      // 显示添加数量控件
+      _showAddNumber(type) {
+        this.$refs.addNumber && this.$refs.addNumber.showLink(type)
+      },
+      // addNumber控件确定按钮
+      async comfirmNumer(number, type) {
         let goodsList = this.goodsMsg.goods_skus[0]
         goodsList.sku_id = goodsList.goods_sku_id
         goodsList.num = number
         goodsList.goods_units = this.goodsMsg.goods_units
-        const total = (goodsList.trade_price * number).toFixed(2)
+        let price = goodsList.trade_price
+        if (this.activityType === ACTIVE_TYPE.NEW_CLIENT) {
+          try {
+            let res = await API.Global.checkIsNewCustomer()
+            if (res.data.is_new_client === 0) {
+              price = this.goodsMsg.goods_sale_price
+              goodsList.trade_price = price
+            }
+          } catch (e) {
+            console.warn(e)
+          }
+        }
+        if (this.activityType === ACTIVE_TYPE.GROUP_ON) {
+          let flag = await this._checkAbleCreateGroup(0, number)
+          if (!flag) return
+          if (type) {
+            price = this.goodsMsg.goods_sale_price
+            goodsList.trade_price = price
+          } else {
+            goodsList.url = `/pages/collage-detail`
+            goodsList.source = 'c_groupon'
+            goodsList.groupon_id = 0
+            goodsList.latitude = this.latitude
+            goodsList.longitude = this.longitude
+          }
+        }
+        const total = (price * number).toFixed(2)
+        goodsList.activity = this.goodsMsg.activity
         let orderInfo = {
           goodsList: new Array(goodsList),
           total: total,
@@ -384,7 +474,43 @@
         }
         this.setOrderInfo(orderInfo)
         wx.navigateTo({url: `/pages/submit-order`})
+      },
+      async _checkAbleCreateGroup(groupId = 0, num = 1) {
+        try {
+          let data = {
+            activity_id: this.goodsMsg.activity_id,
+            goods_sku_id: this.goodsMsg.goods_skus[0].goods_sku_id,
+            groupon_id: groupId,
+            num,
+            longitude: this.longitude,
+            latitude: this.latitude
+          }
+          const res = await API.Global.checkAbleCreateGroup(data)
+          if (res.error === this.$ERR_OK) {
+            return true
+          } else {
+            this.$wechat.showToast(res.message)
+          }
+          return true
+        } catch (e) {
+          e && this.$wechat.showToast(e.message)
+          console.warn(e)
+        }
       }
+      // comfirmNumer(number) {
+      //   let goodsList = this.goodsMsg.goods_skus[0]
+      //   goodsList.sku_id = goodsList.goods_sku_id
+      //   goodsList.num = number
+      //   goodsList.goods_units = this.goodsMsg.goods_units
+      //   const total = (goodsList.trade_price * number).toFixed(2)
+      //   let orderInfo = {
+      //     goodsList: new Array(goodsList),
+      //     total: total,
+      //     deliverAt: this.deliverAt
+      //   }
+      //   this.setOrderInfo(orderInfo)
+      //   wx.navigateTo({url: `/pages/submit-order`})
+      // }
     }
   }
 </script>
@@ -427,73 +553,6 @@
         padding :0 2px
         position :relative
         bottom :1px
-
-  .fixed-btn
-    position: fixed
-    left: 0
-    bottom: 0
-    height: 55px
-    width: 100%
-    background: #fff
-    layout(row)
-    z-index: 111
-    .hlep-btn
-      width: 30vw
-      height: 55px
-      layout(row)
-      border-top-1px(#E6E6E6)
-      .hlep-btn-box
-        width: 50%
-        layout()
-        justify-content: center
-        align-items: center
-        .hlep-top
-          width: 20px
-          height: 20px
-          margin-bottom: 8px
-          position: relative
-          .detail-img
-            width: 100%
-            height: 100%
-            display: block
-          .help-number
-            position: absolute
-            top: -5px
-            right: -7px
-            min-width: 16px
-            text-align: center
-            height: 16px
-            line-height: 14px
-            padding: 0 3px
-            box-sizing: border-box
-            font-family: $font-family-medium
-            color: $color-white
-            font-size: $font-size-10
-            border: 1px solid $color-white
-            background: #FF3B39
-            border-radius: 50%
-        .hlep-bottom
-          font-size: $font-size-10
-          font-family: $font-family-regular
-          color: $color-text-main
-          line-height: 1
-    .goods-btn
-      width: 35vw
-      line-height: 55px
-      height: 55px
-      text-align: center
-      font-size: $font-size-14
-      font-family: $font-family-regular
-      color: #fff
-      &:after
-        border: none
-    .goods-btn-active
-      color: $color-text-main
-      background: $color-tag
-    .goods-btn-assint
-      color: #fff
-      background: $color-text-assist
-      width: 70vw
 
   .panel
     background: #FFFFFF;

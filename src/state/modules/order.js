@@ -43,6 +43,7 @@ export const actions = {
   submitOrder({commit, state}, {orderInfo, complete}) {
     API.SubmitOrder.submitOrder(orderInfo)
       .then(res => {
+        console.log(res, 123)
         wechat.hideLoading()
         if (res.error !== ERR_OK) {
           wechat.showToast(res.message)
@@ -54,7 +55,7 @@ export const actions = {
             if (res.error !== ERR_OK) {
               wechat.showToast(res.message)
             }
-          })//  API.SubmitOrder.saveMobile
+          })
         let payRes = res.data
         const {timestamp, nonceStr, signType, paySign} = payRes
         let orderId = res.data.order_id
@@ -66,7 +67,11 @@ export const actions = {
           paySign,
           success (res) {
             setTimeout(() => {
-              wx.redirectTo({url: `/pages/pay-result?orderId=${orderId}&&type=0&total=${state.total}`})
+              if (orderInfo.url) {
+                wx.redirectTo({url: `${orderInfo.url}?orderId=${orderId}`})
+              } else {
+                wx.redirectTo({url: `/pages/pay-result?orderId=${orderId}&&type=0&total=${state.total}`})
+              }
             }, 1500)
           },
           fail (res) {

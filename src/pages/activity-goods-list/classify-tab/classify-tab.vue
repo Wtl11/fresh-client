@@ -5,7 +5,7 @@
     id="scrollView-relative"
     :scroll-into-view="viewToItem"
     scroll-x
-    :scroll-with-animation="!isIos"
+    scroll-with-animation="true"
   >
     <form report-submit @submit="$getFormId"
       v-for="(item, index) in tabList"
@@ -36,39 +36,22 @@
   export default {
     name: COMPONENT_NAME,
     props: {
-      // id: {
-      //   type: String,
-      //   default: 'scrollView-relative'
-      // },
-      // isShow: {
-      //   type: Boolean,
-      //   default: true
-      // },
-      // isShowTab: {
-      //   type: Boolean,
-      //   default: true
-      // },
       tabList: {
         type: Array,
         default: () => []
       },
-      // viewToItem: {
-      //   type: String,
-      //   default: 'item0'
-      // },
       styles: {
         type: String,
         default: ''
+      },
+      tabIndex: {
+        type: Number,
+        default: 0
       }
-      // tabIndex: {
-      //   type: Number,
-      //   default: 0
-      // }
     },
     data() {
       return {
         isIos: true,
-        tabIndex: 0,
         viewToItem: ''
       }
     },
@@ -106,7 +89,7 @@
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
-  $tab-height=86px
+  $tab-height=92px
   @import "~@designCommon"
 
   button
@@ -154,7 +137,7 @@
       flex-direction :column
       .icon
         margin :0 auto
-        padding :5px 0
+        padding :8px 0
         width :44px
         height :@width
         position :relative
@@ -162,7 +145,7 @@
       .text
         flex: 1
         font-family: $font-family-regular
-        font-size: 13px
+        font-size: 14px
         color: #333
         position :relative
         .name
@@ -171,7 +154,7 @@
           white-space: nowrap
           row-center()
           &.active
-            font-size: 15px
+            font-size: 16px
             font-family: $font-family-medium
       .item-under-line
         position: absolute
