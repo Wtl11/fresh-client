@@ -551,6 +551,7 @@
         this.$$shareHandler({event: EVENT_CODE.HOME})
         ald.aldstat.sendEvent('首页')
         this.$wechat.hideLoading()
+        this.$$sendEvent()
       }
     },
     async onPullDownRefresh() {

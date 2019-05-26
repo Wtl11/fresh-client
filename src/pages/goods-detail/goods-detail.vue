@@ -380,6 +380,8 @@
         goodsId: this.goodsId
       })
       this.isFirstLoad = false
+      const _track = this.activityType === ACTIVE_TYPE.DEFAULT ? 'product' : 'activity'
+      this.$$sendEvent({goodsId: this.goodsId, activityId: this.activityId, _track})
     },
     onHide() {
       this._clearTimer()

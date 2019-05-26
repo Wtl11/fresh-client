@@ -25,5 +25,10 @@ export default {
   getFinishGroupList(data = null, loading = false, toast = false) {
     const url = `/api/wap/activity/activity-groupon-goods-customer`
     return request.get({url, data, loading, toast})
+  },
+  // 小程序采集（1.0）
+  sendEvent(data = null, loading = false, toast = false) {
+    const url = `/api/wap/data/data-center-collect`
+    return request.get({url, data, loading, toast})
   }
 }

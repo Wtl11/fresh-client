@@ -397,6 +397,7 @@
       this.getGoodsOtherInfo()
       // this.initStatus()
       // this._refreshLocation()
+      this.$$sendEvent({goodsId: this.data.goods.goods_id, activityId: this.activityId})
     },
     methods: {
       ...orderMethods,

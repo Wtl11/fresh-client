@@ -140,6 +140,7 @@
         event: EVENT_CODE.FLASH_SALE_LIST,
         activityId: this.id
       })
+      this.$$sendEvent()
     },
     onReachBottom() {
       this.page++

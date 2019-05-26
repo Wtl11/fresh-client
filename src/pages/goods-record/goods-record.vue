@@ -181,6 +181,8 @@
         activityId: this.activityId,
         goodsId: this.goodsId
       })
+      // const _track = this.activityType === ACTIVE_TYPE.DEFAULT ? 'product' : 'activity'
+      this.$$sendEvent({goodsId: this.goodsId, activityId: this.activityId})
     },
     onShareAppMessage() {
       this.$sendMsg({

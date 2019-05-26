@@ -89,6 +89,7 @@
       this._getTakeArray()
       this._getCouponInfo()
       this._getCouponStatus()
+      this.$$sendEvent()
     },
     onReachBottom() {
       this.page++
