@@ -521,7 +521,7 @@
         let data = {
           activity_id: this.activityId,
           goods_sku_id: this.data.goods.goods_sku_id,
-          groupon_id: this.data.goods.groupon_id,
+          groupon_id: this.data.groupon_id,
           longitude: this.longitude,
           latitude: this.latitude
         }
