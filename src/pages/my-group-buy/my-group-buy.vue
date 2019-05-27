@@ -20,12 +20,7 @@
           </div>
         </div>
         <button v-if="item.groupon_status === 0" class="goods-btn share-button" :id="index" @click.stop="shareGroup(item)">邀请邻居</button>
-        <div v-else class="goods-btn">拼团详情</div>
-      </li>
-      <li class="foot-ties" v-if="!hasMore && !isShowEmpty">
-        <div class="lines left"></div>
-        <div class="lines right"></div>
-        <div class="center">再拉也没有了</div>
+        <button v-else class="goods-btn">拼团详情</button>
       </li>
     </ul>
     <section class="noting" v-else-if="isShowEmpty">
@@ -171,7 +166,7 @@
       align-items: center
     .leader-tips
       position: absolute
-      top: 43.5px
+      top: 44px
       left: $padding-left
       width: 26px
       height: 19px
@@ -198,12 +193,14 @@
         .group-num
           float: left
           width: auto
-          height: 18px
+          height: 16px
+          line-height: 16px
           padding: 0 7px
           layout()
           align-items: center
           text-align: center
-          border-1px(rgba(250,117,0,0.3),2px)
+          border: 1px solid rgba(250,117,0,0.3)
+          border-radius: 2px
           font-size: $font-size-12
           font-family: $font-family-regular
         .goods-price
@@ -228,27 +225,6 @@
       &.share-button
         color: $color-main
         border: 1px solid $color-main
-  .foot-ties
-    flex: 1
-    layout(row)
-    justify-content: center
-    align-items: center
-    height: 60px
-    box-sizing: border-box
-    padding: 20px 0
-
-    .lines
-      width: 10px
-      height: 1px
-      background: rgba(124, 132, 156, 0.20)
-      margin: 0 5px
-
-    .center
-      font-family: $font-family-regular
-      font-size: $font-size-14
-      color: rgba(152, 152, 159, 0.30)
-      text-align: justify
-      line-height: 1
   .noting
     text-align: center
     margin-top: 106px
