@@ -377,7 +377,7 @@
       this._isHelpScroll = false
       this._sharing = false
       return {
-        ACTIVE_TYPE,
+        ACTIVE_TYPE: ACTIVE_TYPE,
         // 头部变色
         title: '赞播优鲜',
         // 团长信息
@@ -495,16 +495,17 @@
     },
     onUnload() {
       this._navigationIO && this._navigationIO.disconnect()
-      this.bannerIndex = 0
-      this.activeTabStyles = ''
-      this.flashTabIndex = 0
-      this.activeTabIndex = 0
-      this.flashViewToChild = undefined
-      this.guessPage = 1
-      this.guessHasMore = true
-      this.latitude = 0
-      this.longitude = 0
-      wx.setStorageSync('homeData', this.$data, {curShopId: ''})
+      wx.setStorageSync('homeData', {
+        groupInfo: this.groupInfo,
+        moduleArray: this.moduleArray,
+        flashArray: this.flashArray,
+        classifyArray: this.classifyArray,
+        activeTabInfo: this.activeTabInfo,
+        newClientList: this.newClientList,
+        todayHotList: this.todayHotList,
+        groupList: this.groupList,
+        guessList: this.guessList
+      })
     },
     onHide() {
     },
@@ -813,7 +814,7 @@
       },
       // 跳转至商品详情页
       handleJumpToGoodsDetail(item, type) {
-        console.log(type, ACTIVE_TYPE.FLASH)
+        console.log(type, this.ACTIVE_TYPE.FLASH)
         wx.navigateTo({
           url: `/pages/goods-detail?id=${item.goods_id}&activityId=${item.activity_id}&activityType=${type}`
         })
