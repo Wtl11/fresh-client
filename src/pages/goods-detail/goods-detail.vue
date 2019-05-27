@@ -134,7 +134,7 @@
       <!--拼团列表-->
       <div v-if="activityType === ACTIVE_TYPE.GROUP_ON" class="collage-box">
         <div class="title">{{collageTotal}}位邻居正在拼单，可直接参与</div>
-        <swiper v-if="collageList.length > 1"  class="collage-scroll" autoplay circular :vertical="groupAutoScroll" interval="5000" :display-multiple-items="2">
+        <swiper v-if="collageList.length > 1"  class="collage-scroll" :autoplay="groupAutoScroll" circular interval="5000" :display-multiple-items="2">
           <block v-for="(item, index) in collageList" :key="index">
             <swiper-item class="collage-content">
               <div class="left">
