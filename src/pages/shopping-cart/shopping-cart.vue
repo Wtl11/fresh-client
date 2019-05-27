@@ -29,7 +29,7 @@
               <div class="price" :class="'corp-' + corpName + '-money'" v-if="item.trade_price">
                 <span class="num">{{item.trade_price}}</span>
                 <span class="unit">元</span>
-                <img class="new-user-img" v-if="imageUrl && item.is_new_client === 1 && item.activity && item.activity.activity_type === ACTIVE_TYPE.NEW_CLIENT" :src="imageUrl + '/yx-image/2.4/pic-newlabel@2x.png'" alt="">
+                <img class="new-user-img" v-if="imageUrl && item.is_new_client === 1 && item.activity && item.activity.activity_theme === ACTIVE_TYPE.NEW_CLIENT" :src="imageUrl + '/yx-image/2.4/pic-newlabel@2x.png'" alt="">
               </div>
             </div>
             <div class="right">
