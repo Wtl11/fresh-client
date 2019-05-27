@@ -36,7 +36,7 @@
         <div v-for="(item, index) in grouponHead" :key="index" class="head-box" :class="[{'small-head': grouponHead.length > 4}, {'has-border': item.avatar}]">
 
           <img v-if="item.avatar" :src="item.avatar" alt="" class="logo">
-          <img v-else :src="imageUrl + '/yx-image/collage/pic-touxiang@2x.png'" alt="" class="logo">
+          <img v-else-if="imageUrl" :src="imageUrl + '/yx-image/collage/pic-touxiang@2x.png'" alt="" class="logo">
           <span v-if="item.is_main" class="tag">拼主</span>
         </div>
       </div>
@@ -370,6 +370,7 @@
       clearInterval(this.timer)
     },
     onLoad(options) {
+      this._options = options || {}
       // let option = options
       // if (!option) {
       //   option = isEmptyObject(this.$mp.query) ? this.$mp.appOptions.query : this.$mp.query
@@ -383,13 +384,15 @@
     },
     async onShow() {
       let option = {}
-      if (!isEmptyObject(this.$mp.query)) {
+      if (!isEmptyObject(this._options)) {
+        option = this._options
+      } else if (!isEmptyObject(this.$mp.query)) {
         option = this.$mp.query
       } else if (!isEmptyObject(this.$mp.appOptions.query)) {
         option = this.$mp.appOptions.query
       }
       // let option = isEmptyObject(this.$mp.query) ? this.$mp.appOptions.query : this.$mp.query
-      console.warn('拼团详情options:', option)
+      console.warn('拼团详情options:', option, this.$mp)
       this.id = option.id || option.orderId
       if (option.shopId) {
         wx.setStorageSync('shopId', option.shopId)

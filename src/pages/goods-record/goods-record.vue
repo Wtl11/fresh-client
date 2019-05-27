@@ -164,6 +164,7 @@
     },
     onLoad(options) {
       console.warn(options, '<-----参数---->')
+      this._options = options || {}
       this._initPageParams(options)
       this._getList(false)
     },
@@ -219,8 +220,12 @@
       ...orderMethods,
       // 初始化页面参数
       _initPageParams(options) {
-        if (!options) {
-          options = isEmptyObject(this.$mp.query) ? this.$mp.appOptions.query : this.$mp.query
+        if (!isEmptyObject(this._options)) {
+          options = this._options
+        } else if (!isEmptyObject(this.$mp.query)) {
+          options = this.$mp.query
+        } else if (!isEmptyObject(this.$mp.appOptions.query)) {
+          options = this.$mp.appOptions.query
         }
         this.goodsId = +options.id || +options.goodsId || 0
         this.activityId = +options.activityId || 0

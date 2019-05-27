@@ -361,6 +361,7 @@
       }
     },
     onLoad(options) {
+      this._options = options || {}
       ald.aldstat.sendEvent('商品详情')
       // this._initPageParams(options)
       // this.getQrCode()
@@ -712,8 +713,15 @@
         })
       },
       // 初始化页面参数
-      _initPageParams(options) {
-        options = isEmptyObject(this.$mp.query) ? this.$mp.appOptions.query : this.$mp.query
+      _initPageParams(options = {}) {
+        if (!isEmptyObject(this._options)) {
+          options = this._options
+        } else if (!isEmptyObject(this.$mp.query)) {
+          options = this.$mp.query
+        } else if (!isEmptyObject(this.$mp.appOptions.query)) {
+          options = this.$mp.appOptions.query
+        }
+        // options = isEmptyObject(this.$mp.query) ? this.$mp.appOptions.query : this.$mp.query
         this.goodsId = +options.id || +options.goodsId || 0
         this.activityId = +options.activityId || 0
         this.shopId = +options.shopId || 0
