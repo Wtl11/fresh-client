@@ -706,8 +706,12 @@
             .relativeTo('.active-tab-container')
             .observe('.panel', res => {
               if (res.intersectionRatio > 0 && !this._isScrolling) {
+                let id = res.id.replace('panel', '') * 1
                 this._isHelpScroll = false
-                this.activeTabIndex = res.id.replace('panel', '') * 1
+                this.activeTabIndex = id
+                if (id === this.activeTabInfo.length - 1 && this.guessList.length === 0) {
+                  this._getGuessList()
+                }
               }
             })
         }, 500)
