@@ -719,6 +719,7 @@
         padding: 2px 4px
         border-radius: 2px
         margin-left: 5px
+        box-sizing: border-box
         border: 1px solid rgba(250,117,0,0.20)
     .price
       color: #FA7500
