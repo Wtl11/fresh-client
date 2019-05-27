@@ -455,7 +455,9 @@
       },
       // 关闭
       handleHideAddNumber() {
-        this.joinGroupId = undefined
+        setTimeout(() => {
+          this.joinGroupId = undefined
+        }, 1000)
         this.groupAutoScroll = true
       },
       async jumpToCollage(item) {
@@ -634,6 +636,7 @@
           total: total,
           deliverAt: this.deliverAt
         }
+        console.log(orderInfo)
         this.setOrderInfo(orderInfo)
         wx.navigateTo({url: `/pages/submit-order`})
       },
