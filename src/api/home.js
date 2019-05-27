@@ -21,5 +21,10 @@ export default {
   getGroupList(data, loading = false, toast) {
     const url = `/api/wap/activity/activity-groupon-goods`
     return request.get({url, data, loading, toast})
+  },
+  // 活动商品列表[v2.1]
+  getActivityList(data, loading = false, toast) {
+    const url = `/api/wap/goods/activity-goods`
+    return request.get({url, data, loading, toast})
   }
 }

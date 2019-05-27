@@ -8,6 +8,6 @@ export const ACTIVE_TYPE = {
   GOODS_HOT_TAG: 'goods_hot_tag',
   GROUP_ON: 'groupon',
   GUESS: 'guess',
-  FLASH: 'FLASH',
+  FLASH: 'activity_fixed',
   DEFAULT: 'DEFAULT'
 }
