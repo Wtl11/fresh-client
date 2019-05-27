@@ -146,7 +146,7 @@
     bottom: 0
     right: 0
     z-index: 100
-    background: rgba(55, 75, 99, 0.8)
+    background: rgba(17, 17, 17, 0.8)
   .link-bottom
     position: fixed
     bottom: -130%

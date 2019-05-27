@@ -476,6 +476,7 @@
         let goodsList = this.data.goods
         goodsList.sku_id = goodsList.goods_sku_id
         goodsList.num = number
+        goodsList.activity_id = this.activityId
         let price = goodsList.trade_price
         let flag = await this.checkGroupon()
         // console.log(flag, 'flag')
@@ -756,7 +757,7 @@
   .orange
     color: #FF8506
   .status-tip
-    font-size: $font-size-14
+    font-size: $font-size-16
     font-family: $font-family-medium
     text-align: center
     .mark
@@ -821,6 +822,7 @@
       line-height: 14px
       color: #A03918
       font-size: 10px
+      border: 1px solid #FFF
       font-family: $font-family-medium
   .btn
     margin: 0 auto
@@ -835,7 +837,7 @@
     background: $color-main
     margin-bottom: 12px
   .bot-tip
-    color: $color-text-assist
+    color: #808080
     font-size: 13px
     font-family: $font-family-regular
     text-align: center

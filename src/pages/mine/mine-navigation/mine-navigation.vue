@@ -6,7 +6,7 @@
         <li v-for="(item, index) in navList" :key="index" class="item-wrapper" :class="item.cname" @click="handleClick(item)">
           <div class="img-box">
             <img class="icon-img" mode="aspectFill" v-if="imageUrl && item.icon" :src="imageUrl + item.icon">
-            <p v-if="item.hasExplain && couponNumber > 0" class="item-count">{{couponNumber}}</p>
+            <p v-if="item.hasExplain && couponNumber > -1" class="item-count">{{couponNumber}}</p>
           </div>
           <p class="title">{{item.title}}</p>
         </li>
@@ -211,8 +211,8 @@
             margin-bottom: 6px
           .item-count
             position: absolute
-            top: -8px
-            right: -12px
+            top: -6px
+            right: -7px
             min-width: 16px
             text-align: center
             height: 16px
