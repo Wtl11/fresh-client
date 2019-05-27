@@ -100,7 +100,7 @@
       jumpGoodsDetail(item) {
         let activityType = ''
         if (item.activity) {
-          activityType = item.activity.activity_type || ''
+          activityType = item.activity.activity_theme || ''
         }
         wx.navigateTo({
           url: `/pages/goods-detail?id=${item.goods_id}&activityId=${item.activity_id}&shopId=${this.shopId}&activityType=${activityType}`

@@ -129,7 +129,8 @@
     methods: {
       ...orderMethods,
       _checkIsNewClient() {
-        let flag = (this.goodsList && this.goodsList.some(val => val.activity.activity_type === ACTIVE_TYPE.NEW_CLIENT))
+        console.log(this.goodsList)
+        let flag = (this.goodsList && this.goodsList.some(val => val.activity.activity_theme === ACTIVE_TYPE.NEW_CLIENT))
         if (flag) {
           API.Global.checkIsNewCustomer().then(res => {
             this.isShowNewCustomer = res.data.is_new_client === 0

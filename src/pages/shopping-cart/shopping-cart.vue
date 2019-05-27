@@ -228,7 +228,7 @@
       jumpGoodsDetail(item) {
         let type = ''
         if (item.activity) {
-          type = item.activity.activity_type || ''
+          type = item.activity.activity_theme || ''
         }
         wx.navigateTo({
           url: `/pages/goods-detail?id=${item.goods_id}&activityId=${item.activity_id}&activityType=${type}`
@@ -272,8 +272,14 @@
           this.$wechat.showToast('请选择商品!')
           return
         }
+        const goodsList = [...this.checkedGoods].map(item => {
+          if (item.is_new_client === 0) {
+            item.trade_price = item.goods_sale_price
+          }
+          return item
+        })
         let orderInfo = {
-          goodsList: this.checkedGoods,
+          goodsList: goodsList,
           total: this.totalPrice,
           deliverAt: this.deliverAt
         }
