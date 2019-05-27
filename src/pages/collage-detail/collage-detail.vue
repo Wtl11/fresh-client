@@ -27,8 +27,8 @@
       </div>
 
       <p v-if="statusText" class="status-text" :class="{'orange': orangeStatus}"><img v-if="imageUrl" :src="imageUrl + '/yx-image/collage/'+ msg[statusNum].icon +'@2x.png'" alt="" class="icon">{{msg[statusNum].statusText}}</p>
-      <p v-if="statusTip1" class="status-tip" :class="{'tip-top': topText2}">还差<span class="mark">{{data.surplus_number}}</span>人，快喊邻居一起来拼团吧</p>
-      <p v-if="statusTip2" class="status-tip status-tip2">仅剩<span class="mark">{{data.surplus_number}}</span>个名额</p>
+      <p v-if="statusTip1" class="status-tip" :class="{'tip-top': topText2}">还差<span class="mark"> {{data.surplus_number}} </span>人，快喊邻居一起来拼团吧</p>
+      <p v-if="statusTip2" class="status-tip status-tip2">仅剩<span class="mark"> {{data.surplus_number}} </span>个名额</p>
       <p v-if="runTime" class="run-time">剩余 <span class="time-num">{{timeArr[0]}}</span>:<span class="time-num">{{timeArr[1]}}</span>:<span class="time-num">{{timeArr[2]}}</span></p>
 
       <!--头像-->
@@ -54,11 +54,11 @@
     <div v-if="goods || time" class="line"></div>
     <div v-if="goods" class="goods" @click="toDetail">
       <span class="label">拼团商品</span>
-      <p class="text">{{data.goods.name}}<img :src="imageUrl + '/yx-image/collage/icon-pressed@2x.png'" class="icon"></p>
+      <p class="text"><span class="text-title">{{data.goods.name}}</span><img :src="imageUrl + '/yx-image/collage/icon-pressed@2x.png'" class="icon"></p>
     </div>
     <div v-if="time" class="time">
       <span class="label">拼团时间</span>
-      <span class="text">{{data.start_groupon_at}}</span>
+      <span class="text"><span class="text-title">{{data.start_groupon_at}}</span></span>
     </div>
 
     <!--进度-->
@@ -552,8 +552,8 @@
           this.showShare()
         } else if (this.btnShow === 2) {
           // console.log(2)
-          // -----------参团成功或者拼主拼团成功跳转去我的订单
-          wx.navigateTo({url: `/pages/order-list?id=&index=0`})
+          // -----------参团成功或者拼主拼团成功跳转去制定订单详情
+          wx.navigateTo({url: `/pages/order-detail?id=${this.data.customer_order_id}`})
         } else if (this.btnShow === 3) {
           // console.log(3)
           // -----------返回首页
@@ -854,7 +854,7 @@
     font-size: $font-size-14
     border-bottom-1px(#E6E6E6)
     .label
-      width: 180px
+      width: 40vw
       overflow: hidden
       text-overflow: ellipsis
       white-space: nowrap
@@ -862,11 +862,21 @@
     .text
       color: #111
       display: flex
+      flex: 1
+      overflow: hidden
       align-items: center
-    .icon
-      width: 6px
-      height: 12px
-      margin-left: 4px
+      .text-title
+        display: block
+        flex: 1
+        overflow: hidden
+        color: #111
+        text-overflow: ellipsis
+        white-space: nowrap
+        text-align: right
+      .icon
+        width: 6px
+        height: 12px
+        margin-left: 4px
 
   .progress-handle
     padding: 30px 12px 60px
