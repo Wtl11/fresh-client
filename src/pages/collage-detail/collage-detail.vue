@@ -479,7 +479,6 @@
         goodsList.activity_id = this.activityId
         let price = goodsList.trade_price
         let flag = await this.checkGroupon()
-        // console.log(flag, 'flag')
         if (!flag) return
         goodsList.url = `/pages/collage-detail`
         goodsList.source = 'c_groupon'
@@ -561,6 +560,8 @@
         } else if (!this.isGroup && status === 0) {
           // console.log(4)
           // -----------一键参团
+          let flag = await this.checkGroupon()
+          if (!flag) return
           this._showAddNumber()
         } else if (!this.isGroup && status === 1) {
           // console.log(5)

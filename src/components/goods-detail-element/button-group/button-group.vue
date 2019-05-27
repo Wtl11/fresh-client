@@ -12,17 +12,17 @@
         <div class="hlep-bottom">{{item.text}}</div>
       </button>
     </div>
-      <button v-if="showLeftButton" class="common-btn group left" formType="submit" @click="instantlyBuy('goods_sale_price')">
-        <p class="money">¥{{buttonInfo.salePrice}}元</p>
-        <p class="text">单独购买</p>
-      </button>
-      <div v-else-if="activeStatus === 1" class="common-btn over o-6">已抢完</div>
-      <button v-if="showRightButton" class="common-btn group right" :class="{disable: buttonInfo.tipTop}"  formType="submit" @click="handleGroupBuy">
-        <p class="money">¥{{buttonInfo.tradePrice}}元</p>
-        <p class="text">发起团购</p>
-      </button>
-    <div v-else-if="activeStatus === 1" class="common-btn over">已抢完</div>
     <div v-if="!showRightButton && !showLeftButton" class="goods-btn goods-btn-assint">{{btnText}}</div>
+    <button v-if="showLeftButton" class="common-btn group left" formType="submit" @click="instantlyBuy('goods_sale_price')">
+      <p class="money">¥{{buttonInfo.salePrice}}元</p>
+      <p class="text">单独购买</p>
+    </button>
+    <div v-else class="common-btn over o-6">已抢完</div>
+    <button v-if="showRightButton" class="common-btn group right" :class="{disable: buttonInfo.tipTop}"  formType="submit" @click="handleGroupBuy">
+      <p class="money">¥{{buttonInfo.tradePrice}}元</p>
+      <p class="text">发起团购</p>
+    </button>
+    <div v-else class="common-btn over">已抢完</div>
   </div>
 <!--  一般-->
   <div v-else class="button-group">
