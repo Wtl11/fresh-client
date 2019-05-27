@@ -133,7 +133,7 @@
       <!--拼团列表-->
       <div v-if="activityType === ACTIVE_TYPE.GROUP_ON" class="collage-box">
         <div class="title">{{collageTotal}}位邻居正在拼单，可直接参与</div>
-        <swiper v-if="collageList.length > 1"  class="collage-scroll" autoplay circular :vertical="groupAutoScroll" interval="5000" :display-multiple-items="2">
+        <swiper v-if="collageList.length > 1"  class="collage-scroll" :autoplay="autoplay" circular vertical interval="5000" :display-multiple-items="2">
           <block v-for="(item, index) in collageList" :key="index">
             <swiper-item class="collage-content">
               <div class="left">
@@ -278,7 +278,7 @@
         currentNum: 1,
         collageList: [],
         collageTotal: 0,
-        groupAutoScroll: true
+        autoplay: true
       }
     },
     computed: {
@@ -456,7 +456,7 @@
       // 关闭
       handleHideAddNumber() {
         this.joinGroupId = undefined
-        this.groupAutoScroll = true
+        this.autoplay = true
       },
       async jumpToCollage(item) {
         if (this.tipTop) {
@@ -467,7 +467,7 @@
         if (flag) {
           this.instantlyBuy()
           this.joinGroupId = item.grouon_id
-          this.groupAutoScroll = false
+          this.autoplay = false
         }
       },
       _getUnGroupList() {
@@ -1038,6 +1038,7 @@
         .time
           margin-top: 5px
       .go-collage
+        reset-button()
         width: 75px
         height: 30px
         font-family: $font-family-regular

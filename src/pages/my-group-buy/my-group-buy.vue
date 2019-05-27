@@ -195,7 +195,7 @@
           width: auto
           height: 16px
           line-height: 16px
-          padding: 0 7px
+          padding: 0 4px
           layout()
           align-items: center
           text-align: center
