@@ -454,11 +454,16 @@
         })
         return arr
       },
+      activityModule() {
+        return this.moduleArray.find(val => val.module_name === 'activity') || {}
+      },
+      activityModuleList() {
+        return this.activityModule.list || []
+      },
       flashModule() {
         let flash = {}
-        let module = this.moduleArray.find(val => val.module_name === 'activity') || {}
-        if (module.list) {
-          flash = module.list.find(val => val.module_name === 'activity_fixed') || {}
+        if (this.activityModuleList.length) {
+          flash = this.activityModuleList.find(val => val.module_name === 'activity_fixed') || {}
         }
         return flash
       },
@@ -466,7 +471,7 @@
         return this.flashModule.list || []
       },
       isShowFlash() {
-        return this.flashModule.is_close === 0 && this.flashTabInfo.length
+        return this.flashModule.is_close === 0 && this.flashArray.length > 0
       }
     },
     watch: {
@@ -504,7 +509,9 @@
     onHide() {
     },
     onPageScroll(e) {
-      // console.log(e)
+      if (this.guessList.length === 0) {
+        this._getGuessList()
+      }
       // this._helpObserver(e)
     },
     async onShow() {
@@ -535,12 +542,9 @@
         this._getLocation()
         this._getNotify()
         await this._getModuleInfo()
+        this.$wechat.hideLoading()
         this._initTabInfo()
         this._addMonitor()
-        this._getFlashList()
-        this._getTodayHostList()
-        this._getNewClientList()
-        this._getGroupList()
         if (!wx.getStorageSync('token')) return
         this.setCartCount()
       } catch (e) {
@@ -550,7 +554,6 @@
         this.$sendMsg({event_no: 1000})
         this.$$shareHandler({event: EVENT_CODE.HOME})
         ald.aldstat.sendEvent('首页')
-        this.$wechat.hideLoading()
       }
     },
     async onPullDownRefresh() {
@@ -562,10 +565,6 @@
         await this._getModuleInfo(false)
         this._initTabInfo()
         this._addMonitor()
-        this._getFlashList()
-        this._getTodayHostList()
-        this._getNewClientList()
-        this._getGroupList()
       } catch (e) {
         console.error(e)
       }
@@ -591,15 +590,15 @@
         moduleName = res.target.id.replace('share-', '')
       }
       switch (moduleName) {
-        case [ACTIVE_TYPE.NEW_CLIENT]:
+        case ACTIVE_TYPE.NEW_CLIENT:
           imgUrl = '/yx-image/2.4/pic-xrth_share@2x.png'
           title = `${this.socialName}-赞播优鲜社区团购`
           break
-        case [ACTIVE_TYPE.GOODS_HOT_TAG]:
+        case ACTIVE_TYPE.GOODS_HOT_TAG:
           imgUrl = '/yx-image/2.4/pic-jrbp_share@2x.png'
           title = `${this.socialName}-赞播优鲜社区团购`
           break
-        case [ACTIVE_TYPE.GROUP_ON] :
+        case ACTIVE_TYPE.GROUP_ON :
           imgUrl = '/yx-image/2.4/pic-ptfx_share@2x.png'
           title = `${this.socialName}-赞播优鲜社区团购`
           break
@@ -656,30 +655,6 @@
           this._isLoading = false
         })
       },
-      async _getGroupList() {
-        try {
-          let res = await API.Home.getGroupList({limit: 20})
-          this.groupList = this._formatListPriceData(res.data)
-        } catch (e) {
-          console.warn(e)
-        }
-      },
-      async _getTodayHostList() {
-        try {
-          // let res = await API.Home.getTodayHotList({limit: 20})
-          // this.todayHotList = this._formatListPriceData(res.data)
-        } catch (e) {
-          console.warn(e)
-        }
-      },
-      async _getNewClientList() {
-        try {
-          // let res = await API.Home.getNewClientList({limit: 20})
-          // this.newClientList = this._formatListPriceData(res.data)
-        } catch (e) {
-          console.error(e)
-        }
-      },
       _formatListPriceData(arr = []) {
         return arr.map(item => {
           return {
@@ -691,10 +666,9 @@
       // 初始化活动tab
       _initTabInfo() {
         let arr = []
-        let module = this.moduleArray.find(val => val.module_name === 'activity') || {}
-        if (module.list) {
-          module.list.forEach(item => {
-            if (item.module_name !== 'activity_fixed' && item.is_close < 1) {
+        if (this.activityModuleList.length) {
+          this.activityModuleList.forEach(item => {
+            if (item.module_name !== 'activity_fixed' && item.starting_point_id > 0) {
               arr.push({
                 ...item,
                 ...TAB_ARR_CONFIG[item.module_name]
@@ -735,7 +709,6 @@
                 this.activeTabIndex = res.id.replace('panel', '') * 1
               }
             })
-          // this._initDomPosition()
         }, 500)
       },
       _helpObserver(e) {
@@ -840,7 +813,7 @@
       },
       // 跳转至商品详情页
       handleJumpToGoodsDetail(item, type) {
-        console.log(item)
+        console.log(type, ACTIVE_TYPE.FLASH)
         wx.navigateTo({
           url: `/pages/goods-detail?id=${item.goods_id}&activityId=${item.activity_id}&activityType=${type}`
         })
@@ -935,7 +908,7 @@
       },
       // 获取地理位置
       async _getLocation() {
-        // if (this.latitude && this.longitude) return
+        if (this.latitude && this.longitude) return
         try {
           let res = await this.$wechat.getLocation()
           this.longitude = res.longitude
@@ -968,6 +941,24 @@
         try {
           let res = await API.FlashSale.getModuleInfo({page_name: 'index'}, loading)
           this.moduleArray = res.data.modules || []
+          this.activityModuleList.forEach((item) => {
+            if (item.starting_point_id > 0) {
+              let key = TAB_ARR_CONFIG[item.module_name]
+              if (item.module_name === ACTIVE_TYPE.GROUP_ON) {
+                API.Home.getGroupList({limit: 20}).then(res => {
+                  this.groupList = this._formatListPriceData(res.data)
+                })
+              } else {
+                let activityId = item.starting_point_id
+                if (item.module_name === ACTIVE_TYPE.FLASH) {
+                  activityId = this.flashTabInfo[this.flashTabIndex].id || item.starting_point_id
+                }
+                API.Home.getActivityList({activity_id: activityId, page: 1, limit: key.limit}).then(res => {
+                  this[key.dataArray] = this._formatListPriceData(res.data)
+                })
+              }
+            }
+          })
         } catch (e) {
           console.error(e)
         }

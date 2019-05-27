@@ -733,6 +733,7 @@
           type = ACTIVE_TYPE.FLASH
         }
         this.activityType = type || ACTIVE_TYPE.DEFAULT
+        console.log(this.activityType)
       },
       // 获取购买者的用户信息
       _getBuyUsers() {
