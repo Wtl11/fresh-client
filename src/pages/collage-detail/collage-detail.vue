@@ -711,14 +711,14 @@
       font-size: $font-size-12
       font-family: $font-family-regular
       .total
-        padding: 2px 7px
+        padding: 2px 4px
         background: rgba(255,133,6,0.15)
         border-radius: 2px
       .count
-        padding: 2px 7px
+        padding: 2px 4px
         border-radius: 2px
         margin-left: 5px
-        border-1px(rgba(250,117,0,0.20))
+        border: 1px solid rgba(250,117,0,0.20)
     .price
       color: #FA7500
       margin-top: 10px
@@ -755,7 +755,7 @@
   .orange
     color: #FF8506
   .status-tip
-    font-size: $font-size-14
+    font-size: $font-size-16
     font-family: $font-family-medium
     text-align: center
     .mark
@@ -820,6 +820,7 @@
       line-height: 14px
       color: #A03918
       font-size: 10px
+      border: 1px solid #FFF
       font-family: $font-family-medium
   .btn
     margin: 0 auto
@@ -834,7 +835,7 @@
     background: $color-main
     margin-bottom: 12px
   .bot-tip
-    color: $color-text-assist
+    color: #808080
     font-size: 13px
     font-family: $font-family-regular
     text-align: center
