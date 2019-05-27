@@ -382,7 +382,13 @@
       // }
     },
     async onShow() {
-      let option = isEmptyObject(this.$mp.query) ? this.$mp.appOptions.query : this.$mp.query
+      let option = {}
+      if (!isEmptyObject(this.$mp.query)) {
+        option = this.$mp.query
+      } else if (!isEmptyObject(this.$mp.appOptions.query)) {
+        option = this.$mp.appOptions.query
+      }
+      // let option = isEmptyObject(this.$mp.query) ? this.$mp.appOptions.query : this.$mp.query
       console.warn('拼团详情options:', option)
       this.id = option.id || option.orderId
       if (option.shopId) {
@@ -406,6 +412,7 @@
         let res = await API.Groupon.getGrouponDetail({id: this.id, order_id: this.orderId})
         if (res.error !== this.$ERR_OK) {
           this.$wechat.showToast(res.message)
+          this._initLocation()
           return
         }
         this.data = res.data
