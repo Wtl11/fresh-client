@@ -749,7 +749,7 @@
   .orange
     color: #FF8506
   .status-tip
-    font-size: $font-size-14
+    font-size: $font-size-16
     font-family: $font-family-medium
     text-align: center
     .mark
@@ -828,7 +828,7 @@
     background: $color-main
     margin-bottom: 12px
   .bot-tip
-    color: $color-text-assist
+    color: #808080
     font-size: 13px
     font-family: $font-family-regular
     text-align: center
