@@ -20,7 +20,7 @@
           </div>
         </div>
         <button v-if="item.groupon_status === 0" class="goods-btn share-button" :id="index" @click.stop="shareGroup(item)">邀请邻居</button>
-        <div v-else class="goods-btn">拼团详情</div>
+        <button v-else class="goods-btn">拼团详情</button>
       </li>
     </ul>
     <section class="noting" v-else-if="isShowEmpty">
