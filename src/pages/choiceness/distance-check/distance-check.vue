@@ -8,6 +8,7 @@
     >
       当前位置不在配送范围内，建议换个地址试试<p class="triangle"></p>
     </section>
+    <p v-if="top && !isShowGuidelines" class="tipTop" :style="{bottom: height + 'px'}">当前位置不在配送范围内，建议换个地址试试</p>
   </div>
 </template>
 
@@ -19,16 +20,30 @@
     data() {
       return {
         top: 0,
-        isShowGuidelines: true
+        isShowGuidelines: true,
+        height: -100,
+        isShowTopTip: false
       }
+    },
+    onLoad() {
+      setTimeout(() => {
+        wx.createSelectorQuery().select('#customTabBar').boundingClientRect().exec(res => {
+          this.height = res[0].height
+        })
+      }, 500)
+    },
+    onUnload() {
+      this.isShowGuidelines = true
+      this.top = 0
+      this.height = -100
     },
     methods: {
       setTop(top) {
         this.top = top + 3
         this.isShowGuidelines = true
-        setTimeout(() => {
-          this.hide()
-        }, 2000)
+        // setTimeout(() => {
+        //   this.hide()
+        // }, 2000)
       },
       hide() {
         this.isShowGuidelines = false
@@ -40,6 +55,19 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   $color-triangle-width = 5px
   @import "~@designCommon"
+
+  .tipTop
+    position :fixed
+    bottom :-100px
+    left:0
+    right :0
+    padding :0 12px
+    height :40px
+    background: #FFEBD6
+    font-family: $font-family-regular
+    font-size: 15px;
+    color: #FA7500;
+    line-height: @height
 
   .distance-check
     position: fixed
