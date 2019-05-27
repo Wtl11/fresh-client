@@ -476,6 +476,7 @@
         let goodsList = this.data.goods
         goodsList.sku_id = goodsList.goods_sku_id
         goodsList.num = number
+        goodsList.activity_id = this.activityId
         let price = goodsList.trade_price
         let flag = await this.checkGroupon()
         // console.log(flag, 'flag')

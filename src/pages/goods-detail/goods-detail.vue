@@ -70,14 +70,15 @@
                    class="header-title active-common group"
           >
             <div class="banner-title-main">
+              <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.4/pic-pintuan_xq.png'" mode="aspectFill" class="banner-title-bg">
               <div class="banner-main-box">
                 <div class="banner-main-left">
                   <div class="left-price">{{goodsMsg.trade_price}}</div>
                   <div class="left-price-text">元</div>
                   <div class="left-price-line">
                     <div class="line-price-top">
-                      <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-qgj@2x.png'" class="text-img" mode="aspectFill">
-                      <div class="text">{{iconText}}</div>
+                      <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.4/pic-qgj@1x.png'" class="text-img" mode="aspectFill">
+                      <div class="text group">{{iconText}}</div>
                     </div>
                     <div class="line-price-box">{{goodsMsg.original_price}}元</div>
                   </div>
@@ -162,7 +163,7 @@
                   <p class="text">还差<span class="color">{{item.surplus_number}}人</span>拼成</p>
                   <span v-if="item.diff" class="time">剩余{{item.diff.hour}}:{{item.diff.minute}}:{{item.diff.second}}</span>
                 </div>
-                <button formType="submit" class="go-collage" @click="jumpToCollage(item)">去参团</button>
+                <button formType="submit" hover-class="none" class="go-collage" @click="jumpToCollage(item)">去参团</button>
               </div>
             </section>
           </block>
@@ -991,7 +992,7 @@
       height: 50px
       line-height: 50px
       color: #1D2023
-      font-size: $font-size-14
+      font-size: $font-size-15
       font-family: $font-family-medium
       border-bottom-1px(#ECEDF1)
     .collage-scroll
@@ -1017,7 +1018,7 @@
         align-items: center
       .logo
         width: 40px
-        height: 40px
+        height: @width
         border-radius: 50%
       .name
         flex: 1
@@ -1032,12 +1033,15 @@
         display: flex
         align-itmes: center
       .context
-        width :72px
+        width :80px
         font-size: $font-size-12
         color: #1D2023
         font-family: $font-family-regular
-        .color
-          color: #FA7500
+        .text
+          letter-spacing: 0
+          .color
+            padding :0 3px
+            color: #FA7500
         .time
           margin-top: 5px
       .go-collage
@@ -1045,7 +1049,7 @@
         height: 30px
         font-family: $font-family-regular
         font-size: $font-size-14
-        margin-left: 15px
+        margin-left: 7px
         line-height: 30px
         text-align: center
         border-radius: 30px
@@ -1314,6 +1318,8 @@
         height :19px
         border :0.5px solid $color-white
         layout(row,block,nowrap)
+        border-radius :2px
+        overflow :hidden
         .right
           padding-left :4px
           font-family: $font-family-medium
@@ -1336,8 +1342,9 @@
         width: 100%
         border-top-left-radius: 8px
         border-top-right-radius: 8px
+        overflow :hidden
       &.group
-        background: linear-gradient(90deg, #FD4C46 0%, #FB6C21 100%);
+        position :relative
       .banner-title-main
         padding-bottom: 13vw
         width: 100%
@@ -1348,6 +1355,8 @@
           bottom: 0
           width: 100%
           height: 100%
+          border-top-left-radius: 8px
+          border-top-right-radius: 8px
         .banner-main-box
           position: absolute
           left: 0
@@ -1391,6 +1400,8 @@
                 text-align: center
                 position: relative
                 z-index: 11
+                &.group
+                  color: #FF4343
             .line-price-box
               font-size: $font-size-12
               font-family: $font-family-regular
