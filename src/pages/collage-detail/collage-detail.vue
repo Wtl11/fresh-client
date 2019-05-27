@@ -552,8 +552,8 @@
           this.showShare()
         } else if (this.btnShow === 2) {
           // console.log(2)
-          // -----------参团成功或者拼主拼团成功跳转去我的订单
-          wx.navigateTo({url: `/pages/order-list?id=&index=0`}) // 我的订单 todo
+          // -----------参团成功或者拼主拼团成功跳转去制定订单详情
+          wx.navigateTo({url: `/pages/order-detail?id=${this.data.customer_order_id}`})
         } else if (this.btnShow === 3) {
           // console.log(3)
           // -----------返回首页
