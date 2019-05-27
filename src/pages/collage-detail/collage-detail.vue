@@ -383,6 +383,7 @@
     },
     async onShow() {
       let option = isEmptyObject(this.$mp.query) ? this.$mp.appOptions.query : this.$mp.query
+      console.warn('拼团详情options:', option)
       this.id = option.id || option.orderId
       if (option.shopId) {
         wx.setStorageSync('shopId', option.shopId)
@@ -488,7 +489,8 @@
         goodsList.activity = this.data.activity
         let orderInfo = {
           goodsList: new Array(goodsList),
-          total: total
+          total: total,
+          deliverAt: ''
         }
         this.setOrderInfo(orderInfo)
         wx.navigateTo({url: `/pages/submit-order`})
@@ -538,6 +540,10 @@
         this.status = e.target.value
       },
       async clickBtn() {
+        let isLogin = await this.$isLogin()
+        if (!isLogin) {
+          return
+        }
         let status = +this.status
         if (this.btnShow === 1) {
           // console.log(1)

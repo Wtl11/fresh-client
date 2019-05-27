@@ -255,28 +255,28 @@
               <img
                 lazy-load
                 mode="widthFix"
-                v-if="imageUrl && item.module_name === 'groupon'"
+                v-if="imageUrl && item.module_name === ACTIVE_TYPE.GROUP_ON"
                 :src="imageUrl + '/yx-image/2.4/pic-ptfx@2x.png'"
                 class="banner-image">
               <img
                 lazy-load
                 mode="widthFix"
-                v-if="imageUrl && item.module_name === 'new_client'"
+                v-if="imageUrl && item.module_name === ACTIVE_TYPE.NEW_CLIENT"
                 :src="imageUrl + '/yx-image/2.4/pic-xrth@2x.png'"
                 class="banner-image">
               <img
                 lazy-load
                 mode="widthFix"
-                v-if="imageUrl && item.module_name === 'goods_hot_tag'"
+                v-if="imageUrl && item.module_name === ACTIVE_TYPE.GOODS_HOT_TAG"
                 :src="imageUrl + '/yx-image/2.4/pic-jrbk@2x.png'"
                 class="banner-image">
               <img
                 lazy-load
                 mode="widthFix"
-                v-if="imageUrl && item.module_name === 'guess'"
+                v-if="imageUrl && item.module_name === ACTIVE_TYPE.GUESS"
                 :src="imageUrl + '/yx-image/2.4/pic-cnxh@2x.png'"
                 class="banner-image">
-              <button v-if="item.module_name !== 'guess'" class="share-button" open-type="share" :id="'share-' + item.module_name"></button>
+              <button v-if="item.module_name !== ACTIVE_TYPE.GUESS" class="share-button" open-type="share" :id="'share-' + item.module_name"></button>
               <block v-for="(child, idx) in item.list" :key="idx">
                 <div class="panel-goods-wrapper"
                      @click="handleJumpToGoodsDetail(child, item.module_name)"
@@ -316,7 +316,7 @@
                   </div>
                 </div>
               </block>
-              <article v-if="item.list.length < 1 && item.module_name !== 'guess' " class="goods-empty">
+              <article v-if="item.list.length < 1 && item.module_name !== ACTIVE_TYPE.GUESS " class="goods-empty">
                 <div class="empty-wrapper">本活动暂未开始，可浏览其他活动哦！</div>
               </article>
             </section>
@@ -554,7 +554,6 @@
       }
     },
     async onPullDownRefresh() {
-      this._refreshLocation()
       this._resetGuessParams()
       this._getCouponModalList()
       this._getLocation()
@@ -592,15 +591,15 @@
         moduleName = res.target.id.replace('share-', '')
       }
       switch (moduleName) {
-        case 'new_client':
+        case [ACTIVE_TYPE.NEW_CLIENT]:
           imgUrl = '/yx-image/2.4/pic-xrth_share@2x.png'
           title = `${this.socialName}-赞播优鲜社区团购`
           break
-        case 'goods_hot_tag':
+        case [ACTIVE_TYPE.GOODS_HOT_TAG]:
           imgUrl = '/yx-image/2.4/pic-jrbp_share@2x.png'
           title = `${this.socialName}-赞播优鲜社区团购`
           break
-        case 'groupon' :
+        case [ACTIVE_TYPE.GROUP_ON] :
           imgUrl = '/yx-image/2.4/pic-ptfx_share@2x.png'
           title = `${this.socialName}-赞播优鲜社区团购`
           break
@@ -630,7 +629,7 @@
         wx.navigateTo({url: `/pages/classify?id=${item.id}`})
       },
       handleGoodsButton(child = {}, item = {}) {
-        if (item.module_name === 'groupon') {
+        if (item.module_name === ACTIVE_TYPE.GROUP_ON) {
           this.handleJumpToGoodsDetail(child, item.module_name)
         } else {
           this.addShoppingCart(child)
@@ -639,6 +638,7 @@
       _resetGuessParams() {
         this.guessPage = 1
         this.guessHasMore = true
+        this.guessList = []
       },
       _getGuessList() {
         if (this._isLoading) return
@@ -703,8 +703,8 @@
           })
         }
         arr.push({
-          ...TAB_ARR_CONFIG['guess'],
-          module_name: 'guess'
+          ...TAB_ARR_CONFIG[ACTIVE_TYPE.GUESS],
+          module_name: ACTIVE_TYPE.GUESS
         })
         this.activeTabInfo = arr
       },
