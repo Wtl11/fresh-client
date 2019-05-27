@@ -617,12 +617,13 @@
           }
         }
         if (this.activityType === ACTIVE_TYPE.GROUP_ON) {
-          let flag = await this._checkAbleCreateGroup(0, number)
-          if (!flag) return
           if (type) {
             price = this.goodsMsg.goods_sale_price
             goodsList.trade_price = price
+            goodsList.activity_id = 0
           } else {
+            let flag = await this._checkAbleCreateGroup(this.joinGroupId || 0, number)
+            if (!flag) return
             goodsList.url = `/pages/collage-detail`
             goodsList.source = 'c_groupon'
             goodsList.groupon_id = this.joinGroupId || 0
@@ -637,7 +638,6 @@
           total: total,
           deliverAt: this.deliverAt
         }
-        console.log(orderInfo)
         this.setOrderInfo(orderInfo)
         wx.navigateTo({url: `/pages/submit-order`})
       },
