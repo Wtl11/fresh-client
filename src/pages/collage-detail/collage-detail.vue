@@ -712,14 +712,13 @@
       font-size: $font-size-12
       font-family: $font-family-regular
       .total
-        padding: 2px 4px
+        padding: 1px 4px
         background: rgba(255,133,6,0.15)
         border-radius: 2px
       .count
-        padding: 2px 4px
+        padding: 0 3px
         border-radius: 2px
         margin-left: 5px
-        box-sizing: border-box
         border: 1px solid rgba(250,117,0,0.20)
     .price
       color: #FA7500
