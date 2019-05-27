@@ -95,6 +95,7 @@
   import ClearWatch from '@mixins/clear-watch'
   import LoadingMore from '@components/loading-more/loading-more'
   import {ACTIVE_TYPE} from '@utils/contants'
+  import {objDeepCopy} from '../../utils/common'
 
   export default {
     mixins: [ClearWatch],
@@ -272,7 +273,7 @@
           this.$wechat.showToast('请选择商品!')
           return
         }
-        const goodsList = [...this.checkedGoods].map(item => {
+        const goodsList = objDeepCopy(this.checkedGoods).map(item => {
           if (item.is_new_client === 0) {
             item.trade_price = item.goods_sale_price
           }
