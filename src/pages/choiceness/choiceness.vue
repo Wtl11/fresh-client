@@ -624,6 +624,8 @@
       _resetLocation() {
         this.latitude = 0
         this.longitude = 0
+        this._isShowDistance = false
+        this.$refs.distance && this.$refs.distance.reset()
       },
       handleJumpToClassify(item) {
         wx.navigateTo({url: `/pages/classify?id=${item.id}`})
@@ -781,7 +783,9 @@
             let flag = res.intersectionRatio > 0
             let title = flag ? '赞播优鲜' : '赞播优鲜·' + this.socialName
             this.$refs.navigationBar && this.$refs.navigationBar.setTranslucentTitle(title)
-            this.$refs.distance && this.$refs.distance.hide()
+            if (this._isShowDistance) {
+              this.$refs.distance && this.$refs.distance.hide()
+            }
             resolve()
           })
         })
@@ -924,6 +928,7 @@
             res = await API.Global.checkShopDistance({longitude: this.longitude, latitude: this.latitude})
             this.groupInfo = res.data.shop
             if (res.data.distance_judge !== 0) {
+              this._isShowDistance = true
               this.$refs.distance && this.$refs.distance.setTop(this._navigationBarHeight + 30)
             }
           }

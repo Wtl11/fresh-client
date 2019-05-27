@@ -8,7 +8,7 @@
     >
       当前位置不在配送范围内，建议换个地址试试<p class="triangle"></p>
     </section>
-    <p v-if="top && !isShowGuidelines" class="tipTop" :style="{bottom: height + 'px'}">当前位置不在配送范围内，建议换个地址试试</p>
+    <p v-if="isShowTopTip" class="tipTop" :style="{bottom: height + 'px'}">当前位置不在配送范围内，建议换个地址试试</p>
   </div>
 </template>
 
@@ -20,7 +20,7 @@
     data() {
       return {
         top: 0,
-        isShowGuidelines: true,
+        isShowGuidelines: false,
         height: -100,
         isShowTopTip: false
       }
@@ -33,9 +33,9 @@
       }, 500)
     },
     onUnload() {
-      this.isShowGuidelines = true
       this.top = 0
       this.height = -100
+      this.reset()
     },
     methods: {
       setTop(top) {
@@ -47,6 +47,13 @@
       },
       hide() {
         this.isShowGuidelines = false
+        this.showTopTip()
+      },
+      showTopTip() {
+        this.isShowTopTip = true
+      },
+      reset() {
+        this.isShowTopTip = false
       }
     }
   }
