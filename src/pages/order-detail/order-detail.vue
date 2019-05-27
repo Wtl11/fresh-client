@@ -589,7 +589,8 @@
         justify-content: space-between
 
         .name
-          width: 100%
+          flex: 1
+          overflow: hidden
           font-family: $font-family-regular
           font-size: $font-size-14
           color: $color-sub
