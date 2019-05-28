@@ -113,6 +113,12 @@
       ...cartMethods,
       async _changeTab(index, id, e) {
         if (this.tabIndex === index) return
+        // 如果是切换旁边的tab就加上动画，不是旁边的tab就不要动画
+        if (this.tabIndex === index + 1 || this.tabIndex === index - 1) {
+          this.boxTransition = 'all .3s'
+        } else {
+          this.boxTransition = ''
+        }
         this._setViewToItem(index)
         this.move = e.target.offsetLeft
         this.classifyId = id
@@ -139,11 +145,6 @@
           }
           res.data.forEach((item, index) => {
             if (item.id * 1 === this.classifyId * 1) {
-              if (isLoad) {
-                setTimeout(() => {
-                  this.boxTransition = 'all .3s'
-                }, 50)
-              }
               this._setViewToItem(index)
             }
           })
