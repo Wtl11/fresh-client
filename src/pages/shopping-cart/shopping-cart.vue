@@ -123,7 +123,8 @@
         height: 0,
         page: 1,
         limit: 10,
-        hasMore: true
+        hasMore: true,
+        curShopId: ''
       }
     },
     async onTabItemTap() {
@@ -132,13 +133,26 @@
     onLoad() {
       let res = this.$wx.getSystemInfoSync()
       this.height = res.statusBarHeight >= 44 ? 28 : 0
-      if (!wx.getStorageSync('token')) return
-      this._getShopCart(true)
-      this.getCarRecommend()
     },
     async onShow() {
       if (!wx.getStorageSync('token')) return
-      await this._getShopCart(false)
+      await this._getShopCart()
+      let shopId = wx.getStorageSync('shopId')
+      if (!shopId) {
+        let res = await API.Choiceness.getDefaultShopInfo()
+        shopId = res.data.id
+        wx.setStorageSync('shopId', shopId)
+      }
+      // 判断是否切店，如果切店了重新读猜你喜欢
+      if (this.curShopId * 1 !== shopId * 1) {
+        wx.pageScrollTo({
+          scrollTop: 0,
+          duration: 0
+        })
+        this.page = 1
+        this.getCarRecommend()
+      }
+      this.curShopId = shopId
     },
     onReachBottom() {
       if (!this.hasMore) return
