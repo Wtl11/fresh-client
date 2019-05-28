@@ -743,13 +743,14 @@
         font-size: $font-size-14
         margin-top: -2px
   .top-text
-    height: 40px
-    font-size: 15px
+    height: 10.7vw
+    font-size: 4vw
     font-family: $font-family-regular
     color: #FF8300
     padding: 0 12px
-    line-height: 40px
+    line-height: @height
     background: #FFEBD6
+    no-wrap()
   .status-text
     font-family: $font-family-medium
     color: $color-main
