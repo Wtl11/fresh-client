@@ -655,7 +655,7 @@
           } else {
             this.guessList = this.guessList.concat(arr)
           }
-          this.guessHasMore = arr.length
+          this.guessHasMore = arr.length > 0 && arr.length >= 10
         }).finally(() => {
           this._isLoading = false
         })
@@ -690,7 +690,10 @@
       // 添加监听
       _addMonitor() {
         setTimeout(() => {
-          if (!(this.activeTabInfo && this.activeTabInfo.length > 1)) return
+          if (!(this.activeTabInfo && this.activeTabInfo.length > 1)) {
+            this.guessList.length === 0 && this._getGuessList()
+            return
+          }
           if (!this._navigationBarHeight) return
           const navigationBarHeight = this._navigationBarHeight
           const top = navigationBarHeight + 59
@@ -713,11 +716,22 @@
                 let id = res.id.replace('panel', '') * 1
                 this._isHelpScroll = false
                 this.activeTabIndex = id
-                if (id === this.activeTabInfo.length - 1 && this.guessList.length === 0) {
-                  this._getGuessList()
-                }
               }
             })
+          // wx.createIntersectionObserver()
+          //   .relativeToViewport()
+          //   .observe('.panel' + this.activeTabInfo.length - 1, res => {
+          //     console.log(this.activeTabInfo.length - 1)
+          //     if (res.intersectionRatio > 0 && !this._isScrolling && this.guessList.length === 0) {
+          //       this._getGuessList()
+          //       // let id = res.id.replace('panel', '') * 1
+          //       // this._isHelpScroll = false
+          //       // this.activeTabIndex = id
+          //       // if (id === this.activeTabInfo.length - 1 && this.guessList.length === 0) {
+          //       //   this._getGuessList()
+          //       // }
+          //     }
+          //   })
         }, 500)
       },
       _helpObserver(e) {

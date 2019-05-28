@@ -132,7 +132,7 @@
         </div>
       </div>
       <!--拼团列表-->
-      <div v-if="activityType === ACTIVE_TYPE.GROUP_ON" class="collage-box">
+      <div v-if="activityType === ACTIVE_TYPE.GROUP_ON && collageList.length > 0" class="collage-box">
         <div class="title">{{collageTotal}}位邻居正在拼单，可直接参与</div>
         <swiper v-if="collageList.length > 1"  class="collage-scroll" :autoplay="autoplay" circular vertical interval="5000" :display-multiple-items="2">
           <block v-for="(item, index) in collageList" :key="index">
@@ -391,7 +391,6 @@
     onReady() {
       let res = this.$wx.getSystemInfoSync()
       this.statusBarHeight = res.statusBarHeight || 20
-      console.log(this.statusBarHeight)
     },
     onUnload() {
       this.$refs.navigationBar && this.$refs.navigationBar._initHeadStyle()

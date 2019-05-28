@@ -69,7 +69,9 @@ export const actions = {
               let timer = null
               let count = 0
               API.Global.checkPayResult({order_id: orderId}).then(res => {
+                console.warn(res, '支付轮询')
                 if (res.data.is_payed === 1) {
+                  console.warn(`${orderInfo.url}?orderId=${orderId}`)
                   wx.redirectTo({url: `${orderInfo.url}?orderId=${orderId}`})
                 } else {
                   _loopCheckPay({orderId, orderInfo, timer, count})
