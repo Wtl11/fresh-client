@@ -69,7 +69,7 @@ export const actions = {
               let timer = null
               let count = 0
               API.Global.checkPayResult({order_id: orderId}).then(res => {
-                if (res.is_payed === 1) {
+                if (res.data.is_payed === 1) {
                   wx.redirectTo({url: `${orderInfo.url}?orderId=${orderId}`})
                 } else {
                   _loopCheckPay({orderId, orderInfo, timer, count})
@@ -121,7 +121,7 @@ function _loopCheckPay({orderId, orderInfo, timer = null, count = 0}) {
       return
     }
     API.Global.checkPayResult({order_id: orderId}).then(res => {
-      if (res.is_payed === 1) {
+      if (res.data.is_payed === 1) {
         clearInterval(timer)
         wx.redirectTo({url: `${orderInfo.url}?orderId=${orderId}`})
       }
