@@ -558,6 +558,7 @@
     border-bottom-1px($color-line)
 
     .goods-info-box
+      height: 75px
       layout(row)
       flex: 1
       align-items: center
@@ -579,7 +580,7 @@
 
     .goods-info
       box-sizing: border-box
-      padding-left: 2.67vw
+      padding-left: 10px
       flex: 1
       overflow: hidden
 
@@ -624,11 +625,11 @@
           text-align: center
 
       .guige
+        height: 20px
         font-family: $font-family-regular
         font-size: $font-size-14
         color: $color-text-sub
-        margin-top: 7px
-        margin-bottom: 20px
+        margin-bottom: 9px
 
       .price
         layout(row)
