@@ -432,6 +432,8 @@
       this.statusBarHeight = res.statusBarHeight || 20
     },
     onUnload() {
+      clearInterval(this._1Timer)
+      clearInterval(this._groupTimer)
       this.$refs.navigationBar && this.$refs.navigationBar._initHeadStyle()
       this.eventCount = 0
       this.$refs.shareList && this.$refs.shareList.hideLink()
