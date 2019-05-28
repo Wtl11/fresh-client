@@ -225,7 +225,7 @@
         // 拼主开团成功、拼主待成团
         // 参团者参团成功、参团者待成团
         if (this.isMain) {
-          if (this.orderId || +this.status === 0) {
+          if (+this.status === 0) {
             return true
           }
         } else if (!this.isMain && this.isGroup) {
@@ -250,7 +250,7 @@
         // 参团者参团成功、参团者待成团
         // 未参团者一键参团
         if (this.isMain) {
-          if (this.orderId || +this.status === 0) {
+          if (+this.status === 0) {
             return true
           }
         } else if (!this.isMain && this.isGroup) {
@@ -445,7 +445,7 @@
         if (this.status < 3) {
           this.statusNum = this.status
         }
-        if (this.orderId && this.isMain) {
+        if (this.orderId && this.isMain && +this.status === 0) {
           this.statusNum = 3
         } else if (this.orderId && !this.isMain && +this.status === 0) {
           this.statusNum = 4
