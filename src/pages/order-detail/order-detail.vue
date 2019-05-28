@@ -586,7 +586,7 @@
       .tit
         layout(row)
         align-items: center
-        height: 16px
+        height: 25px
         justify-content: space-between
 
         .name
