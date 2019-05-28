@@ -7,7 +7,7 @@
           <p>{{item.created_at}}</p>
           <p :class="item.groupon_status === 0 ? 'corp-' + corpName + '-money' : ''">{{item.groupon_status_str}}</p>
         </div>
-        <img v-if="imageUrl" :src="imageUrl+'/yx-image/2.4/pic-pinzhu@2x.png'" alt="" class="leader-tips">
+        <img v-if="imageUrl && item.is_main === 1" :src="imageUrl+'/yx-image/2.4/pic-pinzhu@2x.png'" alt="" class="leader-tips">
         <div class="goods-info">
           <img class="img" mode="aspectFill" :src="item.goods.goods_cover_image">
           <div class="info-con">
@@ -22,7 +22,7 @@
         <button v-else class="goods-btn">拼团详情</button>
       </li>
     </ul>
-    <section class="noting" v-else-if="isShowEmpty">
+    <section v-else-if="isShowEmpty" class="noting">
       <div class="noting-img">
         <img class="img" v-if="imageUrl" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'" alt="">
       </div>
@@ -61,6 +61,10 @@
     onLoad() {
       this._getGroupBuyList()
     },
+    onShow() {
+      // onShow只拿优惠券
+      this._getGroupBuyList(true)
+    },
     onReachBottom() {
       if (!this.hasMore) return
       this.page++
@@ -78,9 +82,13 @@
       }
     },
     methods: {
-      async _getGroupBuyList() {
+      async _getGroupBuyList(onlyCoupon = false) {
         API.Order.getGroupList({page: this.page}).then((res) => {
           if (res.error === this.$ERR_OK) {
+            res.coupon && res.coupon.length > 0 && this._showCoupon(res.coupon)
+            if (onlyCoupon) {
+              return
+            }
             if (this.page === 1) {
               this.groupBuyList = res.data
             } else {
@@ -92,13 +100,12 @@
             if (this.groupBuyList.length >= res.meta.total) {
               this.hasMore = false
             }
-            res.coupon && res.coupon.length > 0 && this._getCouponList(res.coupon)
           } else {
             this.$wechat.showToast(res.message)
           }
         })
       },
-      async _getCouponList(couponArr) {
+      async _showCoupon(couponArr) {
         couponArr && this._ref('couponModal', 'show', couponArr)
       },
       // 工具-->调用子节点的方法
