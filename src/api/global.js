@@ -25,5 +25,10 @@ export default {
   getFinishGroupList(data = null, loading = false, toast = false) {
     const url = `/api/wap/activity/activity-groupon-goods-customer`
     return request.get({url, data, loading, toast})
+  },
+  // 检查订单支付状态[v2.4.1.2]
+  checkPayResult(data = null, loading = false, toast = false) {
+    const url = `/api/wap/check-order-pay-status`
+    return request.get({url, data, loading, toast})
   }
 }

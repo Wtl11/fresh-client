@@ -41,6 +41,8 @@ export const actions = {
     commit('SET_BEFORE_TOTAL', total)
   },
   submitOrder({commit, state}, {orderInfo, complete}) {
+    let timer = null
+    let count = 0
     API.SubmitOrder.submitOrder(orderInfo)
       .then(res => {
         console.log(res, 123)
@@ -66,13 +68,21 @@ export const actions = {
           signType,
           paySign,
           success (res) {
-            setTimeout(() => {
-              if (orderInfo.url) {
-                wx.redirectTo({url: `${orderInfo.url}?orderId=${orderId}`})
-              } else {
+            if (orderInfo.url) {
+              API.Global.checkPayResult({order_id: orderId}).then(res => {
+                if (res.is_payed === 1) {
+                  wx.redirectTo({url: `${orderInfo.url}?orderId=${orderId}`})
+                } else {
+                  _loopCheckPay({orderId, orderInfo})
+                }
+              }).catch(e => {
+                _loopCheckPay({orderId, orderInfo})
+              })
+            } else {
+              setTimeout(() => {
                 wx.redirectTo({url: `/pages/pay-result?orderId=${orderId}&&type=0&total=${state.total}`})
-              }
-            }, 1500)
+              }, 1500)
+            }
           },
           fail (res) {
             wx.redirectTo({url: `/pages/order-detail?id=${orderId}&&type=0`})
@@ -99,4 +109,24 @@ export const mutations = {
   SET_BEFORE_TOTAL(state, total) {
     state.beforeTotal = total
   }
+}
+
+function _loopCheckPay({orderId, orderInfo, timer = null, count = 0}) {
+  timer && clearInterval(timer)
+  timer = setInterval(() => {
+    count++
+    if (count >= 10) {
+      clearInterval(timer)
+      wx.redirectTo({url: `/pages/order-detail?id=${orderId}&&type=0`})
+      return
+    }
+    API.Global.checkPayResult({order_id: orderId}).then(res => {
+      if (res.is_payed === 1) {
+        clearInterval(timer)
+        wx.redirectTo({url: `${orderInfo.url}?orderId=${orderId}`})
+      }
+    }).catch(e => {
+      console.warn(e)
+    })
+  }, 1000)
 }
