@@ -1,6 +1,6 @@
 <template>
   <div class="lost">
-    <navigation-bar title="开启定位"></navigation-bar>
+    <navigation-bar title="开启定位" :showArrow="false"></navigation-bar>
     <div class="img-box">
       <img :src="imageUrl + '/yx-image/order/pic-address@2x.png'" v-if="imageUrl" class="error-img">
       <p class="text">亲，我们未获得您的位置信息</p>
@@ -34,7 +34,7 @@
                 if (TAB_REG.test(path)) {
                   wx.switchTab({url})
                 } else {
-                  wx.navigateTo({url})
+                  wx.redirectTo({url})
                 }
               }
             })

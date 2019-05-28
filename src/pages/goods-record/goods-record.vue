@@ -164,8 +164,12 @@
     },
     onLoad(options) {
       console.warn(options, '<-----参数---->')
-      this._options = options || {}
+      if (!isEmptyObject(options)) {
+        this._options = options || {}
+      }
+      // console.warn(this._options, '<--_options---参数---->')
       this._initPageParams(options)
+      console.warn(this._options, '<--_options---参数---->')
       this._getList(false)
     },
     onShow() {

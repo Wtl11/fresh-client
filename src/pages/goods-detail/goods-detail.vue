@@ -362,7 +362,9 @@
       }
     },
     onLoad(options) {
-      this._options = options || {}
+      if (!isEmptyObject(options)) {
+        this._options = options || {}
+      }
       ald.aldstat.sendEvent('商品详情')
       // this._initPageParams(options)
       // this.getQrCode()

@@ -107,7 +107,6 @@
   import LoadingMore from '@components/loading-more/loading-more'
   import API from '@api'
   const PAGE_NAME = 'COLLAGE_DETAIL'
-
   // 3开团成功 7参团成功 9不在范围 为自定义状态。
   const STATUS_ARR = [
     {
@@ -370,17 +369,9 @@
       clearInterval(this.timer)
     },
     onLoad(options) {
-      this._options = options || {}
-      // let option = options
-      // if (!option) {
-      //   option = isEmptyObject(this.$mp.query) ? this.$mp.appOptions.query : this.$mp.query
-      // }
-      // console.warn('options:', option)
-      // this.orderId = option.orderId || ''
-      // this.id = option.id || ''
-      // if (option.shopId) {
-      //   wx.setStorageSync('shopId', option.shopId)
-      // }
+      if (!isEmptyObject(options)) {
+        this._options = options || {}
+      }
     },
     async onShow() {
       let option = {}

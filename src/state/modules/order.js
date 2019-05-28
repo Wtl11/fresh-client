@@ -68,11 +68,15 @@ export const actions = {
             if (orderInfo.url) {
               let timer = null
               let count = 0
+              wechat.showLoading()
               API.Global.checkPayResult({order_id: orderId}).then(res => {
                 console.warn(res, '支付轮询')
                 if (res.data.is_payed === 1) {
                   console.warn(`${orderInfo.url}?orderId=${orderId}`)
-                  wx.redirectTo({url: `${orderInfo.url}?orderId=${orderId}`})
+                  setTimeout(() => {
+                    wechat.hideLoading()
+                    wx.redirectTo({url: `${orderInfo.url}?orderId=${orderId}`})
+                  }, 1000)
                 } else {
                   _loopCheckPay({orderId, orderInfo, timer, count})
                 }
@@ -113,19 +117,26 @@ export const mutations = {
 }
 
 function _loopCheckPay({orderId, orderInfo, timer = null, count = 0}) {
+  wechat.showLoading()
   timer && clearInterval(timer)
   timer = setInterval(() => {
     count++
     console.warn(count, '支付轮询')
     if (count >= 10) {
+      wechat.hideLoading()
       clearInterval(timer)
       wx.redirectTo({url: `/pages/order-detail?id=${orderId}&&type=0`})
       return
     }
     API.Global.checkPayResult({order_id: orderId}).then(res => {
+      console.warn('支付：' + res)
       if (res.data.is_payed === 1) {
         clearInterval(timer)
-        wx.redirectTo({url: `${orderInfo.url}?orderId=${orderId}`})
+        setTimeout(() => {
+          wechat.hideLoading()
+          wx.redirectTo({url: `${orderInfo.url}?orderId=${orderId}`})
+        }, 1000)
+        // wx.redirectTo({url: `${orderInfo.url}?orderId=${orderId}`})
       }
     }).catch(e => {
       console.warn(e)
