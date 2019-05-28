@@ -1009,7 +1009,7 @@
     overflow :auto
   // 服务图标
   .server-icon-wrapper
-    height :27px
+    height :28px
     padding :0 20px
     display: flex
     flex-wrap :nowrap
@@ -1217,7 +1217,7 @@
 
   // 分类
   .classify-wrapper
-    padding :6px 12px 11px
+    padding :6px 12px 8px
     display :flex
     flex-wrap: wrap
     .classify-item-wrapper

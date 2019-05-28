@@ -1,9 +1,9 @@
 <template>
   <form action="" report-submit @submit="$getFormId">
     <div class="active-detail">
-      <navigation-bar ref="navigationBar" :title="msgTitle" :showArrow="true" :translucent="false"></navigation-bar>
+      <navigation-bar ref="navigationBar" :title="msgTitle" :translucent="true"></navigation-bar>
       <section class="banner-box">
-        <section v-if="buyUsers.length" class="buy-users">
+        <section v-if="buyUsers.length" class="buy-users" :style="{top: statusBarHeight + 44 + 'px'}">
           <swiper
             class="carousel"
             :autoplay="true"
@@ -279,7 +279,8 @@
         currentNum: 1,
         collageList: [],
         collageTotal: 0,
-        autoplay: true
+        autoplay: true,
+        statusBarHeight: -100
       }
     },
     computed: {
@@ -386,6 +387,11 @@
     onHide() {
       this._clearTimer()
       clearInterval(this._groupTimer)
+    },
+    onReady() {
+      let res = this.$wx.getSystemInfoSync()
+      this.statusBarHeight = res.statusBarHeight || 20
+      console.log(this.statusBarHeight)
     },
     onUnload() {
       this.$refs.navigationBar && this.$refs.navigationBar._initHeadStyle()
@@ -768,7 +774,8 @@
           this.$wechat.hideLoading()
           if (res.error === this.$ERR_OK) {
             this.goodsMsg = res.data
-            this.$refs.navigationBar && this.$refs.navigationBar.setTranslucentTitle(this.goodsMsg.name)
+            this.msgTitle = this.goodsMsg.name
+            // this.$refs.navigationBar && this.$refs.navigationBar.setTranslucentTitle(this.goodsMsg.name)
             this._sendGoodsMsg()
             this._flashAction()
             this._getUnGroupList()
@@ -960,7 +967,6 @@
     background: rgba(17,17,17,0.6)
     border-radius: 36px
     position :absolute
-    top:10px
     left :8px
     z-index :80
     overflow :hidden

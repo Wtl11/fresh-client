@@ -69,10 +69,10 @@
     left:0
     right :0
     padding :0 12px
-    height :40px
+    height :10.7vw
     background: #FFEBD6
     font-family: $font-family-regular
-    font-size: 15px;
+    font-size: 4vw
     color: #FA7500;
     line-height: @height
 

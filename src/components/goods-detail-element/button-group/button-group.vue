@@ -151,15 +151,15 @@
       color: $color-text-main
   .tip-top
     position absolute
-    height :40px
-    top:-39px
+    height :10.7vw
+    top:-10.6vw
     left :0
     right :0
     background: #FFEBD6
     padding :0 12px
     line-height :@height
     font-family: $font-family-regular
-    font-size: 15px;
+    font-size: 4vw
     color: #FA7500;
     z-index :115
     no-wrap()
