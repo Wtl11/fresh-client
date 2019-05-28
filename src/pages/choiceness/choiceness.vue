@@ -536,6 +536,7 @@
             duration: 0
           })
           this.curShopId = this.shopId
+          this.activeTabStyles = ''
           this._resetLocation()
           this._resetBanner()
           this._resetFlash()
@@ -838,7 +839,6 @@
       },
       // 跳转至商品详情页
       handleJumpToGoodsDetail(item, type) {
-        console.log(type, this.ACTIVE_TYPE.FLASH)
         wx.navigateTo({
           url: `/pages/goods-detail?id=${item.goods_id}&activityId=${item.activity_id}&activityType=${type}`
         })
@@ -974,33 +974,40 @@
           let index = 0
           this.activityModuleList.forEach((item) => {
             index++
-            if (item.starting_point_id > 0) {
-              let key = TAB_ARR_CONFIG[item.module_name]
+            let key = TAB_ARR_CONFIG[item.module_name]
+            let activityId = item.starting_point_id || 0
+            // 所有活动
+            if (activityId > 0 && item.module_name !== ACTIVE_TYPE.FLASH) {
               if (item.module_name === ACTIVE_TYPE.GROUP_ON) {
                 API.Home.getGroupList({limit: 20}).then(res => {
                   this.groupList = this._formatListPriceData(res.data)
                 })
               } else {
-                let activityId = item.starting_point_id
-                if (item.module_name === ACTIVE_TYPE.FLASH) {
-                  activityId = this.flashTabInfo[this.flashTabIndex].id || item.starting_point_id
-                }
                 API.Home.getActivityList({activity_id: activityId, page: 1, limit: key.limit}).then(res => {
                   this[key.dataArray] = this._formatListPriceData(res.data)
                 })
               }
+            } else if (activityId === 0 && item.module_name !== ACTIVE_TYPE.FLASH) {
+              this[key.dataArray] = []
             }
+            // 限时抢购活动
+            if (item.module_name === ACTIVE_TYPE.FLASH && item.list.length > 0) {
+              activityId = this.flashTabInfo[this.flashTabIndex].id || item.list[0].id
+              API.Home.getActivityList({activity_id: activityId, page: 1, limit: key.limit}).then(res => {
+                this[key.dataArray] = this._formatListPriceData(res.data)
+              })
+            } else if (item.module_name === ACTIVE_TYPE.FLASH && item.list.length === 0) {
+              this[key.dataArray] = []
+            }
+            // 分享进来的滑动
             if (index >= this.activityModuleList.length && this.shareModuleName) {
               setTimeout(() => {
-                // console.log(this.activeTabInfo, index, item.module_name)
                 let moduleIndex = this.activeTabInfo.findIndex(val => val.module_name === this.shareModuleName)
-                // console.log(moduleIndex)
                 moduleIndex > -1 && this.handleActiveTabChange(moduleIndex)
                 this.shareModuleName = ''
               }, 1000)
             }
           })
-          // console.log(index === this.activityModuleList.length)
         } catch (e) {
           console.error(e)
         }

@@ -20,7 +20,7 @@
     <div v-else class="common-btn over o-6">已抢完</div>
     <button v-if="showRightButton" class="common-btn group right" :class="{disable: buttonInfo.tipTop}"  formType="submit" @click="handleGroupBuy">
       <p class="money">¥{{buttonInfo.tradePrice}}元</p>
-      <p class="text">发起团购</p>
+      <p class="text">发起拼团</p>
     </button>
     <div v-else class="common-btn over">已抢完</div>
   </div>
@@ -82,7 +82,7 @@
         return this.buttonInfo.isShowTwoButton
       },
       showLeftButton() {
-        return this.activeStatus === 1 && this.buttonInfo.base_usable_stock > 0
+        return this.buttonInfo.base_usable_stock > 0
       },
       showRightButton() {
         return this.activeStatus === 1 && this.buttonInfo.usable_stock > 0

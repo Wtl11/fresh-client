@@ -55,6 +55,7 @@
         this.isShowTopTip = true
       },
       reset() {
+        this.isShowGuidelines = false
         this.isShowTopTip = false
       }
     }

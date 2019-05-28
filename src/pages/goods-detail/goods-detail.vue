@@ -37,28 +37,6 @@
           </article>
         </div>
         <article class="header-title-wrapper">
-          <section v-if="activityType === ACTIVE_TYPE.FLASH" class="header-title">
-            <div class="banner-title-main">
-              <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-spxq_bg@2x.png'" mode="aspectFill" class="banner-title-bg">
-              <div class="banner-main-box">
-                <div class="banner-main-left">
-                  <div class="left-price">{{goodsMsg.trade_price}}</div>
-                  <div class="left-price-text">元</div>
-                  <div class="left-price-line">
-                    <div class="line-price-top">
-                      <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-qgj@2x.png'" class="text-img" mode="aspectFill">
-                      <div class="text">秒杀价</div>
-                    </div>
-                    <div class="line-price-box">{{goodsMsg.original_price}}元</div>
-                  </div>
-                </div>
-                <div class="banner-main-right">
-                  <div class="time-text">{{goodsMsg.at_diff_str}}</div>
-                  <div class="time-all-box">{{activityTime.hour}}:{{activityTime.minute}}:{{activityTime.second}}</div>
-                </div>
-              </div>
-            </div>
-          </section>
           <section v-if="activityType === ACTIVE_TYPE.DEFAULT" class="header-title-default">
             <div class="left-price" :class="'corp-' + corpName + '-money'">{{goodsMsg.trade_price}}</div>
             <div class="left-price-text">
@@ -70,32 +48,57 @@
                    class="header-title active-common group"
           >
             <div class="banner-title-main">
-              <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.4/pic-pintuan_xq.png'" mode="aspectFill" class="banner-title-bg">
+              <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.4/pic-pintuan_xq@2x.png'" mode="aspectFill" class="banner-title-bg">
               <div class="banner-main-box">
+                <figure class="group-icon-wrapper">
+                  <div class="left">
+                    <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.4/icon-persont@2x.png'" class="left-icon">
+                  </div>
+                  <p class="right">{{limitPerson}}人拼</p>
+                </figure>
                 <div class="banner-main-left">
                   <div class="left-price">{{goodsMsg.trade_price}}</div>
                   <div class="left-price-text">元</div>
                   <div class="left-price-line">
-                    <div class="line-price-top">
-                      <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.4/pic-qgj@1x.png'" class="text-img" mode="aspectFill">
-                      <div class="text group">{{iconText}}</div>
+                    <div class="line-price-top" style="height: 3px">
+<!--                      <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-qgj@2x.png'" class="text-img" mode="aspectFill">-->
+<!--                      <div class="text">秒杀价</div>-->
                     </div>
                     <div class="line-price-box">{{goodsMsg.original_price}}元</div>
                   </div>
                 </div>
+                <div class="banner-main-right">
+                  <div class="time-text">{{goodsMsg.at_diff_str}}</div>
+                  <div class="time-all-box">{{activityTime.hour}}:{{activityTime.minute}}:{{activityTime.second}}</div>
+                </div>
               </div>
             </div>
-            <figure class="icon-wrapper">
-              <div class="left">
-                <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.4/icon-persont@2x.png'" class="left-icon">
-              </div>
-              <p class="right">{{limitPerson}}人拼</p>
-            </figure>
+<!--            <div class="banner-title-main">-->
+<!--              <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.4/pic-pintuan_xq.png'" mode="aspectFill" class="banner-title-bg">-->
+<!--              <div class="banner-main-box">-->
+<!--                <div class="banner-main-left">-->
+<!--                  <div class="left-price">{{goodsMsg.trade_price}}</div>-->
+<!--                  <div class="left-price-text">元</div>-->
+<!--                  <div class="left-price-line">-->
+<!--                    <div class="line-price-top">-->
+<!--                      <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.4/pic-qgj@1x.png'" class="text-img" mode="aspectFill">-->
+<!--                      <div class="text group">{{iconText}}</div>-->
+<!--                    </div>-->
+<!--                    <div class="line-price-box">{{goodsMsg.original_price}}元</div>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--            <figure class="icon-wrapper">-->
+<!--              <div class="left">-->
+<!--                <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.4/icon-persont@2x.png'" class="left-icon">-->
+<!--              </div>-->
+<!--              <p class="right">{{limitPerson}}人拼</p>-->
+<!--            </figure>-->
           </section>
-          <section v-else-if="activityType !== ACTIVE_TYPE.FLASH"
-                   class="header-title active-common"
-          >
+          <section v-else class="header-title">
             <div class="banner-title-main">
+              <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-spxq_bg@2x.png'" mode="aspectFill" class="banner-title-bg">
               <div class="banner-main-box">
                 <div class="banner-main-left">
                   <div class="left-price">{{goodsMsg.trade_price}}</div>
@@ -108,9 +111,32 @@
                     <div class="line-price-box">{{goodsMsg.original_price}}元</div>
                   </div>
                 </div>
+                <div class="banner-main-right">
+                  <div class="time-text">{{goodsMsg.at_diff_str}}</div>
+                  <div class="time-all-box">{{activityTime.hour}}:{{activityTime.minute}}:{{activityTime.second}}</div>
+                </div>
               </div>
             </div>
           </section>
+<!--          <section v-else-if="activityType !== ACTIVE_TYPE.FLASH"-->
+<!--                   class="header-title active-common"-->
+<!--          >-->
+<!--            <div class="banner-title-main">-->
+<!--              <div class="banner-main-box">-->
+<!--                <div class="banner-main-left">-->
+<!--                  <div class="left-price">{{goodsMsg.trade_price}}</div>-->
+<!--                  <div class="left-price-text">元</div>-->
+<!--                  <div class="left-price-line">-->
+<!--                    <div class="line-price-top">-->
+<!--                      <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-qgj@2x.png'" class="text-img" mode="aspectFill">-->
+<!--                      <div class="text">{{iconText}}</div>-->
+<!--                    </div>-->
+<!--                    <div class="line-price-box">{{goodsMsg.original_price}}元</div>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </section>-->
         </article>
       </section>
       <div class="header-detail">
@@ -132,8 +158,8 @@
         </div>
       </div>
       <!--拼团列表-->
-      <div v-if="activityType === ACTIVE_TYPE.GROUP_ON && collageList.length > 0" class="collage-box">
-        <div class="title">{{collageTotal}}位邻居正在拼单，可直接参与</div>
+      <div v-if="activityType === ACTIVE_TYPE.GROUP_ON" class="collage-box">
+        <div v-if="collageList.length > 0" class="title">{{collageTotal}}位邻居正在拼单，可直接参与</div>
         <swiper v-if="collageList.length > 1"  class="collage-scroll" :autoplay="autoplay" circular vertical interval="5000" :display-multiple-items="2">
           <block v-for="(item, index) in collageList" :key="index">
             <swiper-item class="collage-content">
@@ -168,9 +194,19 @@
             </section>
           </block>
         </article>
-        <div class="collage-scroll" v-if="!collageList.length">
-          <div class="nothing">暂无参团信息~</div>
-        </div>
+<!--        <div class="collage-scroll" v-if="collageList.length === 0">-->
+<!--          <div class="nothing">暂无参团信息~</div>-->
+<!--        </div>-->
+        <p class="group-rule-wrapper" :class="{active: collageList.length > 0}">
+          <span class="number">1</span>
+          <span class="text">.发起拼团/参团</span>
+          <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.4/pic-ptwf@2x.png'" class="icon-arrow">
+          <span class="number">2</span>
+          <span class="text">.拼团成功</span>
+          <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.4/pic-ptwf@2x.png'" class="icon-arrow">
+          <span class="number">3</span>
+          <span class="text">.拼主返券</span>
+        </p>
       </div>
       <buy-record
         v-if="userImgList.length > 0"
@@ -275,7 +311,6 @@
           minute: '00',
           second: '00'
         },
-        timer: null,
         currentNum: 1,
         collageList: [],
         collageTotal: 0,
@@ -307,6 +342,9 @@
             break
           case ACTIVE_TYPE.GOODS_HOT_TAG:
             text = '爆款价'
+            break
+          case ACTIVE_TYPE.FLASH:
+            text = '秒杀价'
             break
           default:
             break
@@ -366,8 +404,6 @@
         this._options = options || {}
       }
       ald.aldstat.sendEvent('商品详情')
-      // this._initPageParams(options)
-      // this.getQrCode()
     },
     onShow() {
       this._initPageParams()
@@ -387,7 +423,8 @@
       this.isFirstLoad = false
     },
     onHide() {
-      this._clearTimer()
+      // this._clearTimer()
+      clearInterval(this._1Timer)
       clearInterval(this._groupTimer)
     },
     onReady() {
@@ -520,26 +557,6 @@
         if (e.target.current) {
           this.currentNum = e.target.current * 1 + 1
         }
-      },
-      _kanTimePlay(diff) {
-        this.activityTime = countDownHandle(diff)
-        this.timer = setTimeout(() => {
-          diff--
-          if (diff < 0) {
-            diff = 0
-          }
-          this.activityTime = countDownHandle(diff)
-          if (this.activityTime.differ <= 0) {
-            this._clearTimer()
-            this.kanTimeEnd()
-          } else {
-            return this._kanTimePlay(diff)
-          }
-        }, 1000)
-      },
-      _clearTimer() {
-        clearTimeout(this.timer)
-        clearInterval(this.timer)
       },
       // 画商品海报
       _actionDrawPoster() {
@@ -790,12 +807,24 @@
       },
       // 限时抢购倒计时开始
       _flashAction() {
-        if (this.activityType !== ACTIVE_TYPE.FLASH) return
+        if (this.activityType === ACTIVE_TYPE.DEFAULT) return
         if (this.activeStatus === BTN_STATUS.DOWN) {
           return
         }
         let diff = this.goodsMsg.at_diff || 0
-        this._kanTimePlay(diff)
+        clearInterval(this._1Timer)
+        this.activityTime = countDownHandle(diff)
+        this._1Timer = setInterval(() => {
+          diff--
+          if (diff < 0) {
+            diff = 0
+          }
+          this.activityTime = countDownHandle(diff)
+          if (this.activityTime.differ <= 0) {
+            clearInterval(this._1Timer)
+            this.kanTimeEnd()
+          }
+        }, 1000)
       },
       // 倒计时结束hook
       kanTimeEnd() {
@@ -1003,13 +1032,29 @@
     box-sizing: border-box
     margin: 0 12px 10px
     box-shadow: 0 2px 15px 0 rgba(17, 17, 17, 0.06)
+    .group-rule-wrapper
+      height :45px
+      padding :0 10px
+      layout(row,block,nowrap)
+      overflow :hidden
+      align-items :center
+      font-family: $font-family-regular
+      font-size: 13px;
+      color: #1D2023;
+      &.active
+        border-top-1px(#ECEDF1)
+      .number
+        font-family :$font-family-din-bold
+      .icon-arrow
+        width :4.5px
+        height :7.5px
+        margin :0 9px 0 9px
     .title
       height: 50px
       line-height: 50px
       color: #1D2023
       font-size: $font-size-15
       font-family: $font-family-medium
-      border-bottom-1px(#ECEDF1)
     .collage-scroll
       height: 112px
       padding: 4px 0
@@ -1018,7 +1063,7 @@
         height :56px
       .nothing
         text-align: center
-        padding-top: 50px
+        padding-top: 40px
         font-family: $font-family-regular
         font-size: $font-size-16
     .collage-content
@@ -1354,7 +1399,6 @@
             height :10.5px
       &.active-common
         height: 13vw
-        background: #ff6d0d
         width: 100%
         border-top-left-radius: 8px
         border-top-right-radius: 8px
@@ -1365,6 +1409,32 @@
         padding-bottom: 13vw
         width: 100%
         position: relative
+        .group-icon-wrapper
+          right:15px
+          width :61px
+          height :19px
+          border :0.5px solid $color-white
+          layout(row,block,nowrap)
+          border-radius :2px
+          overflow :hidden
+          margin-right :7px
+          margin-top :3px
+          .right
+            padding-left :4px
+            font-family: $font-family-medium
+            font-size: 13px;
+            color: #FFFFFF
+          .left
+            width :19px
+            height :@width
+            background :$color-white
+            display :flex
+            justify-content :center
+            align-items :center
+            .left-icon
+              display :block
+              width :11px
+              height :10.5px
         .banner-title-bg
           position: absolute
           left: 0
@@ -1385,6 +1455,7 @@
           align-items: center
           justify-content: space-between
           .banner-main-left
+            flex: 1
             layout(row)
             align-items: center
             .left-price

@@ -15,7 +15,7 @@
         <button class="share-button" open-type="share">
           <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/icon-sharexq@2x.png'" mode="aspectFill" class="share-img">
         </button>
-        <article v-if="activityType === ACTIVE_TYPE.FLASH" class="right-wrapper">
+        <article v-if="activityType !== ACTIVE_TYPE.DEFAULT" class="right-wrapper">
           <p class="title">{{goodsMsg.at_diff_str}}</p>
           <div class="time-wrapper">
             <p class="time start">{{countDownTimes.hour}}</p>
@@ -109,7 +109,6 @@
           minute: '00',
           second: '00'
         },
-        timer: null,
         activityType: '',
         ACTIVE_TYPE
       }
@@ -340,7 +339,7 @@
       },
       // 限时抢购倒计时开始
       _flashAction() {
-        if (this.activityType !== ACTIVE_TYPE.FLASH) return
+        if (this.activityType === ACTIVE_TYPE.DEFAULT) return
         if (this.activeStatus === BTN_STATUS.DOWN) {
           return
         }

@@ -168,7 +168,7 @@
       return {
         statusArr: STATUS_ARR,
         progress: [1, 2, 3, 4],
-        text: ['开团', '邀请邻居', '拼团成功', '拼团返券'],
+        text: ['开团', '邀请邻居', '拼团成功', '拼主返券'],
         timeArr: [],
         recommendList: [],
         msg: STATUS_ARR,
