@@ -41,11 +41,8 @@ export const actions = {
     commit('SET_BEFORE_TOTAL', total)
   },
   submitOrder({commit, state}, {orderInfo, complete}) {
-    let timer = null
-    let count = 0
     API.SubmitOrder.submitOrder(orderInfo)
       .then(res => {
-        console.log(res, 123)
         wechat.hideLoading()
         if (res.error !== ERR_OK) {
           wechat.showToast(res.message)
@@ -69,14 +66,16 @@ export const actions = {
           paySign,
           success (res) {
             if (orderInfo.url) {
+              let timer = null
+              let count = 0
               API.Global.checkPayResult({order_id: orderId}).then(res => {
                 if (res.is_payed === 1) {
                   wx.redirectTo({url: `${orderInfo.url}?orderId=${orderId}`})
                 } else {
-                  _loopCheckPay({orderId, orderInfo})
+                  _loopCheckPay({orderId, orderInfo, timer, count})
                 }
               }).catch(e => {
-                _loopCheckPay({orderId, orderInfo})
+                _loopCheckPay({orderId, orderInfo, timer, count})
               })
             } else {
               setTimeout(() => {
