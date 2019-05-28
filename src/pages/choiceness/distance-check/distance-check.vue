@@ -28,9 +28,11 @@
     onLoad() {
       setTimeout(() => {
         wx.createSelectorQuery().select('#customTabBar').boundingClientRect().exec(res => {
-          this.height = res[0].height
+          if (res && res[0]) {
+            this.height = res[0].height
+          }
         })
-      }, 500)
+      }, 2000)
     },
     onUnload() {
       this.top = 0
