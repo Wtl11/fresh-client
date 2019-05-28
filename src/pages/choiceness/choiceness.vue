@@ -429,7 +429,8 @@
           }
         ],
         latitude: 0,
-        longitude: 0
+        longitude: 0,
+        shareModuleName: ''
       }
     },
     computed: {
@@ -609,6 +610,7 @@
           break
       }
       const flag = Date.now()
+      console.warn(`/pages/choiceness?shopId=${this.shopId}&moduleName=${moduleName}&flag=${flag}`)
       return {
         title,
         path: `/pages/choiceness?shopId=${this.shopId}&moduleName=${moduleName}&flag=${flag}`,
@@ -945,13 +947,19 @@
           this.shopId = options.shopId
         }
         this.shopId && wx.setStorageSync('shopId', this.shopId)
+        this.shareModuleName = options.moduleName || ''
+      },
+      _moveToShareModule() {
+
       },
       // 获取模块信息
       async _getModuleInfo(loading) {
         try {
           let res = await API.FlashSale.getModuleInfo({page_name: 'index'}, loading)
           this.moduleArray = res.data.modules || []
+          let index = 0
           this.activityModuleList.forEach((item) => {
+            index++
             if (item.starting_point_id > 0) {
               let key = TAB_ARR_CONFIG[item.module_name]
               if (item.module_name === ACTIVE_TYPE.GROUP_ON) {
@@ -968,7 +976,17 @@
                 })
               }
             }
+            if (index >= this.activityModuleList.length && this.shareModuleName) {
+              setTimeout(() => {
+                // console.log(this.activeTabInfo, index, item.module_name)
+                let moduleIndex = this.activeTabInfo.findIndex(val => val.module_name === this.shareModuleName)
+                // console.log(moduleIndex)
+                moduleIndex > -1 && this.handleActiveTabChange(moduleIndex)
+                this.shareModuleName = ''
+              }, 1000)
+            }
           })
+          // console.log(index === this.activityModuleList.length)
         } catch (e) {
           console.error(e)
         }
@@ -1078,6 +1096,7 @@
               color: $color-text-sub
               position :relative
               top:-2px
+              min-height :19px
             .active-icon
               margin-top :15px
               align-self :flex-start

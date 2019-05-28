@@ -279,9 +279,14 @@
           }
           return item
         })
+        const total = goodsList.reduce((total, current) => {
+          let money = (total * 1) + (current.trade_price * current.num)
+          money = money.toFixed(2)
+          return money
+        }, 0)
         let orderInfo = {
-          goodsList: goodsList,
-          total: this.totalPrice,
+          goodsList,
+          total,
           deliverAt: this.deliverAt
         }
         this.setOrderInfo(orderInfo)
