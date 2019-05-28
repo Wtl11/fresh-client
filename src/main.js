@@ -60,7 +60,8 @@ export default {
           selectedIconPath: '/static/img/icon-my_press.png'
         }
       ]
-    }
+    },
+    usingComponents: {}
   }
 }
 

@@ -114,6 +114,7 @@ function _loopCheckPay({orderId, orderInfo, timer = null, count = 0}) {
   timer && clearInterval(timer)
   timer = setInterval(() => {
     count++
+    console.warn(count, '支付轮询')
     if (count >= 10) {
       clearInterval(timer)
       wx.redirectTo({url: `/pages/order-detail?id=${orderId}&&type=0`})
