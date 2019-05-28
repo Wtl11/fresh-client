@@ -32,7 +32,7 @@
             this.height = res[0].height
           }
         })
-      }, 2000)
+      }, 1500)
     },
     onUnload() {
       this.top = 0
