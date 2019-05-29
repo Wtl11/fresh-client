@@ -24,10 +24,9 @@ export function getStorage (key) {
   })
 }
 
-export function getLocation (type, callback) {
+export function getLocation (type = 'gcj02', callback) {
   return new Promise((resolve, reject) => {
     wx.getLocation({type: type, success: resolve, fail: reject, complete: callback})
-    console.log(resolve, reject, '211')
   })
 }
 

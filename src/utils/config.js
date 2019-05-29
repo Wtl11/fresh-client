@@ -5,7 +5,7 @@ const testVersion = '' // todo ai测试版本
 // todo 测试专用记得更新
 const DEV = {
   api: 'http://social-shopping-api.jerryf.cn/social-shopping',
-  image: 'https://img.jerryf.cn/defaults',
+  image: 'https://img.jkweixin.net/defaults',
   upload: 'http://social-shopping-api.jerryf.cn/social-shopping',
   outLink: 'wss://fresh-h5.jkweixin.net', // 外部h5链接
   websocket: 'wss://wss.jerryf.cn/',

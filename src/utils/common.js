@@ -205,7 +205,7 @@ export function floatAccAdd(num1, num2) {
  * @param time 入参为秒
  * @returns {{hour: string, differ: number, minute: string, second: string}}
  */
-export function countDownHandle(time) {
+export function countDownHandle(time = 0) {
   let differ = +time || 0
   // let day = ~~(differ / 60 / 60 / 24) + ''
   let hour = ~~(differ / 60 / 60) + ''
@@ -260,6 +260,14 @@ export function formatCouponMoney (money = '') {
   const arr = ('' + money).split('.')
   return {
     int: arr[0],
-    dec: arr[1] ? '.' + arr[1] : ''
+    dec: +arr[1] ? '.' + arr[1] : ''
   }
+}
+
+// 判断是否为空对象
+export function isEmptyObject(obj = {}) {
+  for (let key in obj) {
+    return false // 返回false，不为空对象
+  }
+  return true // 返回true，为空对象
 }

@@ -7,6 +7,7 @@ page.$mount()
 
 export default {
   config: {
-    navigationBarTitleText: '订单列表'
+    navigationBarTitleText: '订单列表',
+    usingComponents: {}
   }
 }

@@ -99,11 +99,16 @@
         },
         id: undefined, // 活动id
         sharing: false, // 分享中
-        goChildPage: false
+        goChildPage: false,
+        groupInfo: {}
       }
     },
     computed: {
       ...cartComputed,
+      // 社区名称
+      socialName() {
+        return (this.groupInfo || {}).social_name || ''
+      },
       currentObj() {
         return this.tabList[this.tabIndex] || {}
       }
@@ -130,6 +135,7 @@
       await this._getPageParams()
       this._resetListParams()
       this._getTabList(this.id)
+      this._groupInfo()
       this.$$shareHandler({
         event: EVENT_CODE.FLASH_SALE_LIST,
         activityId: this.id
@@ -151,8 +157,9 @@
       const shopId = wx.getStorageSync('shopId')
       const flag = Date.now()
       console.warn(`/pages/flash-sale-list?id=${this.currentObj.id}&shopId=${shopId}`)
+      console.log(this.socialName)
       return {
-        title: SHARE_IMG[status].title,
+        title: this.socialName + '-' + SHARE_IMG[status].title,
         path: `/pages/flash-sale-list?id=${this.currentObj.id}&shopId=${shopId}&flag=${flag}`,
         imageUrl: this.imageUrl + SHARE_IMG[status].img
       }
@@ -164,6 +171,17 @@
       this.timer && clearInterval(this.timer)
     },
     methods: {
+      // 获取团长的信息
+      async _groupInfo(loading) {
+        let res = await API.Choiceness.getGroupInfo(loading)
+        if (loading) {
+          this.$wechat.hideLoading()
+        }
+        if (res.error !== this.$ERR_OK) {
+          this.$wechat.showToast(res.message)
+        }
+        this.groupInfo = res.data
+      },
       handleGoToChildPage() {
         this.goChildPage = true
       },

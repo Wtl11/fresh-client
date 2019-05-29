@@ -8,7 +8,7 @@ import '@utils/app-plugins'
 import '@utils/saas'
 import '@design'
 
-Vue.config._mpTrace = true
+Vue.config._mpTrace = false
 Vue.config.productionTip = false
 App.mpType = 'app'
 const app = new Vue({
@@ -60,7 +60,8 @@ export default {
           selectedIconPath: '/static/img/icon-my_press.png'
         }
       ]
-    }
+    },
+    usingComponents: {}
   }
 }
 

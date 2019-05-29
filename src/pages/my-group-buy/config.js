@@ -1,11 +1,12 @@
+// 我的拼团
 import Vue from 'vue'
-import Page from './active-detail'
+import Page from './my-group-buy'
 
 const page = new Vue(Page)
 page.$mount()
 
 export default {
   config: {
-    navigationBarTitleText: '&#39;&#39;'
+    navigationBarTitleText: 'MY_GROUP_BUY'
   }
 }

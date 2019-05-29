@@ -15,8 +15,8 @@
         </div>
         <form action="" report-submit @submit="$getFormId" @click.stop="addShoppingCart(item)">
           <button class="price-right" formType="submit">
-            <img v-if="imageUrl && corpName === 'platform'" :src="imageUrl + '/yx-image/goods/icon-shopcart2@2x.png'" alt="" class="price-right-img">
-            <img v-if="imageUrl && corpName === 'retuan'" :src="imageUrl + '/yx-image/retuan/icon-shopcart@2x.png'" alt="" class="price-right-img">
+            <img v-if="imageUrl && corpName === 'platform'" :src="imageUrl + '/yx-image/collage/icon-addgoods@2x.png'" alt="" class="price-right-img">
+<!--            <img v-if="imageUrl && corpName === 'retuan'" :src="imageUrl + '/yx-image/retuan/icon-shopcart@2x.png'" alt="" class="price-right-img">-->
           </button>
         </form>
       </div>
@@ -41,7 +41,7 @@
       ...cartMethods,
       jumpGoodsDetail(item) {
         wx.navigateTo({
-          url: `/pages/goods-detail?id=${item.id || 0}&activityId=${item.activity_id || 0}`
+          url: `/pages/goods-detail?id=${item.goods_id || 0}&activityId=${item.activity_id || 0}`
         })
       },
       addShoppingCart(item) {

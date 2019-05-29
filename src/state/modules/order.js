@@ -54,7 +54,7 @@ export const actions = {
             if (res.error !== ERR_OK) {
               wechat.showToast(res.message)
             }
-          })//  API.SubmitOrder.saveMobile
+          })
         let payRes = res.data
         const {timestamp, nonceStr, signType, paySign} = payRes
         let orderId = res.data.order_id
@@ -65,9 +65,29 @@ export const actions = {
           signType,
           paySign,
           success (res) {
-            setTimeout(() => {
-              wx.redirectTo({url: `/pages/pay-result?orderId=${orderId}&&type=0&total=${state.total}`})
-            }, 1500)
+            if (orderInfo.url) {
+              let timer = null
+              let count = 0
+              wechat.showLoading()
+              API.Global.checkPayResult({order_id: orderId}).then(res => {
+                console.warn(res, '支付轮询')
+                if (res.data.is_payed === 1) {
+                  console.warn(`${orderInfo.url}?orderId=${orderId}`)
+                  setTimeout(() => {
+                    wechat.hideLoading()
+                    wx.redirectTo({url: `${orderInfo.url}?orderId=${orderId}`})
+                  }, 1000)
+                } else {
+                  _loopCheckPay({orderId, orderInfo, timer, count})
+                }
+              }).catch(e => {
+                _loopCheckPay({orderId, orderInfo, timer, count})
+              })
+            } else {
+              setTimeout(() => {
+                wx.redirectTo({url: `/pages/pay-result?orderId=${orderId}&&type=0&total=${state.total}`})
+              }, 1500)
+            }
           },
           fail (res) {
             wx.redirectTo({url: `/pages/order-detail?id=${orderId}&&type=0`})
@@ -94,4 +114,32 @@ export const mutations = {
   SET_BEFORE_TOTAL(state, total) {
     state.beforeTotal = total
   }
+}
+
+function _loopCheckPay({orderId, orderInfo, timer = null, count = 0}) {
+  wechat.showLoading()
+  timer && clearInterval(timer)
+  timer = setInterval(() => {
+    count++
+    console.warn(count, '支付轮询')
+    if (count >= 10) {
+      wechat.hideLoading()
+      clearInterval(timer)
+      wx.redirectTo({url: `/pages/order-detail?id=${orderId}&&type=0`})
+      return
+    }
+    API.Global.checkPayResult({order_id: orderId}).then(res => {
+      console.warn('支付：' + res)
+      if (res.data.is_payed === 1) {
+        clearInterval(timer)
+        setTimeout(() => {
+          wechat.hideLoading()
+          wx.redirectTo({url: `${orderInfo.url}?orderId=${orderId}`})
+        }, 1000)
+        // wx.redirectTo({url: `${orderInfo.url}?orderId=${orderId}`})
+      }
+    }).catch(e => {
+      console.warn(e)
+    })
+  }, 1000)
 }

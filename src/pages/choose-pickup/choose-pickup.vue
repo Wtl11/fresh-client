@@ -74,7 +74,8 @@
       }
     },
     onLoad(options) {
-      this.groupInfo = getApp().globalData.$groupInfo
+      // this.groupInfo = getApp().globalData.$groupInfo
+      this._groupInfo()
       this._getSystemInfo()
       this.backgroundTop = (this.systemInfo.statusBarHeight || 20) + 44
       this.$refs.navigationBar && this.$refs.navigationBar.setNavigationBarBackground(`background:#73c200;transition:none`)
@@ -91,6 +92,17 @@
       this._getList(false)
     },
     methods: {
+      // 获取团长的信息
+      async _groupInfo(loading) {
+        let res = await API.Choiceness.getGroupInfo(loading)
+        if (loading) {
+          this.$wechat.hideLoading()
+        }
+        if (res.error !== this.$ERR_OK) {
+          this.$wechat.showToast(res.message)
+        }
+        this.groupInfo = res.data
+      },
       handleLoad() {
         // wx.nextTick(() => {
         //   this.backgroundLoad = true
