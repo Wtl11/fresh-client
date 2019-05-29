@@ -1038,7 +1038,7 @@
       overflow :hidden
       align-items :center
       font-family: $font-family-regular
-      font-size: 13px;
+      font-size: 3.5vw
       color: #1D2023;
       &.active
         border-top-1px(#ECEDF1)
@@ -1047,7 +1047,7 @@
       .icon-arrow
         width :4.5px
         height :7.5px
-        margin :0 15px
+        margin :0 4vw
     .title
       padding :17px 0 6px
       color: #1D2023
