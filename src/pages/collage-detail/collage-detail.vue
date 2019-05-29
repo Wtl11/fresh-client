@@ -105,7 +105,10 @@
   import { formatNumber, isEmptyObject } from '@utils/common'
   import {orderMethods} from '@state/helpers'
   import LoadingMore from '@components/loading-more/loading-more'
+  import ShareTrick from '@mixins/share-trick'
   import API from '@api'
+  import ShareHandler, {EVENT_CODE} from '@mixins/share-handler'
+
   const PAGE_NAME = 'COLLAGE_DETAIL'
   // 3开团成功 7参团成功 9不在范围 为自定义状态。
   const STATUS_ARR = [
@@ -163,7 +166,7 @@
 
   export default {
     page: PAGE_NAME,
-    mixins: [ClearWatch],
+    mixins: [ClearWatch, ShareTrick, ShareHandler],
     data() {
       return {
         statusArr: STATUS_ARR,
@@ -203,10 +206,10 @@
         return name || ''
       },
       topText1() { // 开团成功
-        return this.orderId && this.isGroup && +this.status === 0
+        return this.isGroup && +this.status === 0 && this.isActivityEnd === 0
       },
       topText2() { // 不在范围
-        return !this.isGroup && !this.distance && +this.status === 0
+        return !this.isGroup && !this.distance && +this.status === 0 && this.isActivityEnd === 0
       },
       goodsBox() {
         // 参团非拼主、未参团一键参团
@@ -220,7 +223,7 @@
         // 一键参团、不在范围
         if (!this.isGroup && +this.status === 0 && this.distance && !this.isActivityEnd) {
           return false
-        } else if (!this.isGroup && +this.status === 0 && !this.distance) {
+        } else if (!this.isGroup && +this.isActivityEnd === 0 && !this.distance) {
           return false
         }
         return true
@@ -244,7 +247,7 @@
       },
       statusTip2() {
         // 一键参团
-        if (!this.isGroup && this.distance && +this.status === 0 && !this.isActivityEnd) {
+        if (!this.isGroup && +this.status === 0 && !this.isActivityEnd) {
           return true
         }
         return false
@@ -424,6 +427,11 @@
         this.goodsMsg = res.data.goods
         this.activityId = res.data.activity.activity_id
         console.log('step:', this.step, ' status:', this.status, ' isActivityEnd:', this.isActivityEnd, ' isGroup:', this.isGroup, ' isMain', this.isMain)
+        this.$$shareHandler({
+          event: EVENT_CODE.COLLAGE_DETAIL,
+          activityId: this.activityId,
+          goodsId: this.data.goods.goods_id
+        })
         this.timeHandle() // 跑倒计时
         // 初始头像
         let arr = new Array(res.data.groupon_person_limit).fill({})

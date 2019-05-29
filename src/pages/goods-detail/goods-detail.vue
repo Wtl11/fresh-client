@@ -267,6 +267,7 @@
   import base64src from '@utils/create-qr-code-wx'
   import {BTN_STATUS, BTN_TEXT_CONSTANT} from './config'
   import GoodsDetailMixins from '@mixins/goods-detail'
+  import ShareTrick from '@mixins/share-trick'
 
   const PAGE_NAME = 'ACTIVE_DETAIL'
   const PAGE_ROUTE_NAME = 'goods-detail'
@@ -278,7 +279,7 @@
   const ald = getApp()
   export default {
     name: PAGE_NAME,
-    mixins: [clearWatch, ShareHandler, GoodsDetailMixins],
+    mixins: [clearWatch, ShareHandler, GoodsDetailMixins, ShareTrick],
     components: {
       NavigationBar,
       LinkGroup,

@@ -38,11 +38,13 @@
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import CouponModal from './coupon-modal/coupon-modal'
   import SharePop from '../collage-detail/share-pop/share-pop'
-
+  import ShareTrick from '@mixins/share-trick'
+  import ClearWatch from '@mixins/clear-watch'
   const PAGE_NAME = 'MY_GROUP_BUY'
 
   export default {
     name: PAGE_NAME,
+    mixins: [ShareTrick, ClearWatch],
     components: {
       NavigationBar,
       CouponModal,

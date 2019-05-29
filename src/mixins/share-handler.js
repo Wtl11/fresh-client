@@ -80,7 +80,8 @@ export const EVENT_CODE = {
   HOME: 2004,
   SHARE_ORDER: 2005,
   COUPON_TAKE: 2006,
-  GOODS_RECORD: 2007
+  GOODS_RECORD: 2007,
+  COLLAGE_DETAIL: 2008
 }
 
 export class Share {
