@@ -65,6 +65,7 @@
   import GoodsDetailMixins from '@mixins/goods-detail'
   import ButtonGroup from '@components/goods-detail-element/button-group/button-group'
   import {resolveQueryScene, countDownHandle, isEmptyObject} from '@utils/common'
+  import ShareTrick from '@mixins/share-trick'
 
   const PAGE_NAME = 'GOODS_RECORD'
   const TYPEBTN = [{url: '/yx-image/goods/icon-homepage@2x.png', text: '首页', type: 0}, {url: '/yx-image/goods/icon-shopcart@2x.png', text: '购物车', type: 2}]
@@ -82,7 +83,7 @@
   }
   export default {
     name: PAGE_NAME,
-    mixins: [ShareHandler, GoodsDetailMixins],
+    mixins: [ShareHandler, GoodsDetailMixins, ShareTrick],
     components: {
       NavigationBar,
       IsEnd,
