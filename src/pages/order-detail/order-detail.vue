@@ -558,11 +558,12 @@
     border-bottom-1px($color-line)
 
     .goods-info-box
-      height: 75px
+      height: 77px
       layout(row)
       flex: 1
       align-items: center
       overflow: hidden
+      padding: 1px 0
 
     .goods-img
       width: 75px

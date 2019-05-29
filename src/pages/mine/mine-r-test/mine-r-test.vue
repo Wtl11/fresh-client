@@ -54,6 +54,7 @@
       .text
         padding-right :10px
       .btn
+
         width :60px
         height :30px
         border :1px solid $color-line
