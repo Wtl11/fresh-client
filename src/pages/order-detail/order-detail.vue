@@ -143,7 +143,7 @@
   import ConfirmMsg from '@components/confirm-msg/confirm-msg'
   import API from '@api'
   import {oauthComputed, orderMethods} from '@state/helpers'
-  import {floatAccAdd, countDownHandle} from '@utils/common'
+  import {floatAccAdd, countDownHandle, isEmptyObject} from '@utils/common'
 
   export default {
     data() {
@@ -175,22 +175,40 @@
       },
       isGroup() {
         return (this.orderMsg.groupon && this.orderMsg.groupon.pay_status === 1) || false
+      },
+      groupData() {
+        return this.orderMsg.groupon || {}
       }
     },
-    onLoad(e) {
-      this.orderId = e.id
+    onLoad(options) {
+      if (!isEmptyObject(options)) {
+        this._options = options || {}
+      }
     },
     onShow() {
+      this._initPageParams()
       this.getGoodsDetailData()
     },
     onUnload() {
       this.groupTimer && clearInterval(this.groupTimer)
+      clearInterval(this._groupOrderTimer)
     },
     onHide() {
       this.groupTimer && clearInterval(this.groupTimer)
+      clearInterval(this._groupOrderTimer)
     },
     methods: {
       ...orderMethods,
+      _initPageParams(options = {}) {
+        if (!isEmptyObject(this._options)) {
+          options = this._options
+        } else if (!isEmptyObject(this.$mp.query)) {
+          options = this.$mp.query
+        } else if (!isEmptyObject(this.$mp.appOptions.query)) {
+          options = this.$mp.appOptions.query
+        }
+        this.orderId = options.id
+      },
       closeOrder() {
         this.modelMsg = '确定取消该订单？'
         this.confirmtype = 0
@@ -246,7 +264,42 @@
           event_no: 1006,
           total: this.orderMsg.total
         })
-        this.getGoodsDetailData()
+        if (this.groupData.id > 0) {
+          let count = 0
+          this.$wechat.showLoading()
+          API.Global.checkPayResult({order_id: this.orderId}).then(res => {
+            console.warn(res, '支付：')
+            if (res.data.is_payed === 1) {
+              setTimeout(() => {
+                this.$wechat.hideLoading()
+                this.getGoodsDetailData()
+              }, 1500)
+            } else {
+              this._groupOrderTimer = setInterval(() => {
+                count++
+                if (count > 5) {
+                  this.$wechat.hideLoading()
+                  clearInterval(this._groupOrderTimer)
+                  this.getGoodsDetailData()
+                  return
+                }
+                API.Global.checkPayResult({order_id: this.orderId}).then(res => {
+                  console.warn(res, '支付轮询：' + count)
+                  if (res.data.is_payed === 1) {
+                    clearInterval(this._groupOrderTimer)
+                    setTimeout(() => {
+                      this.$wechat.hideLoading()
+                      this.getGoodsDetailData()
+                    }, 1500)
+                  }
+                })
+              }, 1000)
+            }
+          })
+        } else {
+          this.getGoodsDetailData()
+        }
+        // this.getGoodsDetailData()
         // this.orderMsg.status = 1
         // this.orderMsg.status_text = '待提货'
       },
