@@ -182,7 +182,7 @@
       this._getGoodsDetailData()
       this.getGoodsOtherInfo()
       this.$$shareHandler({
-        event: EVENT_CODE.GOODS_DETAIL,
+        event: EVENT_CODE.GOODS_RECORD,
         activityId: this.activityId,
         goodsId: this.goodsId
       })
