@@ -422,7 +422,7 @@
     },
     onHide() {
       // this._clearTimer()
-      clearInterval(this._1Timer)
+      clearInterval(this._allActiveTimer)
       clearInterval(this._groupTimer)
     },
     onReady() {
@@ -430,7 +430,7 @@
       this.statusBarHeight = res.statusBarHeight || 20
     },
     onUnload() {
-      clearInterval(this._1Timer)
+      clearInterval(this._allActiveTimer)
       clearInterval(this._groupTimer)
       this.$refs.navigationBar && this.$refs.navigationBar._initHeadStyle()
       this.eventCount = 0
@@ -812,16 +812,16 @@
           return
         }
         let diff = this.goodsMsg.at_diff || 0
-        clearInterval(this._1Timer)
+        clearInterval(this._allActiveTimer)
         this.activityTime = countDownHandle(diff)
-        this._1Timer = setInterval(() => {
+        this._allActiveTimer = setInterval(() => {
           diff--
           if (diff < 0) {
             diff = 0
           }
           this.activityTime = countDownHandle(diff)
           if (this.activityTime.differ <= 0) {
-            clearInterval(this._1Timer)
+            clearInterval(this._allActiveTimer)
             this.kanTimeEnd()
           }
         }, 1000)
@@ -1510,4 +1510,5 @@
               color: $color-text-main
               font-family: $font-family-medium
               line-height:15px
+              width :65px
 </style>
