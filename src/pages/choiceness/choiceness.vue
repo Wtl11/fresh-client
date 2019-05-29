@@ -560,6 +560,7 @@
       }
     },
     async onPullDownRefresh() {
+      this._resetLocation()
       this._resetGuessParams()
       this._getCouponModalList()
       this._getLocation()
