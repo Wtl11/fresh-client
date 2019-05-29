@@ -284,11 +284,11 @@
                   <div class="goods-item">
                     <figure class="left">
                       <img mode="aspectFill"
-                           lazy-load
+                           :lazy-load="true"
                            v-if="child.goods_cover_image"
                            :src="child.goods_cover_image" alt="" class="good-image">
                       <img
-                        lazy-load
+                        :lazy-load="true"
                         v-if="imageUrl"
                         :src="imageUrl + '/yx-image/2.4/icon-label@2x.png'"
                         class="label-icon">
