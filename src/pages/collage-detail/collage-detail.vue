@@ -221,9 +221,7 @@
       },
       statusText() {
         // 一键参团、不在范围
-        if (!this.isGroup && +this.status === 0 && this.distance && !this.isActivityEnd) {
-          return false
-        } else if (!this.isGroup && +this.isActivityEnd === 0 && !this.distance) {
+        if (!this.isGroup && +this.status === 0) {
           return false
         }
         return true
