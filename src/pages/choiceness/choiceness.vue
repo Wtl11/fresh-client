@@ -911,7 +911,9 @@
         if (!wx.getStorageSync('token')) return
         let customerId = id || (wx.getStorageSync('userInfo') || {}).id || 0
         API.Coupon.getModalList({customer_id: customerId}).then(res => {
-          this._ref('couponModal', 'show', res.data)
+          if (res && res.data && res.data.length) {
+            this._ref('couponModal', 'show', res.data)
+          }
         }).catch(e => {
           console.error(e)
         })
