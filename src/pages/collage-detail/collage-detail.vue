@@ -203,7 +203,7 @@
         return name || ''
       },
       topText1() { // 开团成功
-        return this.orderId && this.isMain
+        return this.orderId && this.isGroup && +this.status === 0
       },
       topText2() { // 不在范围
         return !this.isGroup && !this.distance && +this.status === 0

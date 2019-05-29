@@ -1430,7 +1430,7 @@
             justify-content :center
             align-items :center
             color:#FD4E44
-            font-size :14px
+            font-size :15px
         .banner-title-bg
           position: absolute
           left: 0
@@ -1500,12 +1500,15 @@
                 opacity :0.8
           .banner-main-right
             text-align: center
+            position :relative
+            left :5px
             .time-text
               font-size: $font-size-13
               color: $color-text-main
               font-family: $font-family-regular
               line-height:15px
             .time-all-box
+              padding-top :1px
               font-size: $font-size-14
               color: $color-text-main
               font-family: $font-family-medium
