@@ -54,7 +54,7 @@
     <div v-if="goods || time" class="line"></div>
     <div v-if="goods" class="goods" @click="toDetail">
       <span class="label">拼团商品</span>
-      <p class="text"><span class="text-title">{{data.goods.name}}</span><img :src="imageUrl + '/yx-image/collage/icon-pressed@2x.png'" class="icon"></p>
+      <p class="text"><span class="text-title">{{data.goods.name}}</span><img v-if="imageUrl" :src="imageUrl + '/yx-image/collage/icon-pressed@2x.png'" class="icon"></p>
     </div>
     <div v-if="time" class="time">
       <span class="label">拼团时间</span>
