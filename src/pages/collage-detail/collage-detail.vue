@@ -4,8 +4,8 @@
     <!--<picker style="margin-top: 10px; border: 1px solid #eee" mode="selector" @change="changePicker" :value="status" :range="[0,1,2,3,4,5,6,7,8,9,10,11]">
       <div class="picker">当前选择：{{status}}</div>
     </picker>-->
-    <p v-if="topText1" class="top-text">该活动仅支持： {{data.shop.social_name}}</p>
-    <p v-if="topText2" class="top-text">当前社区不支持拼团活动: {{data.shop.social_name}}</p>
+    <p v-if="topText1" class="top-text">该活动仅支持： {{socialName}}</p>
+    <p v-if="topText2" class="top-text">当前位置不支持{{socialName}}社区拼团活动</p>
     <div class="top-msg">
       <!--商品信息-->
       <div v-if="goodsBox" class="goods-box" @click="toDetail">
@@ -197,6 +197,11 @@
       }
     },
     computed: {
+      socialName() {
+        let name = this.data.shop.social_name || ''
+        name = name.substring(0, 8) + (name.length > 8 ? '...' : '')
+        return name || ''
+      },
       topText1() { // 开团成功
         return this.orderId && this.isMain
       },

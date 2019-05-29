@@ -51,20 +51,18 @@
               <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.4/pic-pintuan_xq@2x.png'" mode="aspectFill" class="banner-title-bg">
               <div class="banner-main-box">
                 <figure class="group-icon-wrapper">
-                  <div class="left">
-                    <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.4/icon-persont@2x.png'" class="left-icon">
-                  </div>
-                  <p class="right">{{limitPerson}}人拼</p>
+                  <div class="left">{{limitPerson}}</div>
+                  <p class="right">人拼</p>
                 </figure>
                 <div class="banner-main-left">
                   <div class="left-price">{{goodsMsg.trade_price}}</div>
                   <div class="left-price-text">元</div>
                   <div class="left-price-line">
-                    <div class="line-price-top" style="height: 3px">
+                    <div class="line-price-top">
 <!--                      <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-qgj@2x.png'" class="text-img" mode="aspectFill">-->
 <!--                      <div class="text">秒杀价</div>-->
                     </div>
-                    <div class="line-price-box">{{goodsMsg.original_price}}元</div>
+                    <div class="line-price-box group">{{goodsMsg.original_price}}元</div>
                   </div>
                 </div>
                 <div class="banner-main-right">
@@ -424,7 +422,7 @@
     },
     onHide() {
       // this._clearTimer()
-      clearInterval(this._1Timer)
+      clearInterval(this._allActiveTimer)
       clearInterval(this._groupTimer)
     },
     onReady() {
@@ -432,7 +430,7 @@
       this.statusBarHeight = res.statusBarHeight || 20
     },
     onUnload() {
-      clearInterval(this._1Timer)
+      clearInterval(this._allActiveTimer)
       clearInterval(this._groupTimer)
       this.$refs.navigationBar && this.$refs.navigationBar._initHeadStyle()
       this.eventCount = 0
@@ -474,7 +472,7 @@
           this.buyUsers = res.data.map(item => {
             return {
               avatar: item.avatar,
-              text: `${item.nickname}${item.groupon_at}拼单成功`
+              text: `${item.nickname}拼单成功`
             }
           })
         })
@@ -814,16 +812,16 @@
           return
         }
         let diff = this.goodsMsg.at_diff || 0
-        clearInterval(this._1Timer)
+        clearInterval(this._allActiveTimer)
         this.activityTime = countDownHandle(diff)
-        this._1Timer = setInterval(() => {
+        this._allActiveTimer = setInterval(() => {
           diff--
           if (diff < 0) {
             diff = 0
           }
           this.activityTime = countDownHandle(diff)
           if (this.activityTime.differ <= 0) {
-            clearInterval(this._1Timer)
+            clearInterval(this._allActiveTimer)
             this.kanTimeEnd()
           }
         }, 1000)
@@ -1036,7 +1034,6 @@
     box-shadow: 0 2px 15px 0 rgba(17, 17, 17, 0.06)
     .group-rule-wrapper
       height :45px
-      padding :0 10px
       layout(row,block,nowrap)
       overflow :hidden
       align-items :center
@@ -1050,19 +1047,18 @@
       .icon-arrow
         width :4.5px
         height :7.5px
-        margin :0 9px 0 9px
+        margin :0 15px
     .title
-      height: 50px
-      line-height: 50px
+      padding :17px 0 6px
       color: #1D2023
       font-size: $font-size-15
       font-family: $font-family-medium
     .collage-scroll
-      height: 112px
+      height: 128px
       padding: 4px 0
       overflow: hidden
       &.single
-        height :56px
+        height :64px
       .nothing
         text-align: center
         padding-top: 40px
@@ -1412,31 +1408,29 @@
         width: 100%
         position: relative
         .group-icon-wrapper
-          right:15px
-          width :61px
-          height :19px
-          border :0.5px solid $color-white
+          width :53px
+          height :20px
+          border :1px solid $color-white
           layout(row,block,nowrap)
           border-radius :2px
           overflow :hidden
           margin-right :7px
-          margin-top :3px
+          position relative
+          top :2px
+          font-family: $font-family-medium
+          font-size: 13px;
+          color: #FFFFFF
           .right
             padding-left :4px
-            font-family: $font-family-medium
-            font-size: 13px;
-            color: #FFFFFF
           .left
-            width :19px
+            width :20px
             height :@width
             background :$color-white
             display :flex
             justify-content :center
             align-items :center
-            .left-icon
-              display :block
-              width :11px
-              height :10.5px
+            color:#FD4E44
+            font-size :14px
         .banner-title-bg
           position: absolute
           left: 0
@@ -1469,6 +1463,8 @@
               font-family: $font-family-medium
               color: $color-white
               margin-right: 6px
+              position :relative
+              top:1px
             .line-price-top
               height: 11px
               width: 36.5px
@@ -1498,6 +1494,10 @@
               line-height: 1
               color: #fff
               margin-top: 2px
+              &.group
+                position :relative
+                top:-1px
+                opacity :0.8
           .banner-main-right
             text-align: center
             .time-text
@@ -1506,8 +1506,9 @@
               font-family: $font-family-regular
               line-height:15px
             .time-all-box
-              font-size: $font-size-13
+              font-size: $font-size-14
               color: $color-text-main
-              font-family: $font-family-regular
+              font-family: $font-family-medium
               line-height:15px
+              width :65px
 </style>

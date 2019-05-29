@@ -19,7 +19,7 @@
                 <div class="status" :class="'corp-' + corpName + '-money'">{{item.status === 11 || item.status_text === '活动中' ? '已付款' : item.status_text}}</div>
               </div>
               <div class="center">
-                <p v-if="item.groupon.pay_status !== 0 && item.groupon && item.groupon.groupon_status_str" class="group-status">
+                <p v-if="item.groupon && item.groupon.pay_status !== 0 && item.groupon.groupon_status_str" class="group-status">
                   <img v-if="imageUrl" :src="imageUrl+'/yx-image/2.4/icon-spellgroup@2x.png'" alt="" class="group-icon">
                   <span :class="'corp-' + corpName + '-money'">[{{item.groupon.groupon_status_str}}]</span>
                   <template v-if="item.groupon.groupon_status === 0 && item.groupon.surplus_seconds && item.at_countdown">
@@ -136,6 +136,7 @@
       },
       getOrderList(tabIdx, getMore = false) {
         let ol = this.orderListArr[tabIdx]
+        // 加载更多就page+1，否则都重置当前tab的page和hasMore
         if (getMore) {
           if (!ol.hasMore) {
             return
@@ -146,11 +147,13 @@
           ol.hasMore = true
         }
         let status = this.getStatus(tabIdx)
-        API.Order.getOrderListData(status, 1).then((res) => {
+        API.Order.getOrderListData(status, ol.page).then((res) => {
           if (res.error === this.$ERR_OK) {
+            let hasCountdown = false
             for (let order of res.data) {
               if (order.groupon && order.groupon.surplus_seconds) {
                 order.at_countdown = countDownHandle(order.groupon.surplus_seconds)
+                hasCountdown = true
               }
             }
             if (getMore) {
@@ -158,7 +161,7 @@
             } else {
               ol.data = res.data
             }
-            this._startTimer()
+            hasCountdown && this._startTimer()
             if (ol.data.length >= res.meta.total * 1) {
               ol.hasMore = false
             }
