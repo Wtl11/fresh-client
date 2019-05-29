@@ -73,8 +73,8 @@
         <div v-for="(item, index) in recommendList" :key="index" class="list-item">
           <goods-item :item="item" @_getShopCart="_getShopCart"></goods-item>
         </div>
-        <loading-more v-if="hasMore"></loading-more>
-        <div class="foot-ties" v-if="!hasMore">
+        <loading-more v-if="recommendListLoad"></loading-more>
+        <div v-if="!hasMore" class="foot-ties">
           <div class="center">— 再拉也没有了 —</div>
         </div>
       </div>
@@ -124,7 +124,9 @@
         page: 1,
         limit: 10,
         hasMore: true,
-        curShopId: ''
+        curShopId: '',
+        recommendListLoad: false,
+        firstLoad: false
       }
     },
     async onTabItemTap() {
@@ -133,10 +135,12 @@
     onLoad() {
       let res = this.$wx.getSystemInfoSync()
       this.height = res.statusBarHeight >= 44 ? 28 : 0
+      this.firstLoad = true
     },
     async onShow() {
       if (!wx.getStorageSync('token')) return
-      await this._getShopCart()
+      await this._getShopCart(this.firstLoad)
+      this.firstLoad = false
       let shopId = wx.getStorageSync('shopId')
       if (!shopId) {
         let res = await API.Choiceness.getDefaultShopInfo()
@@ -177,7 +181,7 @@
     methods: {
       ...orderMethods,
       ...cartMethods,
-      async _getShopCart(loading) {
+      async _getShopCart(loading = false) {
         let res = await API.Cart.shopCart(loading)
         this.$wechat.hideLoading()
         if (res.error !== this.$ERR_OK) {
@@ -197,7 +201,9 @@
         this.setCartCount()
       },
       async getCarRecommend() {
+        this.recommendListLoad = true
         let res = await API.Cart.getCarRecommend({page: this.page, limit: this.limit})
+        this.recommendListLoad = false
         if (res.error !== this.$ERR_OK) {
           this.$wechat.showToast(res.message)
           return
@@ -208,7 +214,7 @@
           let arr = this.recommendList.concat(res.data)
           this.recommendList = arr
         }
-        if (this.page === 5) {
+        if (this.page === 5 || res.data.length <= 0) {
           this.hasMore = false
         }
       },
