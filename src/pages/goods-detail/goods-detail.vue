@@ -471,9 +471,10 @@
         }
         API.Global.getFinishGroupList(data).then(res => {
           this.buyUsers = res.data.map(item => {
+            let nickName = item.nickname || ''
             return {
               avatar: item.avatar,
-              text: `${item.nickname}拼单成功`
+              text: `${nickName.substring(0, 6) + (nickName.length > 6 ? '...' : '')}拼单成功`
             }
           })
         })
