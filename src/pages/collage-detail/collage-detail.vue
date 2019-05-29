@@ -612,9 +612,10 @@
           let arr = this.recommendList.concat(res.data)
           this.recommendList = arr
         }
-        if (this.page === 5) {
-          this.hasMore = false
-        }
+        this.hasMore = res.data.length > 0 && res.data.length >= 10
+        // if (this.page === 5) {
+        //   this.hasMore = arr.length > 0 && arr.length >= 10
+        // }
       },
       // 初始化地理位置
       _initLocation() {
@@ -955,6 +956,7 @@
       align-items: center
       padding: 0 6px
       box-sizing: border-box
+      background :#f7f7f7
       .list-item
         width: 50%
         box-sizing: border-box

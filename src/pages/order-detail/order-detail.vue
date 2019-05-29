@@ -296,7 +296,7 @@
       _setGroupTimer() {
         this.groupTimer && clearInterval(this.groupTimer)
         this.groupTimer = setInterval(() => {
-          let surplusSeconds = this.orderMsg.groupon.surplus_seconds
+          let surplusSeconds = this.orderMsg.groupon.surplus_seconds || 0
           if (surplusSeconds && surplusSeconds !== 0) {
             surplusSeconds--
             this.at_countdown = countDownHandle(surplusSeconds)
