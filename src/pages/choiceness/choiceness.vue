@@ -590,7 +590,7 @@
       let imgUrl = ''
       let moduleName = ''
       let title = ``
-      if (res.target.id) {
+      if (res.target && res.target.id) {
         moduleName = res.target.id.replace('share-', '')
       }
       switch (moduleName) {
