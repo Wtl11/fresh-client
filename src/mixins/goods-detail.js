@@ -24,9 +24,12 @@ export default {
           res = await API.Global.checkShopDistance({longitude: this.longitude, latitude: this.latitude})
           let name = res.data.shop.social_name
           name = name.substring(0, 8) + (name.length > 8 ? '...' : '')
-          this.tipTop = res.data.distance_judge === 0 ? '' : `当前位置${name}社区不参与拼团活动`
+          this.tipTop = res.data.distance_judge === 0 ? '' : `当前位置不可参与${name}社区拼团活动`
         }
       } catch (e) {
+        this.longitude = 0
+        this.latitude = 0
+        this.tipTop = ''
         wx.navigateTo({url: `/pages/open-location`})
       }
     }

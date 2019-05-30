@@ -29,7 +29,7 @@
               <div class="price" :class="'corp-' + corpName + '-money'" v-if="item.trade_price">
                 <span class="num">{{item.trade_price}}</span>
                 <span class="unit">元</span>
-                <img class="new-user-img" v-if="imageUrl && item.is_new_client === 1 && item.activity && item.activity.activity_type === 'new_client'" :src="imageUrl + '/yx-image/2.4/pic-newlabel@2x.png'" alt="">
+                <img class="new-user-img" v-if="imageUrl && item.activity && item.activity.activity_theme === ACTIVE_TYPE.NEW_CLIENT" :src="imageUrl + '/yx-image/2.4/pic-newlabel@2x.png'" alt="">
               </div>
             </div>
             <div class="right">
@@ -73,8 +73,8 @@
         <div v-for="(item, index) in recommendList" :key="index" class="list-item">
           <goods-item :item="item" @_getShopCart="_getShopCart"></goods-item>
         </div>
-        <loading-more v-if="hasMore"></loading-more>
-        <div class="foot-ties" v-if="!hasMore">
+        <loading-more v-if="recommendListLoad"></loading-more>
+        <div v-if="!hasMore" class="foot-ties">
           <div class="center">— 再拉也没有了 —</div>
         </div>
       </div>
@@ -94,6 +94,8 @@
   import {orderMethods, cartMethods} from '@state/helpers'
   import ClearWatch from '@mixins/clear-watch'
   import LoadingMore from '@components/loading-more/loading-more'
+  import {ACTIVE_TYPE} from '@utils/contants'
+  import {objDeepCopy} from '../../utils/common'
 
   export default {
     mixins: [ClearWatch],
@@ -106,6 +108,7 @@
     },
     data() {
       return {
+        ACTIVE_TYPE,
         msg: '确定删除该商品吗?',
         delIndex: 0,
         goodsList: [],
@@ -120,7 +123,10 @@
         height: 0,
         page: 1,
         limit: 10,
-        hasMore: true
+        hasMore: true,
+        curShopId: '',
+        recommendListLoad: false,
+        firstLoad: false
       }
     },
     async onTabItemTap() {
@@ -129,13 +135,28 @@
     onLoad() {
       let res = this.$wx.getSystemInfoSync()
       this.height = res.statusBarHeight >= 44 ? 28 : 0
-      if (!wx.getStorageSync('token')) return
-      this._getShopCart(true)
-      this.getCarRecommend()
+      this.firstLoad = true
     },
     async onShow() {
       if (!wx.getStorageSync('token')) return
-      await this._getShopCart(false)
+      await this._getShopCart(this.firstLoad)
+      this.firstLoad = false
+      let shopId = wx.getStorageSync('shopId')
+      if (!shopId) {
+        let res = await API.Choiceness.getDefaultShopInfo()
+        shopId = res.data.id
+        wx.setStorageSync('shopId', shopId)
+      }
+      // 判断是否切店，如果切店了重新读猜你喜欢
+      if (this.curShopId * 1 !== shopId * 1) {
+        wx.pageScrollTo({
+          scrollTop: 0,
+          duration: 0
+        })
+        this.page = 1
+        this.getCarRecommend()
+      }
+      this.curShopId = shopId
     },
     onReachBottom() {
       if (!this.hasMore) return
@@ -160,7 +181,7 @@
     methods: {
       ...orderMethods,
       ...cartMethods,
-      async _getShopCart(loading) {
+      async _getShopCart(loading = false) {
         let res = await API.Cart.shopCart(loading)
         this.$wechat.hideLoading()
         if (res.error !== this.$ERR_OK) {
@@ -180,7 +201,9 @@
         this.setCartCount()
       },
       async getCarRecommend() {
+        this.recommendListLoad = true
         let res = await API.Cart.getCarRecommend({page: this.page, limit: this.limit})
+        this.recommendListLoad = false
         if (res.error !== this.$ERR_OK) {
           this.$wechat.showToast(res.message)
           return
@@ -191,7 +214,7 @@
           let arr = this.recommendList.concat(res.data)
           this.recommendList = arr
         }
-        if (this.page === 5) {
+        if (this.page === 5 || res.data.length <= 0) {
           this.hasMore = false
         }
       },
@@ -226,7 +249,7 @@
       jumpGoodsDetail(item) {
         let type = ''
         if (item.activity) {
-          type = item.activity.activity_type || ''
+          type = item.activity.activity_theme || ''
         }
         wx.navigateTo({
           url: `/pages/goods-detail?id=${item.goods_id}&activityId=${item.activity_id}&activityType=${type}`
@@ -270,9 +293,20 @@
           this.$wechat.showToast('请选择商品!')
           return
         }
+        const goodsList = objDeepCopy(this.checkedGoods).map(item => {
+          if (item.is_new_client === 0) {
+            item.trade_price = item.goods_sale_price
+          }
+          return item
+        })
+        const total = goodsList.reduce((total, current) => {
+          let money = (total * 1) + (current.trade_price * current.num)
+          money = money.toFixed(2)
+          return money
+        }, 0)
         let orderInfo = {
-          goodsList: this.checkedGoods,
-          total: this.totalPrice,
+          goodsList,
+          total,
           deliverAt: this.deliverAt
         }
         this.setOrderInfo(orderInfo)

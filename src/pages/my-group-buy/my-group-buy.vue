@@ -6,9 +6,8 @@
         <div class="top-bar">
           <p>{{item.created_at}}</p>
           <p :class="item.groupon_status === 0 ? 'corp-' + corpName + '-money' : ''">{{item.groupon_status_str}}</p>
-<!--          <p>待分享，差{{item.surplus_number}}人</p>-->
         </div>
-        <img v-if="imageUrl" :src="imageUrl+'/yx-image/2.4/pic-pinzhu@2x.png'" alt="" class="leader-tips">
+        <img v-if="imageUrl && item.is_main === 1" :src="imageUrl+'/yx-image/2.4/pic-pinzhu@2x.png'" alt="" class="leader-tips">
         <div class="goods-info">
           <img class="img" mode="aspectFill" :src="item.goods.goods_cover_image">
           <div class="info-con">
@@ -20,15 +19,10 @@
           </div>
         </div>
         <button v-if="item.groupon_status === 0" class="goods-btn share-button" :id="index" @click.stop="shareGroup(item)">邀请邻居</button>
-        <div v-else class="goods-btn">拼团详情</div>
-      </li>
-      <li class="foot-ties" v-if="!hasMore && !isShowEmpty">
-        <div class="lines left"></div>
-        <div class="lines right"></div>
-        <div class="center">再拉也没有了</div>
+        <button v-else class="goods-btn">拼团详情</button>
       </li>
     </ul>
-    <section class="noting" v-else-if="isShowEmpty">
+    <section v-else-if="isShowEmpty" class="noting">
       <div class="noting-img">
         <img class="img" v-if="imageUrl" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'" alt="">
       </div>
@@ -44,12 +38,13 @@
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import CouponModal from './coupon-modal/coupon-modal'
   import SharePop from '../collage-detail/share-pop/share-pop'
-
+  import ShareTrick from '@mixins/share-trick'
+  import ClearWatch from '@mixins/clear-watch'
   const PAGE_NAME = 'MY_GROUP_BUY'
-  const BTN_ARR = ['拼团详情', '邀请邻居']
 
   export default {
     name: PAGE_NAME,
+    mixins: [ShareTrick, ClearWatch],
     components: {
       NavigationBar,
       CouponModal,
@@ -62,14 +57,15 @@
         isShowEmpty: false,
         page: 1,
         limit: 10,
-        btnArr: BTN_ARR,
         shareData: {}
       }
     },
-    computed: {},
-    onShow() {
-      this.page = 1
+    onLoad() {
       this._getGroupBuyList()
+    },
+    onShow() {
+      // onShow只拿优惠券
+      this._getGroupBuyList(true)
     },
     onReachBottom() {
       if (!this.hasMore) return
@@ -88,9 +84,13 @@
       }
     },
     methods: {
-      async _getGroupBuyList() {
+      async _getGroupBuyList(onlyCoupon = false) {
         API.Order.getGroupList({page: this.page}).then((res) => {
           if (res.error === this.$ERR_OK) {
+            res.coupon && res.coupon.length > 0 && this._showCoupon(res.coupon)
+            if (onlyCoupon) {
+              return
+            }
             if (this.page === 1) {
               this.groupBuyList = res.data
             } else {
@@ -102,22 +102,12 @@
             if (this.groupBuyList.length >= res.meta.total) {
               this.hasMore = false
             }
-            res.coupon && res.coupon.length > 0 && this._getCouponList(res.coupon)
           } else {
             this.$wechat.showToast(res.message)
           }
         })
       },
-      async _getCouponList(couponArr) {
-        // couponArr = [
-        //   {
-        //     preferential_type: 2,
-        //     range_type_str: '通用',
-        //     coupon_name: '满10元减9元',
-        //     end_at_day: '2019-5-31',
-        //     denomination: 7
-        //   }
-        // ]
+      async _showCoupon(couponArr) {
         couponArr && this._ref('couponModal', 'show', couponArr)
       },
       // 工具-->调用子节点的方法
@@ -171,7 +161,7 @@
       align-items: center
     .leader-tips
       position: absolute
-      top: 43.5px
+      top: 44px
       left: $padding-left
       width: 26px
       height: 19px
@@ -198,12 +188,14 @@
         .group-num
           float: left
           width: auto
-          height: 18px
-          padding: 0 7px
+          height: 16px
+          line-height: 16px
+          padding: 0 4px
           layout()
           align-items: center
           text-align: center
-          border-1px(rgba(250,117,0,0.3),2px)
+          border: 1px solid rgba(250,117,0,0.3)
+          border-radius: 2px
           font-size: $font-size-12
           font-family: $font-family-regular
         .goods-price
@@ -228,27 +220,6 @@
       &.share-button
         color: $color-main
         border: 1px solid $color-main
-  .foot-ties
-    flex: 1
-    layout(row)
-    justify-content: center
-    align-items: center
-    height: 60px
-    box-sizing: border-box
-    padding: 20px 0
-
-    .lines
-      width: 10px
-      height: 1px
-      background: rgba(124, 132, 156, 0.20)
-      margin: 0 5px
-
-    .center
-      font-family: $font-family-regular
-      font-size: $font-size-14
-      color: rgba(152, 152, 159, 0.30)
-      text-align: justify
-      line-height: 1
   .noting
     text-align: center
     margin-top: 106px

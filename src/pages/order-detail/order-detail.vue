@@ -144,8 +144,10 @@
   import API from '@api'
   import {oauthComputed, orderMethods} from '@state/helpers'
   import {floatAccAdd, countDownHandle} from '@utils/common'
+  import GetOptions from '@mixins/get-options'
 
   export default {
+    mixins: [GetOptions],
     data() {
       return {
         orderId: '',
@@ -175,22 +177,34 @@
       },
       isGroup() {
         return (this.orderMsg.groupon && this.orderMsg.groupon.pay_status === 1) || false
+      },
+      groupData() {
+        return this.orderMsg.groupon || {}
       }
     },
-    onLoad(e) {
-      this.orderId = e.id
-    },
+    // onLoad(options) {
+    //   if (!isEmptyObject(options)) {
+    //     this._options = options || {}
+    //   }
+    // },
     onShow() {
+      this._initPageParams()
       this.getGoodsDetailData()
     },
     onUnload() {
       this.groupTimer && clearInterval(this.groupTimer)
+      clearInterval(this._groupOrderTimer)
     },
     onHide() {
       this.groupTimer && clearInterval(this.groupTimer)
+      clearInterval(this._groupOrderTimer)
     },
     methods: {
       ...orderMethods,
+      _initPageParams() {
+        let options = this._$$initOptions()
+        this.orderId = options.id
+      },
       closeOrder() {
         this.modelMsg = '确定取消该订单？'
         this.confirmtype = 0
@@ -246,8 +260,44 @@
           event_no: 1006,
           total: this.orderMsg.total
         })
-        this.orderMsg.status = 1
-        this.orderMsg.status_text = '待提货'
+        if (this.groupData.id > 0) {
+          let count = 0
+          this.$wechat.showLoading()
+          API.Global.checkPayResult({order_id: this.orderId}).then(res => {
+            console.warn(res, '支付：')
+            if (res.data.is_payed === 1) {
+              setTimeout(() => {
+                this.$wechat.hideLoading()
+                this.getGoodsDetailData()
+              }, 1500)
+            } else {
+              this._groupOrderTimer = setInterval(() => {
+                count++
+                if (count > 5) {
+                  this.$wechat.hideLoading()
+                  clearInterval(this._groupOrderTimer)
+                  this.getGoodsDetailData()
+                  return
+                }
+                API.Global.checkPayResult({order_id: this.orderId}).then(res => {
+                  console.warn(res, '支付轮询：' + count)
+                  if (res.data.is_payed === 1) {
+                    clearInterval(this._groupOrderTimer)
+                    setTimeout(() => {
+                      this.$wechat.hideLoading()
+                      this.getGoodsDetailData()
+                    }, 1500)
+                  }
+                })
+              }, 1000)
+            }
+          })
+        } else {
+          this.getGoodsDetailData()
+        }
+        // this.getGoodsDetailData()
+        // this.orderMsg.status = 1
+        // this.orderMsg.status_text = '待提货'
       },
       isRefund(item) {
         this.$refs.colseModel.show()
@@ -295,7 +345,7 @@
       _setGroupTimer() {
         this.groupTimer && clearInterval(this.groupTimer)
         this.groupTimer = setInterval(() => {
-          let surplusSeconds = this.orderMsg.groupon.surplus_seconds
+          let surplusSeconds = this.orderMsg.groupon.surplus_seconds || 0
           if (surplusSeconds && surplusSeconds !== 0) {
             surplusSeconds--
             this.at_countdown = countDownHandle(surplusSeconds)
@@ -557,10 +607,12 @@
     border-bottom-1px($color-line)
 
     .goods-info-box
+      height: 77px
       layout(row)
       flex: 1
       align-items: center
       overflow: hidden
+      padding: 1px 0
 
     .goods-img
       width: 75px
@@ -578,18 +630,19 @@
 
     .goods-info
       box-sizing: border-box
-      padding-left: 2.67vw
+      padding-left: 10px
       flex: 1
       overflow: hidden
 
       .tit
         layout(row)
         align-items: center
-        height: 16px
+        height: 25px
         justify-content: space-between
 
         .name
-          width: 100%
+          flex: 1
+          overflow: hidden
           font-family: $font-family-regular
           font-size: $font-size-14
           color: $color-sub
@@ -622,11 +675,11 @@
           text-align: center
 
       .guige
+        height: 20px
         font-family: $font-family-regular
         font-size: $font-size-14
         color: $color-text-sub
-        margin-top: 7px
-        margin-bottom: 20px
+        margin-bottom: 9px
 
       .price
         layout(row)

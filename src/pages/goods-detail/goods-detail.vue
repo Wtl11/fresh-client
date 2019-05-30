@@ -1,9 +1,9 @@
 <template>
   <form action="" report-submit @submit="$getFormId">
     <div class="active-detail">
-      <navigation-bar ref="navigationBar" :title="msgTitle" :showArrow="true" :translucent="false"></navigation-bar>
+      <navigation-bar ref="navigationBar" :title="msgTitle" :translucent="true"></navigation-bar>
       <section class="banner-box">
-        <section v-if="buyUsers.length" class="buy-users">
+        <section v-if="buyUsers.length" class="buy-users" :style="{top: statusBarHeight + 44 + 'px'}">
           <swiper
             class="carousel"
             :autoplay="true"
@@ -37,28 +37,6 @@
           </article>
         </div>
         <article class="header-title-wrapper">
-          <section v-if="activityType === ACTIVE_TYPE.FLASH" class="header-title">
-            <div class="banner-title-main">
-              <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-spxq_bg@2x.png'" mode="aspectFill" class="banner-title-bg">
-              <div class="banner-main-box">
-                <div class="banner-main-left">
-                  <div class="left-price">{{goodsMsg.trade_price}}</div>
-                  <div class="left-price-text">元</div>
-                  <div class="left-price-line">
-                    <div class="line-price-top">
-                      <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-qgj@2x.png'" class="text-img" mode="aspectFill">
-                      <div class="text">秒杀价</div>
-                    </div>
-                    <div class="line-price-box">{{goodsMsg.original_price}}元</div>
-                  </div>
-                </div>
-                <div class="banner-main-right">
-                  <div class="time-text">{{goodsMsg.at_diff_str}}</div>
-                  <div class="time-all-box">{{activityTime.hour}}:{{activityTime.minute}}:{{activityTime.second}}</div>
-                </div>
-              </div>
-            </div>
-          </section>
           <section v-if="activityType === ACTIVE_TYPE.DEFAULT" class="header-title-default">
             <div class="left-price" :class="'corp-' + corpName + '-money'">{{goodsMsg.trade_price}}</div>
             <div class="left-price-text">
@@ -70,31 +48,55 @@
                    class="header-title active-common group"
           >
             <div class="banner-title-main">
+              <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.4/pic-pintuan_xq@2x.png'" mode="aspectFill" class="banner-title-bg">
               <div class="banner-main-box">
+                <figure class="group-icon-wrapper">
+                  <div class="left">{{limitPerson}}</div>
+                  <p class="right">人拼</p>
+                </figure>
                 <div class="banner-main-left">
                   <div class="left-price">{{goodsMsg.trade_price}}</div>
                   <div class="left-price-text">元</div>
                   <div class="left-price-line">
                     <div class="line-price-top">
-                      <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-qgj@2x.png'" class="text-img" mode="aspectFill">
-                      <div class="text">{{iconText}}</div>
+<!--                      <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-qgj@2x.png'" class="text-img" mode="aspectFill">-->
+<!--                      <div class="text">秒杀价</div>-->
                     </div>
-                    <div class="line-price-box">{{goodsMsg.original_price}}元</div>
+                    <div class="line-price-box group">{{goodsMsg.original_price}}元</div>
                   </div>
+                </div>
+                <div class="banner-main-right">
+                  <div class="time-text">{{goodsMsg.at_diff_str}}</div>
+                  <div class="time-all-box">{{activityTime.hour}}:{{activityTime.minute}}:{{activityTime.second}}</div>
                 </div>
               </div>
             </div>
-            <figure class="icon-wrapper">
-              <div class="left">
-                <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.4/icon-persont@2x.png'" class="left-icon">
-              </div>
-              <p class="right">{{limitPerson}}人拼</p>
-            </figure>
+<!--            <div class="banner-title-main">-->
+<!--              <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.4/pic-pintuan_xq.png'" mode="aspectFill" class="banner-title-bg">-->
+<!--              <div class="banner-main-box">-->
+<!--                <div class="banner-main-left">-->
+<!--                  <div class="left-price">{{goodsMsg.trade_price}}</div>-->
+<!--                  <div class="left-price-text">元</div>-->
+<!--                  <div class="left-price-line">-->
+<!--                    <div class="line-price-top">-->
+<!--                      <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.4/pic-qgj@1x.png'" class="text-img" mode="aspectFill">-->
+<!--                      <div class="text group">{{iconText}}</div>-->
+<!--                    </div>-->
+<!--                    <div class="line-price-box">{{goodsMsg.original_price}}元</div>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--            <figure class="icon-wrapper">-->
+<!--              <div class="left">-->
+<!--                <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.4/icon-persont@2x.png'" class="left-icon">-->
+<!--              </div>-->
+<!--              <p class="right">{{limitPerson}}人拼</p>-->
+<!--            </figure>-->
           </section>
-          <section v-else-if="activityType !== ACTIVE_TYPE.FLASH"
-                   class="header-title active-common"
-          >
+          <section v-else class="header-title">
             <div class="banner-title-main">
+              <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-spxq_bg@2x.png'" mode="aspectFill" class="banner-title-bg">
               <div class="banner-main-box">
                 <div class="banner-main-left">
                   <div class="left-price">{{goodsMsg.trade_price}}</div>
@@ -107,9 +109,32 @@
                     <div class="line-price-box">{{goodsMsg.original_price}}元</div>
                   </div>
                 </div>
+                <div class="banner-main-right">
+                  <div class="time-text">{{goodsMsg.at_diff_str}}</div>
+                  <div class="time-all-box">{{activityTime.hour}}:{{activityTime.minute}}:{{activityTime.second}}</div>
+                </div>
               </div>
             </div>
           </section>
+<!--          <section v-else-if="activityType !== ACTIVE_TYPE.FLASH"-->
+<!--                   class="header-title active-common"-->
+<!--          >-->
+<!--            <div class="banner-title-main">-->
+<!--              <div class="banner-main-box">-->
+<!--                <div class="banner-main-left">-->
+<!--                  <div class="left-price">{{goodsMsg.trade_price}}</div>-->
+<!--                  <div class="left-price-text">元</div>-->
+<!--                  <div class="left-price-line">-->
+<!--                    <div class="line-price-top">-->
+<!--                      <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-qgj@2x.png'" class="text-img" mode="aspectFill">-->
+<!--                      <div class="text">{{iconText}}</div>-->
+<!--                    </div>-->
+<!--                    <div class="line-price-box">{{goodsMsg.original_price}}元</div>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </section>-->
         </article>
       </section>
       <div class="header-detail">
@@ -132,8 +157,8 @@
       </div>
       <!--拼团列表-->
       <div v-if="activityType === ACTIVE_TYPE.GROUP_ON" class="collage-box">
-        <div class="title">{{collageTotal}}位邻居正在拼单，可直接参与</div>
-        <swiper v-if="collageList.length > 1"  class="collage-scroll" autoplay circular :vertical="groupAutoScroll" interval="5000" :display-multiple-items="2">
+        <div v-if="collageList.length > 0" class="title">{{collageTotal}}位邻居正在拼单，可直接参与</div>
+        <swiper v-if="collageList.length > 1"  class="collage-scroll" :autoplay="autoplay" circular vertical interval="5000" :display-multiple-items="2">
           <block v-for="(item, index) in collageList" :key="index">
             <swiper-item class="collage-content">
               <div class="left">
@@ -162,14 +187,24 @@
                   <p class="text">还差<span class="color">{{item.surplus_number}}人</span>拼成</p>
                   <span v-if="item.diff" class="time">剩余{{item.diff.hour}}:{{item.diff.minute}}:{{item.diff.second}}</span>
                 </div>
-                <button formType="submit" class="go-collage" @click="jumpToCollage(item)">去参团</button>
+                <button formType="submit" hover-class="none" class="go-collage" @click="jumpToCollage(item)">去参团</button>
               </div>
             </section>
           </block>
         </article>
-        <div class="collage-scroll" v-if="!collageList.length">
-          <div class="nothing">暂无参团信息~</div>
-        </div>
+<!--        <div class="collage-scroll" v-if="collageList.length === 0">-->
+<!--          <div class="nothing">暂无参团信息~</div>-->
+<!--        </div>-->
+        <p class="group-rule-wrapper" :class="{active: collageList.length > 0}">
+          <span class="number">1</span>
+          <span class="text">.发起拼团/参团</span>
+          <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.4/pic-ptwf@2x.png'" class="icon-arrow">
+          <span class="number">2</span>
+          <span class="text">.拼团成功</span>
+          <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.4/pic-ptwf@2x.png'" class="icon-arrow">
+          <span class="number">3</span>
+          <span class="text">.拼主返券</span>
+        </p>
       </div>
       <buy-record
         v-if="userImgList.length > 0"
@@ -221,7 +256,7 @@
   import {SCENE_SHARE, SCENE_DEFAULT, SCENE_QR_CODE, ACTIVE_TYPE} from '@utils/contants'
   import ShareHandler, {EVENT_CODE} from '@mixins/share-handler'
   import API from '@api'
-  import {resolveQueryScene, countDownHandle, isEmptyObject} from '@utils/common'
+  import {resolveQueryScene, countDownHandle} from '@utils/common'
   import LinkGroup from '@components/link-group/link-group'
   import BuyRecord from '@components/goods-detail-element/buy-record/buy-record'
   import DetailImage from '@components/goods-detail-element/detail-image/detail-image'
@@ -232,6 +267,8 @@
   import base64src from '@utils/create-qr-code-wx'
   import {BTN_STATUS, BTN_TEXT_CONSTANT} from './config'
   import GoodsDetailMixins from '@mixins/goods-detail'
+  import ShareTrick from '@mixins/share-trick'
+  import GetOptions from '@mixins/get-options'
 
   const PAGE_NAME = 'ACTIVE_DETAIL'
   const PAGE_ROUTE_NAME = 'goods-detail'
@@ -243,7 +280,7 @@
   const ald = getApp()
   export default {
     name: PAGE_NAME,
-    mixins: [clearWatch, ShareHandler, GoodsDetailMixins],
+    mixins: [clearWatch, ShareHandler, GoodsDetailMixins, ShareTrick, GetOptions],
     components: {
       NavigationBar,
       LinkGroup,
@@ -274,11 +311,11 @@
           minute: '00',
           second: '00'
         },
-        timer: null,
         currentNum: 1,
         collageList: [],
         collageTotal: 0,
-        groupAutoScroll: true
+        autoplay: true,
+        statusBarHeight: -100
       }
     },
     computed: {
@@ -305,6 +342,9 @@
             break
           case ACTIVE_TYPE.GOODS_HOT_TAG:
             text = '爆款价'
+            break
+          case ACTIVE_TYPE.FLASH:
+            text = '秒杀价'
             break
           default:
             break
@@ -360,9 +400,10 @@
       }
     },
     onLoad(options) {
+      // if (!isEmptyObject(options)) {
+      //   this._options = options || {}
+      // }
       ald.aldstat.sendEvent('商品详情')
-      // this._initPageParams(options)
-      // this.getQrCode()
     },
     onShow() {
       this._initPageParams()
@@ -384,10 +425,17 @@
       this.$$sendEvent({goodsId: this.goodsId, activityId: this.activityId, _track})
     },
     onHide() {
-      this._clearTimer()
+      // this._clearTimer()
+      clearInterval(this._allActiveTimer)
       clearInterval(this._groupTimer)
     },
+    onReady() {
+      let res = this.$wx.getSystemInfoSync()
+      this.statusBarHeight = res.statusBarHeight || 20
+    },
     onUnload() {
+      clearInterval(this._allActiveTimer)
+      clearInterval(this._groupTimer)
       this.$refs.navigationBar && this.$refs.navigationBar._initHeadStyle()
       this.eventCount = 0
       this.$refs.shareList && this.$refs.shareList.hideLink()
@@ -426,9 +474,10 @@
         }
         API.Global.getFinishGroupList(data).then(res => {
           this.buyUsers = res.data.map(item => {
+            let nickName = item.nickname || ''
             return {
               avatar: item.avatar,
-              text: `${item.nickname}${item.groupon_at}拼单成功`
+              text: `${nickName.substring(0, 6) + (nickName.length > 6 ? '...' : '')}拼单成功`
             }
           })
         })
@@ -457,8 +506,10 @@
       },
       // 关闭
       handleHideAddNumber() {
-        this.joinGroupId = undefined
-        this.groupAutoScroll = true
+        setTimeout(() => {
+          this.joinGroupId = undefined
+        }, 1000)
+        this.autoplay = true
       },
       async jumpToCollage(item) {
         if (this.tipTop) {
@@ -469,7 +520,7 @@
         if (flag) {
           this.instantlyBuy()
           this.joinGroupId = item.grouon_id
-          this.groupAutoScroll = false
+          this.autoplay = false
         }
       },
       _getUnGroupList() {
@@ -511,26 +562,6 @@
         if (e.target.current) {
           this.currentNum = e.target.current * 1 + 1
         }
-      },
-      _kanTimePlay(diff) {
-        this.activityTime = countDownHandle(diff)
-        this.timer = setTimeout(() => {
-          diff--
-          if (diff < 0) {
-            diff = 0
-          }
-          this.activityTime = countDownHandle(diff)
-          if (this.activityTime.differ <= 0) {
-            this._clearTimer()
-            this.kanTimeEnd()
-          } else {
-            return this._kanTimePlay(diff)
-          }
-        }, 1000)
-      },
-      _clearTimer() {
-        clearTimeout(this.timer)
-        clearInterval(this.timer)
       },
       // 画商品海报
       _actionDrawPoster() {
@@ -590,7 +621,7 @@
         this.eventNo = EVENT_NO_CONFIG[entryAppType]
       },
       _checkIsNewClient() {
-        let flag = (this.goodsList && this.goodsList.some(val => val.activity.activity_type === ACTIVE_TYPE.NEW_CLIENT))
+        let flag = (this.goodsList && this.goodsList.some(val => val.activity.activity_theme === ACTIVE_TYPE.NEW_CLIENT))
         if (flag) {
           API.Global.checkIsNewCustomer().then(res => {
             this.isShowNewCustomer = res.data.is_new_client === 0
@@ -616,12 +647,13 @@
           }
         }
         if (this.activityType === ACTIVE_TYPE.GROUP_ON) {
-          let flag = await this._checkAbleCreateGroup(0, number)
-          if (!flag) return
           if (type) {
             price = this.goodsMsg.goods_sale_price
             goodsList.trade_price = price
+            goodsList.activity_id = 0
           } else {
+            let flag = await this._checkAbleCreateGroup(this.joinGroupId || 0, number)
+            if (!flag) return
             goodsList.url = `/pages/collage-detail`
             goodsList.source = 'c_groupon'
             goodsList.groupon_id = this.joinGroupId || 0
@@ -710,8 +742,8 @@
         })
       },
       // 初始化页面参数
-      _initPageParams(options) {
-        options = isEmptyObject(this.$mp.query) ? this.$mp.appOptions.query : this.$mp.query
+      _initPageParams() {
+        let options = this._$$initOptions()
         this.goodsId = +options.id || +options.goodsId || 0
         this.activityId = +options.activityId || 0
         this.shopId = +options.shopId || 0
@@ -758,7 +790,8 @@
           this.$wechat.hideLoading()
           if (res.error === this.$ERR_OK) {
             this.goodsMsg = res.data
-            this.$refs.navigationBar && this.$refs.navigationBar.setTranslucentTitle(this.goodsMsg.name)
+            this.msgTitle = this.goodsMsg.name
+            // this.$refs.navigationBar && this.$refs.navigationBar.setTranslucentTitle(this.goodsMsg.name)
             this._sendGoodsMsg()
             this._flashAction()
             this._getUnGroupList()
@@ -772,12 +805,24 @@
       },
       // 限时抢购倒计时开始
       _flashAction() {
-        if (this.activityType !== ACTIVE_TYPE.FLASH) return
+        if (this.activityType === ACTIVE_TYPE.DEFAULT) return
         if (this.activeStatus === BTN_STATUS.DOWN) {
           return
         }
         let diff = this.goodsMsg.at_diff || 0
-        this._kanTimePlay(diff)
+        clearInterval(this._allActiveTimer)
+        this.activityTime = countDownHandle(diff)
+        this._allActiveTimer = setInterval(() => {
+          diff--
+          if (diff < 0) {
+            diff = 0
+          }
+          this.activityTime = countDownHandle(diff)
+          if (this.activityTime.differ <= 0) {
+            clearInterval(this._allActiveTimer)
+            this.kanTimeEnd()
+          }
+        }, 1000)
       },
       // 倒计时结束hook
       kanTimeEnd() {
@@ -950,7 +995,6 @@
     background: rgba(17,17,17,0.6)
     border-radius: 36px
     position :absolute
-    top:10px
     left :8px
     z-index :80
     overflow :hidden
@@ -986,22 +1030,36 @@
     box-sizing: border-box
     margin: 0 12px 10px
     box-shadow: 0 2px 15px 0 rgba(17, 17, 17, 0.06)
+    .group-rule-wrapper
+      height :45px
+      layout(row,block,nowrap)
+      overflow :hidden
+      align-items :center
+      font-family: $font-family-regular
+      font-size: 3.5vw
+      color: #1D2023;
+      &.active
+        border-top-1px(#ECEDF1)
+      .number
+        font-family :$font-family-din-bold
+      .icon-arrow
+        width :4.5px
+        height :7.5px
+        margin :0 4vw
     .title
-      height: 50px
-      line-height: 50px
+      padding :17px 0 6px
       color: #1D2023
-      font-size: $font-size-14
+      font-size: $font-size-15
       font-family: $font-family-medium
-      border-bottom-1px(#ECEDF1)
     .collage-scroll
-      height: 112px
+      height: 128px
       padding: 4px 0
       overflow: hidden
       &.single
-        height :56px
+        height :64px
       .nothing
         text-align: center
-        padding-top: 50px
+        padding-top: 40px
         font-family: $font-family-regular
         font-size: $font-size-16
     .collage-content
@@ -1016,7 +1074,7 @@
         align-items: center
       .logo
         width: 40px
-        height: 40px
+        height: @width
         border-radius: 50%
       .name
         flex: 1
@@ -1031,20 +1089,24 @@
         display: flex
         align-itmes: center
       .context
-        width :72px
+        width :80px
         font-size: $font-size-12
         color: #1D2023
         font-family: $font-family-regular
-        .color
-          color: #FA7500
+        .text
+          letter-spacing: 0
+          .color
+            padding :0 3px
+            color: #FA7500
         .time
           margin-top: 5px
       .go-collage
+        reset-button()
         width: 75px
         height: 30px
         font-family: $font-family-regular
         font-size: $font-size-14
-        margin-left: 15px
+        margin-left: 7px
         line-height: 30px
         text-align: center
         border-radius: 30px
@@ -1313,6 +1375,8 @@
         height :19px
         border :0.5px solid $color-white
         layout(row,block,nowrap)
+        border-radius :2px
+        overflow :hidden
         .right
           padding-left :4px
           font-family: $font-family-medium
@@ -1331,22 +1395,48 @@
             height :10.5px
       &.active-common
         height: 13vw
-        background: #ff6d0d
         width: 100%
         border-top-left-radius: 8px
         border-top-right-radius: 8px
+        overflow :hidden
       &.group
-        background: linear-gradient(90deg, #FD4C46 0%, #FB6C21 100%);
+        position :relative
       .banner-title-main
         padding-bottom: 13vw
         width: 100%
         position: relative
+        .group-icon-wrapper
+          width :53px
+          height :20px
+          border :1px solid $color-white
+          layout(row,block,nowrap)
+          border-radius :2px
+          overflow :hidden
+          margin-right :7px
+          position relative
+          top :2px
+          font-family: $font-family-medium
+          font-size: 13px;
+          color: #FFFFFF
+          .right
+            padding-left :4px
+          .left
+            width :20px
+            height :@width
+            background :$color-white
+            display :flex
+            justify-content :center
+            align-items :center
+            color:#FD4E44
+            font-size :15px
         .banner-title-bg
           position: absolute
           left: 0
           bottom: 0
           width: 100%
           height: 100%
+          border-top-left-radius: 8px
+          border-top-right-radius: 8px
         .banner-main-box
           position: absolute
           left: 0
@@ -1359,6 +1449,7 @@
           align-items: center
           justify-content: space-between
           .banner-main-left
+            flex: 1
             layout(row)
             align-items: center
             .left-price
@@ -1370,6 +1461,8 @@
               font-family: $font-family-medium
               color: $color-white
               margin-right: 6px
+              position :relative
+              top:1px
             .line-price-top
               height: 11px
               width: 36.5px
@@ -1390,6 +1483,8 @@
                 text-align: center
                 position: relative
                 z-index: 11
+                &.group
+                  color: #FF4343
             .line-price-box
               font-size: $font-size-12
               font-family: $font-family-regular
@@ -1397,16 +1492,24 @@
               line-height: 1
               color: #fff
               margin-top: 2px
+              &.group
+                position :relative
+                top:-1px
+                opacity :0.8
           .banner-main-right
             text-align: center
+            position :relative
+            left :5px
             .time-text
               font-size: $font-size-13
               color: $color-text-main
               font-family: $font-family-regular
               line-height:15px
             .time-all-box
-              font-size: $font-size-13
+              padding-top :1px
+              font-size: $font-size-14
               color: $color-text-main
-              font-family: $font-family-regular
+              font-family: $font-family-medium
               line-height:15px
+              width :65px
 </style>

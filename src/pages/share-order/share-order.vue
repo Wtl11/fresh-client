@@ -69,11 +69,12 @@
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import ShareHandler, {EVENT_CODE} from '@mixins/share-handler'
-
+  import GetOptions from '@mixins/get-options'
   import API from '@api'
+  import clearWatch from '@mixins/clear-watch'
 
   export default {
-    mixins: [ShareHandler],
+    mixins: [ShareHandler, GetOptions, clearWatch],
     data() {
       return {
         orderId: '',
@@ -85,11 +86,10 @@
         userImgList: []
       }
     },
-    onLoad(e) {
-      this.orderId = e.id
-      this.shopId = e.shopId
-    },
     onShow() {
+      let options = this._$$initOptions()
+      this.orderId = options.id
+      this.shopId = options.shopId
       this.getShareOrderDate()
       this.$$shareHandler({
         event: EVENT_CODE.SHARE_ORDER,
@@ -100,7 +100,7 @@
       jumpGoodsDetail(item) {
         let activityType = ''
         if (item.activity) {
-          activityType = item.activity.activity_type || ''
+          activityType = item.activity.activity_theme || ''
         }
         wx.navigateTo({
           url: `/pages/goods-detail?id=${item.goods_id}&activityId=${item.activity_id}&shopId=${this.shopId}&activityType=${activityType}`

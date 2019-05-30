@@ -12,17 +12,17 @@
         <div class="hlep-bottom">{{item.text}}</div>
       </button>
     </div>
-      <button v-if="showLeftButton" class="common-btn group left" formType="submit" @click="instantlyBuy('goods_sale_price')">
-        <p class="money">¥{{buttonInfo.salePrice}}元</p>
-        <p class="text">单独购买</p>
-      </button>
-      <div v-else-if="activeStatus === 1" class="common-btn over">已抢完</div>
-      <button v-if="showRightButton" class="common-btn group right" :class="{disable: buttonInfo.tipTop}"  formType="submit" @click="handleGroupBuy">
-        <p class="money">¥{{buttonInfo.tradePrice}}元</p>
-        <p class="text">发起团购</p>
-      </button>
-    <div v-else-if="activeStatus === 1" class="common-btn over">已抢完</div>
     <div v-if="!showRightButton && !showLeftButton" class="goods-btn goods-btn-assint">{{btnText}}</div>
+    <button v-if="showLeftButton" class="common-btn group left" formType="submit" @click="instantlyBuy('goods_sale_price')">
+      <p class="money">¥{{buttonInfo.salePrice}}元</p>
+      <p class="text">单独购买</p>
+    </button>
+    <div v-else class="common-btn over o-6">已抢完</div>
+    <button v-if="showRightButton" class="common-btn group right" :class="{disable: buttonInfo.tipTop}"  formType="submit" @click="handleGroupBuy">
+      <p class="money">¥{{buttonInfo.tradePrice}}元</p>
+      <p class="text">发起拼团</p>
+    </button>
+    <div v-else class="common-btn over">已抢完</div>
   </div>
 <!--  一般-->
   <div v-else class="button-group">
@@ -82,7 +82,7 @@
         return this.buttonInfo.isShowTwoButton
       },
       showLeftButton() {
-        return this.activeStatus === 1 && this.buttonInfo.base_usable_stock > 0
+        return this.buttonInfo.base_usable_stock > 0
       },
       showRightButton() {
         return this.activeStatus === 1 && this.buttonInfo.usable_stock > 0
@@ -130,6 +130,8 @@
       font-size :14px
       background: #B7B7B7
       color: $color-white
+      &.o-6
+        opacity :0.6
     &.group
       layout()
       justify-content :center
@@ -149,15 +151,15 @@
       color: $color-text-main
   .tip-top
     position absolute
-    height :40px
-    top:-39px
+    height :10.7vw
+    top:-10.6vw
     left :0
     right :0
     background: #FFEBD6
     padding :0 12px
     line-height :@height
     font-family: $font-family-regular
-    font-size: 15px;
+    font-size: 4vw
     color: #FA7500;
     z-index :115
     no-wrap()

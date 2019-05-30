@@ -226,10 +226,12 @@
         >
 <!--          活动tab-->
           <section class="active-tab-wrapper"
+                   ref="refActiveTAb"
                    id="activeTab"
                    v-if="activeTabInfo && activeTabInfo.length > 1"
           >
             <ul class="active-tab-container"
+                ref="refActiveTabContainer"
                 :style="activeTabStyles"
                 :class="{active: activeTabStyles}"
             >
@@ -255,28 +257,28 @@
               <img
                 lazy-load
                 mode="widthFix"
-                v-if="imageUrl && item.module_name === 'groupon'"
+                v-if="imageUrl && item.module_name === ACTIVE_TYPE.GROUP_ON"
                 :src="imageUrl + '/yx-image/2.4/pic-ptfx@2x.png'"
                 class="banner-image">
               <img
                 lazy-load
                 mode="widthFix"
-                v-if="imageUrl && item.module_name === 'new_client'"
+                v-if="imageUrl && item.module_name === ACTIVE_TYPE.NEW_CLIENT"
                 :src="imageUrl + '/yx-image/2.4/pic-xrth@2x.png'"
                 class="banner-image">
               <img
                 lazy-load
                 mode="widthFix"
-                v-if="imageUrl && item.module_name === 'goods_hot_tag'"
+                v-if="imageUrl && item.module_name === ACTIVE_TYPE.GOODS_HOT_TAG"
                 :src="imageUrl + '/yx-image/2.4/pic-jrbk@2x.png'"
                 class="banner-image">
               <img
                 lazy-load
                 mode="widthFix"
-                v-if="imageUrl && item.module_name === 'guess'"
+                v-if="imageUrl && item.module_name === ACTIVE_TYPE.GUESS"
                 :src="imageUrl + '/yx-image/2.4/pic-cnxh@2x.png'"
                 class="banner-image">
-              <button v-if="item.module_name !== 'guess'" class="share-button" open-type="share" :id="'share-' + item.module_name"></button>
+              <button v-if="item.module_name !== ACTIVE_TYPE.GUESS" class="share-button" open-type="share" :id="'share-' + item.module_name"></button>
               <block v-for="(child, idx) in item.list" :key="idx">
                 <div class="panel-goods-wrapper"
                      @click="handleJumpToGoodsDetail(child, item.module_name)"
@@ -284,11 +286,11 @@
                   <div class="goods-item">
                     <figure class="left">
                       <img mode="aspectFill"
-                           lazy-load
+                           :lazy-load="true"
                            v-if="child.goods_cover_image"
                            :src="child.goods_cover_image" alt="" class="good-image">
                       <img
-                        lazy-load
+                        :lazy-load="true"
                         v-if="imageUrl"
                         :src="imageUrl + '/yx-image/2.4/icon-label@2x.png'"
                         class="label-icon">
@@ -316,7 +318,7 @@
                   </div>
                 </div>
               </block>
-              <article v-if="item.list.length < 1 && item.module_name !== 'guess' " class="goods-empty">
+              <article v-if="item.list.length < 1 && item.module_name !== ACTIVE_TYPE.GUESS " class="goods-empty">
                 <div class="empty-wrapper">本活动暂未开始，可浏览其他活动哦！</div>
               </article>
             </section>
@@ -353,6 +355,8 @@
   import {ACTIVE_TYPE} from '@utils/contants'
   import IsEnd from '@components/is-end/is-end'
   import LoadingMore from '@components/loading-more/loading-more'
+  import clearWatch from '@mixins/clear-watch'
+  // import GetOptions from '@mixins/get-options'
 
   const ald = getApp()
   const PAGE_NAME = 'CHOICENESS'
@@ -361,7 +365,9 @@
     name: PAGE_NAME,
     mixins: [
       ShareHandler,
-      ShareTrick
+      ShareTrick,
+      clearWatch
+      // GetOptions
     ],
     components: {
       NavigationBar,
@@ -377,7 +383,7 @@
       this._isHelpScroll = false
       this._sharing = false
       return {
-        ACTIVE_TYPE,
+        ACTIVE_TYPE: ACTIVE_TYPE,
         // 头部变色
         title: '赞播优鲜',
         // 团长信息
@@ -429,7 +435,8 @@
           }
         ],
         latitude: 0,
-        longitude: 0
+        longitude: 0,
+        shareModuleName: ''
       }
     },
     computed: {
@@ -454,11 +461,16 @@
         })
         return arr
       },
+      activityModule() {
+        return this.moduleArray.find(val => val.module_name === 'activity') || {}
+      },
+      activityModuleList() {
+        return this.activityModule.list || []
+      },
       flashModule() {
         let flash = {}
-        let module = this.moduleArray.find(val => val.module_name === 'activity') || {}
-        if (module.list) {
-          flash = module.list.find(val => val.module_name === 'activity_fixed') || {}
+        if (this.activityModuleList.length) {
+          flash = this.activityModuleList.find(val => val.module_name === 'activity_fixed') || {}
         }
         return flash
       },
@@ -466,7 +478,7 @@
         return this.flashModule.list || []
       },
       isShowFlash() {
-        return this.flashModule.is_close === 0 && this.flashTabInfo.length
+        return this.flashModule.is_close === 0 && this.flashArray.length > 0
       }
     },
     watch: {
@@ -476,7 +488,7 @@
       }
     },
     onLoad(options) {
-      console.warn(options, '<==home==>')
+      // console.warn(options, '<==home==>')
       this.$wechat.showLoading()
       let data = wx.getStorageSync('homeData')
       if (data) {
@@ -490,21 +502,24 @@
     },
     onUnload() {
       this._navigationIO && this._navigationIO.disconnect()
-      this.bannerIndex = 0
-      this.activeTabStyles = ''
-      this.flashTabIndex = 0
-      this.activeTabIndex = 0
-      this.flashViewToChild = undefined
-      this.guessPage = 1
-      this.guessHasMore = true
-      this.latitude = 0
-      this.longitude = 0
-      wx.setStorageSync('homeData', this.$data, {curShopId: ''})
+      wx.setStorageSync('homeData', {
+        groupInfo: this.groupInfo,
+        moduleArray: this.moduleArray,
+        flashArray: this.flashArray,
+        classifyArray: this.classifyArray,
+        activeTabInfo: this.activeTabInfo,
+        newClientList: this.newClientList,
+        todayHotList: this.todayHotList,
+        groupList: this.groupList,
+        guessList: this.guessList
+      })
     },
     onHide() {
     },
     onPageScroll(e) {
-      // console.log(e)
+      if (this.guessList.length === 0) {
+        this._getGuessList()
+      }
       // this._helpObserver(e)
     },
     async onShow() {
@@ -527,6 +542,7 @@
             duration: 0
           })
           this.curShopId = this.shopId
+          this.activeTabStyles = ''
           this._resetLocation()
           this._resetBanner()
           this._resetFlash()
@@ -535,12 +551,9 @@
         this._getLocation()
         this._getNotify()
         await this._getModuleInfo()
+        this.$wechat.hideLoading()
         this._initTabInfo()
         this._addMonitor()
-        this._getFlashList()
-        this._getTodayHostList()
-        this._getNewClientList()
-        this._getGroupList()
         if (!wx.getStorageSync('token')) return
         this.setCartCount()
       } catch (e) {
@@ -550,12 +563,11 @@
         this.$sendMsg({event_no: 1000})
         this.$$shareHandler({event: EVENT_CODE.HOME})
         ald.aldstat.sendEvent('首页')
-        this.$wechat.hideLoading()
         this.$$sendEvent()
       }
     },
     async onPullDownRefresh() {
-      this._refreshLocation()
+      this._resetLocation()
       this._resetGuessParams()
       this._getCouponModalList()
       this._getLocation()
@@ -564,10 +576,6 @@
         await this._getModuleInfo(false)
         this._initTabInfo()
         this._addMonitor()
-        this._getFlashList()
-        this._getTodayHostList()
-        this._getNewClientList()
-        this._getGroupList()
       } catch (e) {
         console.error(e)
       }
@@ -589,19 +597,19 @@
       let imgUrl = ''
       let moduleName = ''
       let title = ``
-      if (res.target.id) {
+      if (res.target && res.target.id) {
         moduleName = res.target.id.replace('share-', '')
       }
       switch (moduleName) {
-        case 'new_client':
+        case ACTIVE_TYPE.NEW_CLIENT:
           imgUrl = '/yx-image/2.4/pic-xrth_share@2x.png'
           title = `${this.socialName}-赞播优鲜社区团购`
           break
-        case 'goods_hot_tag':
+        case ACTIVE_TYPE.GOODS_HOT_TAG:
           imgUrl = '/yx-image/2.4/pic-jrbp_share@2x.png'
           title = `${this.socialName}-赞播优鲜社区团购`
           break
-        case 'groupon' :
+        case ACTIVE_TYPE.GROUP_ON :
           imgUrl = '/yx-image/2.4/pic-ptfx_share@2x.png'
           title = `${this.socialName}-赞播优鲜社区团购`
           break
@@ -611,6 +619,7 @@
           break
       }
       const flag = Date.now()
+      console.warn(`/pages/choiceness?shopId=${this.shopId}&moduleName=${moduleName}&flag=${flag}`)
       return {
         title,
         path: `/pages/choiceness?shopId=${this.shopId}&moduleName=${moduleName}&flag=${flag}`,
@@ -626,12 +635,14 @@
       _resetLocation() {
         this.latitude = 0
         this.longitude = 0
+        this._isShowDistance = false
+        this.$refs.distance && this.$refs.distance.reset()
       },
       handleJumpToClassify(item) {
         wx.navigateTo({url: `/pages/classify?id=${item.id}`})
       },
       handleGoodsButton(child = {}, item = {}) {
-        if (item.module_name === 'groupon') {
+        if (item.module_name === ACTIVE_TYPE.GROUP_ON) {
           this.handleJumpToGoodsDetail(child, item.module_name)
         } else {
           this.addShoppingCart(child)
@@ -640,6 +651,7 @@
       _resetGuessParams() {
         this.guessPage = 1
         this.guessHasMore = true
+        this.guessList = []
       },
       _getGuessList() {
         if (this._isLoading) return
@@ -652,34 +664,10 @@
           } else {
             this.guessList = this.guessList.concat(arr)
           }
-          this.guessHasMore = arr.length
+          this.guessHasMore = arr.length > 0 && arr.length >= 10
         }).finally(() => {
           this._isLoading = false
         })
-      },
-      async _getGroupList() {
-        try {
-          let res = await API.Home.getGroupList({limit: 20})
-          this.groupList = this._formatListPriceData(res.data)
-        } catch (e) {
-          console.warn(e)
-        }
-      },
-      async _getTodayHostList() {
-        try {
-          // let res = await API.Home.getTodayHotList({limit: 20})
-          // this.todayHotList = this._formatListPriceData(res.data)
-        } catch (e) {
-          console.warn(e)
-        }
-      },
-      async _getNewClientList() {
-        try {
-          // let res = await API.Home.getNewClientList({limit: 20})
-          // this.newClientList = this._formatListPriceData(res.data)
-        } catch (e) {
-          console.error(e)
-        }
       },
       _formatListPriceData(arr = []) {
         return arr.map(item => {
@@ -692,10 +680,9 @@
       // 初始化活动tab
       _initTabInfo() {
         let arr = []
-        let module = this.moduleArray.find(val => val.module_name === 'activity') || {}
-        if (module.list) {
-          module.list.forEach(item => {
-            if (item.module_name !== 'activity_fixed' && item.is_close < 1) {
+        if (this.activityModuleList.length) {
+          this.activityModuleList.forEach(item => {
+            if (item.module_name !== 'activity_fixed' && item.starting_point_id > 0) {
               arr.push({
                 ...item,
                 ...TAB_ARR_CONFIG[item.module_name]
@@ -704,21 +691,24 @@
           })
         }
         arr.push({
-          ...TAB_ARR_CONFIG['guess'],
-          module_name: 'guess'
+          ...TAB_ARR_CONFIG[ACTIVE_TYPE.GUESS],
+          module_name: ACTIVE_TYPE.GUESS
         })
         this.activeTabInfo = arr
       },
       // 添加监听
       _addMonitor() {
         setTimeout(() => {
-          if (!(this.activeTabInfo && this.activeTabInfo.length > 1)) return
+          if (!(this.activeTabInfo && this.activeTabInfo.length > 1)) {
+            this.guessList.length === 0 && this._getGuessList()
+            return
+          }
           if (!this._navigationBarHeight) return
           const navigationBarHeight = this._navigationBarHeight
           const top = navigationBarHeight + 59
           this._activeTab = wx.createIntersectionObserver()
           this._activeTab.relativeToViewport({top: -top})
-          this._activeTab.observe('#activeTab', res => {
+          this.$refs.refActiveTAb && this._activeTab.observe('#activeTab', res => {
             let flag = res.boundingClientRect.top <= top && res.intersectionRect.top <= 0
             this.activeTabStyles = flag ? `
                 position:fixed;
@@ -728,15 +718,15 @@
                 background: #fff;
               ` : ''
           })
-          wx.createIntersectionObserver(undefined, {observeAll: true})
+          this.$refs.refActiveTabContainer && wx.createIntersectionObserver(undefined, {observeAll: true})
             .relativeTo('.active-tab-container')
             .observe('.panel', res => {
               if (res.intersectionRatio > 0 && !this._isScrolling) {
+                let id = res.id.replace('panel', '') * 1
                 this._isHelpScroll = false
-                this.activeTabIndex = res.id.replace('panel', '') * 1
+                this.activeTabIndex = id
               }
             })
-          // this._initDomPosition()
         }, 500)
       },
       _helpObserver(e) {
@@ -804,7 +794,9 @@
             let flag = res.intersectionRatio > 0
             let title = flag ? '赞播优鲜' : '赞播优鲜·' + this.socialName
             this.$refs.navigationBar && this.$refs.navigationBar.setTranslucentTitle(title)
-            this.$refs.distance && this.$refs.distance.hide()
+            if (this._isShowDistance) {
+              this.$refs.distance && this.$refs.distance.hide()
+            }
             resolve()
           })
         })
@@ -841,7 +833,6 @@
       },
       // 跳转至商品详情页
       handleJumpToGoodsDetail(item, type) {
-        console.log(item)
         wx.navigateTo({
           url: `/pages/goods-detail?id=${item.goods_id}&activityId=${item.activity_id}&activityType=${type}`
         })
@@ -914,7 +905,9 @@
         if (!wx.getStorageSync('token')) return
         let customerId = id || (wx.getStorageSync('userInfo') || {}).id || 0
         API.Coupon.getModalList({customer_id: customerId}).then(res => {
-          this._ref('couponModal', 'show', res.data)
+          if (res && res.data && res.data.length) {
+            this._ref('couponModal', 'show', res.data)
+          }
         }).catch(e => {
           console.error(e)
         })
@@ -936,7 +929,7 @@
       },
       // 获取地理位置
       async _getLocation() {
-        // if (this.latitude && this.longitude) return
+        if (this.latitude && this.longitude) return
         try {
           let res = await this.$wechat.getLocation()
           this.longitude = res.longitude
@@ -947,28 +940,70 @@
             res = await API.Global.checkShopDistance({longitude: this.longitude, latitude: this.latitude})
             this.groupInfo = res.data.shop
             if (res.data.distance_judge !== 0) {
+              this._isShowDistance = true
               this.$refs.distance && this.$refs.distance.setTop(this._navigationBarHeight + 30)
             }
           }
         } catch (e) {
+          this.longitude = 0
+          this.latitude = 0
           wx.navigateTo({url: `/pages/open-location`})
         }
       },
       // 初始化页面配置
       _initPageParams(options = {}) {
+        // let options = this._$$initOptions()
+        this.shopId = options.shopId
         if (options.scene) {
           let {shopId} = resolveQueryScene(options.scene)
           this.shopId = shopId
-        } else {
-          this.shopId = options.shopId
         }
-        this.shopId && wx.setStorageSync('shopId', this.shopId)
+        this.shopId > 0 && wx.setStorageSync('shopId', this.shopId)
+        this.shareModuleName = options.moduleName || ''
+        console.warn(options, '==>home')
       },
       // 获取模块信息
       async _getModuleInfo(loading) {
         try {
           let res = await API.FlashSale.getModuleInfo({page_name: 'index'}, loading)
           this.moduleArray = res.data.modules || []
+          let index = 0
+          this.activityModuleList.forEach((item) => {
+            index++
+            let key = TAB_ARR_CONFIG[item.module_name]
+            let activityId = item.starting_point_id || 0
+            // 所有活动
+            if (activityId > 0 && item.module_name !== ACTIVE_TYPE.FLASH) {
+              if (item.module_name === ACTIVE_TYPE.GROUP_ON) {
+                API.Home.getGroupList({limit: 20}).then(res => {
+                  this.groupList = this._formatListPriceData(res.data)
+                })
+              } else {
+                API.Home.getActivityList({activity_id: activityId, page: 1, limit: key.limit}).then(res => {
+                  this[key.dataArray] = this._formatListPriceData(res.data)
+                })
+              }
+            } else if (activityId === 0 && item.module_name !== ACTIVE_TYPE.FLASH) {
+              this[key.dataArray] = []
+            }
+            // 限时抢购活动
+            if (item.module_name === ACTIVE_TYPE.FLASH && item.list.length > 0) {
+              activityId = this.flashTabInfo[this.flashTabIndex].id || item.list[0].id
+              API.Home.getActivityList({activity_id: activityId, page: 1, limit: key.limit}).then(res => {
+                this[key.dataArray] = this._formatListPriceData(res.data)
+              })
+            } else if (item.module_name === ACTIVE_TYPE.FLASH && item.list.length === 0) {
+              this[key.dataArray] = []
+            }
+            // 分享进来的滑动
+            if (index >= this.activityModuleList.length && this.shareModuleName) {
+              setTimeout(() => {
+                let moduleIndex = this.activeTabInfo.findIndex(val => val.module_name === this.shareModuleName)
+                moduleIndex > -1 && this.handleActiveTabChange(moduleIndex)
+                this.shareModuleName = ''
+              }, 1000)
+            }
+          })
         } catch (e) {
           console.error(e)
         }
@@ -991,7 +1026,7 @@
     overflow :auto
   // 服务图标
   .server-icon-wrapper
-    height :27px
+    height :28px
     padding :0 20px
     display: flex
     flex-wrap :nowrap
@@ -1078,6 +1113,7 @@
               color: $color-text-sub
               position :relative
               top:-2px
+              min-height :19px
             .active-icon
               margin-top :15px
               align-self :flex-start
@@ -1198,7 +1234,7 @@
 
   // 分类
   .classify-wrapper
-    padding :5px 12px 10px
+    padding :6px 12px 8px
     display :flex
     flex-wrap: wrap
     .classify-item-wrapper

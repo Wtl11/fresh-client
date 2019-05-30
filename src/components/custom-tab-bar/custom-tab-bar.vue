@@ -1,5 +1,5 @@
 <template>
-  <div class="navigation-bottom">
+  <div class="navigation-bottom" id="customTabBar">
     <div class="navigation-top" :style="{height: (49 + height) + 'px'}"></div>
     <div class="navigation-box">
       <div class="nav-list-box" v-for="(item, index) in platformList" :key="index" @click="jumpNav(item)">

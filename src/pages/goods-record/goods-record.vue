@@ -15,7 +15,7 @@
         <button class="share-button" open-type="share">
           <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/icon-sharexq@2x.png'" mode="aspectFill" class="share-img">
         </button>
-        <article v-if="activityType === ACTIVE_TYPE.FLASH" class="right-wrapper">
+        <article v-if="activityType !== ACTIVE_TYPE.DEFAULT" class="right-wrapper">
           <p class="title">{{goodsMsg.at_diff_str}}</p>
           <div class="time-wrapper">
             <p class="time start">{{countDownTimes.hour}}</p>
@@ -64,7 +64,9 @@
   import AddNumber from '@components/add-number/add-number'
   import GoodsDetailMixins from '@mixins/goods-detail'
   import ButtonGroup from '@components/goods-detail-element/button-group/button-group'
-  import {resolveQueryScene, countDownHandle, isEmptyObject} from '@utils/common'
+  import {resolveQueryScene, countDownHandle} from '@utils/common'
+  import ShareTrick from '@mixins/share-trick'
+  import GetOptions from '@mixins/get-options'
 
   const PAGE_NAME = 'GOODS_RECORD'
   const TYPEBTN = [{url: '/yx-image/goods/icon-homepage@2x.png', text: '首页', type: 0}, {url: '/yx-image/goods/icon-shopcart@2x.png', text: '购物车', type: 2}]
@@ -82,7 +84,7 @@
   }
   export default {
     name: PAGE_NAME,
-    mixins: [ShareHandler, GoodsDetailMixins],
+    mixins: [ShareHandler, GoodsDetailMixins, ShareTrick, GetOptions],
     components: {
       NavigationBar,
       IsEnd,
@@ -109,7 +111,6 @@
           minute: '00',
           second: '00'
         },
-        timer: null,
         activityType: '',
         ACTIVE_TYPE
       }
@@ -164,7 +165,12 @@
     },
     onLoad(options) {
       console.warn(options, '<-----参数---->')
+      // if (!isEmptyObject(options)) {
+      //   this._options = options || {}
+      // }
+      // console.warn(this._options, '<--_options---参数---->')
       this._initPageParams(options)
+      console.warn(this._options, '<--_options---参数---->')
       this._getList(false)
     },
     onShow() {
@@ -177,7 +183,7 @@
       this._getGoodsDetailData()
       this.getGoodsOtherInfo()
       this.$$shareHandler({
-        event: EVENT_CODE.GOODS_DETAIL,
+        event: EVENT_CODE.GOODS_RECORD,
         activityId: this.activityId,
         goodsId: this.goodsId
       })
@@ -220,10 +226,8 @@
       ...cartMethods,
       ...orderMethods,
       // 初始化页面参数
-      _initPageParams(options) {
-        if (!options) {
-          options = isEmptyObject(this.$mp.query) ? this.$mp.appOptions.query : this.$mp.query
-        }
+      _initPageParams() {
+        let options = this._$$initOptions()
         this.goodsId = +options.id || +options.goodsId || 0
         this.activityId = +options.activityId || 0
         this.shopId = +options.shopId || 0
@@ -333,7 +337,7 @@
       },
       // 限时抢购倒计时开始
       _flashAction() {
-        if (this.activityType !== ACTIVE_TYPE.FLASH) return
+        if (this.activityType === ACTIVE_TYPE.DEFAULT) return
         if (this.activeStatus === BTN_STATUS.DOWN) {
           return
         }

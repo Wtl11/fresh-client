@@ -4,8 +4,8 @@
     <!--<picker style="margin-top: 10px; border: 1px solid #eee" mode="selector" @change="changePicker" :value="status" :range="[0,1,2,3,4,5,6,7,8,9,10,11]">
       <div class="picker">当前选择：{{status}}</div>
     </picker>-->
-    <p v-if="topText1" class="top-text">该活动仅支持： {{data.shop.social_name}}</p>
-    <p v-if="topText2" class="top-text">当前社区不支持拼团活动: {{data.shop.social_name}}</p>
+    <p v-if="topText1" class="top-text">该活动仅支持： {{socialName}}社区</p>
+    <p v-if="topText2" class="top-text">当前位置不支持{{socialName}}社区拼团活动</p>
     <div class="top-msg">
       <!--商品信息-->
       <div v-if="goodsBox" class="goods-box" @click="toDetail">
@@ -27,8 +27,8 @@
       </div>
 
       <p v-if="statusText" class="status-text" :class="{'orange': orangeStatus}"><img v-if="imageUrl" :src="imageUrl + '/yx-image/collage/'+ msg[statusNum].icon +'@2x.png'" alt="" class="icon">{{msg[statusNum].statusText}}</p>
-      <p v-if="statusTip1" class="status-tip" :class="{'tip-top': topText2}">还差<span class="mark">{{data.surplus_number}}</span>人，快喊邻居一起来拼团吧</p>
-      <p v-if="statusTip2" class="status-tip status-tip2">仅剩<span class="mark">{{data.surplus_number}}</span>个名额</p>
+      <p v-if="statusTip1" class="status-tip" :class="{'tip-top': topText2}">还差<span class="mark"> {{data.surplus_number}} </span>人，快喊邻居一起来拼团吧</p>
+      <p v-if="statusTip2" class="status-tip status-tip2">仅剩<span class="mark"> {{data.surplus_number}} </span>个名额</p>
       <p v-if="runTime" class="run-time">剩余 <span class="time-num">{{timeArr[0]}}</span>:<span class="time-num">{{timeArr[1]}}</span>:<span class="time-num">{{timeArr[2]}}</span></p>
 
       <!--头像-->
@@ -36,7 +36,7 @@
         <div v-for="(item, index) in grouponHead" :key="index" class="head-box" :class="[{'small-head': grouponHead.length > 4}, {'has-border': item.avatar}]">
 
           <img v-if="item.avatar" :src="item.avatar" alt="" class="logo">
-          <img v-else :src="imageUrl + '/yx-image/collage/pic-touxiang@2x.png'" alt="" class="logo">
+          <img v-else-if="imageUrl" :src="imageUrl + '/yx-image/collage/pic-touxiang@2x.png'" alt="" class="logo">
           <span v-if="item.is_main" class="tag">拼主</span>
         </div>
       </div>
@@ -54,11 +54,11 @@
     <div v-if="goods || time" class="line"></div>
     <div v-if="goods" class="goods" @click="toDetail">
       <span class="label">拼团商品</span>
-      <p class="text">{{data.goods.name}}<img :src="imageUrl + '/yx-image/collage/icon-pressed@2x.png'" class="icon"></p>
+      <p class="text"><span class="text-title">{{data.goods.name}}</span><img v-if="imageUrl" :src="imageUrl + '/yx-image/collage/icon-pressed@2x.png'" class="icon"></p>
     </div>
     <div v-if="time" class="time">
       <span class="label">拼团时间</span>
-      <span class="text">{{data.start_groupon_at}}</span>
+      <span class="text"><span class="text-title">{{data.start_groupon_at}}</span></span>
     </div>
 
     <!--进度-->
@@ -102,12 +102,15 @@
   import SharePop from './share-pop/share-pop'
   import AddNumber from '@components/add-number/add-number'
   import {ACTIVE_TYPE} from '@utils/contants'
-  import { formatNumber, isEmptyObject } from '@utils/common'
+  import { formatNumber } from '@utils/common'
   import {orderMethods} from '@state/helpers'
   import LoadingMore from '@components/loading-more/loading-more'
+  import ShareTrick from '@mixins/share-trick'
   import API from '@api'
-  const PAGE_NAME = 'COLLAGE_DETAIL'
+  import ShareHandler, {EVENT_CODE} from '@mixins/share-handler'
+  import GetOptions from '@mixins/get-options'
 
+  const PAGE_NAME = 'COLLAGE_DETAIL'
   // 3开团成功 7参团成功 9不在范围 为自定义状态。
   const STATUS_ARR = [
     {
@@ -164,12 +167,12 @@
 
   export default {
     page: PAGE_NAME,
-    mixins: [ClearWatch],
+    mixins: [ClearWatch, ShareTrick, ShareHandler, GetOptions],
     data() {
       return {
         statusArr: STATUS_ARR,
         progress: [1, 2, 3, 4],
-        text: ['开团', '邀请邻居', '拼团成功', '拼团返券'],
+        text: ['开团', '邀请邻居', '拼团成功', '拼主返券'],
         timeArr: [],
         recommendList: [],
         msg: STATUS_ARR,
@@ -198,11 +201,16 @@
       }
     },
     computed: {
+      socialName() {
+        let name = this.data.shop.social_name || ''
+        name = name.substring(0, 8) + (name.length > 8 ? '...' : '')
+        return name || ''
+      },
       topText1() { // 开团成功
-        return this.orderId && this.isMain
+        return this.isGroup && +this.status === 0 && this.isActivityEnd === 0
       },
       topText2() { // 不在范围
-        return !this.isGroup && !this.distance && +this.status === 0
+        return !this.isGroup && !this.distance && +this.status === 0 && this.isActivityEnd === 0
       },
       goodsBox() {
         // 参团非拼主、未参团一键参团
@@ -214,9 +222,7 @@
       },
       statusText() {
         // 一键参团、不在范围
-        if (!this.isGroup && +this.status === 0 && this.distance && !this.isActivityEnd) {
-          return false
-        } else if (!this.isGroup && +this.status === 0 && !this.distance) {
+        if (!this.isGroup && +this.status === 0) {
           return false
         }
         return true
@@ -225,7 +231,7 @@
         // 拼主开团成功、拼主待成团
         // 参团者参团成功、参团者待成团
         if (this.isMain) {
-          if (this.orderId || +this.status === 0) {
+          if (+this.status === 0) {
             return true
           }
         } else if (!this.isMain && this.isGroup) {
@@ -240,7 +246,7 @@
       },
       statusTip2() {
         // 一键参团
-        if (!this.isGroup && this.distance && +this.status === 0 && !this.isActivityEnd) {
+        if (!this.isGroup && +this.status === 0 && !this.isActivityEnd) {
           return true
         }
         return false
@@ -250,7 +256,7 @@
         // 参团者参团成功、参团者待成团
         // 未参团者一键参团
         if (this.isMain) {
-          if (this.orderId || +this.status === 0) {
+          if (+this.status === 0) {
             return true
           }
         } else if (!this.isMain && this.isGroup) {
@@ -369,20 +375,22 @@
     onHide() {
       clearInterval(this.timer)
     },
-    onLoad(options) {
-      // let option = options
-      // if (!option) {
-      //   option = isEmptyObject(this.$mp.query) ? this.$mp.appOptions.query : this.$mp.query
-      // }
-      // console.warn('options:', option)
-      // this.orderId = option.orderId || ''
-      // this.id = option.id || ''
-      // if (option.shopId) {
-      //   wx.setStorageSync('shopId', option.shopId)
-      // }
-    },
+    // onLoad(options) {
+    //   if (!isEmptyObject(options)) {
+    //     this._options = options || {}
+    //   }
+    // },
     async onShow() {
-      let option = isEmptyObject(this.$mp.query) ? this.$mp.appOptions.query : this.$mp.query
+      let option = this._$$initOptions()
+      // if (!isEmptyObject(this._options)) {
+      //   option = this._options
+      // } else if (!isEmptyObject(this.$mp.query)) {
+      //   option = this.$mp.query
+      // } else if (!isEmptyObject(this.$mp.appOptions.query)) {
+      //   option = this.$mp.appOptions.query
+      // }
+      // let option = isEmptyObject(this.$mp.query) ? this.$mp.appOptions.query : this.$mp.query
+      console.warn('拼团详情options:', option, this.$mp)
       this.id = option.id || option.orderId
       if (option.shopId) {
         wx.setStorageSync('shopId', option.shopId)
@@ -406,6 +414,7 @@
         let res = await API.Groupon.getGrouponDetail({id: this.id, order_id: this.orderId})
         if (res.error !== this.$ERR_OK) {
           this.$wechat.showToast(res.message)
+          this._initLocation()
           return
         }
         this.data = res.data
@@ -418,6 +427,11 @@
         this.goodsMsg = res.data.goods
         this.activityId = res.data.activity.activity_id
         console.log('step:', this.step, ' status:', this.status, ' isActivityEnd:', this.isActivityEnd, ' isGroup:', this.isGroup, ' isMain', this.isMain)
+        this.$$shareHandler({
+          event: EVENT_CODE.COLLAGE_DETAIL,
+          activityId: this.activityId,
+          goodsId: this.data.goods.goods_id
+        })
         this.timeHandle() // 跑倒计时
         // 初始头像
         let arr = new Array(res.data.groupon_person_limit).fill({})
@@ -435,7 +449,7 @@
         if (this.status < 3) {
           this.statusNum = this.status
         }
-        if (this.orderId && this.isMain) {
+        if (this.orderId && this.isMain && +this.status === 0) {
           this.statusNum = 3
         } else if (this.orderId && !this.isMain && +this.status === 0) {
           this.statusNum = 4
@@ -476,9 +490,9 @@
         let goodsList = this.data.goods
         goodsList.sku_id = goodsList.goods_sku_id
         goodsList.num = number
+        goodsList.activity_id = this.activityId
         let price = goodsList.trade_price
         let flag = await this.checkGroupon()
-        // console.log(flag, 'flag')
         if (!flag) return
         goodsList.url = `/pages/collage-detail`
         goodsList.source = 'c_groupon'
@@ -489,7 +503,8 @@
         goodsList.activity = this.data.activity
         let orderInfo = {
           goodsList: new Array(goodsList),
-          total: total
+          total: total,
+          deliverAt: ''
         }
         this.setOrderInfo(orderInfo)
         wx.navigateTo({url: `/pages/submit-order`})
@@ -519,7 +534,7 @@
         let data = {
           activity_id: this.activityId,
           goods_sku_id: this.data.goods.goods_sku_id,
-          groupon_id: this.data.goods.groupon_id,
+          groupon_id: this.data.groupon_id,
           longitude: this.longitude,
           latitude: this.latitude
         }
@@ -539,29 +554,29 @@
         this.status = e.target.value
       },
       async clickBtn() {
+        let isLogin = await this.$isLogin()
+        if (!isLogin) {
+          return
+        }
         let status = +this.status
         if (this.btnShow === 1) {
-          // console.log(1)
           // -----------参团了拼团进行中可分享
           this.showShare()
         } else if (this.btnShow === 2) {
-          // console.log(2)
-          // -----------参团成功或者拼主拼团成功跳转去我的订单
-          wx.navigateTo({url: `/pages/order-list?id=&index=0`})
+          // -----------参团成功或者拼主拼团成功跳转去制定订单详情
+          wx.navigateTo({url: `/pages/order-detail?id=${this.data.customer_order_id}`})
         } else if (this.btnShow === 3) {
-          // console.log(3)
           // -----------返回首页
           wx.switchTab({url: '/pages/choiceness'})
         } else if (!this.isGroup && status === 0) {
-          // console.log(4)
           // -----------一键参团
+          let flag = await this.checkGroupon()
+          if (!flag) return
           this._showAddNumber()
         } else if (!this.isGroup && status === 1) {
-          // console.log(5)
           // -----------我来开团
           wx.navigateTo({url: `/pages/goods-detail?id=${this.data.goods.goods_id}&activityId=${this.activityId}&activityType=${this.activeType}`})
         } else {
-          // console.log(6)
         }
       },
       showShare() {
@@ -599,43 +614,25 @@
           let arr = this.recommendList.concat(res.data)
           this.recommendList = arr
         }
-        if (this.page === 5) {
-          this.hasMore = false
-        }
+        this.hasMore = res.data.length > 0 && res.data.length >= 10
       },
       // 初始化地理位置
       _initLocation() {
-        // if (wx.getStorageSync('locationShow') * 1 === 3 || wx.getStorageSync('locationShow') * 1 === 2) {
-        // } else {
         let that = this
         wx.getLocation({
           async success(res) {
-            wx.setStorageSync('locationData', res)
-            wx.setStorageSync('locationShow', 1)
             that.latitude = res.latitude
             that.longitude = res.longitude
-            that.locationStatus = 1
             that.getLocationData()
           },
           fail(res) {
-            wx.setStorageSync('locationShow', 3)
-            // wx.setStorageSync('lastPage', 'collage-detail')
+            that.longitude = 0
+            that.latitude = 0
             wx.navigateTo({
               url: `/pages/open-location`
             })
           }
         })
-        // }
-      },
-      // 更新地理位置
-      _refreshLocation() {
-        this.locationStatus = wx.getStorageSync('locationShow')
-        if (this.locationStatus * 1 === 3) {
-          // wx.setStorageSync('lastPage', 'collage-detail')
-          wx.navigateTo({
-            url: `/pages/open-location`
-          })
-        }
       },
       // 根据地理位置判断范围
       getLocationData() {
@@ -644,13 +641,14 @@
           longitude: data.longitude || 0,
           latitude: data.latitude || 0
         }).then((res) => {
-          // if (res.error !== this.$ERR_OK) {
-          //   return
-          // }
-          // if (res.data.distance > 1000) {
-          //   this.distance = false
-          // }
           this.distance = res.data.distance_judge === 0
+        }).catch(e => {
+          console.warn(e)
+          this.longitude = 0
+          this.latitude = 0
+          wx.navigateTo({
+            url: `/pages/open-location`
+          })
         })
       }
     }
@@ -706,14 +704,14 @@
       font-size: $font-size-12
       font-family: $font-family-regular
       .total
-        padding: 2px 7px
+        padding: 1px 4px
         background: rgba(255,133,6,0.15)
         border-radius: 2px
       .count
-        padding: 2px 7px
+        padding: 0 3px
         border-radius: 2px
         margin-left: 5px
-        border-1px(rgba(250,117,0,0.20))
+        border: 1px solid rgba(250,117,0,0.20)
     .price
       color: #FA7500
       margin-top: 10px
@@ -726,13 +724,14 @@
         font-size: $font-size-14
         margin-top: -2px
   .top-text
-    height: 40px
-    font-size: 15px
+    height: 10.7vw
+    font-size: 4vw
     font-family: $font-family-regular
     color: #FF8300
     padding: 0 12px
-    line-height: 40px
+    line-height: @height
     background: #FFEBD6
+    no-wrap()
   .status-text
     font-family: $font-family-medium
     color: $color-main
@@ -750,7 +749,7 @@
   .orange
     color: #FF8506
   .status-tip
-    font-size: $font-size-14
+    font-size: $font-size-16
     font-family: $font-family-medium
     text-align: center
     .mark
@@ -815,6 +814,7 @@
       line-height: 14px
       color: #A03918
       font-size: 10px
+      border: 1px solid #FFF
       font-family: $font-family-medium
   .btn
     margin: 0 auto
@@ -829,7 +829,7 @@
     background: $color-main
     margin-bottom: 12px
   .bot-tip
-    color: $color-text-assist
+    color: #808080
     font-size: 13px
     font-family: $font-family-regular
     text-align: center
@@ -847,7 +847,7 @@
     font-size: $font-size-14
     border-bottom-1px(#E6E6E6)
     .label
-      width: 180px
+      width: 40vw
       overflow: hidden
       text-overflow: ellipsis
       white-space: nowrap
@@ -855,11 +855,21 @@
     .text
       color: #111
       display: flex
+      flex: 1
+      overflow: hidden
       align-items: center
-    .icon
-      width: 6px
-      height: 12px
-      margin-left: 4px
+      .text-title
+        display: block
+        flex: 1
+        overflow: hidden
+        color: #111
+        text-overflow: ellipsis
+        white-space: nowrap
+        text-align: right
+      .icon
+        width: 6px
+        height: 12px
+        margin-left: 4px
 
   .progress-handle
     padding: 30px 12px 60px
@@ -930,6 +940,7 @@
       align-items: center
       padding: 0 6px
       box-sizing: border-box
+      background :#f7f7f7
       .list-item
         width: 50%
         box-sizing: border-box

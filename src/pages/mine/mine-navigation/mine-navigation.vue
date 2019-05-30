@@ -211,12 +211,12 @@
             margin-bottom: 6px
           .item-count
             position: absolute
-            top: -8px
-            right: -12px
+            top: -6px
+            right: -7px
             min-width: 16px
             text-align: center
             height: 16px
-            line-height: 12px
+            line-height: 14px
             padding: 0 3px
             box-sizing: border-box
             font-family: $font-family-medium
