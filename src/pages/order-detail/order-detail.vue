@@ -143,9 +143,11 @@
   import ConfirmMsg from '@components/confirm-msg/confirm-msg'
   import API from '@api'
   import {oauthComputed, orderMethods} from '@state/helpers'
-  import {floatAccAdd, countDownHandle, isEmptyObject} from '@utils/common'
+  import {floatAccAdd, countDownHandle} from '@utils/common'
+  import GetOptions from '@mixins/get-options'
 
   export default {
+    mixins: [GetOptions],
     data() {
       return {
         orderId: '',
@@ -180,11 +182,11 @@
         return this.orderMsg.groupon || {}
       }
     },
-    onLoad(options) {
-      if (!isEmptyObject(options)) {
-        this._options = options || {}
-      }
-    },
+    // onLoad(options) {
+    //   if (!isEmptyObject(options)) {
+    //     this._options = options || {}
+    //   }
+    // },
     onShow() {
       this._initPageParams()
       this.getGoodsDetailData()
@@ -199,14 +201,8 @@
     },
     methods: {
       ...orderMethods,
-      _initPageParams(options = {}) {
-        if (!isEmptyObject(this._options)) {
-          options = this._options
-        } else if (!isEmptyObject(this.$mp.query)) {
-          options = this.$mp.query
-        } else if (!isEmptyObject(this.$mp.appOptions.query)) {
-          options = this.$mp.appOptions.query
-        }
+      _initPageParams() {
+        let options = this._$$initOptions()
         this.orderId = options.id
       },
       closeOrder() {

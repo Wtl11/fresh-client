@@ -256,7 +256,7 @@
   import {SCENE_SHARE, SCENE_DEFAULT, SCENE_QR_CODE, ACTIVE_TYPE} from '@utils/contants'
   import ShareHandler, {EVENT_CODE} from '@mixins/share-handler'
   import API from '@api'
-  import {resolveQueryScene, countDownHandle, isEmptyObject} from '@utils/common'
+  import {resolveQueryScene, countDownHandle} from '@utils/common'
   import LinkGroup from '@components/link-group/link-group'
   import BuyRecord from '@components/goods-detail-element/buy-record/buy-record'
   import DetailImage from '@components/goods-detail-element/detail-image/detail-image'
@@ -268,6 +268,7 @@
   import {BTN_STATUS, BTN_TEXT_CONSTANT} from './config'
   import GoodsDetailMixins from '@mixins/goods-detail'
   import ShareTrick from '@mixins/share-trick'
+  import GetOptions from '@mixins/get-options'
 
   const PAGE_NAME = 'ACTIVE_DETAIL'
   const PAGE_ROUTE_NAME = 'goods-detail'
@@ -279,7 +280,7 @@
   const ald = getApp()
   export default {
     name: PAGE_NAME,
-    mixins: [clearWatch, ShareHandler, GoodsDetailMixins, ShareTrick],
+    mixins: [clearWatch, ShareHandler, GoodsDetailMixins, ShareTrick, GetOptions],
     components: {
       NavigationBar,
       LinkGroup,
@@ -399,9 +400,9 @@
       }
     },
     onLoad(options) {
-      if (!isEmptyObject(options)) {
-        this._options = options || {}
-      }
+      // if (!isEmptyObject(options)) {
+      //   this._options = options || {}
+      // }
       ald.aldstat.sendEvent('商品详情')
     },
     onShow() {
@@ -739,15 +740,8 @@
         })
       },
       // 初始化页面参数
-      _initPageParams(options = {}) {
-        if (!isEmptyObject(this._options)) {
-          options = this._options
-        } else if (!isEmptyObject(this.$mp.query)) {
-          options = this.$mp.query
-        } else if (!isEmptyObject(this.$mp.appOptions.query)) {
-          options = this.$mp.appOptions.query
-        }
-        // options = isEmptyObject(this.$mp.query) ? this.$mp.appOptions.query : this.$mp.query
+      _initPageParams() {
+        let options = this._$$initOptions()
         this.goodsId = +options.id || +options.goodsId || 0
         this.activityId = +options.activityId || 0
         this.shopId = +options.shopId || 0

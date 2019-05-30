@@ -226,10 +226,12 @@
         >
 <!--          活动tab-->
           <section class="active-tab-wrapper"
+                   ref="refActiveTAb"
                    id="activeTab"
                    v-if="activeTabInfo && activeTabInfo.length > 1"
           >
             <ul class="active-tab-container"
+                ref="refActiveTabContainer"
                 :style="activeTabStyles"
                 :class="{active: activeTabStyles}"
             >
@@ -353,6 +355,8 @@
   import {ACTIVE_TYPE} from '@utils/contants'
   import IsEnd from '@components/is-end/is-end'
   import LoadingMore from '@components/loading-more/loading-more'
+  import clearWatch from '@mixins/clear-watch'
+  // import GetOptions from '@mixins/get-options'
 
   const ald = getApp()
   const PAGE_NAME = 'CHOICENESS'
@@ -361,7 +365,9 @@
     name: PAGE_NAME,
     mixins: [
       ShareHandler,
-      ShareTrick
+      ShareTrick,
+      clearWatch
+      // GetOptions
     ],
     components: {
       NavigationBar,
@@ -482,7 +488,7 @@
       }
     },
     onLoad(options) {
-      console.warn(options, '<==home==>')
+      // console.warn(options, '<==home==>')
       this.$wechat.showLoading()
       let data = wx.getStorageSync('homeData')
       if (data) {
@@ -701,7 +707,7 @@
           const top = navigationBarHeight + 59
           this._activeTab = wx.createIntersectionObserver()
           this._activeTab.relativeToViewport({top: -top})
-          this._activeTab.observe('#activeTab', res => {
+          this.$refs.refActiveTAb && this._activeTab.observe('#activeTab', res => {
             let flag = res.boundingClientRect.top <= top && res.intersectionRect.top <= 0
             this.activeTabStyles = flag ? `
                 position:fixed;
@@ -711,7 +717,7 @@
                 background: #fff;
               ` : ''
           })
-          wx.createIntersectionObserver(undefined, {observeAll: true})
+          this.$refs.refActiveTabContainer && wx.createIntersectionObserver(undefined, {observeAll: true})
             .relativeTo('.active-tab-container')
             .observe('.panel', res => {
               if (res.intersectionRatio > 0 && !this._isScrolling) {
@@ -720,20 +726,6 @@
                 this.activeTabIndex = id
               }
             })
-          // wx.createIntersectionObserver()
-          //   .relativeToViewport()
-          //   .observe('.panel' + this.activeTabInfo.length - 1, res => {
-          //     console.log(this.activeTabInfo.length - 1)
-          //     if (res.intersectionRatio > 0 && !this._isScrolling && this.guessList.length === 0) {
-          //       this._getGuessList()
-          //       // let id = res.id.replace('panel', '') * 1
-          //       // this._isHelpScroll = false
-          //       // this.activeTabIndex = id
-          //       // if (id === this.activeTabInfo.length - 1 && this.guessList.length === 0) {
-          //       //   this._getGuessList()
-          //       // }
-          //     }
-          //   })
         }, 500)
       },
       _helpObserver(e) {
@@ -952,22 +944,22 @@
             }
           }
         } catch (e) {
+          this.longitude = 0
+          this.latitude = 0
           wx.navigateTo({url: `/pages/open-location`})
         }
       },
       // 初始化页面配置
       _initPageParams(options = {}) {
+        // let options = this._$$initOptions()
+        this.shopId = options.shopId
         if (options.scene) {
           let {shopId} = resolveQueryScene(options.scene)
           this.shopId = shopId
-        } else {
-          this.shopId = options.shopId
         }
-        this.shopId && wx.setStorageSync('shopId', this.shopId)
+        this.shopId > 0 && wx.setStorageSync('shopId', this.shopId)
         this.shareModuleName = options.moduleName || ''
-      },
-      _moveToShareModule() {
-
+        console.warn(options, '==>home')
       },
       // 获取模块信息
       async _getModuleInfo(loading) {

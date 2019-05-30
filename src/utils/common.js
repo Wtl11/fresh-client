@@ -227,7 +227,7 @@ export function countDownHandle(time = 0) {
 /**
  * 解析二维码-公共方法
  */
-export function resolveQueryScene(scene) {
+export function resolveQueryScene(scene = '') {
   let goodsId = 0
   let shopId = 0
   let activityId = 0

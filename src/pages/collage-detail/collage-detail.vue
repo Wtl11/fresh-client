@@ -102,12 +102,13 @@
   import SharePop from './share-pop/share-pop'
   import AddNumber from '@components/add-number/add-number'
   import {ACTIVE_TYPE} from '@utils/contants'
-  import { formatNumber, isEmptyObject } from '@utils/common'
+  import { formatNumber } from '@utils/common'
   import {orderMethods} from '@state/helpers'
   import LoadingMore from '@components/loading-more/loading-more'
   import ShareTrick from '@mixins/share-trick'
   import API from '@api'
   import ShareHandler, {EVENT_CODE} from '@mixins/share-handler'
+  import GetOptions from '@mixins/get-options'
 
   const PAGE_NAME = 'COLLAGE_DETAIL'
   // 3开团成功 7参团成功 9不在范围 为自定义状态。
@@ -166,7 +167,7 @@
 
   export default {
     page: PAGE_NAME,
-    mixins: [ClearWatch, ShareTrick, ShareHandler],
+    mixins: [ClearWatch, ShareTrick, ShareHandler, GetOptions],
     data() {
       return {
         statusArr: STATUS_ARR,
@@ -374,20 +375,20 @@
     onHide() {
       clearInterval(this.timer)
     },
-    onLoad(options) {
-      if (!isEmptyObject(options)) {
-        this._options = options || {}
-      }
-    },
+    // onLoad(options) {
+    //   if (!isEmptyObject(options)) {
+    //     this._options = options || {}
+    //   }
+    // },
     async onShow() {
-      let option = {}
-      if (!isEmptyObject(this._options)) {
-        option = this._options
-      } else if (!isEmptyObject(this.$mp.query)) {
-        option = this.$mp.query
-      } else if (!isEmptyObject(this.$mp.appOptions.query)) {
-        option = this.$mp.appOptions.query
-      }
+      let option = this._$$initOptions()
+      // if (!isEmptyObject(this._options)) {
+      //   option = this._options
+      // } else if (!isEmptyObject(this.$mp.query)) {
+      //   option = this.$mp.query
+      // } else if (!isEmptyObject(this.$mp.appOptions.query)) {
+      //   option = this.$mp.appOptions.query
+      // }
       // let option = isEmptyObject(this.$mp.query) ? this.$mp.appOptions.query : this.$mp.query
       console.warn('拼团详情options:', option, this.$mp)
       this.id = option.id || option.orderId
@@ -558,29 +559,23 @@
         }
         let status = +this.status
         if (this.btnShow === 1) {
-          // console.log(1)
           // -----------参团了拼团进行中可分享
           this.showShare()
         } else if (this.btnShow === 2) {
-          // console.log(2)
           // -----------参团成功或者拼主拼团成功跳转去制定订单详情
           wx.navigateTo({url: `/pages/order-detail?id=${this.data.customer_order_id}`})
         } else if (this.btnShow === 3) {
-          // console.log(3)
           // -----------返回首页
           wx.switchTab({url: '/pages/choiceness'})
         } else if (!this.isGroup && status === 0) {
-          // console.log(4)
           // -----------一键参团
           let flag = await this.checkGroupon()
           if (!flag) return
           this._showAddNumber()
         } else if (!this.isGroup && status === 1) {
-          // console.log(5)
           // -----------我来开团
           wx.navigateTo({url: `/pages/goods-detail?id=${this.data.goods.goods_id}&activityId=${this.activityId}&activityType=${this.activeType}`})
         } else {
-          // console.log(6)
         }
       },
       showShare() {
@@ -619,43 +614,24 @@
           this.recommendList = arr
         }
         this.hasMore = res.data.length > 0 && res.data.length >= 10
-        // if (this.page === 5) {
-        //   this.hasMore = arr.length > 0 && arr.length >= 10
-        // }
       },
       // 初始化地理位置
       _initLocation() {
-        // if (wx.getStorageSync('locationShow') * 1 === 3 || wx.getStorageSync('locationShow') * 1 === 2) {
-        // } else {
         let that = this
         wx.getLocation({
           async success(res) {
-            wx.setStorageSync('locationData', res)
-            wx.setStorageSync('locationShow', 1)
             that.latitude = res.latitude
             that.longitude = res.longitude
-            that.locationStatus = 1
             that.getLocationData()
           },
           fail(res) {
-            wx.setStorageSync('locationShow', 3)
-            // wx.setStorageSync('lastPage', 'collage-detail')
+            that.longitude = 0
+            that.latitude = 0
             wx.navigateTo({
               url: `/pages/open-location`
             })
           }
         })
-        // }
-      },
-      // 更新地理位置
-      _refreshLocation() {
-        this.locationStatus = wx.getStorageSync('locationShow')
-        if (this.locationStatus * 1 === 3) {
-          // wx.setStorageSync('lastPage', 'collage-detail')
-          wx.navigateTo({
-            url: `/pages/open-location`
-          })
-        }
       },
       // 根据地理位置判断范围
       getLocationData() {
@@ -664,13 +640,14 @@
           longitude: data.longitude || 0,
           latitude: data.latitude || 0
         }).then((res) => {
-          // if (res.error !== this.$ERR_OK) {
-          //   return
-          // }
-          // if (res.data.distance > 1000) {
-          //   this.distance = false
-          // }
           this.distance = res.data.distance_judge === 0
+        }).catch(e => {
+          console.warn(e)
+          this.longitude = 0
+          this.latitude = 0
+          wx.navigateTo({
+            url: `/pages/open-location`
+          })
         })
       }
     }

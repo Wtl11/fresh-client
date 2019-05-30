@@ -64,8 +64,9 @@
   import AddNumber from '@components/add-number/add-number'
   import GoodsDetailMixins from '@mixins/goods-detail'
   import ButtonGroup from '@components/goods-detail-element/button-group/button-group'
-  import {resolveQueryScene, countDownHandle, isEmptyObject} from '@utils/common'
+  import {resolveQueryScene, countDownHandle} from '@utils/common'
   import ShareTrick from '@mixins/share-trick'
+  import GetOptions from '@mixins/get-options'
 
   const PAGE_NAME = 'GOODS_RECORD'
   const TYPEBTN = [{url: '/yx-image/goods/icon-homepage@2x.png', text: '首页', type: 0}, {url: '/yx-image/goods/icon-shopcart@2x.png', text: '购物车', type: 2}]
@@ -83,7 +84,7 @@
   }
   export default {
     name: PAGE_NAME,
-    mixins: [ShareHandler, GoodsDetailMixins, ShareTrick],
+    mixins: [ShareHandler, GoodsDetailMixins, ShareTrick, GetOptions],
     components: {
       NavigationBar,
       IsEnd,
@@ -164,9 +165,9 @@
     },
     onLoad(options) {
       console.warn(options, '<-----参数---->')
-      if (!isEmptyObject(options)) {
-        this._options = options || {}
-      }
+      // if (!isEmptyObject(options)) {
+      //   this._options = options || {}
+      // }
       // console.warn(this._options, '<--_options---参数---->')
       this._initPageParams(options)
       console.warn(this._options, '<--_options---参数---->')
@@ -223,14 +224,8 @@
       ...cartMethods,
       ...orderMethods,
       // 初始化页面参数
-      _initPageParams(options) {
-        if (!isEmptyObject(this._options)) {
-          options = this._options
-        } else if (!isEmptyObject(this.$mp.query)) {
-          options = this.$mp.query
-        } else if (!isEmptyObject(this.$mp.appOptions.query)) {
-          options = this.$mp.appOptions.query
-        }
+      _initPageParams() {
+        let options = this._$$initOptions()
         this.goodsId = +options.id || +options.goodsId || 0
         this.activityId = +options.activityId || 0
         this.shopId = +options.shopId || 0

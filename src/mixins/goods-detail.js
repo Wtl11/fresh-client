@@ -27,6 +27,9 @@ export default {
           this.tipTop = res.data.distance_judge === 0 ? '' : `当前位置不可参与${name}社区拼团活动`
         }
       } catch (e) {
+        this.longitude = 0
+        this.latitude = 0
+        this.tipTop = ''
         wx.navigateTo({url: `/pages/open-location`})
       }
     }
