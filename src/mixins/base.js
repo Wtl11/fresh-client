@@ -40,6 +40,7 @@ export default {
     _autoSend() {
       if (!this.$mp) return
       if (this.$mp.mpType !== 'page') return
+      if (!this.$mp.page) return
       const _pp = this.$mp.page.route
       let flag = UN_AUTO_SNED_PAGE.some(val => RegExp(val).test(_pp))
       if (flag) return
@@ -48,12 +49,17 @@ export default {
     $$sendEvent({_event = 'view', _track = '', goodsId = 0, activityId = 0} = {}) {
       if (!this.$mp) return
       if (this.$mp.mpType !== 'page') return
+      if (!this.$mp.page) return
       let _uuid = wx.getStorageSync('zbyx_uuid')
       if (!_uuid) {
         _uuid = createGuid()
         wx.setStorageSync('zbyx_uuid', _uuid)
       }
-      let _pc = this.$mp.page.__displayReporter.showReferpagepath.replace('.html', '') // 来源页
+      let _pc = ''
+      if (this.$mp.page.__displayReporter && this.$mp.page.__displayReporter.showReferpagepath) {
+        _pc = this.$mp.page.__displayReporter.showReferpagepath.replace('.html', '') // 来源页
+      }
+      // let _pc = this.$mp.page.__displayReporter.showReferpagepath.replace('.html', '') // 来源页
       let _pp = this.$mp.page.route // 当前页
       // let scene = this.$mp.appOptions.scene // 场景值
       // let options = isEmptyObject(this.$mp.query) ? this.$mp.appOptions.query : this.$mp.query
