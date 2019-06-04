@@ -264,7 +264,7 @@
   import ButtonGroup from '@components/goods-detail-element/button-group/button-group'
   import AddNumber from '@components/add-number/add-number'
   import WePaint from '@components/we-paint/we-paint'
-  import base64src from '@utils/create-qr-code-wx'
+  import {bufferToImage} from '@utils/create-qr-code-wx'
   import {BTN_STATUS, BTN_TEXT_CONSTANT} from './config'
   import GoodsDetailMixins from '@mixins/goods-detail'
   import ShareTrick from '@mixins/share-trick'
@@ -843,10 +843,10 @@
       async action() {
         let name = this.goodsMsg.name.length >= 12 ? this.goodsMsg.name.slice(0, 12) + '...' : this.goodsMsg.name
         let subName = this.goodsMsg.describe.length >= 12 ? this.goodsMsg.describe.slice(0, 12) + '...' : this.goodsMsg.describe
-        let qrCodeIsBase64 = /base64/i.test(this.shareImg)
+        // let qrCodeIsBase64 = /base64/i.test(this.shareImg)
         try {
-          if (qrCodeIsBase64) {
-            this.shareImg = await base64src(this.shareImg)
+          if (this.shareImg) {
+            this.shareImg = await bufferToImage(this.shareImg)
           }
         } catch (e) {
           console.error(e)

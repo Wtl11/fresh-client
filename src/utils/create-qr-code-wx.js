@@ -9,6 +9,7 @@ const base64src = function(base64data) {
     }
     const filePath = `${wx.env.USER_DATA_PATH}/${FILE_BASE_NAME + Date.now()}.${format}`
     const buffer = wx.base64ToArrayBuffer(bodyData)
+    console.log(typeof buffer)
     fsm.writeFile({
       filePath,
       data: buffer,
@@ -24,3 +25,21 @@ const base64src = function(base64data) {
 }
 
 export default base64src
+
+export function bufferToImage(buffer) {
+  return new Promise((resolve, reject) => {
+    const format = 'png'
+    const filePath = `${wx.env.USER_DATA_PATH}/${FILE_BASE_NAME + Date.now()}.${format}`
+    fsm.writeFile({
+      filePath,
+      data: buffer,
+      encoding: 'binary',
+      success() {
+        resolve(filePath)
+      },
+      fail() {
+        reject(new Error('ERROR_BUFFER_WRITE'))
+      }
+    })
+  })
+}
