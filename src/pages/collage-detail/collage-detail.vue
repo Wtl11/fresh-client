@@ -636,10 +636,10 @@
       },
       // 根据地理位置判断范围
       getLocationData() {
-        let data = wx.getStorageSync('locationData')
+        // let data = wx.getStorageSync('locationData')
         API.Global.checkShopDistance({
-          longitude: data.longitude || 0,
-          latitude: data.latitude || 0
+          longitude: this.longitude || 0,
+          latitude: this.latitude || 0
         }).then((res) => {
           this.distance = res.data.distance_judge === 0
         }).catch(e => {
