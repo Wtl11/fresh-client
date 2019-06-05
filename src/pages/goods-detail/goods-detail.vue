@@ -471,6 +471,7 @@
         const shopId = wx.getStorageSync('shopId')
         const miniPath = `/pages/${PAGE_ROUTE_NAME}?id=${this.goodsId}&shopId=${shopId}&activityId=${this.activityId}&activityType=${this.activityType}`
         API.Global.getProduct({goods_id: this.goodsId}).then(res => {
+          // console.warn(res.data)
           if (res.data) {
             let product = Object.assign({}, res.data, {src_mini_program_path: miniPath})
             product.src_wxapp_path && delete product.src_wxapp_path
@@ -803,7 +804,6 @@
       // _initActiveType() {
       //   if (this.activityId > 0) {
       //     this.activityType = this.goodsMsg.activity.activityType
-      //     console.log(this.activityType)
       //   } else {
       //     this.activityType = 'DEFAULT'
       //   }

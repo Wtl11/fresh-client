@@ -116,6 +116,13 @@
           })
       },
       async goPay() {
+        if (this._paying) return
+        this._paying = true
+        clearTimeout(this._payTimer)
+        this._payTimer = setTimeout(() => {
+          this._paying = false
+        }, 1500)
+        this.$wechat.showLoading()
         let orderInfo = {
           goods: this.goodsList,
           nickname: this.userInfo.nickname,

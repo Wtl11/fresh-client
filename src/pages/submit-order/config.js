@@ -7,6 +7,7 @@ page.$mount()
 
 export default {
   config: {
-    navigationBarTitleText: 'SUBMIT_ORDER'
+    navigationBarTitleText: 'SUBMIT_ORDER',
+    usingComponents: {}
   }
 }

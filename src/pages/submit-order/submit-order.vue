@@ -156,6 +156,13 @@
           })
       },
       async goPay() {
+        if (this._paying) return
+        this._paying = true
+        clearTimeout(this._payTimer)
+        this._payTimer = setTimeout(() => {
+          this._paying = false
+        }, 1500)
+        this.$wechat.showLoading()
         let url = this.goodsList[0].url || ''
         let source = this.goodsList[0].source || ''
         let longitude = this.goodsList[0].longitude || ''

@@ -43,15 +43,15 @@ export const actions = {
   submitOrder({commit, state}, {orderInfo, complete}) {
     API.SubmitOrder.submitOrder(orderInfo)
       .then(res => {
-        wechat.hideLoading()
         if (res.error !== ERR_OK) {
+          wechat.hideLoading()
           wechat.showToast(res.message)
           return
         }
         API.SubmitOrder.saveMobile(orderInfo.mobile)
           .then(res => {
-            wechat.hideLoading()
             if (res.error !== ERR_OK) {
+              wechat.hideLoading()
               wechat.showToast(res.message)
             }
           })
@@ -85,11 +85,13 @@ export const actions = {
               })
             } else {
               setTimeout(() => {
+                wechat.hideLoading()
                 wx.redirectTo({url: `/pages/pay-result?orderId=${orderId}&&type=0&total=${state.total}`})
               }, 1500)
             }
           },
           fail (res) {
+            wechat.hideLoading()
             wx.redirectTo({url: `/pages/order-detail?id=${orderId}&&type=0`})
           },
           complete
