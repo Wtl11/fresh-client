@@ -504,7 +504,7 @@
         let orderInfo = {
           goodsList: new Array(goodsList),
           total: total,
-          deliverAt: ''
+          deliverAt: this.data.delivery_at || ''
         }
         this.setOrderInfo(orderInfo)
         wx.navigateTo({url: `/pages/submit-order`})

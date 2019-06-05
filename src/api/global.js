@@ -35,5 +35,10 @@ export default {
   sendEvent(data = null, loading = false, toast = false) {
     const url = `/api/wap/data/data-center-collect`
     return request.get({url, data, loading, toast})
+  },
+  // 查询物品信息-好物圈商品信息
+  getProduct(data = null, loading = false, toast = false) {
+    const url = `/api/wap/goods-thing-circle/query-product`
+    return request.post({url, data, loading, toast})
   }
 }

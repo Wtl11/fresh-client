@@ -945,9 +945,11 @@
             }
           }
         } catch (e) {
-          this.longitude = 0
-          this.latitude = 0
-          wx.navigateTo({url: `/pages/open-location`})
+          if (e && e.errMsg) {
+            this.longitude = 0
+            this.latitude = 0
+            wx.navigateTo({url: `/pages/open-location`})
+          }
         }
       },
       // 初始化页面配置

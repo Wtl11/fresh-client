@@ -59,8 +59,6 @@
                   <div class="left-price-text">元</div>
                   <div class="left-price-line">
                     <div class="line-price-top">
-<!--                      <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-qgj@2x.png'" class="text-img" mode="aspectFill">-->
-<!--                      <div class="text">秒杀价</div>-->
                     </div>
                     <div class="line-price-box group">{{goodsMsg.original_price}}元</div>
                   </div>
@@ -71,28 +69,6 @@
                 </div>
               </div>
             </div>
-<!--            <div class="banner-title-main">-->
-<!--              <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.4/pic-pintuan_xq.png'" mode="aspectFill" class="banner-title-bg">-->
-<!--              <div class="banner-main-box">-->
-<!--                <div class="banner-main-left">-->
-<!--                  <div class="left-price">{{goodsMsg.trade_price}}</div>-->
-<!--                  <div class="left-price-text">元</div>-->
-<!--                  <div class="left-price-line">-->
-<!--                    <div class="line-price-top">-->
-<!--                      <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.4/pic-qgj@1x.png'" class="text-img" mode="aspectFill">-->
-<!--                      <div class="text group">{{iconText}}</div>-->
-<!--                    </div>-->
-<!--                    <div class="line-price-box">{{goodsMsg.original_price}}元</div>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <figure class="icon-wrapper">-->
-<!--              <div class="left">-->
-<!--                <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.4/icon-persont@2x.png'" class="left-icon">-->
-<!--              </div>-->
-<!--              <p class="right">{{limitPerson}}人拼</p>-->
-<!--            </figure>-->
           </section>
           <section v-else class="header-title">
             <div class="banner-title-main">
@@ -116,32 +92,13 @@
               </div>
             </div>
           </section>
-<!--          <section v-else-if="activityType !== ACTIVE_TYPE.FLASH"-->
-<!--                   class="header-title active-common"-->
-<!--          >-->
-<!--            <div class="banner-title-main">-->
-<!--              <div class="banner-main-box">-->
-<!--                <div class="banner-main-left">-->
-<!--                  <div class="left-price">{{goodsMsg.trade_price}}</div>-->
-<!--                  <div class="left-price-text">元</div>-->
-<!--                  <div class="left-price-line">-->
-<!--                    <div class="line-price-top">-->
-<!--                      <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-qgj@2x.png'" class="text-img" mode="aspectFill">-->
-<!--                      <div class="text">{{iconText}}</div>-->
-<!--                    </div>-->
-<!--                    <div class="line-price-box">{{goodsMsg.original_price}}元</div>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </section>-->
         </article>
       </section>
       <div class="header-detail">
-        <button class="share-wrapper" formType="submit" :open-type="activityType !== ACTIVE_TYPE.DEFAULT? 'share': ''" @click="handleShowShare">
+        <div class="share-wrapper" formType="submit" :open-type="activityType !== ACTIVE_TYPE.DEFAULT? 'share': ''" @click="handleShowShare">
           <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/icon-sharexq@2x.png'" mode="aspectFill" class="share-img">
           <p class="share-text">分享</p>
-        </button>
+        </div>
         <div class="info-box">
           <article class="title-wrapper">
             <div class="title" :class="goodsMsg.name ? 'has-title' : ''">{{goodsMsg.name}}</div>
@@ -243,9 +200,39 @@
       </article>
     </div>
     <add-number ref="addNumber" :msgDetail="goodsMsg" :msgDetailInfo="buyGoodsInfo" @comfirmNumer="comfirmNumer" @hide="handleHideAddNumber"></add-number>
-    <link-group ref="groupList" :wechatInfo="groupInfo"></link-group>
-    <link-group ref="shareList" :linkType="2" @saveImg="_actionDrawPoster"></link-group>
+<!--    <link-group ref="groupList" :wechatInfo="groupInfo"></link-group>-->
+<!--    <link-group ref="shareList" :linkType="2" @saveImg="_actionDrawPoster"></link-group>-->
     <we-paint ref="wePaint" @drawDone="_drawPosterDone"></we-paint>
+    <article class="share-panel-wrapper">
+      <div v-if="showSharePanel" class="share-mask" @click="handleHideSharePanel">
+      </div>
+      <section class="share-panel" :class="{show: showSharePanel}">
+        <div class="header">
+          <p>分享</p>
+          <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.4/icon-del@2x.png'" class="close-icon" @click="handleHideSharePanel">
+        </div>
+        <div class="container">
+          <share-button v-if="product" type="3" :product="product" class="container-item-wrapper" @click="handleHideSharePanel">
+            <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.4/icon-tjhwq@2x.png'" class="item-icon">
+            <p class="text">推荐到好物圈</p>
+            <div class="tip-wrapper">
+              <p>好物推荐，和大家一起分享你发现的好物</p>
+              <div class="triangle"></div>
+            </div>
+          </share-button>
+          <button open-type="share" class="container-item-wrapper" @click="handleHideSharePanel">
+            <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.4/pic-wechat@2x.png'" class="item-icon">
+            <p class="text button">分享给好友</p>
+            <div v-if="product" class="line"></div>
+          </button>
+          <nav v-if="activityType === ACTIVE_TYPE.DEFAULT" class="container-item-wrapper" @click="_actionDrawPoster">
+            <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.4/icon-wechatq@2x.png'" class="item-icon">
+            <p class="text">生成分享海报</p>
+            <div class="line"></div>
+          </nav>
+        </div>
+      </section>
+    </article>
   </form>
 </template>
 
@@ -264,14 +251,27 @@
   import ButtonGroup from '@components/goods-detail-element/button-group/button-group'
   import AddNumber from '@components/add-number/add-number'
   import WePaint from '@components/we-paint/we-paint'
-  import {bufferToImage} from '@utils/create-qr-code-wx'
-  import {BTN_STATUS, BTN_TEXT_CONSTANT} from './config'
+  import base64src from '@utils/create-qr-code-wx'
   import GoodsDetailMixins from '@mixins/goods-detail'
   import ShareTrick from '@mixins/share-trick'
   import GetOptions from '@mixins/get-options'
 
   const PAGE_NAME = 'ACTIVE_DETAIL'
   const PAGE_ROUTE_NAME = 'goods-detail'
+  // 按钮状态映射
+  export const BTN_STATUS = {
+    WILL: 0,
+    ACTION: 1,
+    DOWN: 2
+  }
+  // 按钮文案
+  export const BTN_TEXT_CONSTANT = {
+    [BTN_STATUS.WILL]: '即将开抢',
+    [BTN_STATUS.ACTION]: '',
+    [BTN_STATUS.DOWN]: '已结束',
+    'NO_INVENTORY': '已抢完'
+  }
+
   const EVENT_NO_CONFIG = {
     [SCENE_QR_CODE]: 1001,
     [SCENE_SHARE]: 1002,
@@ -315,7 +315,9 @@
         collageList: [],
         collageTotal: 0,
         autoplay: true,
-        statusBarHeight: -100
+        statusBarHeight: -100,
+        product: null,
+        showSharePanel: false
       }
     },
     computed: {
@@ -415,6 +417,7 @@
       this.setCartCount()
       this._setEventNo()
       this._getBuyUsers()
+      this._getProduct()
       this.$$shareHandler({
         event: EVENT_CODE.GOODS_DETAIL,
         activityId: this.activityId,
@@ -464,6 +467,17 @@
     methods: {
       ...orderMethods,
       ...cartMethods,
+      _getProduct() {
+        const shopId = wx.getStorageSync('shopId')
+        const miniPath = `/pages/${PAGE_ROUTE_NAME}?id=${this.goodsId}&shopId=${shopId}&activityId=${this.activityId}&activityType=${this.activityType}`
+        API.Global.getProduct({goods_id: this.goodsId}).then(res => {
+          if (res.data) {
+            let product = Object.assign({}, res.data, {src_mini_program_path: miniPath})
+            product.src_wxapp_path && delete product.src_wxapp_path
+            this.product = product
+          }
+        })
+      },
       _getFinishGroupList() {
         if (this.activityType !== ACTIVE_TYPE.GROUP_ON) return
         let data = {
@@ -571,6 +585,7 @@
           return
         }
         this.action()
+        this.handleHideSharePanel()
         this.$sendMsg({ event_no: 1005, goods_id: this.goodsId, title: this.goodsMsg.name })
       },
       // 添加购物车
@@ -714,10 +729,14 @@
       },
       // 显示分享控件
       handleShowShare() {
-        if (this.activityType !== ACTIVE_TYPE.DEFAULT) {
-          return
-        }
-        this.$refs.shareList && this.$refs.shareList.showLink()
+        // if (this.activityType !== ACTIVE_TYPE.DEFAULT) {
+        //   return
+        // }
+        // this.$refs.shareList && this.$refs.shareList.showLink()
+        this.showSharePanel = true
+      },
+      handleHideSharePanel() {
+        this.showSharePanel = false
       },
       // 获取站点购买的用户
       getUserImgList() {
@@ -780,11 +799,19 @@
           })
         })
       },
+      // TODO
+      // _initActiveType() {
+      //   if (this.activityId > 0) {
+      //     this.activityType = this.goodsMsg.activity.activityType
+      //     console.log(this.activityType)
+      //   } else {
+      //     this.activityType = 'DEFAULT'
+      //   }
+      // },
       // 获取商品详情
       _getGoodsDetailData() {
         let data = {
-          activity_id: this.activityId,
-          is_hot: this.activityType === ACTIVE_TYPE.GOODS_HOT_TAG ? 1 : 0
+          activity_id: this.activityId
         }
         API.Choiceness.getGoodsDetail(this.goodsId, data, this.isFirstLoad).then((res) => {
           this.$wechat.hideLoading()
@@ -796,6 +823,7 @@
             this._flashAction()
             this._getUnGroupList()
             this._getFinishGroupList()
+            // this._initActiveType()
           } else {
             this.$wechat.showToast(res.message)
           }
@@ -843,10 +871,10 @@
       async action() {
         let name = this.goodsMsg.name.length >= 12 ? this.goodsMsg.name.slice(0, 12) + '...' : this.goodsMsg.name
         let subName = this.goodsMsg.describe.length >= 12 ? this.goodsMsg.describe.slice(0, 12) + '...' : this.goodsMsg.describe
-        // let qrCodeIsBase64 = /base64/i.test(this.shareImg)
+        let qrCodeIsBase64 = /base64/i.test(this.shareImg)
         try {
-          if (this.shareImg) {
-            this.shareImg = await bufferToImage(this.shareImg)
+          if (qrCodeIsBase64) {
+            this.shareImg = await base64src(this.shareImg)
           }
         } catch (e) {
           console.error(e)
@@ -974,6 +1002,9 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@designCommon"
 
+  button
+    reset-button()
+
   .active-detail
     min-height: 100vh
     background: $color-background
@@ -987,6 +1018,92 @@
         left: 12px
         right :@left
         bottom: -1px
+  // 分享模块
+  .share-panel-wrapper
+    .share-mask
+      position: fixed
+      left: 0
+      top: 0
+      bottom: 0
+      right: 0
+      z-index: 999
+      background: rgba(17, 17, 17, 0.7)
+    .share-panel
+      position: fixed
+      bottom: -130%
+      left: 0
+      background: #fff
+      width: 100%
+      z-index:9999
+      transition: all .5s
+      &.show
+        bottom :0
+      .header
+        padding :0 12px
+        height :45px
+        background: #F7F7F7
+        font-family: $font-family-regular
+        font-size: 15px;
+        color: #1D2023;
+        letter-spacing: 1.36px
+        display :flex
+        justify-content :space-between
+        align-items :center
+        .close-icon
+          width :13px
+          height :@width
+      .container
+        background :$color-white
+        display :flex
+        padding :29px 0 70px
+        .container-item-wrapper
+          flex: 1
+          position :relative
+          .tip-wrapper
+            position absolute
+            top:83px
+            left: 50%
+            transform :translateX(-20%)
+            width :234.5px
+            height :24px
+            opacity: 0.7;
+            font-size: 12px
+            color: $color-text-sub
+            text-align: center
+            line-height: @height
+            background: #F5F5F5;
+            border-radius: @height
+            .triangle
+              position :absolute
+              top:-13px
+              left:40px
+              width :0
+              height :0
+              border:7px solid #F5F5F5;
+              border-top-color: transparent
+              border-left-color :transparent
+              border-right-color: transparent
+          .line
+            position :absolute
+            width :1px
+            height :40px
+            left :0
+            top:4px
+            transform :scaleX(0.5)
+            background: #E6E6E6
+          .item-icon
+            width :40px
+            height :@width
+            display :block
+            margin :0 auto 10px
+          .text
+            font-family: $font-family-regular
+            font-size: 14px
+            color: $color-text-sub
+            text-align: center
+            &.button
+              position :relative
+              top:3px
   // 购买记录
   .buy-users
     width :35vw

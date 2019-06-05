@@ -6,7 +6,7 @@
       </li>
     </ul>
 <!--    <div class="right">已有<span class="red">{{userTotal}}</span>人购买</div>-->
-    <div class="right">查看购买记录</div>
+    <div class="right">最新购买记录</div>
     <img class="arrow-right" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/icon-pressed@2x.png'">
   </div>
 </template>

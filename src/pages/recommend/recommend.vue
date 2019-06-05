@@ -138,7 +138,8 @@
             num: 1,
             cart_id: 0
           }],
-          total: item.trade_price
+          total: item.trade_price,
+          deliverAt: ''
         }
         this.setOrderInfo(orderInfo)
         const url = `/pages/recommend-pay`
