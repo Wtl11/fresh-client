@@ -24,7 +24,7 @@
     onShow() {
       wx.getSetting({
         success: (data) => {
-          if (data.authSetting['scope.userLocation']) {
+          if (data && data.authSetting && data.authSetting['scope.userLocation']) {
             wx.getLocation({
               success(res) {
                 // wx.setStorageSync('locationData', res)
