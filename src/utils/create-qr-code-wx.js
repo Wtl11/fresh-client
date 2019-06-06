@@ -9,7 +9,7 @@ const base64src = function(base64data) {
     }
     const filePath = `${wx.env.USER_DATA_PATH}/${FILE_BASE_NAME + Date.now()}.${format}`
     const buffer = wx.base64ToArrayBuffer(bodyData)
-    console.log(typeof buffer)
+    // console.log(typeof buffer)
     fsm.writeFile({
       filePath,
       data: buffer,
