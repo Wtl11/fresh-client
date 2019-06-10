@@ -121,7 +121,7 @@
       // console.log(this.goodsList)
     },
     async onShow() {
-      ald.aldstat.sendEvent('去支付')
+      ald && ald.aldstat.sendEvent('去支付')
       this._getCode()
       this._setMobile()
       this._getShopDetail()

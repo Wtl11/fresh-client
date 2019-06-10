@@ -170,7 +170,7 @@
         @buyRecordNavTo="buyRecordNavTo"
       ></buy-record>
       <detail-image :goodsMsg="goodsMsg"></detail-image>
-      <service-description></service-description>
+      <service-description :runTime="runTime"></service-description>
       <button-group
         :buttonInfo="buttonInfo"
         :activityType="activityType"
@@ -317,7 +317,8 @@
         autoplay: true,
         statusBarHeight: -100,
         product: null,
-        showSharePanel: false
+        showSharePanel: false,
+        runTime: ''
       }
     },
     computed: {
@@ -405,7 +406,7 @@
       // if (!isEmptyObject(options)) {
       //   this._options = options || {}
       // }
-      ald.aldstat.sendEvent('商品详情')
+      ald && ald.aldstat.sendEvent('商品详情')
     },
     onShow() {
       this._initPageParams()
@@ -418,6 +419,7 @@
       this._setEventNo()
       this._getBuyUsers()
       this._getProduct()
+      this._getRunTime()
       this.$$shareHandler({
         event: EVENT_CODE.GOODS_DETAIL,
         activityId: this.activityId,
@@ -467,6 +469,12 @@
     methods: {
       ...orderMethods,
       ...cartMethods,
+      _getRunTime() {
+        API.Global.getRunTime().then(res => {
+          // console.log(res, 11111111)
+          this.runTime = res.data.run_time
+        })
+      },
       _getProduct() {
         const shopId = wx.getStorageSync('shopId')
         const miniPath = `/pages/${PAGE_ROUTE_NAME}?id=${this.goodsId}&shopId=${shopId}&activityId=${this.activityId}&activityType=${this.activityType}`
@@ -703,7 +711,7 @@
         if (!isLogin) {
           return
         }
-        ald.aldstat.sendEvent('立即购买')
+        ald && ald.aldstat.sendEvent('立即购买')
         // 团购单买
         if (type === 'goods_sale_price') {
           this._showAddNumber(type)

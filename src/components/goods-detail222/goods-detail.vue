@@ -307,7 +307,7 @@
       } else if (this.corpName === 'retuan') {
         this.safeList = RETUANSAFELIST
       }
-      ald.aldstat.sendEvent('商品详情')
+      ald && ald.aldstat.sendEvent('商品详情')
       if (options.scene) {
         // let scene = decodeURIComponent(options.scene)
         // let params = getParams(scene)
@@ -451,7 +451,7 @@
         if (!isLogin) {
           return
         }
-        ald.aldstat.sendEvent('立即购买')
+        ald && ald.aldstat.sendEvent('立即购买')
         // 显示抢购限购数量
         if (this.buyGoodsInfo.person_all_buy_limit * 1 !== -1 && this.buyGoodsInfo.person_all_buy_count >= this.buyGoodsInfo.person_all_buy_limit) {
           this.$wechat.showToast(`该商品限购${this.buyGoodsInfo.person_all_buy_limit}件，您不能再购买了`)
