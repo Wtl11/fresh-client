@@ -40,5 +40,10 @@ export default {
   getProduct(data = null, loading = false, toast = false) {
     const url = `/api/wap/goods-thing-circle/query-product`
     return request.post({url, data, loading, toast})
+  },
+  getDistance(data = null, loading = false, toast = false) {
+    const url = `/api/wap/shop-distance`
+    return request.get({url, data, loading, toast})
   }
+
 }
