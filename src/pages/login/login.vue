@@ -49,7 +49,6 @@
       },
       async _login(e) {
         if (e.mp.detail.errMsg !== 'getUserInfo:ok') return
-        // ald.aldstat.sendEvent('授权登录')
         let data = {code: this.codeMsg.code, iv: e.target.iv, encryptedData: e.target.encryptedData}
         let res = await API.Login.getToken(data)
         this.$wechat.hideLoading()

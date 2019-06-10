@@ -121,13 +121,30 @@
       // console.log(this.goodsList)
     },
     async onShow() {
-      ald.aldstat.sendEvent('去支付')
+      ald && ald.aldstat.sendEvent('去支付')
       this._getCode()
       this._setMobile()
       this._getShopDetail()
+      this._getLocation()
     },
     methods: {
       ...orderMethods,
+      // 获取地理位置
+      async _getLocation() {
+        if (this.latitude && this.longitude) return
+        try {
+          let res = await this.$wechat.getLocation()
+          this.longitude = res.longitude
+          this.latitude = res.latitude
+          if (!this.latitude || !this.longitude) {
+            wx.navigateTo({url: `/pages/open-location`})
+          }
+        } catch (e) {
+          this.longitude = 0
+          this.latitude = 0
+          wx.navigateTo({url: `/pages/open-location`})
+        }
+      },
       _checkIsNewClient() {
         let flag = (this.goodsList && this.goodsList.some(val => val.activity && val.activity.activity_theme === ACTIVE_TYPE.NEW_CLIENT))
         if (flag) {
@@ -165,8 +182,10 @@
         this.$wechat.showLoading()
         let url = this.goodsList[0].url || ''
         let source = this.goodsList[0].source || ''
-        let longitude = this.goodsList[0].longitude || ''
-        let latitude = this.goodsList[0].latitude || ''
+        // let longitude = this.goodsList[0].longitude || this.longitude
+        // let latitude = this.goodsList[0].latitude || this.latitude
+        let longitude = this.longitude
+        let latitude = this.latitude
         let orderInfo = {
           goods: this.goodsList,
           nickname: this.userInfo.nickname,

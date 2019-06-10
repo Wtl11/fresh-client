@@ -405,7 +405,7 @@
       // if (!isEmptyObject(options)) {
       //   this._options = options || {}
       // }
-      ald.aldstat.sendEvent('商品详情')
+      ald && ald.aldstat.sendEvent('商品详情')
     },
     onShow() {
       this._initPageParams()
@@ -703,7 +703,7 @@
         if (!isLogin) {
           return
         }
-        ald.aldstat.sendEvent('立即购买')
+        ald && ald.aldstat.sendEvent('立即购买')
         // 团购单买
         if (type === 'goods_sale_price') {
           this._showAddNumber(type)

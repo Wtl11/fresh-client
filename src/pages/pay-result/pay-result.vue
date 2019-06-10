@@ -38,7 +38,7 @@
       NavigationBar
     },
     onLoad(e) {
-      ald.aldstat.sendEvent('支付成功页')
+      ald && ald.aldstat.sendEvent('支付成功页')
       this.orderId = e.orderId
       this.payType = e.payType
       this.$sendMsg({

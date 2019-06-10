@@ -562,7 +562,7 @@
         this._getCouponModalList() // 首页弹窗
         this.$sendMsg({event_no: 1000})
         this.$$shareHandler({event: EVENT_CODE.HOME})
-        ald.aldstat.sendEvent('首页')
+        ald && ald.aldstat.sendEvent('首页')
         this.$$sendEvent()
       }
     },
