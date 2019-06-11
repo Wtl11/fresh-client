@@ -84,7 +84,7 @@
       <div v-if="isShowPayModal" class="share-mask" @click="_hidePayModal">
       </div>
       <section class="share-panel" :class="{show: isShowPayModal}">
-        <p class="title">提货地址距离当前位置{{distance}}km,请确认提货信息</p>
+        <p class="title">提货地址距离当前位置<span class="distance">{{distance}}km</span>请确认提货信息</p>
         <p class="sub-title">预计{{deliverAt}}可提货</p>
         <article class="box-wrapper">
 <!--          <div class="item-wrapper">-->
@@ -161,6 +161,7 @@
     },
     onLoad() {
       // 重置优惠券
+      this.$wechat.showLoading()
       this.saveCoupon({})
       this._getCouponInfo()
       this._checkIsNewClient()
@@ -171,7 +172,9 @@
       this._getCode()
       this._setMobile()
       this._getShopDetail()
-      this._getLocation()
+      await this._getLocation()
+      this._getDistance()
+      this.$wechat.hideLoading()
     },
     methods: {
       ...orderMethods,
@@ -218,6 +221,13 @@
             this.code = res.code
           })
       },
+      _getDistance() {
+        let longitude = this.longitude
+        let latitude = this.latitude
+        API.Global.getDistance({longitude, latitude}).then(res => {
+          this.distance = Number(res.data.distance / 1000).toFixed(2)
+        })
+      },
       _showPayModal() {
         this.isShowPayModal = true
       },
@@ -225,19 +235,9 @@
         this.isShowPayModal = false
       },
       async goPay() {
-        try {
-          let longitude = this.longitude
-          let latitude = this.latitude
-          API.Global.getDistance({longitude, latitude}).then(res => {
-            if (res.data.distance > 5000) {
-              this.distance = Number(res.data.distance / 1000).toFixed(2)
-              this._showPayModal()
-            } else {
-              this._goPayAction()
-            }
-          })
-        } catch (e) {
-          console.warn(e)
+        if (this.distance > 5) {
+          this._showPayModal()
+        } else {
           this._goPayAction()
         }
       },
@@ -348,6 +348,9 @@
        font-size: 16px
        color: #111111
        text-align: center
+       .distance
+          color: #FA7500
+          padding :0 3px
      .sub-title
        padding-top :6px
        font-family: $font-family-regular
@@ -380,16 +383,17 @@
            color: $color-text-main
            text-align :right
          .l-number
-           font-family: $font-family-din-bold
+           font-family: $font-family-bold
            font-size: 16px;
            color: #FF8506;
            position :relative
-           bottom :2px
+           bottom :1px
          .l-unit
            font-size: 14px;
            color: #FF8506;
+           margin-left :1px
            position :relative
-           bottom :1px
+           bottom :0px
      .button-group
        display :flex
        .button-wrapper
