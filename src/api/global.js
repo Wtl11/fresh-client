@@ -45,5 +45,10 @@ export default {
   getRunTime(data = null, loading = false, toast = false) {
     const url = `/api/wap/scm/run-time`
     return request.get({url, data, loading, toast})
+  },
+  // 获取与当前社区的距离
+  getDistance(data = null, loading = false, toast = false) {
+    const url = `/api/wap/shop-distance`
+    return request.get({url, data, loading, toast})
   }
 }

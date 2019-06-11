@@ -80,6 +80,50 @@
       </div>
       <button formType="submit" class="pay" :class="'corp-' + corpName + '-bg'" @click.stop="goPay">去支付</button>
     </div>
+    <article class="share-panel-wrapper">
+      <div v-if="isShowPayModal" class="share-mask" @click="_hidePayModal">
+      </div>
+      <section class="share-panel" :class="{show: isShowPayModal}">
+        <p class="title">提货地址距离当前位置<span class="distance">{{distance}}km</span>请确认提货信息</p>
+        <p class="sub-title">预计{{deliverAt}}可提货</p>
+        <article class="box-wrapper">
+<!--          <div class="item-wrapper">-->
+<!--            <p class="left">提货人：</p>-->
+<!--            <p class="right">{{groupInfo.name}}</p>-->
+<!--          </div>-->
+          <div class="item-wrapper">
+            <p class="left">团长：</p>
+            <p class="right">{{groupInfo.name}}</p>
+          </div>
+          <div class="item-wrapper">
+            <p class="left">提货地点：</p>
+            <p class="right">{{groupInfo.province}}{{groupInfo.city}}{{groupInfo.district}}{{groupInfo.address}}</p>
+          </div>
+<!--          <div class="item-wrapper">-->
+<!--            <p class="left">团长：</p>-->
+<!--            <p class="right">{{groupInfo.name}}</p>-->
+<!--          </div>-->
+          <div class="item-wrapper">
+            <p class="left">商品总价：</p>
+            <p class="right">{{beforeTotal}}元</p>
+          </div>
+          <div class="item-wrapper mar-0">
+            <p class="left">优惠券：</p>
+            <p v-if="discount > 0" class="right">-{{discount}}元</p>
+            <p v-else class="right">0元</p>
+          </div>
+          <div class="last-item-wrapper">
+            <p class="l-title">实付金额：</p>
+            <p class="l-number">{{total}}</p>
+            <p class="l-unit">元</p>
+          </div>
+        </article>
+        <div class="button-group">
+          <p class="button-wrapper left" @click="_hidePayModal">取消</p>
+          <p class="button-wrapper right" @click="_goPayAction">去支付</p>
+        </div>
+      </section>
+    </article>
   </div>
   </form>
 </template>
@@ -101,7 +145,9 @@
         mobile: '',
         groupInfo: {},
         userInfo: {},
-        isShowNewCustomer: false
+        isShowNewCustomer: false,
+        distance: 0,
+        isShowPayModal: false
       }
     },
     computed: {
@@ -115,6 +161,7 @@
     },
     onLoad() {
       // 重置优惠券
+      this.$wechat.showLoading()
       this.saveCoupon({})
       this._getCouponInfo()
       this._checkIsNewClient()
@@ -125,9 +172,28 @@
       this._getCode()
       this._setMobile()
       this._getShopDetail()
+      await this._getLocation()
+      this._getDistance()
+      this.$wechat.hideLoading()
     },
     methods: {
       ...orderMethods,
+      // 获取地理位置
+      async _getLocation() {
+        if (this.latitude && this.longitude) return
+        try {
+          let res = await this.$wechat.getLocation()
+          this.longitude = res.longitude
+          this.latitude = res.latitude
+          if (!this.latitude || !this.longitude) {
+            wx.navigateTo({url: `/pages/open-location`})
+          }
+        } catch (e) {
+          this.longitude = 0
+          this.latitude = 0
+          wx.navigateTo({url: `/pages/open-location`})
+        }
+      },
       _checkIsNewClient() {
         let flag = (this.goodsList && this.goodsList.some(val => val.activity && val.activity.activity_theme === ACTIVE_TYPE.NEW_CLIENT))
         if (flag) {
@@ -155,7 +221,28 @@
             this.code = res.code
           })
       },
+      _getDistance() {
+        let longitude = this.longitude
+        let latitude = this.latitude
+        API.Global.getDistance({longitude, latitude}).then(res => {
+          this.distance = Number(res.data.distance / 1000).toFixed(2)
+        })
+      },
+      _showPayModal() {
+        this.isShowPayModal = true
+      },
+      _hidePayModal() {
+        this.isShowPayModal = false
+      },
       async goPay() {
+        if (this.distance > 5) {
+          this._showPayModal()
+        } else {
+          this._goPayAction()
+        }
+      },
+      async _goPayAction() {
+        this._hidePayModal()
         if (this._paying) return
         this._paying = true
         clearTimeout(this._payTimer)
@@ -165,8 +252,10 @@
         this.$wechat.showLoading()
         let url = this.goodsList[0].url || ''
         let source = this.goodsList[0].source || ''
-        let longitude = this.goodsList[0].longitude || ''
-        let latitude = this.goodsList[0].latitude || ''
+        // let longitude = this.goodsList[0].longitude || this.longitude
+        // let latitude = this.goodsList[0].latitude || this.latitude
+        let longitude = this.longitude
+        let latitude = this.latitude
         let orderInfo = {
           goods: this.goodsList,
           nickname: this.userInfo.nickname,
@@ -233,6 +322,94 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
  @import "~@designCommon"
+ // 支付模块
+ .share-panel-wrapper
+   .share-mask
+     position: fixed
+     left: 0
+     top: 0
+     bottom: 0
+     right: 0
+     z-index: 999
+     background: rgba(17, 17, 17, 0.7)
+   .share-panel
+     position: fixed
+     bottom: -130%
+     left: 0
+     background: #fff
+     width: 100%
+     z-index:9999
+     transition: all .5s
+     &.show
+       bottom :0
+     .title
+       padding-top :22px
+       font-family: $font-family-medium
+       font-size: 16px
+       color: #111111
+       text-align: center
+       .distance
+          color: #FA7500
+          padding :0 3px
+     .sub-title
+       padding-top :6px
+       font-family: $font-family-regular
+       font-size: 14px
+       color: #FA7500
+       letter-spacing: 0
+       text-align: center
+     .box-wrapper
+       background: #F7F7F7
+       border-radius: 4px
+       margin: 20px 12px 14.5px
+       padding :20px 15px
+       .item-wrapper
+         display :flex
+         font-family: $font-family-regular
+         font-size: 14px
+         margin-bottom :16px
+         .left
+           width :80px
+           color: #616161
+         .right
+           flex: 1
+           color: $color-text-main
+       .last-item-wrapper
+         display :flex
+         font-family: $font-family-regular
+         .l-title
+           flex: 1
+           font-size: 14px
+           color: $color-text-main
+           text-align :right
+         .l-number
+           font-family: $font-family-bold
+           font-size: 16px;
+           color: #FF8506;
+           position :relative
+           bottom :1px
+         .l-unit
+           font-size: 14px;
+           color: #FF8506;
+           margin-left :1px
+           position :relative
+           bottom :0px
+     .button-group
+       display :flex
+       .button-wrapper
+         flex: 1
+         height :55px
+         font-family: $font-family-medium
+         font-size: 16px
+         color: $color-text-main
+         text-align: center
+         line-height: @height
+         box-sizing :border-box
+         &.left
+           border-top :1px solid $color-line
+         &.right
+           background: #73C200;
+           color: #FFFFFF;
 
   .goods-total-wrapper
     padding :15.5px 12px 12px
