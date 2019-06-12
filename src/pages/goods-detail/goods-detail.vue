@@ -382,14 +382,14 @@
       // buttonInfo信息
       buttonInfo() {
         return {
-          activeStatus: this.activeStatus,
-          btnText: this.btnText,
-          isShowTwoButton: this.isShowTwoButton,
-          tradePrice: this.goodsMsg.trade_price,
-          salePrice: this.goodsMsg.goods_sale_price,
-          base_usable_stock: this.goodsMsg.base_usable_stock, // 非活动库存
-          usable_stock: this.goodsMsg.usable_stock, // 库存
-          tipTop: this.tipTop
+          activeStatus: this.activeStatus || 0,
+          btnText: this.btnText || '',
+          isShowTwoButton: this.isShowTwoButton || false,
+          tradePrice: this.goodsMsg.trade_price || 0,
+          salePrice: this.goodsMsg.goods_sale_price || 0,
+          base_usable_stock: this.goodsMsg.base_usable_stock || 0, // 非活动库存
+          usable_stock: this.goodsMsg.usable_stock || 0, // 库存
+          tipTop: this.tipTop || ''
         }
       },
       // 二维码
