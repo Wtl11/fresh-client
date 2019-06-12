@@ -46,3 +46,6 @@ wx.onNetworkStatusChange(function (res) {
 wx.onMemoryWarning(function (res) {
   console.warn('onMemoryWarningReceive', res)
 })
+// wx.showShareMenu({
+//   withShareTicket: true
+// })

@@ -57,7 +57,7 @@ export const actions = {
           })
         let payRes = res.data
         const {timestamp, nonceStr, signType, paySign} = payRes
-        let orderId = res.data.order_id
+        let orderId = res.data.order_id || 0
         wx.requestPayment({
           timeStamp: timestamp,
           nonceStr,

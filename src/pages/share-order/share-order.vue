@@ -110,6 +110,7 @@
         this.showMoreImg = true
       },
       getShareOrderDate() {
+        console.warn('share-order-orderId:' + this.orderId)
         API.Order.getOrderDetailData(this.orderId, {get_avatar: true}).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.orderMsg = res.data

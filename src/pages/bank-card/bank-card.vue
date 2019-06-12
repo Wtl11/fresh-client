@@ -19,19 +19,41 @@
       </div>
     </div>
     <div class="ro-bank-card-btn-box lost">
-      <div class="ro-bank-card-btn" :class="'corp-' + corpName + '-bg'" @click="_bankCards">保存</div>
+      <div class="ro-bank-card-btn" :class="'corp-' + corpName + '-bg'" @click="_showBankToast">保存</div>
     </div>
+    <article class="confirm-msg" v-if="isShowToast" :animation="maskAnimation" @click="_hideBankToast">
+      <button class="content" :animation="modalAnimation">
+        <p class="title">请核对您的信息</p>
+        <div class="item-wrapper">
+          <p class="it-left">持卡人</p>
+          <p class="it-right">{{cardName}}</p>
+        </div>
+        <div class="item-wrapper">
+          <p class="it-left">银行卡号</p>
+          <p class="it-right">{{cardNum}}</p>
+        </div>
+        <div class="item-wrapper">
+          <p class="it-left">开户行</p>
+          <p class="it-right">{{bank}}</p>
+        </div>
+        <div class="btn-group">
+          <div class="btn confirm" :class="'corp-' + corpName + '-text'" @click.stop="_bankCards">确定</div>
+        </div>
+      </button>
+    </article>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
+  import AnimationModal from '@mixins/animation-modal'
   import API from '@api'
 
   const PAGE_NAME = 'BANK_CARD'
 
   export default {
     name: PAGE_NAME,
+    mixins: [AnimationModal],
     data() {
       return {
         cardNum: '',
@@ -40,7 +62,8 @@
         bankList: [],
         id: null,
         bankIdx: 0,
-        submitLock: false
+        submitLock: false,
+        isShowToast: false
       }
     },
     components: {
@@ -100,12 +123,31 @@
         }
         if (res.error === this.$ERR_OK) {
           this.$wechat.showToast('绑定成功')
+          this._hideBankToast()
           setTimeout(() => {
             wx.navigateBack()
           }, 1500)
         } else {
           this.$refs.toast.show(res.message)
         }
+      },
+      _showBankToast() {
+        if (!this.cardName) {
+          this.$wechat.showToast('持卡人不能为空')
+          return
+        }
+        if (!this.cardNum) {
+          this.$wechat.showToast('银行卡号不能为空')
+          return
+        }
+        if (this.bank === '选择开户银行') {
+          this.$wechat.showToast('开户行不能为空')
+          return
+        }
+        this.isShowToast = true
+      },
+      _hideBankToast() {
+        this.isShowToast = false
       },
       getBankList() {
         API.Wallet.getAllBankList().then((res) => {
@@ -134,6 +176,62 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
  @import "~@designCommon"
 
+ // 弹窗
+ .confirm-msg
+   background-color: rgba(17, 17, 17, 0.7)
+   fill-box(fixed)
+   z-index: 500
+   layout()
+   align-items: center
+   .mask
+     fill-box()
+     background-color: $color-20202E
+     opacity: 0.8
+   .content
+     position: relative
+     width: 290px
+     min-height: 244px
+     background-color: $color-white
+     border: 1px solid rgba(32, 32, 46, 0.10)
+     border-radius: 6px
+     layout()
+     left:0
+     top:0
+     bottom:0
+     right:0
+     margin:auto
+     opacity :1
+     line-height :1
+    .title
+      font-family: PingFangSC-Medium
+      font-size: 16px
+      color: #111111
+      margin :25px auto 30px
+    .item-wrapper
+      font-family: PingFangSC-Regular
+      font-size: 14px
+      display :flex
+      margin-bottom :20px
+      text-align :left
+      .it-left
+        width :74px
+        color: #616161
+        padding-left :25px
+      .it-right
+        coor: $color-text-main
+    .btn-group
+      margin :15px auto 0
+      width :136px
+      height:36px
+      background: #73C200
+      border: 1px solid #73C200
+      border-radius: @height
+      .confirm
+        font-family: PingFangSC-Regular;
+        font-size: 16px;
+        color:#fff
+        text-align :center
+        line-height :36px
 
   .bank-card
     width: 100%
