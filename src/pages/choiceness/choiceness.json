@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "CHOICENESS",
+  "enablePullDownRefresh": true,
+  "backgroundColorTop": "#FFFFFF",
+  "backgroundColorBottom": "#FFFFFF",
+  "navigationBarTextStyle": "black",
+  "backgroundTextStyle": "dark",
+  "onReachBottomDistance": 150,
+  "usingComponents": {}
+}

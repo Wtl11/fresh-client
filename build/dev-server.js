@@ -1,15 +1,15 @@
 require('./check-versions')()
 
-var chalk = require('chalk')
+process.env.PLATFORM = process.argv[2] || 'wx'
 var config = require('../config')
 // var utils = require('./utils')
 var getParams = require('./build.utils')
 if (!process.env.NODE_ENV) {
   process.env.NODE_ENV = JSON.parse(config.dev.env.NODE_ENV)
 }
-var argvs = process.argv.slice(2)
+var argvs = process.argv.slice(3)
 let params = getParams(argvs)
-console.log(params)
+console.log(Object.assign(params, {platform: process.env.PLATFORM}))
 process.env.BUILD_ENV = params.environments
 process.env.VERSION = params.versions
 process.env.APPLICATION = params.applications
@@ -21,6 +21,7 @@ var webpack = require('webpack')
 var proxyMiddleware = require('http-proxy-middleware')
 var portfinder = require('portfinder')
 var webpackConfig = require('./webpack.dev.conf')
+var utils = require('./utils')
 
 // default port where dev server listens for incoming traffic
 var port = process.env.PORT || config.dev.port
@@ -32,6 +33,9 @@ var proxyTable = config.dev.proxyTable
 
 var app = express()
 var compiler = webpack(webpackConfig)
+if (process.env.PLATFORM === 'swan') {
+  utils.writeFrameworkinfo()
+}
 
 // var devMiddleware = require('webpack-dev-middleware')(compiler, {
 //   publicPath: webpackConfig.output.publicPath,

@@ -6,19 +6,6 @@ import {ACTIVE_TYPE} from '@utils/contants'
 const page = new Vue(Page)
 page.$mount()
 
-export default {
-  config: {
-    navigationBarTitleText: 'CHOICENESS',
-    enablePullDownRefresh: true,
-    backgroundColorTop: '#FFFFFF',
-    backgroundColorBottom: '#FFFFFF',
-    navigationBarTextStyle: 'black',
-    backgroundTextStyle: 'dark',
-    onReachBottomDistance: 150,
-    usingComponents: {}
-  }
-}
-
 export const TAB_ARR_CONFIG = {
   [ACTIVE_TYPE.FLASH]: {
     limit: 10,
