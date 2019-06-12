@@ -88,8 +88,8 @@
     },
     onShow() {
       let options = this._$$initOptions()
-      this.orderId = options.id
-      this.shopId = options.shopId
+      this.orderId = options.id || 0
+      this.shopId = options.shopId || 0
       this.getShareOrderDate()
       this.$$shareHandler({
         event: EVENT_CODE.SHARE_ORDER,

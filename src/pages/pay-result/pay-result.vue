@@ -21,12 +21,15 @@
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import ShareTrick from '@mixins/share-trick'
+  import GetOptions from '@mixins/get-options'
+  import clearWatch from '@mixins/clear-watch'
+
   const ald = getApp()
   const PAGE_NAME = 'PAY_RESULT'
 
   export default {
     name: PAGE_NAME,
-    mixins: [ShareTrick],
+    mixins: [ShareTrick, GetOptions, clearWatch],
     data() {
       return {
         allReady: false,
@@ -50,13 +53,19 @@
         this.allReady = true
       }, 1700)
     },
+    onShow() {
+      let options = this._$$initOptions()
+      this.orderId = options.orderId
+      this.payType = options.payType
+    },
     onShareAppMessage() {
-      let shopId = wx.getStorageSync('shopId')
-      let userInfo = wx.getStorageSync('userInfo').nickname
+      let shopId = wx.getStorageSync('shopId') || 0
+      let userInfo = wx.getStorageSync('userInfo') || {}
+      let nickName = userInfo.nickname || ''
       const flag = Date.now()
       console.log(`/pages/share-order?id=${this.orderId}&shopId=${shopId}`)
       return {
-        title: `团长，我是“${userInfo}”，刚在店里买了商品↓，请接单！`,
+        title: `团长，我是“${nickName}”，刚在店里买了商品↓，请接单！`,
         path: `/pages/share-order?id=${this.orderId}&shopId=${shopId}&flag=${flag}`,
         imageUrl: `${this.imageUrl}/yx-image/order/pic-share_order@2x.png`,
         success: (res) => {
