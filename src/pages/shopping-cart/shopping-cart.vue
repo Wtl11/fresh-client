@@ -316,8 +316,9 @@
         }
         this.$wechat.showToast(res.message)
         this._getShopCart()
-        // this.goodsList.splice(this.deleteInfo.delIndex, 1)
-        // this.goodsList = [...this.goodsList]
+        this.goodsList = this.goodsList.filter(item => {
+          return item.id !== this.deleteInfo.cartId
+        })
         this.setCartCount()
         if (!this.goodsList.length) {
           this.isShowCart = true
