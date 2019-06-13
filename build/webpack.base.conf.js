@@ -24,8 +24,20 @@ function getEntry (rootSrc, pattern) {
   }, {})
 }
 
+function getEntry1 (rootSrc, pattern) {
+  var files = glob.sync(path.resolve(rootSrc, pattern))
+  console.log(files)
+  return files.reduce((res, file) => {
+    var info = path.parse(file)
+    var key = info.dir.slice(rootSrc.length + 1)
+    res[key] = path.resolve(file)
+    return res
+  }, {})
+}
+
 const appEntry = { app: resolve('./src/main.js') }
 const pagesEntry = getEntry(resolve('./src'), 'pages/**/config.js')
+const packageEntry = getEntry1(resolve('./src'), 'pages/[a-z]-package/config.js')
 const entry = Object.assign({}, appEntry, pagesEntry)
 
 let baseWebpackConfig = {
