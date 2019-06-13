@@ -1,5 +1,5 @@
 ---
-to: "src/pages/<%= h.inflection.dasherize(name) %>/<%= h.inflection.dasherize(name) %>.vue"
+to: "src/pages/<%= h.inflection.dasherize(package) %>/<%= h.inflection.dasherize(name) %>/<%= h.inflection.dasherize(name) %>.vue"
 ---
 <template>
   <div class="<%= h.inflection.dasherize(name) %>">
