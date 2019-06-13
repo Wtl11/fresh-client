@@ -64,7 +64,7 @@ export default {
     usingComponents: {},
     plugins: {
       goodsSharePlugin: {
-        version: '3.0.0',
+        version: '3.1.0',
         provider: 'wx56c8f077de74b07c'
       }
     }

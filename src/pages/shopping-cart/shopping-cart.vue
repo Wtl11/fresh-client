@@ -3,7 +3,7 @@
   <div class="wrap" :class="{'padding-wrap': goodsList.length}">
     <navigation-bar title="购物车" :showArrow="false" :translucent="false"></navigation-bar>
     <div class="shop-list">
-      <div class="shop-item" :class="{'shop-item-opcta' : item.num <= 0}" v-for="(item, index) in goodsList" :key="index">
+      <div class="shop-item" :class="{'shop-item-opcta' : item.num <= 0}" v-for="(item, index) in goodsList" :key="item.id">
         <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && !item.checked && item.num > 0" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt=""/>
         <!--<img class="sel-box" v-if="imageUrl && item.num <= 0" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt="" />-->
         <div class="sel-box sel-clr-box" v-if="imageUrl && item.num <= 0"></div>
@@ -315,7 +315,9 @@
           this.$wechat.showToast(res.message)
         }
         this.$wechat.showToast(res.message)
-        this.goodsList.splice(this.deleteInfo.delIndex, 1)
+        this._getShopCart()
+        // this.goodsList.splice(this.deleteInfo.delIndex, 1)
+        // this.goodsList = [...this.goodsList]
         this.setCartCount()
         if (!this.goodsList.length) {
           this.isShowCart = true
