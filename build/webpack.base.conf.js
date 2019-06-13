@@ -16,7 +16,6 @@ function resolve (dir) {
 
 function getEntry (rootSrc, pattern, packageType) {
   let files = glob.sync(path.resolve(rootSrc, pattern))
-  console.log(files)
   return files.reduce((res, file) => {
     let info = path.parse(file)
     let dirname = info.dir.slice(rootSrc.length + 1)
@@ -32,7 +31,7 @@ function getKey(dirnames, packageType) {
     case "main":
       return [dirnames[0], dirnames[2]]
     case "sub":
-      return dirnames
+      return [dirnames[1], dirnames[2]]
     default:
       return []
   }
