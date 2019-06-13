@@ -80,9 +80,8 @@
       },
       toOrderDetail() {
         wx.navigateTo({
-          url: '/pages/oeder-detail'
+          url: this.$router.leader + '/oeder-detail'
         })
-        // this.$router.push('/pages/oeder-detail')
       }
     }
   }

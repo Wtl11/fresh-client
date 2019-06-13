@@ -67,7 +67,7 @@
     },
     methods: {
       navHandle () {
-        wx.navigateTo({ url: '/pages/radar' })
+        wx.navigateTo({ url: this.$router.leader + '/radar' })
       },
       _action (data) {
         let eventMsg = new EventMsg(data)

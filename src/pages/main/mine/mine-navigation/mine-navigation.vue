@@ -147,7 +147,7 @@
       },
       // 跳转我的小区
       _goMyHosing() {
-        let page = this.isLeader ? '/pages/regimental-commander' : '/package-leader/mine-housing'
+        let page = this.isLeader ? this.$router.leader + '/regimental-commander' : this.$router.leader + '/mine-housing'
         wx.navigateTo({url: page})
       },
       // 获取团长订单统计

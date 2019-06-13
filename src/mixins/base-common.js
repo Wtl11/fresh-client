@@ -10,7 +10,8 @@ export default {
       formId: [],
       imageUrl: this.$imageUrl,
       shopName: '',
-      corpName: corp.shopSaas
+      corpName: corp.shopSaas,
+      $router: this.$router
     }
   },
   onLoad() {

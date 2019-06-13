@@ -113,9 +113,9 @@
       },
       jumpBankcard() {
         if (!this.addBankId) {
-          wx.navigateTo({url: `/pages/bank-card`})
+          wx.navigateTo({url: this.$router.leader + `/bank-card`})
         } else {
-          wx.navigateTo({url: `/pages/bank-card?id=${this.addBankId}`})
+          wx.navigateTo({url: this.$router.leader + `/bank-card?id=${this.addBankId}`})
         }
       }
     }

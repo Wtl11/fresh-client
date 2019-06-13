@@ -61,7 +61,7 @@
       console.warn(shopId, wx.getStorageSync('leaderId'), wx.getStorageSync('shopId'), '========团餐') // todo
       return {
         title: this.goodsMsg.name,
-        path: `/pages/goods-detail?id=${this.goodsId}&shopId=${shopId}&activityId=${this.activityId}&flag=${flag}`, // 商品详情
+        path: this.$router.main + `/goods-detail?id=${this.goodsId}&shopId=${shopId}&activityId=${this.activityId}&flag=${flag}`, // 商品详情
         imageUrl: this.thumb_image || this.goodsMsg.goods_cover_image,
         success: (res) => {
           // 转发成功

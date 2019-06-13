@@ -16,7 +16,7 @@
       <div class="order-big-box" :style="{'transform': ' translateX('+ -(navIndex * width) +'px)', width: width * nav.length + 'px'}">
         <!--今日订单-->
         <scroll-view class="order-box" :style="{'height': scrollHeight + 'px'}" scroll-y @scrolltolower="_getMoreList">
-          <navigator :url="'/pages/group-order-detail?id=' + order.order_id" :hover-stop-propagation="true" hover-class="none" class="order-item" v-for="(order, idx) in todayList" :key="idx">
+          <navigator :url="$router.leader + '/group-order-detail?id=' + order.order_id" :hover-stop-propagation="true" hover-class="none" class="order-item" v-for="(order, idx) in todayList" :key="idx">
             <div class="order-header">
               <div class="order-num">{{order.code}}</div>
               <div class="name">{{order.address.nickname}}</div>
@@ -46,7 +46,7 @@
           </div>
         </scroll-view>
         <scroll-view class="order-box" :style="{'height': scrollHeight + 'px'}" scroll-y @scrolltolower="_getMoreList">
-          <navigator :url="'/pages/group-order-detail?id=' + order.order_id" :hover-stop-propagation="true" hover-class="none" class="order-item" v-for="(order, idx) in yesterdayList" :key="idx">
+          <navigator :url="$router.leader + '/group-order-detail?id=' + order.order_id" :hover-stop-propagation="true" hover-class="none" class="order-item" v-for="(order, idx) in yesterdayList" :key="idx">
             <div class="order-header">
               <div class="order-num">{{order.code}}</div>
               <div class="name">{{order.address.nickname}}</div>
@@ -77,7 +77,7 @@
           </div>
         </scroll-view>
         <scroll-view class="order-box" :style="{'height': scrollHeight + 'px'}" scroll-y @scrolltolower="_getMoreList">
-          <navigator :url="'/pages/group-order-detail?id=' + order.order_id" :hover-stop-propagation="true" hover-class="none" class="order-item" v-for="(order, idx) in list" :key="idx">
+          <navigator :url="$router.leader + '/group-order-detail?id=' + order.order_id" :hover-stop-propagation="true" hover-class="none" class="order-item" v-for="(order, idx) in list" :key="idx">
             <div class="order-header">
               <div class="order-num">{{order.code}}</div>
               <div class="name">{{order.address.nickname}}</div>
