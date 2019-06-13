@@ -69,7 +69,7 @@
         <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/icon-ulike@2x.png'" alt="" class="icon">
         <span class="text">猜你喜欢</span>
       </p>
-      <div class="recommend-list">
+      <article class="recommend-list">
         <div v-for="(item, index) in recommendList" :key="item.goods_id" class="list-item">
 <!--          <goods-item :item="item" @_getShopCart="_getShopCart"></goods-item>-->
           <div class="classify-item" @click="recommendJumpGoodsDetail(item)">
@@ -96,10 +96,10 @@
             </section>
           </div>
         </div>
-        <loading-more v-if="recommendListLoad"></loading-more>
-        <div v-if="!hasMore" class="foot-ties">
-          <div class="center">— 再拉也没有了 —</div>
-        </div>
+      </article>
+      <loading-more v-if="recommendListLoad"></loading-more>
+      <div v-if="!hasMore" class="foot-ties">
+        <div class="center">— 再拉也没有了 —</div>
       </div>
     </div>
     <confirm-msg ref="msg" :msg="msg" useType="double" @confirm="deleteCartGood"></confirm-msg>
@@ -177,6 +177,7 @@
           duration: 0
         })
         this.page = 1
+        this.hasMore = true
         this.getCarRecommend()
       }
       this.curShopId = shopId
