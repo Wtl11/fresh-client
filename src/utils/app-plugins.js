@@ -8,8 +8,8 @@ import * as wechat from './wechat'
 // import {fileType} from './we-cos/fileConfig'
 import baseCommon from '@mixins/base-common'
 import base from '@mixins/base'
-import createQrCode from './create-qr-code'
-import router from './router-handler'
+import createQrCode from '@utils/create-qr-code'
+import routerHandler from '@utils/router-handler'
 
 // 定义插件
 const AppPlugin = {
@@ -28,7 +28,7 @@ const AppPlugin = {
     // Vue.prototype.$cosFileType = fileType
     Vue.prototype.$store = store
     Vue.prototype.$createQrCode = createQrCode
-    Vue.prototype.$router = router
+    Vue.prototype.$routerHandler = routerHandler
   }
 }
 // 使用插件

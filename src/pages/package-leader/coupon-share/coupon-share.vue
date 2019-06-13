@@ -41,7 +41,7 @@
       console.warn(shopId, packetId, '=======团长分享')
       return {
         title: `【赞播优鲜】送你一张${couponName}优惠券，赶快来领取吧！`,
-        path: this.$router.main + `/coupon-take?shopId=${shopId}&packetId=${packetId}&flag=${flag}`,
+        path: this.$routerHandler.main.PACKAGE + `/coupon-take?shopId=${shopId}&packetId=${packetId}&flag=${flag}`,
         imageUrl: `${this.imageUrl}/yx-image/2.1/pic-getcoupon@2x.png`
       }
     },

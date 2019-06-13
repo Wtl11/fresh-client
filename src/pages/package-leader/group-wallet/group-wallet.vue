@@ -69,13 +69,13 @@
     },
     methods: {
       jumpWithdraw() {
-        wx.navigateTo({url: this.$router.leader + `/withdraw`})
+        wx.navigateTo({url: this.$routerHandler.leader.WITHDRAW})
       },
       jumpIncome() {
-        wx.navigateTo({url: this.$router.leader + `/income-record`})
+        wx.navigateTo({url: this.$routerHandler.leader.INCOME_RECORD})
       },
       jumpExpend() {
-        wx.navigateTo({url: this.$router.leader + `/expend-record`})
+        wx.navigateTo({url: this.$routerHandler.leader.EXPEND_RECORD})
       },
       getWalletMoney() {
         API.Wallet.getShopMoney().then((res) => {

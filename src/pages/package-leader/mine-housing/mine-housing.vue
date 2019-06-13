@@ -73,7 +73,7 @@
       },
       applyLeader() {
         this.$wx.navigateTo({
-          url: this.$router.main + '/out-html?routeType=recruit-regimental'
+          url: this.$routerHandler.main.PACKAGE + '/out-html?routeType=recruit-regimental'
         })
       },
       // 保存二维码
@@ -172,7 +172,7 @@
         if (res.error === this.$ERR_OK) {
           wx.setStorageSync('isLeader', true)
           wx.setStorageSync('shopId', res.data.id)
-          wx.redirectTo({url: this.$router.leader + '/regimental-commander'})
+          wx.redirectTo({url: this.$routerHandler.leader.REGIMENTAL_COMMANDER})
         }
       },
       _setNav(index, e) {
