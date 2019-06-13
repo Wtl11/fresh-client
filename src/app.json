@@ -35,7 +35,7 @@
   ],
   "subPackages": [
     {
-      "root": "pages/leader-package/",
+      "root": "pages/package-leader/",
       "pages": [
         "mine-housing",
         "regimental-commander",

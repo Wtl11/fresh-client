@@ -14,32 +14,34 @@ function resolve (dir) {
   return path.join(__dirname, '..', dir)
 }
 
-function getEntry (rootSrc, pattern) {
-  var files = glob.sync(path.resolve(rootSrc, pattern))
+function getEntry (rootSrc, pattern, packageType) {
+  let files = glob.sync(path.resolve(rootSrc, pattern))
+  console.log(files)
   return files.reduce((res, file) => {
-    var info = path.parse(file)
-    var key = info.dir.slice(rootSrc.length + 1)
+    let info = path.parse(file)
+    let dirname = info.dir.slice(rootSrc.length + 1)
+    let dirnames = dirname.split('/')
+    let key = getKey(dirnames, packageType).join('/')
     res[key] = path.resolve(file)
     return res
   }, {})
 }
 
-function getEntry1 (rootSrc, pattern) {
-  var files = glob.sync(path.resolve(rootSrc, pattern))
-  console.log(files)
-  return files.reduce((res, file) => {
-    var info = path.parse(file)
-    var key = info.dir.slice(rootSrc.length + 1)
-    console.log(key)
-    res[key] = path.resolve(file)
-    return res
-  }, {})
+function getKey(dirnames, packageType) {
+  switch (packageType) {
+    case "main":
+      return [dirnames[0], dirnames[2]]
+    case "sub":
+      return dirnames
+    default:
+      return []
+  }
 }
 
 const appEntry = { app: resolve('./src/main.js') }
-const pagesEntry = getEntry(resolve('./src'), 'pages/**/config.js')
-const packageEntry = getEntry1(resolve('./src'), 'pages/*package/**/config.js')
-const entry = Object.assign({}, appEntry, pagesEntry)
+const pagesEntry = getEntry(resolve('./src'), 'pages/main/**/config.js', 'main')
+const packageEntry = getEntry(resolve('./src'), 'pages/package*/**/config.js', 'sub')
+const entry = Object.assign({}, appEntry, pagesEntry, packageEntry)
 
 let baseWebpackConfig = {
   // 如果要自定义生成的 dist 目录里面的文件路径，

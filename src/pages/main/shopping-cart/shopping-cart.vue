@@ -95,7 +95,7 @@
   import ClearWatch from '@mixins/clear-watch'
   import LoadingMore from '@components/loading-more/loading-more'
   import {ACTIVE_TYPE} from '@utils/contants'
-  import {objDeepCopy} from '../../utils/common'
+  import {objDeepCopy} from '@utils/common'
 
   export default {
     mixins: [ClearWatch],
