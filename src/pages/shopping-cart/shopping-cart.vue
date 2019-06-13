@@ -314,8 +314,6 @@
         if (res.error !== this.$ERR_OK) {
           this.$wechat.showToast(res.message)
         }
-        this.$wechat.showToast(res.message)
-        this._getShopCart()
         this.goodsList = this.goodsList.filter(item => {
           return item.id !== this.deleteInfo.cartId
         })
@@ -323,6 +321,7 @@
         if (!this.goodsList.length) {
           this.isShowCart = true
         }
+        this.$wechat.showToast(res.message)
       },
       toggelCheck(i) {
         this.goodsList[i].checked = !this.goodsList[i].checked
