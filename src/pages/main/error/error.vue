@@ -11,10 +11,10 @@
 
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
-  import app from '@src/main'
+  import app from '@src/app.json'
 
   const PAGE_NAME = 'ERROR'
-  const TAB_BAR = app.config.tabBar.list
+  const TAB_BAR = app.tabBar.list
   export default {
     name: PAGE_NAME,
     data() {

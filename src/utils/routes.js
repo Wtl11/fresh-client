@@ -1,5 +1,7 @@
+// PACKAGE_PATH
 const LEADER = '/package-leader'
 const MAIN = '/pages'
+/* eslint-disable */
 export default {
   leader: {
     PACKAGE: LEADER,
@@ -19,9 +21,11 @@ export default {
     BANK_CARD: `${LEADER}/bank-card`,
     SALE_SERVICE: `${LEADER}/sale-service`,
     FIND_PRODUCT: `${LEADER}/find-product`,
-    COPY_DETAIL: `${LEADER}/copy-detail`
+    COPY_DETAIL: `${LEADER}/copy-detail`,
+    // package-leader
   },
   main: {
-    PACKAGE: MAIN
+    PACKAGE: MAIN,
+    // main
   }
 }

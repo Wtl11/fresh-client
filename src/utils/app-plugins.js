@@ -9,7 +9,7 @@ import * as wechat from './wechat'
 import baseCommon from '@mixins/base-common'
 import base from '@mixins/base'
 import createQrCode from '@utils/create-qr-code'
-import routerHandler from '@utils/router-handler'
+import routes from '@utils/routes'
 
 // 定义插件
 const AppPlugin = {
@@ -28,7 +28,7 @@ const AppPlugin = {
     // Vue.prototype.$cosFileType = fileType
     Vue.prototype.$store = store
     Vue.prototype.$createQrCode = createQrCode
-    Vue.prototype.$routerHandler = routerHandler
+    Vue.prototype.$routes = routes
   }
 }
 // 使用插件

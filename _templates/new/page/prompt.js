@@ -1,12 +1,16 @@
 const appJson = require('../../../src/app.json')
+const MAIN_PACKAGE = 'main'
 const choices = []
 if (appJson.subPackages && appJson.subPackages.length > 0) {
   appJson.subPackages.forEach((item) => {
-    choices.push(item.root.replace(/\//g, ''))
+    const packageName = item.root.replace(/\//g, '')
+    item.pages.unshift('' + packageName)
+    choices.push({message: packageName, value: item.pages})
   })
-  choices.unshift('main')
 }
-debugger
+appJson.pages.unshift(MAIN_PACKAGE)
+choices.unshift({message: MAIN_PACKAGE, value: appJson.pages})
+
 module.exports = [
   {
     type: 'select',

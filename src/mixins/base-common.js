@@ -1,8 +1,7 @@
 // 不需要自动重置data数据的页
 import API from '@api'
-import routerHandler from '@utils/router-handler'
+
 import {corp} from '@utils/saas'
-console.log(routerHandler)
 const unResetPage = []
 
 export default {
@@ -12,7 +11,7 @@ export default {
       imageUrl: this.$imageUrl,
       shopName: '',
       corpName: corp.shopSaas,
-      $routerHandler: routerHandler
+      $routes: this.$routes
     }
   },
   onLoad() {

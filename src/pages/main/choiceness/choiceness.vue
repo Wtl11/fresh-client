@@ -488,7 +488,6 @@
       }
     },
     onLoad(options) {
-      // console.warn(options, '<==home==>')
       this.$wechat.showLoading()
       let data = wx.getStorageSync('homeData')
       if (data) {

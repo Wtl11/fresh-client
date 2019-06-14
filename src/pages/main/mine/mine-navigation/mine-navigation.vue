@@ -147,7 +147,7 @@
       },
       // 跳转我的小区
       _goMyHosing() {
-        let page = this.isLeader ? this.$routerHandler.leader.REGIMENTAL_COMMANDER : this.$routerHandler.leader.MINE_HOUSING
+        let page = this.isLeader ? this.$routes.leader.REGIMENTAL_COMMANDER : this.$routes.leader.MINE_HOUSING
         wx.navigateTo({url: page})
       },
       // 获取团长订单统计

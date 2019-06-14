@@ -12,7 +12,7 @@
           <div class="reg-address">{{leaderDetail.social_name}}</div>
         </div>
       </div>
-      <navigator :url="$routerHandler.leader.REGIMENTAL_INFO" hover-class="none" class="reg-tip">
+      <navigator :url="$routes.leader.REGIMENTAL_INFO" hover-class="none" class="reg-tip">
         <span class="reg-text">团长信息</span>
         <img :src="imageUrl + '/yx-image/group/icon-samllarrow@2x.png'" v-if="imageUrl" class="way">
       </navigator>
@@ -39,17 +39,17 @@
     <!--功能模块-->
     <div class="reg-manager">
       <div class="reg-manager-box">
-        <navigator :url="$routerHandler.leader.YESTERDAY_SALE_MANAGER" hover-class="none" class="reg-manager-item">
+        <navigator :url="$routes.leader.YESTERDAY_SALE_MANAGER" hover-class="none" class="reg-manager-item">
           <img :src="imageUrl + '/yx-image/group/icon-order@2x.png'" v-if="imageUrl && corpName === 'platform'" class="reg-manager-icon">
           <img :src="imageUrl + '/yx-image/retuan/icon-order@2x.png'" v-if="imageUrl && corpName === 'retuan'" class="reg-manager-icon">
           <p class="reg-manager-text">消费者订单</p>
         </navigator>
-        <navigator :url="$routerHandler.leader.AFTER_SALE_MANAGEMENT" hover-class="none" class="reg-manager-item">
+        <navigator :url="$routes.leader.AFTER_SALE_MANAGEMENT" hover-class="none" class="reg-manager-item">
           <img :src="imageUrl + '/yx-image/group/icon-sale@2x.png'" v-if="imageUrl && corpName === 'platform'" class="reg-manager-icon">
           <img :src="imageUrl + '/yx-image/retuan/icon-sale@2x.png'" v-if="imageUrl && corpName === 'retuan'" class="reg-manager-icon">
           <p class="reg-manager-text">售后管理</p>
         </navigator>
-        <navigator :url="$routerHandler.leader.DELIVERY_ORDER" hover-class="none" class="reg-manager-item">
+        <navigator :url="$routes.leader.DELIVERY_ORDER" hover-class="none" class="reg-manager-item">
           <img :src="imageUrl + '/yx-image/group/icon-delivery@2x.png'" v-if="imageUrl && corpName === 'platform'" class="reg-manager-icon">
           <img :src="imageUrl + '/yx-image/retuan/icon-delivery2@2x.png'" v-if="imageUrl && corpName === 'retuan'" class="reg-manager-icon">
           <p class="reg-manager-text">配送收货</p>
@@ -61,12 +61,12 @@
           <img :src="imageUrl + '/yx-image/retuan/icon-scan@2x.png'" v-if="imageUrl && corpName === 'retuan'" class="reg-manager-icon">
           <p class="reg-manager-text">扫一扫</p>
         </div>
-        <navigator :url="$routerHandler.leader.GROUP_WALLET" hover-class="none" class="reg-manager-item">
+        <navigator :url="$routes.leader.GROUP_WALLET" hover-class="none" class="reg-manager-item">
           <img :src="imageUrl + '/yx-image/group/icon-moeny_box@2x.png'" v-if="imageUrl && corpName === 'platform'" class="reg-manager-icon">
           <img :src="imageUrl + '/yx-image/retuan/icon-moeny_box@2x.png'" v-if="imageUrl && corpName === 'retuan'" class="reg-manager-icon">
           <p class="reg-manager-text">团长钱包</p>
         </navigator>
-        <navigator :url="$routerHandler.main.PACKAGE + '/out-html?routeType=data-overview'" hover-class="none" class="reg-manager-item">
+        <navigator :url="$routes.main.PACKAGE + '/out-html?routeType=data-overview'" hover-class="none" class="reg-manager-item">
           <img :src="imageUrl + '/yx-image/group/iocn-report_forms@2x.png'" v-if="imageUrl && corpName === 'platform'" class="reg-manager-icon">
           <img :src="imageUrl + '/yx-image/retuan/iocn-report_forms@2x.png'" v-if="imageUrl && corpName === 'retuan'" class="reg-manager-icon">
           <p class="reg-manager-text">数据统计</p>
@@ -124,7 +124,7 @@
           </div>
         </section>
         <section class="reg-goods-box order-box" :style="{'transform': ' translateX('+ -(navIndex * width) +'px)'}">
-          <navigator :url="$routerHandler.leader.COPY_DETAIL + '?id=' + item.goods_id + '&activityId=' + item.activity_id" hover-class="none" class="reg-goods-item" v-for="(item,index) in goodsList" :key="item.goods_sku_id || index">
+          <navigator :url="$routes.leader.COPY_DETAIL + '?id=' + item.goods_id + '&activityId=' + item.activity_id" hover-class="none" class="reg-goods-item" v-for="(item,index) in goodsList" :key="item.goods_sku_id || index">
             <img :src="item.goods_cover_image" class="reg-goods-img" mode="aspectFill">
             <div class="reg-goods-content">
               <div class="reg-goods-title">{{item.name}}</div>
@@ -302,7 +302,7 @@
         wx.scanCode({
           success(res) {
             let id = JSON.parse(res.result).customer_id
-            wx.navigateTo({url: this.$routerHandler.leader.FIND_PRODUCT + `?id=${id}`})
+            wx.navigateTo({url: this.$routes.leader.FIND_PRODUCT + `?id=${id}`})
           }
         })
       },

@@ -80,7 +80,7 @@
       },
       toOrderDetail() {
         wx.navigateTo({
-          url: this.$routerHandler.leader.PACKAGE + '/oeder-detail'
+          url: this.$routes.leader.PACKAGE + '/oeder-detail'
         })
       }
     }

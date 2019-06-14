@@ -1,5 +1,5 @@
 ---
-to: "src/pages/<%= h.inflection.dasherize(package) %>/<%= h.inflection.dasherize(name) %>/config.js"
+to: "src/pages/<%= h.inflection.dasherize(package[0]) %>/<%= h.inflection.dasherize(name) %>/config.js"
 ---
 import Vue from 'vue'
 import Page from './<%=  h.inflection.dasherize(name) %>'

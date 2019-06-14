@@ -15,11 +15,12 @@
 <script type="text/ecmascript-6">
   /* eslint-disable no-undef */
   import wx from 'wx'
-  import app from '@src/main'
+  import app from '@src/app.json'
 
   function pageRouter() {
-    let page = app.config.pages.find(item => /\^/.test(item))
-    return page.replace('^', '/')
+    // let page = app.config.pages.find(item => /\^/.test(item))
+    // return page.replace('^', '/')
+    return '/' + app.pages[0]
   }
 
   let DEFAULT_PAGE = pageRouter()

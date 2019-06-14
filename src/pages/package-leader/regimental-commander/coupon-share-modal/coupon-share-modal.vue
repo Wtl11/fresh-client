@@ -106,7 +106,7 @@
         API.Coupon.createPacket({couponId: this.couponId, number}).then((res) => {
           callback && callback()
           this.hide()
-          wx.navigateTo({url: this.$routerHandler.leader.COUPON_SHARE + `?packetId=${res.data.bag_id}`})
+          wx.navigateTo({url: this.$routes.leader.COUPON_SHARE + `?packetId=${res.data.bag_id}`})
         }).catch(e => {
           console.error(e)
         })

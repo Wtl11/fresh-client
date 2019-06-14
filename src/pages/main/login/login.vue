@@ -16,10 +16,10 @@
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import API from '@api'
-  import app from '@src/main'
+  import app from '@src/app.json'
   // const ald = getApp()
   const PAGE_NAME = 'LOGIN'
-  const TAB_BAR = app.config.tabBar.list
+  const TAB_BAR = app.tabBar.list
   export default {
     name: PAGE_NAME,
     components: {
