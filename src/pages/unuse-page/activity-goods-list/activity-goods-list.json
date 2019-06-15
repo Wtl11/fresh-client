@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "ACTIVITY_GOODS_LIST",
+  "enablePullDownRefresh": true,
+  "backgroundTextStyle": "dark",
+  "onReachBottomDistance": 50
+}
