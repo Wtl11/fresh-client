@@ -255,6 +255,7 @@
   import GoodsDetailMixins from '@mixins/goods-detail'
   import ShareTrick from '@mixins/share-trick'
   import GetOptions from '@mixins/get-options'
+  import Ald from '@utils/ald'
 
   const PAGE_NAME = 'ACTIVE_DETAIL'
   const PAGE_ROUTE_NAME = 'goods-detail'
@@ -277,7 +278,7 @@
     [SCENE_SHARE]: 1002,
     [SCENE_DEFAULT]: 1003
   }
-  const ald = getApp()
+  // const ald = getApp()
   export default {
     name: PAGE_NAME,
     mixins: [clearWatch, ShareHandler, GoodsDetailMixins, ShareTrick, GetOptions],
@@ -405,7 +406,8 @@
       // if (!isEmptyObject(options)) {
       //   this._options = options || {}
       // }
-      ald && ald.aldstat.sendEvent('商品详情')
+      // ald && ald.aldstat.sendEvent('商品详情')
+      Ald.sendEvent('商品详情')
     },
     onShow() {
       this._initPageParams()
@@ -703,7 +705,8 @@
         if (!isLogin) {
           return
         }
-        ald && ald.aldstat.sendEvent('立即购买')
+        // ald && ald.aldstat.sendEvent('立即购买')
+        Ald.sendEvent('立即购买')
         // 团购单买
         if (type === 'goods_sale_price') {
           this._showAddNumber(type)

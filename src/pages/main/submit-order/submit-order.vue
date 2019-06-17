@@ -133,8 +133,9 @@
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import {ACTIVE_TYPE} from '@utils/contants'
   import API from '@api'
+  import Ald from '@utils/ald'
 
-  const ald = getApp()
+  // const ald = getApp()
   const PAGE_NAME = 'SUBMIT_ORDER'
 
   export default {
@@ -168,7 +169,8 @@
       // console.log(this.goodsList)
     },
     async onShow() {
-      ald && ald.aldstat.sendEvent('去支付')
+      // ald && ald.aldstat.sendEvent('去支付')
+      Ald.sendEvent('去支付')
       this._getCode()
       this._setMobile()
       this._getShopDetail()

@@ -81,8 +81,8 @@
   import {orderComputed, orderMethods} from '@state/helpers'
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import API from '@api'
-
-  const ald = getApp()
+  import Ald from '@utils/ald'
+  // const ald = getApp()
   const PAGE_NAME = 'SUBMIT_ORDER'
 
   export default {
@@ -102,7 +102,8 @@
       }
     },
     async onShow() {
-      ald && ald.aldstat.sendEvent('去支付')
+      // ald && ald.aldstat.sendEvent('去支付')
+      Ald.sendEvent('去支付')
       this._getCode()
       this._setMobile()
       this._getShopDetail()

@@ -21,7 +21,9 @@
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import ShareTrick from '@mixins/share-trick'
-  const ald = getApp()
+  import Ald from '@utils/ald'
+
+  // const ald = getApp()
   const PAGE_NAME = 'PAY_RESULT'
 
   export default {
@@ -38,7 +40,8 @@
       NavigationBar
     },
     onLoad(e) {
-      ald && ald.aldstat.sendEvent('支付成功页')
+      // ald && ald.aldstat.sendEvent('支付成功页')
+      Ald.sendEvent('支付成功页')
       this.orderId = e.orderId
       this.payType = e.payType
       this.$sendMsg({

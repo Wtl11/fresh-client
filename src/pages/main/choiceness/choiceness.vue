@@ -356,9 +356,10 @@
   import IsEnd from '@components/is-end/is-end'
   import LoadingMore from '@components/loading-more/loading-more'
   import clearWatch from '@mixins/clear-watch'
+  import Ald from '@utils/ald'
   // import GetOptions from '@mixins/get-options'
 
-  const ald = getApp()
+  // const ald = getApp()
   const PAGE_NAME = 'CHOICENESS'
 
   export default {
@@ -561,7 +562,7 @@
         this._getCouponModalList() // 首页弹窗
         this.$sendMsg({event_no: 1000})
         this.$$shareHandler({event: EVENT_CODE.HOME})
-        ald && ald.aldstat.sendEvent('首页')
+        Ald.sendEvent('首页')
         this.$$sendEvent()
       }
     },
