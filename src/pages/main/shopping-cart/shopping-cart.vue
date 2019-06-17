@@ -1,87 +1,110 @@
 <template>
   <form action="" report-submit @submit="$getFormId">
-  <div class="wrap" :class="{'padding-wrap': goodsList.length}">
-    <navigation-bar title="购物车" :showArrow="false" :translucent="false"></navigation-bar>
-    <div class="shop-list">
-      <div class="shop-item" :class="{'shop-item-opcta' : item.num <= 0}" v-for="(item, index) in goodsList" :key="index">
-        <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && !item.checked && item.num > 0" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt=""/>
-        <!--<img class="sel-box" v-if="imageUrl && item.num <= 0" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt="" />-->
-        <div class="sel-box sel-clr-box" v-if="imageUrl && item.num <= 0"></div>
-        <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && item.checked && item.num > 0 && corpName === 'platform'" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
-        <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && item.checked && item.num > 0 && corpName === 'retuan'" :src="imageUrl+'/yx-image/retuan/icon-pick_gwc@2x.png'" alt=""/>
-        <button formType="submit" class="goods-image" @click.stop="jumpGoodsDetail(item)">
-          <img class="goods-img" mode="aspectFill" :src="item.goods_cover_image" alt="">
-          <div class="robbed" v-if="item.num <= 0">已抢完</div>
+    <div class="wrap" :class="{'padding-wrap': goodsList.length}">
+      <navigation-bar title="购物车" :showArrow="false" :translucent="false"></navigation-bar>
+      <div class="shop-list">
+        <div class="shop-item" :class="{'shop-item-opcta' : item.num <= 0}" v-for="(item, index) in goodsList" :key="item.id">
+          <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && !item.checked && item.num > 0" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt=""/>
+          <!--<img class="sel-box" v-if="imageUrl && item.num <= 0" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt="" />-->
+          <div class="sel-box sel-clr-box" v-if="imageUrl && item.num <= 0"></div>
+          <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && item.checked && item.num > 0 && corpName === 'platform'" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
+          <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && item.checked && item.num > 0 && corpName === 'retuan'" :src="imageUrl+'/yx-image/retuan/icon-pick_gwc@2x.png'" alt=""/>
+          <button formType="submit" class="goods-image" @click.stop="jumpGoodsDetail(item)">
+            <img class="goods-img" mode="aspectFill" :src="item.goods_cover_image" alt="">
+            <div class="robbed" v-if="item.num <= 0">已抢完</div>
+          </button>
+          <div class="good-info">
+            <div formType="submit" class="top" @click.stop="jumpGoodsDetail(item)">
+              <div class="title">{{item.name}}</div>
+              <button formType="submit" class="del" @click.stop="delGoodsInfo(index, item.id)">
+                <img class="del-img" v-if="imageUrl" :src="imageUrl + '/yx-image/cart/icon_delete@2x.png'" alt="">
+              </button>
+            </div>
+            <div class="bot">
+              <div formType="submit" class="left" @click.stop="jumpGoodsDetail(item)">
+                <div class="spec" v-if="item.goods_units">规格：{{item.goods_units}}</div>
+                <div class="remain">
+                  <div class="txt" :class="'corp-' + corpName + '-money-text'" v-if="item.is_urgency">仅剩{{item.usable_stock}}件</div>
+                </div>
+                <div class="price" :class="'corp-' + corpName + '-money'" v-if="item.trade_price">
+                  <span class="num">{{item.trade_price}}</span>
+                  <span class="unit">元</span>
+                  <img class="new-user-img" v-if="imageUrl && item.activity && item.activity.activity_theme === ACTIVE_TYPE.NEW_CLIENT" :src="imageUrl + '/yx-image/2.4/pic-newlabel@2x.png'" alt="">
+                </div>
+              </div>
+              <div class="right">
+                <div class="number-box">
+                  <button formType="submit" class="minus" @click.stop="subNum(index, item.num, item.id)">-</button>
+                  <div class="num">{{item.num}}</div>
+                  <button formType="submit" class="add" @click.stop="addNum(index, item.num, item.buy_limit, item.id)">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--结算-->
+      <div class="payment" :style="{bottom: (49 + height) + 'px'}" v-if="goodsList.length > 0">
+        <button formType="submit" class="check-all" @click.stop="toggleCheckAll">
+          <img class="sel-box" v-if="imageUrl && allChecked && corpName === 'platform'" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
+          <img class="sel-box" v-if="imageUrl && allChecked && corpName === 'retuan'" :src="imageUrl+'/yx-image/retuan/icon-pick_gwc@2x.png'" alt=""/>
+          <img class="sel-box" v-if="imageUrl && !allChecked" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt=""/>
+          <div class="txt">全选</div>
         </button>
-        <div class="good-info">
-          <div formType="submit" class="top" @click.stop="jumpGoodsDetail(item)">
-            <div class="title">{{item.name}}</div>
-            <button formType="submit" class="del" @click.stop="delGoodsInfo(index, item.id)">
-              <img class="del-img" v-if="imageUrl" :src="imageUrl + '/yx-image/cart/icon_delete@2x.png'" alt="">
-            </button>
-          </div>
-          <div class="bot">
-            <div formType="submit" class="left" @click.stop="jumpGoodsDetail(item)">
-              <div class="spec" v-if="item.goods_units">规格：{{item.goods_units}}</div>
-              <div class="remain">
-                <div class="txt" :class="'corp-' + corpName + '-money-text'" v-if="item.is_urgency">仅剩{{item.usable_stock}}件</div>
-              </div>
-              <div class="price" :class="'corp-' + corpName + '-money'" v-if="item.trade_price">
-                <span class="num">{{item.trade_price}}</span>
-                <span class="unit">元</span>
-                <img class="new-user-img" v-if="imageUrl && item.activity && item.activity.activity_theme === ACTIVE_TYPE.NEW_CLIENT" :src="imageUrl + '/yx-image/2.4/pic-newlabel@2x.png'" alt="">
-              </div>
-            </div>
-            <div class="right">
-              <div class="number-box">
-                <button formType="submit" class="minus" @click.stop="subNum(index, item.num, item.id)">-</button>
-                <div class="num">{{item.num}}</div>
-                <button formType="submit" class="add" @click.stop="addNum(index, item.num, item.buy_limit, item.id)">+</button>
-              </div>
-            </div>
-          </div>
+        <div class="payment-content">
+          <div class="price" :class="'corp-' + corpName + '-money'">合计 {{totalPrice}}元</div>
+          <button formType="submit" class="pay-btn" :class="'corp-' + corpName + '-bg'" @click.stop="submitOrder">去结算</button>
         </div>
       </div>
-    </div>
-    <!--结算-->
-    <div class="payment" :style="{bottom: (49 + height) + 'px'}" v-if="goodsList.length > 0">
-      <button formType="submit" class="check-all" @click.stop="toggleCheckAll">
-        <img class="sel-box" v-if="imageUrl && allChecked && corpName === 'platform'" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
-        <img class="sel-box" v-if="imageUrl && allChecked && corpName === 'retuan'" :src="imageUrl+'/yx-image/retuan/icon-pick_gwc@2x.png'" alt=""/>
-        <img class="sel-box" v-if="imageUrl && !allChecked" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt=""/>
-        <div class="txt">全选</div>
-      </button>
-      <div class="payment-content">
-        <div class="price" :class="'corp-' + corpName + '-money'">合计 {{totalPrice}}元</div>
-        <button formType="submit" class="pay-btn" :class="'corp-' + corpName + '-bg'" @click.stop="submitOrder">去结算</button>
+      <!--没有商品-->
+      <div class="without" v-if="isShowCart">
+        <div class="without-img"><img class="img" v-if="imageUrl" :src="imageUrl+'/yx-image/cart/pic-gwc@2x.png'" alt=""></div>
+        <div class="txt">购物车没有商品哦!</div>
+        <div class="txt">赶快去挑选吧</div>
+        <!--<div class="btn" :class="'corp-' + corpName + '-bg'" @click.stop="toChoicenessPage">去逛逛</div>-->
       </div>
-    </div>
-    <!--没有商品-->
-    <div class="without" v-if="isShowCart">
-      <div class="without-img"><img class="img" v-if="imageUrl" :src="imageUrl+'/yx-image/cart/pic-gwc@2x.png'" alt=""></div>
-      <div class="txt">购物车没有商品哦!</div>
-      <div class="txt">赶快去挑选吧</div>
-      <!--<div class="btn" :class="'corp-' + corpName + '-bg'" @click.stop="toChoicenessPage">去逛逛</div>-->
-    </div>
-    <!--商品推荐-->
-    <div class="recommend">
-      <p class="title">
-        <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/icon-ulike@2x.png'" alt="" class="icon">
-        <span class="text">猜你喜欢</span>
-      </p>
-      <div class="recommend-list">
-        <div v-for="(item, index) in recommendList" :key="index" class="list-item">
-          <goods-item :item="item" @_getShopCart="_getShopCart"></goods-item>
-        </div>
+      <!--商品推荐-->
+      <div class="recommend">
+        <p class="title">
+          <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/icon-ulike@2x.png'" alt="" class="icon">
+          <span class="text">猜你喜欢</span>
+        </p>
+        <article class="recommend-list">
+          <div v-for="(item, index) in recommendList" :key="item.goods_id" class="list-item">
+            <!--          <goods-item :item="item" @_getShopCart="_getShopCart"></goods-item>-->
+            <div class="classify-item" @click="recommendJumpGoodsDetail(item)">
+              <figure class="classify-box-top">
+                <img v-if="imageUrl && corpName === 'platform'" :src="imageUrl + '/yx-image/choiceness/icon-label2@2x.png'" alt="" class="top-label" mode="aspectFill">
+                <img v-if="imageUrl && corpName === 'retuan'" :src="imageUrl + '/yx-image/retuan/icon-label2@2x.png'" alt="" class="top-label" mode="aspectFill">
+                <img v-if="item.goods_cover_image" :src="item.goods_cover_image" alt="" class="box-top-img" mode="aspectFill">
+              </figure>
+              <section class="classify-box-bottom">
+                <div class="classify-title">{{item.name}}</div>
+                <div class="classify-price-box">
+                  <div class="price-left">
+                    <div class="price-number" :class="'corp-' + corpName + '-money'">{{item.trade_price}}</div>
+                    <div class="price-money" :class="'corp-' + corpName + '-money'">元</div>
+                    <div class="price-line">{{item.original_price}}元</div>
+                  </div>
+                  <form action="" report-submit @submit="$getFormId" @click.stop="addShoppingCart(item)">
+                    <button class="price-right" formType="submit">
+                      <img v-if="imageUrl && corpName === 'platform'" :src="imageUrl + '/yx-image/collage/icon-addgoods@2x.png'" alt="" class="price-right-img">
+                      <!--            <img v-if="imageUrl && corpName === 'retuan'" :src="imageUrl + '/yx-image/retuan/icon-shopcart@2x.png'" alt="" class="price-right-img">-->
+                    </button>
+                  </form>
+                </div>
+              </section>
+            </div>
+          </div>
+        </article>
         <loading-more v-if="recommendListLoad"></loading-more>
         <div v-if="!hasMore" class="foot-ties">
           <div class="center">— 再拉也没有了 —</div>
         </div>
       </div>
+      <confirm-msg ref="msg" :msg="msg" useType="double" @confirm="deleteCartGood"></confirm-msg>
+      <custom-tab-bar currentType="cart"></custom-tab-bar>
     </div>
-    <confirm-msg ref="msg" :msg="msg" useType="double" @confirm="deleteCartGood"></confirm-msg>
-    <custom-tab-bar currentType="cart"></custom-tab-bar>
-  </div>
   </form>
 </template>
 
@@ -89,7 +112,7 @@
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import CustomTabBar from '@components/custom-tab-bar/custom-tab-bar'
   import ConfirmMsg from '@components/confirm-msg/confirm-msg'
-  import GoodsItem from './goods-item/goods-item'
+  // import GoodsItem from './goods-item/goods-item'
   import API from '@api'
   import {orderMethods, cartMethods} from '@state/helpers'
   import ClearWatch from '@mixins/clear-watch'
@@ -103,7 +126,7 @@
       ConfirmMsg,
       NavigationBar,
       CustomTabBar,
-      GoodsItem,
+      // GoodsItem,
       LoadingMore
     },
     data() {
@@ -154,6 +177,7 @@
           duration: 0
         })
         this.page = 1
+        this.hasMore = true
         this.getCarRecommend()
       }
       this.curShopId = shopId
@@ -181,6 +205,31 @@
     methods: {
       ...orderMethods,
       ...cartMethods,
+      recommendJumpGoodsDetail(item) {
+        wx.navigateTo({
+          url: `/pages/goods-detail?id=${item.goods_id || 0}&activityId=${item.activity_id || 0}`
+        })
+      },
+      addShoppingCart(item) {
+        if (!this.$isLogin()) {
+          return
+        }
+        API.Choiceness.addShopCart({goods_sku_id: item.goods_sku_id || 0, activity_id: item.activity_id || 0}).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.$sendMsg({
+              event_no: 1007,
+              goods_id: item.goods_id,
+              title: item.name
+            })
+            // this.$emit('_getShopCart')
+            this._getShopCart()
+            this.$wechat.showToast('加入购物车成功', 1000, false)
+            this.setCartCount()
+          } else {
+            this.$wechat.showToast(res.message, 1000, false)
+          }
+        })
+      },
       async _getShopCart(loading = false) {
         let res = await API.Cart.shopCart(loading)
         this.$wechat.hideLoading()
@@ -266,12 +315,14 @@
         if (res.error !== this.$ERR_OK) {
           this.$wechat.showToast(res.message)
         }
-        this.$wechat.showToast(res.message)
-        this.goodsList.splice(this.deleteInfo.delIndex, 1)
+        this.goodsList = this.goodsList.filter(item => {
+          return item.id !== this.deleteInfo.cartId
+        })
         this.setCartCount()
         if (!this.goodsList.length) {
           this.isShowCart = true
         }
+        this.$wechat.showToast(res.message)
       },
       toggelCheck(i) {
         this.goodsList[i].checked = !this.goodsList[i].checked
@@ -320,7 +371,8 @@
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
- @import "~@designCommon"
+  @import "~@designCommon"
+
   .wrap
     width: 100vw
     min-height: 100vh
@@ -625,4 +677,72 @@
       color: rgba(152, 152, 159, 0.30)
       text-align: justify
       line-height: 1
+
+  .classify-item
+    background: #fff
+    overflow: hidden
+    padding: 10px 7px 10px
+    box-sizing: border-box
+    width: 100%
+    border-radius: 4px
+    .classify-box-top
+      padding-bottom: 100%
+      height: 0
+      width: 100%
+      overflow: hidden
+      position: relative
+      .top-label
+        position: absolute
+        left: 0
+        top: 0
+        display: block
+        width: 31.2px
+        height: 31.4px
+        z-index: 11
+      .box-top-img
+        position: absolute
+        left: 0
+        top: 0
+        z-index: 2
+        display: block
+        width: 100%
+        height: 100%
+    .classify-box-bottom
+      padding-top: 10px
+      font-family: $font-family-regular
+      .classify-title
+        color: $color-text-main
+        font-size: $font-size-14
+        min-height: $font-size-16
+        no-wrap()
+        margin-bottom: 8.5px
+      .classify-price-box
+        layout(row)
+        align-items: center
+        justify-content: space-between
+        .price-left
+          layout(row)
+          align-items: center
+          font-size: $font-size-12
+          font-family: $font-family-medium
+          .price-number
+            font-size: $font-size-18
+            margin-right: 2px
+          .price-money
+            margin-right: 5px
+            position :relative
+            top:2px
+          .price-line
+            color: $color-text-assist
+            text-decoration: line-through
+            position :relative
+            top:2px
+        .price-right
+          width: 23px
+          height: 23px
+          position: relative
+          .price-right-img
+            width: 23px
+            height: 23px
+            display: block
 </style>
