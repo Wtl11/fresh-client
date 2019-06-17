@@ -9,10 +9,6 @@ var MpvueVerdorPlugin = require('webpack-mpvue-vendor-plugin')
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
 var OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
 
-var env = process.env.BUILD_ENV
-var versions = process.env.VERSION
-var applications = process.env.APPLICATION
-
 module.exports = merge(baseWebpackConfig, {
   module: {
     rules: utils.styleLoaders({
@@ -31,12 +27,6 @@ module.exports = merge(baseWebpackConfig, {
     chunkFilename: utils.assetsPath('[id].js')
   },
   plugins: [
-    new webpack.DefinePlugin({
-      'process.env': env,
-      'process.applications': applications,
-      'process.versions': versions
-    }),
-
     // copy from ./webpack.prod.conf.js
     // extract css into its own file
     new ExtractTextPlugin({
