@@ -4,7 +4,7 @@ process.env.NODE_ENV = 'production'
 process.env.PLATFORM = process.argv[2] || 'wx'
 var getParams = require('./build.utils')
 
-var argvs = process.argv.slice(2)
+var argvs = process.argv.slice(3)
 let params = getParams(argvs)
 process.env.BUILD_ENV = params.environments
 process.env.VERSION = params.versions

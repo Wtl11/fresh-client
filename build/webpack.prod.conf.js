@@ -11,10 +11,6 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin')
 var OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
 var MpvueVendorPlugin = require('webpack-mpvue-vendor-plugin')
 
-var env = process.env.BUILD_ENV
-var versions = process.env.VERSION
-var applications = process.env.APPLICATION
-
 var webpackConfig = merge(baseWebpackConfig, {
   module: {
     rules: utils.styleLoaders({
@@ -31,12 +27,6 @@ var webpackConfig = merge(baseWebpackConfig, {
     chunkFilename: utils.assetsPath('[id].js')
   },
   plugins: [
-    // http://vuejs.github.io/vue-loader/en/workflow/production.html
-    new webpack.DefinePlugin({
-      'process.env': env,
-      'process.applications': applications,
-      'process.versions': versions
-    }),
     // extract css into its own file
     new ExtractTextPlugin({
       // filename: utils.assetsPath('css/[name].[contenthash].css')

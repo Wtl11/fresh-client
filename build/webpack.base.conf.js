@@ -42,6 +42,10 @@ const pagesEntry = getEntry(resolve('./src'), 'pages/main/**/config.js', 'main')
 const packageEntry = getEntry(resolve('./src'), 'pages/package*/**/config.js', 'sub')
 const entry = Object.assign({}, appEntry, pagesEntry, packageEntry)
 
+var env = process.env.BUILD_ENV
+var versions = process.env.VERSION
+var applications = process.env.APPLICATION
+
 let baseWebpackConfig = {
   // 如果要自定义生成的 dist 目录里面的文件路径，
   // 可以将 entry 写成 {'toPath': 'fromPath'} 的形式，
@@ -134,7 +138,10 @@ let baseWebpackConfig = {
   plugins: [
     new webpack.DefinePlugin({
       'mpvue': 'global.mpvue',
-      'mpvuePlatform': 'global.mpvuePlatform'
+      'mpvuePlatform': 'global.mpvuePlatform',
+      'process.env': env,
+      'process.applications': applications,
+      'process.versions': versions
     }),
     new MpvuePlugin(),
     new CopyWebpackPlugin([{
