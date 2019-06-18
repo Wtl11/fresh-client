@@ -155,7 +155,7 @@
             success (res) {
               setTimeout(() => {
                 self.$wechat.hideLoading()
-                wx.redirectTo({url: `/pages/pay-result?orderId=${orderId}&&type=0&total=${self.total}&payType=offline`})
+                wx.redirectTo({url: `${this.$routes.main.PAY_RESULT}?orderId=${orderId}&&type=0&total=${self.total}&payType=offline`})
               }, 1500)
             },
             fail (res) {

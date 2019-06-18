@@ -398,11 +398,11 @@
         }, 1000)
       },
       goToGroupBuy(item) {
-        item.groupon && wx.navigateTo({url: `/pages/collage-detail?id=${item.groupon.id}`})
+        item.groupon && wx.navigateTo({url: `${this.$routes.main.COLLAGE_DETAIL}?id=${item.groupon.id}`})
       },
       jumpGoodsDetail(item) {
         wx.navigateTo({
-          url: `/pages/goods-detail?id=${item.goods_id}`
+          url: `${this.$routes.main.GOODS_DETAIL}?id=${item.goods_id}`
         })
       }
     }

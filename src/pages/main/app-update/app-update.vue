@@ -7,7 +7,7 @@
       </figure>
       <p class="text">系统正在升级中，稍后再试吧！</p>
       <div class="button-wrapper">
-        <navigator url="/pages/choiceness" open-type="switchTab" class="button" :class="'corp-' + corpName + '-bg'">刷新一下</navigator>
+        <navigator :url="$routes.main.CHOICENESS" open-type="switchTab" class="button" :class="'corp-' + corpName + '-bg'">刷新一下</navigator>
       </div>
     </div>
   </div>

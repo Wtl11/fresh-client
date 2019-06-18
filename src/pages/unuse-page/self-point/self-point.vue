@@ -119,7 +119,7 @@
       changeShop() {
         let shopId = this.changedShop.id
         this.$wechat.setStorage('shopId', shopId)
-        wx.switchTab({url: '/pages/choiceness'})
+        wx.switchTab({url: `${this.$routes.main.CHOICENESS}`})
       },
       _getShopList() {
         this.shopMore = false

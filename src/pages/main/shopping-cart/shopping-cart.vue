@@ -207,7 +207,7 @@
       ...cartMethods,
       recommendJumpGoodsDetail(item) {
         wx.navigateTo({
-          url: `/pages/goods-detail?id=${item.goods_id || 0}&activityId=${item.activity_id || 0}`
+          url: `${this.$routes.main.GOODS_DETAIL}?id=${item.goods_id || 0}&activityId=${item.activity_id || 0}`
         })
       },
       addShoppingCart(item) {
@@ -301,7 +301,7 @@
           type = item.activity.activity_theme || ''
         }
         wx.navigateTo({
-          url: `/pages/goods-detail?id=${item.goods_id}&activityId=${item.activity_id}&activityType=${type}`
+          url: `${this.$routes.main.GOODS_DETAIL}?id=${item.goods_id}&activityId=${item.activity_id}&activityType=${type}`
         })
       },
       // 点击删除按钮
@@ -361,10 +361,10 @@
           deliverAt: this.deliverAt
         }
         this.setOrderInfo(orderInfo)
-        wx.navigateTo({url: '/pages/submit-order'})
+        wx.navigateTo({url: `${this.$routes.main.SUBMIT_ORDER}`})
       },
       toChoicenessPage() {
-        wx.switchTab({url: '/pages/choiceness'})
+        wx.switchTab({url: `${this.$routes.main.CHOICENESS}`})
       }
     }
   }

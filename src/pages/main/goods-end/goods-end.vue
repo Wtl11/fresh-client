@@ -26,7 +26,7 @@
     },
     methods: {
       goBack() {
-        wx.switchTab({ url: '/pages/choiceness' })
+        wx.switchTab({ url: `${this.$routes.main.CHOICENESS}` })
       }
     }
   }

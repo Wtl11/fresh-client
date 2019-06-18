@@ -79,14 +79,14 @@
     methods: {
       navHandle() {
         this.hide()
-        wx.navigateTo({url: '/pages/coupon-mine'})
+        wx.navigateTo({url: `${this.$routes.main.COUPON_MINE}`})
       },
       cancelHandle() {
         this.hide()
       },
       submitHandle() {
         this.hide()
-        wx.switchTab({ url: '/pages/choiceness' })
+        wx.switchTab({url: `${this.$routes.main.CHOICENESS}`})
       },
       show(arr = []) {
         if (!arr.length) {

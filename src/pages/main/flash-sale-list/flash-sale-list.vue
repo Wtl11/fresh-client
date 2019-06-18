@@ -157,11 +157,11 @@
       const status = this.currentObj.status
       const shopId = wx.getStorageSync('shopId')
       const flag = Date.now()
-      console.warn(`/pages/flash-sale-list?id=${this.currentObj.id}&shopId=${shopId}`)
+      console.warn(`${this.$routes.main.FLASH_SALE_LIST}?id=${this.currentObj.id}&shopId=${shopId}`)
       console.log(this.socialName)
       return {
         title: this.socialName + '-' + SHARE_IMG[status].title,
-        path: `/pages/flash-sale-list?id=${this.currentObj.id}&shopId=${shopId}&flag=${flag}`,
+        path: `${this.$routes.main.FLASH_SALE_LIST}?id=${this.currentObj.id}&shopId=${shopId}&flag=${flag}`,
         imageUrl: this.imageUrl + SHARE_IMG[status].img
       }
     },
@@ -187,7 +187,7 @@
         this.goChildPage = true
       },
       handleNav() {
-        wx.switchTab({url: '/pages/shopping-cart'})
+        wx.switchTab({url: `${this.$routes.main.SHOPPING_CART}`})
       },
       // 更新页面的参数
       async _getPageParams() {
@@ -228,7 +228,7 @@
           let res = await API.FlashSale.getFlashTabList('', loading)
           this.tabList = res.data
           if (this.tabList && this.tabList.length === 0) {
-            wx.redirectTo({url: '/pages/goods-end'})
+            wx.redirectTo({url: `${this.$routes.main.GOODS_END}`})
             return
           }
           if (id) {

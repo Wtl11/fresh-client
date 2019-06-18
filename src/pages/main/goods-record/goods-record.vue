@@ -201,7 +201,7 @@
       const flag = Date.now()
       return {
         title: this.goodsMsg.name,
-        path: `/pages/goods-record?goodsId=${this.goodsId}&shopId=${shopId}&activityId=${this.activityId}&activityType=${this.activityType}&flag=${flag}`, // 商品详情
+        path: `${this.$routes.main.GOODS_RECORD}?goodsId=${this.goodsId}&shopId=${shopId}&activityId=${this.activityId}&activityType=${this.activityType}&flag=${flag}`, // 商品详情
         imageUrl: this.thumb_image || this.goodsMsg.goods_cover_image,
         success: (res) => {
           // 转发成功
@@ -397,14 +397,14 @@
       buttonGroupNav(item) {
         switch (item.type) {
           case 0:
-            wx.switchTab({url: '/pages/choiceness'})
+            wx.switchTab({url: `${this.$routes.main.CHOICENESS}`})
             break
           case 1:
             // this.$refs.groupList.showLink()
             break
           case 2:
             if (this.$isLogin()) {
-              wx.switchTab({url: '/pages/shopping-cart'})
+              wx.switchTab({url: `${this.$routes.main.SHOPPING_CART}`})
             }
             break
         }
@@ -464,7 +464,7 @@
             price = this.goodsMsg.goods_sale_price
             goodsList.trade_price = price
           } else {
-            goodsList.url = `/pages/collage-detail`
+            goodsList.url = `${this.$routes.main.COLLAGE_DETAIL}`
             goodsList.source = 'c_groupon'
             goodsList.groupon_id = 0
             goodsList.latitude = this.latitude
@@ -479,7 +479,7 @@
           deliverAt: this.deliverAt
         }
         this.setOrderInfo(orderInfo)
-        wx.navigateTo({url: `/pages/submit-order`})
+        wx.navigateTo({url: `${this.$routes.main.SUBMIT_ORDER}`})
       },
       async _checkAbleCreateGroup(groupId = 0, num = 1) {
         try {

@@ -290,17 +290,17 @@
       jumpOrder(item) {
         if (item.id === 4) {
           wx.navigateTo({
-            url: `/pages/after-service`
+            url: `${this.$routes.main.AFTER_SERVICE}`
           })
         } else {
           wx.navigateTo({
-            url: `/pages/order-list?id=${item.id}&&index=${item.index}`
+            url: `${this.$routes.main.ORDER_LIST}?id=${item.id}&&index=${item.index}`
           })
         }
       },
       jumpOrderDetail(item) {
         wx.navigateTo({
-          url: `/pages/order-detail?id=${item.id}`
+          url: `${this.$routes.main.ORDER_DETAIL}?id=${item.id}`
         })
       },
       // 获取头部数量

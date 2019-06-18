@@ -451,7 +451,7 @@
       const flag = Date.now()
       return {
         title: this.goodsMsg.name,
-        path: `/pages/${PAGE_ROUTE_NAME}?id=${this.goodsId}&shopId=${shopId}&activityId=${this.activityId}&activityType=${this.activityType}&flag=${flag}`, // 商品详情
+        path: `${this.$routes.main.PACKAGE}/${PAGE_ROUTE_NAME}?id=${this.goodsId}&shopId=${shopId}&activityId=${this.activityId}&activityType=${this.activityType}&flag=${flag}`, // 商品详情
         imageUrl: this.thumb_image || this.goodsMsg.goods_cover_image,
         success: (res) => {
           // 转发成功
@@ -471,7 +471,7 @@
       ...cartMethods,
       _getProduct() {
         const shopId = wx.getStorageSync('shopId')
-        const miniPath = `/pages/${PAGE_ROUTE_NAME}?id=${this.goodsId}&shopId=${shopId}&activityId=${this.activityId}&activityType=${this.activityType}`
+        const miniPath = `${this.$routes.main.PACKAGE}/${PAGE_ROUTE_NAME}?id=${this.goodsId}&shopId=${shopId}&activityId=${this.activityId}&activityType=${this.activityType}`
         API.Global.getProduct({goods_id: this.goodsId}).then(res => {
           // console.warn(res.data)
           if (res.data) {
@@ -616,21 +616,21 @@
       buttonGroupNav(item) {
         switch (item.type) {
           case 0:
-            wx.switchTab({url: '/pages/choiceness'})
+            wx.switchTab({url: `${this.$routes.main.CHOICENESS}`})
             break
           case 1:
             // this.$refs.groupList.showLink()
             break
           case 2:
             if (this.$isLogin()) {
-              wx.switchTab({url: '/pages/shopping-cart'})
+              wx.switchTab({url: `${this.$routes.main.SHOPPING_CART}`})
             }
             break
         }
       },
       // 购买记录导航
       buyRecordNavTo() {
-        const url = `/pages/goods-record?goodsId=${this.goodsId}&shopId=${this.shopId}&activityId=${this.activityId}&activityType=${this.activityType}`
+        const url = `${this.$routes.main.GOODS_RECORD}?goodsId=${this.goodsId}&shopId=${this.shopId}&activityId=${this.activityId}&activityType=${this.activityType}`
         wx.navigateTo({url})
       },
       // 设置群数据事件号
@@ -672,7 +672,7 @@
           } else {
             let flag = await this._checkAbleCreateGroup(this.joinGroupId || 0, number)
             if (!flag) return
-            goodsList.url = `/pages/collage-detail`
+            goodsList.url = `${this.$routes.main.COLLAGE_DETAIL}`
             goodsList.source = 'c_groupon'
             goodsList.groupon_id = this.joinGroupId || 0
             goodsList.latitude = this.latitude
@@ -687,7 +687,7 @@
           deliverAt: this.deliverAt
         }
         this.setOrderInfo(orderInfo)
-        wx.navigateTo({url: `/pages/submit-order`})
+        wx.navigateTo({url: `${this.$routes.main.SUBMIT_ORDER}`})
       },
       // 获取用户的购买信息
       getGoodsOtherInfo() {

@@ -142,7 +142,7 @@
           deliverAt: ''
         }
         this.setOrderInfo(orderInfo)
-        const url = `/pages/recommend-pay`
+        const url = `${this.$routes.main.RECOMMEND_PAY}`
         wx.navigateTo({url})
       },
       // // 支付

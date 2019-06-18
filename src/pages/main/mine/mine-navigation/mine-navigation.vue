@@ -142,7 +142,7 @@
         if (item.titleIsArray) {
           this._goMyHosing()
         } else {
-          wx.navigateTo({url: `/pages/${item.url}`})
+          wx.navigateTo({url: `${this.$routes.main.PACKAGE}/${item.url}`})
         }
       },
       // 跳转我的小区

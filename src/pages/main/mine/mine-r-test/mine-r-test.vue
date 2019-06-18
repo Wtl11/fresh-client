@@ -31,7 +31,7 @@
     methods: {
       submit() {
         const {employeeId, shopId, marketId} = this
-        const url = `/pages/recommend?employeeId=${employeeId}&shopId=${shopId}&marketId=${marketId}`
+        const url = `${this.$routes.main.RECOMMEND}?employeeId=${employeeId}&shopId=${shopId}&marketId=${marketId}`
         wx.navigateTo({url})
       },
       clear() {

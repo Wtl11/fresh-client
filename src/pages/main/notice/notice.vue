@@ -64,7 +64,7 @@
         })
       },
       handleNav() {
-        wx.navigateTo({url: '/pages/coupon-mine'})
+        wx.navigateTo({url: `${this.$routes.main.COUPON_MINE}`})
       }
     }
   }

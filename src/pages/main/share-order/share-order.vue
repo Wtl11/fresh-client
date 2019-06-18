@@ -103,7 +103,7 @@
           activityType = item.activity.activity_theme || ''
         }
         wx.navigateTo({
-          url: `/pages/goods-detail?id=${item.goods_id}&activityId=${item.activity_id}&shopId=${this.shopId}&activityType=${activityType}`
+          url: `${this.$routes.main.GOODS_DETAIL}?id=${item.goods_id}&activityId=${item.activity_id}&shopId=${this.shopId}&activityType=${activityType}`
         })
       },
       showImgMore() {

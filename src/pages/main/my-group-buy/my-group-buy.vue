@@ -77,7 +77,7 @@
       const flag = Date.now()
       return {
         title: `【${this.shareData.name}】`,
-        path: `/pages/collage-detail?id=${this.shareData.id}&shopId=${shopId}&flag=${flag}`,
+        path: `${this.$routes.main.COLLAGE_DETAIL}?id=${this.shareData.id}&shopId=${shopId}&flag=${flag}`,
         imageUrl: `${this.shareData.img}`,
         success: (res) => {},
         fail: (res) => {}
@@ -115,7 +115,7 @@
         this.$refs[key] && this.$refs[key][fn] && this.$refs[key][fn](params)
       },
       listHandle(item) {
-        item.id && wx.navigateTo({url: `/pages/collage-detail?id=${item.id}`})
+        item.id && wx.navigateTo({url: `${this.$routes.main.COLLAGE_DETAIL}?id=${item.id}`})
       },
       shareGroup(item) {
         this.shareData = {

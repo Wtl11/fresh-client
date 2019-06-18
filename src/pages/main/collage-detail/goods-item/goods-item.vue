@@ -41,7 +41,7 @@
       ...cartMethods,
       jumpGoodsDetail(item) {
         wx.navigateTo({
-          url: `/pages/goods-detail?id=${item.id || 0}&activityId=${item.activity_id || 0}`
+          url: `${this.$routes.main.GOODS_DETAIL}?id=${item.id || 0}&activityId=${item.activity_id || 0}`
         })
       },
       addShoppingCart(item) {

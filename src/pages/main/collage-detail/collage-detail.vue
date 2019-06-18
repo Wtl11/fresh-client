@@ -350,11 +350,11 @@
       const flag = Date.now()
       return {
         title: `${this.data.goods.name}`,
-        path: `/pages/collage-detail?id=${this.id}&shopId=${shopId}&flag=${flag}`,
+        path: `${this.$routes.main.COLLAGE_DETAIL}?id=${this.id}&shopId=${shopId}&flag=${flag}`,
         // imageUrl: `${this.imageUrl}/yx-image/order/pic-share_order@2x.png`,
         imageUrl: `${this.shareImage}`,
         success: (res) => {
-          console.warn(`/pages/collage-detail?id=${this.id}&shopId=${shopId}&flag=${flag}`)
+          console.warn(`${this.$routes.main.COLLAGE_DETAIL}?id=${this.id}&shopId=${shopId}&flag=${flag}`)
           // 转发成功
         },
         fail: (res) => {
@@ -494,7 +494,7 @@
         let price = goodsList.trade_price
         let flag = await this.checkGroupon()
         if (!flag) return
-        goodsList.url = `/pages/collage-detail`
+        goodsList.url = `${this.$routes.main.COLLAGE_DETAIL}`
         goodsList.source = 'c_groupon'
         goodsList.groupon_id = this.data.groupon_id
         goodsList.latitude = this.latitude
@@ -507,7 +507,7 @@
           deliverAt: this.data.delivery_at || ''
         }
         this.setOrderInfo(orderInfo)
-        wx.navigateTo({url: `/pages/submit-order`})
+        wx.navigateTo({url: `${this.$routes.main.SUBMIT_ORDER}`})
       },
       initStatus() {
         if (this.status < 3) {
@@ -564,10 +564,10 @@
           this.showShare()
         } else if (this.btnShow === 2) {
           // -----------参团成功或者拼主拼团成功跳转去制定订单详情
-          wx.navigateTo({url: `/pages/order-detail?id=${this.data.customer_order_id}`})
+          wx.navigateTo({url: `${this.$routes.main.ORDER_DETAIL}?id=${this.data.customer_order_id}`})
         } else if (this.btnShow === 3) {
           // -----------返回首页
-          wx.switchTab({url: '/pages/choiceness'})
+          wx.switchTab({url: `${this.$routes.main.CHOICENESS}`})
         } else if (!this.isGroup && status === 0) {
           // -----------一键参团
           let flag = await this.checkGroupon()
@@ -575,7 +575,7 @@
           this._showAddNumber()
         } else if (!this.isGroup && status === 1) {
           // -----------我来开团
-          wx.navigateTo({url: `/pages/goods-detail?id=${this.data.goods.goods_id}&activityId=${this.activityId}&activityType=${this.activeType}`})
+          wx.navigateTo({url: `${this.$routes.main.GOODS_DETAIL}?id=${this.data.goods.goods_id}&activityId=${this.activityId}&activityType=${this.activeType}`})
         } else {
         }
       },
@@ -583,7 +583,7 @@
         this.$refs.sharePop.show(this.data.surplus_number, this.data.shop.social_name, this.data.groupon_person_limit)
       },
       toDetail() {
-        wx.navigateTo({url: `/pages/goods-detail?id=${this.data.goods.goods_id}&activityId=${this.activityId}&activityType=${this.activeType}`})
+        wx.navigateTo({url: `${this.$routes.main.GOODS_DETAIL}?id=${this.data.goods.goods_id}&activityId=${this.activityId}&activityType=${this.activeType}`})
       },
       timeHandle() {
         clearInterval(this.timer)
@@ -629,7 +629,7 @@
             that.longitude = 0
             that.latitude = 0
             wx.navigateTo({
-              url: `/pages/open-location`
+              url: `${this.$routes.main.OPEN_LOCATION}`
             })
           }
         })
@@ -647,7 +647,7 @@
           this.longitude = 0
           this.latitude = 0
           wx.navigateTo({
-            url: `/pages/open-location`
+            url: `${this.$routes.main.OPEN_LOCATION}`
           })
         })
       }

@@ -188,12 +188,12 @@
           this.longitude = res.longitude
           this.latitude = res.latitude
           if (!this.latitude || !this.longitude) {
-            wx.navigateTo({url: `/pages/open-location`})
+            wx.navigateTo({url: `${this.$routes.main.OPEN_LOCATION}`})
           }
         } catch (e) {
           this.longitude = 0
           this.latitude = 0
-          wx.navigateTo({url: `/pages/open-location`})
+          wx.navigateTo({url: `${this.$routes.main.OPEN_LOCATION}`})
         }
       },
       _checkIsNewClient() {
@@ -215,7 +215,7 @@
         })
       },
       chooseCouponHandle() {
-        wx.navigateTo({url: '/pages/coupon-choose'})
+        wx.navigateTo({url: `${this.$routes.main.COUPON_CHOOSE}`})
       },
       _getCode() {
         this.$wechat.login()

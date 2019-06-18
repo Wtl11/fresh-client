@@ -138,7 +138,7 @@
       navHandle() {
         this._targetList()
         this.hide()
-        wx.navigateTo({url: '/pages/coupon-mine'})
+        wx.navigateTo({url: `${this.$routes.main.COUPON_MINE}`})
       },
       cancelHandle() {
         this._targetList()

@@ -110,7 +110,7 @@
       },
       toOrderDetail(item) {
         wx.navigateTo({
-          url: `/pages/after-order?id=${item.id}`
+          url: `${this.$routes.main.AFTER_ORDER}?id=${item.id}`
         })
       }
     }

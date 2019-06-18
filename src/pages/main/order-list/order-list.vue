@@ -55,7 +55,7 @@
             </div>
           </div>
           <div class="noting" v-if="list.data.length === 0 && !list.hasMore">
-            <div class="notingimg"><img class="img" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'" alt=""></div>
+            <div class="notingimg"><img v-if="imageUrl" class="img" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'" alt=""></div>
             <div class="txt">空空如也</div>
           </div>
         </div>
@@ -194,7 +194,7 @@
       },
       jumpDetail(item) {
         wx.navigateTo({
-          url: `/pages/order-detail?id=${item.order_id}`
+          url: `${this.$routes.main.ORDER_DETAIL}?id=${item.order_id}`
         })
       }
     }

@@ -201,7 +201,7 @@
         this.goChildPage = true
       },
       goToShoppingCar() {
-        wx.switchTab({url: '/pages/shopping-cart'})
+        wx.switchTab({url: `${this.$routes.main.SHOPPING_CART}`})
       },
       // 类目栏的tab切换
       classifyChangeTab(index, id, e) {

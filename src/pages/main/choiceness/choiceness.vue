@@ -191,7 +191,7 @@
           </div>
           <span class="notice-line">|</span>
           <navigator
-            url="/pages/notice"
+            :url="$routes.main.NOTICE"
             class="notice-look"
             hover-class="none"
           >查看</navigator>
@@ -619,10 +619,10 @@
           break
       }
       const flag = Date.now()
-      console.warn(`/pages/choiceness?shopId=${this.shopId}&moduleName=${moduleName}&flag=${flag}`)
+      console.warn(`${this.$routes.main.CHOICENESS}?shopId=${this.shopId}&moduleName=${moduleName}&flag=${flag}`)
       return {
         title,
-        path: `/pages/choiceness?shopId=${this.shopId}&moduleName=${moduleName}&flag=${flag}`,
+        path: `${this.$routes.main.CHOICENESS}?shopId=${this.shopId}&moduleName=${moduleName}&flag=${flag}`,
         imageUrl: this.imageUrl + imgUrl,
         success: (res) => {
         },
@@ -639,7 +639,7 @@
         this.$refs.distance && this.$refs.distance.reset()
       },
       handleJumpToClassify(item) {
-        wx.navigateTo({url: `/pages/classify?id=${item.id}`})
+        wx.navigateTo({url: `${this.$routes.main.CLASSIFY}?id=${item.id}`})
       },
       handleGoodsButton(child = {}, item = {}) {
         if (item.module_name === ACTIVE_TYPE.GROUP_ON) {
@@ -777,11 +777,11 @@
       },
       // 商品搜索页
       handleSearchGoods() {
-        wx.navigateTo({url: `/pages/goods-search`})
+        wx.navigateTo({url: `${this.$routes.main.GOODS_SEARCH}`})
       },
       // 切换社群
       handleChangeCommunity() {
-        wx.navigateTo({url: `/pages/choose-pickup`})
+        wx.navigateTo({url: `${this.$routes.main.CHOOSE_PICKUP}`})
       },
       // 初识话navigation状态
       _initNavigationStatus() {
@@ -806,16 +806,16 @@
         let url = ''
         switch (item.type) {
           case 'mini_goods':
-            url = `/pages/goods-detail?id=${item.other_id}&activityId=${item.activity_id}`
+            url = `${this.$routes.main.GOODS_DETAIL}?id=${item.other_id}&activityId=${item.activity_id}`
             break
           case 'goods_cate':
-            url = `/pages/classify?id=${item.other_id}`
+            url = `${this.$routes.main.CLASSIFY}?id=${item.other_id}`
             break
           case 'mini_link':
             url = `${item.url}`
             break
           default:
-            url = `/pages/out-html?url=${item.url}`
+            url = `${this.$routes.main.OUT_HTML}?url=${item.url}`
             break
         }
         wx.navigateTo({url})
@@ -834,12 +834,12 @@
       // 跳转至商品详情页
       handleJumpToGoodsDetail(item, type) {
         wx.navigateTo({
-          url: `/pages/goods-detail?id=${item.goods_id}&activityId=${item.activity_id}&activityType=${type}`
+          url: `${this.$routes.main.GOODS_DETAIL}?id=${item.goods_id}&activityId=${item.activity_id}&activityType=${type}`
         })
       },
       // 跳转至限时抢购列表
       handleJumpToFlashList(id) {
-        wx.navigateTo({url: `/pages/flash-sale-list?id=${id}`})
+        wx.navigateTo({url: `${this.$routes.main.FLASH_SALE_LIST}?id=${id}`})
       },
       // 限时抢购tab切换
       handleFlashTabChange(item, index) {
@@ -935,7 +935,7 @@
           this.longitude = res.longitude
           this.latitude = res.latitude
           if (!this.latitude || !this.longitude) {
-            wx.navigateTo({url: `/pages/open-location`})
+            wx.navigateTo({url: `${this.$routes.main.OPEN_LOCATION}`})
           } else {
             res = await API.Global.checkShopDistance({longitude: this.longitude, latitude: this.latitude})
             this.groupInfo = res.data.shop
@@ -948,7 +948,7 @@
           if (e && e.errMsg) {
             this.longitude = 0
             this.latitude = 0
-            wx.navigateTo({url: `/pages/open-location`})
+            wx.navigateTo({url: `${this.$routes.main.OPEN_LOCATION}`})
           }
         }
       },
