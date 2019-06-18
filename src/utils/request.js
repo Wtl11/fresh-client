@@ -12,9 +12,10 @@ const NETPAGE = `/pages/error`
 
 // 请求拦截器
 fly.interceptors.request.use((request) => {
-  request.headers['Authorization'] = wx.getStorageSync('token') // todo
+  request.headers['Authorization'] = wx.getStorageSync('token')
   request.headers['Current-Shop'] = wx.getStorageSync('shopId') || baseURL.defaultId
-  request.headers['Current-Corp'] = corp.currentCorp // todo 测试专用记得删除
+  request.headers['Current-Corp'] = corp.currentCorp
+  request.headers['OpenGid'] = wx.getStorageSync('openGId') || ''
   return request
 })
 
