@@ -15,7 +15,7 @@ fly.interceptors.request.use((request) => {
   request.headers['Authorization'] = wx.getStorageSync('token')
   request.headers['Current-Shop'] = wx.getStorageSync('shopId') || baseURL.defaultId
   request.headers['Current-Corp'] = corp.currentCorp
-  request.headers['OpenGid'] = wx.getStorageSync('openGId') || ''
+  request.headers['Open-GId'] = wx.getStorageSync('openGId') || ''
   return request
 })
 
