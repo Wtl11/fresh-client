@@ -18,21 +18,27 @@
       </navigator>
     </div>
     <!--收入信息-->
-    <div class="reg-home" :style="{'margin-top': adaptation.hoseMarginTop + 'px'}">
-      <img :src="imageUrl + '/yx-image/group/pic-shop@2x.png'" v-if="imageUrl && corpName === 'platform'" class="reg-shop-icon">
-      <img :src="imageUrl + '/yx-image/retuan/pic-shop@2x.png'" v-if="imageUrl && corpName === 'retuan'" class="reg-shop-icon">
-      <div class="order-item">
-        <div class="reg-order-title">今日收入(元)</div>
-        <div class="reg-order-money">{{orderTotal.today_income}}</div>
+    <navigator :url="$routes.main.OUT_HTML+'?routeType=data-overview'" hover-class="none">
+      <div class="reg-home" :style="{'margin-top': adaptation.hoseMarginTop + 'px'}">
+        <img :src="imageUrl + '/yx-image/group/pic-shop@2x.png'" v-if="imageUrl && corpName === 'platform'" class="reg-shop-icon">
+        <img :src="imageUrl + '/yx-image/retuan/pic-shop@2x.png'" v-if="imageUrl && corpName === 'retuan'" class="reg-shop-icon">
+        <div class="order-item">
+          <div class="reg-order-title">今日收入(元)</div>
+          <div class="reg-order-money">{{orderTotal.today_income}}</div>
+        </div>
+        <div class="order-item">
+          <div class="reg-order-title">今日订单(笔)</div>
+          <div class="reg-order-money">{{orderTotal.today_order}}</div>
+        </div>
+        <div class="order-item">
+          <div class="reg-order-title">今日销售(元)</div>
+          <div class="reg-order-money">{{orderTotal.today_sale}}</div>
+        </div>
       </div>
-      <div class="order-item">
-        <div class="reg-order-title">今日订单(笔)</div>
-        <div class="reg-order-money">{{orderTotal.today_order}}</div>
-      </div>
-      <div class="order-item">
-        <div class="reg-order-title">今日销售(元)</div>
-        <div class="reg-order-money">{{orderTotal.today_sale}}</div>
-      </div>
+    </navigator>
+    <!--团长邀请-->
+    <div v-if="leaderStatus" class="leader-invite-banner-wrap" @click="goInvitePage">
+      <img :src="imageUrl + '/yx-image/group/pic-yqtzbanner@2x.png'" v-if="imageUrl" class="leader-invite-banner">
     </div>
     <!--ai消息-->
     <notification-regimental ref="notification" :customerCount="customerCount"></notification-regimental>
@@ -66,10 +72,15 @@
           <img :src="imageUrl + '/yx-image/retuan/icon-moeny_box@2x.png'" v-if="imageUrl && corpName === 'retuan'" class="reg-manager-icon">
           <p class="reg-manager-text">团长钱包</p>
         </navigator>
-        <navigator :url="$routes.main.PACKAGE + '/out-html?routeType=data-overview'" hover-class="none" class="reg-manager-item">
+        <!--<navigator url="/pages/distribution-commission" hover-class="none" class="reg-manager-item">-->
+          <!--<img :src="imageUrl + '/yx-image/group/iocn-report_forms@2x.png'" v-if="imageUrl && corpName === 'platform'" class="reg-manager-icon">-->
+          <!--<img :src="imageUrl + '/yx-image/retuan/iocn-report_forms@2x.png'" v-if="imageUrl && corpName === 'retuan'" class="reg-manager-icon">-->
+          <!--<p class="reg-manager-text">分销佣金</p>-->
+        <!--</navigator>-->
+        <navigator :url="$routes.leader.DISTRIBUTION_COMMISSION" hover-class="none" class="reg-manager-item">
           <img :src="imageUrl + '/yx-image/group/iocn-report_forms@2x.png'" v-if="imageUrl && corpName === 'platform'" class="reg-manager-icon">
           <img :src="imageUrl + '/yx-image/retuan/iocn-report_forms@2x.png'" v-if="imageUrl && corpName === 'retuan'" class="reg-manager-icon">
-          <p class="reg-manager-text">数据统计</p>
+          <p class="reg-manager-text">分销佣金</p>
         </navigator>
       </div>
     </div>
@@ -193,7 +204,8 @@
         customerCount: 0,
         isFirstLoad: true,
         couponHeight: 0,
-        couponArray: []
+        couponArray: [],
+        leaderStatus: false
       }
     },
     async onReachBottom() {
@@ -244,7 +256,22 @@
     //   }
     // },
     methods: {
+      // 点击进去邀请团长页面
+      goInvitePage() {
+        wx.navigateTo({url: this.$routes.leader.LEADER_INVITE})
+      },
+      // 获取邀请状态
+      _getLeaderStatus() {
+        API.Leader.getLeaderStatus().then(res => {
+          if (res.error !== this.$ERR_OK) {
+            this.$wechat.showToast(res.message)
+            return
+          }
+          this.leaderStatus = res.data.status
+        })
+      },
       _showRefresh() {
+        this._getLeaderStatus()
         if (!this.isFirstLoad) {
           this.nav = [
             new TabItem({title: '预售清单', fn: '_getPresellGoods', isOnReachBottom: false}),
@@ -584,7 +611,17 @@
         font-family: $font-family-medium
         color: $color-text-main
         font-size: $font-size-18
+ .leader-invite-banner-wrap
+   box-shadow: 0 3px 10px 0 rgba(17, 17, 17, 0.06)
+   border-radius: 10px
+   margin: 12px auto
+   width: 93.6vw
+   height:76px
 
+ .leader-invite-banner
+   width: 100%
+   height:76px
+   border-radius: 10px
   .reg-manager
     box-shadow: 0 3px 10px 0 rgba(17, 17, 17, 0.06)
     border-radius: 10px

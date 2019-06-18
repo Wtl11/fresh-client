@@ -37,6 +37,10 @@
     {
       "root": "package-leader/",
       "pages": [
+        "distribution-commission",
+        "leader-invite",
+       "leader-invite-success",
+        "apply-leader",
         "mine-housing",
         "regimental-commander",
         "regimental-info",
@@ -105,7 +109,7 @@
   "usingComponents": {},
   "plugins": {
     "goodsSharePlugin": {
-      "version": "3.1.0",
+      "version": "3.1.1",
       "provider": "wx56c8f077de74b07c"
     }
   }

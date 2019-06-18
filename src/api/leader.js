@@ -30,9 +30,9 @@ export default {
    * @param loading
    * @returns {*}
    */
-  leaderDetail(loading = false) {
+  leaderDetail(data = {}, loading = false) {
     const url = `/api/wap/shop-manager/shop-manager-detail`
-    return request.get(url, {}, loading)
+    return request.get(url, data, loading)
   },
   /**
    * 团长详情
@@ -193,5 +193,18 @@ export default {
   goodsThumb(data, loading = false) {
     const url = '/api/wap/goods/shop-shelf-goods-thumb'
     return request.get(url, data, loading)
+  },
+  // 获取招募团长 开启关闭的 实时情况
+  getLeaderStatus(loading = false) {
+    const url = `/api/wap/recruit/shop-distribution-config`
+    return request.get(url, {}, loading)
+  },
+  inviteSubmit(data, loading = false) {
+    const url = `/api/wap/recruit/shop-distribution-apply`
+    return request.post(url, data, loading)
+  },
+  getDistributionCommissionList(data = { page: 1, limit: 10 }, loading = false, toast = false) {
+    const url = `/api/wap/recruit/shop-distribution-list`
+    return request.get({url, data, loading, toast})
   }
 }

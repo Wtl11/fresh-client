@@ -21,7 +21,10 @@ export default {
     BANK_CARD: `${LEADER}/bank-card`,
     SALE_SERVICE: `${LEADER}/sale-service`,
     FIND_PRODUCT: `${LEADER}/find-product`,
-    COPY_DETAIL: `${LEADER}/copy-detail`,
+    DISTRIBUTION_COMMISSION: `${LEADER}/distribution-commission`,
+    LEADER_INVITE: `${LEADER}/leader-invite`,
+    LEADER_INVITE_SUCCESS: `${LEADER}/leader-invite-success`,
+    APPLY_LEADER: `${LEADER}/apply-leader`
     // package-leader
   },
   main: {
