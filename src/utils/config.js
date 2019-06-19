@@ -1,22 +1,21 @@
 import {corp} from '@utils/saas'
 const env = process.env
 const version = process.versions
-const testVersion = '' // todo ai测试版本
-// todo 测试专用记得更新
+
 const DEV = {
-  api: 'http://social-shopping-api.jerryf.cn/social-shopping',
+  api: 'http://social-shopping-api.jerryf.cn/social-shopping' + version,
   image: 'https://img.jkweixin.net/defaults',
-  upload: 'http://social-shopping-api.jerryf.cn/social-shopping',
+  upload: 'http://social-shopping-api.jerryf.cn/social-shopping' + version,
   outLink: 'wss://fresh-h5.jkweixin.net', // 外部h5链接
   websocket: 'wss://wss.jerryf.cn/',
   webview: 'https://fresh-h5.jkweixin.net',
   defaultId: corp.defaultId
 }
-// todo
+
 const TEST = {
-  api: 'https://social-shopping-api.jkweixin.net/social-shopping' + testVersion,
+  api: 'https://social-shopping-api.jkweixin.net/social-shopping' + version,
   image: 'https://img.jkweixin.net/defaults',
-  upload: 'https://social-shopping-api.jkweixin.net/social-shopping',
+  upload: 'https://social-shopping-api.jkweixin.net/social-shopping' + version,
   outLink: 'https://fresh-h5.jkweixin.net',
   websocket: 'wss://wss.jkweixin.net',
   webview: 'https://fresh-h5.jkweixin.net',
@@ -32,6 +31,7 @@ const PROD = {
   webview: 'https://fresh-h5.jkweixin.com',
   defaultId: corp.defaultId
 }
+
 export const baseURL = env === 'production' ? PROD : env === 'test' ? TEST : DEV
 
 export const ERR_OK = 0

@@ -582,31 +582,31 @@
           &:first-child
             padding-top :25px
           .left
-            width :36px
+            width :9.6vw
             height :@width
             border-radius :50%
             background :#ccc
             margin-right :9px
             overflow :hidden
             .avatar
-              width :36px
+              width :9.6vw
               height :@width
               display :block
           .right
             font-family: $font-family-regular
-            font-size: 14px;
+            font-size: 3.7vw
             color: $color-text-main
             letter-spacing: 0.3px
             white-space: nowrap
             overflow :hidden
-            line-height :36px
+            line-height :9.6vw
             .number
               padding :0 2px
               color: #FA7500;
             .date
               display :inline-block
-              padding-left :13px
-              font-size: 13px;
+              padding-left :3.4vw
+              font-size: 3.4vw
               color: $color-text-sub
               text-overflow: ellipsis
 

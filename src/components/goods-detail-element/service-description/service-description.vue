@@ -4,7 +4,7 @@
     <img v-if="imageUrl && corpName === 'retuan'" :src="imageUrl + '/yx-image/retuan/pic-platform_head@2x.png'" mode="widthFix" class="send-box-img-retuan">
     <div class="send-title">服务说明</div>
     <div class="send-item-list">
-      <span class="list-title">• 发货须知：</span><span class="list-sub">当天下午23:00前下单，当天发货次日达；当天下午23:00后下单，次日发货。</span>
+      <span class="list-title">• 发货须知：</span><span class="list-sub">当天下午{{runTime}}前下单，当天发货次日达；当天下午{{runTime}}后下单，次日发货。</span>
     </div>
     <div class="send-item-list">
       <span class="list-title">• 划线价格：</span><span class="list-sub">指商品的厂商指导价、价签价格或该商品的曾经展示过的价格，</span><span class="list-line">并非原价</span><span class="list-sub">，仅供参考。</span>
@@ -20,6 +20,12 @@
 
   export default {
     name: COMPONENT_NAME,
+    props: {
+      runTime: {
+        type: String,
+        default: ''
+      }
+    },
     data() {
       return {
 

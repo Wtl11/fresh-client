@@ -82,7 +82,7 @@
         // 获取页面请求参数
         query += `${key}=${options.query[key]}&`
       }
-      if (options.path !== 'pages/lost' && options.path !== 'pages/error' && options.path !== 'pages/login') {
+      if (options.path !== this.$routes.main.LOST && options.path !== this.$routes.main.ERROR && options.path !== this.$routes.main.LOGIN ) {
         wx.setStorageSync('targetPage', `${options.path}${query ? '?' : ''}${query.slice(0, -1)}`)
       }
     },

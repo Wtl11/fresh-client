@@ -326,10 +326,15 @@
       // },
       // 二维码
       _scanCode() {
+        const self = this
         wx.scanCode({
           success(res) {
-            let id = JSON.parse(res.result).customer_id
-            wx.navigateTo({url: this.$routes.leader.FIND_PRODUCT + `?id=${id}`})
+            try {
+              let id = JSON.parse(res.result).customer_id
+              wx.navigateTo({url: self.$routes.leader.FIND_PRODUCT + `?id=${id}`})
+            } catch (e) {
+              self.$wechat.showToast('二维码不合法')
+            }
           }
         })
       },

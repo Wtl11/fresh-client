@@ -73,11 +73,12 @@
       this._getGroupBuyList()
     },
     onShareAppMessage(e) {
-      let shopId = wx.getStorageSync('shopId')
+      // let shopId = wx.getStorageSync('shopId')
       const flag = Date.now()
+      console.warn(`${this.$routes.main.COLLAGE_DETAIL}?id=${this.shareData.id}&shopId=${this._shopId}&flag=${flag}`)
       return {
         title: `【${this.shareData.name}】`,
-        path: `${this.$routes.main.COLLAGE_DETAIL}?id=${this.shareData.id}&shopId=${shopId}&flag=${flag}`,
+        path: `${this.$routes.main.COLLAGE_DETAIL}?id=${this.shareData.id}&shopId=${this._shopId}&flag=${flag}`,
         imageUrl: `${this.shareData.img}`,
         success: (res) => {},
         fail: (res) => {}
@@ -123,6 +124,7 @@
           name: item.goods.name,
           id: item.id
         }
+        this._shopId = item.shop.shop_id
         this._getShareImg(item)
         this.$refs.sharePop.show(item.surplus_number, item.shop.social_name, item.groupon_person_limit)
       },
