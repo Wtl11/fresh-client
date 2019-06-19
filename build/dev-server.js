@@ -7,7 +7,6 @@ var getParams = require('./build.utils')
 if (!process.env.NODE_ENV) {
   process.env.NODE_ENV = JSON.parse(config.dev.env.NODE_ENV)
 }
-var argvs = process.argv.slice(3)
 let params = getParams(argvs)
 console.log(Object.assign(params, {platform: process.env.PLATFORM}))
 process.env.BUILD_ENV = params.environments
