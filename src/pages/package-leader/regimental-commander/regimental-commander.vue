@@ -37,8 +37,8 @@
       </div>
     </navigator>
     <!--团长邀请-->
-    <div v-if="leaderStatus" class="leader-invite-banner-wrap" @click="goInvitePage">
-      <img :src="imageUrl + '/yx-image/group/pic-yqtzbanner@2x.png'" v-if="imageUrl" class="leader-invite-banner">
+    <div v-if="leaderStatus" class="leader-invite-banner-wrap notification-regimental" @click="goInvitePage">
+      <img :src="imageUrl + '/yx-image/group/pic-yqtzbanner@2x.png'" mode="widthFix" v-if="imageUrl" class="leader-invite-banner">
     </div>
     <!--ai消息-->
     <notification-regimental ref="notification" :customerCount="customerCount"></notification-regimental>
@@ -258,7 +258,7 @@
     methods: {
       // 点击进去邀请团长页面
       goInvitePage() {
-        wx.navigateTo({url: this.$routes.leader.LEADER_INVITE})
+        wx.navigateTo({url: this.$routes.leader.LEADER_INVITE + '?flag=' + Date.now()})
       },
       // 获取邀请状态
       _getLeaderStatus() {
@@ -612,16 +612,17 @@
         color: $color-text-main
         font-size: $font-size-18
  .leader-invite-banner-wrap
-   box-shadow: 0 3px 10px 0 rgba(17, 17, 17, 0.06)
-   border-radius: 10px
-   margin: 12px auto
-   width: 93.6vw
-   height:76px
-
- .leader-invite-banner
-   width: 100%
-   height:76px
-   border-radius: 10px
+   box-shadow:0 3px 10px 0 rgba(17,17,17,0.06)
+   border-radius:10px
+   width:93.6vw
+   -webkit-box-sizing:border-box
+   box-sizing:border-box
+   background:#fff
+   margin:12px auto
+   padding:10px
+   .leader-invite-banner
+     display block
+     width:100%
   .reg-manager
     box-shadow: 0 3px 10px 0 rgba(17, 17, 17, 0.06)
     border-radius: 10px

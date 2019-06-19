@@ -5,15 +5,15 @@
       <div class="container-wrap">
         <div class="input-box">
           <div class="input-label">姓名</div>
-          <input v-model="inputData.name" maxlength="25" class="input-item" type="text" placeholder="请输入姓名">
+          <input v-model="inputData.name" maxlength="25" class="input-item" type="text" placeholder="请输入姓名" placeholder-style="color: #b3b3b3"  placeholder-class="placeholder-text">
         </div>
         <div class="input-box">
           <div class="input-label">手机号</div>
-          <input type="number" v-model="inputData.mobile" maxlength="11" class="input-item" placeholder="请输入手机号码">
+          <input type="number" v-model="inputData.mobile" placeholder-style="color: #b3b3b3" maxlength="11" placeholder-class="placeholder-text" class="input-item" placeholder="请输入手机号码">
         </div>
         <div class="input-box">
           <div class="input-label">验证码</div>
-          <input v-model="inputData.auth_code" type="number"  maxlength="8"   class="input-item" placeholder="请输入验证码">
+          <input v-model="inputData.auth_code"  placeholder-style="color: #b3b3b3" type="number"  maxlength="8" placeholder-class="placeholder-text"   class="input-item" placeholder="请输入验证码">
           <div v-if="isSet" class="get-code get-code-btn" @click="setCode">{{codeText}}</div>
           <div v-else class="get-code get-code-disable">{{codeText}}</div>
         </div>
@@ -24,7 +24,7 @@
       <div class="container-wrap">
         <div class="input-box">
           <div class="input-label">小区名称</div>
-          <input v-model="inputData.social_name" maxlength="25" class="input-item" type="text"  placeholder="请输入小区名称">
+          <input v-model="inputData.social_name"  placeholder-style="color: #b3b3b3" maxlength="25" placeholder-class="placeholder-text" class="input-item" type="text"  placeholder="请输入小区名称">
         </div>
         <div class="input-box box-height-auto" @click="selectAddresBtn">
           <div class="input-label">选择地址</div>
@@ -61,7 +61,7 @@
         </div>
       </div>
     </div>
-    <div v-if="hasMargin" :class="['submit-btn',{disable:!isDisableSubmit}]" @click="submit">提交审核</div>
+    <div v-if="hasMargin" :class="['submit-btn',{disable:!isDisableSubmit}]" @click="submit">提交申请</div>
   </div>
 </template>
 
@@ -182,6 +182,7 @@
         return true
       },
       justifyPhone() {
+        console.log('justifyPhone')
         if (this.inputData.mobile === '') {
           this.$wechat.showToast('请输入手机号码')
           return false
@@ -231,7 +232,7 @@
         this.tapCode = false
         let codeData = {}
         try {
-          codeData = await API.Leader.messageBind(data)
+          codeData = await API.Leader.setCodeMessage(data)
           this.codeText = '发送中…'
           setTimeout(() => {
             this.$wechat.showToast(codeData.message)
@@ -311,26 +312,31 @@
     font-family :$font-family-medium
     color: #161315
     z-index:100
+  .placeholder-text
+    color:#B3B3B3
+    font-family: $font-family-regular
+    font-size: $font-size-15
   .form-model
-    padding:0px 19px 15px
+    padding-right px-change-vw(19)
+    padding-left  px-change-vw(19)
     overflow:hidden
-    .placeholder-text
-      font-family: $font-family-regular
-      font-size: $font-size-14
-      color: #B7B7B7
     &.has-margin
+      padding-bottom:15px
       .input-model
+        background: $color-white
         margin-bottom:20px
         border-radius:10px
         box-shadow: 0 6px 20px 0 rgba(17,17,17,0.06)
-    .upload-wrap
-      padding-bottom:15px
+        .title
+          height: 48px
+          line-height :48px
+      .upload-wrap
+        padding-bottom:15px
     .input-model
       color:#333333
-      background: $color-white
       .title
-        height: 48px
-        line-height :48px
+        height: 56px
+        line-height :58px
         font-size:$font-size-16
         font-family:$font-family-medium
         color:#333333
@@ -361,13 +367,14 @@
         .input-item
           flex:1
           font-size: 15px
-          color: $color-text-main
           height: 26px
           line-height: 26px
+          color: #111111
+        .placeholder-text
+          color: #B3B3B3
 
         .get-code
           min-width: 80px
-          col-center()
           right: 10px
           font-size: $font-size-13
           font-family: $font-family-regular
@@ -386,9 +393,6 @@
           col-center()
         .get-code-btn
           border-1px(#B7B7B7,15px)
-          position:absolute
-          height:30px
-          width:100px
         .arrow-right
           padding:5px 20px
           .img
@@ -415,11 +419,13 @@
             height:64px
             box-sizing border-box
             margin-right:10px
+            border-radius: 3px
             &.no-cont
               display flex
               align-items center
               justify-content center
               background:#F7F7F7
+              border-radius: 3px
           .icon-add
               width:14px
               height:@width

@@ -206,5 +206,19 @@ export default {
   getDistributionCommissionList(data = { page: 1, limit: 10 }, loading = false, toast = false) {
     const url = `/api/wap/recruit/shop-distribution-list`
     return request.get({url, data, loading, toast})
+  },
+  /**
+   * 团长招募团长详情
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  getLeaderDetail(data = {}, loading = false) {
+    const url = `api/wap/get-shop-detail`
+    return request.get(url, data, loading)
+  },
+  setCodeMessage(data, loading) {
+    const url = `/api/wap/recruit/message-bind`
+    return request.post(url, data, loading)
   }
 }

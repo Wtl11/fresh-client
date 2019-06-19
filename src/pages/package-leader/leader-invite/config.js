@@ -6,6 +6,7 @@ page.$mount()
 
 export default {
   config: {
-    navigationBarTitleText: '团长招募'
+    navigationBarTitleText: '团长招募',
+    enablePullDownRefresh: true
   }
 }

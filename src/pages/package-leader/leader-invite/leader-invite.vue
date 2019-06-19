@@ -20,8 +20,8 @@
               <h6 class="text-h6">每成功邀请一位朋友成为团长</h6>
               <h5 class="text-h5">即可获得{{invite_money}}元现金奖励</h5>
             </div>
-            <div class="money right-box">
-              {{invite_money}}元
+            <div class="right-box">
+              <span class="money">{{invite_money}}</span>元
             </div>
           </div>
           <div class="li-item second">
@@ -29,22 +29,22 @@
               <h6 class="text-h6">被邀请者的社区用户下单</h6>
               <h5 class="text-h5">您将获得{{percent}}%的佣金奖励</h5>
             </div>
-            <div class="percent-item right-box">
+            <div class="right-box">
               <div class="percent-num">
                 {{percent}}%
               </div>
               <div class="text-12">
-                <div>佣</div>
-                <div>金</div></div>
+                <div class="text-yj">佣金</div>
+              </div>
             </div>
           </div>
           <img v-if="imageUrl" :src="imageUrl + '/yx-image/leader/pic-tzzm_02.jpg'" mode="widthFix"  class="img">
         </div>
       </template>
-      <img v-if="imageUrl" :src="imageUrl + '/yx-image/leader/pic-tzzm_03.jpg'" mode="widthFix"  class="img">
-      <img v-if="imageUrl" :src="imageUrl + '/yx-image/leader/pic-tzzm_04.jpg'" mode="widthFix"  class="img">
-      <img v-if="imageUrl" :src="imageUrl + '/yx-image/leader/pic-tzzm_05.jpg'" mode="widthFix"  class="img">
-      <img v-if="imageUrl" :src="imageUrl + '/yx-image/leader/pic-tzzm_06.jpg'" mode="widthFix"  class="img">
+      <img v-if="imageUrl" :src="imageUrl + '/yx-image/leader/pic-tzzm_03.jpg'" mode="widthFix" :lazy-load="true" class="img">
+      <img v-if="imageUrl" :src="imageUrl + '/yx-image/leader/pic-tzzm_04.jpg'" mode="widthFix" :lazy-load="true"  class="img">
+      <img v-if="imageUrl" :src="imageUrl + '/yx-image/leader/pic-tzzm_05.jpg'" mode="widthFix" :lazy-load="true"  class="img">
+      <img v-if="imageUrl" :src="imageUrl + '/yx-image/leader/pic-tzzm_06.jpg'" mode="widthFix"  :lazy-load="true" class="img">
       <div v-if="isInvitee" id="form-box" class="input-wrap">
         <img v-if="imageUrl" :src="imageUrl + '/yx-image/leader/pic-tzzmbyq_t1@2x.png'" mode="widthFix"  class="img">
         <div :style="{'background-image':imageUrl && 'url(' + imageUrl + '/yx-image/leader/pic-tzzmbyq_t2@2x.png)'}" class="form-body">
@@ -55,7 +55,8 @@
       <div>
         <div class="operate-btn">
           <button v-if="!isInvitee" open-type="share" class="operate-btn open-share-btn">立即邀请朋友成为团长</button>
-          <button v-else class="operate-btn open-share-btn" @click="inviteBtn">立即申请成为团长</button>
+          <button v-if="isInvitee && !isInsert"  class="operate-btn open-share-btn" @click="goInvitePage">立即申请成为团长</button>
+          <button v-if="isInvitee && isInsert" class="operate-btn apply-btn" @click="inviteBtn">提交申请</button>
         </div>
       </div>
     </scroll-view>
@@ -84,30 +85,36 @@
         },
         percent: 4,
         invite_money: 50,
+        TopHeight: 64,
         scrollHeight: 500,
-        isInvitee: false,
+        isInvitee: true,
         leaderDetail: {
           nickname: '',
           head_image_url: ''
-        }
+        },
+        isInsert: false
       }
     },
     async onLoad() {
-      this._getLeaderDetail()
       let res = this.$wx.getSystemInfoSync()
-      this.scrollHeight = res.screenHeight - res.statusBarHeight - 44
+      this.TopHeight = res.statusBarHeight + 44
+      this.scrollHeight = res.screenHeight - this.TopHeight
     },
     async onShow() {
       this.isInvitee = true
       await this._getLeaderStatus()
       // 被邀请者
       let options = this._$$initOptions()
-      console.log(options)
+      console.log(options, 'options')
+      let leaderId
       if (options && options.leaderId) {
-        await this._getLeaderDetail({shop_id: options.leaderId})
+        leaderId = options.leaderId
       } else {
+        leaderId = wx.getStorageSync('leaderId') // 获取团长id
         this.isInvitee = false
       }
+      this.isInvitee && this.listenShow()
+      await this._getLeaderDetail({shop_id: leaderId})
     },
     onShareAppMessage() {
       const flag = Date.now()
@@ -128,15 +135,23 @@
       }
     },
     methods: {
+      // 申请表格 是否在 滚动视图
+      listenShow() {
+        const query = wx.createIntersectionObserver()
+        query.relativeToViewport({bottom: 0}).observe('#form-box', res => {
+          this.isInsert = res.intersectionRect.top > 0 ? 1 : false
+          console.log(this.isInsert)
+        })
+      },
       // 获取团长信息
       async _getLeaderDetail(params) {
-        let res = await API.Leader.leaderDetail(params)
+        let res = await API.Leader.getLeaderDetail(params)
+        console.log(res, '_getLeaderDetail')
         if (res.error !== this.$ERR_OK) {
           this.$wechat.showToast(res.message)
           return
         }
         this.leaderDetail = res.data
-        console.log(this.leaderDetail, 'leaderDetail')
       },
       // 获取邀请状态
       async _getLeaderStatus() {
@@ -147,25 +162,17 @@
         }
         console.log(res, 'getLeaderStatus')
         if (res.data.status) {
-          this.invite_money = res.data.invite_money
+          this.invite_money = Math.floor(res.data.invite_money)
           this.percent = Math.floor(res.data.percent)
         } else {
           wx.redirectTo({url: this.$routes.main.GOODS_END})
         }
       },
-      // 申请表格 是否在 滚动视图
+      goInvitePage() {
+        wx.navigateTo({url: this.$routes.leader.APPLY_LEADER})
+      },
       inviteBtn() {
-        const query = wx.createSelectorQuery()
-        query.select('#form-box').boundingClientRect()
-        query.selectViewport().scrollOffset()
-        query.exec((res) => {
-          console.log(res[0].top, this.scrollHeight)
-          if (res[0].top <= this.scrollHeight) {
-            this.$refs.inviteForm.submit()
-          } else {
-            wx.navigateTo({url: this.$routes.leader.APPLY_LEADER})
-          }
-        })
+        this.$refs.inviteForm.submit()
       }
     }
   }
@@ -177,23 +184,21 @@
     position:relative
     .inviter-wrap
       position:absolute
-      top:48px
+      top:px-change-vh(26)
       left:0
       right:0
       color:$color-white
       text-align center
       font-size: $font-size-18
       font-family :$font-family-medium
-      padding-top:30px
       .head-photo-wrap
         position:absolute
         top:0
         left:50%
-        transform translate(-50%,-50%)
-        width:46px
-        height:46px
-        border: 3px solid #FFFFFF
-        border-radius 50%
+        transform translateX(-50%)
+        width:52px
+        height:52px
+        border-1px(#FFFFFF, 26px, solid, 1.5px)
         .head-photo
           width: 100%
           height: 100%
@@ -201,7 +206,7 @@
       .inviter-name
         font-size: $font-size-16
         font-family :$font-family-regular
-        margin-bottom:5px
+        margin-top:px-change-vh(8)
         .name
           margin-right:5px
   .inviteForm
@@ -219,22 +224,31 @@
       position: relative
       .li-item
         position:absolute
-        width:px-change-vw(240)
+        width:100vw
+        box-sizing border-box
+        padding:0 px-change-vw(41) 0 px-change-vw(91)
         display flex
         justify-content space-between
         align-items center
-        right:px-change-vw(45)
+        right:0
         height:px-change-vw(86)
         &.first
           top:px-change-vw(108)
         &.second
           bottom:px-change-vw(62)
         .right-box
+          text-align:center
           width:px-change-vw(65)
+          font-size :$font-size-13
         .money, .percent-num
-          font-family $font-family-din-bold
+          font-family:'DINAlternate-Bold'
           text-align center
-          font-size: $font-size-28
+        .money
+          font-size: 28px
+        .percent-num
+          font-size: 30px
+        .text-yj
+          letter-spacing 4px
         .percent-item
           justify-content center
           align-items  center
@@ -256,14 +270,16 @@
       height:50px
       line-height: 50px
       text-align: center
-      background: #FFE100
-      font-size: $font-size-18
-      font-family :$font-family-medium
-      color: #161315
       &.open-share-btn
         position:fixed
         bottom:0
         left:0
         right:0
-        z-index:100
+        z-index:300
+        font-size: $font-size-18
+        font-family :$font-family-medium
+        color: #161315
+        background: #FFE100
+      &.apply-btn
+        background: #FFE100
 </style>
