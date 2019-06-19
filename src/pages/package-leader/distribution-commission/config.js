@@ -6,6 +6,7 @@ page.$mount()
 
 export default {
   config: {
-    navigationBarTitleText: '分销佣金'
+    navigationBarTitleText: '分销佣金',
+    onReachBottomDistance: 50
   }
 }

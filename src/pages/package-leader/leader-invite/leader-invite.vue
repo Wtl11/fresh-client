@@ -1,7 +1,7 @@
 <template>
   <div class="leader-invite">
     <navigation-bar title="团长招募"></navigation-bar>
-    <scroll-view :style="{height:scrollHeight + 'px'}" scroll-y class="scroll" @scroll="scroll">
+    <scroll-view :style="{height:scrollHeight + 'px'}" :scroll-with-animation="true" :scroll-into-view="currentShowEle" scroll-y class="scroll" @scroll="scroll">
       <div v-if="isInvitee">
         <div  class="inviter-wrap">
           <div class="head-photo-wrap">
@@ -54,9 +54,11 @@
       </div>
       <div>
         <div class="operate-btn">
-          <button v-if="!isInvitee" open-type="share" class="operate-btn open-share-btn">立即邀请朋友成为团长</button>
-          <button v-if="isInvitee && !isInsert"  class="operate-btn open-share-btn" @click="goInvitePage">立即申请成为团长</button>
-          <button v-if="isInvitee && isInsert" class="operate-btn apply-btn" @click="inviteBtn">提交申请</button>
+          <button v-if="!isInvitee" open-type="share" class="operate-btn show open-share-btn">立即邀请朋友成为团长</button>
+          <template v-else>
+            <button :class="['operate-btn open-share-btn',{show:!isInsert}]" @click="goInvitePage">立即申请成为团长</button>
+            <button v-if="isInsert" :class="['operate-btn apply-btn',{show:isInsert}]" class="operate-btn apply-btn" @click="inviteBtn">提交申请</button>
+          </template>
         </div>
       </div>
     </scroll-view>
@@ -66,7 +68,7 @@
 <script type="text/ecmascript-6">
   import API from '@api'
   import NavigationBar from '@components/navigation-bar/navigation-bar'
-  import FormModel from '../apply-leader/form-model/form-model.vue'
+  import FormModel from './form-model/form-model.vue'
   import GetOptions from '@mixins/get-options'
   const PAGE_NAME = 'LEADER_INVITE'
 
@@ -92,7 +94,8 @@
           nickname: '',
           head_image_url: ''
         },
-        isInsert: false
+        isInsert: false,
+        currentShowEle: ''
       }
     },
     async onLoad() {
@@ -113,7 +116,10 @@
         leaderId = wx.getStorageSync('leaderId') // 获取团长id
         this.isInvitee = false
       }
-      this.isInvitee && this.listenShow()
+      if (this.isInvitee) {
+        this.listenShow()
+        this.refs.inviteForm.resetForm()
+      }
       await this._getLeaderDetail({shop_id: leaderId})
     },
     onShareAppMessage() {
@@ -139,7 +145,9 @@
       listenShow() {
         const query = wx.createIntersectionObserver()
         query.relativeToViewport({bottom: 0}).observe('#form-box', res => {
-          this.isInsert = res.intersectionRect.top > 0 ? 1 : false
+          console.log(res)
+          this.isInsert = res.intersectionRatio > 0 ? 1 : false
+          this.currentShowEle = ''
           console.log(this.isInsert)
         })
       },
@@ -169,7 +177,8 @@
         }
       },
       goInvitePage() {
-        wx.navigateTo({url: this.$routes.leader.APPLY_LEADER})
+        this.currentShowEle = 'form-box'
+        // wx.navigateTo({url: this.$routes.leader.APPLY_LEADER})
       },
       inviteBtn() {
         this.$refs.inviteForm.submit()
@@ -267,9 +276,12 @@
           display flex
     .operate-btn
       width: 100%
-      height:50px
-      line-height: 50px
+      height:0
       text-align: center
+      transition  all 0.5s
+      &.show
+        height:50px
+        line-height: 50px
       &.open-share-btn
         position:fixed
         bottom:0
