@@ -3,12 +3,38 @@
   import {entryAppType, resolveQueryScene} from '@utils/common'
   import API from '@api'
   import {ERR_OK, baseURL} from '@utils/config'
-
+  /* eslint-disable */
   export default {
     data() {
       return {
         codeMsg: ''
       }
+    },
+    created() {
+      // 调用API从本地缓存中获取数据
+      /*
+       * 平台 api 差异的处理方式:  api 方法统一挂载到 mpvue 名称空间, 平台判断通过 mpvuePlatform 特征字符串
+       * 微信：mpvue === wx, mpvuePlatform === 'wx'
+       * 头条：mpvue === tt, mpvuePlatform === 'tt'
+       * 百度：mpvue === swan, mpvuePlatform === 'swan'
+       * 支付宝(蚂蚁)：mpvue === my, mpvuePlatform === 'my'
+       */
+      let logs
+      if (mpvuePlatform === 'my') {
+        logs = mpvue.getStorageSync({ key: 'logs' }).data || []
+        logs.unshift(Date.now())
+        mpvue.setStorageSync({
+          key: 'logs',
+          data: logs
+        })
+      } else {
+        logs = mpvue.getStorageSync('logs') || []
+        logs.unshift(Date.now())
+        mpvue.setStorageSync('logs', logs)
+      }
+    },
+    log() {
+      console.log(`log at:${Date.now()}`)
     },
     async onLaunch() {
       let res = await API.Choiceness.getDefaultShopInfo()
@@ -56,7 +82,7 @@
         // 获取页面请求参数
         query += `${key}=${options.query[key]}&`
       }
-      if (options.path !== 'pages/lost' && options.path !== 'pages/error' && options.path !== 'pages/login') {
+      if (options.path !== this.$routes.main.LOST && options.path !== this.$routes.main.ERROR && options.path !== this.$routes.main.LOGIN ) {
         wx.setStorageSync('targetPage', `${options.path}${query ? '?' : ''}${query.slice(0, -1)}`)
       }
     },

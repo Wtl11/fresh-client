@@ -1,7 +1,7 @@
 // 不需要自动重置data数据的页
 import API from '@api'
-import {corp} from '@utils/saas'
 
+import {corp} from '@utils/saas'
 const unResetPage = []
 
 export default {
@@ -10,7 +10,8 @@ export default {
       formId: [],
       imageUrl: this.$imageUrl,
       shopName: '',
-      corpName: corp.shopSaas
+      corpName: corp.shopSaas,
+      $routes: this.$routes
     }
   },
   onLoad() {

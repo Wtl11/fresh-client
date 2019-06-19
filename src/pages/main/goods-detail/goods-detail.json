@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "GOODS-DETAIL",
+  "usingComponents": {
+    "share-button": "plugin://goodsSharePlugin/share-button"
+  }
+}

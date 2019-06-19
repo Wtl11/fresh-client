@@ -17,6 +17,7 @@
 
 <script type="text/ecmascript-6">
   import {cartComputed} from '@state/helpers'
+  import $$routes from '@utils/routes'
 
   const COMPONENT_NAME = 'NAVIGATION_BOTTOM'
   const PLATFORM = [
@@ -96,14 +97,14 @@
         if (item.type === this.currentType) return
         switch (item.type) {
           case 'index':
-            wx.switchTab({url: '/pages/choiceness'})
+            wx.switchTab({url: $$routes.main.CHOICENESS})
             break
           case 'cart':
-            wx.switchTab({url: '/pages/shopping-cart'})
+            wx.switchTab({url: $$routes.main.SHOPPING_CART})
             await this.$isLogin()
             break
           case 'mine':
-            wx.switchTab({url: '/pages/mine'})
+            wx.switchTab({url: $$routes.main.MINE})
             await this.$isLogin()
             break
           default:

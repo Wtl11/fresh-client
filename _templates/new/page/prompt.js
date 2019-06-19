@@ -1,4 +1,23 @@
+const appJson = require('../../../src/app.json')
+const MAIN_PACKAGE = 'main'
+const choices = []
+if (appJson.subPackages && appJson.subPackages.length > 0) {
+  appJson.subPackages.forEach((item) => {
+    const packageName = item.root.replace(/\//g, '')
+    item.pages.unshift('' + packageName)
+    choices.push({message: packageName, value: item.pages})
+  })
+}
+appJson.pages.unshift(MAIN_PACKAGE)
+choices.unshift({message: MAIN_PACKAGE, value: appJson.pages})
+
 module.exports = [
+  {
+    type: 'select',
+    name: 'package',
+    message: '请选择包名',
+    choices
+  },
   {
     type: 'input',
     name: 'name',

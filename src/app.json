@@ -1,0 +1,113 @@
+{
+  "pages": [
+    "pages/choiceness",
+    "pages/shopping-cart",
+    "pages/mine",
+    "pages/goods-detail",
+    "pages/choose-pickup",
+    "pages/goods-search",
+    "pages/classify",
+    "pages/out-html",
+    "pages/goods-record",
+    "pages/notice",
+    "pages/coupon-mine",
+    "pages/my-group-buy",
+    "pages/order-list",
+    "pages/order-detail",
+    "pages/after-service",
+    "pages/after-order",
+    "pages/submit-order",
+    "pages/pay-result",
+    "pages/share-order",
+    "pages/collage-detail",
+    "pages/open-location",
+    "pages/coupon-choose",
+    "pages/coupon-take",
+    "pages/flash-sale-list",
+    "pages/coupon-classify",
+    "pages/login",
+    "pages/error",
+    "pages/lost",
+    "pages/goods-end",
+    "pages/app-update",
+    "pages/recommend",
+    "pages/recommend-pay"
+  ],
+  "subPackages": [
+    {
+      "root": "package-leader/",
+      "pages": [
+        "mine-housing",
+        "regimental-commander",
+        "regimental-info",
+        "radar",
+        "coupon-share",
+        "yesterday-sale-manager",
+        "group-order-detail",
+        "after-sale-management",
+        "delivery-order",
+        "group-wallet",
+        "income-record",
+        "expend-record",
+        "withdraw",
+        "bank-card",
+        "sale-service",
+        "find-product",
+        "copy-detail"
+      ]
+    }
+  ],
+  "preloadRule": {
+    "pages/mine": {
+      "network": "all",
+      "packages": ["package-leader/"]
+    }
+  },
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "WeChat",
+    "navigationBarTextStyle": "black",
+    "navigationStyle": "custom"
+  },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "当前位置用于定位你附近的自提点"
+    }
+  },
+  "tabBar": {
+    "color": "#2c2c2c",
+    "selectedColor": "#73C200",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "custom": true,
+    "list": [
+      {
+        "pagePath": "pages/choiceness",
+        "text": "首页",
+        "iconPath": "/static/img/icon-select.png",
+        "selectedIconPath": "/static/img/icon-select_press.png"
+      },
+      {
+        "pagePath": "pages/shopping-cart",
+        "text": "购物车",
+        "iconPath": "/static/img/icon-goodscart.png",
+        "selectedIconPath": "/static/img/icon-goodscat_press.png"
+      },
+      {
+        "pagePath": "pages/mine",
+        "text": "我的",
+        "iconPath": "/static/img/icon-my.png",
+        "selectedIconPath": "/static/img/icon-my_press.png"
+      }
+    ]
+  },
+  "usingComponents": {},
+  "plugins": {
+    "goodsSharePlugin": {
+      "version": "3.1.1",
+      "provider": "wx56c8f077de74b07c"
+    }
+  }
+}
+

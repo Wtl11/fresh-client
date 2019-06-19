@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "昨日订单",
+  "enablePullDownRefresh": true,
+  "backgroundColor": "#ffffff",
+  "backgroundTextStyle": "dark"
+}
