@@ -473,7 +473,6 @@
       ...cartMethods,
       _getRunTime() {
         API.Global.getRunTime().then(res => {
-          // console.log(res, 11111111)
           this.runTime = res.data.run_time
         })
       },
