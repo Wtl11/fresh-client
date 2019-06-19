@@ -6,7 +6,8 @@
         <li v-for="(item, index) in navList" :key="index" class="item-wrapper" :class="item.cname" @click="handleClick(item)">
           <div class="img-box">
             <img class="icon-img" mode="aspectFill" v-if="imageUrl && item.icon" :src="imageUrl + item.icon">
-            <p v-if="item.hasExplain && couponNumber > 0" class="item-count">{{couponNumber}}</p>
+            <p v-if="item.hasExplain === 1 && couponNumber > 0" class="item-count">{{couponNumber}}</p>
+            <p v-if="item.hasExplain === 2 && goodsNumber" class="item-count">{{goodsNumber}}</p>
           </div>
           <p class="title">{{item.title}}</p>
         </li>
@@ -42,6 +43,7 @@
 
 <script type="text/ecmascript-6">
   import API from '@api'
+
   const COMPONENT_NAME = 'MINE_NAVIGATION'
 
   export default {
@@ -49,11 +51,16 @@
     props: {
       detail: {
         type: Object,
-        default: () => {}
+        default: () => {
+        }
       },
       couponNumber: {
         type: Number,
         default: 2
+      },
+      goodsNumber: {
+        type: Number,
+        default: 0
       },
       isLeader: {
         type: Boolean,
@@ -64,18 +71,31 @@
       return {
         navList: [
           {
-            cname: 'line-box',
+            cname: '',
             icon: '/yx-image/2.4/icon-mypt_me@2x.png',
             title: '我的拼团',
-            url: 'my-group-buy',
+            url: this.$routes.main.MY_GROUP_BUY,
             fn: '_handleNav'
           },
           {
-            cname: 'line-box',
+            cname: '',
             icon: '/yx-image/2.4/icon-coupon_me@2x.png',
             title: '优惠券',
-            hasExplain: true,
-            url: 'coupon-mine',
+            hasExplain: 1,
+            url: this.$routes.main.COUPON_MINE,
+            fn: '_handleNav'
+          }, {
+            cname: '',
+            icon: '/yx-image/invitation/icon-yqyl_me@2x.png',
+            title: '邀请有礼',
+            url: this.$routes.activity.INVITATION_INTRODUCTION,
+            fn: '_handleNav'
+          }, {
+            cname: '',
+            icon: '/yx-image/invitation/icon-spcoupon_me@2x.png',
+            title: '商品券',
+            hasExplain: 2,
+            url: this.$routes.activity.COMMODITY_CERTIFICATES,
             fn: '_handleNav'
           },
           {
@@ -91,6 +111,20 @@
             title: '常见问题',
             url: 'out-html?routeType=FAQ',
             fn: '_handleNav'
+          },
+          {
+            cname: 'line-box',
+            icon: '',
+            title: '',
+            url: '',
+            fn: ''
+          },
+          {
+            cname: 'line-box',
+            icon: '',
+            title: '',
+            url: '',
+            fn: ''
           },
           {
             cname: '',
@@ -142,13 +176,13 @@
         if (item.titleIsArray) {
           this._goMyHosing()
         } else {
-          wx.navigateTo({url: `${this.$routes.main.PACKAGE}/${item.url}`})
+          wx.navigateTo({ url: `${item.url}` })
         }
       },
       // 跳转我的小区
       _goMyHosing() {
         let page = this.isLeader ? this.$routes.leader.REGIMENTAL_COMMANDER : this.$routes.leader.MINE_HOUSING
-        wx.navigateTo({url: page})
+        wx.navigateTo({ url: page })
       },
       // 获取团长订单统计
       async _leaderOrderTotal() {
@@ -176,23 +210,23 @@
   $padding-left = 13px
 
   .mine-navigation
-    padding :12px
+    padding: 12px
     .panel
       background: #FFFFFF;
-      box-shadow: 0 4px 30px 0 rgba(17,17,17,0.06);
+      box-shadow: 0 4px 30px 0 rgba(17, 17, 17, 0.06);
       border-radius: 6px
       margin-bottom: 12px
       padding-bottom: 4px
       .nav-title
         padding: 10px $padding-left 4px $padding-left
         color: $color-text-main
-        font-size :16px
+        font-size: 16px
         font-family: $font-family-bold
       .nav-box
-        padding : 0 10px
+        padding: 0 10px
         layout(row)
         .item-wrapper
-          layout(column,block,nowrap)
+          layout(column, block, nowrap)
           justify-content: center
           align-items: center
           text-align: center
@@ -206,7 +240,7 @@
           .img-box
             position: relative
           .icon-img
-            width:19px
+            width: 19px
             height: @width
             margin-bottom: 6px
           .item-count
@@ -246,8 +280,8 @@
               font-family: $font-family-bold
             .explain
               color: $color-text-sub
-              font-size :12px
-              padding-right :5px
+              font-size: 12px
+              padding-right: 5px
             .arrow-img
               display: block
               width: 7.5px

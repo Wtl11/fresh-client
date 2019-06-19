@@ -134,6 +134,8 @@
     <confirm-msg ref="refundModel" useType="double" :msg="modelMsg" @confirm="confirm"></confirm-msg>
     <confirm-msg ref="colseModel" useType="close"></confirm-msg>
     <link-group ref="groupList" :wechatInfo="groupInfo"></link-group>
+    <!--商品券弹窗-->
+    <coupon-modal ref="invModal"></coupon-modal>
   </div>
 </template>
 
@@ -142,9 +144,10 @@
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import ConfirmMsg from '@components/confirm-msg/confirm-msg'
   import API from '@api'
-  import {oauthComputed, orderMethods} from '@state/helpers'
-  import {floatAccAdd, countDownHandle} from '@utils/common'
+  import { oauthComputed, orderMethods } from '@state/helpers'
+  import { floatAccAdd, countDownHandle } from '@utils/common'
   import GetOptions from '@mixins/get-options'
+  import CouponModal from './coupon-modal/coupon-modal'
 
   export default {
     mixins: [GetOptions],
@@ -162,13 +165,14 @@
         curItem: '',
         saleText: '',
         shareType: 0,
-        at_countdown: {hour: 0, minute: 0, second: 0}
+        at_countdown: { hour: 0, minute: 0, second: 0 }
       }
     },
     components: {
       NavigationBar,
       LinkGroup,
-      ConfirmMsg
+      ConfirmMsg,
+      CouponModal
     },
     computed: {
       ...oauthComputed,
@@ -243,7 +247,7 @@
               return
             }
             let payRes = res.data
-            const {timestamp, nonceStr, signType, paySign} = payRes
+            const { timestamp, nonceStr, signType, paySign } = payRes
             this.orderId = res.data.order_id
             wx.requestPayment({
               timeStamp: timestamp,
@@ -263,7 +267,7 @@
         if (this.groupData.id > 0) {
           let count = 0
           this.$wechat.showLoading()
-          API.Global.checkPayResult({order_id: this.orderId}).then(res => {
+          API.Global.checkPayResult({ order_id: this.orderId }).then(res => {
             console.warn(res, '支付：')
             if (res.data.is_payed === 1) {
               setTimeout(() => {
@@ -279,7 +283,7 @@
                   this.getGoodsDetailData()
                   return
                 }
-                API.Global.checkPayResult({order_id: this.orderId}).then(res => {
+                API.Global.checkPayResult({ order_id: this.orderId }).then(res => {
                   console.warn(res, '支付轮询：' + count)
                   if (res.data.is_payed === 1) {
                     clearInterval(this._groupOrderTimer)
@@ -295,9 +299,18 @@
         } else {
           this.getGoodsDetailData()
         }
+        this.getReceiveInviteCoupon()
         // this.getGoodsDetailData()
         // this.orderMsg.status = 1
         // this.orderMsg.status_text = '待提货'
+      },
+      getReceiveInviteCoupon() {
+        API.Coupon.receiveInviteCoupon({ cond_type: 6 }, false, false)
+          .then((res) => {
+            if (res.error !== this.$ERR_OK) return
+            this.couponItem = res.data
+            this.couponItem && this.$refs.invModal.show([this.couponItem])
+          })
       },
       isRefund(item) {
         this.$refs.colseModel.show()
@@ -312,9 +325,9 @@
         let that = this
         that.$wx.setClipboardData({
           data: this.orderMsg.order_sn,
-          success: function (res) {
+          success: function(res) {
             that.$wx.getClipboardData({
-              success: function (res) {
+              success: function(res) {
               }
             })
           }
@@ -398,7 +411,7 @@
         }, 1000)
       },
       goToGroupBuy(item) {
-        item.groupon && wx.navigateTo({url: `${this.$routes.main.COLLAGE_DETAIL}?id=${item.groupon.id}`})
+        item.groupon && wx.navigateTo({ url: `${this.$routes.main.COLLAGE_DETAIL}?id=${item.groupon.id}` })
       },
       jumpGoodsDetail(item) {
         wx.navigateTo({
@@ -468,7 +481,6 @@
         display: block
         width: 100%
         height: 100%
-
 
   .wrap
     width: 100vw
@@ -884,7 +896,7 @@
     .group-icon
       width: 15px
       height: @width
-      margin-right :4px
+      margin-right: 4px
     .arrow
       width: 7.5px
       height: 12.5px

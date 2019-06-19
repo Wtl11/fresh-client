@@ -49,9 +49,11 @@
         </div>
       </div>
     </div>
+    <banner></banner>
     <mine-navigation
       :detail="detail"
       :couponNumber="couponNumber"
+      :goodsNumber="goodsNumber"
       :isLeader="isLeader"
     ></mine-navigation>
     <div class="mine-model" v-if="showModal" :animation="maskAnimation" @click="_cancelQrCodeBox">
@@ -79,6 +81,7 @@
   import MineNavigation from './mine-navigation/mine-navigation'
   import AnimationModal from '@mixins/animation-modal'
   import ClearWatch from '@mixins/clear-watch'
+  import Banner from './banner/banner'
 
   const ORRDER_NAV_LIST = [
     {icon_url: '/yx-image/cart/icon-payment@2x.png', name: '待付款', id: 0, index: 1, count: 0},
@@ -111,6 +114,7 @@
         isLeader: false,
         // BUTTON_GROUP: BUTTON_GROUP,
         couponNumber: 0,
+        goodsNumber: 0,
         ENV: false,
         statusBarHeight: 0,
         backgroundHeight: 0,
@@ -307,6 +311,7 @@
       _getCouponNumber() {
         API.Coupon.getClientListNumber('', false).then(res => {
           this.couponNumber = res.data.can_used_count
+          this.goodsNumber = res.data.goods_can_used_count
         })
       }
     }, // 235
@@ -316,7 +321,8 @@
       NavigationBar,
       CustomTabBar,
       MineRTest,
-      MineNavigation
+      MineNavigation,
+      Banner
     }
   }
 </script>

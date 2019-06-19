@@ -5,11 +5,11 @@ export const cartComputed = {
 }
 
 export const orderComputed = {
-  ...mapGetters('order', ['goodsList', 'total', 'deliverAt', 'couponInfo', 'beforeTotal'])
+  ...mapGetters('order', ['goodsList', 'total', 'deliverAt', 'couponInfo', 'beforeTotal', 'commodityItem'])
 }
 
 export const orderMethods = {
-  ...mapActions('order', ['setOrderInfo', 'submitOrder', 'saveCoupon'])
+  ...mapActions('order', ['setOrderInfo', 'submitOrder', 'saveCoupon', 'setCommodityItem'])
 }
 
 export const cartMethods = {

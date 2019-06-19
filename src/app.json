@@ -31,9 +31,20 @@
     "pages/goods-end",
     "pages/app-update",
     "pages/recommend",
-    "pages/recommend-pay"
+    "pages/recommend-pay",
+    "pages/invitation-choose"
   ],
   "subPackages": [
+    {
+      "root": "package-activity/",
+      "pages": [
+        "commodity-certificates",
+        "my-record",
+        "invitation-introduction",
+        "invitation-rules",
+        "invitee"
+      ]
+    },
     {
       "root": "package-leader/",
       "pages": [
@@ -60,7 +71,7 @@
   "preloadRule": {
     "pages/mine": {
       "network": "all",
-      "packages": ["package-leader/"]
+      "packages": ["package-leader/", "package-activity/"]
     }
   },
   "window": {

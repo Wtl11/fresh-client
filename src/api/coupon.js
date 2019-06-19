@@ -117,5 +117,38 @@ export default {
   getStatusTmpl(id, loading = false, toast = false) {
     const url = `/api/wap/coupon-activity-manage/get-ativity-coupon-status/${id}`
     return request.get({url, undefined, loading, toast})
+  },
+  /**
+   *  邀请有礼营销活动详情[v2.6.2]
+   * @param id
+   * @param loading
+   * @param toast
+   * @returns {*}
+   */
+  invitationDetail(id, loading = false, toast = true) {
+    const url = `/api/wap/coupon-activity-manage/activity-invite-coupon-detail/0`
+    return request.get({url, undefined, loading, toast})
+  },
+  /**
+   *  获取营销活动战绩[v2.6.2]
+   * @param id
+   * @param loading
+   * @param toast
+   * @returns {*}
+   */
+  getInviteStatistic(data, loading = false, toast = true) {
+    const url = `/api/wap/coupon-activity-manage/get-invite-statistic/0`
+    return request.get({url, data, loading, toast})
+  },
+  /**
+   *  邀请页领取优惠券[v2.6.2]
+   * @param id
+   * @param loading
+   * @param toast
+   * @returns {*}
+   */
+  receiveInviteCoupon(data, loading = false, toast = true) {
+    const url = `/api/wap/coupon-activity-manage/receive-invite-coupon`
+    return request.post({url, data, loading, toast})
   }
 }

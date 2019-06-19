@@ -1,8 +1,18 @@
 // PACKAGE_PATH
+const ACTIVITY = '/package-activity'
 const LEADER = '/package-leader'
 const MAIN = '/pages'
 /* eslint-disable */
 export default {
+  activity: {
+    PACKAGE: ACTIVITY,
+    INVITEE:`${ACTIVITY}/invitee`,
+    INVITATION_RULES:`${ACTIVITY}/invitation-rules`,
+    INVITATION_INTRODUCTION:`${ACTIVITY}/invitation-introduction`,
+    MY_RECORD:`${ACTIVITY}/my-record`,
+    COMMODITY_CERTIFICATES:`${ACTIVITY}/commodity-certificates`,
+    // package-activity
+  },
   leader: {
     PACKAGE: LEADER,
     MINE_HOUSING: `${LEADER}/mine-housing`,
@@ -57,7 +67,8 @@ export default {
     RECOMMEND_PAY: `${MAIN}/recommend-pay`,
     SHARE_ORDER: `${MAIN}/share-order`,
     SHOPPING_CART: `${MAIN}/shopping-cart`,
-    SUBMIT_ORDER: `${MAIN}/submit-order`
+    SUBMIT_ORDER: `${MAIN}/submit-order`,
+    INVITATION_CHOOSE:`${MAIN}/invitation-choose`,
     // main
   }
 }

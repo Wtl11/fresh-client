@@ -1,137 +1,150 @@
 <template>
   <form action="" report-submit @submit="$getFormId">
-  <div class="submit-order">
-    <navigation-bar title="提交订单" :showArrow="true" :translucent="false"></navigation-bar>
-    <div class="order-title" :class="'corp-' + corpName + '-submit-order'">请在{{deliverAt}}到货后，到团长代理点自提</div>
-    <div class="order-info">
-      <div class="order-info-top">
-        <div class="info-phone">
-          <div class="icon-text" :class="'corp-' + corpName + '-bg'">团长</div>
-          <div class="icon-number"><span class="name">{{groupInfo.name}}</span><span
-            class="txt">{{groupInfo.social_name}}</span></div>
+    <div class="submit-order">
+      <navigation-bar title="提交订单" :showArrow="true" :translucent="false"></navigation-bar>
+      <div class="order-title" :class="'corp-' + corpName + '-submit-order'">请在{{deliverAt}}到货后，到团长代理点自提</div>
+      <div class="order-info">
+        <div class="order-info-top">
+          <div class="info-phone">
+            <div class="icon-text" :class="'corp-' + corpName + '-bg'">团长</div>
+            <div class="icon-number"><span class="name">{{groupInfo.name}}</span><span
+              class="txt">{{groupInfo.social_name}}</span></div>
+          </div>
+          <div class="info-address">
+            提货地址：{{groupInfo.province}}{{groupInfo.city}}{{groupInfo.district}}{{groupInfo.address}}
+          </div>
         </div>
-        <div class="info-address">
-          提货地址：{{groupInfo.province}}{{groupInfo.city}}{{groupInfo.district}}{{groupInfo.address}}
+        <div class="order-info-bottom">
+          <div class="info-bottom-phone">
+            <div class="lable">提货人手机号：</div>
+            <div class="mobile"><input class="mobile-content" type="text" v-model="mobile"></div>
+          </div>
+          <form class="btn-box" report-submit @submit="getFormId">
+            <button class="wechat-btn" v-if="corpName === 'platform'" formType="submit" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber">使用微信手机号</button>
+            <button class="wechat-btn wechat-btn-retuan" v-if="corpName === 'retuan'" formType="submit" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber">使用微信手机号</button>
+          </form>
         </div>
       </div>
-      <div class="order-info-bottom">
-        <div class="info-bottom-phone">
-          <div class="lable">提货人手机号：</div>
-          <div class="mobile"><input class="mobile-content" type="text" v-model="mobile"></div>
-        </div>
-        <form class="btn-box" report-submit @submit="getFormId">
-          <button class="wechat-btn" v-if="corpName === 'platform'" formType="submit" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber">使用微信手机号</button>
-          <button class="wechat-btn wechat-btn-retuan" v-if="corpName === 'retuan'" formType="submit" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber">使用微信手机号</button>
-        </form>
-      </div>
-    </div>
-    <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-colour@2x.png'" class="order-line">
-    <div class="order-list">
-      <div class="list-item" v-for="(item, index) in goodsList" :key="index">
-        <div class="item-left-img"><img class="img" :src="item.goods_cover_image" alt=""></div>
-        <div class="item-right">
-          <div class="title">{{item.name}}</div>
-          <div class="sub-title">规格：{{item.goods_units}}</div>
-          <div class="price-box">
-            <div class="price-left">
-              <div class="number">{{item.trade_price}}</div>
-              <div class="icon">元</div>
+      <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-colour@2x.png'" class="order-line">
+      <div class="order-list">
+        <div class="list-item" v-for="(item, index) in goodsList" :key="index">
+          <div class="item-left-img"><img class="img" :src="item.goods_cover_image" alt=""></div>
+          <div class="item-right">
+            <div class="title">{{item.name}}</div>
+            <div class="sub-title">规格：{{item.goods_units}}</div>
+            <div class="price-box">
+              <div class="price-left">
+                <div class="number">{{item.trade_price}}</div>
+                <div class="icon">元</div>
+              </div>
+              <div class="price-right">
+                <div class="icon">x</div>
+                <div class="number">{{item.num}}</div>
+              </div>
             </div>
-            <div class="price-right">
-              <div class="icon">x</div>
-              <div class="number">{{item.num}}</div>
-            </div>
           </div>
         </div>
       </div>
-    </div>
-    <section class="goods-total-wrapper">
-      <div class="total-wrapper">
-        <p class="name">商品总价</p>
-        <p class="price">{{beforeTotal}}</p>
-        <p>元</p>
-      </div>
-      <p v-if="isShowNewCustomer" class="new-rule-wrapper">你不符合新人特惠购买资格</p>
-    </section>
-    <ul class="coupon-info-wrapper" :class="'corp-' + corpName + '-money'">
-      <li v-if="isGroupModal" class="coupon-item">
-        <p class="name">使用优惠券</p>
-        <p class="price-disable">该商品不支持使用优惠券</p>
-      </li>
-      <li v-else class="coupon-item" @click="chooseCouponHandle">
-        <p class="name">使用优惠券</p>
-        <p v-if="discount > 0" class="price">-{{discount}}</p>
-        <p v-else class="price-disable">未使用优惠券</p>
-        <p v-if="discount > 0">元</p>
-        <div class="item-arrow-img">
-          <img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="img">
+      <section class="goods-total-wrapper">
+        <div class="total-wrapper">
+          <p class="name">商品总价</p>
+          <p class="price">{{beforeTotal}}</p>
+          <p>元</p>
         </div>
-      </li>
-      <li class="coupon-item">
-        <p class="name">实付金额</p>
-        <p class="price">{{total}}</p>
-        <p>元</p>
-      </li>
-    </ul>
-    <div class="fixed-btn">
-      <div class="money" :class="'corp-' + corpName + '-money'">
-        <p>总计 {{total}}元</p>
-        <p class="explain">(已优惠<span :class="'corp-' + corpName + '-money'">{{discount}}</span>元)</p>
-      </div>
-      <button formType="submit" class="pay" :class="'corp-' + corpName + '-bg'" @click.stop="goPay">去支付</button>
-    </div>
-    <article class="share-panel-wrapper">
-      <div v-if="isShowPayModal" class="share-mask" @click="_hidePayModal">
-      </div>
-      <section class="share-panel" :class="{show: isShowPayModal}">
-        <p class="title">提货地址距离当前位置<span class="distance">{{distance}}km</span>请确认提货信息</p>
-        <p class="sub-title">预计{{deliverAt}}可提货</p>
-        <article class="box-wrapper">
-<!--          <div class="item-wrapper">-->
-<!--            <p class="left">提货人：</p>-->
-<!--            <p class="right">{{groupInfo.name}}</p>-->
-<!--          </div>-->
-          <div class="item-wrapper">
-            <p class="left">团长：</p>
-            <p class="right">{{groupInfo.name}}</p>
-          </div>
-          <div class="item-wrapper">
-            <p class="left">提货地点：</p>
-            <p class="right">{{groupInfo.province}}{{groupInfo.city}}{{groupInfo.district}}{{groupInfo.address}}</p>
-          </div>
-<!--          <div class="item-wrapper">-->
-<!--            <p class="left">团长：</p>-->
-<!--            <p class="right">{{groupInfo.name}}</p>-->
-<!--          </div>-->
-          <div class="item-wrapper">
-            <p class="left">商品总价：</p>
-            <p class="right">{{beforeTotal}}元</p>
-          </div>
-          <div class="item-wrapper mar-0">
-            <p class="left">优惠券：</p>
-            <p v-if="discount > 0" class="right">-{{discount}}元</p>
-            <p v-else class="right">0元</p>
-          </div>
-          <div class="last-item-wrapper">
-            <p class="l-title">实付金额：</p>
-            <p class="l-number">{{total}}</p>
-            <p class="l-unit">元</p>
-          </div>
-        </article>
-        <div class="button-group">
-          <p class="button-wrapper left" @click="_hidePayModal">取消</p>
-          <p class="button-wrapper right" @click="_goPayAction">去支付</p>
-        </div>
+        <p v-if="isShowNewCustomer" class="new-rule-wrapper">你不符合新人特惠购买资格</p>
       </section>
-    </article>
-  </div>
+      <ul class="coupon-info-wrapper" :class="'corp-' + corpName + '-money'">
+        <li v-if="isGoodsModal" class="coupon-item">
+          <p class="name">使用商品券</p>
+          <p class="price-disable">该商品不支持使用商品券</p>
+        </li>
+        <li v-if="!isGoodsModal" class="coupon-item" @click="chooseGoodsCouponHandle">
+          <p class="name">使用商品券</p>
+          <p v-if="goodsDiscount > 0" class="price">-{{goodsDiscount}}</p>
+          <p v-else class="price-disable">未使用商品券</p>
+          <p v-if="goodsDiscount > 0">元</p>
+          <div class="item-arrow-img">
+            <img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="img">
+          </div>
+        </li>
+        <li v-if="isGroupModal" class="coupon-item">
+          <p class="name">使用优惠券</p>
+          <p class="price-disable">该商品不支持使用优惠券</p>
+        </li>
+        <li v-if="!isGroupModal" class="coupon-item" @click="chooseCouponHandle">
+          <p class="name">使用优惠券</p>
+          <p v-if="discount > 0" class="price">-{{discount}}</p>
+          <p v-else class="price-disable">未使用优惠券</p>
+          <p v-if="discount > 0">元</p>
+          <div class="item-arrow-img">
+            <img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="img">
+          </div>
+        </li>
+        <li class="coupon-item">
+          <p class="name">实付金额</p>
+          <p class="price">{{total}}</p>
+          <p>元</p>
+        </li>
+      </ul>
+      <div class="fixed-btn">
+        <div class="money" :class="'corp-' + corpName + '-money'">
+          <p>总计 {{total}}元</p>
+          <p class="explain">(已优惠<span :class="'corp-' + corpName + '-money'">{{discount + goodsDiscount}}</span>元)</p>
+        </div>
+        <button formType="submit" class="pay" :class="'corp-' + corpName + '-bg'" @click.stop="goPay">去支付</button>
+      </div>
+      <article class="share-panel-wrapper">
+        <div v-if="isShowPayModal" class="share-mask" @click="_hidePayModal">
+        </div>
+        <section class="share-panel" :class="{show: isShowPayModal}">
+          <p class="title">提货地址距离当前位置<span class="distance">{{distance}}km</span>请确认提货信息</p>
+          <p class="sub-title">预计{{deliverAt}}可提货</p>
+          <article class="box-wrapper">
+            <!--          <div class="item-wrapper">-->
+            <!--            <p class="left">提货人：</p>-->
+            <!--            <p class="right">{{groupInfo.name}}</p>-->
+            <!--          </div>-->
+            <div class="item-wrapper">
+              <p class="left">团长：</p>
+              <p class="right">{{groupInfo.name}}</p>
+            </div>
+            <div class="item-wrapper">
+              <p class="left">提货地点：</p>
+              <p class="right">{{groupInfo.province}}{{groupInfo.city}}{{groupInfo.district}}{{groupInfo.address}}</p>
+            </div>
+            <!--          <div class="item-wrapper">-->
+            <!--            <p class="left">团长：</p>-->
+            <!--            <p class="right">{{groupInfo.name}}</p>-->
+            <!--          </div>-->
+            <div class="item-wrapper">
+              <p class="left">商品总价：</p>
+              <p class="right">{{beforeTotal}}元</p>
+            </div>
+            <div class="item-wrapper mar-0">
+              <p class="left">优惠券：</p>
+              <p v-if="discount > 0" class="right">-{{discount}}元</p>
+              <p v-else class="right">0元</p>
+            </div>
+            <div class="last-item-wrapper">
+              <p class="l-title">实付金额：</p>
+              <p class="l-number">{{total}}</p>
+              <p class="l-unit">元</p>
+            </div>
+          </article>
+          <div class="button-group">
+            <p class="button-wrapper left" @click="_hidePayModal">取消</p>
+            <p class="button-wrapper right" @click="_goPayAction">去支付</p>
+          </div>
+        </section>
+      </article>
+    </div>
   </form>
 </template>
 
 <script type="text/ecmascript-6">
-  import {orderComputed, orderMethods} from '@state/helpers'
+  import { orderComputed, orderMethods } from '@state/helpers'
   import NavigationBar from '@components/navigation-bar/navigation-bar'
-  import {ACTIVE_TYPE} from '@utils/contants'
+  import { ACTIVE_TYPE } from '@utils/contants'
   import API from '@api'
   import Ald from '@utils/ald'
 
@@ -158,11 +171,19 @@
       },
       isGroupModal() {
         return this.goodsList[0].url || false
+      },
+      isGoodsModal() {
+        return false
+      },
+      goodsDiscount() {
+        console.log(this.commodityItem)
+        return this.commodityItem ? +this.commodityItem.denomination ? +this.commodityItem.denomination : 0 : 0
       }
     },
     onLoad() {
       // 重置优惠券
       this.$wechat.showLoading()
+      this.setCommodityItem({})
       this.saveCoupon({})
       this._getCouponInfo()
       this._checkIsNewClient()
@@ -180,6 +201,19 @@
     },
     methods: {
       ...orderMethods,
+      _getGoodsInfo() {
+        if (this.isGoodsModal) {
+          return
+        }
+        API.Coupon.getChooseList({ goods: this.goodsList, is_usable: 1, tag_type: 1 }).then((res) => {
+          if (!res.data.length) return
+          let coupon = res.data[0]
+          this.setCommodityItem(coupon)
+        })
+      },
+      chooseGoodsCouponHandle() {
+        wx.navigateTo({ url: this.$routes.main.INVITATION_CHOOSE })
+      },
       // 获取地理位置
       async _getLocation() {
         if (this.latitude && this.longitude) return
@@ -188,12 +222,12 @@
           this.longitude = res.longitude
           this.latitude = res.latitude
           if (!this.latitude || !this.longitude) {
-            wx.navigateTo({url: `${this.$routes.main.OPEN_LOCATION}`})
+            wx.navigateTo({ url: `${this.$routes.main.OPEN_LOCATION}` })
           }
         } catch (e) {
           this.longitude = 0
           this.latitude = 0
-          wx.navigateTo({url: `${this.$routes.main.OPEN_LOCATION}`})
+          wx.navigateTo({ url: `${this.$routes.main.OPEN_LOCATION}` })
         }
       },
       _checkIsNewClient() {
@@ -208,14 +242,15 @@
         if (this.isGroupModal) {
           return
         }
-        API.Coupon.getChooseList({goods: this.goodsList, is_usable: 1}).then((res) => {
+        API.Coupon.getChooseList({ goods: this.goodsList, is_usable: 1 }).then((res) => {
           if (!res.data.length) return
           let coupon = res.data[0]
           this.saveCoupon(coupon)
+          this._getGoodsInfo()
         })
       },
       chooseCouponHandle() {
-        wx.navigateTo({url: `${this.$routes.main.COUPON_CHOOSE}`})
+        wx.navigateTo({ url: `${this.$routes.main.COUPON_CHOOSE}` })
       },
       _getCode() {
         this.$wechat.login()
@@ -226,7 +261,7 @@
       _getDistance() {
         let longitude = this.longitude
         let latitude = this.latitude
-        API.Global.getDistance({longitude, latitude}).then(res => {
+        API.Global.getDistance({ longitude, latitude }).then(res => {
           this.distance = Number(res.data.distance / 1000).toFixed(2)
         })
       },
@@ -323,148 +358,148 @@
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
- @import "~@designCommon"
- // 支付模块
- .share-panel-wrapper
-   .share-mask
-     position: fixed
-     left: 0
-     top: 0
-     bottom: 0
-     right: 0
-     z-index: 999
-     background: rgba(17, 17, 17, 0.7)
-   .share-panel
-     position: fixed
-     bottom: -130%
-     left: 0
-     background: #fff
-     width: 100%
-     z-index:9999
-     transition: all .5s
-     &.show
-       bottom :0
-     .title
-       padding-top :22px
-       font-family: $font-family-medium
-       font-size: 16px
-       color: #111111
-       text-align: center
-       .distance
+  @import "~@designCommon"
+  // 支付模块
+  .share-panel-wrapper
+    .share-mask
+      position: fixed
+      left: 0
+      top: 0
+      bottom: 0
+      right: 0
+      z-index: 999
+      background: rgba(17, 17, 17, 0.7)
+    .share-panel
+      position: fixed
+      bottom: -130%
+      left: 0
+      background: #fff
+      width: 100%
+      z-index: 9999
+      transition: all .5s
+      &.show
+        bottom: 0
+      .title
+        padding-top: 22px
+        font-family: $font-family-medium
+        font-size: 16px
+        color: #111111
+        text-align: center
+        .distance
           color: #FA7500
-          padding :0 3px
-     .sub-title
-       padding-top :6px
-       font-family: $font-family-regular
-       font-size: 14px
-       color: #FA7500
-       letter-spacing: 0
-       text-align: center
-     .box-wrapper
-       background: #F7F7F7
-       border-radius: 4px
-       margin: 20px 12px 14.5px
-       padding :20px 15px
-       .item-wrapper
-         display :flex
-         font-family: $font-family-regular
-         font-size: 14px
-         margin-bottom :16px
-         .left
-           width :80px
-           color: #616161
-         .right
-           flex: 1
-           color: $color-text-main
-       .last-item-wrapper
-         display :flex
-         font-family: $font-family-regular
-         .l-title
-           flex: 1
-           font-size: 14px
-           color: $color-text-main
-           text-align :right
-         .l-number
-           font-family: $font-family-bold
-           font-size: 16px;
-           color: #FF8506;
-           position :relative
-           bottom :1px
-         .l-unit
-           font-size: 14px;
-           color: #FF8506;
-           margin-left :1px
-           position :relative
-           bottom :0px
-     .button-group
-       display :flex
-       .button-wrapper
-         flex: 1
-         height :55px
-         font-family: $font-family-medium
-         font-size: 16px
-         color: $color-text-main
-         text-align: center
-         line-height: @height
-         box-sizing :border-box
-         &.left
-           border-top :1px solid $color-line
-         &.right
-           background: #73C200;
-           color: #FFFFFF;
+          padding: 0 3px
+      .sub-title
+        padding-top: 6px
+        font-family: $font-family-regular
+        font-size: 14px
+        color: #FA7500
+        letter-spacing: 0
+        text-align: center
+      .box-wrapper
+        background: #F7F7F7
+        border-radius: 4px
+        margin: 20px 12px 14.5px
+        padding: 20px 15px
+        .item-wrapper
+          display: flex
+          font-family: $font-family-regular
+          font-size: 14px
+          margin-bottom: 16px
+          .left
+            width: 80px
+            color: #616161
+          .right
+            flex: 1
+            color: $color-text-main
+        .last-item-wrapper
+          display: flex
+          font-family: $font-family-regular
+          .l-title
+            flex: 1
+            font-size: 14px
+            color: $color-text-main
+            text-align: right
+          .l-number
+            font-family: $font-family-bold
+            font-size: 16px;
+            color: #FF8506;
+            position: relative
+            bottom: 1px
+          .l-unit
+            font-size: 14px;
+            color: #FF8506;
+            margin-left: 1px
+            position: relative
+            bottom: 0px
+      .button-group
+        display: flex
+        .button-wrapper
+          flex: 1
+          height: 55px
+          font-family: $font-family-medium
+          font-size: 16px
+          color: $color-text-main
+          text-align: center
+          line-height: @height
+          box-sizing: border-box
+          &.left
+            border-top: 1px solid $color-line
+          &.right
+            background: #73C200;
+            color: #FFFFFF;
 
   .goods-total-wrapper
-    padding :15.5px 12px 12px
+    padding: 15.5px 12px 12px
     font-family: $font-family-regular
     color: $color-text-main
-    background :#fff
+    background: #fff
     border-top-1px(#e6e6e6)
-    border-bottom :11px solid $color-background
+    border-bottom: 11px solid $color-background
     .new-rule-wrapper
-     padding-top :6px
-     font-size: 12px;
-     text-align: right;
-     color: $color-text-sub
+      padding-top: 6px
+      font-size: 12px;
+      text-align: right;
+      color: $color-text-sub
     .total-wrapper
-     display :flex
-     align-items :center
-     font-size: 14px
-     line-height: 1
-     .name
-       flex:1
-       color: #000000
-     .price
-       font-family: $font-family-medium
+      display: flex
+      align-items: center
+      font-size: 14px
+      line-height: 1
+      .name
+        flex: 1
+        color: #000000
+      .price
+        font-family: $font-family-medium
 
   .coupon-info-wrapper
-    border-bottom :11px solid $color-background
-    padding :10.5px 12px
+    border-bottom: 11px solid $color-background
+    padding: 10.5px 12px
     font-family: $font-family-regular
     font-size: 14px;
     line-height: 1
-    background :#fff
+    background: #fff
     .coupon-item
-      display :flex
-      align-items :center
-      padding :10px 0
-     .name
-       flex:1
-       color: #000000
-     .price
-       font-size: 16px
-       font-family: $font-family-medium
-     .price-disable
-        font-size :14px
-        color: #808080
+      display: flex
+      align-items: center
+      padding: 10px 0
+    .name
+      flex: 1
+      color: #000000
+    .price
+      font-size: 16px
+      font-family: $font-family-medium
+    .price-disable
+      font-size: 14px
+      color: #808080
     .item-arrow-img
-       margin-left :5px
-       display: block
-       width: 7.5px
-       height: 12.5px
-       .img
-         display :block
-         width :100%
-         height :100%
+      margin-left: 5px
+      display: block
+      width: 7.5px
+      height: 12.5px
+      .img
+        display: block
+        width: 100%
+        height: 100%
 
   .submit-order
     width: 100%
@@ -573,6 +608,7 @@
     height: 3px
     width: 100%
     margin-bottom: 11px
+
   .order-list
     background: #fff
     padding-left: 3.2vw
@@ -657,24 +693,25 @@
     .money
       font-size: $font-size-16
       font-family: $font-family-medium
-      display :flex
-      align-items :flex-end
+      display: flex
+      align-items: flex-end
       .explain
         font-family: $font-family-regular
         font-size: 14px
         color: $color-text-main
     .pay
       position absolute
-      right :0
-      bottom :0
-      height :50px
-      width :33.33333333333333vw
+      right: 0
+      bottom: 0
+      height: 50px
+      width: 33.33333333333333vw
       font-size: $font-size-16
       color: #fff
       font-family: $font-family-medium
       line-height: @height
       text-align: center
       background: #73C200
+
   .submit-order
     width: 100%
 </style>
