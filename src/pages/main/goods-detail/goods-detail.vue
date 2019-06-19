@@ -170,7 +170,7 @@
         @buyRecordNavTo="buyRecordNavTo"
       ></buy-record>
       <detail-image :goodsMsg="goodsMsg"></detail-image>
-      <service-description></service-description>
+      <service-description :runTime="runTime"></service-description>
       <button-group
         :buttonInfo="buttonInfo"
         :activityType="activityType"
@@ -318,7 +318,8 @@
         autoplay: true,
         statusBarHeight: -100,
         product: null,
-        showSharePanel: false
+        showSharePanel: false,
+        runTime: ''
       }
     },
     computed: {
@@ -420,6 +421,7 @@
       this._setEventNo()
       this._getBuyUsers()
       this._getProduct()
+      this._getRunTime()
       this.$$shareHandler({
         event: EVENT_CODE.GOODS_DETAIL,
         activityId: this.activityId,
@@ -469,6 +471,11 @@
     methods: {
       ...orderMethods,
       ...cartMethods,
+      _getRunTime() {
+        API.Global.getRunTime().then(res => {
+          this.runTime = res.data.run_time
+        })
+      },
       _getProduct() {
         const shopId = wx.getStorageSync('shopId')
         const miniPath = `${this.$routes.main.PACKAGE}/${PAGE_ROUTE_NAME}?id=${this.goodsId}&shopId=${shopId}&activityId=${this.activityId}&activityType=${this.activityType}`
