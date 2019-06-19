@@ -80,7 +80,43 @@ module.exports = function (arguments) {
   // }
 }
 
+// function handleResolveArgs(arguments) {
+//   let res = {
+//     versions: '\'\'',
+//     applications: '\'platform\'',
+//     environments: '\'production\''
+//   }
+//   arguments.forEach(item => {
+//     findChild(versions, item, res, 'versions')
+//     findChild(applications, item, res, 'applications')
+//     findChild(environments, item, res, 'environments')
+//   })
+//   return res
+// }
+//
+// function findChild(targetArr, target, res, key) {
+//   let result = targetArr.find(child => child === target)
+//   result && (res[key] = result)
+//   if (result) {
+//     switch (key) {
+//       case 'versions':
+//         res[key] = '\'/' + result
+//         break
+//       case 'applications':
+//         res[key] = '\'' + result + '\''
+//         break
+//       case 'environments':
+//         res[key] = '\'' + result + '\''
+//         break
+//       default:
+//         break
+//     }
+//   }
+// }
+
 function handleException(message) {
   console.log(chalk.red('' + message + '\n'))
   process.exit(1)
 }
+
+// module.exports = handleResolveArgs
