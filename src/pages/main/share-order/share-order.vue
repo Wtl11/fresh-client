@@ -298,7 +298,7 @@
             color: $color-sub
       .share-tit
         .name
-          width: 47.7vw
+          flex: 1
         .share-tit-btn
           font-size: $font-size-12
           color: $color-white
