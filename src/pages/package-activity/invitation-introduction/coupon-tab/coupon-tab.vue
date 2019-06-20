@@ -44,7 +44,7 @@
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
-  $tab-height = 57px
+  $tab-height = 47px
   @import "~@designCommon"
 
   .place-box
@@ -73,13 +73,15 @@
         font-size: 15px
         color: $color-text-sub
         text-align: center
-        line-height: @height
         display: flex
         position: relative
         .tab-item
-          flex: 1
+          width: 50%
+          line-height: 1
+          box-sizing: border-box
+          padding-top: 17.5px
           &.active
-            font-family: PingFang-SC-Bold
+            font-family: $font-family-medium
             font-size: 15px
             color: #F27F2E
         .line-wrapper

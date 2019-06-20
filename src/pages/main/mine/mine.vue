@@ -1,7 +1,7 @@
 <template>
   <div class="wrap">
     <navigation-bar title="我的" :showArrow="false" :translucent="true"></navigation-bar>
-<!--    <mine-r-test v-if="ENV === 'test'"></mine-r-test>-->
+    <!--    <mine-r-test v-if="ENV === 'test'"></mine-r-test>-->
     <div :style="{height: placeHeight+'px'}"></div>
     <section class="top-background" :style="{height: backgroundHeight+'px'}">
       <img class="img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/bg-top_me.png'">
@@ -14,7 +14,7 @@
         <div class="nickname">{{userInfo.nickname}}</div>
       </div>
       <div class="erwcode" @click="createQrCode">
-        <img class="ecode-img" v-if="imageUrl" :src="imageUrl+'/yx-image/2.3/icon-code@2x.png'">
+        <img class="ecode-img" v-if="imageUrl" :src="imageUrl+'/yx-image/invitation/icon-code@2x.png'">
         <p class="ecode-text">提货码</p>
       </div>
     </div>
@@ -64,8 +64,8 @@
         <div class="erm-text" :class="'corp-' + corpName + '-text'">向团长出示二维码提货</div>
       </div>
     </div>
-<!--    <official-account></official-account>-->
-<!--    <div style="height: 50px"></div>-->
+    <!--    <official-account></official-account>-->
+    <!--    <div style="height: 50px"></div>-->
     <custom-tab-bar currentType="mine"></custom-tab-bar>
   </div>
 </template>
@@ -76,7 +76,7 @@
   import CustomTabBar from '@components/custom-tab-bar/custom-tab-bar'
   import QrcodeMsg from '@components/qrcode-msg/qrcode-msg'
   import API from '@api'
-  import {oauthComputed} from '@state/helpers'
+  import { oauthComputed } from '@state/helpers'
   import MineRTest from './mine-r-test/mine-r-test'
   import MineNavigation from './mine-navigation/mine-navigation'
   import AnimationModal from '@mixins/animation-modal'
@@ -84,11 +84,11 @@
   import Banner from './banner/banner'
 
   const ORRDER_NAV_LIST = [
-    {icon_url: '/yx-image/cart/icon-payment@2x.png', name: '待付款', id: 0, index: 1, count: 0},
-    {icon_url: '/yx-image/cart/icon-delivery@2x.png', name: '待提货', id: 1, index: 2, count: 0},
-    {icon_url: '/yx-image/cart/icon-finish@2x.png', name: '已完成', id: 2, index: 3, count: 0},
-    {icon_url: '/yx-image/cart/icon-aftersales@2x.png', name: '售后', id: 4, count: 0},
-    {icon_url: '/yx-image/cart/icon-order@2x.png', name: '全部', id: '', index: 0, count: 0}
+    { icon_url: '/yx-image/cart/icon-payment@2x.png', name: '待付款', id: 0, index: 1, count: 0 },
+    { icon_url: '/yx-image/cart/icon-delivery@2x.png', name: '待提货', id: 1, index: 2, count: 0 },
+    { icon_url: '/yx-image/cart/icon-finish@2x.png', name: '已完成', id: 2, index: 3, count: 0 },
+    { icon_url: '/yx-image/cart/icon-aftersales@2x.png', name: '售后', id: 4, count: 0 },
+    { icon_url: '/yx-image/cart/icon-order@2x.png', name: '全部', id: '', index: 0, count: 0 }
   ]
 
   export default {
@@ -240,7 +240,7 @@
       },
       createQrCode() {
         let id = wx.getStorageSync('userInfo') ? wx.getStorageSync('userInfo').id : 0
-        let str = JSON.stringify({'customer_id': id}) // todo
+        let str = JSON.stringify({ 'customer_id': id }) // todo
         let img = this.$createQrCode.png(str) // png
         img = this.$createQrCode.svg(str) // svg
         this.testSrc = img
@@ -283,7 +283,7 @@
             if (res.error !== this.$ERR_OK) {
               return
             }
-            let {city, district, address, longitude, latitude, mobile, social_name: socialName} = res.data
+            let { city, district, address, longitude, latitude, mobile, social_name: socialName } = res.data
             this.detail.address = city + district + address
             this.detail.longitude = longitude
             this.detail.latitude = latitude
@@ -332,10 +332,10 @@
   @import "~@designCommon"
 
   .img
-    width :100%
-    height :100%
-    font-size :0
-    line-height :0
+    width: 100%
+    height: 100%
+    font-size: 0
+    line-height: 0
 
   cover-view
     border: none
@@ -346,20 +346,20 @@
     background: $color-white
     position: relative
     .top-background
-      position :absolute
-      left :0
-      right :0
+      position: absolute
+      left: 0
+      right: 0
       top: 0
-      background-color :#73c200
+      background-color: #73c200
     .button-group
-      position :relative
+      position: relative
       .button-item
-        padding :30px 12px 0
+        padding: 30px 12px 0
         &:last-child
-          padding :30px 12px
+          padding: 30px 12px
         .item-wrapper
           layout(row)
-          justify-content :center
+          justify-content: center
           font-family: $font-family-medium
           font-size: $font-size-16
           color: $color-sub
@@ -372,9 +372,9 @@
             font-family: $font-family-regular
             font-size: 14px
             color: #808080
-            padding :0 6px
-            position :relative
-            bottom :1px
+            padding: 0 6px
+            position: relative
+            bottom: 1px
           .item-arrow-img
             display: block
             width: 7.5px
@@ -459,10 +459,11 @@
     .group
       padding: 0 3.46vw 0 3.2vw
     .mine-top
-      padding :10px 23px 0
-      layout(row,block,nowrap)
+      padding: 10px 12px 0 23px
+      layout(row, block, nowrap)
       align-items: center
-      position :relative
+      position: relative
+      justify-content: space-between
       .info
         layout(row)
         align-items: center
@@ -471,14 +472,14 @@
           width: 55px
           height: @width
           border-radius: 50%
-          border: 2px solid rgba(255,255,255,0.80)
+          border: 2px solid rgba(255, 255, 255, 0.80)
           .avatar-img
             display: block
             border-radius: 50%
             width: 100%
             height: 100%
         .nickname
-          padding-left :17px
+          padding-left: 17px
           max-width: 53vw
           font-family: $font-family-medium
           font-size: $font-size-18
@@ -486,16 +487,21 @@
           letter-spacing: 0.9px
           no-wrap()
       .erwcode
-        opacity: 0.9;
+        display: flex
+        background: #FAFFF2
+        border-radius: 20px
+        align-items: center
+        justify-content: center
+        height: 32px
+        width: 90px
         .ecode-text
-          padding-top :4px
-          font-family: $font-family-regular
-          font-size: 11px;
-          color: #FFFFFF;
-          text-align :center
+          font-family: $font-family-medium
+          font-size: $font-size-13
+          color: $color-main
+          margin-left: 6px
         .ecode-img
           display: block
-          width: 38px
+          width: 15px
           height: @width
     .order-nav
       width: 100%
@@ -558,7 +564,7 @@
     margin: 17px 12px 0 12px
     background: $color-white
     overflow: hidden
-    position :relative
+    position: relative
     .order-banner-box
       padding: 0 10px 10px
       box-sizing: border-box

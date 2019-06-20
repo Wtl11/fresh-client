@@ -3,7 +3,7 @@
     <navigation-bar title="邀请有礼"></navigation-bar>
     <div class="invitee-box">
       <div class="invitee-img-box">
-        <img v-if="imageUrl" :src="imageUrl + '/yx-image/invitation/pic-getcoupon_yqyl@2x.png'" class="invitee-img">
+        <img mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/invitation/pic-getcoupon_yqyl@2x.png'" class="invitee-img">
       </div>
       <div class="coupon">
         <coupon-item :dataInfo="coupon"></coupon-item>

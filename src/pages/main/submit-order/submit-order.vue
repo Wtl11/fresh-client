@@ -51,7 +51,7 @@
           <p class="price">{{beforeTotal}}</p>
           <p>元</p>
         </div>
-        <p v-if="isShowNewCustomer" class="new-rule-wrapper">你不符合新人特惠购买资格</p>
+        <p v-if="isShowNewCustomer" class="new-rule-wrapper">不符合新人购买资格，按原价结算</p>
       </section>
       <ul class="coupon-info-wrapper" :class="'corp-' + corpName + '-money'">
         <li v-if="isGoodsModal" class="coupon-item">
@@ -459,7 +459,7 @@
       padding-top: 6px
       font-size: 12px;
       text-align: right;
-      color: $color-text-sub
+      color: #FF8506
     .total-wrapper
       display: flex
       align-items: center

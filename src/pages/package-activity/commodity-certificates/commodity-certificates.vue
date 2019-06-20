@@ -259,9 +259,10 @@
           width: 18.4vw
           height: 18.4vw
           .goods-img
-            border-radius: 1px
+            border-radius: 2px
             width: 18.4vw
             height: 18.4vw
+            overflow: hidden
           .goods-price
             position: absolute
             bottom: 0
@@ -300,31 +301,30 @@
         .title
           layout(row, block, nowrap)
           align-items: center
-          color: #1D2023;
+          color: #1D2023
           .use-type
-            height: 12px;
-            border: 1px solid rgba(29, 32, 35, 0.8);
-            border-radius: 2px;
-            color: #1d2023;
-            font-size: 11px;
-            line-height: 12.5px;
-            padding: 0 2px;
+            height: 12px
+            border: 1px solid rgba(29, 32, 35, 0.8)
+            border-radius: 2px
+            color: #1d2023
+            font-size: 11px
+            line-height: 12.5px
+            padding: 0 2px
           .txt
             font-family: $font-family-medium
-            font-size: 3.733333333333334vw
-            max-width: 54vw
-            margin-top: 5.8666vw
-            no-wrap()
+            font-size: 4vw
+            max-width: 51vw
+            margin-top: 4.26667vw
             color: $color-text-main
-            line-height: 1.2
+            line-height: 5.0667vw
+            height: 10.13333vw
         .condition
           font-family: $font-family-regular
-          padding-top: 4vw
+          padding-top: 1.6vw
           opacity: 0.8
           color: $color-text-sub
-          font-size: 3.2vw
+          font-size: 3.46667vw
           line-height: 1
-          no-wrap()
 
   .img
     position: absolute

@@ -70,27 +70,25 @@
         tabIndex: 0,
         height: 300,
         tabList: [
-          new TabItem({ text: '邀请成功', status: '1', numberKey: 'can_used_count' }),
-          new TabItem({ text: '邀请在路上', status: '0', numberKey: 'cannot_used_count' })
+          new TabItem({ text: '邀请成功', status: '3', numberKey: 'can_used_count' }),
+          new TabItem({ text: '邀请在路上', status: '1', numberKey: 'cannot_used_count' })
         ]
       }
     },
     onShareAppMessage() {
       let shopId = wx.getStorageSync('shopId') || 0
-      let userInfo = wx.getStorageSync('userInfo') || {}
-      let nickName = userInfo.nickname || ''
-      let id = userInfo.id || ''
+      let socialName = wx.getStorageSync('social_name')
       return {
-        title: `${nickName}邀请你参加新人专享活动`,
-        path: `${this.$routes.activity.INVITEE}?shopId=${shopId}&invitationId=${id}`,
-        imageUrl: `${this.imageUrl}/yx-image/invitation/pic-yqyl_wechat@2x.png`
+        title: `${socialName},次日达、直采直销，点击下单↓`,
+        path: `${this.$routes.main.CHOICENESS}?shopId=${shopId}`,
+        imageUrl: this.imageUrl + '/yx-image/choiceness/pic-zbyx@2x.png'
       }
     },
     onShow() {
-      this.tabIndex = +this.$mp.query.index || 0
       this.getInviteStatistic(true)
     },
     onLoad() {
+      this.tabIndex = +this.$mp.query.index || 0
       let res = this.$wx.getSystemInfoSync()
       this.height = res.screenHeight - 40 - 12 - 44 - res.statusBarHeight
     },
@@ -154,14 +152,16 @@
           .coupon-wrapper
             background: transparent
             position: relative
-            min-height: (21.33333 * 3) vw
+            min-height: (19.46667 * 3) vw
             .people-item
               display: flex
-              padding: 6.666667vw 0 4vw
+              padding: 4vw 0 4vw
               margin: 0 4vw
               box-sizing: border-box
-              height: 21.33333vw
-              border-bottom-1px(#E6E6E6)
+              height: 19.46667vw
+              border-bottom-1px(#D8D8D8)
+              &:nth-child(3)
+                border-none()
               .people-img
                 width: 10.6667vw
                 border-radius: 50%
@@ -204,5 +204,20 @@
                 height: 13px
                 line-height: 13px
                 font-family: $font-family-regular
+
+            .more-item
+              display: flex
+              align-items: center
+              justify-content: center
+              height: 38px
+              border-top-1px(#D8D8D8)
+              .more-text
+                color: #868686
+                font-family: $font-family-regular
+                font-size: $font-size-14
+                margin-right: 4.5px
+              .way
+                height: 12.5px
+                width: 6.5px
 
 </style>

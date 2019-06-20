@@ -1,66 +1,68 @@
 <template>
-  <div class="invitation-introduction">
+  <div>
     <navigation-bar title="邀请有礼"></navigation-bar>
-    <div class="invitee-img-box">
-      <img v-if="imageUrl" :src="imageUrl + '/yx-image/invitation/pic-yqyl@2x.png'" class="invitee-img">
-      <div class="rules" @click="goRules"></div>
-    </div>
-    <img v-if="imageUrl" :src="imageUrl + '/yx-image/invitation/pic-title1@2x.png'" class="title-img">
-    <div class="coupon">
-      <div v-for="(item, index) in couponList" :key="index" class="coupon-item">
-        <img v-if="imageUrl" :src="imageUrl + '/yx-image/invitation/pic-yqcoupon@2x.png'" class="coupon-img">
-        <div class="coupon-right-title">
-          <span class="coupon-title">福利{{index + 1}}</span>
-        </div>
-        <div class="coupon-content">
-          <div class="coupon-intro">邀请<span class="coupon-num">{{item.cond_num}}</span>位新用户下单</div>
-          <div class="coupon-tip">可获得</div>
-          <div class="coupon-name" v-if="item.other_info">{{item.other_info.goods_name}}</div>
-        </div>
-        <div class="goods-img-box">
-          <img v-if="item.other_info" :src="item.other_info.goods_cover_image" mode="aspectFill" class="goods-img">
+    <div class="invitation-introduction">
+      <div class="invitee-img-box">
+        <img v-if="imageUrl" :src="imageUrl + '/yx-image/invitation/pic-yqyl@2x.png'" class="invitee-img">
+        <div class="rules" @click="goRules"></div>
+      </div>
+      <img v-if="imageUrl" :src="imageUrl + '/yx-image/invitation/pic-title1@2x.png'" class="title-img">
+      <div class="coupon">
+        <div v-for="(item, index) in couponList" :key="index" class="coupon-item">
+          <img v-if="imageUrl" :src="imageUrl + '/yx-image/invitation/pic-yqcoupon@2x.png'" class="coupon-img">
+          <div class="coupon-right-title">
+            <span class="coupon-title">福利{{index + 1}}</span>
+          </div>
+          <div class="coupon-content">
+            <div class="coupon-intro">邀请<span class="coupon-num">{{item.cond_num}}</span>位新用户下单</div>
+            <div class="coupon-tip">可获得</div>
+            <div class="coupon-name" v-if="item.other_info">{{item.other_info.goods_name}}</div>
+          </div>
+          <div class="goods-img-box">
+            <img v-if="item.other_info" :src="item.other_info.goods_cover_image" mode="aspectFill" class="goods-img">
+          </div>
         </div>
       </div>
-    </div>
-    <img v-if="imageUrl" :src="imageUrl + '/yx-image/invitation/pic-title2@2x.png'" class="title-img">
-    <div class="people">
-      <coupon-tab :tabList="tabList" :tabIndex="tabIndex" @change="changeTab"></coupon-tab>
-      <article class="big-box">
-        <div
-          class="scroll-wrapper"
-          :style="{'transform': ' translateX('+ -(tabIndex * 91.4667) +'vw)', width:  (tabList.length * 91.4667) +'vw'}"
-        >
-          <nav class="scroll-item-wrapper"
-               v-for="(item, index) in tabList" :key="index"
+      <img v-if="imageUrl" :src="imageUrl + '/yx-image/invitation/pic-title2@2x.png'" class="title-img">
+      <div class="people">
+        <coupon-tab :tabList="tabList" :tabIndex="tabIndex" @change="changeTab"></coupon-tab>
+        <article class="big-box">
+          <div
+            class="scroll-wrapper"
+            :style="{'transform': ' translateX('+ -(tabIndex * 91.4667) +'vw)', width:  (tabList.length * 91.4667) +'vw'}"
           >
-            <ul class="coupon-wrapper" v-if="index === tabIndex">
-              <!---->
-              <block v-for="(child, idx) in item.dataArray" :key="idx">
-                <li v-if="idx < 3" class="people-item">
-                  <img :src="child.avatar" alt="" class="people-img">
-                  <div class="people-msg">
-                    <div class="people-name">{{child.nickname}}</div>
-                    <div class="people-time">{{child.created_at}}</div>
-                  </div>
-                  <div class="tip" v-if="tabIndex === 0">下单成功</div>
-                  <button class="guid" v-if="tabIndex === 1" open-type="share">去引导</button>
+            <nav class="scroll-item-wrapper"
+                 v-for="(item, index) in tabList" :key="index"
+            >
+              <ul class="coupon-wrapper" v-if="index === tabIndex">
+                <!---->
+                <block v-for="(child, idx) in item.dataArray" :key="idx">
+                  <li v-if="idx < 3" class="people-item">
+                    <img :src="child.avatar" alt="" class="people-img">
+                    <div class="people-msg">
+                      <div class="people-name">{{child.nickname}}</div>
+                      <div class="people-time">{{child.created_at}}</div>
+                    </div>
+                    <div class="tip" v-if="tabIndex === 0">下单成功</div>
+                    <button class="guid" v-if="tabIndex === 1" open-type="share">去引导</button>
+                  </li>
+                </block>
+                <li v-if="item.dataArray.length > 3" class="more-item" @click="goMore">
+                  <span class="more-text">查看更多</span>
+                  <img v-if="imageUrl" :src="imageUrl + '/yx-image/invitation/icon-pressed_yq@2x.png'" class="way">
                 </li>
-              </block>
-              <li v-if="item.dataArray.length > 3" class="more-item" @click="goMore">
-                <span class="more-text">查看更多</span>
-                <img v-if="imageUrl" :src="imageUrl + '/yx-image/invitation/icon-pressed_yq@2x.png'" class="way">
-              </li>
-              <is-active-empty v-if="item.isShowEmpty"></is-active-empty>
-              <!--<li v-if="item.isShowEmpty" class="empty-wrapper">-->
-              <!--<img class="empty-img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.1/pic-kong@2x.png'">-->
-              <!--<p class="empty-text">空空如也</p>-->
-              <!--</li>-->
-            </ul>
-          </nav>
-        </div>
-      </article>
+                <is-active-empty v-if="item.isShowEmpty"></is-active-empty>
+                <!--<li v-if="item.isShowEmpty" class="empty-wrapper">-->
+                <!--<img class="empty-img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.1/pic-kong@2x.png'">-->
+                <!--<p class="empty-text">空空如也</p>-->
+                <!--</li>-->
+              </ul>
+            </nav>
+          </div>
+        </article>
+      </div>
+      <button class="btn" open-type="share" data-type="default">立即邀请好友领好礼</button>
     </div>
-    <button class="btn" open-type="share">立即邀请好友领好礼</button>
   </div>
 </template>
 
@@ -85,21 +87,32 @@
       return {
         tabIndex: 0,
         tabList: [
-          new TabItem({ text: '邀请成功', status: '1', numberKey: 'can_used_count' }),
-          new TabItem({ text: '邀请在路上', status: '0', numberKey: 'cannot_used_count' })
+          new TabItem({ text: '邀请成功', status: '3', numberKey: 'can_used_count' }),
+          new TabItem({ text: '邀请在路上', status: '1', numberKey: 'cannot_used_count' })
         ],
         couponList: []
       }
     },
-    onShareAppMessage() {
+    onShareAppMessage(e) {
       let shopId = wx.getStorageSync('shopId') || 0
       let userInfo = wx.getStorageSync('userInfo') || {}
       let nickName = userInfo.nickname || ''
       let id = userInfo.id || ''
+      let socialName = wx.getStorageSync('social_name')
+      // 引导
+      let imageUrl = this.imageUrl + '/yx-image/choiceness/pic-zbyx@2x.png'
+      let title = `${socialName},次日达、直采直销，点击下单↓`
+      let path = `${this.$routes.main.CHOICENESS}?shopId=${shopId}`
+      if (e.target.dataset.type === 'default') {
+        // 邀请用户
+        title = `${nickName}邀请你参加新人专享活动`
+        imageUrl = `${this.imageUrl}/yx-image/invitation/pic-yqyl_wechat@2x.png`
+        path = `${this.$routes.activity.INVITEE}?shopId=${shopId}&invitationId=${id}`
+      }
       return {
-        title: `${nickName}邀请你参加新人专享活动`,
-        path: `${this.$routes.activity.INVITEE}?shopId=${shopId}&invitationId=${id}`,
-        imageUrl: `${this.imageUrl}/yx-image/invitation/pic-yqyl_wechat@2x.png`
+        title,
+        path,
+        imageUrl
       }
     },
     onShow() {
@@ -147,7 +160,6 @@
   @import "~@designCommon"
 
   .invitation-introduction
-    min-height: 100vh
     background: #FDE676
     padding-bottom: 84px
 
@@ -171,13 +183,14 @@
           .coupon-wrapper
             background: transparent
             position: relative
-            min-height: (21.33333 * 3) vw
+            min-height: (19.46667 * 3) vw
+            margin-top: 2.6667vw
             .people-item
               display: flex
-              padding: 6.666667vw 0 4vw
+              padding: 4vw 0 4vw
               margin: 0 4vw
               box-sizing: border-box
-              height: 21.33333vw
+              height: 19.46667vw
               border-bottom-1px(#D8D8D8)
               &:nth-child(3)
                 border-none()
@@ -301,11 +314,11 @@
         color: #333333
         display: flex
         align-items: center
-        line-height: 17px
+        line-height: 1
         .coupon-num
           font-size: $font-size-17
           color: #F27F2E
-          font-family: PingFang-SC-Heavy
+          font-family: $font-family-medium
       .coupon-tip
         margin-top: 6.1333vw
         font-size: $font-size-13
@@ -315,7 +328,7 @@
       .coupon-name
         line-height: 1
         font-size: $font-size-16
-        font-family: $font-family-bold
+        font-family: $font-family-medium
         color: #333333
         margin-top: 1.6vw
         no-wrap()
@@ -324,6 +337,7 @@
       z-index: 1
       margin: 1.5vw 0 0 3.73333vw
       .goods-img
+        border-radius: 4px
         margin-top: 1.86667vw
         display: block
         width: 23.33334vw
