@@ -6,18 +6,24 @@
     <div v-if="useType==='able'" class="coupon-container">
       <section class="left">
         <div class="l-top" :class="'corp-' + corpName + '-money'">
-          <p class="number">{{dataInfo.denomination}}</p>
+          <p class="number">{{money.int}}</p>
+          <p class="dec">{{money.dec}}</p>
           <p class="unit">{{unit}}</p>
         </div>
-        <div v-if="dataInfo.condition > 0" class="l-bottom">{{dataInfo.condition_str}}</div>
+        <div v-if="dataInfo.condition >= 0" class="l-bottom">{{dataInfo.condition_str}}</div>
       </section>
       <section class="right">
         <div class="info-wrapper">
-          <div class="title">{{dataInfo.coupon_name}}</div>
-          <div class="explain-wrapper">
-            <p class="explain">{{dataInfo.range_type_desc}}</p>
-            <p class="date">有效期至{{dataInfo.end_at}}</p>
+<!--          <div class="title">{{dataInfo.coupon_name}}</div>-->
+<!--          <div class="explain-wrapper">-->
+<!--            <p class="explain">{{dataInfo.range_type_desc}}</p>-->
+<!--            <p class="date">有效期至{{dataInfo.end_at}}</p>-->
+<!--          </div>-->
+          <div class="title">
+            <p class="use-type">{{dataInfo.range_type_str}}</p>
+            <p class="txt">{{dataInfo.coupon_name}}</p>
           </div>
+          <p class="condition">有效期至 {{dataInfo.end_at}}</p>
         </div>
         <div class="tool-wrapper">
           <img class="sel-box"
@@ -39,18 +45,24 @@
       <div class="top">
         <section class="left">
           <div class="l-top color-b7b7b7">
-            <p class="number">{{dataInfo.denomination}}</p>
+            <p class="number">{{money.int}}</p>
+            <p class="dec">{{money.dec}}</p>
             <p class="unit">{{unit}}</p>
           </div>
-          <div v-if="dataInfo.condition > 0" class="l-bottom color-b7b7b7">{{dataInfo.condition_str}}</div>
+          <div v-if="dataInfo.condition >= 0" class="l-bottom color-b7b7b7">{{dataInfo.condition_str}}</div>
         </section>
         <section class="right">
           <div class="info-wrapper">
-            <div class="title color-b7b7b7">{{dataInfo.coupon_name}}</div>
-            <div class="explain-wrapper color-b7b7b7">
-              <p class="explain">{{dataInfo.range_type_desc}}</p>
-              <p class="date">有效期至{{dataInfo.end_at}}</p>
+<!--            <div class="title color-b7b7b7">{{dataInfo.coupon_name}}</div>-->
+<!--            <div class="explain-wrapper color-b7b7b7">-->
+<!--              <p class="explain">{{dataInfo.range_type_desc}}</p>-->
+<!--              <p class="date">有效期至{{dataInfo.end_at}}</p>-->
+<!--            </div>-->
+            <div class="title color-b7b7b7">
+              <p class="use-type" :style="{color: '#b7b7b7', borderColor: '#b7b7b7'}">{{dataInfo.range_type_str}}</p>
+              <p class="txt" :style="{color: '#b7b7b7'}">{{dataInfo.coupon_name}}</p>
             </div>
+            <p class="condition" :style="{color: '#b7b7b7'}">有效期至 {{dataInfo.end_at}}</p>
           </div>
           <div class="tool-wrapper">
           </div>
@@ -65,6 +77,8 @@
 
 <script type="text/ecmascript-6">
   import Coupon from './coupon'
+  import {formatCouponMoney} from '@utils/common'
+
   const COMPONENT_NAME = 'COUPON_ITEM'
 
   export default {
@@ -99,6 +113,9 @@
     computed: {
       unit() {
         return Coupon.COUPON_UNIT[this.dataInfo.preferential_type] || ''
+      },
+      money() {
+        return formatCouponMoney(this.dataInfo.denomination)
       }
     }
   }
@@ -130,6 +147,11 @@
       .number
         font-size: 9.066666666666666vw
         line-height: 7.733333333333333vw
+      .dec
+        position :relative
+        top:1.0666666666666667vw
+        font-size: 5.6vw
+        line-height: @font-size
       .unit
         margin-left :1px
         position :relative
@@ -137,7 +159,7 @@
         font-size: 4.010695187165775vw
         line-height: @font-size
     .l-bottom
-      padding-top :1.4666666666666666vw
+      margin-top :7px
       font-family: $font-family-regular
       font-size: 3.2vw
       color: $color-text-sub
@@ -171,21 +193,32 @@
       justify-content :space-between
       color: $color-text-sub
       .title
-        width :40vw
-        font-family: $font-family-medium
-        font-size: 3.733333333333334vw
-        line-height: @font-size
-        color: $color-text-main
-        no-wrap()
-      .explain-wrapper
-        padding-top :2.666666666666667vw
-        opacity: 0.8
-        font-family: $font-family-regular
-        font-size: 3.2vw
-        line-height: @font-size
-        .date
-          padding-top :1.866666666666667vw
+        layout(row,block,nowrap)
+        align-items :center
+        color: #1D2023;
+        .use-type
+          height:12px;
+          border:1px solid rgba(29,32,35,0.8);
+          border-radius:2px;
+          color:#1d2023;
+          font-size:11px;
+          line-height:12.5px;
+          padding:0 2px;
+        .txt
+          padding-left :0.8vw
+          font-family: $font-family-medium
+          font-size :4vw
+          max-width :28vw
           no-wrap()
+          line-height :1.2
+      .condition
+        font-family: $font-family-regular
+        padding-top : 4.666666666666667vw
+        opacity :0.8
+        color:$color-text-sub
+        font-size: 3.4666666666666663vw
+        line-height :1
+        no-wrap()
 
 
   .coupon-item

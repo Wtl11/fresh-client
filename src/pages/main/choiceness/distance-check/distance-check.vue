@@ -75,7 +75,7 @@
     height :10.7vw
     background: #FFEBD6
     font-family: $font-family-regular
-    font-size: 4vw
+    font-size: 3.733333333333334vw
     color: #FA7500;
     line-height: @height
 

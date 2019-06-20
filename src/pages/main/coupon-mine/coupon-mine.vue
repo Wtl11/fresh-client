@@ -17,8 +17,14 @@
                     <img class="top-bg-img" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/pic-couponbg_myzk1.png'">
                     <div class="top-container">
                       <artilce class="left" :style="{color: child.color}">
-                        <p class="number">{{child.money.int}}</p>
-                        <p class="unit">{{child.money.dec}}{{child.unit}}</p>
+                        <div class="money-wrapper">
+                          <p class="number">{{child.money.int}}</p>
+                          <p class="dec">{{child.money.dec}}</p>
+<!--                          <p class="number">6</p>-->
+<!--                          <p class="dec">.1</p>-->
+                          <p class="unit">{{child.unit}}</p>
+                        </div>
+                        <p class="explain" :style="{color: child.color}">{{child.condition_str}}</p>
                       </artilce>
                       <article class="right">
                         <div class="title">
@@ -290,18 +296,34 @@
       .left
         flex: 1
         display :flex
-        font-family: $font-family-medium
-        layout(row,block,nowrap)
+        layout(column,block,nowrap)
         align-items :center
         justify-content :center
         color: #FF8506
-        .number
-          font-size: 9.066666666666666vw
-          line-height: 7.733333333333333vw
-        .unit
-          position :relative
-          top:1.65vw
-          font-size: 4.010695187165775vw
+        .money-wrapper
+          layout(row,block,nowrap)
+          font-family: $font-family-medium
+          align-items :center
+          justify-content :center
+          .number
+            font-size: 9.066666666666666vw
+            line-height: 7.733333333333333vw
+          .dec
+            position :relative
+            top:1.0666666666666667vw
+            font-size: 5.6vw
+            line-height: @font-size
+          .unit
+            position :relative
+            top:1.65vw
+            font-size: 4.010695187165775vw
+            line-height: @font-size
+        .explain
+          margin-top :7px
+          font-family: $font-family-regular
+          font-size: 3.2vw
+          color: $color-text-main
+          text-align: center;
           line-height: @font-size
       .right
         flex: 2.548582995951417
@@ -319,6 +341,7 @@
           z-index :50
         .button
           col-center()
+          top: 67%
           right :4vw
           width:17.333333333333336vw
           height :6.4vw
@@ -344,16 +367,16 @@
           .txt
             padding-left :0.8vw
             font-family: $font-family-medium
-            font-size :3.733333333333334vw
+            font-size :4vw
             max-width :28vw
             no-wrap()
             line-height :1.2
         .condition
           font-family: $font-family-regular
-          padding-top :2.933333333333333vw
+          padding-top : 4.666666666666667vw
           opacity :0.8
           color:$color-text-sub
-          font-size :3.2vw
+          font-size: 3.4666666666666663vw
           line-height :1
           no-wrap()
 

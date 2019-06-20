@@ -36,7 +36,7 @@
         if (!arr.some(val => val === type)) {
           return null
         }
-        // const webUrl = `http://192.168.9.130:6874` || baseURL.webview
+        // const webUrl = `http://192.168.9.130:6874` || baseURL.webview // todo
         const webUrl = baseURL.webview
         let url = `${webUrl}/${type}`
         let token = wx.getStorageSync('token')
