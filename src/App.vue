@@ -89,7 +89,7 @@
     },
     onPageNotFound(res) {
       wx.redirectTo({
-        url: '/pages/lost'
+        url: this.$routes.main.LOST
       })
     },
     methods: {

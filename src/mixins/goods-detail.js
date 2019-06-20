@@ -19,7 +19,7 @@ export default {
         this.longitude = res.longitude
         this.latitude = res.latitude
         if (!this.latitude || !this.longitude) {
-          wx.navigateTo({url: `/pages/open-location`})
+          wx.navigateTo({url: `${this.$routes.main.OPEN_LOCATION}`})
         } else {
           res = await API.Global.checkShopDistance({longitude: this.longitude, latitude: this.latitude})
           let name = res.data.shop.social_name
@@ -30,7 +30,7 @@ export default {
         this.longitude = 0
         this.latitude = 0
         this.tipTop = ''
-        wx.navigateTo({url: `/pages/open-location`})
+        wx.navigateTo({url: `${this.$routes.main.OPEN_LOCATION}`})
       }
     }
   }

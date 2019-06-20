@@ -2,6 +2,7 @@ import API from '@api'
 import * as wechat from './wechat'
 import {ERR_OK} from '@utils/config'
 import {SCENE_QR_CODE, SCENE_DEFAULT, SCENE_SHARE} from './contants'
+import $$routes from '@utils/routes'
 
 const shareArr = [1007, 1008, 1036, 1044, 1073, 1074]
 const qrCordArr = [1047, 1048, 1049, 1011, 1012, 1013]
@@ -179,7 +180,7 @@ export async function silentAuthorization() {
     await getCurrentPages()[getCurrentPages().length - 1].onShow()
     return
   }
-  wx.reLaunch({url: '/pages/login'})
+  wx.reLaunch({url: $$routes.main.LOGIN})
 }
 
 // 两个浮点数求和

@@ -4,11 +4,12 @@ import {baseURL, TIME_OUT, ERR_OK, ERR_NO} from './config'
 import {silentAuthorization} from './common'
 import wx from './wx'
 import {corp} from '@utils/saas'
+import $$routes from '@utils/routes'
 const fly = new Fly()
 let ErrorNum = 0
 // 公共请求头
 const COMMON_HEADER = {}
-const NETPAGE = `/pages/error`
+const NETPAGE = `${$$routes.main.ERROR}`
 
 // 请求拦截器
 fly.interceptors.request.use((request) => {
@@ -67,13 +68,13 @@ async function checkCode(res = {}) {
         // eslint-disable-next-line no-undef
         let pages = getCurrentPages()
         let curPage = pages[pages.length - 1]
-        if (curPage.route !== 'pages/regimental-commander') {
+        if (curPage.route !== $$routes.leader.REGIMENTAL_COMMANDER.replace(/\//, '')) {
           return
         }
-        wx.redirectTo({url: '/pages/mine-housing'})
+        wx.redirectTo({url: $$routes.leader.MINE_HOUSING})
         break
       case 10003: // 活动过期，跳转活动失效页面
-        wx.redirectTo({url: '/pages/goods-end'})
+        wx.redirectTo({url: $$routes.main.GOODS_END})
         break
       case 10000: // 登录状态失效时跳转
         if (ErrorNum <= 0) {
@@ -84,16 +85,16 @@ async function checkCode(res = {}) {
         // wx.reLaunch({url: '/pages/login'})
         break
       case 13002: // 冻结
-        wx.redirectTo({url: '/pages/lost?shopId=1'})
+        wx.redirectTo({url: $$routes.main.LOST + '?shopId=1'})
         break
       case 13003:
         return res.data
       case 13004: // 系统升级
         const options = wx.getLaunchOptionsSync()
-        if (options.path === '/pages/app-update') {
+        if (options.path === $$routes.main.APP_UPDATE) {
           return
         }
-        wx.redirectTo({url: '/pages/app-update'})
+        wx.redirectTo({url: $$routes.main.APP_UPDATE})
         return
     }
     throw requestException(res)

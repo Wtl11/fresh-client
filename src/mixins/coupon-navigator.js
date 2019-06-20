@@ -5,14 +5,14 @@ export default {
       let flag = COUPON_CLASSIFY_PATH.some(val => val === +rangType)
       let url = ''
       if (flag) {
-        url = `/pages/coupon-classify?id=${id}`
+        url = `${this.$routes.main.COUPON_CLASSIFY}?id=${id}`
         if (navType) {
           wx[navType] && wx[navType]({url})
           return
         }
         wx.navigateTo({url})
       } else {
-        url = `/pages/choiceness`
+        url = `${this.$routes.main.CHOICENESS}`
         wx.switchTab({url})
       }
     }

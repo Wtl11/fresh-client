@@ -101,7 +101,7 @@ export default {
           await getCurrentPages()[getCurrentPages().length - 1].onShow()
           return true
         }
-        wx.reLaunch({url: '/pages/login'})
+        wx.reLaunch({url: this.$routes.main.LOGIN})
         wx.setStorageSync('targetPage', url)
         return false
       }

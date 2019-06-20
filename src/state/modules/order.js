@@ -1,6 +1,7 @@
 import API from '@api'
 import * as wechat from '@utils/wechat'
 import { ERR_OK } from '@utils/config'
+import $$routes from '@utils/routes'
 
 export const state = {
   goodsList: [],
@@ -95,13 +96,13 @@ export const actions = {
             } else {
               setTimeout(() => {
                 wechat.hideLoading()
-                wx.redirectTo({ url: `/pages/pay-result?orderId=${orderId}&&type=0&total=${state.total}` })
+                wx.redirectTo({ url: `${$$routes.main.PAY_RESULT}?orderId=${orderId}&&type=0&total=${state.total}` })
               }, 1500)
             }
           },
           fail(res) {
             wechat.hideLoading()
-            wx.redirectTo({ url: `/pages/order-detail?id=${orderId}&&type=0` })
+            wx.redirectTo({ url: `${$$routes.main.ORDER_DETAIL}?id=${orderId}&&type=0` })
           },
           complete
         })
@@ -139,7 +140,7 @@ function _loopCheckPay({ orderId, orderInfo, timer = null, count = 0 }) {
     if (count >= 10) {
       wechat.hideLoading()
       clearInterval(timer)
-      wx.redirectTo({ url: `/pages/order-detail?id=${orderId}&&type=0` })
+      wx.redirectTo({ url: `${$$routes.main.ORDER_DETAIL}?id=${orderId}&&type=0` })
       return
     }
     API.Global.checkPayResult({ order_id: orderId }).then(res => {

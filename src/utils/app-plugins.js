@@ -38,10 +38,10 @@ wx.onNetworkStatusChange(function (res) {
   getApp().globalData.isConnected = res.isConnected
   if (!res.isConnected) {
     const options = wx.getLaunchOptionsSync()
-    if (options.path === '/pages/error') {
+    if (options.path === routes.main.ERROR) {
       return
     }
-    wx.redirectTo({url: '/pages/error'})
+    wx.redirectTo({url: routes.main.ERROR})
   }
   console.error(res.networkType)
 })
