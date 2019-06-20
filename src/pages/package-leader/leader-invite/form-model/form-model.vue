@@ -167,6 +167,9 @@
         return res
       }
     },
+    onLoad() {
+      this.resetForm()
+    },
     methods: {
       resetForm() {
         this.inputData = {

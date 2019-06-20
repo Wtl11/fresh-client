@@ -6,6 +6,6 @@ page.$mount()
 
 export default {
   config: {
-    navigationBarTitleText: '申请成为团长'
+    navigationBarTitleText: '团长招募'
   }
 }

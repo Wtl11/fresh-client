@@ -167,7 +167,25 @@
         return res
       }
     },
+    onLoad() {
+      this.resetForm()
+    },
     methods: {
+      resetForm() {
+        this.inputData = {
+          name: '',
+          mobile: '',
+          auth_code: '',
+          state: '',
+          city: '',
+          district: '',
+          social_name: '',
+          address: '',
+          shop_photo_url: '',
+          wx_group_photo_url: '',
+          invite_shop_id: 1
+        }
+      },
       // 获取邀请状态
       async _getLeaderStatus() {
         let res = await API.Leader.getLeaderStatus()
@@ -219,6 +237,7 @@
       },
       chooseFilesBtn(type) {
         chooseFiles().then(res => {
+          console.log(777)
           this.inputData[type] = res[0].url
         })
       },
@@ -385,14 +404,11 @@
           line-height: 30px
           box-sizing: border-box
           color:#808080
+          border-1px(#B7B7B7,15px)
         .get-code-disable
           background: #F8FAF7
           color: #B7B7B7
           border-radius: 15px
-          border-1px($color-line, 15px)
-          col-center()
-        .get-code-btn
-          border-1px(#B7B7B7,15px)
         .arrow-right
           padding:5px 20px
           .img

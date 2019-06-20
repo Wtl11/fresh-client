@@ -2,63 +2,40 @@
   <div class="leader-invite">
     <navigation-bar title="团长招募"></navigation-bar>
     <scroll-view :style="{height:scrollHeight + 'px'}" :scroll-with-animation="true" :scroll-into-view="currentShowEle" scroll-y class="scroll" @scroll="scroll">
-      <div v-if="isInvitee">
-        <div  class="inviter-wrap">
-          <div class="head-photo-wrap">
-            <img :src="leaderDetail.head_image_url" alt="" class="head-photo">
+      <img v-if="imageUrl" :src="imageUrl + '/yx-image/leader/pic-tzzm_01.jpg'" mode="widthFix" class="img">
+      <div class="percent-wrap">
+        <div class="li-item first">
+          <div class="">
+            <h6 class="text-h6">每成功邀请一位朋友成为团长</h6>
+            <h5 class="text-h5">即可获得{{invite_money}}元现金奖励</h5>
           </div>
-          <div class="inviter-name"><span class="name">{{leaderDetail.nickname}}</span>邀请您</div>
-          <div class="text">成为赞播优鲜社区合伙人</div>
+          <div class="right-box">
+            <span class="money">{{invite_money}}</span>元
+          </div>
         </div>
-        <img v-if="imageUrl" :src="imageUrl + '/yx-image/leader/pic-tzzmbyq_01.jpg'" mode="widthFix" class="img">
+        <div class="li-item second">
+          <div>
+            <h6 class="text-h6">被邀请者的社区用户下单</h6>
+            <h5 class="text-h5">您将获得{{percent}}%的佣金奖励</h5>
+          </div>
+          <div class="right-box">
+            <div class="percent-num">
+              {{percent}}%
+            </div>
+            <div class="text-12">
+              <div class="text-yj">佣金</div>
+            </div>
+          </div>
+        </div>
+        <img v-if="imageUrl" :src="imageUrl + '/yx-image/leader/pic-tzzm_02.jpg'" mode="widthFix"  class="img">
       </div>
-      <template v-else>
-        <img v-if="imageUrl" :src="imageUrl + '/yx-image/leader/pic-tzzm_01.jpg'" mode="widthFix" class="img">
-        <div class="percent-wrap">
-          <div class="li-item first">
-            <div class="">
-              <h6 class="text-h6">每成功邀请一位朋友成为团长</h6>
-              <h5 class="text-h5">即可获得{{invite_money}}元现金奖励</h5>
-            </div>
-            <div class="right-box">
-              <span class="money">{{invite_money}}</span>元
-            </div>
-          </div>
-          <div class="li-item second">
-            <div>
-              <h6 class="text-h6">被邀请者的社区用户下单</h6>
-              <h5 class="text-h5">您将获得{{percent}}%的佣金奖励</h5>
-            </div>
-            <div class="right-box">
-              <div class="percent-num">
-                {{percent}}%
-              </div>
-              <div class="text-12">
-                <div class="text-yj">佣金</div>
-              </div>
-            </div>
-          </div>
-          <img v-if="imageUrl" :src="imageUrl + '/yx-image/leader/pic-tzzm_02.jpg'" mode="widthFix"  class="img">
-        </div>
-      </template>
       <img v-if="imageUrl" :src="imageUrl + '/yx-image/leader/pic-tzzm_03.jpg'" mode="widthFix" :lazy-load="true" class="img">
       <img v-if="imageUrl" :src="imageUrl + '/yx-image/leader/pic-tzzm_04.jpg'" mode="widthFix" :lazy-load="true"  class="img">
       <img v-if="imageUrl" :src="imageUrl + '/yx-image/leader/pic-tzzm_05.jpg'" mode="widthFix" :lazy-load="true"  class="img">
       <img v-if="imageUrl" :src="imageUrl + '/yx-image/leader/pic-tzzm_06.jpg'" mode="widthFix"  :lazy-load="true" class="img">
-      <div v-if="isInvitee" id="form-box" class="input-wrap">
-        <img v-if="imageUrl" :src="imageUrl + '/yx-image/leader/pic-tzzmbyq_t1@2x.png'" mode="widthFix"  class="img">
-        <div :style="{'background-image':imageUrl && 'url(' + imageUrl + '/yx-image/leader/pic-tzzmbyq_t2@2x.png)'}" class="form-body">
-          <FormModel :hasMargin="false" ref="inviteForm"></FormModel>
-        </div>
-        <img v-if="imageUrl" :src="imageUrl + '/yx-image/leader/pic-tzzmbyq_t3@2x.png'" mode="widthFix"  class="img">
-      </div>
       <div>
         <div class="operate-btn">
-          <button v-if="!isInvitee" open-type="share" class="operate-btn show open-share-btn">立即邀请朋友成为团长</button>
-          <template v-else>
-            <button :class="['operate-btn open-share-btn',{show:!isInsert}]" @click="goInvitePage">立即申请成为团长</button>
-            <button v-if="isInsert" :class="['operate-btn apply-btn',{show:isInsert}]" class="operate-btn apply-btn" @click="inviteBtn">提交申请</button>
-          </template>
+          <button open-type="share" class="operate-btn show open-share-btn">立即邀请朋友成为团长</button>
         </div>
       </div>
     </scroll-view>
@@ -85,13 +62,10 @@
         invite_money: 50,
         TopHeight: 64,
         scrollHeight: 500,
-        isInvitee: true,
         leaderDetail: {
           nickname: '',
           head_image_url: ''
-        },
-        isInsert: false,
-        currentShowEle: ''
+        }
       }
     },
     async onLoad() {
@@ -100,29 +74,14 @@
       this.scrollHeight = res.screenHeight - this.TopHeight
     },
     async onShow() {
-      this.isInvitee = true
       await this._getLeaderStatus()
       // 被邀请者
-      let options = this._$$initOptions()
-      console.log(options, 'options')
-      let leaderId
-      if (options && options.leaderId) {
-        leaderId = options.leaderId
-      } else {
-        leaderId = wx.getStorageSync('leaderId') // 获取团长id
-        this.isInvitee = false
-      }
+      let leaderId = wx.getStorageSync('leaderId') || wx.getStorageSync('shopId')// 获取团长id
       this._getLeaderDetail({shop_id: leaderId})
-      console.log(this.isInvitee, 'isInvitee')
-      if (this.isInvitee) {
-        this.$refs.inviteForm.resetForm()
-        console.log('inviteForm', this.$refs.inviteForm)
-        this.listenShow()
-      }
     },
     onShareAppMessage() {
       const flag = Date.now()
-      let url = this.$routes.leader.LEADER_INVITE + `?leaderId=${this.leaderDetail.shop_id}&flag=${flag}`
+      let url = this.$routes.leader.APPLY_LEADER + `?leaderId=${this.leaderDetail.shop_id}&flag=${flag}`
       console.warn(url)
       console.log(this.imageUrl + '/yx-image/leader/pic-yqtz_wechat@2x.png')
       console.log(this.leaderDetail)
@@ -139,17 +98,6 @@
       }
     },
     methods: {
-      // 申请表格 是否在 滚动视图
-      listenShow() {
-        const query = wx.createIntersectionObserver()
-        console.log(query, 'query')
-        query.relativeToViewport({bottom: 0}).observe('#form-box', res => {
-          console.log(res, 999)
-          this.isInsert = res.intersectionRatio > 0 ? 1 : false
-          this.currentShowEle = ''
-          console.log(this.isInsert)
-        })
-      },
       // 获取团长信息
       async _getLeaderDetail(params) {
         let res = await API.Leader.getLeaderDetail(params)
@@ -175,13 +123,6 @@
         } else {
           wx.redirectTo({url: this.$routes.main.GOODS_END})
         }
-      },
-      goInvitePage() {
-        this.currentShowEle = 'form-box'
-        // wx.navigateTo({url: this.$routes.leader.APPLY_LEADER})
-      },
-      inviteBtn() {
-        this.$refs.inviteForm.submit()
       }
     }
   }
