@@ -225,7 +225,7 @@
             <p class="text button">分享给好友</p>
             <div v-if="product" class="line"></div>
           </button>
-          <nav v-if="activityType === ACTIVE_TYPE.DEFAULT" class="container-item-wrapper" @click="_actionDrawPoster">
+          <nav class="container-item-wrapper" @click="_actionDrawPoster">
             <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.4/icon-wechatq@2x.png'" class="item-icon">
             <p class="text">生成分享海报</p>
             <div class="line"></div>
@@ -351,6 +351,7 @@
             text = '秒杀价'
             break
           default:
+            text = '团购价'
             break
         }
         return text
@@ -951,7 +952,7 @@
             {
               el: '.share-group-box',
               drawType: 'text-area',
-              source: '团购价',
+              source: this.iconText,
               fontSize: 14,
               color: moneyColor
             },
