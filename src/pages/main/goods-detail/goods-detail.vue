@@ -451,17 +451,17 @@
       const self = this
       const shopId = wx.getStorageSync('shopId')
       const flag = Date.now()
+      self.$sendMsg({
+        event_no: 1004,
+        goods_id: self.goodsId,
+        title: self.goodsMsg.name
+      })
       return {
         title: this.goodsMsg.name,
         path: `${this.$routes.main.PACKAGE}/${PAGE_ROUTE_NAME}?id=${this.goodsId}&shopId=${shopId}&activityId=${this.activityId}&activityType=${this.activityType}&flag=${flag}`, // 商品详情
         imageUrl: this.thumb_image || this.goodsMsg.goods_cover_image,
         success: (res) => {
           // 转发成功
-          self.$sendMsg({
-            event_no: 1004,
-            goods_id: self.goodsId,
-            title: self.goodsMsg.name
-          })
         },
         fail: (res) => {
           // 转发失败

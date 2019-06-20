@@ -15,6 +15,8 @@
         <button class="jump-goods jump-order" formType="submit"  @click="jumpGoods">继续购物</button>
       </form>
     </div>
+    <!--商品券弹窗-->
+    <coupon-modal ref="invModal"></coupon-modal>
   </div>
 </template>
 
@@ -22,6 +24,8 @@
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import ShareTrick from '@mixins/share-trick'
   import Ald from '@utils/ald'
+  import API from '@api'
+  import CouponModal from './coupon-modal/coupon-modal'
 
   // const ald = getApp()
   const PAGE_NAME = 'PAY_RESULT'
@@ -37,7 +41,8 @@
       }
     },
     components: {
-      NavigationBar
+      NavigationBar,
+      CouponModal
     },
     onLoad(e) {
       // ald && ald.aldstat.sendEvent('支付成功页')
@@ -48,6 +53,9 @@
         event_no: 1006,
         total: e.total
       })
+      setTimeout(() => {
+        this.getReceiveInviteCoupon()
+      }, 1200)
       clearTimeout(this.timer)
       this.timer = setTimeout(() => {
         this.allReady = true
@@ -77,6 +85,14 @@
       jumpGoods() {
         if (!this.allReady) return
         wx.switchTab({ url: `${this.$routes.main.CHOICENESS}` })
+      },
+      getReceiveInviteCoupon() {
+        API.Coupon.receiveInviteCoupon({cond_type: 6}, false, false)
+          .then((res) => {
+            if (res.error !== this.$ERR_OK) return
+            this.couponItem = res.data
+            this.couponItem && this.$refs.invModal.show([this.couponItem])
+          })
       }
       // jumpDetail() {
       //   if (!this.allReady) return

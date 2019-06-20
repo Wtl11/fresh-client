@@ -92,6 +92,8 @@
         </div>
       </div>
     </div>
+    <!--商品券弹窗-->
+    <coupon-modal ref="invModal"></coupon-modal>
   </div>
 </template>
 
@@ -109,6 +111,7 @@
   import API from '@api'
   import ShareHandler, {EVENT_CODE} from '@mixins/share-handler'
   import GetOptions from '@mixins/get-options'
+  import CouponModal from './coupon-modal/coupon-modal'
 
   const PAGE_NAME = 'COLLAGE_DETAIL'
   // 3开团成功 7参团成功 9不在范围 为自定义状态。
@@ -343,7 +346,8 @@
       GoodsItem,
       SharePop,
       LoadingMore,
-      AddNumber
+      AddNumber,
+      CouponModal
     },
     onShareAppMessage() {
       let shopId = wx.getStorageSync('shopId')
@@ -407,8 +411,20 @@
       // this._refreshLocation()
       this.$$sendEvent({goodsId: this.data.goods.goods_id, activityId: this.activityId})
     },
+    onLoad() {
+      this.getReceiveInviteCoupon()
+    },
     methods: {
       ...orderMethods,
+      // 邀请活动的下单优惠券
+      getReceiveInviteCoupon() {
+        API.Coupon.receiveInviteCoupon({cond_type: 6}, false, false)
+          .then((res) => {
+            if (res.error !== this.$ERR_OK) return
+            this.couponItem = res.data
+            this.couponItem && this.$refs.invModal.show([this.couponItem])
+          })
+      },
       // 拼团详情
       async getGrouponDetail() {
         let res = await API.Groupon.getGrouponDetail({id: this.id, order_id: this.orderId})
