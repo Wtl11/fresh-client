@@ -81,10 +81,6 @@
     mixins: [GetOptions],
     data() {
       return {
-        inviter: {
-          inviter: '',
-          id: ''
-        },
         percent: 4,
         invite_money: 50,
         TopHeight: 64,
@@ -116,11 +112,13 @@
         leaderId = wx.getStorageSync('leaderId') // 获取团长id
         this.isInvitee = false
       }
+      this._getLeaderDetail({shop_id: leaderId})
+      console.log(this.isInvitee, 'isInvitee')
       if (this.isInvitee) {
+        this.$refs.inviteForm.resetForm()
+        console.log('inviteForm', this.$refs.inviteForm)
         this.listenShow()
-        this.refs.inviteForm.resetForm()
       }
-      await this._getLeaderDetail({shop_id: leaderId})
     },
     onShareAppMessage() {
       const flag = Date.now()
@@ -144,8 +142,9 @@
       // 申请表格 是否在 滚动视图
       listenShow() {
         const query = wx.createIntersectionObserver()
+        console.log(query, 'query')
         query.relativeToViewport({bottom: 0}).observe('#form-box', res => {
-          console.log(res)
+          console.log(res, 999)
           this.isInsert = res.intersectionRatio > 0 ? 1 : false
           this.currentShowEle = ''
           console.log(this.isInsert)
@@ -157,9 +156,10 @@
         console.log(res, '_getLeaderDetail')
         if (res.error !== this.$ERR_OK) {
           this.$wechat.showToast(res.message)
-          return
+          return false
         }
         this.leaderDetail = res.data
+        return true
       },
       // 获取邀请状态
       async _getLeaderStatus() {
