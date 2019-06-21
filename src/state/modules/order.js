@@ -32,15 +32,15 @@ export const getters = {
 
 export const actions = {
   setCommodityItem({ commit, state }, item) {
-    console.log(state.total, item.denomination)
-    // console.log(state.total)
-    let total = item.notUse ? (state.total * 1) + 1 * item.notUse : item.denomination ? state.total - item.denomination : state.total
+    console.log(item.real_condition_total)
+    let total = item.real_condition_total ? item.real_condition_total : state.couponInfo.real_condition_total ? state.couponInfo.real_condition_total : state.beforeTotal
     commit('SET_COMMODITY_ITEM', item)
     commit('SET_TOTAL', total)
   },
   // 保存优惠券信息
   saveCoupon({ commit, state }, coupon) {
-    let total = coupon.real_condition_total || state.beforeTotal
+    console.log(coupon)
+    let total = coupon.real_condition_total ? coupon.real_condition_total : state.commodityItem.real_condition_total ? state.commodityItem.real_condition_total : state.beforeTotal
     commit('SAVE_COUPON', coupon)
     commit('SET_TOTAL', total)
   },

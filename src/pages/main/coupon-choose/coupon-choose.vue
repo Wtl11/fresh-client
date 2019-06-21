@@ -25,7 +25,7 @@
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import CouponItem from './coupon-item/coupon-item'
-  import {orderComputed, orderMethods} from '@state/helpers'
+  import { orderComputed, orderMethods } from '@state/helpers'
   import API from '@api'
 
   const PAGE_NAME = 'CHOOSE_COUPON'
@@ -43,13 +43,15 @@
         useArray: [],
         disableArray: [],
         useIndex: -1,
-        isShowEmpty: 0
+        isShowEmpty: 0,
+        customerCoupons: []
       }
     },
     computed: {
       ...orderComputed
     },
     onLoad() {
+      this.customerCoupons = this.$mp.query.customer_coupons ? [this.$mp.query.customer_coupons] : []
       this._getCouponInfo()
     },
     methods: {
@@ -65,14 +67,14 @@
         wx.navigateBack()
       },
       _getCouponInfo() {
-        API.Coupon.getChooseList({goods: this.goodsList, is_usable: 1}, true).then((res) => {
+        API.Coupon.getChooseList({ goods: this.goodsList, is_usable: 1, customer_coupons: this.customerCoupons }, true).then((res) => {
           this.useArray = res.data
           this.useIndex = res.data.findIndex(val => val.coupon_id === this.couponInfo.coupon_id)
           if (!res.data.length) {
             this.isShowEmpty++
           }
         })
-        API.Coupon.getChooseList({goods: this.goodsList, is_usable: 0}, false).then((res) => {
+        API.Coupon.getChooseList({ goods: this.goodsList, is_usable: 0, customer_coupons: this.customerCoupons }, false).then((res) => {
           this.disableArray = res.data
           if (!res.data.length) {
             this.isShowEmpty++
@@ -87,34 +89,34 @@
   @import "~@designCommon"
 
   .empty-wrapper
-    padding-top :106px
+    padding-top: 106px
     .img
-      display :block
-      margin :0 auto
-      width :116px
-      height :110px
+      display: block
+      margin: 0 auto
+      width: 116px
+      height: 110px
     .text
-      padding-top :15px
+      padding-top: 15px
       font-family: $font-family-regular
       font-size: 14px
       color: $color-text-sub
       text-align: center
 
   .choose-coupon
-    background :$color-background
-    min-height :100vh
-    padding-bottom :20px
-    box-sizing :border-box
+    background: $color-background
+    min-height: 100vh
+    padding-bottom: 20px
+    box-sizing: border-box
     .panel
-      padding :15px 12px 5px
+      padding: 15px 12px 5px
       .title
-        padding-bottom :10px
+        padding-bottom: 10px
         font-family: $font-family-regular
         font-size: 14px
         color: $color-text-main
         line-height: @font-size
       .coupon-item
-        padding-bottom :12px
+        padding-bottom: 12px
         &:last-child
-          padding-bottom :0
+          padding-bottom: 0
 </style>

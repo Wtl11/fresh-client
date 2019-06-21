@@ -49,12 +49,13 @@
         </div>
       </div>
     </div>
-    <banner></banner>
+    <banner v-if="enable"></banner>
     <mine-navigation
       :detail="detail"
       :couponNumber="couponNumber"
       :goodsNumber="goodsNumber"
       :isLeader="isLeader"
+      :isInvitation="enable"
     ></mine-navigation>
     <div class="mine-model" v-if="showModal" :animation="maskAnimation" @click="_cancelQrCodeBox">
       <div class="model-con" :animation="modalAnimation">
@@ -118,7 +119,8 @@
         ENV: false,
         statusBarHeight: 0,
         backgroundHeight: 0,
-        placeHeight: 0
+        placeHeight: 0,
+        enable: true
       }
     },
     onLoad() {
@@ -136,6 +138,7 @@
       let storageUserInfo = await this.$wechat.getStorage('userInfo')
       this.userInfo = storageUserInfo.data
       this.isLeader = wx.getStorageSync('isLeader') || false
+      this._isOpenInvitation()
       this._getShopDetail()
       this._getOrderCount()
       this._getCouponNumber()
@@ -150,6 +153,13 @@
       // ...mapGetters(['role'])
     },
     methods: {
+      _isOpenInvitation() {
+        API.Mine.activityInviteEnable()
+          .then((res) => {
+            this.enable = !!res.data.enable
+            console.log(res)
+          })
+      },
       _changeNavigation(e) {
         let flag = e.scrollTop < 184
         const color = flag ? `#ffffff` : `#000000`
@@ -162,78 +172,12 @@
           }
         })
       },
-      // navigateLocation() {
-      //   this.$wechat.openLocation({
-      //     latitude: this.detail.latitude,
-      //     longitude: this.detail.longitude,
-      //     name: this.detail.socialName,
-      //     address: this.detail.address
-      //   })
-      // },
-      // navHandle(item) {
-      //   // let isLeader = wx.getStorageSync('isLeader') || false
-      //   // let page = isLeader ? '/pages/regimental-commander' : '/pages/mine-housing'
-      //   // wx.navigateTo({url: page})
-      //   if (item.isLeader) {
-      //     this._goMyHosing()
-      //   } else {
-      //     wx.navigateTo({url: `/pages/${item.url}`})
-      //   }
-      // },
-      // // 跳转我的小区
-      // _goMyHosing() {
-      //   let isLeader = wx.getStorageSync('isLeader') || false
-      //   let page = isLeader ? '/pages/regimental-commander' : '/pages/mine-housing'
-      //   wx.navigateTo({url: page})
-      // },
       _showQrCodeBox() {
-        // let modalAnimation = wx.createAnimation({
-        //   duration: 500,
-        //   timingFunction: 'cubic-bezier(1, -0.07, 0.51, 1.48)',
-        //   delay: 0
-        // })
-        // let maskAnimation = wx.createAnimation({
-        //   duration: 500,
-        //   timingFunction: 'linear',
-        //   delay: 0
-        // })
-        // maskAnimation.opacity(0).step()
-        // modalAnimation.scale(0.3).step()
-        // this.maskAnimation = maskAnimation.export()
-        // this.modalAnimation = modalAnimation.export()
-        // this.showModal = true
-        // setTimeout(() => {
-        //   maskAnimation.opacity(1).step()
-        //   modalAnimation.scale(1).step()
-        //   this.maskAnimation = maskAnimation.export()
-        //   this.modalAnimation = modalAnimation.export()
-        // }, 200)
         if (this.showModal) return
         this.showModal = true
         this.showAnimation()
       },
       _cancelQrCodeBox() {
-        // let modalAnimation = wx.createAnimation({
-        //   duration: 300,
-        //   timingFunction: 'linear',
-        //   delay: 0
-        // })
-        // let maskAnimation = wx.createAnimation({
-        //   duration: 300,
-        //   timingFunction: 'linear',
-        //   delay: 0
-        // })
-        // maskAnimation.opacity(0).step()
-        // modalAnimation.scale(0.3).step()
-        // this.maskAnimation = maskAnimation.export()
-        // this.modalAnimation = modalAnimation.export()
-        // setTimeout(() => {
-        //   maskAnimation.opacity(1).step()
-        //   modalAnimation.scale(1).step()
-        //   this.maskAnimation = maskAnimation.export()
-        //   this.modalAnimation = modalAnimation.export()
-        //   this.showModal = false
-        // }, 300)
         this.hideAnimation(() => {
           this.showModal = false
         })
@@ -246,9 +190,6 @@
         this.testSrc = img
         this._showQrCodeBox()
       },
-      // toChangeShop() {
-      //   wx.navigateTo({url: '/pages/self-point'})
-      // },
       _getOrderCount() {
         API.Mine.getOrderCount()
           .then((res) => {

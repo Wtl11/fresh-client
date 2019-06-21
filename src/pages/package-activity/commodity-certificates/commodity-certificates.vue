@@ -77,7 +77,7 @@
     async onShow() {
       this.choose = !!this.$mp.query.choose || false
       await this._getLIst(true)
-      this.setCommodityItem({ sd: 'sdfsd' })
+      // this.setCommodityItem({ sd: 'sdfsd' })
     },
     async onReachBottom() {
       if (this.page >= this.lastPage) {
@@ -126,10 +126,6 @@
         this.setCommodityItem(item)
         wx.navigateBack()
         console.log(item)
-      },
-      notUse() {
-        this.select = false
-        this.setCommodityItem({})
       }
     }
   }
@@ -258,11 +254,11 @@
           position: relative
           width: 18.4vw
           height: 18.4vw
+          border-radius: 2px
+          overflow: hidden
           .goods-img
-            border-radius: 2px
             width: 18.4vw
             height: 18.4vw
-            overflow: hidden
           .goods-price
             position: absolute
             bottom: 0

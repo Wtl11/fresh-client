@@ -20,5 +20,13 @@ export default {
   getAfterOrderCount(loading = false) {
     let url = '/api/wap/customer-after-sale-orders-count'
     return request.get(url, null, loading)
+  },
+  /**
+   * 邀请有礼是否开启[v2.6.2]
+   * @param loading
+   */
+  activityInviteEnable(loading = false) {
+    let url = '/api/wap/coupon-activity-manage/activity-invite-enable/0'
+    return request.get(url, null, loading)
   }
 }

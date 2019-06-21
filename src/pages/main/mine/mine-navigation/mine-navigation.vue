@@ -2,16 +2,28 @@
   <div class="mine-navigation">
     <div class="panel">
       <p class="nav-title">我的服务</p>
-      <ul class="nav-box">
-        <li v-for="(item, index) in navList" :key="index" class="item-wrapper" :class="item.cname" @click="handleClick(item)">
-          <div class="img-box">
-            <img class="icon-img" mode="aspectFill" v-if="imageUrl && item.icon" :src="imageUrl + item.icon">
-            <p v-if="item.hasExplain === 1 && couponNumber > 0" class="item-count">{{couponNumber}}</p>
-            <p v-if="item.hasExplain === 2 && goodsNumber" class="item-count">{{goodsNumber}}</p>
+      <div class="nav-box">
+        <div class="nav-top">
+          <div v-for="(item, index) in navList" :key="index" v-if="item.type === 'top' && item.isShow" class="item-wrapper" :class="item.cname" @click="handleClick(item)">
+            <div class="img-box">
+              <img class="icon-img" mode="aspectFill" v-if="imageUrl && item.icon" :src="imageUrl + item.icon">
+              <p v-if="item.hasExplain === 1 && couponNumber > 0" class="item-count">{{couponNumber}}</p>
+              <p v-if="item.hasExplain === 2 && goodsNumber" class="item-count">{{goodsNumber}}</p>
+            </div>
+            <p class="title">{{item.title}}</p>
           </div>
-          <p class="title">{{item.title}}</p>
-        </li>
-      </ul>
+        </div>
+        <div class="nav-bottom">
+          <div v-for="(item, index) in navList" :key="index" v-if="item.type === 'bottom' && item.isShow" class="item-wrapper" :class="item.cname" @click="handleClick(item)">
+            <div class="img-box">
+              <img class="icon-img" mode="aspectFill" v-if="imageUrl && item.icon" :src="imageUrl + item.icon">
+              <p v-if="item.hasExplain === 1 && couponNumber > 0" class="item-count">{{couponNumber}}</p>
+              <p v-if="item.hasExplain === 2 && goodsNumber" class="item-count">{{goodsNumber}}</p>
+            </div>
+            <p class="title">{{item.title}}</p>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="panel" :class="isLeader?'has-data':''">
       <ul class="nav-row">
@@ -65,6 +77,10 @@
       isLeader: {
         type: Boolean,
         default: false
+      },
+      isInvitation: {
+        type: Boolean,
+        default: false
       }
     },
     data() {
@@ -75,7 +91,9 @@
             icon: '/yx-image/2.4/icon-mypt_me@2x.png',
             title: '我的拼团',
             url: this.$routes.main.MY_GROUP_BUY,
-            fn: '_handleNav'
+            fn: '_handleNav',
+            type: 'top',
+            isShow: true
           },
           {
             cname: '',
@@ -83,69 +101,73 @@
             title: '优惠券',
             hasExplain: 1,
             url: this.$routes.main.COUPON_MINE,
-            fn: '_handleNav'
-          }, {
-            cname: '',
-            icon: '/yx-image/invitation/icon-yqyl_me@2x.png',
-            title: '邀请有礼',
-            url: this.$routes.activity.INVITATION_INTRODUCTION,
-            fn: '_handleNav'
-          }, {
+            fn: '_handleNav',
+            type: 'top',
+            isShow: true
+          },
+          {
             cname: '',
             icon: '/yx-image/invitation/icon-spcoupon_me@2x.png',
             title: '商品券',
             hasExplain: 2,
             url: this.$routes.activity.COMMODITY_CERTIFICATES,
-            fn: '_handleNav'
+            fn: '_handleNav',
+            type: 'top',
+            isShow: true
           },
           {
-            cname: 'line-box',
+            cname: '',
+            icon: '/yx-image/invitation/icon-yqyl_me@2x.png',
+            title: '邀请有礼',
+            url: this.$routes.activity.INVITATION_INTRODUCTION,
+            fn: '_handleNav',
+            type: 'top',
+            isShow: this.isInvitation
+          },
+          {
+            cname: '',
             icon: '/yx-image/2.4/icon-address_me@2x.png',
             title: '自提点',
             url: '',
-            fn: '_navigateLocation'
+            fn: '_navigateLocation',
+            type: 'top',
+            isShow: true
           },
           {
-            cname: 'line-box',
+            cname: '',
             icon: '/yx-image/2.4/icon-question_me@2x.png',
             title: '常见问题',
             url: 'out-html?routeType=FAQ',
-            fn: '_handleNav'
-          },
-          {
-            cname: 'line-box',
-            icon: '',
-            title: '',
-            url: '',
-            fn: ''
-          },
-          {
-            cname: 'line-box',
-            icon: '',
-            title: '',
-            url: '',
-            fn: ''
+            fn: '_handleNav',
+            type: 'top',
+            isShow: true
           },
           {
             cname: '',
             icon: '/yx-image/2.4/icon-colonel@2x.png',
             title: '团长招募',
             url: 'out-html?routeType=recruit-regimental',
-            fn: '_handleNav'
+            fn: '_handleNav',
+            type: 'bottom',
+            isShow: true
           },
           {
             cname: '',
             icon: '/yx-image/2.4/icon-supplier_me@2x.png',
             title: '供应商招募',
             url: 'out-html?routeType=recruit-supplier',
-            fn: '_handleNav'
+            fn: '_handleNav',
+            type: 'bottom',
+            isShow: true
           },
           {
             cname: '',
             icon: '/yx-image/2.4/icon-alliance_me@2x.png',
             title: '加盟商招募',
             url: 'out-html?routeType=recruit-alliance',
-            fn: '_handleNav'
+            fn: '_handleNav',
+            type: 'bottom',
+            isShow: true
           }
         ],
         rowNavList: [
@@ -224,6 +246,9 @@
         font-family: $font-family-bold
       .nav-box
         padding: 0 10px
+      .nav-bottom
+        border-top-1px($color-line)
+      .nav-top, .nav-bottom
         layout(row)
         .item-wrapper
           layout(column, block, nowrap)
@@ -311,5 +336,4 @@
                 .data-title
                   color: $color-text-sub
                   font-size: 12px
-
 </style>

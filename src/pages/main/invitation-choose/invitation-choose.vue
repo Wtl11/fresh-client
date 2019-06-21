@@ -132,7 +132,8 @@
         disableArray: [],
         useIndex: -1,
         isShowEmpty: 0,
-        select: false
+        select: false,
+        customerCoupons: []
       }
     },
     computed: {
@@ -144,6 +145,7 @@
       }
     },
     onLoad() {
+      this.customerCoupons = this.$mp.query.customer_coupons ? [this.$mp.query.customer_coupons] : []
       if (!isEmptyObject(this.commodityItem)) {
         this.useIndex = this.useArray.findIndex((item) => item.coupon_id === this.commodityItem.coupon_id)
       } else {
@@ -162,8 +164,7 @@
       notUse() {
         this.select = true
         this.useIndex = -1
-        let money = { notUse: this.commodityItem.denomination }
-        this.setCommodityItem(money)
+        this.setCommodityItem({})
         wx.navigateBack()
       },
       goGoodsDetail(item) {
@@ -179,7 +180,7 @@
         this.useArray = JSON.parse(JSON.stringify(arr))
       },
       _getCouponInfo() {
-        API.Coupon.getChooseList({ goods: this.goodsList, is_usable: 1, tag_type: 1 }, true).then((res) => {
+        API.Coupon.getChooseList({ goods: this.goodsList, is_usable: 1, tag_type: 1, customer_coupons: this.customerCoupons }, true).then((res) => {
           this.useArray = res.data
           this.useIndex = res.data.findIndex(val => val.coupon_id === this.couponInfo.coupon_id)
           this.useIndex = res.data.length && !isEmptyObject(this.commodityItem) && !this.commodityItem.notUse ? 0 : -1
@@ -187,7 +188,7 @@
             this.isShowEmpty++
           }
         })
-        API.Coupon.getChooseList({ goods: this.goodsList, is_usable: 0, tag_type: 1 }, false).then((res) => {
+        API.Coupon.getChooseList({ goods: this.goodsList, is_usable: 0, tag_type: 1, customer_coupons: this.customerCoupons }, false).then((res) => {
           this.disableArray = res.data
           if (!res.data.length) {
             this.isShowEmpty++
@@ -322,11 +323,11 @@
           position: relative
           width: 18.4vw
           height: 18.4vw
+          border-radius: 2px
+          overflow: hidden
           .goods-img
-            border-radius: 2px
             width: 18.4vw
             height: 18.4vw
-            overflow: hidden
           .goods-price
             position: absolute
             bottom: 0

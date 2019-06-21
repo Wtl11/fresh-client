@@ -102,8 +102,9 @@
       },
       getInviteStatistic(loading = false) {
         let page = this.tabList[this.tabIndex].page
-        API.Coupon.getInviteStatistic({ status: this.tabList[this.tabIndex].status, page }, loading).then((res) => {
+        API.Coupon.getInviteStatistic({ status: this.tabList[this.tabIndex].status, page, limit: 12 }, loading).then((res) => {
           if (res.error !== this.$ERR_OK) return
+          this.tabList[this.tabIndex].last = res.meta.last_page
           if (page === 1) {
             this.tabList[this.tabIndex].dataArray = res.data
             this.tabList[this.tabIndex].isShowEmpty = !res.data.length
@@ -160,8 +161,6 @@
               box-sizing: border-box
               height: 19.46667vw
               border-bottom-1px(#D8D8D8)
-              &:nth-child(3)
-                border-none()
               .people-img
                 width: 10.6667vw
                 border-radius: 50%

@@ -28,7 +28,7 @@
       <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-colour@2x.png'" class="order-line">
       <div class="order-list">
         <div class="list-item" v-for="(item, index) in goodsList" :key="index">
-          <div class="item-left-img"><img class="img" :src="item.goods_cover_image" alt=""></div>
+          <div class="item-left-img"><img class="img" mode="aspectFill" :src="item.goods_cover_image" alt=""></div>
           <div class="item-right">
             <div class="title">{{item.name}}</div>
             <div class="sub-title">规格：{{item.goods_units}}</div>
@@ -147,6 +147,7 @@
   import { ACTIVE_TYPE } from '@utils/contants'
   import API from '@api'
   import Ald from '@utils/ald'
+  import { isEmptyObject } from '@utils/common'
 
   // const ald = getApp()
   const PAGE_NAME = 'SUBMIT_ORDER'
@@ -161,7 +162,8 @@
         userInfo: {},
         isShowNewCustomer: false,
         distance: 0,
-        isShowPayModal: false
+        isShowPayModal: false,
+        isGet: true
       }
     },
     computed: {
@@ -176,18 +178,39 @@
         return false
       },
       goodsDiscount() {
-        console.log(this.commodityItem)
         return this.commodityItem ? +this.commodityItem.denomination ? +this.commodityItem.denomination : 0 : 0
+      },
+      customerCoupons() {
+        let arr = []
+        if (!isEmptyObject(this.commodityItem)) {
+          arr.push(this.commodityItem.coupon_id)
+        } else if (!isEmptyObject(this.couponInfo)) {
+          arr.push(this.couponInfo.coupon_id)
+        }
+        return arr
+      }
+    },
+    watch: {
+      commodityItem(value) {
+        if (!this.isGet) {
+          return
+        }
+        // 当修改选择的商品券时，应相应去修改优惠券的选择
+        this._getCouponInfo()
       }
     },
     onLoad() {
       // 重置优惠券
       this.$wechat.showLoading()
+      this._getGoodsInfo()
+      // this._getCouponInfo()
+      this._checkIsNewClient()
+    },
+    onUnload() {
+      console.log('卸载')
+      this.isGet = false
       this.setCommodityItem({})
       this.saveCoupon({})
-      this._getCouponInfo()
-      this._checkIsNewClient()
-      // console.log(this.goodsList)
     },
     async onShow() {
       // ald && ald.aldstat.sendEvent('去支付')
@@ -205,14 +228,24 @@
         if (this.isGoodsModal) {
           return
         }
-        API.Coupon.getChooseList({ goods: this.goodsList, is_usable: 1, tag_type: 1 }).then((res) => {
-          if (!res.data.length) return
-          let coupon = res.data[0]
-          this.setCommodityItem(coupon)
-        })
+        let couponId = !isEmptyObject(this.couponInfo) ? [this.couponInfo.coupon_id] : []
+        API.Coupon.getChooseList({ goods: this.goodsList, is_usable: 1, tag_type: 1, customer_coupons: couponId })
+          .then((res) => {
+            if (res.data.length) {
+              let coupon = res.data[0]
+              this.setCommodityItem(coupon)
+            } else {
+              this.setCommodityItem({})
+              this._getCouponInfo()
+            }
+            // this._getCouponInfo()
+          })
+          .catch(() => {
+            this._getCouponInfo()
+          })
       },
       chooseGoodsCouponHandle() {
-        wx.navigateTo({ url: this.$routes.main.INVITATION_CHOOSE })
+        wx.navigateTo({ url: `${this.$routes.main.INVITATION_CHOOSE}?customer_coupons=${this.couponInfo.coupon_id || ''}` })
       },
       // 获取地理位置
       async _getLocation() {
@@ -242,15 +275,20 @@
         if (this.isGroupModal) {
           return
         }
-        API.Coupon.getChooseList({ goods: this.goodsList, is_usable: 1 }).then((res) => {
-          if (!res.data.length) return
-          let coupon = res.data[0]
-          this.saveCoupon(coupon)
-          this._getGoodsInfo()
-        })
+        let couponId = !isEmptyObject(this.commodityItem) ? [this.commodityItem.coupon_id] : []
+
+        API.Coupon.getChooseList({ goods: this.goodsList, is_usable: 1, customer_coupons: couponId })
+          .then((res) => {
+            if (!res.data.length) {
+              this.saveCoupon({})
+              return
+            }
+            let coupon = res.data[0]
+            this.saveCoupon(coupon)
+          })
       },
       chooseCouponHandle() {
-        wx.navigateTo({ url: `${this.$routes.main.COUPON_CHOOSE}` })
+        wx.navigateTo({ url: `${this.$routes.main.COUPON_CHOOSE}?customer_coupons=${this.commodityItem.coupon_id || ''}` })
       },
       _getCode() {
         this.$wechat.login()
@@ -302,7 +340,8 @@
           url,
           source,
           latitude,
-          longitude
+          longitude,
+          customer_coupons: this.customerCoupons
         }
         this.userInfo.mobile = this.mobile
         this.$wechat.setStorage('userInfo', this.userInfo)
