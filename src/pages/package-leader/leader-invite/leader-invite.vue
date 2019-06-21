@@ -29,10 +29,10 @@
         </div>
         <img v-if="imageUrl" :src="imageUrl + '/yx-image/leader/pic-tzzm_02.jpg'" mode="widthFix"  class="img">
       </div>
-      <img v-if="imageUrl" :src="imageUrl + '/yx-image/leader/pic-tzzm_03.jpg'" mode="widthFix" :lazy-load="true" class="img">
-      <img v-if="imageUrl" :src="imageUrl + '/yx-image/leader/pic-tzzm_04.jpg'" mode="widthFix" :lazy-load="true"  class="img">
-      <img v-if="imageUrl" :src="imageUrl + '/yx-image/leader/pic-tzzm_05.jpg'" mode="widthFix" :lazy-load="true"  class="img">
-      <img v-if="imageUrl" :src="imageUrl + '/yx-image/leader/pic-tzzm_06.jpg'" mode="widthFix"  :lazy-load="true" class="img">
+      <img v-if="imageUrl" :src="imageUrl + '/yx-image/leader/pic-tzzm_03.jpg'" mode="widthFix"  class="img">
+      <img v-if="imageUrl" :src="imageUrl + '/yx-image/leader/pic-tzzm_04.jpg'" mode="widthFix"  class="img">
+      <img v-if="imageUrl" :src="imageUrl + '/yx-image/leader/pic-tzzm_05.jpg'" mode="widthFix"  class="img">
+      <img v-if="imageUrl" :src="imageUrl + '/yx-image/leader/pic-tzzm_06.jpg'" mode="widthFix"  class="img">
       <div>
         <div class="operate-btn">
           <button open-type="share" class="operate-btn show open-share-btn">立即邀请朋友成为团长</button>

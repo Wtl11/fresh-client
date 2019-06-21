@@ -153,8 +153,18 @@
       .inviter-name
         font-size: $font-size-16
         font-family :$font-family-regular
+        display flex
+        justify-content center
+        max-width :px-change-vw(256)
         margin-top:px-change-vh(8)
+        margin-right:auto
+        margin-left:auto
+        white-space nowrap
+
         .name
+          white-space nowrap
+          overflow hidden
+          text-overflow ellipsis
           margin-right:5px
   .inviteForm
   .form-body
