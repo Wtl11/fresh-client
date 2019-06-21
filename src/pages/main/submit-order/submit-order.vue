@@ -182,10 +182,11 @@
       },
       customerCoupons() {
         let arr = []
+        console.log(this.commodityItem)
         if (!isEmptyObject(this.commodityItem)) {
-          arr.push(this.commodityItem.coupon_id)
+          arr.push(this.commodityItem.customer_coupon_id)
         } else if (!isEmptyObject(this.couponInfo)) {
-          arr.push(this.couponInfo.coupon_id)
+          arr.push(this.couponInfo.customer_coupon_id)
         }
         return arr
       }
@@ -228,7 +229,7 @@
         if (this.isGoodsModal) {
           return
         }
-        let couponId = !isEmptyObject(this.couponInfo) ? [this.couponInfo.coupon_id] : []
+        let couponId = !isEmptyObject(this.couponInfo) ? [this.couponInfo.customer_coupon_id] : []
         API.Coupon.getChooseList({ goods: this.goodsList, is_usable: 1, tag_type: 1, customer_coupons: couponId })
           .then((res) => {
             if (res.data.length) {
@@ -245,7 +246,7 @@
           })
       },
       chooseGoodsCouponHandle() {
-        wx.navigateTo({ url: `${this.$routes.main.INVITATION_CHOOSE}?customer_coupons=${this.couponInfo.coupon_id || ''}` })
+        wx.navigateTo({ url: `${this.$routes.main.INVITATION_CHOOSE}?customer_coupons=${this.couponInfo.customer_coupon_id || ''}` })
       },
       // 获取地理位置
       async _getLocation() {
@@ -275,7 +276,7 @@
         if (this.isGroupModal) {
           return
         }
-        let couponId = !isEmptyObject(this.commodityItem) ? [this.commodityItem.coupon_id] : []
+        let couponId = !isEmptyObject(this.commodityItem) ? [this.commodityItem.customer_coupon_id] : []
 
         API.Coupon.getChooseList({ goods: this.goodsList, is_usable: 1, customer_coupons: couponId })
           .then((res) => {
@@ -288,7 +289,7 @@
           })
       },
       chooseCouponHandle() {
-        wx.navigateTo({ url: `${this.$routes.main.COUPON_CHOOSE}?customer_coupons=${this.commodityItem.coupon_id || ''}` })
+        wx.navigateTo({ url: `${this.$routes.main.COUPON_CHOOSE}?customer_coupons=${this.commodityItem.customer_coupon_id || ''}` })
       },
       _getCode() {
         this.$wechat.login()
