@@ -28,7 +28,7 @@
       >
 <!--        轮播图-->
         <section
-          v-if="moduleItem.module_name === 'bannar' && moduleItem.is_close === 0"
+          v-if="moduleItem.module_name === 'bannar' && moduleItem.is_close === 0 && moduleItem.list && moduleItem.list.length"
           id="banner"
           class="item-wrapper banner module-item">
           <article v-if="moduleItem.list && moduleItem.list.length" class="home-banner">

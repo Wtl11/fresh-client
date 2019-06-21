@@ -40,6 +40,7 @@
     methods: {
       ...cartMethods,
       jumpGoodsDetail(item) {
+        console.info(item)
         wx.navigateTo({
           url: `${this.$routes.main.GOODS_DETAIL}?id=${item.goods_id || 0}&activityId=${item.activity_id || 0}`
         })
