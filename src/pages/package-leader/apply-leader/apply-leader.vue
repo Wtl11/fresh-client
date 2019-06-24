@@ -72,7 +72,7 @@
       console.log(options, 'options')
       let leaderId = options.leaderId
       leaderId && wx.setStorageSync('shopId', leaderId)
-      await this._getLeaderStatus()
+      await this._getLeaderStatus(leaderId)
       this._getLeaderDetail({shop_id: leaderId})
       this.listenShow()
     },
@@ -100,8 +100,8 @@
         return true
       },
       // 获取邀请状态
-      async _getLeaderStatus() {
-        let res = await API.Leader.getLeaderStatus()
+      async _getLeaderStatus(leaderId) {
+        let res = await API.Leader.getLeaderStatus({invite_shop_id: leaderId})
         if (res.error !== this.$ERR_OK) {
           this.$wechat.showToast(res.message)
           return

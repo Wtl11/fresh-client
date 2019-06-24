@@ -74,9 +74,9 @@
       this.scrollHeight = res.screenHeight - this.TopHeight
     },
     async onShow() {
-      await this._getLeaderStatus()
       // 被邀请者
       let leaderId = wx.getStorageSync('leaderId') || wx.getStorageSync('shopId')// 获取团长id
+      await this._getLeaderStatus(leaderId)
       this._getLeaderDetail({shop_id: leaderId})
     },
     onShareAppMessage() {
@@ -110,8 +110,8 @@
         return true
       },
       // 获取邀请状态
-      async _getLeaderStatus() {
-        let res = await API.Leader.getLeaderStatus()
+      async _getLeaderStatus(leaderId) {
+        let res = await API.Leader.getLeaderStatus({invite_shop_id: leaderId})
         if (res.error !== this.$ERR_OK) {
           this.$wechat.showToast(res.message)
           return

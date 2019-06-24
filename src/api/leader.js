@@ -195,9 +195,9 @@ export default {
     return request.get(url, data, loading)
   },
   // 获取招募团长 开启关闭的 实时情况
-  getLeaderStatus(loading = false) {
+  getLeaderStatus(data, loading = false) {
     const url = `/api/wap/recruit/shop-distribution-config`
-    return request.get(url, {}, loading)
+    return request.get(url, data, loading)
   },
   inviteSubmit(data, loading = false) {
     const url = `/api/wap/recruit/shop-distribution-apply`

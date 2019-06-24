@@ -261,8 +261,8 @@
         wx.navigateTo({url: this.$routes.leader.LEADER_INVITE + '?flag=' + Date.now()})
       },
       // 获取邀请状态
-      _getLeaderStatus() {
-        API.Leader.getLeaderStatus().then(res => {
+      _getLeaderStatus(leaderId) {
+        API.Leader.getLeaderStatus({invite_shop_id: leaderId}).then(res => {
           if (res.error !== this.$ERR_OK) {
             this.$wechat.showToast(res.message)
             this.leaderStatus = false
@@ -271,8 +271,7 @@
           this.leaderStatus = res.data.status
         })
       },
-      _showRefresh() {
-        this._getLeaderStatus()
+      async _showRefresh() {
         if (!this.isFirstLoad) {
           this.nav = [
             new TabItem({title: '预售清单', fn: '_getPresellGoods', isOnReachBottom: false}),
@@ -281,10 +280,12 @@
           ]
           let obj = this.nav[this.navIndex]
           this[obj.fn]()
-          this._getLeaderDetail()
           this._leaderOrderTotal()
           this._getCustomerCount()
         }
+        await this._getLeaderDetail()
+        console.log(this.leaderDetail)
+        this._getLeaderStatus(this.leaderDetail.shop_id)
       },
       // 优惠券弹窗
       couponHandle(child, idx) {
