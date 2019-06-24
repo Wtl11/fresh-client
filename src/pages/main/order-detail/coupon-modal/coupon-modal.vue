@@ -8,31 +8,31 @@
            @click="cancelHandle"
       >
       <img class="top-img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/invitation/pic-xdfq@2x.png'">
-      <div class="coupon-con" :class="couponArray.length === 1?'one':''">
-        <div v-if="couponArray.length === 1" class="coupon-list">
+      <div class="coupon-con" :class="couponArray.length === 1 ? 'one':''">
+        <div v-if="couponArray.length === 1 && couponArray[0].coupon" class="coupon-list">
           <img class="item-bg" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.4/pic-dcoupon@2x.png'">
           <div class="item-con">
-            <div class="price-box"><span class="price">{{couponArray[0].denomination}}</span>{{couponArray[0].preferential_type === 1?'折':'元'}}</div>
+            <div class="price-box"><span class="price">{{couponArray[0].coupon.denomination}}</span>{{couponArray[0].coupon.preferential_type === 1?'折':'元'}}</div>
             <div class="right-box">
               <div class="title">
-                <p class="type">{{couponArray[0].range_type_str}}</p>
-                <p class="txt">{{couponArray[0].coupon_name}}</p>
+                <p class="type">{{couponArray[0].coupon.range_type_str}}</p>
+                <p class="txt">{{couponArray[0].coupon.coupon_name}}</p>
               </div>
-              <div class="condition">有效期至 {{couponArray[0].end_at}}</div>
+              <div class="condition">有效期至 {{couponArray[0].coupon.end_at}}</div>
             </div>
           </div>
         </div>
         <scroll-view v-else class="coupon-list" scroll-y>
-          <div v-for="(item, index) in couponArray" :key="index" class="coupon-item">
+          <div v-for="(item, index) in couponArray" v-if="item.coupon" :key="index" class="coupon-item">
             <img class="item-bg" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.4/pic-coupon_lqtc@2x.png'">
             <div class="item-con">
-              <div class="price-box"><span class="price">{{item.denomination}}</span>{{item.preferential_type === 1?'折':'元'}}</div>
+              <div class="price-box"><span class="price">{{item.coupon.denomination}}</span>{{item.coupon.preferential_type === 1?'折':'元'}}</div>
               <div class="right-box">
                 <div class="title">
-                  <p class="type">{{item.range_type_str}}</p>
-                  <p class="txt">{{item.coupon_name}}</p>
+                  <p class="type">{{item.coupon.range_type_str}}</p>
+                  <p class="txt">{{item.coupon.coupon_name}}</p>
                 </div>
-                <div class="condition">有效期至 {{item.end_at}}</div>
+                <div class="condition">有效期至 {{item.coupon.end_at}}</div>
               </div>
             </div>
           </div>
@@ -101,6 +101,7 @@
         wx.switchTab({ url: this.$routes.main.CHOICENESS })
       },
       show(arr = []) {
+        console.log(this.couponArray)
         if (!arr.length) {
           return
         }

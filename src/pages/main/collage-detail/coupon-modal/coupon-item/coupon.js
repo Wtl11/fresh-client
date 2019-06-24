@@ -1,3 +1,4 @@
+
 export default class {
   constructor () {
     this.is_pass = 0

@@ -418,11 +418,11 @@
       ...orderMethods,
       // 邀请活动的下单优惠券
       getReceiveInviteCoupon() {
-        API.Coupon.receiveInviteCoupon({cond_type: 6}, false, false)
+        API.Coupon.receiveInviteCoupon({ cond_type: 6 }, false, false)
           .then((res) => {
             if (res.error !== this.$ERR_OK) return
             this.couponItem = res.data
-            this.couponItem && this.$refs.invModal.show([this.couponItem])
+            this.couponItem.length && this.$refs.invModal.show(this.couponItem)
           })
       },
       // 拼团详情
