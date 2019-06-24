@@ -1,8 +1,8 @@
 <template>
   <div class="choose-coupon">
-    <navigation-bar title="选择商品券"></navigation-bar>
+    <navigation-bar title="选择兑换券"></navigation-bar>
     <div class="select-coupon" @click="notUse">
-      <div class="select-title">不使用商品券</div>
+      <div class="select-title">不使用兑换券</div>
       <div class="select-icon-box">
         <img :class="{active: !select}" v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" class="select-icon"/>
         <img v-if="imageUrl" :class="{active: select}" :src="imageUrl + '/yx-image/invitation/icon-pick@2x.png'" class="select-icon">
@@ -10,7 +10,7 @@
     </div>
 
     <dl v-if="useArray.length" class="panel">
-      <dt class="not-title">可用商品券</dt>
+      <dt class="not-title">可用兑换券</dt>
       <div class="coupon">
         <div v-for="(item, index) in useArray" :key="index" class="coupon-item" @click="selectCoupon(item, index)">
           <section class="top-wrapper">
@@ -60,7 +60,7 @@
       </div>
     </dl>
     <dl v-if="disableArray.length" class="panel">
-      <dt class="not-title">不可用商品券</dt>
+      <dt class="not-title">不可用兑换券</dt>
       <div class="coupon coupon-disable">
         <div v-for="(item, index) in disableArray" :key="index" class="coupon-item">
           <div class="shade"></div>
@@ -145,7 +145,6 @@
       }
     },
     onLoad() {
-      this.customerCoupons = this.$mp.query.customer_coupons ? [this.$mp.query.customer_coupons] : []
       if (!isEmptyObject(this.commodityItem)) {
         this.useIndex = this.useArray.findIndex((item) => item.coupon_id === this.commodityItem.coupon_id)
       } else {
@@ -180,7 +179,7 @@
         this.useArray = JSON.parse(JSON.stringify(arr))
       },
       _getCouponInfo() {
-        API.Coupon.getChooseList({ goods: this.goodsList, is_usable: 1, tag_type: 1, customer_coupons: this.customerCoupons }, true).then((res) => {
+        API.Coupon.getChooseList({ goods: this.goodsList, is_usable: 1, tag_type: 1 }, true).then((res) => {
           this.useArray = res.data
           this.useIndex = res.data.findIndex(val => val.coupon_id === this.couponInfo.coupon_id)
           this.useIndex = res.data.length && !isEmptyObject(this.commodityItem) && !this.commodityItem.notUse ? 0 : -1
@@ -188,7 +187,7 @@
             this.isShowEmpty++
           }
         })
-        API.Coupon.getChooseList({ goods: this.goodsList, is_usable: 0, tag_type: 1, customer_coupons: this.customerCoupons }, false).then((res) => {
+        API.Coupon.getChooseList({ goods: this.goodsList, is_usable: 0, tag_type: 1 }, false).then((res) => {
           this.disableArray = res.data
           if (!res.data.length) {
             this.isShowEmpty++

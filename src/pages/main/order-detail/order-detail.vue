@@ -134,7 +134,7 @@
     <confirm-msg ref="refundModel" useType="double" :msg="modelMsg" @confirm="confirm"></confirm-msg>
     <confirm-msg ref="colseModel" useType="close"></confirm-msg>
     <link-group ref="groupList" :wechatInfo="groupInfo"></link-group>
-    <!--商品券弹窗-->
+    <!--兑换券弹窗-->
     <coupon-modal ref="invModal"></coupon-modal>
   </div>
 </template>

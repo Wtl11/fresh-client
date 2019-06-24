@@ -51,7 +51,6 @@
       ...orderComputed
     },
     onLoad() {
-      this.customerCoupons = this.$mp.query.customer_coupons ? [this.$mp.query.customer_coupons] : []
       this._getCouponInfo()
     },
     methods: {
@@ -67,14 +66,14 @@
         wx.navigateBack()
       },
       _getCouponInfo() {
-        API.Coupon.getChooseList({ goods: this.goodsList, is_usable: 1, customer_coupons: this.customerCoupons }, true).then((res) => {
+        API.Coupon.getChooseList({ goods: this.goodsList, is_usable: 1 }, true).then((res) => {
           this.useArray = res.data
           this.useIndex = res.data.findIndex(val => val.coupon_id === this.couponInfo.coupon_id)
           if (!res.data.length) {
             this.isShowEmpty++
           }
         })
-        API.Coupon.getChooseList({ goods: this.goodsList, is_usable: 0, customer_coupons: this.customerCoupons }, false).then((res) => {
+        API.Coupon.getChooseList({ goods: this.goodsList, is_usable: 0 }, false).then((res) => {
           this.disableArray = res.data
           if (!res.data.length) {
             this.isShowEmpty++

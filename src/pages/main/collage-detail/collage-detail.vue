@@ -92,7 +92,7 @@
         </div>
       </div>
     </div>
-    <!--商品券弹窗-->
+    <!--兑换券弹窗-->
     <coupon-modal ref="invModal"></coupon-modal>
   </div>
 </template>

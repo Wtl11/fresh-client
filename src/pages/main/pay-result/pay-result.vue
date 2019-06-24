@@ -15,7 +15,7 @@
         <button class="jump-goods jump-order" formType="submit"  @click="jumpGoods">继续购物</button>
       </form>
     </div>
-    <!--商品券弹窗-->
+    <!--兑换券弹窗-->
     <coupon-modal ref="invModal"></coupon-modal>
   </div>
 </template>

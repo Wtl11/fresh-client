@@ -33,14 +33,12 @@ export const getters = {
 export const actions = {
   setCommodityItem({ commit, state }, item) {
     console.log(item.real_condition_total)
-    let total = item.real_condition_total ? item.real_condition_total : state.couponInfo.real_condition_total ? state.couponInfo.real_condition_total : state.beforeTotal
+    // let total = item.real_condition_total ? item.real_condition_total : state.couponInfo.real_condition_total ? state.couponInfo.real_condition_total : state.beforeTotal
     commit('SET_COMMODITY_ITEM', item)
-    commit('SET_TOTAL', total)
   },
   // 保存优惠券信息
   saveCoupon({ commit, state }, coupon) {
-    console.log(coupon)
-    let total = coupon.real_condition_total ? coupon.real_condition_total : state.commodityItem.real_condition_total ? state.commodityItem.real_condition_total : state.beforeTotal
+    let total = coupon.real_condition_total || state.beforeTotal
     commit('SAVE_COUPON', coupon)
     commit('SET_TOTAL', total)
   },
@@ -50,7 +48,7 @@ export const actions = {
     commit('DELIVER_AT', deliverAt)
     commit('SET_BEFORE_TOTAL', total)
   },
-  submitOrder({ commit, state }, { orderInfo, complete }) {
+  submitOrder({ commit, state }, { orderInfo, complete, isFree = false }) {
     API.SubmitOrder.submitOrder(orderInfo)
       .then(res => {
         if (res.error !== ERR_OK) {
@@ -68,6 +66,10 @@ export const actions = {
         let payRes = res.data
         const { timestamp, nonceStr, signType, paySign } = payRes
         let orderId = res.data.order_id || 0
+        if (isFree) {
+          wx.redirectTo({ url: `${$$routes.main.PAY_RESULT}?orderId=${orderId}&&type=0&total=${state.total}` })
+          return
+        }
         wx.requestPayment({
           timeStamp: timestamp,
           nonceStr,

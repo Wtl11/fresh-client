@@ -8,7 +8,8 @@ import '@utils/app-plugins'
 import '@utils/saas'
 import '@design'
 
-Vue.config._mpTrace = process.env !== 'production'
+// Vue.config._mpTrace = process.env !== 'production'
+Vue.config._mpTrace = false
 Vue.config.productionTip = false
 App.mpType = 'app'
 const app = new Vue({

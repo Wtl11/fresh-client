@@ -90,7 +90,8 @@
           new TabItem({ text: '邀请成功', status: '3', numberKey: 'can_used_count' }),
           new TabItem({ text: '邀请在路上', status: '1', numberKey: 'cannot_used_count' })
         ],
-        couponList: []
+        couponList: [],
+        thumbImage: ''
       }
     },
     onShareAppMessage(e) {
@@ -106,7 +107,7 @@
       if (e.target.dataset.type === 'default') {
         // 邀请用户
         title = `${nickName}邀请你参加新人专享活动`
-        imageUrl = `${this.imageUrl}/yx-image/invitation/pic-yqyl_wechat@2x.png`
+        imageUrl = this.thumbImage
         path = `${this.$routes.activity.INVITEE}?shopId=${shopId}&invitationId=${id}`
       }
       return {
@@ -131,6 +132,7 @@
             }
           })
           this.couponList = arr
+          this.thumbImage = res.data.thumb_image
         })
       },
       getInviteStatistic(loading = false) {

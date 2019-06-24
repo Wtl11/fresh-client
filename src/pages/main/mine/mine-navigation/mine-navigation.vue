@@ -108,7 +108,7 @@
           {
             cname: '',
             icon: '/yx-image/invitation/icon-spcoupon_me@2x.png',
-            title: '商品券',
+            title: '兑换券',
             hasExplain: 2,
             url: this.$routes.activity.COMMODITY_CERTIFICATES,
             fn: '_handleNav',

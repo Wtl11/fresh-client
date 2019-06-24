@@ -48,7 +48,7 @@
              @click="submitHandle"
         >
         <div class="bottom-con">
-          <p hover-class="none" class="explain" @click="navHandle">商品券已放入账号 <span class="look">查看></span></p>
+          <p hover-class="none" class="explain" @click="navHandle">兑换券已放入账号 <span class="look">查看></span></p>
           <img class="coupon-btn"
                mode="aspectFill"
                v-if="imageUrl"

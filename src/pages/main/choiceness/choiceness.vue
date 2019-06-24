@@ -335,7 +335,7 @@
       <custom-tab-bar currentType="index"></custom-tab-bar>
       <!--    优惠券弹窗-->
       <coupon-modal ref="couponModal"></coupon-modal>
-      <!--商品券弹窗-->
+      <!--兑换券弹窗-->
       <invitation-modal ref="invModal"></invitation-modal>
       <!--    添加至我的小程序-->
       <new-guidelines ref="guidelines"></new-guidelines>

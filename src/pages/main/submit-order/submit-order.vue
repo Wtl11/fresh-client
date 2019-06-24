@@ -28,7 +28,7 @@
       <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-colour@2x.png'" class="order-line">
       <div class="order-list">
         <div class="list-item" v-for="(item, index) in goodsList" :key="index">
-          <div class="item-left-img"><img class="img" mode="aspectFill" :src="item.goods_cover_image" alt=""></div>
+          <div class="item-left-img"><img class="img" :src="item.goods_cover_image" alt=""></div>
           <div class="item-right">
             <div class="title">{{item.name}}</div>
             <div class="sub-title">规格：{{item.goods_units}}</div>
@@ -54,24 +54,20 @@
         <p v-if="isShowNewCustomer" class="new-rule-wrapper">不符合新人购买资格，按原价结算</p>
       </section>
       <ul class="coupon-info-wrapper" :class="'corp-' + corpName + '-money'">
-        <li v-if="isGoodsModal" class="coupon-item">
-          <p class="name">使用商品券</p>
-          <p class="price-disable">该商品不支持使用商品券</p>
-        </li>
-        <li v-if="!isGoodsModal" class="coupon-item" @click="chooseGoodsCouponHandle">
+        <li v-if="isFree" class="coupon-item">
           <p class="name">使用商品券</p>
           <p v-if="goodsDiscount > 0" class="price">-{{goodsDiscount}}</p>
           <p v-else class="price-disable">未使用商品券</p>
           <p v-if="goodsDiscount > 0">元</p>
-          <div class="item-arrow-img">
-            <img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="img">
-          </div>
+          <!--<div class="item-arrow-img">-->
+          <!--<img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="img">-->
+          <!--</div>-->
         </li>
-        <li v-if="isGroupModal" class="coupon-item">
+        <li v-if="isGroupModal && !isFree" class="coupon-item">
           <p class="name">使用优惠券</p>
           <p class="price-disable">该商品不支持使用优惠券</p>
         </li>
-        <li v-if="!isGroupModal" class="coupon-item" @click="chooseCouponHandle">
+        <li v-if="!isGroupModal && !isFree" class="coupon-item" @click="chooseCouponHandle">
           <p class="name">使用优惠券</p>
           <p v-if="discount > 0" class="price">-{{discount}}</p>
           <p v-else class="price-disable">未使用优惠券</p>
@@ -82,16 +78,24 @@
         </li>
         <li class="coupon-item">
           <p class="name">实付金额</p>
-          <p class="price">{{total}}</p>
+          <p v-if="!isFree" class="price">{{total}}</p>
+          <p v-else class="price">0</p>
           <p>元</p>
         </li>
       </ul>
-      <div class="fixed-btn">
+      <div v-if="!isFree" class="fixed-btn">
         <div class="money" :class="'corp-' + corpName + '-money'">
           <p>总计 {{total}}元</p>
-          <p class="explain">(已优惠<span :class="'corp-' + corpName + '-money'">{{discount + goodsDiscount}}</span>元)</p>
+          <p class="explain">(已优惠<span :class="'corp-' + corpName + '-money'">{{discount}}</span>元)</p>
         </div>
         <button formType="submit" class="pay" :class="'corp-' + corpName + '-bg'" @click.stop="goPay">去支付</button>
+      </div>
+      <div v-if="isFree" class="fixed-btn">
+        <div class="money" :class="'corp-' + corpName + '-money'">
+          <p>总计 0元</p>
+          <p class="explain">(已优惠<span :class="'corp-' + corpName + '-money'">{{total}}</span>元)</p>
+        </div>
+        <button formType="submit" class="pay" :class="'corp-' + corpName + '-bg'" @click.stop="_goPayAction">去支付</button>
       </div>
       <article class="share-panel-wrapper">
         <div v-if="isShowPayModal" class="share-mask" @click="_hidePayModal">
@@ -147,7 +151,7 @@
   import { ACTIVE_TYPE } from '@utils/contants'
   import API from '@api'
   import Ald from '@utils/ald'
-  import { isEmptyObject } from '@utils/common'
+  // import { isEmptyObject } from '@utils/common'
 
   // const ald = getApp()
   const PAGE_NAME = 'SUBMIT_ORDER'
@@ -163,7 +167,8 @@
         isShowNewCustomer: false,
         distance: 0,
         isShowPayModal: false,
-        isGet: true
+        isFirst: true,
+        isFree: false
       }
     },
     computed: {
@@ -178,38 +183,21 @@
         return false
       },
       goodsDiscount() {
+        // console.log(this.commodityItem)
         return this.commodityItem ? +this.commodityItem.denomination ? +this.commodityItem.denomination : 0 : 0
-      },
-      customerCoupons() {
-        let arr = []
-        console.log(this.commodityItem)
-        if (!isEmptyObject(this.commodityItem)) {
-          arr.push(this.commodityItem.customer_coupon_id)
-        } else if (!isEmptyObject(this.couponInfo)) {
-          arr.push(this.couponInfo.customer_coupon_id)
-        }
-        return arr
-      }
-    },
-    watch: {
-      commodityItem(value) {
-        if (!this.isGet) {
-          return
-        }
-        // 当修改选择的商品券时，应相应去修改优惠券的选择
-        this._getCouponInfo()
       }
     },
     onLoad() {
+      this.isFree = this.$mp.query.isFree || false
       // 重置优惠券
       this.$wechat.showLoading()
-      this._getGoodsInfo()
-      // this._getCouponInfo()
+      // this._getGoodsInfo()
+      if (!this.isFree) {
+        this._getCouponInfo()
+      }
       this._checkIsNewClient()
     },
     onUnload() {
-      console.log('卸载')
-      this.isGet = false
       this.setCommodityItem({})
       this.saveCoupon({})
     },
@@ -225,28 +213,24 @@
     },
     methods: {
       ...orderMethods,
+      // 免费兑换
+      goFree() {
+
+      },
       _getGoodsInfo() {
         if (this.isGoodsModal) {
           return
         }
-        let couponId = !isEmptyObject(this.couponInfo) ? [this.couponInfo.customer_coupon_id] : []
-        API.Coupon.getChooseList({ goods: this.goodsList, is_usable: 1, tag_type: 1, customer_coupons: couponId })
+        API.Coupon.getChooseList({ goods: this.goodsList, is_usable: 1, tag_type: 1 })
           .then((res) => {
             if (res.data.length) {
               let coupon = res.data[0]
               this.setCommodityItem(coupon)
-            } else {
-              this.setCommodityItem({})
-              this._getCouponInfo()
             }
-            // this._getCouponInfo()
-          })
-          .catch(() => {
-            this._getCouponInfo()
           })
       },
       chooseGoodsCouponHandle() {
-        wx.navigateTo({ url: `${this.$routes.main.INVITATION_CHOOSE}?customer_coupons=${this.couponInfo.customer_coupon_id || ''}` })
+        wx.navigateTo({ url: `${this.$routes.main.INVITATION_CHOOSE}` })
       },
       // 获取地理位置
       async _getLocation() {
@@ -276,9 +260,7 @@
         if (this.isGroupModal) {
           return
         }
-        let couponId = !isEmptyObject(this.commodityItem) ? [this.commodityItem.customer_coupon_id] : []
-
-        API.Coupon.getChooseList({ goods: this.goodsList, is_usable: 1, customer_coupons: couponId })
+        API.Coupon.getChooseList({ goods: this.goodsList, is_usable: 1 })
           .then((res) => {
             if (!res.data.length) {
               this.saveCoupon({})
@@ -289,7 +271,7 @@
           })
       },
       chooseCouponHandle() {
-        wx.navigateTo({ url: `${this.$routes.main.COUPON_CHOOSE}?customer_coupons=${this.commodityItem.customer_coupon_id || ''}` })
+        wx.navigateTo({ url: `${this.$routes.main.COUPON_CHOOSE}` })
       },
       _getCode() {
         this.$wechat.login()
@@ -328,27 +310,25 @@
         this.$wechat.showLoading()
         let url = this.goodsList[0].url || ''
         let source = this.goodsList[0].source || ''
-        // let longitude = this.goodsList[0].longitude || this.longitude
-        // let latitude = this.goodsList[0].latitude || this.latitude
+        let customerCouponId = this.isFree ? this.commodityItem.customer_coupon_id : this.couponInfo.customer_coupon_id ? this.couponInfo.customer_coupon_id : 0
+        console.log(customerCouponId)
+        //  commodityItem
         let longitude = this.longitude
         let latitude = this.latitude
         let orderInfo = {
           goods: this.goodsList,
           nickname: this.userInfo.nickname,
           mobile: this.mobile,
-          customer_coupon_id: this.couponInfo.customer_coupon_id || 0,
+          customer_coupon_id: customerCouponId,
           open_gid: wx.getStorageSync('openGId') || 0,
           url,
-          source,
+          source: this.isFree ? 'c_exchange' : source,
           latitude,
-          longitude,
-          customer_coupons: this.customerCoupons
+          longitude
         }
         this.userInfo.mobile = this.mobile
         this.$wechat.setStorage('userInfo', this.userInfo)
-        await this.submitOrder({
-          orderInfo
-        })
+        await this.submitOrder({ orderInfo, isFree: this.isFree })
       },
       _payback(res, id) {
       },

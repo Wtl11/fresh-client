@@ -23,10 +23,10 @@
           <div class="rules-text"><span class="circular"></span>新人用户奖励</div>
           <div class="rules-no">您分享给新用户，对方即可获得新人红包新用户使用红包成功下单后，会获得红包奖励</div>
           <div class="rules-text"><span class="circular"></span>邀请人奖励</div>
-          <div class="rules-no">成功邀请1位新人下单后，得XXX商品券</div>
-          <div class="rules-no">成功邀请3位新人下单后，得XXX商品券</div>
-          <div class="rules-no">成功邀请6位新人下单后，得XXX商品券</div>
-          <div class="rules-no">成功邀请>6位新人下单后，得XXX商品券</div>
+          <div class="rules-no">成功邀请1位新人下单后，得XXX兑换券</div>
+          <div class="rules-no">成功邀请3位新人下单后，得XXX兑换券</div>
+          <div class="rules-no">成功邀请6位新人下单后，得XXX兑换券</div>
+          <div class="rules-no">成功邀请>6位新人下单后，得XXX兑换券</div>
         </div>
       </div>
     </div>
