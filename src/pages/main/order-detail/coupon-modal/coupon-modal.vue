@@ -61,6 +61,7 @@
   import AnimationModal from '@mixins/animation-modal'
   import CouponItem from './coupon-item/coupon-item'
   import {formatCouponMoney} from '@utils/common'
+  import API from '@api'
 
   const COMPONENT_NAME = 'COUPON_MODAL'
 
@@ -77,14 +78,25 @@
       }
     },
     methods: {
+      _targetList() {
+        console.log(this.couponArray)
+        let arr = this.couponArray.map((item) => {
+          return item.coupon_activity_id || 0
+        })
+        API.Coupon.targetModal({ coupon_activity_ids: arr }).catch(e => {
+          console.error(e)
+        })
+      },
       navHandle() {
         this.hide()
         wx.navigateTo({url: this.$routes.main.COUPON_MINE})
       },
       cancelHandle() {
+        this._targetList()
         this.hide()
       },
       submitHandle() {
+        this._targetList()
         this.hide()
         wx.switchTab({ url: this.$routes.main.CHOICENESS })
       },
