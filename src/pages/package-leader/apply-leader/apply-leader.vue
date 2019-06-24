@@ -67,12 +67,12 @@
       this.scrollHeight = res.screenHeight - this.TopHeight
     },
     async onShow() {
-      await this._getLeaderStatus()
       // 被邀请者
       let options = this._$$initOptions()
       console.log(options, 'options')
       let leaderId = options.leaderId
       leaderId && wx.setStorageSync('shopId', leaderId)
+      await this._getLeaderStatus()
       this._getLeaderDetail({shop_id: leaderId})
       this.listenShow()
     },
