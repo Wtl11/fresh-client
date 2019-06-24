@@ -265,6 +265,7 @@
         API.Leader.getLeaderStatus().then(res => {
           if (res.error !== this.$ERR_OK) {
             this.$wechat.showToast(res.message)
+            this.leaderStatus = false
             return
           }
           this.leaderStatus = res.data.status
