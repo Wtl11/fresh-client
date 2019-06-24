@@ -13,7 +13,7 @@
           <img class="item-bg" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.4/pic-dcoupon@2x.png'">
           <div class="item-con">
             <div class="img-box">
-              <img v-if="couponArray[0].coupon && couponArray[0].coupon.other_info" :src="couponArray[0].coupon.other_info.goods_cover_image" class="img-item">
+              <img v-if="couponArray[0].coupon && couponArray[0].coupon.other_info" :src="couponArray[0].coupon.other_info.goods_cover_image" mode="aspectFill" class="img-item">
             </div>
             <div class="right-box">
               <div class="title">
@@ -29,7 +29,7 @@
             <img class="item-bg" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.4/pic-coupon_lqtc@2x.png'">
             <div class="item-con">
               <div class="img-box">
-                <img v-if="item.coupon && item.coupon.other_info" :src="item.coupon.other_info.goods_cover_image" class="img-item">
+                <img v-if="item.coupon && item.coupon.other_info" :src="item.coupon.other_info.goods_cover_image" mode="aspectFill" class="img-item">
               </div>
               <div class="right-box" v-if="item.coupon">
                 <div class="title">

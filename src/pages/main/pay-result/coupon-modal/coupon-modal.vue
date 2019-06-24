@@ -60,7 +60,7 @@
 <script type="text/ecmascript-6">
   import AnimationModal from '@mixins/animation-modal'
   import CouponItem from './coupon-item/coupon-item'
-  import {formatCouponMoney} from '@utils/common'
+  import { formatCouponMoney } from '@utils/common'
   import API from '@api'
 
   const COMPONENT_NAME = 'COUPON_MODAL'
@@ -79,17 +79,17 @@
     },
     methods: {
       _targetList() {
-        console.log(this.couponArray)
         let arr = this.couponArray.map((item) => {
           return item.coupon_activity_id || 0
         })
-        API.Coupon.targetModal({ coupon_activity_ids: arr }).catch(e => {
+        API.Coupon.targetModal({ coupon_activity_ids: arr, source: 'order' }).catch(e => {
           console.error(e)
         })
       },
       navHandle() {
+        this._targetList()
         this.hide()
-        wx.navigateTo({url: this.$routes.main.COUPON_MINE})
+        wx.navigateTo({ url: this.$routes.main.COUPON_MINE })
       },
       cancelHandle() {
         this._targetList()
@@ -201,29 +201,29 @@
               flex: 1
               overflow: hidden
               .title
-                layout(row,block,nowrap)
-                align-items :center
+                layout(row, block, nowrap)
+                align-items: center
                 color: $color-text-main
                 .type
                   font-family: $font-family-medium
-                  height:12px
-                  line-height:10px
-                  border:1px solid rgba(29,32,35,0.75)
-                  border-radius:2px
+                  height: 12px
+                  line-height: 10px
+                  border: 1px solid rgba(29, 32, 35, 0.75)
+                  border-radius: 2px
                   font-size: $font-size-10
                   padding: 0 2px
                   layout(row)
                   align-items: center
-                  opacity :0.8
+                  opacity: 0.8
                 .txt
-                  padding-left : 2px
+                  padding-left: 2px
                   font-family: $font-family-medium
-                  font-size : $font-size-14
+                  font-size: $font-size-14
                   no-wrap()
               .condition
-                padding-top : 4px
-                opacity :0.8
-                font-size : $font-size-13
+                padding-top: 4px
+                opacity: 0.8
+                font-size: $font-size-13
         &.one
           height: 194.5px
           .coupon-list
@@ -235,7 +235,7 @@
               .price-box
                 max-width: 62px
           .title
-            padding-top : 8px
+            padding-top: 8px
 
         .bottom-bg
           position: absolute

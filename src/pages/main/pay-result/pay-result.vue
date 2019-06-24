@@ -10,9 +10,9 @@
       <div class="result-text-box">{{allReady ? '订单支付成功' : '支付中···'}}</div>
     </div>
     <div class="jump-btn-box lost">
-      <button v-if="payType !== 'offline'" class="jump-goods" :class="[allReady ? '' : 'jump-goods-show', 'corp-' + corpName + '-bg']" open-type="share"  formType="submit" >提醒团长接单</button>
+      <button v-if="payType !== 'offline'" class="jump-goods" :class="[allReady ? '' : 'jump-goods-show', 'corp-' + corpName + '-bg']" open-type="share" formType="submit">提醒团长接单</button>
       <form action="" report-submit @submit="$getFormId">
-        <button class="jump-goods jump-order" formType="submit"  @click="jumpGoods">继续购物</button>
+        <button class="jump-goods jump-order" formType="submit" @click="jumpGoods">继续购物</button>
       </form>
     </div>
     <!--兑换券弹窗-->
@@ -87,7 +87,7 @@
         wx.switchTab({ url: `${this.$routes.main.CHOICENESS}` })
       },
       getReceiveInviteCoupon() {
-        API.Coupon.receiveInviteCoupon({cond_type: 6}, false, false)
+        API.Coupon.receiveInviteCoupon({ cond_type: 6 }, false, false)
           .then((res) => {
             if (res.error !== this.$ERR_OK) return
             this.couponItem = res.data
@@ -105,12 +105,13 @@
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
- @import "~@designCommon"
+  @import "~@designCommon"
 
   .pay-result
     background: $color-white
     height: 100vh
     width: 100%
+
   .result-top
     padding-top: 75px
     transform-style: preserve-3d
@@ -141,8 +142,10 @@
       font-size: $font-size-16
       text-align: center
       margin-top: 15px
+
   .jump-btn-box
     margin-top: 94px
+
   .jump-goods
     height: 45px
     line-height: 45px
@@ -154,11 +157,13 @@
     font-size: $font-size-16
     &:after
       border: none
+
   .jump-order
     background: $color-white
     font-family: $font-family-regular
     color: $color-text-sub
     border-1px(#b7b7b7, 25px)
+
   .z
     width: 100%
 </style>
