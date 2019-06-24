@@ -75,7 +75,7 @@
     },
     async onShow() {
       // 被邀请者
-      let leaderId = wx.getStorageSync('leaderId') || wx.getStorageSync('shopId')// 获取团长id
+      let leaderId = wx.getStorageSync('leaderId')// 获取团长id
       await this._getLeaderStatus(leaderId)
       this._getLeaderDetail({shop_id: leaderId})
     },
