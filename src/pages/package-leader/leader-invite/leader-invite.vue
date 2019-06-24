@@ -132,43 +132,11 @@
   @import "~@designCommon"
   .scroll
     position:relative
-    .inviter-wrap
-      position:absolute
-      top:px-change-vh(26)
-      left:0
-      right:0
-      color:$color-white
-      text-align center
-      font-size: $font-size-18
-      font-family :$font-family-medium
-      .head-photo-wrap
-        position:absolute
-        top:0
-        left:50%
-        transform translateX(-50%)
-        width:52px
-        height:52px
-        border-1px(#FFFFFF, 26px, solid, 1.5px)
-        .head-photo
-          width: 100%
-          height: 100%
-          border-radius 50%
-      .inviter-name
-        font-size: $font-size-16
-        font-family :$font-family-regular
-        margin-top:px-change-vh(8)
-        .name
-          margin-right:5px
-  .inviteForm
-  .form-body
-    background-size 100% 100%
-    padding-top:25px
-  .input-wrap
-    background-color : #00ba65
   .leader-invite
     width: 100%
     .img
       display block
+      font-size 0
       width:100vw
     .percent-wrap
       position: relative

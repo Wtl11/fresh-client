@@ -12,10 +12,10 @@
         </div>
         <img v-if="imageUrl" :src="imageUrl + '/yx-image/leader/pic-tzzmbyq_01.jpg'" mode="widthFix" class="img">
       </div>
-      <img v-if="imageUrl" :src="imageUrl + '/yx-image/leader/pic-tzzm_03.jpg'" mode="widthFix" :lazy-load="true" class="img">
-      <img v-if="imageUrl" :src="imageUrl + '/yx-image/leader/pic-tzzm_04.jpg'" mode="widthFix" :lazy-load="true"  class="img">
-      <img v-if="imageUrl" :src="imageUrl + '/yx-image/leader/pic-tzzm_05.jpg'" mode="widthFix" :lazy-load="true"  class="img">
-      <img v-if="imageUrl" :src="imageUrl + '/yx-image/leader/pic-tzzm_06.jpg'" mode="widthFix"  :lazy-load="true" class="img">
+      <img v-if="imageUrl" :src="imageUrl + '/yx-image/leader/pic-tzzm_03.jpg'" mode="widthFix" class="img">
+      <img v-if="imageUrl" :src="imageUrl + '/yx-image/leader/pic-tzzm_04.jpg'" mode="widthFix" class="img">
+      <img v-if="imageUrl" :src="imageUrl + '/yx-image/leader/pic-tzzm_05.jpg'" mode="widthFix" class="img">
+      <img v-if="imageUrl" :src="imageUrl + '/yx-image/leader/pic-tzzm_06.jpg'" mode="widthFix" class="img">
       <div id="form-box" class="input-wrap">
         <img v-if="imageUrl" :src="imageUrl + '/yx-image/leader/pic-tzzmbyq_t1@2x.png'" mode="widthFix"  class="img">
         <div :style="{'background-image':imageUrl && 'url(' + imageUrl + '/yx-image/leader/pic-tzzmbyq_t2@2x.png)'}" class="form-body">
@@ -176,52 +176,8 @@
     width: 100%
     .img
       display block
+      font-size 0
       width:100vw
-    .percent-wrap
-      position: relative
-      .li-item
-        position:absolute
-        width:100vw
-        box-sizing border-box
-        padding:0 px-change-vw(41) 0 px-change-vw(91)
-        display flex
-        justify-content space-between
-        align-items center
-        right:0
-        height:px-change-vw(86)
-        &.first
-          top:px-change-vw(108)
-        &.second
-          bottom:px-change-vw(62)
-        .right-box
-          text-align:center
-          width:px-change-vw(65)
-          font-size :$font-size-13
-        .money, .percent-num
-          font-family:'DINAlternate-Bold'
-          text-align center
-        .money
-          font-size: 28px
-        .percent-num
-          font-size: 30px
-        .text-yj
-          letter-spacing 4px
-        .percent-item
-          justify-content center
-          align-items  center
-          .text-12
-            font-size: $font-size-12
-            font-family $font-family-regular
-
-        .text-h6
-          color: #333333
-          font-size: $font-size-13
-        .text-h5
-          color: #333333
-          font-size:$font-size-14
-          font-family: $font-family-bold
-        .percent-item
-          display flex
     .operate-btn
       width: 100%
       height:0
