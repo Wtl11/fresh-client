@@ -157,7 +157,6 @@
         API.Mine.activityInviteEnable()
           .then((res) => {
             this.enable = !!res.data.enable
-            console.log(res)
           })
       },
       _changeNavigation(e) {

@@ -108,7 +108,6 @@
       getReceiveInviteCoupon() {
         API.Coupon.receiveInviteCoupon({ invite_id: this.invitationId, cond_type: 1 })
           .then((res) => {
-            console.log(res)
             res.message && this.$wechat.showToast(res.message, 2500)
             if (res.error !== this.$ERR_OK) return
             this.coupon = res.data || {}

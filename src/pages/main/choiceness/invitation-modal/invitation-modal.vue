@@ -83,7 +83,6 @@
     },
     watch: {
       couponArray(news) {
-        console.log(news)
       }
     },
     methods: {

@@ -311,7 +311,6 @@
         let url = this.goodsList[0].url || ''
         let source = this.goodsList[0].source || ''
         let customerCouponId = this.isFree ? this.commodityItem.customer_coupon_id : this.couponInfo.customer_coupon_id ? this.couponInfo.customer_coupon_id : 0
-        console.log(customerCouponId)
         //  commodityItem
         let longitude = this.longitude
         let latitude = this.latitude

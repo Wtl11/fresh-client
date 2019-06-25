@@ -170,6 +170,11 @@
       },
       selectCoupon(item) {
         if (item.status !== 1) return
+        // 商品不可用时的吐司提示
+        if (item.other_info.is_enable === 0) {
+          this.$wechat.showToast(item.other_info.unusable_str)
+          return
+        }
         // 设置商品信息
         let arr = [item.other_info.goods_skus[0]]
         arr[0].num = 1

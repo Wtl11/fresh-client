@@ -32,9 +32,6 @@
         default: 0
       }
     },
-    onLoad() {
-      console.log(this.tabList)
-    },
     methods: {
       changeHandle(item, index) {
         this.$emit('change', item, index)

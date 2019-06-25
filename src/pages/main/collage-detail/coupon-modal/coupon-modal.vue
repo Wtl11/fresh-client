@@ -79,10 +79,12 @@
     },
     methods: {
       _targetList() {
+        let customerCoupons = []
         let arr = this.couponArray.map((item) => {
+          customerCoupons.push({ customer_coupon_id: item.coupon.customer_coupon_id || 0, coupon_activity_id: item.coupon_activity_id || 0 })
           return item.coupon_activity_id || 0
         })
-        API.Coupon.targetModal({ coupon_activity_ids: arr, source: 'order' }).catch(e => {
+        API.Coupon.targetModal({ coupon_activity_ids: arr, customer_coupons: customerCoupons }).catch(e => {
           console.error(e)
         })
       },
@@ -101,7 +103,6 @@
         wx.switchTab({ url: this.$routes.main.CHOICENESS })
       },
       show(arr = []) {
-        console.log(this.couponArray)
         if (!arr.length) {
           return
         }
