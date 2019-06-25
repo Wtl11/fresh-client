@@ -110,8 +110,8 @@
           .then((res) => {
             res.message && this.$wechat.showToast(res.message, 2500)
             if (res.error !== this.$ERR_OK) return
-            this.coupon = res.data || {}
-            this.disable = !res.data || this.coupon.status !== 1
+            this.coupon = res.data.length ? res.data[0].coupon : {}
+            this.disable = !res.data || !res.data.length || this.coupon.status !== 1
           })
           .catch(() => {
             this.disable = true

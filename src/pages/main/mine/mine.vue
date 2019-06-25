@@ -136,9 +136,9 @@
     async onShow() {
       if (!wx.getStorageSync('token')) return
       let storageUserInfo = await this.$wechat.getStorage('userInfo')
+      this._isOpenInvitation()
       this.userInfo = storageUserInfo.data
       this.isLeader = wx.getStorageSync('isLeader') || false
-      this._isOpenInvitation()
       this._getShopDetail()
       this._getOrderCount()
       this._getCouponNumber()

@@ -190,6 +190,11 @@
       this.isLeader = wx.getStorageSync('isLeader') || false
       this.isLeader && this._leaderOrderTotal()
     },
+    watch: {
+      isInvitation(value) {
+        this.navList[3].isShow = value
+      }
+    },
     methods: {
       handleClick(item) {
         typeof this[item.fn] === 'function' && this[item.fn](item)
