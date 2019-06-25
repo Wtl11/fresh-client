@@ -9,7 +9,12 @@ const UN_AUTO_SNED_PAGE = [
   'goods-record',
   'coupon-take',
   'flash-sale-list',
-  'collage-detail'
+  'collage-detail',
+  'app-update',
+  'goods-end',
+  'error',
+  'lost',
+  'open-location'
 ]
 export default {
   onReady() {
