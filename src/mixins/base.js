@@ -13,7 +13,8 @@ const UN_AUTO_SNED_PAGE = [
   'app-update',
   'goods-end',
   'error',
-  'lost'
+  'lost',
+  'open-location'
 ]
 export default {
   onReady() {
