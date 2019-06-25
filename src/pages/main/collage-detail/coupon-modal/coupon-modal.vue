@@ -81,7 +81,7 @@
       _targetList() {
         let customerCoupons = []
         let arr = this.couponArray.map((item) => {
-          customerCoupons.push({ customer_coupon_id: item.coupon.customer_coupon_id || 0, coupon_activity_id: item.coupon_activity_id || 0 })
+          customerCoupons.push({ customer_coupon_id: item.customer_coupon_id || 0, coupon_activity_id: item.coupon_activity_id || 0 })
           return item.coupon_activity_id || 0
         })
         API.Coupon.targetModal({ coupon_activity_ids: arr, customer_coupons: customerCoupons }).catch(e => {
