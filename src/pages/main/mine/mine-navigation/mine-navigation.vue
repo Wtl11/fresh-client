@@ -192,7 +192,9 @@
     },
     watch: {
       isInvitation(value) {
-        this.navList[3].isShow = value
+        let index = this.navList.findIndex((item) => item.title === '邀请有礼')
+        if (index === -1) return
+        this.navList[index].isShow = value
       }
     },
     methods: {
