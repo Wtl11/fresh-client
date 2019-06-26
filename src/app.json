@@ -48,6 +48,10 @@
     {
       "root": "package-leader/",
       "pages": [
+        "distribution-commission",
+        "leader-invite",
+       "leader-invite-success",
+        "apply-leader",
         "mine-housing",
         "regimental-commander",
         "regimental-info",
