@@ -44,7 +44,7 @@
                       <div class="people-time">{{child.created_at}}</div>
                     </div>
                     <div class="tip" v-if="tabIndex === 0">下单成功</div>
-                    <button class="guid" v-if="tabIndex === 1" open-type="share">去引导</button>
+                    <button class="guid" v-if="tabIndex === 1" data-type="default" open-type="share">去引导</button>
                   </li>
                 </block>
                 <li v-if="item.dataArray.length > 3" class="more-item" @click="goMore">
@@ -61,7 +61,7 @@
           </div>
         </article>
       </div>
-      <button class="btn" open-type="share" data-type="default">立即邀请好友领好礼</button>
+      <button class="btn" open-type="share">立即邀请好友领好礼</button>
     </div>
   </div>
 </template>
@@ -100,15 +100,15 @@
       let nickName = userInfo.nickname || ''
       let id = userInfo.id || ''
       let socialName = wx.getStorageSync('social_name')
-      // 引导
-      let imageUrl = this.imageUrl + '/yx-image/choiceness/pic-zbyx@2x.png'
-      let title = `${socialName},次日达、直采直销，点击下单↓`
-      let path = `${this.$routes.main.CHOICENESS}?shopId=${shopId}`
-      if (e.target.dataset.type === 'default') {
-        // 邀请用户
-        title = `${nickName}邀请你参加新人专享活动`
-        imageUrl = this.thumbImage
-        path = `${this.$routes.activity.INVITEE}?shopId=${shopId}&invitationId=${id}`
+      // 邀请用户
+      let title = `${nickName}邀请你参加新人专享活动`
+      let imageUrl = this.thumbImage
+      let path = `${this.$routes.activity.INVITEE}?shopId=${shopId}&invitationId=${id}`
+      if (e.target && e.target.dataset.type === 'default') {
+        // 引导
+        imageUrl = this.imageUrl + '/yx-image/choiceness/pic-zbyx@2x.png'
+        title = `${socialName},次日达、直采直销，点击下单↓`
+        path = `${this.$routes.main.CHOICENESS}?shopId=${shopId}`
       }
       return {
         title,

@@ -89,9 +89,13 @@
       if (!token) {
         wx.reLaunch({ url: this.$routes.main.LOGIN })
       }
-      //
+      let userInfo = wx.getStorageSync('userInfo') || ''
       this.invitationId = this.$mp.query.invitationId || ''
       this.shopId = this.$mp.query.shopId || ''
+      if (+userInfo.id === +this.invitationId) {
+        // 判断是不是自己分享出去的页面
+        this.goIndex()
+      }
       this.getReceiveInviteCoupon()
       await this.getCarRecommend()
     },
