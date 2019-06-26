@@ -91,7 +91,8 @@
           new TabItem({ text: '邀请在路上', status: '1', numberKey: 'cannot_used_count' })
         ],
         couponList: [],
-        thumbImage: ''
+        thumbImage: '',
+        socialName: ''
       }
     },
     onShareAppMessage(e) {
@@ -99,7 +100,7 @@
       let userInfo = wx.getStorageSync('userInfo') || {}
       let nickName = userInfo.nickname || ''
       let id = userInfo.id || ''
-      let socialName = wx.getStorageSync('social_name')
+      // let socialName = wx.getStorageSync('social_name')
       // 邀请用户
       let title = `${nickName}邀请你参加新人专享活动`
       let imageUrl = this.thumbImage
@@ -107,7 +108,7 @@
       if (e.target && e.target.dataset.type === 'default') {
         // 引导
         imageUrl = this.imageUrl + '/yx-image/choiceness/pic-zbyx@2x.png'
-        title = `${socialName},次日达、直采直销，点击下单↓`
+        title = `${this.socialName},次日达、直采直销，点击下单↓`
         path = `${this.$routes.main.CHOICENESS}?shopId=${shopId}`
       }
       return {
@@ -117,10 +118,20 @@
       }
     },
     onShow() {
+      this._getShopDetail()
       this.invitationDetail()
       this.getInviteStatistic()
     },
     methods: {
+      _getShopDetail() {
+        API.Mine.getShopDetail()
+          .then((res) => {
+            if (res.error !== this.$ERR_OK) {
+              return
+            }
+            this.socialName = res.data.social_name
+          })
+      },
       invitationDetail() {
         API.Coupon.invitationDetail().then((res) => {
           if (res.error !== this.$ERR_OK) return

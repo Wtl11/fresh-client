@@ -38,7 +38,7 @@
     },
     async onLaunch() {
       let res = await API.Choiceness.getDefaultShopInfo()
-      wx.setStorageSync('social_name', res.data.social_name)
+      // wx.setStorageSync('social_name', res.data.social_name)
       let id = res.error === ERR_OK ? res.data.id : baseURL.defaultId
       wx.setStorageSync('defaultShopId', id)
       this.codeMsg = await this.$wechat.login()
