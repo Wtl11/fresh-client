@@ -81,7 +81,8 @@
         invitationId: '',
         shopId: '',
         disable: false,
-        coupon: {}
+        coupon: {},
+        times: 0
       }
     },
     async onLoad() {
@@ -90,8 +91,16 @@
         wx.reLaunch({ url: this.$routes.main.LOGIN })
       }
       let userInfo = wx.getStorageSync('userInfo') || ''
-      this.invitationId = this.$mp.query.invitationId || ''
-      this.shopId = this.$mp.query.shopId || ''
+      let targetPage = wx.getStorageSync('targetPage') || ''
+      let query = this.$mp.query
+      if (query) {
+        this.invitationId = query.invitationId || ''
+        this.shopId = query.shopId || ''
+      } else {
+        let arr = targetPage.split('?')
+        let invitationId = arr[1].split('=')
+        this.invitationId = invitationId[1] || ''
+      }
       if (+userInfo.id === +this.invitationId) {
         // 判断是不是自己分享出去的页面
         this.goIndex()
@@ -118,6 +127,8 @@
             this.disable = !res.data || !res.data.length || this.coupon.status !== 1
           })
           .catch(() => {
+            this.times++
+            // console.log(this.times)
             this.disable = true
           })
       },

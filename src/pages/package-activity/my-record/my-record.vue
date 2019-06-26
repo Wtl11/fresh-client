@@ -72,14 +72,15 @@
         tabList: [
           new TabItem({ text: '邀请成功', status: '3', numberKey: 'can_used_count' }),
           new TabItem({ text: '邀请在路上', status: '1', numberKey: 'cannot_used_count' })
-        ]
+        ],
+        socialName: ''
       }
     },
     onShareAppMessage() {
       let shopId = wx.getStorageSync('shopId') || 0
-      let socialName = wx.getStorageSync('social_name')
+      // let socialName = wx.getStorageSync('social_name')
       return {
-        title: `${socialName},次日达、直采直销，点击下单↓`,
+        title: `${this.socialName},次日达、直采直销，点击下单↓`,
         path: `${this.$routes.main.CHOICENESS}?shopId=${shopId}`,
         imageUrl: this.imageUrl + '/yx-image/choiceness/pic-zbyx@2x.png'
       }
@@ -91,8 +92,18 @@
       this.tabIndex = +this.$mp.query.index || 0
       let res = this.$wx.getSystemInfoSync()
       this.height = res.screenHeight - 40 - 12 - 44 - res.statusBarHeight
+      this._getShopDetail()
     },
     methods: {
+      _getShopDetail() {
+        API.Mine.getShopDetail()
+          .then((res) => {
+            if (res.error !== this.$ERR_OK) {
+              return
+            }
+            this.socialName = res.data.social_name
+          })
+      },
       bindScrollToLower() {
         if (this.tabList[this.tabIndex].page >= this.tabList[this.tabIndex].last) {
           return
