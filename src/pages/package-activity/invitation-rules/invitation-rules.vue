@@ -21,12 +21,9 @@
         <div class="item">
           <div class="rules-title">Q3 邀请成功会得到什么？</div>
           <div class="rules-text"><span class="circular"></span>新人用户奖励</div>
-          <div class="rules-no">您分享给新用户，对方即可获得新人红包新用户使用红包成功下单后，会获得红包奖励</div>
+          <div class="rules-no">您分享给新用户，对方即可获得新人红包的优惠券，下单成功后再返一张优惠券</div>
           <div class="rules-text"><span class="circular"></span>邀请人奖励</div>
-          <div class="rules-no">成功邀请1位新人下单后，得XXX兑换券</div>
-          <div class="rules-no">成功邀请3位新人下单后，得XXX兑换券</div>
-          <div class="rules-no">成功邀请6位新人下单后，得XXX兑换券</div>
-          <div class="rules-no">成功邀请>6位新人下单后，得XXX兑换券</div>
+          <div v-for="(item, index) in couponList" class="rules-no">成功邀请{{item.cond_num > 6 ? '>6' : item.cond_num}}位新人下单后，得{{item.coupon_name}}兑换券</div>
         </div>
       </div>
     </div>
@@ -35,6 +32,7 @@
 
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
+  import API from '@api'
 
   const PAGE_NAME = 'INVITATION_RULES'
 
@@ -44,7 +42,27 @@
       NavigationBar
     },
     data() {
-      return {}
+      return {
+        couponList: []
+      }
+    },
+    onLoad() {
+      this.invitationDetail()
+    },
+    methods: {
+      invitationDetail() {
+        API.Coupon.invitationDetail().then((res) => {
+          if (res.error !== this.$ERR_OK) return
+          this.couponList = res.data.coupons
+          let arr = []
+          this.couponList.forEach((item) => {
+            if (item.cond_type === 5) {
+              arr.push(item)
+            }
+          })
+          this.couponList = arr
+        })
+      }
     }
   }
 </script>
