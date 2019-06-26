@@ -103,6 +103,7 @@
         wx.switchTab({ url: this.$routes.main.CHOICENESS })
       },
       show(arr = []) {
+        console.log(arr)
         if (!arr.length) {
           return
         }

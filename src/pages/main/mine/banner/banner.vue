@@ -25,8 +25,8 @@
         type: Array,
         default: () => {
           return [
-            {image_url: 'http://social-shopping-api-1254297111.picgz.myqcloud.com/1/2019/06/12/156032756916647.png'},
-            {image_url: ''}
+            { image_url: 'http://social-shopping-api-1254297111.picgz.myqcloud.com/1/2019/06/12/156032756916647.png' },
+            { image_url: '' }
           ]
         }
       }
@@ -36,7 +36,7 @@
     },
     methods: {
       goInv() {
-        wx.navigateTo({url: this.$routes.activity.INVITATION_INTRODUCTION})
+        wx.navigateTo({ url: this.$routes.activity.INVITATION_INTRODUCTION })
       }
     }
   }
@@ -48,7 +48,7 @@
   .banner
     border-radius: 6px
     overflow: hidden
-    height: 70px
+    height: 18.66667vw
     margin: 12px 12px 0
 
   .banner-swiper

@@ -16,7 +16,7 @@
           <div class="coupon-content">
             <div class="coupon-intro">邀请<span class="coupon-num">{{item.cond_num}}</span>位新用户下单</div>
             <div class="coupon-tip">可获得</div>
-            <div class="coupon-name" v-if="item.other_info">{{item.other_info.goods_name}}</div>
+            <div class="coupon-name" v-if="item.other_info">{{item.coupon_name}}</div>
           </div>
           <div class="goods-img-box">
             <img v-if="item.other_info" :src="item.other_info.goods_cover_image" mode="aspectFill" class="goods-img">

@@ -42,7 +42,7 @@
       </div>
 
       <!--<button class="btn" open-type="share">{{data.btn}}</button>-->
-      <div v-if="btnShow === 1"  class="btn" @click="clickBtn">邀请邻居参团</div>
+      <div v-if="btnShow === 1" class="btn" @click="clickBtn">邀请邻居参团</div>
       <div v-if="btnShow === 2" class="btn" @click="clickBtn">查看我的订单</div>
       <div v-if="btnShow === 3" class="btn" @click="clickBtn">返回商城首页</div>
       <div v-if="btnShow === 4" class="btn" @click="clickBtn">一键参团</div>
@@ -103,13 +103,13 @@
   import GoodsItem from './goods-item/goods-item'
   import SharePop from './share-pop/share-pop'
   import AddNumber from '@components/add-number/add-number'
-  import {ACTIVE_TYPE} from '@utils/contants'
+  import { ACTIVE_TYPE } from '@utils/contants'
   import { formatNumber } from '@utils/common'
-  import {orderMethods} from '@state/helpers'
+  import { orderMethods } from '@state/helpers'
   import LoadingMore from '@components/loading-more/loading-more'
   import ShareTrick from '@mixins/share-trick'
   import API from '@api'
-  import ShareHandler, {EVENT_CODE} from '@mixins/share-handler'
+  import ShareHandler, { EVENT_CODE } from '@mixins/share-handler'
   import GetOptions from '@mixins/get-options'
   import CouponModal from './coupon-modal/coupon-modal'
 
@@ -200,7 +200,8 @@
           goods: {},
           shop: {},
           activity: {}
-        }
+        },
+        couponItem: []
       }
     },
     computed: {
@@ -409,7 +410,7 @@
       this.getGoodsOtherInfo()
       // this.initStatus()
       // this._refreshLocation()
-      this.$$sendEvent({goodsId: this.data.goods.goods_id, activityId: this.activityId})
+      this.$$sendEvent({ goodsId: this.data.goods.goods_id, activityId: this.activityId })
     },
     onLoad() {
       this.getReceiveInviteCoupon()
@@ -422,12 +423,14 @@
           .then((res) => {
             if (res.error !== this.$ERR_OK) return
             this.couponItem = res.data
-            this.couponItem.length && this.$refs.invModal.show(this.couponItem)
+            setTimeout(() => {
+              this.couponItem.length && this.$refs.invModal && this.$refs.invModal.show(this.couponItem)
+            }, 500)
           })
       },
       // 拼团详情
       async getGrouponDetail() {
-        let res = await API.Groupon.getGrouponDetail({id: this.id, order_id: this.orderId})
+        let res = await API.Groupon.getGrouponDetail({ id: this.id, order_id: this.orderId })
         if (res.error !== this.$ERR_OK) {
           this.$wechat.showToast(res.message)
           this._initLocation()
@@ -478,7 +481,7 @@
         }
       },
       getShareImage() {
-        API.Groupon.getShareImage({activity_id: this.activityId, goods_id: this.data.goods.goods_id})
+        API.Groupon.getShareImage({ activity_id: this.activityId, goods_id: this.data.goods.goods_id })
           .then(res => {
             if (res.error !== this.$ERR_OK) {
               this.$wechat.showToast(res.message)
@@ -493,7 +496,7 @@
       },
       // 获取用户的购买信息
       getGoodsOtherInfo() {
-        API.Choiceness.getGoodsBuyInfo(this.data.goods.goods_id, {activity_id: this.activityId}).then((res) => {
+        API.Choiceness.getGoodsBuyInfo(this.data.goods.goods_id, { activity_id: this.activityId }).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.buyGoodsInfo = res.data
           } else {
@@ -523,7 +526,7 @@
           deliverAt: this.data.delivery_at || ''
         }
         this.setOrderInfo(orderInfo)
-        wx.navigateTo({url: `${this.$routes.main.SUBMIT_ORDER}`})
+        wx.navigateTo({ url: `${this.$routes.main.SUBMIT_ORDER}` })
       },
       initStatus() {
         if (this.status < 3) {
@@ -580,10 +583,10 @@
           this.showShare()
         } else if (this.btnShow === 2) {
           // -----------参团成功或者拼主拼团成功跳转去制定订单详情
-          wx.navigateTo({url: `${this.$routes.main.ORDER_DETAIL}?id=${this.data.customer_order_id}`})
+          wx.navigateTo({ url: `${this.$routes.main.ORDER_DETAIL}?id=${this.data.customer_order_id}` })
         } else if (this.btnShow === 3) {
           // -----------返回首页
-          wx.switchTab({url: `${this.$routes.main.CHOICENESS}`})
+          wx.switchTab({ url: `${this.$routes.main.CHOICENESS}` })
         } else if (!this.isGroup && status === 0) {
           // -----------一键参团
           let flag = await this.checkGroupon()
@@ -591,7 +594,7 @@
           this._showAddNumber()
         } else if (!this.isGroup && status === 1) {
           // -----------我来开团
-          wx.navigateTo({url: `${this.$routes.main.GOODS_DETAIL}?id=${this.data.goods.goods_id}&activityId=${this.activityId}&activityType=${this.activeType}`})
+          wx.navigateTo({ url: `${this.$routes.main.GOODS_DETAIL}?id=${this.data.goods.goods_id}&activityId=${this.activityId}&activityType=${this.activeType}` })
         } else {
         }
       },
@@ -599,7 +602,7 @@
         this.$refs.sharePop.show(this.data.surplus_number, this.data.shop.social_name, this.data.groupon_person_limit)
       },
       toDetail() {
-        wx.navigateTo({url: `${this.$routes.main.GOODS_DETAIL}?id=${this.data.goods.goods_id}&activityId=${this.activityId}&activityType=${this.activeType}`})
+        wx.navigateTo({ url: `${this.$routes.main.GOODS_DETAIL}?id=${this.data.goods.goods_id}&activityId=${this.activityId}&activityType=${this.activeType}` })
       },
       timeHandle() {
         clearInterval(this.timer)
@@ -619,7 +622,7 @@
         }, 1000)
       },
       async getCarRecommend() {
-        let res = await API.Cart.getCarRecommend({page: this.page, limit: 10})
+        let res = await API.Cart.getCarRecommend({ page: this.page, limit: 10 })
         if (res.error !== this.$ERR_OK) {
           this.$wechat.showToast(res.message)
           return
@@ -645,7 +648,7 @@
             that.longitude = 0
             that.latitude = 0
             wx.navigateTo({
-              url: `${this.$routes.main.OPEN_LOCATION}`
+              url: `${that.$routes.main.OPEN_LOCATION}`
             })
           }
         })
@@ -675,10 +678,12 @@
   @import "~@designCommon"
   .top-msg
     padding-bottom: 13px
+
   .goods-box
     background: #F7F7F7
     padding-bottom: 12px
     margin-bottom: 7px
+
   .goods-detail
     padding: 15px 13px
     display: flex
@@ -721,13 +726,13 @@
       font-family: $font-family-regular
       .total
         padding: 1px 4px
-        background: rgba(255,133,6,0.15)
+        background: rgba(255, 133, 6, 0.15)
         border-radius: 2px
       .count
         padding: 0 3px
         border-radius: 2px
         margin-left: 5px
-        border: 1px solid rgba(250,117,0,0.20)
+        border: 1px solid rgba(250, 117, 0, 0.20)
     .price
       color: #FA7500
       margin-top: 10px
@@ -739,6 +744,7 @@
         font-family: $font-family-regular
         font-size: $font-size-14
         margin-top: -2px
+
   .top-text
     height: 10.7vw
     font-size: 4vw
@@ -748,6 +754,7 @@
     line-height: @height
     background: #FFEBD6
     no-wrap()
+
   .status-text
     font-family: $font-family-medium
     color: $color-main
@@ -762,18 +769,23 @@
       border-radius: 50%
       margin-right: 4px
       background: #ccc
+
   .orange
     color: #FF8506
+
   .status-tip
     font-size: $font-size-16
     font-family: $font-family-medium
     text-align: center
     .mark
       color: #FA7500
+
   .status-tip2
     margin-top: 30px
+
   .tip-top
     margin-top: 25px
+
   .run-time
     font-family: $font-family-regular
     font-size: $font-size-14
@@ -798,6 +810,7 @@
       color: #FFF
       &:first-child
         margin-left: 6px
+
   .heads
     padding: 0 12px
     margin-top: 28px
@@ -832,6 +845,7 @@
       font-size: 10px
       border: 1px solid #FFF
       font-family: $font-family-medium
+
   .btn
     margin: 0 auto
     width: 72%
@@ -844,17 +858,19 @@
     border-radius: 50px
     background: $color-main
     margin-bottom: 12px
+
   .bot-tip
     color: #808080
     font-size: 13px
     font-family: $font-family-regular
     text-align: center
     margin-bottom: 7px
+
   .line
     height: 10px
     background: #F7F7F7
 
-  .goods,.time
+  .goods, .time
     height: 50px
     margin: 0 12px
     display: flex
@@ -933,6 +949,7 @@
       left: 0
     .activity
       color: $color-main
+
   .recommend
     .title
       height: 60px
@@ -956,7 +973,7 @@
       align-items: center
       padding: 0 6px
       box-sizing: border-box
-      background :#f7f7f7
+      background: #f7f7f7
       .list-item
         width: 50%
         box-sizing: border-box
@@ -965,6 +982,7 @@
           padding-right: 2.5px
         &:nth-of-type(even)
           padding-left: 2.5px
+
   .foot-ties
     flex: 1
     layout(row)
