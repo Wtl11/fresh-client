@@ -81,7 +81,7 @@
 
   .distance-check
     position: fixed
-    z-index: 999
+    z-index: 900
 
   .mask-wrapper
     background-color: rgba(17, 17, 17, 0.7)

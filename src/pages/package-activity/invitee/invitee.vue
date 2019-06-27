@@ -90,7 +90,6 @@
       if (!token) {
         wx.reLaunch({ url: this.$routes.main.LOGIN })
       }
-      let userInfo = wx.getStorageSync('userInfo') || ''
       let targetPage = wx.getStorageSync('targetPage') || ''
       let query = this.$mp.query
       if (query) {
@@ -100,10 +99,6 @@
         let arr = targetPage.split('?')
         let invitationId = arr[1].split('=')
         this.invitationId = invitationId[1] || ''
-      }
-      if (+userInfo.id === +this.invitationId) {
-        // 判断是不是自己分享出去的页面
-        this.goIndex()
       }
       this.getReceiveInviteCoupon()
       await this.getCarRecommend()
@@ -122,6 +117,13 @@
         API.Coupon.receiveInviteCoupon({ invite_id: this.invitationId, cond_type: 1 })
           .then((res) => {
             res.message && this.$wechat.showToast(res.message, 3000, false)
+            let userInfo = wx.getStorageSync('userInfo') || ''
+            setTimeout(() => {
+              if (+userInfo.id === +this.invitationId) {
+                // 判断是不是自己分享出去的页面
+                this.goIndex()
+              }
+            }, 2000)
             if (res.error !== this.$ERR_OK) return
             this.coupon = res.data.length ? res.data[0].coupon : {}
             this.disable = !res.data || !res.data.length || res.coupon_status !== 1

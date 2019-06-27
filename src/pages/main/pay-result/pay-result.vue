@@ -53,12 +53,10 @@
         event_no: 1006,
         total: e.total
       })
-      setTimeout(() => {
-        this.getReceiveInviteCoupon()
-      }, 1200)
       clearTimeout(this.timer)
       this.timer = setTimeout(() => {
         this.allReady = true
+        this.getReceiveInviteCoupon()
       }, 1700)
     },
     onShareAppMessage() {
