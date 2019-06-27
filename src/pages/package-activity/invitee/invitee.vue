@@ -86,6 +86,9 @@
       }
     },
     async onLoad() {
+      if (this.$mp.query && this.$mp.query.shopId) {
+        wx.setStorageSync('shopId', +this.$mp.query.shopId)
+      }
       let token = wx.getStorageSync('token') || ''
       if (!token) {
         wx.reLaunch({ url: this.$routes.main.LOGIN })
