@@ -120,7 +120,7 @@
         statusBarHeight: 0,
         backgroundHeight: 0,
         placeHeight: 0,
-        enable: true
+        enable: false
       }
     },
     onLoad() {
@@ -157,6 +157,9 @@
         API.Mine.activityInviteEnable()
           .then((res) => {
             this.enable = !!res.data.enable
+          })
+          .catch(() => {
+            this.enable = false
           })
       },
       _changeNavigation(e) {

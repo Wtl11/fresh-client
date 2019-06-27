@@ -14,7 +14,7 @@
             <span class="coupon-title">福利{{index + 1}}</span>
           </div>
           <div class="coupon-content">
-            <div class="coupon-intro">邀请<span class="coupon-num">{{item.cond_num}}</span>位新用户下单</div>
+            <div class="coupon-intro">邀请<span class="coupon-num">{{item.cond_num > 6 ? '>6' : item.cond_num}}</span>位新用户下单</div>
             <div class="coupon-tip">可获得</div>
             <div class="coupon-name" v-if="item.other_info">{{item.coupon_name}}</div>
           </div>
@@ -218,14 +218,14 @@
                 margin-left: 2.66667vw
                 width: 56.266667vw
                 .people-name
-                  font-size: $font-size-15
+                  font-size: 4vw
                   font-family: $font-family-regular
                   color: #1D2023
                   line-height: 1.3
                   margin-top: 0.7vw
                   no-wrap()
                 .people-time
-                  font-size: $font-size-13
+                  font-size: 3.46667vw
                   font-family: $font-family-regular
                   color: #808080
                   line-height: 1
@@ -238,14 +238,14 @@
                 text-align: center
                 border-radius: 15px
                 background: $color-main
-                font-size: $font-size-14
+                font-size: 3.7333vw
                 font-family: $font-family-regular
                 color: $color-white
                 margin-top: 1.2vw
               .tip
                 margin-top: 3.6vw
                 color: #333333
-                font-size: $font-size-13
+                font-size: 3.46667vw
                 height: 13px
                 line-height: 13px
                 font-family: $font-family-regular
@@ -259,7 +259,7 @@
               .more-text
                 color: #868686
                 font-family: $font-family-regular
-                font-size: $font-size-14
+                font-size: 3.7333vw
                 margin-right: 4.5px
               .way
                 height: 12.5px
@@ -323,24 +323,24 @@
       box-sizing: border-box
       .coupon-intro
         margin-top: 4vw
-        font-size: $font-size-14
+        font-size: 3.7333vw
         color: #333333
         display: flex
         align-items: center
         line-height: 1
         .coupon-num
-          font-size: $font-size-17
+          font-size: 4.53333vw
           color: #F27F2E
           font-family: $font-family-medium
       .coupon-tip
         margin-top: 6.1333vw
-        font-size: $font-size-13
+        font-size: 3.266vw
         color: #666666
         font-family: $font-family-regular
         line-height: 1
       .coupon-name
         line-height: 1
-        font-size: $font-size-16
+        font-size: 4.2667vw
         font-family: $font-family-medium
         color: #333333
         margin-top: 1.6vw
@@ -348,12 +348,15 @@
     .goods-img-box
       position: relative
       z-index: 1
-      margin: 1.5vw 0 0 3.73333vw
+      flex: 1
+      margin: 1.5vw 2.1vw 2.4vw 0
+      display: flex
+      align-items: center
+      justify-content: center
       .goods-img
         border-radius: 4px
-        margin-top: 1.86667vw
         display: block
-        width: 23.33334vw
+        width: 20vw
         height: @width
 
   .btn
@@ -366,7 +369,7 @@
     font-family: $font-family-medium
     color: $color-white
     background: #F27F2E
-    font-size: $font-size-18
+    font-size: 4.8vw
     width: 100vw
     z-index: 10
 
