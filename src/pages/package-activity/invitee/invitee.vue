@@ -124,7 +124,7 @@
             res.message && this.$wechat.showToast(res.message, 3000, false)
             if (res.error !== this.$ERR_OK) return
             this.coupon = res.data.length ? res.data[0].coupon : {}
-            this.disable = !res.data || !res.data.length || this.coupon.coupon_status !== 1
+            this.disable = !res.data || !res.data.length || res.coupon_status !== 1
           })
           .catch(() => {
             this.disable = true
