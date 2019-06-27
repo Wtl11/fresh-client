@@ -61,11 +61,13 @@
   import API from '@api'
   import { cartMethods } from '@state/helpers'
   import LoadingMore from '@components/loading-more/loading-more'
+  import GetOptions from '@mixins/get-options'
 
   const PAGE_NAME = 'INVITEE'
 
   export default {
     name: PAGE_NAME,
+    mixins: [GetOptions],
     components: {
       NavigationBar,
       CouponItem,
@@ -79,30 +81,21 @@
         limit: 10,
         hasMore: true,
         invitationId: '',
-        shopId: '',
         disable: false,
         coupon: {},
         times: 0
       }
     },
     async onLoad() {
-      if (this.$mp.query && this.$mp.query.shopId) {
-        wx.setStorageSync('shopId', +this.$mp.query.shopId)
+      let query = this._$$initOptions()
+      if (query && query.shopId) {
+        wx.setStorageSync('shopId', +query.shopId)
       }
       let token = wx.getStorageSync('token') || ''
       if (!token) {
         wx.reLaunch({ url: this.$routes.main.LOGIN })
       }
-      let targetPage = wx.getStorageSync('targetPage') || ''
-      let query = this.$mp.query
-      if (query) {
-        this.invitationId = query.invitationId || ''
-        this.shopId = query.shopId || ''
-      } else {
-        let arr = targetPage.split('?')
-        let invitationId = arr[1].split('=')
-        this.invitationId = invitationId[1] || ''
-      }
+      this.invitationId = query.invitationId || ''
       this.getReceiveInviteCoupon()
       await this.getCarRecommend()
     },
