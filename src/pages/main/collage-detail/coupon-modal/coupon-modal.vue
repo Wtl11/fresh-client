@@ -103,7 +103,6 @@
         wx.switchTab({ url: this.$routes.main.CHOICENESS })
       },
       show(arr = []) {
-        console.log(arr)
         if (!arr.length) {
           return
         }
@@ -217,6 +216,7 @@
                   padding: 0 2px
                   layout(row)
                   align-items: center
+                  white-space: nowrap
                   opacity: 0.8
                 .txt
                   padding-left: 2px
