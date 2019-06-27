@@ -23,7 +23,7 @@
           <div class="rules-text"><span class="circular"></span>新人用户奖励</div>
           <div class="rules-no">您分享给新用户，对方即可获得新人红包的优惠券，下单成功后再返一张优惠券</div>
           <div class="rules-text"><span class="circular"></span>邀请人奖励</div>
-          <div v-for="(item, index) in couponList" class="rules-no">成功邀请{{item.cond_num > 6 ? '>6' : item.cond_num}}位新人下单后，得{{item.coupon_name}}兑换券</div>
+          <div v-for="(item, index) in couponList" :key="index" class="rules-no">成功邀请{{item.cond_num > 6 ? '>6' : item.cond_num}}位新人下单后，得{{item.coupon_name}}兑换券</div>
         </div>
       </div>
     </div>
@@ -71,10 +71,15 @@
   @import "~@designCommon"
 
   .invitation-rules
-    height: 100vh
-    overflow: hidden
+    min-height: 100vh
+    display: flex
+    flex-direction: column
+    overflow: auto
 
   .box
+    display: flex
+    flex: 1
+    flex-direction: column
     background-image: linear-gradient(0deg, #FFEB8A 72%, #F7D54F 100%)
 
   .rules-top
@@ -100,9 +105,10 @@
       z-index: 1
 
   .rules-msg
-    height: 100vh
+    flex: 1
     background: $color-white
-    border-radius: 6px
+    border-top-right-radius :6px
+    border-top-left-radius :6px
     display: block
     box-sizing: border-box
     position: relative
