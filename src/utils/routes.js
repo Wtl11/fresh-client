@@ -1,9 +1,14 @@
 // PACKAGE_PATH
+const CONTENT = '/package-content'
 const ACTIVITY = '/package-activity'
 const LEADER = '/package-leader'
 const MAIN = '/pages'
 /* eslint-disable */
 export default {
+  content: {
+    PACKAGE: CONTENT,
+    // package-content
+  },
   activity: {
     PACKAGE: ACTIVITY,
     INVITEE:`${ACTIVITY}/invitee`,
@@ -72,6 +77,7 @@ export default {
     SHOPPING_CART: `${MAIN}/shopping-cart`,
     SUBMIT_ORDER: `${MAIN}/submit-order`,
     INVITATION_CHOOSE:`${MAIN}/invitation-choose`,
+    EAT:`${MAIN}/eat`,
     // main
   }
 }

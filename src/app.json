@@ -1,6 +1,7 @@
 {
   "pages": [
     "pages/choiceness",
+    "pages/eat",
     "pages/shopping-cart",
     "pages/mine",
     "pages/goods-detail",
@@ -36,6 +37,12 @@
   ],
   "subPackages": [
     {
+      "root": "package-content/",
+      "pages": [
+        "todo"
+      ]
+    },
+    {
       "root": "package-activity/",
       "pages": [
         "commodity-certificates",
@@ -50,7 +57,7 @@
       "pages": [
         "distribution-commission",
         "leader-invite",
-       "leader-invite-success",
+        "leader-invite-success",
         "apply-leader",
         "mine-housing",
         "regimental-commander",
@@ -75,7 +82,16 @@
   "preloadRule": {
     "pages/mine": {
       "network": "all",
-      "packages": ["package-leader/", "package-activity/"]
+      "packages": [
+        "package-leader/",
+        "package-activity/"
+      ]
+    },
+    "pages/eat": {
+      "network": "all",
+      "packages": [
+        "package-content/"
+      ]
     }
   },
   "window": {
@@ -102,6 +118,12 @@
         "text": "首页",
         "iconPath": "/static/img/icon-select.png",
         "selectedIconPath": "/static/img/icon-select_press.png"
+      },
+      {
+        "pagePath": "pages/eat",
+        "text": "吃什么",
+        "iconPath": "/static/img/icon-goodscart.png",
+        "selectedIconPath": "/static/img/icon-goodscat_press.png"
       },
       {
         "pagePath": "pages/shopping-cart",
