@@ -23,14 +23,14 @@
 <!--           :src="imageUrl + '/yx-image/2.1/icon-deletetc@2x.png'"-->
 <!--           @click="cancelHandle"-->
 <!--      >-->
-<!--      <article class="wrapper">-->
+<!--      <article-modal class="wrapper">-->
 <!--        <div class="place-box"></div>-->
 <!--        <div v-for="(item, index) in couponArray" :key="item.coupon_id || index" class="coupon-wrapper">-->
 <!--          <coupon-item :dataInfo="item"></coupon-item>-->
 <!--        </div>-->
 <!--        <p hover-class="none" class="explain" @click="navHandle">优惠券已放入账号 <span class="look">查看></span></p>-->
 <!--        <div class="button" @click="submitHandle"></div>-->
-<!--      </article>-->
+<!--      </article-modal>-->
 <!--    </section>-->
     <section v-if="couponArray.length > 1" class="content" @touchmove.stop>
       <img class="img-bg"

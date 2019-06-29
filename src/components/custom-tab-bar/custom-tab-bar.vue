@@ -28,8 +28,8 @@
       type: 'index'
     },
     {
-      imgUrl: '/yx-image/retuan/hdpi/icon-goodscart.png',
-      imgUrlActive: '/yx-image/retuan/hdpi/icon-goodscat_press01.png',
+      imgUrl: '/yx-image/retuan/hdpi/icon-eat_1@2x.png',
+      imgUrlActive: '/yx-image/retuan/hdpi/icon-eat_2@2x.png',
       text: '吃什么',
       type: 'eat'
     },
@@ -54,8 +54,8 @@
       type: 'index'
     },
     {
-      imgUrl: '/yx-image/retuan/hdpi/icon-goodscart.png',
-      imgUrlActive: '/yx-image/retuan/hdpi/icon-goodscat_press01.png',
+      imgUrl: '/yx-image/retuan/hdpi/icon-eat_1@2x.png',
+      imgUrlActive: '/yx-image/retuan/hdpi/icon-eat_2@2x.png',
       text: '吃什么',
       type: 'eat'
     },

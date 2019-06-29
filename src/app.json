@@ -122,8 +122,8 @@
       {
         "pagePath": "pages/eat",
         "text": "吃什么",
-        "iconPath": "/static/img/icon-goodscart.png",
-        "selectedIconPath": "/static/img/icon-goodscat_press.png"
+        "iconPath": "/static/img/icon-eat_1@2x.png",
+        "selectedIconPath": "/static/img/icon-eat_2@2x.png"
       },
       {
         "pagePath": "pages/shopping-cart",
