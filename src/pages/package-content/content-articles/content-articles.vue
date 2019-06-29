@@ -1,23 +1,19 @@
 <template>
-  <div class="eat">
-    <navigation-bar :showArrow="false" title="吃什么"></navigation-bar>
-    eat
-    <!--    自定义tab-->
-    <custom-tab-bar currentType="eat"></custom-tab-bar>
+  <div class="content-articles">
+    <navigation-bar title="内容文章"></navigation-bar>
+    content-articles
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
-  import CustomTabBar from '@components/custom-tab-bar/custom-tab-bar'
 
-  const PAGE_NAME = 'EAT'
+  const PAGE_NAME = 'CONTENT_ARTICLES'
 
   export default {
     name: PAGE_NAME,
     components: {
-      NavigationBar,
-      CustomTabBar
+      NavigationBar
     },
     data() {
       return {
@@ -29,6 +25,6 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@designCommon"
 
-  .eat
+  .content-articles
     width: 100%
 </style>

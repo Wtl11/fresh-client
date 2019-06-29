@@ -7,6 +7,7 @@ const MAIN = '/pages'
 export default {
   content: {
     PACKAGE: CONTENT,
+    CONTENT_ARTICLES:`${CONTENT}/content-articles`,
     // package-content
   },
   activity: {
