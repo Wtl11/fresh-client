@@ -24,6 +24,19 @@
     </button>
     <div v-else class="common-btn over">已抢完</div>
   </div>
+    <!--  新人-->
+    <div v-else-if="buttonInfo.isShowOldCustomerButton" class="button-group">
+      <div class="hlep-btn">
+        <button formType="submit" class="hlep-btn-box" v-for="(item, index) in typeBtn" :key="index" @click.stop="switchItem(item)">
+          <div class="hlep-top">
+            <img v-if="imageUrl" :src="imageUrl + item.url" class="detail-img" mode="aspectFill">
+            <div class="help-number" v-if="index * 1 === 1 && count * 1 >= 1">{{count * 1 > 99 ? 99 : count}}</div>
+          </div>
+          <div class="hlep-bottom">{{item.text}}</div>
+        </button>
+      </div>
+      <div class="goods-btn goods-btn-assint">新人专属</div>
+    </div>
 <!--  一般-->
   <div v-else class="button-group">
     <div class="hlep-btn">
