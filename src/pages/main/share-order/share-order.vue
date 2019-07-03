@@ -97,6 +97,11 @@
         orderId: this.orderId
       })
     },
+    onReady() {
+      if (wx.getStorageSync('token')) {
+        this.$$sendEvent()
+      }
+    },
     methods: {
       jumpGoodsDetail(item) {
         let activityType = ''
