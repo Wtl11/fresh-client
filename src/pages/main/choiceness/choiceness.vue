@@ -493,6 +493,7 @@
       // 监听用户静默登录后调用
       userInfo(val = {}) {
         this._getCouponModalList(val.id)
+        this.setCartCount()
       }
     },
     onLoad(options) {
