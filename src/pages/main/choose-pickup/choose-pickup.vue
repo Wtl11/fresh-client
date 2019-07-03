@@ -22,18 +22,36 @@
         <h1 class="name">团长 {{groupInfo.name}}</h1>
         <p class="position">当前提货点：{{groupInfo.social_name}}</p>
       </section>
-      <dl v-if="dataArray.length" class="panel list-wrapper">
+      <dl class="panel list-wrapper">
         <dt class="title">历史提货点</dt>
-        <dd v-for="(item, index) in dataArray" :key="index" class="list-item-wrapper" :class="{'has-line': index < dataArray.length}" @click="handleCheck(item)">
-          <pick-up :dataInfo="item"></pick-up>
-        </dd>
+        <div v-if="dataArray.length>0">
+          <dd v-for="(item, index) in dataArray" :key="index" class="list-item-wrapper" :class="{'has-line': index < dataArray.length}" @click="handleCheck(item)">
+            <pick-up :dataInfo="item"></pick-up>
+          </dd>
+        </div>
+        <div v-else>
+          <dd class="empty-wrapper">
+            <img class="empty-img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/pic-address@2x.png'">
+            <p>暂无历史提货点</p>
+          </dd>
+        </div>
+      </dl>
+      <dl class="panel list-wrapper">
+        <dt class="title">附近提货点</dt>
+        <div v-if="nearbyList.length>0">
+          <dd v-for="(item, index) in nearbyList" :key="index" class="list-item-wrapper" :class="{'has-line': index < dataArray.length}" @click="handleCheck(item)">
+            <pick-up :dataInfo="item"></pick-up>
+          </dd>
+        </div>
+        <div v-else>
+          <dd class="empty-wrapper">
+            <img class="empty-img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/pic-address@2x.png'">
+            <p>暂无附近提货点</p>
+          </dd>
+        </div>
       </dl>
       <is-end v-if="!hasMore"></is-end>
       <loading-more v-else></loading-more>
-      <div v-if="isShowEmpty" class="panel empty-wrapper">
-        <img class="empty-img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/pic-address@2x.png'">
-        <p>没有其他提货点</p>
-      </div>
     </div>
     <confirm-msg ref="msg" useType="double" @confirm="handleConfirm"></confirm-msg>
   </div>
@@ -70,10 +88,12 @@
         hasMore: true,
         currentItem: {},
         arrowUrl: ARROW_URL[0],
-        backgroundLoad: true
+        backgroundLoad: true,
+        nearbyParams: {longitude: 0, latitude: 0},
+        nearbyList: []
       }
     },
-    onLoad(options) {
+    async onLoad(options) {
       // this.groupInfo = getApp().globalData.$groupInfo
       this._groupInfo()
       this._getSystemInfo()
@@ -81,15 +101,16 @@
       this.$refs.navigationBar && this.$refs.navigationBar.setNavigationBarBackground(`background:#73c200;transition:none`)
       this.titleColor = `#ffffff`
       this.arrowUrl = ARROW_URL[0]
+      await this._getLocation()
       this._getList(false)
     },
     onPageScroll(e) {
       this._changeNavigation(e)
     },
     onReachBottom() {
-      if (!this.hasMore) return
-      this.page++
-      this._getList(false)
+      // if (!this.hasMore) return
+      // this.page++
+      // this._getList(false)
     },
     methods: {
       // 获取团长的信息
@@ -130,11 +151,29 @@
           }
         })
       },
+      // 获取地理位置
+      async _getLocation() {
+        try {
+          let res = await this.$wechat.getLocation()
+          this.nearbyParams = {
+            longitude: res.longitude,
+            latitude: res.latitude
+          }
+        } catch (e) {
+          this.nearbyParams = {
+            longitude: 0,
+            latitude: 0
+          }
+        }
+      },
       _getList(loading) {
-        API.Pickup.getList({page: this.page}, loading).then(res => {
-          res.data.forEach(item => {
-            this.dataArray.push(item)
-          })
+        API.Pickup.getList({page: 1, limit: 2}, loading).then(res => {
+          this.dataArray = res.data
+          this.isShowEmpty = this.dataArray.length === 0
+          this.hasMore = res.data.length
+        })
+        API.Pickup.getNearbyList(this.nearbyParams, loading).then(res => {
+          this.nearbyList = res.data
           this.isShowEmpty = this.dataArray.length === 0
           this.hasMore = res.data.length
         })
@@ -180,10 +219,10 @@
       min-height :99px
       display :block
   .container
-    min-height :100vh
+    /*min-height :100vh*/
     layout(column,block,nowrap)
   .header
-    margin :0 12px
+    margin :0 12px 12px 12px
     padding :0 10px
     position :relative
     text-align :center
@@ -215,25 +254,23 @@
       line-height: 1.4
   .empty-wrapper
     flex: 1
-    margin :12px
-    padding :0 10px
+    padding-bottom: 30px
     position :relative
-    font-family: PingFangSC-Regular;
-    font-size: 14px;
+    font-family: PingFangSC-Regular
+    font-size: 13px
     color: $color-text-sub
-    text-align: center;
+    text-align: center
     .empty-img
-      margin :80px auto 15px
-      width :116px
-      height :109px
+      margin :20px auto 10px
+      width :77px
+      height :72px
       display :block
   .list-wrapper
-    flex: 1
-    margin :12px
+    margin :0 12px 12px
     padding :0 10px
     position :relative
     font-family: $font-family-regular
-    font-size: 14px;
+    font-size: 14px
     color: $color-text-main
     line-height: 1
     .title
@@ -243,4 +280,6 @@
       height :90px
       &.has-line
         border-bottom-1px()
+      &:last-child
+        border-none()
 </style>
