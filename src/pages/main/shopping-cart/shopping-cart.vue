@@ -187,6 +187,16 @@
       this.page++
       this.getCarRecommend()
     },
+    async onPullDownRefresh() {
+      this.page = 1
+      this.hasMore = true
+      Promise.all([
+        this.getCarRecommend(),
+        this._getShopCart(this.firstLoad)
+      ]).then(() => {
+        this.$wx.stopPullDownRefresh()
+      })
+    },
     computed: {
       checkedGoods() {
         return this.goodsList.filter((item) => item.checked && item.allowCheck)
@@ -384,9 +394,9 @@
   .wrap
     width: 100vw
     min-height: 100vh
-    background: $color-background
     position: relative
     padding-bottom: 10px
+    background :#fff
   .padding-wrap
     padding-bottom: 60px
   .payment
