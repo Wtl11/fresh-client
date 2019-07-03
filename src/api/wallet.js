@@ -47,8 +47,13 @@ export default {
     return request.put(url, data, loading)
   },
   // 申请提现
-  postWithdraw(data, loading = false) {
+  postWithdrawToBank(data, loading = false) {
     const url = `/api/wap/shop-manager/withdrawal-money`
+    return request.post(url, data, loading)
+  },
+  // 申请提现到零钱
+  postWithdraw(data, loading = false) {
+    const url = `/api/wap/shop-manager/withdrawal-weixin-money`
     return request.post(url, data, loading)
   }
 }

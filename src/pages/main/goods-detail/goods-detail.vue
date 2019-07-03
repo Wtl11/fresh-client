@@ -1,7 +1,7 @@
 <template>
   <form action="" report-submit @submit="$getFormId">
     <div class="active-detail">
-      <navigation-bar ref="navigationBar" :title="msgTitle" :translucent="true"></navigation-bar>
+      <navigation-bar ref="navigationBar" :title="msgTitle" :translucent="true" :arrowUrl="arrowUrl"></navigation-bar>
       <section class="banner-box">
         <section v-if="buyUsers.length" class="buy-users" :style="{top: statusBarHeight + 44 + 'px'}">
           <swiper
@@ -24,7 +24,16 @@
           <div class="place-holder"></div>
         </section>
         <div class="header-swiper">
-          <swiper v-if="goodsBanner && goodsBanner.length" class="banner" @change="bannerChange" interval="5000">
+          <swiper v-if="goodsBanner && goodsBanner.length" :current="swiperIdx" class="banner" @change="bannerChange" interval="5000">
+            <block v-if="hasVideo">
+              <swiper-item class="banner-item">
+                <video class="item-img" id="goodsVideo" :src="goodsMsg.goods_videos[0].full_url" :show-center-play-btn="false" :enable-progress-gesture="false" @ended='videoEnd' @waiting="videoWaiting" @progress="videoLoaded"></video>
+                <div class="play-btn" @click="playVideo">
+                  <img v-if="imageUrl&&!videoPlaying" :src="imageUrl + '/yx-image/2.6.5/icon-play_big@2x.png'" mode="aspectFill" class="play-btn-icon">
+                  <img v-if="imageUrl&&videoLoading&&!videoPlaying" :src="imageUrl + '/yx-image/2.4/icon-lightning@2x.png'" mode="aspectFill" class="play-btn-icon">
+                </div>
+              </swiper-item>
+            </block>
             <block v-for="(item, index) in goodsBanner" :key="index">
               <swiper-item class="banner-item">
                 <img :src="item.image_url + '?' + goodsMsg.image_view" class="item-img item-img-one" mode="aspectFill">
@@ -33,10 +42,19 @@
             </block>
           </swiper>
           <article class="banner-number" v-if="goodsBannerLength !== 0">
-            <div class="banner-number-box">{{currentNum}}/{{goodsBannerLength}}</div>
+            <div></div>
+            <div v-if="hasVideo" class="banner-btn-con">
+              <div :class="currentNum===0?'active':''" class="banner-number-box banner-btn" @click="changeCurrentNum(0, true)">
+                <img v-if="imageUrl&&currentNum===0" :src="imageUrl + '/yx-image/2.6.5/icon-play_white@2x.png'" mode="aspectFill" class="banner-btn-icon">
+                <img v-if="imageUrl&&currentNum!==0" :src="imageUrl + '/yx-image/2.6.5/icon-play_black@2x.png'" mode="aspectFill" class="banner-btn-icon">
+                视频
+              </div>
+              <div :class="currentNum!==0?'active':''" class="banner-number-box banner-btn" @click="changeCurrentNum(1, true)">图片</div>
+            </div>
+            <div :style="{opacity: currentNum!==0?'1':'0'}" class="banner-number-box">{{currentNum}}/{{goodsBannerLength}}</div>
           </article>
         </div>
-        <article class="header-title-wrapper">
+        <article :style="{zIndex: hasVideo&&videoPlaying?'-1':'1'}" class="header-title-wrapper">
           <section v-if="activityType === ACTIVE_TYPE.DEFAULT" class="header-title-default">
             <div class="left-price" :class="'corp-' + corpName + '-money'">{{goodsMsg.trade_price}}</div>
             <div class="left-price-text">
@@ -259,6 +277,7 @@
 
   const PAGE_NAME = 'ACTIVE_DETAIL'
   const PAGE_ROUTE_NAME = 'goods-detail'
+  const ARROW_URL = ['/yx-image/2.3/icon-return_white@2x.png', '/zd-image/1.2/icon-title_back@2x.png']
   // 按钮状态映射
   export const BTN_STATUS = {
     WILL: 0,
@@ -319,7 +338,13 @@
         statusBarHeight: -100,
         product: null,
         showSharePanel: false,
-        runTime: ''
+        runTime: '',
+        hasVideo: false,
+        videoPlaying: false,
+        videoLoading: false,
+        videoContext: '',
+        swiperIdx: 0,
+        arrowUrl: ARROW_URL[1]
       }
     },
     computed: {
@@ -584,9 +609,45 @@
         }, 1000)
       },
       bannerChange(e) {
-        if (e.target.current) {
-          this.currentNum = e.target.current * 1 + 1
+        let curNum = e.target.current * 1 + !this.hasVideo
+        this.changeCurrentNum(curNum)
+      },
+      changeCurrentNum(curNum, setIdx) {
+        if (curNum !== this.currentNum) {
+          this.currentNum = curNum
+          if (this.hasVideo && this.videoContext) {
+            if (setIdx) {
+              this.swiperIdx = curNum
+            }
+            if (curNum === 0) {
+              this.arrowUrl = ARROW_URL[0]
+            } else {
+              this.arrowUrl = ARROW_URL[1]
+              this.videoContext.pause()
+              this.videoPlaying = false
+            }
+          }
         }
+      },
+      playVideo() {
+        this.videoPlaying = !this.videoPlaying
+        if (this.videoPlaying) {
+          this.videoContext.play()
+        } else {
+          this.videoContext.pause()
+        }
+      },
+      videoWaiting() {
+        console.log('wait-------------')
+        this.videoLoading = true
+      },
+      videoLoaded() {
+        console.log('loaded-------------')
+        this.videoLoading = false
+      },
+      videoEnd() {
+        this.videoPlaying = false
+        this.videoContext.exitFullScreen()
       },
       // 画商品海报
       _actionDrawPoster() {
@@ -829,6 +890,12 @@
           if (res.error === this.$ERR_OK) {
             this.goodsMsg = res.data
             this.msgTitle = this.goodsMsg.name
+            if (this.goodsMsg.goods_videos.length) {
+              this.hasVideo = true
+              this.currentNum = 0// 默认为1，如果有视频设为0
+              this.arrowUrl = ARROW_URL[0]
+              this.videoContext = wx.createVideoContext('goodsVideo')
+            }
             // this.$refs.navigationBar && this.$refs.navigationBar.setTranslucentTitle(this.goodsMsg.name)
             this._sendGoodsMsg()
             this._flashAction()
@@ -1029,6 +1096,7 @@
         left: 12px
         right :@left
         bottom: -1px
+        transition: opacity 0.3s
   // 分享模块
   .share-panel-wrapper
     .share-mask
@@ -1352,6 +1420,18 @@
           position: absolute
           left: 0
           top: 0
+        .play-btn
+          width: 100%
+          height: 70%
+          position: absolute
+          left: 0
+          top: 15%
+          layout()
+          justify-content: center
+          align-items: center
+          .play-btn-icon
+            width: 50px
+            height: @width
         .item-img-one
           z-index: 1
         .item-img-two
@@ -1361,21 +1441,42 @@
           height: 63px
           width: 63px
     .banner-number
+      box-sizing: border-box
+      width: 100%
+      padding: 0 12px
       position: absolute
       bottom: 13.3vw
       left: 0
       layout(row)
       align-items: center
-      justify-content: center
-      width: 100%
+      justify-content: space-between
       .banner-number-box
         display: inline-block
-        font-size: $font-size-12
-        background: rgba(0, 0, 0, .5)
+        font-size: $font-size-11
+        background: rgba(17,17,17,0.2)
         color: $color-white
         box-sizing: border-box
-        padding: 3px 8px 4px
+        padding: 2px 8px
         border-radius: 20px
+        opacity: .75
+        transition: all 0.3s
+        &.banner-btn
+          min-width: 48px
+          padding: 3px 8px
+          margin: 0 5px
+          background: $color-white
+          font-size: $font-size-10
+          color: $color-text-main
+          font-family: $font-family-regular
+          text-align: center
+          opacity: .75
+          &.active
+            background: linear-gradient(90deg, #FD4C46 0%, #FB6C21 73%)
+            color: $color-white
+            opacity: 1
+          .banner-btn-icon
+            width: 7px
+            height: 7.5px
 
   // 画图
   .share-goods
