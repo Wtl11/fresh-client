@@ -25,9 +25,9 @@
         </section>
         <div class="header-swiper">
           <swiper v-if="goodsBanner && goodsBanner.length" :current="swiperIdx" class="banner" @change="bannerChange" interval="5000">
-            <block v-if="hasVideo">
+            <block v-if="hasVideo&&goodsMsg.goods_videos">
               <swiper-item class="banner-item">
-                <video class="item-img" id="goodsVideo" :src="goodsMsg.goods_videos[0].full_url" :show-center-play-btn="false" :enable-progress-gesture="false" @ended='videoEnd' @waiting="videoWaiting" @progress="videoLoaded"></video>
+                <video class="item-img" id="goodsVideo" :src="goodsMsg.goods_videos[0].full_url" :poster="videoPoster" :show-center-play-btn="false" :enable-progress-gesture="false" @ended='videoEnd' @waiting="videoWaiting" @progress="videoLoaded"></video>
                 <div class="play-btn" @click="playVideo">
                   <img v-if="imageUrl&&!videoPlaying" :src="imageUrl + '/yx-image/2.6.5/icon-play_big@2x.png'" mode="aspectFill" class="play-btn-icon">
                 </div>
@@ -338,6 +338,8 @@
         product: null,
         showSharePanel: false,
         hasVideo: false,
+        isIos: false,
+        videoPoster: '',
         videoPlaying: false,
         videoLoading: false,
         videoContext: '',
@@ -438,6 +440,7 @@
       Ald.sendEvent('商品详情')
     },
     onShow() {
+      this.checkSystem()
       this._initPageParams()
       this._checkIsNewClient()
       this.getQrCode()
@@ -499,6 +502,11 @@
     methods: {
       ...orderMethods,
       ...cartMethods,
+      checkSystem() {
+        let res = wx.getSystemInfoSync()
+        let system = res.system
+        this.isIos = /Ios/i.test(system)
+      },
       _getRunTime() {
         API.Global.getRunTime().then(res => {
           this.runTime = res.data.run_time
@@ -894,6 +902,9 @@
               this.currentNum = 0// 默认为1，如果有视频设为0
               this.arrowUrl = ARROW_URL[0]
               this.videoContext = wx.createVideoContext('goodsVideo')
+              if (!this.isIos) {
+                this.videoPoster = this.goodsMsg.goods_videos[0].full_cover_url
+              }
             }
             // this.$refs.navigationBar && this.$refs.navigationBar.setTranslucentTitle(this.goodsMsg.name)
             this._sendGoodsMsg()
