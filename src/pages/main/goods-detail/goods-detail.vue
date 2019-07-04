@@ -343,7 +343,9 @@
         videoLoading: false,
         videoContext: '',
         swiperIdx: 0,
-        arrowUrl: ARROW_URL[1]
+        arrowUrl: ARROW_URL[1],
+        runTime: '',
+        isShowOldCustomerButton: false
       }
     },
     computed: {
@@ -416,7 +418,8 @@
           salePrice: this.goodsMsg.goods_sale_price || 0,
           base_usable_stock: this.goodsMsg.base_usable_stock || 0, // 非活动库存
           usable_stock: this.goodsMsg.usable_stock || 0, // 库存
-          tipTop: this.tipTop || ''
+          tipTop: this.tipTop || '',
+          isShowOldCustomerButton: this.isShowOldCustomerButton
         }
       },
       // 二维码
@@ -437,6 +440,7 @@
     },
     onShow() {
       this._initPageParams()
+      this._checkIsNewClient()
       this.getQrCode()
       this._getLocation()
       this._getGoodsDetailData()
@@ -706,12 +710,12 @@
         this.eventNo = EVENT_NO_CONFIG[entryAppType]
       },
       _checkIsNewClient() {
-        let flag = (this.goodsList && this.goodsList.some(val => val.activity.activity_theme === ACTIVE_TYPE.NEW_CLIENT))
-        if (flag) {
-          API.Global.checkIsNewCustomer().then(res => {
-            this.isShowNewCustomer = res.data.is_new_client === 0
-          })
+        if (this.activityType !== ACTIVE_TYPE.NEW_CLIENT) {
+          return
         }
+        API.Global.checkIsNewCustomer().then(res => {
+          this.isShowOldCustomerButton = res.data.is_new_client === 0 // 老人0 新人1
+        })
       },
       // addNumber控件确定按钮
       async comfirmNumer(number, type) {
