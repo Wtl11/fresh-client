@@ -7,7 +7,7 @@
     <section class="middle">
       <h1 class="name">
         <span class="leader">团长：{{dataInfo.name}}</span>
-        <span v-if="dataInfo.distance" class="distance">距离{{dataInfo.distance}}m</span>
+        <span v-if="dataInfo.distanceText" class="distance">距离{{dataInfo.distanceText}}</span>
       </h1>
       <p class="position">提货点：{{dataInfo.social_name}} </p>
     </section>

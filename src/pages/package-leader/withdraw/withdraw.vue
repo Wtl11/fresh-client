@@ -28,13 +28,14 @@
       <div class="withdraw-btn" :class="'corp-' + corpName + '-bg'"  @click="submitMoney">提现</div>
     </div>
     <ul class="withdraw-rule">
+      <li class="rule-item">
+        <div class="icon"></div>
+        <div v-if="tabIdx===1" class="text">微信按提现金额0.1%收取手续费，最低1元</div>
+        <div v-else class="text">提现到微信钱包需实名认证</div>
+      </li>
       <li class="rule-item" v-for="(item, index) in ruleList" v-bind:key="index">
         <div class="icon"></div>
         <div class="text">{{item.text}}</div>
-      </li>
-      <li v-if="tabIdx===1" class="rule-item">
-        <div class="icon"></div>
-        <div class="text">微信按提现金额0.1%收取手续费，最低1元</div>
       </li>
     </ul>
   </div>

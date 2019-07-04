@@ -889,7 +889,7 @@
           if (res.error === this.$ERR_OK) {
             this.goodsMsg = res.data
             this.msgTitle = this.goodsMsg.name
-            if (this.goodsMsg.goods_videos.length) {
+            if (this.goodsMsg.goods_videos && this.goodsMsg.goods_videos.length) {
               this.hasVideo = true
               this.currentNum = 0// 默认为1，如果有视频设为0
               this.arrowUrl = ARROW_URL[0]

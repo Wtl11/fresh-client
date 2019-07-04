@@ -174,6 +174,13 @@
         })
         API.Pickup.getNearbyList(this.nearbyParams, loading).then(res => {
           this.nearbyList = res.data
+          this.nearbyList.forEach((item) => {
+            if (item.distance >= 1000) {
+              item.distanceText = (item.distance / 1000).toFixed(1) + 'km'
+            } else {
+              item.distanceText = item.distance + 'm'
+            }
+          })
           this.isShowEmpty = this.dataArray.length === 0
           this.hasMore = res.data.length
         })
