@@ -8,7 +8,7 @@ export default {
   },
   // 获取历史自提点列表
   getNearbyList(data, loading, toast) {
-    const url = `/v3/api/wap/shop-nearby-list`
+    const url = `/api/wap/shop-nearby-list`
     return request.get({url, data, loading, toast})
   }
 }

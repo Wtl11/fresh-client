@@ -43,12 +43,12 @@
           <article class="banner-number" v-if="goodsBannerLength !== 0">
             <div></div>
             <div v-if="hasVideo" class="banner-btn-con">
-              <div :class="currentNum===0?'active':''" class="banner-number-box banner-btn" @click="changeCurrentNum(0, 1)">
+              <div :class="currentNum===0?'active':''" class="banner-number-box banner-btn" @click="changeCurrentNum(0)">
                 <img v-if="imageUrl&&currentNum===0" :src="imageUrl + '/yx-image/2.6.5/icon-play_white@2x.png'" mode="aspectFill" class="banner-btn-icon">
                 <img v-if="imageUrl&&currentNum!==0" :src="imageUrl + '/yx-image/2.6.5/icon-play_black@2x.png'" mode="aspectFill" class="banner-btn-icon">
                 视频
               </div>
-              <div :class="currentNum!==0?'active':''" class="banner-number-box banner-btn" @click="changeCurrentNum(1, 1)">图片</div>
+              <div :class="currentNum!==0?'active':''" class="banner-number-box banner-btn" @click="changeCurrentNum(1)">图片</div>
             </div>
             <div :style="{opacity: currentNum!==0?'1':'0'}" class="banner-number-box">{{currentNum}}/{{goodsBannerLength}}</div>
           </article>
@@ -611,17 +611,15 @@
         }, 1000)
       },
       bannerChange(e) {
+        if (e.mp.detail.source !== 'touch') return
         let curNum = e.target.current * 1 + !this.hasVideo
         this.changeCurrentNum(curNum)
       },
-      changeCurrentNum(curNum, setIdx = false) {
-        if (setIdx) {
-          this.swiperIdx = curNum
-          console.log(this.swiperIdx)
-        }
+      changeCurrentNum(curNum) {
         if (curNum !== this.currentNum) {
           this.currentNum = curNum
           if (this.hasVideo && this.videoContext) {
+            this.swiperIdx = curNum
             if (curNum === 0) {
               this.arrowUrl = ARROW_URL[0]
             } else {
