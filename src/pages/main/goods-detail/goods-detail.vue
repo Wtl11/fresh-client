@@ -337,7 +337,6 @@
         statusBarHeight: -100,
         product: null,
         showSharePanel: false,
-        runTime: '',
         hasVideo: false,
         videoPlaying: false,
         videoLoading: false,
@@ -616,6 +615,10 @@
         this.changeCurrentNum(curNum)
       },
       changeCurrentNum(curNum, setIdx = false) {
+        if (setIdx) {
+          this.swiperIdx = curNum
+          console.log(this.swiperIdx)
+        }
         if (curNum !== this.currentNum) {
           this.currentNum = curNum
           if (this.hasVideo && this.videoContext) {
@@ -627,10 +630,6 @@
               this.videoPlaying = false
             }
           }
-        }
-        if (setIdx) {
-          this.swiperIdx = curNum
-          this.currentNum = curNum
         }
       },
       playVideo() {
