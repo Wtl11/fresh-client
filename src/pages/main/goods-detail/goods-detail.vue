@@ -30,7 +30,6 @@
                 <video class="item-img" id="goodsVideo" :src="goodsMsg.goods_videos[0].full_url" :show-center-play-btn="false" :enable-progress-gesture="false" @ended='videoEnd' @waiting="videoWaiting" @progress="videoLoaded"></video>
                 <div class="play-btn" @click="playVideo">
                   <img v-if="imageUrl&&!videoPlaying" :src="imageUrl + '/yx-image/2.6.5/icon-play_big@2x.png'" mode="aspectFill" class="play-btn-icon">
-                  <img v-if="imageUrl&&videoLoading&&!videoPlaying" :src="imageUrl + '/yx-image/2.4/icon-lightning@2x.png'" mode="aspectFill" class="play-btn-icon">
                 </div>
               </swiper-item>
             </block>
@@ -44,12 +43,12 @@
           <article class="banner-number" v-if="goodsBannerLength !== 0">
             <div></div>
             <div v-if="hasVideo" class="banner-btn-con">
-              <div :class="currentNum===0?'active':''" class="banner-number-box banner-btn" @click="changeCurrentNum(0, true)">
+              <div :class="currentNum===0?'active':''" class="banner-number-box banner-btn" @click="changeCurrentNum(0, 1)">
                 <img v-if="imageUrl&&currentNum===0" :src="imageUrl + '/yx-image/2.6.5/icon-play_white@2x.png'" mode="aspectFill" class="banner-btn-icon">
                 <img v-if="imageUrl&&currentNum!==0" :src="imageUrl + '/yx-image/2.6.5/icon-play_black@2x.png'" mode="aspectFill" class="banner-btn-icon">
                 视频
               </div>
-              <div :class="currentNum!==0?'active':''" class="banner-number-box banner-btn" @click="changeCurrentNum(1, true)">图片</div>
+              <div :class="currentNum!==0?'active':''" class="banner-number-box banner-btn" @click="changeCurrentNum(1, 1)">图片</div>
             </div>
             <div :style="{opacity: currentNum!==0?'1':'0'}" class="banner-number-box">{{currentNum}}/{{goodsBannerLength}}</div>
           </article>
@@ -612,13 +611,10 @@
         let curNum = e.target.current * 1 + !this.hasVideo
         this.changeCurrentNum(curNum)
       },
-      changeCurrentNum(curNum, setIdx) {
+      changeCurrentNum(curNum, setIdx = false) {
         if (curNum !== this.currentNum) {
           this.currentNum = curNum
           if (this.hasVideo && this.videoContext) {
-            if (setIdx) {
-              this.swiperIdx = curNum
-            }
             if (curNum === 0) {
               this.arrowUrl = ARROW_URL[0]
             } else {
@@ -627,6 +623,10 @@
               this.videoPlaying = false
             }
           }
+        }
+        if (setIdx) {
+          this.swiperIdx = curNum
+          this.currentNum = curNum
         }
       },
       playVideo() {
@@ -638,11 +638,9 @@
         }
       },
       videoWaiting() {
-        console.log('wait-------------')
         this.videoLoading = true
       },
       videoLoaded() {
-        console.log('loaded-------------')
         this.videoLoading = false
       },
       videoEnd() {

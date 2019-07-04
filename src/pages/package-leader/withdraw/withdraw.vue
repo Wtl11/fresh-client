@@ -32,6 +32,10 @@
         <div class="icon"></div>
         <div class="text">{{item.text}}</div>
       </li>
+      <li v-if="tabIdx===1" class="rule-item">
+        <div class="icon"></div>
+        <div class="text">微信按提现金额0.1%收取手续费，最低1元</div>
+      </li>
     </ul>
   </div>
 </template>

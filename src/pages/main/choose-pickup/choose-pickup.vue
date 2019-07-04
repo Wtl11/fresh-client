@@ -39,7 +39,7 @@
       <dl class="panel list-wrapper">
         <dt class="title">附近提货点</dt>
         <div v-if="nearbyList.length>0">
-          <dd v-for="(item, index) in nearbyList" :key="index" class="list-item-wrapper" :class="{'has-line': index < dataArray.length}" @click="handleCheck(item)">
+          <dd v-for="(item, index) in nearbyList" :key="index" class="list-item-wrapper" :class="{'has-line': index < nearbyList.length}" @click="handleCheck(item)">
             <pick-up :dataInfo="item"></pick-up>
           </dd>
         </div>
