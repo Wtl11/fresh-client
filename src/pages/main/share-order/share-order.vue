@@ -86,11 +86,15 @@
         userImgList: []
       }
     },
+    onLoad(options) {
+      this.orderId = options.id
+      this.shopId = options.shopId
+    },
     onShow() {
       let options = this._$$initOptions()
       this.orderId = options.id || 0
       this.shopId = options.shopId || 0
-      this.shopId && wx.setStorageSync('shopId', this.shopId)
+      this.shopId && wx.setStorageSync('shopId', +this.shopId)
       this.getShareOrderDate()
       this.$$shareHandler({
         event: EVENT_CODE.SHARE_ORDER,
