@@ -169,7 +169,7 @@
         }
       },
       _getList(loading) {
-        API.Pickup.getList({}, loading).then(res => {
+        API.Pickup.getList({page: 1, limit: 2}, loading).then(res => {
           if (res.data && res.data.length) {
             this.dataArray = res.data
             if (res.data && res.data.length > 2) {
@@ -299,6 +299,8 @@
     font-size: 14px
     color: $color-text-main
     line-height: 1
+    min-height: 225px
+    transition: all 0.25s
     .title
       padding :16px 0 15px
       border-bottom-1px()
