@@ -35,18 +35,18 @@
         {{details.foodsList}}
       </div>
       <div class="goods-list">
-        <goods-item v-for="(item,idx) in details.goodsList" :key="idx" :goodsData="item" @add="addGoods"></goods-item>
+        <goods-item v-for="(item,idx) in details.goodsList" :key="idx" :goodsData="item" @add="addGoods" @click="goToDetail(item)"></goods-item>
       </div>
       <div v-for="(item,idx) in details.articles" :key="idx" class="article-item">
         <text v-if="item.type==='text'" class="article-text">{{item.value}}</text>
         <img v-if="item.type==='img'" :src="item.value" mode="widthFix" class="article-image"/>
         <video v-if="item.type==='video'" :src="item.value" class="article-video"></video>
-        <goods-item v-if="item.type==='goods'" :goodsData="item.value" @add="addGoods"></goods-item>
+        <goods-item v-if="item.type==='goods'" :goodsData="item.value" @add="addGoods(item)" @click="goToDetail(item)"></goods-item>
       </div>
     </div>
     <div class="bottom-operate-wrap">
       <div class="bottom-operate">
-        <div class="operate-item" @click="likeBtn">
+        <div class="operate-item" @click="setLikeBtn">
           <div class="icon-wrap">
             <div class="count">{{details.goodCount}}</div>
             <img v-if="imageUrl && !goodsStatus" :src="imageUrl + '/yx-image/article/icon-like_big1@2x.png'" class="operate-icon">
@@ -60,7 +60,7 @@
             </div>
           </button>
         </div>
-        <div class="operate-item" @click="buyerBtn">
+        <div class="operate-item" @click="goToBuyCar">
           <div class="icon-wrap">
             <div v-if="count" class="count red">{{count || 0}}</div>
             <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-shopping_cart@2x.png'" class="operate-icon">
@@ -72,10 +72,10 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import API from '@api'
+  // import API from '@api'
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import goodsItem from '../content-article-detail-video/goods-item/goods-item.vue'
-  import { cartComputed, cartMethods } from '@state/helpers'
+  import contentMix from '@mixins/content-detail'
 
   const PAGE_NAME = 'CONTENT_ARTICLE_DETAIL'
   export default {
@@ -84,10 +84,12 @@
       NavigationBar,
       goodsItem
     },
+    mixins: [contentMix],
     data() {
       return {
         goodsStatus: false,
         details: {
+          id: 1,
           coverVideo: false,
           authName: 'dsofdpsf',
           authIntroduce: '美食达人。深入浅出的美食科普知识…',
@@ -175,37 +177,8 @@
         }
       }
     },
-    computed: {
-      ...cartComputed
-    },
-    onShareAppMessage() {
-      return {
-        title: '赞播优鲜',
-        path: `${this.$routes.content.CONTENT_ARTICLES_DETAIL_VIDEO}`,
-        imageUrl: '',
-        success: (res) => {
-        },
-        fail: (res) => {
-        }
-      }
-    },
-    methods: {
-      ...cartMethods,
-      likeBtn() {
-      },
-      addGoods(item) {
-        API.Choiceness.addShopCart({ goods_sku_id: item.goods_sku_id, activity_id: item.activity_id }).then((res) => {
-          if (res.error === this.$ERR_OK) {
-            this.$wechat.showToast('加入购物车成功')
-            this.setCartCount()
-          } else {
-            this.$wechat.showToast(res.message)
-          }
-        })
-      },
-      buyerBtn() {
-      }
-    }
+    computed: {},
+    methods: {}
   }
 </script>
 
@@ -317,6 +290,7 @@
         font-size $font-size-15
         letter-spacing 0.4px
         color: #111111
+
       .goods-list
         margin-bottom: 10px
         margin-top: 25px

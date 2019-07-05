@@ -1,5 +1,5 @@
 <template>
-  <div class="good-item">
+  <div class="good-item" @click="clickThis">
     <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-add_to@2x.png'" class="goods-photo">
     <div class="info">
       <div v-if="goodsData && goodsData.name" class="name">{{goodsData.name}}</div>
@@ -12,7 +12,7 @@
           </span>
           <span class="price">{{goodsData.price}}元</span>
         </div>
-        <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-add_to@2x.png'" class="add-img" @click="addBtn(goodsData)">
+        <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-add_to@2x.png'" class="add-img" @click.stop="addBtn(goodsData)">
       </div>
     </div>
   </div>
@@ -47,8 +47,10 @@
     },
     methods: {
       addBtn(value) {
-        console.log(value)
         this.$emit('add', value)
+      },
+      clickThis(value) {
+        this.$emit('click', value)
       }
     }
   }

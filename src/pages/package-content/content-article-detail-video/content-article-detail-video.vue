@@ -4,26 +4,18 @@
     <video id="myVideo"
            src="http://1254297111.vod2.myqcloud.com/76b25520vodgzp1254297111/324863175285890791134089946/r9RD7Tr4UrgA.mp4"
            :autoplay="playStatus"
-           :loop="true"
+           :loop="false"
            :muted="true"
            :controls="showContorl"
-           :show-progress="false"
-           :enable-progress-gesture="false"
-           :show-fullscreen-btn="false"
-           :show-play-btn="false"
-           :show-center-play-btn="false"
-           :custom-cache="false"
-           play-btn-position="center"
            class="full-screen-video"
-           @timeupdate="videoPlayTime"
            @ended="endVideo"
            @click="videoClick"
-           @touchstart="enterVideo"
-           @touchend="leaveVideo"
+           @play="playVideo"
+           @pause="pauseVideo"
     >
-      <div v-if="!playStatus" class="puse-btn"></div>
+      <div v-if="!playStatus && !endVideoHas" class="puse-btn" @click.stop="videoClick"></div>
     </video>
-    <div class="info-wrap">
+    <div v-if="contentVisible" class="info-wrap">
       <div class="auth-wrap">
         <div class="auth-photo-wrap">
           <img v-if="details.authPhoto" :src="details.authPhoto" class="auth-photo">
@@ -35,15 +27,18 @@
       <text class="text" space="ensp" :decode="true">{{details.text}}</text>
       <div class="operate-wrap">
         <div class="operate-wrap-box">
-          <div class="like-operate">
+          <div class="operate-item" @clcik="setLikeBtn">
             <div class="count">{{details.goodCount}}</div>
             <img v-if="imageUrl && !goodStatus" :src="imageUrl + '/yx-image/article/icon-fabulous1@2x.png'" class="operate-icon">
+            <img v-if="imageUrl && goodStatus" :src="imageUrl + '/yx-image/article/icon-fabulous2@2x.png'" class="operate-icon">
           </div>
-          <img v-if="imageUrl && goodStatus" :src="imageUrl + '/yx-image/article/icon-fabulous2@2x.png'" class="operate-icon">
           <button open-type="share" class="operate-icon">
             <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-share_big@2x.png'" class="operate-icon">
           </button>
-          <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-shoping_catbig@2x.png'" class="operate-icon">
+          <div class="operate-item">
+            <div class="count">{{details.goodCount}}</div>
+            <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-shoping_catbig@2x.png'" class="operate-icon" @clcik="goToBuyCar">
+          </div>
         </div>
         <div class="goods-btn" @click.stop="showGoodsListBtn">
           商品({{goodsList.length}})
@@ -54,7 +49,7 @@
     <div :class="['goods-list-wrap',{show:goodsListVisible}]">
       <div class="title">全部商品<span class="num">/共{{goodsList.length}}个商品</span></div>
       <div class="good-list">
-        <goods-item v-for="(item,idx) in goodsList" :key="idx" :goods-data="item" @add="addGoods"></goods-item>
+        <goods-item v-for="(item,idx) in goodsList" :key="idx" :goods-data="item" @add="addGoods" @click="goToDetail(item)"></goods-item>
       </div>
       <div v-if="BottomEmptyVisible" class="bottom-emty-20"></div>
     </div>
@@ -62,11 +57,10 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import API from '@api'
+  // import API from '@api'
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import goodsItem from './goods-item/goods-item.vue'
-  import { cartComputed, cartMethods } from '@state/helpers'
-
+  import contentMix from '@mixins/content-detail'
   const PAGE_NAME = 'CONTENT_ARTICLES'
   export default {
     name: PAGE_NAME,
@@ -77,7 +71,6 @@
     data() {
       return {
         showContorl: false,
-        BottomEmptyVisible: false,
         details: {
           authName: 'dsofdpsf',
           authPhoto: 'https://img.jkweixin.net/defaults/yx-image/retuan/hdpi/icon-select_press01.png',
@@ -85,6 +78,7 @@
           goodCount: 132
         },
         goodStatus: false,
+        contentVisible: true,
         goodsListVisible: false,
         goodsList: [{
           name: '超值特惠 2斤农家新鲜家新鲜',
@@ -108,75 +102,38 @@
           photo: ''
         }],
         playStatus: true,
-        videoContext: null
+        videoContext: null,
+        endVideoHas: false
       }
     },
-    computed: {
-      ...cartComputed
-    },
-    onShareAppMessage() {
-      return {
-        title: '赞播优鲜',
-        path: `${this.$routes.content.CONTENT_ARTICLES_DETAIL_VIDEO}`,
-        imageUrl: '',
-        success: (res) => {
-        },
-        fail: (res) => {
-        }
-      }
-    },
+    mixins: [contentMix],
     onLoad() {
       this.videoContext = wx.createVideoContext('myVideo')
-      let res = this.$wx.getSystemInfoSync()
-      this.BottomEmptyVisible = (res.statusBarHeight >= 44) ? 1 : false
-      console.log(res)
     },
     methods: {
-      ...cartMethods,
-      leaveVideo() {
-        this.timer = setTimeout(() => {
-          this.showContorl = false
-        }, 500)
+      playVideo() {
+        this.endVideoHas = false
+        this.playStatus = true
       },
-      enterVideo() {
-        clearTimeout(this.timer)
-        this.showContorl = true
-      },
-      endVideo() {
-        this.videoContext.pause()
+      pauseVideo() {
         this.playStatus = false
       },
-      videoPlayTime(value) {
-        // console.log(value)
+      endVideo() {
+        this.endVideoHas = true
+        this.playStatus = false
       },
       videoClick() {
-        this.playStatus = !this.playStatus
-        console.log(this.playStatus)
-        if (!this.videoContext) this.videoContext = wx.createVideoContext('myVideo')
-        if (this.playStatus) {
+        if (!this.playStatus) {
           this.videoContext.play()
-        } else {
-          this.videoContext.pause()
+          this.playStatus = true
         }
+        this.contentVisible = !this.contentVisible
+        this.showContorl = !this.contentVisible
         this.goodsListVisible = false
       },
       showGoodsListBtn() {
+        this.videoContext.pause()
         this.goodsListVisible = true
-      },
-      getNumObject(item, n) {
-        console.log(item.split('.'), item.split('.')[n])
-        return item.split('.')[n]
-      },
-      addGoods(item) {
-        API.Choiceness.addShopCart({ goods_sku_id: item.goods_sku_id, activity_id: item.activity_id }).then((res) => {
-          if (res.error === this.$ERR_OK) {
-            this.$wechat.showToast('加入购物车成功')
-            this.setCartCount()
-          } else {
-            this.$wechat.showToast(res.message)
-          }
-        })
-        console.log(item)
       }
     }
   }
@@ -264,7 +221,7 @@
           height: 40px
           margin-right: px-change-vw(25)
 
-        .like-operate
+        .operate-item
           display inline-block
           position: relative
 
