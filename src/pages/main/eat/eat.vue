@@ -114,8 +114,8 @@
 
   let leftList = []
   let rightList = []
-  let leftHight = 0
-  let rightHight = 0
+  let leftHeight = 0
+  let rightHeight = 0
   let itemWidth = 0
   let maxHeight = 0
   const PAGE_NAME = 'EAT'
@@ -147,8 +147,8 @@
         articleHeight: 0,
         tabHeight: 0,
         // 瀑布流参数
-        leftHight: 0,
-        rightHight: 0,
+        leftHeight: 0,
+        rightHeight: 0,
         itemWidth: 0,
         maxHeight: 500,
         leftList: [],
@@ -235,8 +235,8 @@
           // 是否下拉刷新，是的话清除之前的数据
           leftList.length = 0
           rightList.length = 0
-          leftHight = 0
-          rightHight = 0
+          leftHeight = 0
+          rightHeight = 0
           this.leftList = []
           this.rightList = []
         }
@@ -252,18 +252,18 @@
           if (tmp.itemHeight > maxHeight) {
             tmp.itemHeight = maxHeight
           }
-          if (leftHight === rightHight) {
+          if (leftHeight === rightHeight) {
             leftList.push(tmp)
-            leftHight = leftHight + tmp.itemHeight
-          } else if (leftHight < rightHight) {
+            leftHeight = leftHeight + tmp.itemHeight
+          } else if (leftHeight < rightHeight) {
             leftList.push(tmp)
-            leftHight = leftHight + tmp.itemHeight
+            leftHeight = leftHeight + tmp.itemHeight
           } else {
             rightList.push(tmp)
-            rightHight = rightHight + tmp.itemHeight
+            rightHeight = rightHeight + tmp.itemHeight
           }
         }
-        // console.log(leftHight)
+        // console.log(leftHeight)
         // console.log(rightList)
         this.contentList[this.tabIndex].leftList = leftList
         this.contentList[this.tabIndex].rightList = rightList
