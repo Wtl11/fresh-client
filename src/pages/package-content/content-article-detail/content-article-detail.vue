@@ -35,13 +35,13 @@
         {{details.foodsList}}
       </div>
       <div class="goods-list">
-        <goods-item v-for="(item,idx) in details.goodsList" :key="idx" :goodsData="item"></goods-item>
+        <goods-item v-for="(item,idx) in details.goodsList" :key="idx" :goodsData="item" @add="addGoods"></goods-item>
       </div>
       <div v-for="(item,idx) in details.articles" :key="idx" class="article-item">
         <text v-if="item.type==='text'" class="article-text">{{item.value}}</text>
         <img v-if="item.type==='img'" :src="item.value" mode="widthFix" class="article-image"/>
         <video v-if="item.type==='video'" :src="item.value" class="article-video"></video>
-        <goods-item v-if="item.type==='goods'" :goodsData="item.value"></goods-item>
+        <goods-item v-if="item.type==='goods'" :goodsData="item.value" @add="addGoods"></goods-item>
       </div>
     </div>
     <div class="bottom-operate-wrap">
@@ -49,18 +49,20 @@
         <div class="operate-item" @click="likeBtn">
           <div class="icon-wrap">
             <div class="count">{{details.goodCount}}</div>
-            <img v-if="imageUrl && !goodStatus" :src="imageUrl + '/yx-image/article/icon-like_big1@2x.png'" class="operate-icon">
+            <img v-if="imageUrl && !goodsStatus" :src="imageUrl + '/yx-image/article/icon-like_big1@2x.png'" class="operate-icon">
           </div>
         </div>
-        <div class="operate-item" @click="shareBtn">
-          <div class="icon-wrap">
-            <div class="count">{{details.goodCount}}</div>
-            <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-share@2x.png'" class="operate-icon">
-          </div>
+        <div class="operate-item">
+          <button open-type="share" class="operate-item">
+            <div class="icon-wrap">
+              <div class="count">{{details.goodCount}}</div>
+              <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-share@2x.png'" class="operate-icon">
+            </div>
+          </button>
         </div>
         <div class="operate-item" @click="buyerBtn">
           <div class="icon-wrap">
-            <div class="count red">{{details.goodCount}}</div>
+            <div v-if="count" class="count red">{{count || 0}}</div>
             <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-shopping_cart@2x.png'" class="operate-icon">
           </div>
         </div>
@@ -70,11 +72,12 @@
 </template>
 
 <script type="text/ecmascript-6">
+  import API from '@api'
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import goodsItem from '../content-article-detail-video/goods-item/goods-item.vue'
+  import { cartComputed, cartMethods } from '@state/helpers'
 
   const PAGE_NAME = 'CONTENT_ARTICLE_DETAIL'
-
   export default {
     name: PAGE_NAME,
     components: {
@@ -83,6 +86,7 @@
     },
     data() {
       return {
+        goodsStatus: false,
         details: {
           coverVideo: false,
           authName: 'dsofdpsf',
@@ -171,10 +175,33 @@
         }
       }
     },
+    computed: {
+      ...cartComputed
+    },
+    onShareAppMessage() {
+      return {
+        title: '赞播优鲜',
+        path: `${this.$routes.content.CONTENT_ARTICLES_DETAIL_VIDEO}`,
+        imageUrl: '',
+        success: (res) => {
+        },
+        fail: (res) => {
+        }
+      }
+    },
     methods: {
+      ...cartMethods,
       likeBtn() {
       },
-      shareBtn() {
+      addGoods(item) {
+        API.Choiceness.addShopCart({ goods_sku_id: item.goods_sku_id, activity_id: item.activity_id }).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.$wechat.showToast('加入购物车成功')
+            this.setCartCount()
+          } else {
+            this.$wechat.showToast(res.message)
+          }
+        })
       },
       buyerBtn() {
       }
@@ -284,13 +311,16 @@
         font-family $font-family-medium
         color: #111111
         margin-bottom 25px
+
       .foods-list
         font-family $font-family-regular
         font-size $font-size-15
         letter-spacing 0.4px
+        color: #111111
       .goods-list
-        margin-bottom:10px
-        margin-top:25px
+        margin-bottom: 10px
+        margin-top: 25px
+
       .article-item
         margin-bottom 15px
 

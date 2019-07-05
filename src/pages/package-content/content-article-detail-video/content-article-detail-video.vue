@@ -1,7 +1,27 @@
 <template>
-  <div class="content-article-detail-video" >
+  <div class="content-article-detail-video">
     <navigation-bar :translucent="true" :isBackCricle="true" @click-nav="videoClick"></navigation-bar>
-    <video src="" class="full-screen-video" @click="videoClick">
+    <video id="myVideo"
+           src="http://1254297111.vod2.myqcloud.com/76b25520vodgzp1254297111/324863175285890791134089946/r9RD7Tr4UrgA.mp4"
+           :autoplay="playStatus"
+           :loop="true"
+           :muted="true"
+           :controls="showContorl"
+           :show-progress="false"
+           :enable-progress-gesture="false"
+           :show-fullscreen-btn="false"
+           :show-play-btn="false"
+           :show-center-play-btn="false"
+           :custom-cache="false"
+           play-btn-position="center"
+           class="full-screen-video"
+           @timeupdate="videoPlayTime"
+           @ended="endVideo"
+           @click="videoClick"
+           @touchstart="enterVideo"
+           @touchend="leaveVideo"
+    >
+      <div v-if="!playStatus" class="puse-btn"></div>
     </video>
     <div class="info-wrap">
       <div class="auth-wrap">
@@ -12,17 +32,17 @@
         <div class="name">{{details.authName}}</div>
         <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-lv8@2x.png'" class="level-icon">
       </div>
-      <text class="text">
-        {{details.text}}
-      </text>
+      <text class="text" space="ensp" :decode="true">{{details.text}}</text>
       <div class="operate-wrap">
-        <div>
+        <div class="operate-wrap-box">
           <div class="like-operate">
             <div class="count">{{details.goodCount}}</div>
             <img v-if="imageUrl && !goodStatus" :src="imageUrl + '/yx-image/article/icon-fabulous1@2x.png'" class="operate-icon">
           </div>
           <img v-if="imageUrl && goodStatus" :src="imageUrl + '/yx-image/article/icon-fabulous2@2x.png'" class="operate-icon">
-          <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-share_big@2x.png'" class="operate-icon">
+          <button open-type="share" class="operate-icon">
+            <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-share_big@2x.png'" class="operate-icon">
+          </button>
           <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-shoping_catbig@2x.png'" class="operate-icon">
         </div>
         <div class="goods-btn" @click.stop="showGoodsListBtn">
@@ -34,7 +54,7 @@
     <div :class="['goods-list-wrap',{show:goodsListVisible}]">
       <div class="title">全部商品<span class="num">/共{{goodsList.length}}个商品</span></div>
       <div class="good-list">
-        <goods-item v-for="(item,idx) in goodsList" :key="idx" :goods-data="item"></goods-item>
+        <goods-item v-for="(item,idx) in goodsList" :key="idx" :goods-data="item" @add="addGoods"></goods-item>
       </div>
       <div v-if="BottomEmptyVisible" class="bottom-emty-20"></div>
     </div>
@@ -42,11 +62,12 @@
 </template>
 
 <script type="text/ecmascript-6">
+  import API from '@api'
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import goodsItem from './goods-item/goods-item.vue'
+  import { cartComputed, cartMethods } from '@state/helpers'
 
   const PAGE_NAME = 'CONTENT_ARTICLES'
-
   export default {
     name: PAGE_NAME,
     components: {
@@ -55,11 +76,12 @@
     },
     data() {
       return {
+        showContorl: false,
         BottomEmptyVisible: false,
         details: {
           authName: 'dsofdpsf',
           authPhoto: 'https://img.jkweixin.net/defaults/yx-image/retuan/hdpi/icon-select_press01.png',
-          text: '迅速的翻炒，我用筷子直接搅拌了几下，蛋液只要都凝固了，就可以改小火盛起来，我这个炒锅有点粘锅，看起来不是很好。',
+          text: '奋斗史如果点f↵的法国恢复↵的非官方的↵啥大富大贵↵梵蒂冈的双方各h',
           goodCount: 132
         },
         goodStatus: false,
@@ -84,20 +106,58 @@
           details: '绿色外皮下包裹着白嫩嫩的果…',
           price: '10.8',
           photo: ''
-        }]
+        }],
+        playStatus: true,
+        videoContext: null
+      }
+    },
+    computed: {
+      ...cartComputed
+    },
+    onShareAppMessage() {
+      return {
+        title: '赞播优鲜',
+        path: `${this.$routes.content.CONTENT_ARTICLES_DETAIL_VIDEO}`,
+        imageUrl: '',
+        success: (res) => {
+        },
+        fail: (res) => {
+        }
       }
     },
     onLoad() {
+      this.videoContext = wx.createVideoContext('myVideo')
       let res = this.$wx.getSystemInfoSync()
       this.BottomEmptyVisible = (res.statusBarHeight >= 44) ? 1 : false
       console.log(res)
-      this.initBottomStyle()
     },
     methods: {
-      initBottomStyle() {
-
+      ...cartMethods,
+      leaveVideo() {
+        this.timer = setTimeout(() => {
+          this.showContorl = false
+        }, 500)
+      },
+      enterVideo() {
+        clearTimeout(this.timer)
+        this.showContorl = true
+      },
+      endVideo() {
+        this.videoContext.pause()
+        this.playStatus = false
+      },
+      videoPlayTime(value) {
+        // console.log(value)
       },
       videoClick() {
+        this.playStatus = !this.playStatus
+        console.log(this.playStatus)
+        if (!this.videoContext) this.videoContext = wx.createVideoContext('myVideo')
+        if (this.playStatus) {
+          this.videoContext.play()
+        } else {
+          this.videoContext.pause()
+        }
         this.goodsListVisible = false
       },
       showGoodsListBtn() {
@@ -106,6 +166,17 @@
       getNumObject(item, n) {
         console.log(item.split('.'), item.split('.')[n])
         return item.split('.')[n]
+      },
+      addGoods(item) {
+        API.Choiceness.addShopCart({ goods_sku_id: item.goods_sku_id, activity_id: item.activity_id }).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.$wechat.showToast('加入购物车成功')
+            this.setCartCount()
+          } else {
+            this.$wechat.showToast(res.message)
+          }
+        })
+        console.log(item)
       }
     }
   }
@@ -125,6 +196,16 @@
       width: 100vw
       height: 100vh
 
+      .puse-btn
+        position: absolute
+        top: 50%
+        left: 50%
+        transform translate(-50%)
+        width: 50px
+        height: @width
+        background-image url("./icon-play_big2@2x.png")
+        background-size 100%
+
     .info-wrap
       position: fixed
       bottom: 20px
@@ -135,6 +216,7 @@
       .auth-wrap
         display flex
         align-items center
+        margin-bottom 12px
 
         .auth-photo-wrap
           position: relative
@@ -142,11 +224,12 @@
           .auth-photo
             width: 36px
             height: 36px
+            border-radius 50%
 
           .auth-photo-v
             position: absolute
-            bottom: 0
-            right: 0
+            bottom: 2px
+            right: 2px
             width: 12px
             height: 12px
 
@@ -161,16 +244,20 @@
           height: 13px
 
       .text
+        display block
         color: #ffffff
         font-family $font-family-regular
         font-size: $font-size-15
         line-height 21px
-        margin: 12px 0px 25px
 
       .operate-wrap
         display flex
         justify-content space-between
         align-items center
+        margin-top 25px
+
+        .operate-wrap-box
+          display flex
 
         .operate-icon
           width: 40px
@@ -235,6 +322,6 @@
 
       .good-list
         padding: 0px 15px 17px 15px
-        max-height:60vh
+        max-height: 60vh
         overflow auto
 </style>

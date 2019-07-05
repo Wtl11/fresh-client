@@ -6,10 +6,13 @@
       <div class="details">{{goodsData.details}}</div>
       <div class="operate">
         <div>
-          <span class="price-now">10{{}}<span class="small">.8{{}}<span class="unit">元</span></span></span>
+          <span class="price-now">
+            <span class="big">{{goodsData.price}}</span>
+            <span class="unit">元</span>
+          </span>
           <span class="price">{{goodsData.price}}元</span>
         </div>
-        <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-add_to@2x.png'" class="add-img" @click="addBtn">
+        <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-add_to@2x.png'" class="add-img" @click="addBtn(goodsData)">
       </div>
     </div>
   </div>
@@ -43,8 +46,9 @@
       return {}
     },
     methods: {
-      addBtn() {
-        this.$emit('add-click')
+      addBtn(value) {
+        console.log(value)
+        this.$emit('add', value)
       }
     }
   }
@@ -69,6 +73,7 @@
     .info
       padding: 5px 12px
       overflow: hidden
+      flex: 1
 
       .name
         font-family $font-family-medium
@@ -94,15 +99,14 @@
 
       .price-now
         color: #FA7500
-        font-size: $font-size-25
         font-family $font-family-medium
 
-        .small
-          font-size: $font-size-16
+        .big
+          font-size: $font-size-25
 
-          .unit
-            font-family $font-family-regular
-
+        .unit
+          font-family $font-family-regular
+          font-size: $font-size-12
       .price
         color: #B7B7B7
         font-size: $font-size-12
