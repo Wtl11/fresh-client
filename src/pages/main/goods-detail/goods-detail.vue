@@ -28,9 +28,9 @@
             <block v-if="hasVideo&&goodsMsg.goods_videos">
               <swiper-item class="banner-item">
                 <video v-if="goodsMsg.goods_videos[0].full_url" class="item-img" id="goodsVideo" :src="goodsMsg.goods_videos[0].full_url" :poster="videoPoster" :muted="true" :show-mute-btn="true" :show-center-play-btn="false" :enable-progress-gesture="false" @ended='videoEnd' @waiting="videoWaiting" @progress="videoLoaded"></video>
-                <img v-if="playBefore&&!videoPlaying&&goodsBanner[0].image_url" :src="goodsBanner[0].image_url" mode="aspectFill" class="item-img">
-                <div class="play-btn" @click="playVideo">
-                  <img v-if="imageUrl&&!videoPlaying" :src="imageUrl + '/yx-image/2.6.5/icon-play_big@2x.png'" mode="aspectFill" class="play-btn-icon">
+                <img v-if="goodsBanner[0].image_url" :class="!playBefore?'hide':''" :src="goodsBanner[0].image_url" mode="aspectFill" class="item-img video-img">
+                <div class="play-btn" @click="playVideo(false)">
+                  <img v-if="imageUrl&&!videoPlaying" :src="imageUrl + '/yx-image/2.6.5/icon-play_big@2x.png'" mode="aspectFill" class="play-btn-icon" @click.stop="playVideo(true)">
                 </div>
               </swiper-item>
             </block>
@@ -628,12 +628,15 @@
         this.changeCurrentNum(curNum)
       },
       changeCurrentNum(curNum) {
+        this.autoplayTimer && clearTimeout(this.autoplayTimer)
         if (curNum !== this.currentNum) {
           this.currentNum = curNum
           if (this.hasVideo && this.videoContext) {
             this.swiperIdx = curNum
             if (curNum === 0) {
-              this.arrowUrl = ARROW_URL[0]
+              if (!this.playBefore) {
+                this.arrowUrl = ARROW_URL[0]
+              }
             } else {
               this.arrowUrl = ARROW_URL[1]
               this.videoContext.pause()
@@ -642,13 +645,15 @@
           }
         }
       },
-      playVideo() {
-        this.videoPlaying = !this.videoPlaying
+      playVideo(play) {
+        this.videoPlaying = play
         this.playBefore = false
-        if (this.videoPlaying) {
+        if (play) {
           this.videoContext.play()
+          this.arrowUrl = ARROW_URL[0]
         } else {
           this.videoContext.pause()
+          this.arrowUrl = ARROW_URL[1]
         }
       },
       videoWaiting() {
@@ -905,12 +910,11 @@
             if (this.goodsMsg.goods_videos && this.goodsMsg.goods_videos.length) {
               this.hasVideo = true
               this.currentNum = 0// 默认为1，如果有视频设为0
-              this.arrowUrl = ARROW_URL[0]
               this.videoContext = wx.createVideoContext('goodsVideo')
               let that = this
               this.autoplayTimer = setTimeout(() => {
-                if (!that.videoPlaying) {
-                  that.playVideo()
+                if (!that.videoPlaying && that.playBefore && that.swiperIdx === 0) {
+                  that.playVideo(true)
                 }
               }, 2000)
               if (!this.isIos) {
@@ -1441,6 +1445,11 @@
           position: absolute
           left: 0
           top: 0
+        .video-img
+          transition: all 0.3s
+          &.hide
+            opacity: 0
+            z-index: -1
         .play-btn
           width: 100%
           height: 70%
