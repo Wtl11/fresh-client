@@ -24,12 +24,17 @@
       </section>
       <dl class="panel list-wrapper">
         <dt class="title">历史提货点</dt>
-        <div v-if="dataArray.length>0">
-          <dd v-for="(item, index) in dataArray" :key="index" class="list-item-wrapper" :class="{'has-line': index < dataArray.length}" @click="handleCheck(item)">
+        <div v-if="historyList.length>0" class="list-con">
+          <dd v-for="(item, index) in historyList" :key="index" class="list-item-wrapper has-line" @click="handleCheck(item)">
             <pick-up :dataInfo="item"></pick-up>
           </dd>
         </div>
-        <div v-else>
+        <div v-if="dataArray.length>2" class="show-more" @click="showMoreHistory">
+          <span v-if="showMore">收起</span>
+          <span v-else>查看更多</span>
+          <img :class="showMore?'show':''" class="more-img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/icon-pressed_down@2x.png'">
+        </div>
+        <div v-if="dataIsEmpty">
           <dd class="empty-wrapper">
             <img class="empty-img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/pic-address@2x.png'">
             <p>暂无历史提货点</p>
@@ -38,12 +43,12 @@
       </dl>
       <dl class="panel list-wrapper">
         <dt class="title">附近提货点</dt>
-        <div v-if="nearbyList.length>0">
+        <div v-if="nearbyList.length>0" class="list-con">
           <dd v-for="(item, index) in nearbyList" :key="index" class="list-item-wrapper" :class="{'has-line': index < nearbyList.length}" @click="handleCheck(item)">
             <pick-up :dataInfo="item"></pick-up>
           </dd>
         </div>
-        <div v-else>
+        <div v-if="nearbyIsEmpty">
           <dd class="empty-wrapper">
             <img class="empty-img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/pic-address@2x.png'">
             <p>暂无附近提货点</p>
@@ -51,7 +56,6 @@
         </div>
       </dl>
       <is-end v-if="!hasMore"></is-end>
-      <loading-more v-else></loading-more>
     </div>
     <confirm-msg ref="msg" useType="double" @confirm="handleConfirm"></confirm-msg>
   </div>
@@ -84,13 +88,16 @@
         groupInfo: {},
         page: 1,
         dataArray: [],
-        isShowEmpty: false,
+        historyList: [],
+        dataIsEmpty: false,
+        showMore: false,
         hasMore: true,
         currentItem: {},
         arrowUrl: ARROW_URL[0],
         backgroundLoad: true,
         nearbyParams: {longitude: 0, latitude: 0},
-        nearbyList: []
+        nearbyList: [],
+        nearbyIsEmpty: false
       }
     },
     async onLoad(options) {
@@ -106,11 +113,6 @@
     },
     onPageScroll(e) {
       this._changeNavigation(e)
-    },
-    onReachBottom() {
-      // if (!this.hasMore) return
-      // this.page++
-      // this._getList(false)
     },
     methods: {
       // 获取团长的信息
@@ -167,23 +169,40 @@
         }
       },
       _getList(loading) {
-        API.Pickup.getList({page: 1, limit: 2}, loading).then(res => {
-          this.dataArray = res.data
-          this.isShowEmpty = this.dataArray.length === 0
-          this.hasMore = res.data.length
+        API.Pickup.getList({}, loading).then(res => {
+          if (res.data && res.data.length) {
+            this.dataArray = res.data
+            if (res.data && res.data.length > 2) {
+              this.historyList = [this.dataArray[0], this.dataArray[1]]
+            } else {
+              this.historyList = res.data
+            }
+          } else {
+            this.dataIsEmpty = true
+          }
         })
         API.Pickup.getNearbyList(this.nearbyParams, loading).then(res => {
-          this.nearbyList = res.data
-          this.nearbyList.forEach((item) => {
-            if (item.distance >= 1000) {
-              item.distanceText = (item.distance / 1000).toFixed(1) + 'km'
-            } else {
-              item.distanceText = item.distance + 'm'
-            }
-          })
-          this.isShowEmpty = this.dataArray.length === 0
-          this.hasMore = res.data.length
+          if (res.data && res.data.length) {
+            this.nearbyList = res.data
+            this.nearbyList.forEach((item) => {
+              if (item.distance >= 1000) {
+                item.distanceText = (item.distance / 1000).toFixed(1) + 'km'
+              } else {
+                item.distanceText = item.distance + 'm'
+              }
+            })
+          } else {
+            this.nearbyIsEmpty = true
+          }
         })
+      },
+      showMoreHistory() {
+        this.showMore = !this.showMore
+        if (this.showMore) {
+          this.historyList = this.dataArray
+        } else {
+          this.historyList = [this.dataArray[0], this.dataArray[1]]
+        }
       },
       handleCheck(item) {
         this.currentItem = item
@@ -283,10 +302,33 @@
     .title
       padding :16px 0 15px
       border-bottom-1px()
+    .list-con
+      min-height: 180px
+      transition: all 0.25s
     .list-item-wrapper
       height :90px
       &.has-line
         border-bottom-1px()
       &:last-child
         border-none()
+    .show-more
+      width: 100%
+      height: 45px
+      line-height: 45px
+      layout(row)
+      justify-content: center
+      align-items: center
+      text-align: center
+      font-size: $font-size-14
+      font-family: $font-family-regular
+      color: #9B9B9B
+      border-top-1px()
+      .more-img
+        margin-left: 5px
+        width: 12px
+        height: 6px
+        display: block
+        transition: all 0.25s
+        &.show
+          transform:rotate(180deg)
 </style>

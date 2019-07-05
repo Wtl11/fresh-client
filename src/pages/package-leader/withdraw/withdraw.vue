@@ -9,19 +9,36 @@
         <div class="line" :style="'transform: translate(' + tabIdx*100 + '%,0)'"><div class="lines" :class="'corp-' + corpName + '-bg'"></div></div>
       </div>
     </div>
-    <div :class="tabIdx===1?'':'bank-hidden'" class="withdraw-jump" @click="jumpBankcard">
-      <div class="withdraw-text"  :class="addBank === '添加银行卡' ? 'withdraw-text-place' : ''">{{addBank}}</div>
-      <img class="jump-arrows" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/cart/icon-pressed@2x.png'">
-    </div>
-    <div class="withdraw-money">
-      <div class="money-title">提现金额</div>
-      <div class="money-input-box">
-        <div class="money-icon">¥</div>
-        <input type="digit" class="money-input" v-model="drawMoney">
+    <div :style="{'transform': ' translateX('+ -(tabIdx * 100) +'vw)'}" class="container">
+      <div class="withdraw-con">
+        <div class="withdraw-money">
+          <div class="money-title">提现金额</div>
+          <div class="money-input-box">
+            <div class="money-icon">¥</div>
+            <input type="digit" class="money-input" v-model="drawMoney">
+          </div>
+          <div class="money-can-withdraw">
+            <span v-if="walletInfo.remaining">可提现金额</span>
+            <span class="money-number" v-if="walletInfo.remaining">¥{{walletInfo.remaining}}</span>
+          </div>
+        </div>
       </div>
-      <div class="money-can-withdraw">
-        <span v-if="walletInfo.remaining">可提现金额</span>
-        <span class="money-number" v-if="walletInfo.remaining">¥{{walletInfo.remaining}}</span>
+      <div class="withdraw-con">
+        <div class="withdraw-jump" @click="jumpBankcard">
+          <div class="withdraw-text"  :class="addBank === '添加银行卡' ? 'withdraw-text-place' : ''">{{addBank}}</div>
+          <img class="jump-arrows" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/cart/icon-pressed@2x.png'">
+        </div>
+        <div class="withdraw-money">
+          <div class="money-title">提现金额</div>
+          <div class="money-input-box">
+            <div class="money-icon">¥</div>
+            <input type="digit" class="money-input" v-model="drawMoney">
+          </div>
+          <div class="money-can-withdraw">
+            <span v-if="walletInfo.remaining">可提现金额</span>
+            <span class="money-number" v-if="walletInfo.remaining">¥{{walletInfo.remaining}}</span>
+          </div>
+        </div>
       </div>
     </div>
     <div class="withdraw-btn-box lost">
@@ -148,40 +165,48 @@
     width: 100%
     min-height: 100vh
     background: $color-background
-  .withdraw-jump
-    height: 50px
-    layout(row)
-    align-items: center
-    justify-content: space-between
-    padding: 0 15px
-    box-sizing: border-box
-    background: $color-white
-    transition: all .1s
-    overflow: hidden
-    &.bank-hidden
-      height: 0
-    .withdraw-text
-      font-size: $font-size-14
-      font-family: $font-family-regular
-      color: $color-text-main
-    .withdraw-text-place
-      color: $color-text-assist
-    .jump-arrows
-      display: block
-      width: 7.5px
-      height: 12.5px
-      margin-left: 4px
-  .withdraw-money
-    padding: 15px
-    margin-top: 10px
-    background: $color-white
-    box-sizing: border-box
-    margin-bottom: 25px
-    .money-title
-      font-size: $font-size-14
-      font-family: $font-family-regular
-      color: $color-text-main
-      margin-bottom: 19px
+    overflow-x: hidden
+  .container
+    width: 200vw
+    display: flex
+    transform: translateX(0)
+    transition: all 0.3s
+    .withdraw-con
+      width: 100vw
+      .withdraw-money
+        padding: 15px
+        margin-top: 10px
+        background: $color-white
+        box-sizing: border-box
+        margin-bottom: 25px
+        .money-title
+          font-size: $font-size-14
+          font-family: $font-family-regular
+          color: $color-text-main
+          margin-bottom: 19px
+      .withdraw-jump
+        height: 50px
+        layout(row)
+        align-items: center
+        justify-content: space-between
+        padding: 0 15px
+        box-sizing: border-box
+        background: $color-white
+        transition: all .1s
+        overflow: hidden
+        &.bank-hidden
+          height: 0
+        .withdraw-text
+          font-size: $font-size-14
+          font-family: $font-family-regular
+          color: $color-text-main
+        .withdraw-text-place
+          color: $color-text-assist
+        .jump-arrows
+          display: block
+          width: 7.5px
+          height: 12.5px
+          margin-left: 4px
   .money-input-box
     layout(row)
     align-items: center

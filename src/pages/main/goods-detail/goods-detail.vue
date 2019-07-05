@@ -27,7 +27,8 @@
           <swiper v-if="goodsBanner && goodsBanner.length" :current="swiperIdx" class="banner" @change="bannerChange" interval="5000">
             <block v-if="hasVideo&&goodsMsg.goods_videos">
               <swiper-item class="banner-item">
-                <video class="item-img" id="goodsVideo" :src="goodsMsg.goods_videos[0].full_url" :poster="videoPoster" :show-center-play-btn="false" :enable-progress-gesture="false" @ended='videoEnd' @waiting="videoWaiting" @progress="videoLoaded"></video>
+                <video class="item-img" id="goodsVideo" :src="goodsMsg.goods_videos[0].full_url" :poster="videoPoster" :muted="true" :show-center-play-btn="false" :enable-progress-gesture="false" @ended='videoEnd' @waiting="videoWaiting" @progress="videoLoaded"></video>
+                <img v-if="playBefore&&!videoPlaying&&goodsBanner[0].image_url" :src="goodsBanner[0].image_url" mode="aspectFill" class="item-img">
                 <div class="play-btn" @click="playVideo">
                   <img v-if="imageUrl&&!videoPlaying" :src="imageUrl + '/yx-image/2.6.5/icon-play_big@2x.png'" mode="aspectFill" class="play-btn-icon">
                 </div>
@@ -341,6 +342,7 @@
         isIos: false,
         videoPoster: '',
         videoPlaying: false,
+        playBefore: true,
         videoLoading: false,
         videoContext: '',
         swiperIdx: 0,
@@ -466,6 +468,7 @@
       // this._clearTimer()
       clearInterval(this._allActiveTimer)
       clearInterval(this._groupTimer)
+      this.autoplayTimer && clearTimeout(this.autoplayTimer)
     },
     onReady() {
       let res = this.$wx.getSystemInfoSync()
@@ -474,6 +477,7 @@
     onUnload() {
       clearInterval(this._allActiveTimer)
       clearInterval(this._groupTimer)
+      this.autoplayTimer && clearTimeout(this.autoplayTimer)
       this.$refs.navigationBar && this.$refs.navigationBar._initHeadStyle()
       this.eventCount = 0
       this.$refs.shareList && this.$refs.shareList.hideLink()
@@ -640,6 +644,7 @@
       },
       playVideo() {
         this.videoPlaying = !this.videoPlaying
+        this.playBefore = false
         if (this.videoPlaying) {
           this.videoContext.play()
         } else {
@@ -902,6 +907,12 @@
               this.currentNum = 0// 默认为1，如果有视频设为0
               this.arrowUrl = ARROW_URL[0]
               this.videoContext = wx.createVideoContext('goodsVideo')
+              let that = this
+              this.autoplayTimer = setTimeout(() => {
+                if (!that.videoPlaying) {
+                  that.playVideo()
+                }
+              }, 2000)
               if (!this.isIos) {
                 this.videoPoster = this.goodsMsg.goods_videos[0].full_cover_url
               }
@@ -1436,6 +1447,7 @@
           position: absolute
           left: 0
           top: 15%
+          z-index: 9
           layout()
           justify-content: center
           align-items: center
