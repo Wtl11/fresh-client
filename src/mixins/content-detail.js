@@ -30,7 +30,8 @@ export default {
       foodList: '',
       goodsList: [],
       // 内容详情
-      details: []
+      details: [],
+      likes: []
     }
   },
   computed: {
@@ -104,6 +105,7 @@ export default {
       this.details.lookCount = obj.browse_count
       this.details.shareCount = obj.share_count
       this.details.goodStatus = obj.is_fabulou
+      if (this.currentType !== 'video') this._getLikes()
       obj.assembly.forEach(item => {
         if (item.type === 'combination' && item.style_type === 'content') {
           let details = []
@@ -159,8 +161,14 @@ export default {
         }
       })
     },
+    _getLikes() {
+      let limit = this.goodStatus < 7 ? this.goodStatus : 7
+      return API.Content.getLikes({ preview: this.preview, article_id: this.contentId, page: 1, limit}).then(res => {
+        if (res.error === this.$ERR_OK) this.details.likes = res.data
+      })
+    },
     setLikeBtn() {
-      this.details.goodStatus =!this.details.goodStatus
+      this.details.goodStatus = !this.details.goodStatus
       this._articleOperation('fabulou')
     },
     shareBtn() {
@@ -171,12 +179,12 @@ export default {
     },
     // 去詳情
     goToDetail(item) {
-      this._articleOperation('guide_goods',{goods_id:item.goods_id,goods_sku_id:item.goods_sku_id})
+      this._articleOperation('guide_goods', { goods_id: item.goods_id, goods_sku_id: item.goods_sku_id })
       wx.navigateTo({ url: `${this.$routes.main.GOODS_DETAIL}?id=${item.goods_id}&contentId=${this.contentId}` })
     },
     // 加购
     addGoods(item) {
-      this._articleOperation('guide_goods',{goods_id:item.goods_id,goods_sku_id:item.goods_sku_id})
+      this._articleOperation('guide_goods', { goods_id: item.goods_id, goods_sku_id: item.goods_sku_id })
       API.Choiceness.addShopCart({ goods_sku_id: item.goods_sku_id, content_id: this.contentId }).then((res) => {
         if (res.error === this.$ERR_OK) {
           this.$wechat.showToast('加入购物车成功')
@@ -187,14 +195,14 @@ export default {
       })
     },
     _articleOperation(handle, other) {
-      if(this.preview) return false
+      if (this.preview) return false
       let isLogin = this.$isLogin()
-      console.log('isLogin',isLogin)
+      console.log('isLogin', isLogin)
       return API.Content.articleOperation({ article_id: this.contentId, handle: handle, ...other }).then(res => {
         if (res.error === this.$ERR_OK) {
-         if(handle === 'fabulou') this._getDetails()
+          if (handle === 'fabulou') this._getDetails()
         }
       })
-    },
+    }
   }
 }
