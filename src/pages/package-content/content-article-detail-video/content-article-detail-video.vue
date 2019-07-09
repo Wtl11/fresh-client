@@ -2,11 +2,10 @@
   <div class="content-article-detail-video">
     <navigation-bar :translucent="true" :isBackCricle="true" @click-nav="videoClick"></navigation-bar>
     <video id="myVideo"
-           src="http://1254297111.vod2.myqcloud.com/76b25520vodgzp1254297111/324863175285890791134089946/r9RD7Tr4UrgA.mp4"
+           src="http://1254297111.vod2.myqcloud.com/76b25520vodgzp1254297111/131003da5285890791266627594/kl8aifXd3poA.mp4"
            :autoplay="playStatus"
            :loop="false"
-           :muted="true"
-           :controls="showContorl"
+           :controls="!contentVisible"
            class="full-screen-video"
            @ended="endVideo"
            @click="videoClick"
@@ -27,29 +26,32 @@
       <text class="text" space="ensp" :decode="true">{{details.text}}</text>
       <div class="operate-wrap">
         <div class="operate-wrap-box">
-          <div class="operate-item" @clcik="setLikeBtn">
-            <div class="count">{{details.goodCount}}</div>
-            <img v-if="imageUrl && !goodStatus" :src="imageUrl + '/yx-image/article/icon-fabulous1@2x.png'" class="operate-icon">
-            <img v-if="imageUrl && goodStatus" :src="imageUrl + '/yx-image/article/icon-fabulous2@2x.png'" class="operate-icon">
+          <div class="operate-item" @click="setLikeBtn">
+            <div v-if="details.goodCount" class="count">{{details.goodCount}}</div>
+            <img v-if="imageUrl && !details.goodStatus" :src="imageUrl + '/yx-image/article/icon-fabulous1@2x.png'" class="operate-icon">
+            <img v-if="imageUrl && details.goodStatus" :src="imageUrl + '/yx-image/article/icon-fabulous2@2x.png'" class="operate-icon">
           </div>
-          <button open-type="share" class="operate-icon">
+          <button v-if="this.preview===1" open-type="share" class="operate-icon">
             <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-share_big@2x.png'" class="operate-icon">
           </button>
-          <div class="operate-item">
-            <div class="count">{{details.goodCount}}</div>
+          <button v-else class="operate-icon">
+            <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-share_big@2x.png'" class="operate-icon">
+          </button>
+          <div class="operate-item" @click="goToBuyCar">
+            <div class="count">{{count || 0}}</div>
             <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-shoping_catbig@2x.png'" class="operate-icon" @clcik="goToBuyCar">
           </div>
         </div>
         <div class="goods-btn" @click.stop="showGoodsListBtn">
-          商品({{goodsList.length}})
+          商品({{details.goodsList.length || 0}})
         </div>
       </div>
       <div v-if="BottomEmptyVisible" class="bottom-emty-20"></div>
     </div>
     <div :class="['goods-list-wrap',{show:goodsListVisible}]">
-      <div class="title">全部商品<span class="num">/共{{goodsList.length}}个商品</span></div>
+      <div v-if="details.goodsList.length" class="title">全部商品<span class="num">/共{{details.goodsList.length || 0}}个商品</span></div>
       <div class="good-list">
-        <goods-item v-for="(item,idx) in goodsList" :key="idx" :goods-data="item" @add="addGoods" @click="goToDetail(item)"></goods-item>
+        <goods-item v-for="(item,idx) in details.goodsList" :key="idx" :goods-data="item" @add="addGoods" @click="goToDetail(item)"></goods-item>
       </div>
       <div v-if="BottomEmptyVisible" class="bottom-emty-20"></div>
     </div>
@@ -61,6 +63,7 @@
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import goodsItem from './goods-item/goods-item.vue'
   import contentMix from '@mixins/content-detail'
+
   const PAGE_NAME = 'CONTENT_ARTICLES'
   export default {
     name: PAGE_NAME,
@@ -70,37 +73,8 @@
     },
     data() {
       return {
-        showContorl: false,
-        details: {
-          authName: 'dsofdpsf',
-          authPhoto: 'https://img.jkweixin.net/defaults/yx-image/retuan/hdpi/icon-select_press01.png',
-          text: '奋斗史如果点f↵的法国恢复↵的非官方的↵啥大富大贵↵梵蒂冈的双方各h',
-          goodCount: 132
-        },
-        goodStatus: false,
         contentVisible: true,
         goodsListVisible: false,
-        goodsList: [{
-          name: '超值特惠 2斤农家新鲜家新鲜',
-          details: '绿色外皮下包裹着白嫩嫩的果…',
-          price: '10.8',
-          photo: ''
-        }, {
-          name: '超值特惠 2斤农家新鲜家新鲜',
-          details: '绿色外皮下包裹着白嫩嫩的果…',
-          price: '10.8',
-          photo: ''
-        }, {
-          name: '超值特惠 2斤农家新鲜家新鲜',
-          details: '绿色外皮下包裹着白嫩嫩的果…',
-          price: '10.8',
-          photo: ''
-        }, {
-          name: '超值特惠 2斤农家新鲜家新鲜',
-          details: '绿色外皮下包裹着白嫩嫩的果…',
-          price: '10.8',
-          photo: ''
-        }],
         playStatus: true,
         videoContext: null,
         endVideoHas: false
@@ -127,8 +101,7 @@
           this.videoContext.play()
           this.playStatus = true
         }
-        this.contentVisible = !this.contentVisible
-        this.showContorl = !this.contentVisible
+        if (!this.goodsListVisible) this.contentVisible = !this.contentVisible
         this.goodsListVisible = false
       },
       showGoodsListBtn() {

@@ -1,9 +1,8 @@
 <template>
   <div class="content-article-detail">
     <navigation-bar :translucent="true" :isBackCricle="true"></navigation-bar>
-    <img v-if="imageUrl && !details.coverVideo" :src="imageUrl + '/yx-image/leader/pic-tzzm_03.jpg'" mode="widthFix" class="cover-photo">
-    <video v-if="details.coverVideo" :src="item.value" class="cover-photo"></video>
-
+    <video v-if="details.coverVideo" :src="details.coverVideo" class="cover-photo"></video>
+    <img v-else :src="details.coverImage" mode="widthFix" class="cover-photo">
     <div class="auth-wrap">
       <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-high_quality@2x.png'" class="good-article-icon">
       <div class="auth-photo-wrap">
@@ -15,47 +14,53 @@
           {{details.authName}}
           <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-lv8@2x.png'" class="level-icon">
         </div>
-        <div class="auth-introduce">{{details.authIntroduce}}</div>
+        <div class="auth-introduce">{{details.authSignature}}</div>
       </div>
     </div>
     <div class="browse-wrap">
-      <div class="browse-title">浏览1.9万</div>
+      <div class="browse-title">浏览{{details.lookCount>= 10000 ? details.lookCount/10000 +'万':details.lookCount}}</div>
       <div class="like-wrap">
         <div class="like-total">
           <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-like_big1@2x.png'" alt="" class="like-icon">
-          <div class="total-count">664</div>
+          <div class="total-count">{{details.goodCount >999 ?'999+' :details.goodCount }}</div>
         </div>
+        <!-- todo -->
         <img v-for="(item,idx) in details.likes" :key="idx" :src="item.photo" class="liker-photo">
       </div>
     </div>
     <div class="line-middle"></div>
     <div class="article-cont">
-      <div class="name">懒人版糖醋排骨</div>
+      <div class="name">{{details.title }}</div>
       <div class="foods-list">
-        {{details.foodsList}}
+        {{details.foodList}}
       </div>
       <div class="goods-list">
         <goods-item v-for="(item,idx) in details.goodsList" :key="idx" :goodsData="item" @add="addGoods" @click="goToDetail(item)"></goods-item>
       </div>
-      <div v-for="(item,idx) in details.articles" :key="idx" class="article-item">
+      <div v-for="(item,idx) in details.details" :key="idx" class="article-item">
         <text v-if="item.type==='text'" class="article-text">{{item.value}}</text>
-        <img v-if="item.type==='img'" :src="item.value" mode="widthFix" class="article-image"/>
+        <img v-if="item.type==='image'" :src="item.value" mode="widthFix" class="article-image"/>
         <video v-if="item.type==='video'" :src="item.value" class="article-video"></video>
-        <goods-item v-if="item.type==='goods'" :goodsData="item.value" @add="addGoods(item)" @click="goToDetail(item)"></goods-item>
+        <goods-item v-if="item.type==='goods'" :goodsData="item.value" @add="addGoods" @click="goToDetail(item)"></goods-item>
       </div>
     </div>
     <div class="bottom-operate-wrap">
       <div class="bottom-operate">
         <div class="operate-item" @click="setLikeBtn">
           <div class="icon-wrap">
-            <div class="count">{{details.goodCount}}</div>
-            <img v-if="imageUrl && !goodsStatus" :src="imageUrl + '/yx-image/article/icon-like_big1@2x.png'" class="operate-icon">
+            <div v-if="details.goodCount"  class="count">{{details.goodCount}}</div>
+            <img v-if="imageUrl && !details.goodStatus" :src="imageUrl + '/yx-image/article/icon-like_big1@2x.png'" class="operate-icon">
+            <img v-if="imageUrl && details.goodStatus" :src="imageUrl + '/yx-image/article/icon-like_big2@2x.png'" class="operate-icon">
           </div>
         </div>
-        <div class="operate-item">
-          <button open-type="share" class="operate-item">
+        <div>
+          <div v-if="this.preview===1" class="icon-wrap">
+            <div v-if="details.shareCount" class="count">{{details.shareCount}}</div>
+            <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-share@2x.png'" class="operate-icon">
+          </div>
+          <button v-else open-type="share" class="operate-item">
             <div class="icon-wrap">
-              <div class="count">{{details.goodCount}}</div>
+              <div v-if="details.shareCount" class="count">{{details.shareCount}}</div>
               <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-share@2x.png'" class="operate-icon">
             </div>
           </button>
@@ -87,94 +92,6 @@
     mixins: [contentMix],
     data() {
       return {
-        goodsStatus: false,
-        details: {
-          id: 1,
-          coverVideo: false,
-          authName: 'dsofdpsf',
-          authIntroduce: '美食达人。深入浅出的美食科普知识…',
-          authPhoto: 'https://img.jkweixin.net/defaults/yx-image/retuan/hdpi/icon-select_press01.png',
-          text: '迅速的翻炒，我用筷子直接搅拌了几下，蛋液只要都凝固了，就可以改小火盛起来，我这个炒锅有点粘锅，看起来不是很好。',
-          goodCount: 132,
-          foodsList: '用料：排骨、糖、醋、大葱、丁香、八角、花椒、老抽、可乐、盐',
-          likes: [{
-            photo: 'https://social-shopping-api-1254297111.picgz.myqcloud.com/1/2019/06/21/156109801094065.png'
-          }, {
-            photo: 'https://social-shopping-api-1254297111.picgz.myqcloud.com/1/2019/06/21/156109801094065.png'
-          }, {
-            photo: 'https://social-shopping-api-1254297111.picgz.myqcloud.com/1/2019/06/21/156109801094065.png'
-          }, {
-            photo: 'https://social-shopping-api-1254297111.picgz.myqcloud.com/1/2019/06/21/156109801094065.png'
-          }, {
-            photo: 'https://social-shopping-api-1254297111.picgz.myqcloud.com/1/2019/06/21/156109801094065.png'
-          }, {
-            photo: 'https://social-shopping-api-1254297111.picgz.myqcloud.com/1/2019/06/21/156109801094065.png'
-          }, {
-            photo: 'https://social-shopping-api-1254297111.picgz.myqcloud.com/1/2019/06/21/156109801094065.png'
-          }, {
-            photo: 'https://social-shopping-api-1254297111.picgz.myqcloud.com/1/2019/06/21/156109801094065.png'
-          }, {
-            photo: 'https://social-shopping-api-1254297111.picgz.myqcloud.com/1/2019/06/21/156109801094065.png'
-          }],
-          goodsList: [{
-            name: '超值特惠 2斤农家新鲜家新鲜',
-            details: '绿色外皮下包裹着白嫩嫩的果…',
-            price: '10.8',
-            photo: ''
-          }, {
-            name: '超值特惠 2斤农家新鲜家新鲜',
-            details: '绿色外皮下包裹着白嫩嫩的果…',
-            price: '10.8',
-            photo: ''
-          }, {
-            name: '超值特惠 2斤农家新鲜家新鲜',
-            details: '绿色外皮下包裹着白嫩嫩的果…',
-            price: '10.8',
-            photo: ''
-          }, {
-            name: '超值特惠 2斤农家新鲜家新鲜',
-            details: '绿色外皮下包裹着白嫩嫩的果…',
-            price: '10.8',
-            photo: ''
-          }],
-          steps: [{
-            type: 'text',
-            value: '每毕竟排骨本身就非常的受欢迎，再加上红烧的做法不但味道很足而且也不怎么重口味，因此成人和儿童都非常喜欢这道菜。'
-          }, {
-            type: 'text',
-            value: '每毕竟排骨本身就非常的受欢迎，再加上红烧的做法不但味道很足而且也不怎么重口味，因此成人和儿童都非常喜欢这道菜。'
-          }, {
-            type: 'text',
-            value: '每毕竟排骨本身就非常的受欢迎，再加上红烧的做法不但味道很足而且也不怎么重口味，因此成人和儿童都非常喜欢这道菜。'
-          }, {
-            type: 'text',
-            value: '每毕竟排骨本身就非常的受欢迎，再加上红烧的做法不但味道很足而且也不怎么重口味，因此成人和儿童都非常喜欢这道菜。'
-          }],
-          articles: [{
-            type: 'text',
-            value: '一般而言在聊到自己制作的肉一类菜肴的时候，每个人最先想到的大概都是辣椒炒肉以及红烧肉了，但实际上有一种比这两种更受欢迎的菜，那就是红烧排骨了。'
-          }, {
-            type: 'img',
-            value: 'https://img.jkweixin.net/defaults/yx-image/goods/pic-zbyx@2x.png'
-          }, {
-            type: 'text',
-            value: '每毕竟排骨本身就非常的受欢迎，再加上红烧的做法不但味道很足而且也不怎么重口味，因此成人和儿童都非常喜欢这道菜。'
-          }, {
-            type: 'text',
-            value: '每毕竟排骨本身就非常的受欢迎，再加上红烧的做法不但味道很足而且也不怎么重口味，因此成人和儿童都非常喜欢这道菜。'
-          }, {
-            type: 'img',
-            value: 'https://img.jkweixin.net/defaults/yx-image/goods/pic-zbyx@2x.png'
-          }, {
-            type: 'goods',
-            value: {
-              name: '超值特惠 2斤农家新鲜家新鲜',
-              details: '绿色外皮下包裹着白嫩嫩的果…',
-              price: '10.8',
-              photo: ''
-            }
-          }]
-        }
       }
     },
     computed: {},

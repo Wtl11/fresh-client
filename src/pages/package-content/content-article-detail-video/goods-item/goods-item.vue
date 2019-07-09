@@ -1,16 +1,18 @@
 <template>
   <div class="good-item" @click="clickThis">
-    <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-add_to@2x.png'" class="goods-photo">
+    <img v-if="imageUrl && goodsData.is_online === 0" :src="imageUrl + '/yx-image/article/pic-off_shelf@2x.png'" class="goods-photo">
+    <img v-else-if="imageUrl && goodsData.usable_stock === 0" :src="imageUrl + '/yx-image/article/pic-out_stock@2x.png'" class="goods-photo">
+    <img v-else-if="imageUrl" :src="goodsData.goods_cover_image" class="goods-photo">
     <div class="info">
       <div v-if="goodsData && goodsData.name" class="name">{{goodsData.name}}</div>
-      <div class="details">{{goodsData.details}}</div>
+      <div class="details">{{goodsData.describe}}</div>
       <div class="operate">
         <div>
           <span class="price-now">
-            <span class="big">{{goodsData.price}}</span>
+            <span class="big">{{goodsData.trade_price}}</span>
             <span class="unit">元</span>
           </span>
-          <span class="price">{{goodsData.price}}元</span>
+          <span class="price">{{goodsData.original_price}}元</span>
         </div>
         <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-add_to@2x.png'" class="add-img" @click.stop="addBtn(goodsData)">
       </div>
@@ -109,6 +111,7 @@
         .unit
           font-family $font-family-regular
           font-size: $font-size-12
+
       .price
         color: #B7B7B7
         font-size: $font-size-12
