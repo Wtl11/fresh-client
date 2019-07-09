@@ -396,7 +396,7 @@
     min-height: 100vh
     position: relative
     padding-bottom: 10px
-    background :#fff
+    background: #fff
   .padding-wrap
     padding-bottom: 60px
   .payment
@@ -661,6 +661,7 @@
         color: #1D2023
     .recommend-list
       width: 100vw
+      background: $color-background
       layout(row)
       align-items: center
       padding: 0 6px
