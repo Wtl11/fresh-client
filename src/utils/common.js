@@ -236,17 +236,19 @@ export function resolveQueryScene(scene = '') {
   let activityId = 0
   let marketId = 0
   let employeeId = 0
-  let contentId = 0
+  let preview = 0
+  let articleId = 0
   if (scene) {
     try {
       let sceneMsg = decodeURIComponent(scene)
       const params = getParams(sceneMsg)
       shopId = +params.shopId || +params.s || 0
       goodsId = +params.id || +params.g || 0
+      articleId = +params.articleId || +params.a || 0
       activityId = +params.activityId || +params.a || 0
       marketId = +params.marketId || +params.m || 0
       employeeId = +params.employeeId || +params.e || 0
-      contentId = +params.contentId || +params.c || 0
+      preview = +params.preview || +params.p || 0
     } catch (e) {
       console.error(e)
     }
@@ -257,7 +259,8 @@ export function resolveQueryScene(scene = '') {
     activityId,
     marketId,
     employeeId,
-    contentId
+    articleId,
+    preview
   }
 }
 

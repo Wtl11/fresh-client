@@ -73,6 +73,7 @@ export default {
 * copy-detail 团长-商品-页 ---> goods-detail 活动详情页
 * coupon-share 团长-优惠券发放页 ---> coupon-take 领取优惠券 2006
 * goods-detail 商品购买记录 2007
+* article-detail 文章详情
 * */
 export const EVENT_CODE = {
   FLASH_SALE_LIST: 2001,
@@ -83,7 +84,8 @@ export const EVENT_CODE = {
   COUPON_TAKE: 2006,
   GOODS_RECORD: 2007,
   COLLAGE_DETAIL: 2008,
-  EAT: 2009
+  ARTICLE_DETAIL: 2009,
+  EAT: 2010
 }
 
 export class Share {
@@ -97,6 +99,7 @@ export class Share {
     this.goods_id = +props.goodsId || ''
     this.sku_id = +props.skuId || ''
     this.sku_code = props.skuCode || ''
+    this.article_id = +props.articleId || ''
     if (this.event === EVENT_CODE.GOODS_DETAIL) {
       this.event = this.activity_id
         ? EVENT_CODE.ACTIVE_DETAIL

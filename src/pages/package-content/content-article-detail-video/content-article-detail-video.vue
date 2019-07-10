@@ -2,7 +2,7 @@
   <div class="content-article-detail-video">
     <navigation-bar :translucent="true" :isBackCricle="true" @click-nav="videoClick"></navigation-bar>
     <video id="myVideo"
-           src="http://1254297111.vod2.myqcloud.com/76b25520vodgzp1254297111/131003da5285890791266627594/kl8aifXd3poA.mp4"
+           :src="details.videoContent.url"
            :autoplay="playStatus"
            :loop="false"
            :controls="!contentVisible"
@@ -21,7 +21,7 @@
           <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-v@2x.png'" class="auth-photo-v">
         </div>
         <div class="name">{{details.authName}}</div>
-        <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-lv8@2x.png'" class="level-icon">
+        <level-icon :num="details.authorLevel"></level-icon>
       </div>
       <text class="text" space="ensp" :decode="true">{{details.text}}</text>
       <div class="operate-wrap">
@@ -31,10 +31,10 @@
             <img v-if="imageUrl && !details.goodStatus" :src="imageUrl + '/yx-image/article/icon-fabulous1@2x.png'" class="operate-icon">
             <img v-if="imageUrl && details.goodStatus" :src="imageUrl + '/yx-image/article/icon-fabulous2@2x.png'" class="operate-icon">
           </div>
-          <button v-if="this.preview===1" open-type="share" class="operate-icon">
+          <button v-if="this.preview===1" class="operate-icon">
             <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-share_big@2x.png'" class="operate-icon">
           </button>
-          <button v-else class="operate-icon">
+          <button v-else open-type="share" class="operate-icon">
             <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-share_big@2x.png'" class="operate-icon">
           </button>
           <div class="operate-item" @click="goToBuyCar">
@@ -59,9 +59,9 @@
 </template>
 
 <script type="text/ecmascript-6">
-  // import API from '@api'
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import goodsItem from './goods-item/goods-item.vue'
+  import levelIcon from './level-icon/level-icon'
   import contentMix from '@mixins/content-detail'
 
   const PAGE_NAME = 'CONTENT_ARTICLES'
@@ -69,7 +69,8 @@
     name: PAGE_NAME,
     components: {
       NavigationBar,
-      goodsItem
+      goodsItem,
+      levelIcon
     },
     data() {
       return {
@@ -169,9 +170,6 @@
           font-family $font-family-regular
           margin: 0px 3px 0px 5px
 
-        .level-icon
-          width: 40px
-          height: 13px
 
       .text
         display block

@@ -2,12 +2,13 @@ import { cartComputed, cartMethods } from '@state/helpers'
 import { resolveQueryScene } from '@utils/common'
 import GetOptions from '@mixins/get-options'
 import API from '@api'
+import ShareHandler, { EVENT_CODE } from '@mixins/share-handler'
 
 export default {
   data: {
     BottomEmptyVisible: false,
     preview: 0,
-    contentId: '',
+    articleId: '',
     currentType: 'common',
     details: {
       goodStatus: 0,
@@ -18,6 +19,7 @@ export default {
       authPhoto: '',
       authName: '',
       authSignature: '',
+      authorLevel: 0,
       goodCount: 0,
       lookCount: 0,
       shareCount: 0,
@@ -37,14 +39,14 @@ export default {
   computed: {
     ...cartComputed
   },
-  mixins: [GetOptions],
+  mixins: [GetOptions, ShareHandler],
   onShareAppMessage() {
     this.shareBtn()
     const shopId = wx.getStorageSync('shopId')
     let path = this.currentType === 'video' ? this.$routes.content.CONTENT_ARTICLES_DETAIL_VIDEO : this.$routes.content.CONTENT_ARTICLES_DETAIL
     return {
       title: this.details.title,
-      path: `${path}?shopId=${shopId}&contentId=${this.contentId}`,
+      path: `${path}?shopId=${shopId}&articleId=${this.articleId}`,
       imageUrl: this.details.coverImage,
       success: (res) => {
       },
@@ -55,40 +57,30 @@ export default {
   onLoad() {
     let res = this.$wx.getSystemInfoSync()
     this.BottomEmptyVisible = (res.statusBarHeight >= 44) ? 1 : false
-    this.preview = 0
     let options = this._$$initOptions()
-    if (options.contentId) {
-      this.contentId = options.contentId || ''
-    }
+    this.articleId = options.articleId || ''
+    this.preview = options.preview || 0
+    options.shopId && wx.setStorageSync('shopId', options.shopId)
     if (options.scene) {
-      this.preview = 1
       wx.hideShareMenu()
-      let { shopId, contentId } = resolveQueryScene(options.scene)
-      this.shopId = shopId
-      this.contentId = contentId
+      let { shopId, articleId, preview } = resolveQueryScene(options.scene)
+      this.articleId = articleId
+      this.preview = preview
+      shopId && wx.setStorageSync('shopId', options.shopId)
     }
-    this.contentId && this._articleOperation('browse')
+    this.articleId && this._articleOperation('browse')
   },
   onShow() {
-    let options = this._$$initOptions()
-    console.log(options, 'options')
-    if (options.contentId) {
-      this.contentId = options.contentId || ''
-      this.preview = 0
-    }
-    if (options.scene) {
-      this.preview = 1
-      wx.hideShareMenu()
-      let { shopId, contentId } = resolveQueryScene(options.scene)
-      this.shopId = shopId
-      this.contentId = contentId
-    }
     this._getDetails()
+    this.$$shareHandler({
+      event: EVENT_CODE.ARTICLE_DETAIL,
+      articleId: this.articleId
+    })
   },
   methods: {
     ...cartMethods,
     _getDetails() {
-      API.Content.getDetails({ id: this.contentId, preview: this.preview }).then(res => {
+      API.Content.getDetails({ id: this.articleId, preview: this.preview }).then(res => {
         this.changeData(res.data)
       })
     },
@@ -101,6 +93,7 @@ export default {
       this.details.authPhoto = obj.author.head_image_url
       this.details.authName = obj.author.nickname
       this.details.authSignature = obj.author.sign
+      this.details.authorLevel = obj.author.level
       this.details.goodCount = obj.fabulous_num
       this.details.lookCount = obj.browse_count
       this.details.shareCount = obj.share_count
@@ -163,7 +156,7 @@ export default {
     },
     _getLikes() {
       let limit = this.goodStatus < 7 ? this.goodStatus : 7
-      return API.Content.getLikes({ preview: this.preview, article_id: this.contentId, page: 1, limit}).then(res => {
+      return API.Content.getLikes({ preview: this.preview, article_id: this.articleId, page: 1, limit }).then(res => {
         if (res.error === this.$ERR_OK) this.details.likes = res.data
       })
     },
@@ -179,13 +172,16 @@ export default {
     },
     // 去詳情
     goToDetail(item) {
+      console.log(item)
       this._articleOperation('guide_goods', { goods_id: item.goods_id, goods_sku_id: item.goods_sku_id })
-      wx.navigateTo({ url: `${this.$routes.main.GOODS_DETAIL}?id=${item.goods_id}&contentId=${this.contentId}` })
+      const shopId = wx.getStorageSync('shopId')
+      wx.navigateTo({ url: `${this.$routes.main.GOODS_DETAIL}?shopId=${shopId}&id=${item.goods_id}&articleId=${this.articleId}` })
     },
     // 加购
     addGoods(item) {
+      if (this.preview) return false
       this._articleOperation('guide_goods', { goods_id: item.goods_id, goods_sku_id: item.goods_sku_id })
-      API.Choiceness.addShopCart({ goods_sku_id: item.goods_sku_id, content_id: this.contentId }).then((res) => {
+      API.Choiceness.addShopCart({ goods_sku_id: item.goods_sku_id, scenes: 'article', scenes_data: this.articleId }).then((res) => {
         if (res.error === this.$ERR_OK) {
           this.$wechat.showToast('加入购物车成功')
           this.setCartCount()
@@ -198,7 +194,7 @@ export default {
       if (this.preview) return false
       let isLogin = this.$isLogin()
       console.log('isLogin', isLogin)
-      return API.Content.articleOperation({ article_id: this.contentId, handle: handle, ...other }).then(res => {
+      return API.Content.articleOperation({ article_id: this.articleId, handle: handle, ...other }).then(res => {
         if (res.error === this.$ERR_OK) {
           if (handle === 'fabulou') this._getDetails()
         }

@@ -115,7 +115,7 @@
       <!--拼团列表-->
       <div v-if="activityType === ACTIVE_TYPE.GROUP_ON" class="collage-box">
         <div v-if="collageList.length > 0" class="title">{{collageTotal}}位邻居正在拼单，可直接参与</div>
-        <swiper v-if="collageList.length > 1"  class="collage-scroll" :autoplay="autoplay" circular vertical interval="5000" :display-multiple-items="2">
+        <swiper v-if="collageList.length > 1" class="collage-scroll" :autoplay="autoplay" circular vertical interval="5000" :display-multiple-items="2">
           <block v-for="(item, index) in collageList" :key="index">
             <swiper-item class="collage-content">
               <div class="left">
@@ -132,7 +132,7 @@
             </swiper-item>
           </block>
         </swiper>
-        <article v-if="collageList.length === 1"  class="collage-scroll single">
+        <article v-if="collageList.length === 1" class="collage-scroll single">
           <block v-for="(item, index) in collageList" :key="index">
             <section class="collage-content">
               <div class="left">
@@ -149,9 +149,9 @@
             </section>
           </block>
         </article>
-<!--        <div class="collage-scroll" v-if="collageList.length === 0">-->
-<!--          <div class="nothing">暂无参团信息~</div>-->
-<!--        </div>-->
+        <!--        <div class="collage-scroll" v-if="collageList.length === 0">-->
+        <!--          <div class="nothing">暂无参团信息~</div>-->
+        <!--        </div>-->
         <p class="group-rule-wrapper" :class="{active: collageList.length > 0}">
           <span class="number">1</span>
           <span class="text">.发起拼团/参团</span>
@@ -200,8 +200,8 @@
       </article>
     </div>
     <add-number ref="addNumber" :msgDetail="goodsMsg" :msgDetailInfo="buyGoodsInfo" @comfirmNumer="comfirmNumer" @hide="handleHideAddNumber"></add-number>
-<!--    <link-group ref="groupList" :wechatInfo="groupInfo"></link-group>-->
-<!--    <link-group ref="shareList" :linkType="2" @saveImg="_actionDrawPoster"></link-group>-->
+    <!--    <link-group ref="groupList" :wechatInfo="groupInfo"></link-group>-->
+    <!--    <link-group ref="shareList" :linkType="2" @saveImg="_actionDrawPoster"></link-group>-->
     <we-paint ref="wePaint" @drawDone="_drawPosterDone"></we-paint>
     <article class="share-panel-wrapper">
       <div v-if="showSharePanel" class="share-mask" @click="handleHideSharePanel">
@@ -239,11 +239,11 @@
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import clearWatch from '@mixins/clear-watch'
-  import {orderMethods, cartMethods} from '@state/helpers'
-  import {SCENE_SHARE, SCENE_DEFAULT, SCENE_QR_CODE, ACTIVE_TYPE} from '@utils/contants'
-  import ShareHandler, {EVENT_CODE} from '@mixins/share-handler'
+  import { orderMethods, cartMethods } from '@state/helpers'
+  import { SCENE_SHARE, SCENE_DEFAULT, SCENE_QR_CODE, ACTIVE_TYPE } from '@utils/contants'
+  import ShareHandler, { EVENT_CODE } from '@mixins/share-handler'
   import API from '@api'
-  import {resolveQueryScene, countDownHandle} from '@utils/common'
+  import { resolveQueryScene, countDownHandle } from '@utils/common'
   import LinkGroup from '@components/link-group/link-group'
   import BuyRecord from '@components/goods-detail-element/buy-record/buy-record'
   import DetailImage from '@components/goods-detail-element/detail-image/detail-image'
@@ -319,7 +319,8 @@
         statusBarHeight: -100,
         product: null,
         showSharePanel: false,
-        runTime: ''
+        runTime: '',
+        articleId: 0
       }
     },
     computed: {
@@ -430,7 +431,7 @@
       })
       this.isFirstLoad = false
       const _track = this.activityType === ACTIVE_TYPE.DEFAULT ? 'product' : 'activity'
-      this.$$sendEvent({goodsId: this.goodsId, activityId: this.activityId, _track})
+      this.$$sendEvent({ goodsId: this.goodsId, activityId: this.activityId, _track })
     },
     onHide() {
       // this._clearTimer()
@@ -480,10 +481,10 @@
       _getProduct() {
         const shopId = wx.getStorageSync('shopId')
         const miniPath = `${this.$routes.main.PACKAGE}/${PAGE_ROUTE_NAME}?id=${this.goodsId}&shopId=${shopId}&activityId=${this.activityId}&activityType=${this.activityType}`
-        API.Global.getProduct({goods_id: this.goodsId}).then(res => {
+        API.Global.getProduct({ goods_id: this.goodsId }).then(res => {
           // console.warn(res.data)
           if (res.data) {
-            let product = Object.assign({}, res.data, {src_mini_program_path: miniPath})
+            let product = Object.assign({}, res.data, { src_mini_program_path: miniPath })
             product.src_wxapp_path && delete product.src_wxapp_path
             this.product = product
           }
@@ -606,7 +607,12 @@
           return
         }
         let goodsId = this.goodsMsg.goods_skus[0].goods_sku_id
-        API.Choiceness.addShopCart({goods_sku_id: goodsId, activity_id: this.activityId}).then((res) => {
+        let params = { goods_sku_id: goodsId, activity_id: this.activityId }
+        // 文章进入详情 加购 埋点
+        if (this.articleId) {
+          params = { ...params, scenes: 'article', scenes_data: this.articleId }
+        }
+        API.Choiceness.addShopCart(params).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.$sendMsg({
               event_no: 1007,
@@ -624,14 +630,14 @@
       buttonGroupNav(item) {
         switch (item.type) {
           case 0:
-            wx.switchTab({url: `${this.$routes.main.CHOICENESS}`})
+            wx.switchTab({ url: `${this.$routes.main.CHOICENESS}` })
             break
           case 1:
             // this.$refs.groupList.showLink()
             break
           case 2:
             if (this.$isLogin()) {
-              wx.switchTab({url: `${this.$routes.main.SHOPPING_CART}`})
+              wx.switchTab({ url: `${this.$routes.main.SHOPPING_CART}` })
             }
             break
         }
@@ -639,7 +645,7 @@
       // 购买记录导航
       buyRecordNavTo() {
         const url = `${this.$routes.main.GOODS_RECORD}?goodsId=${this.goodsId}&shopId=${this.shopId}&activityId=${this.activityId}&activityType=${this.activityType}`
-        wx.navigateTo({url})
+        wx.navigateTo({ url })
       },
       // 设置群数据事件号
       _setEventNo() {
@@ -695,11 +701,16 @@
           deliverAt: this.deliverAt
         }
         this.setOrderInfo(orderInfo)
-        wx.navigateTo({url: `${this.$routes.main.SUBMIT_ORDER}`})
+        let url = `${this.$routes.main.SUBMIT_ORDER}`
+        // 通过文章进来直接购买
+        if (this.articleId) {
+          url += `?articleId=${this.articleId}`
+        }
+        wx.navigateTo({ url })
       },
       // 获取用户的购买信息
       getGoodsOtherInfo() {
-        API.Choiceness.getGoodsBuyInfo(this.goodsId, {activity_id: this.activityId}).then((res) => {
+        API.Choiceness.getGoodsBuyInfo(this.goodsId, { activity_id: this.activityId }).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.buyGoodsInfo = res.data
           } else {
@@ -752,7 +763,7 @@
       },
       // 获取站点购买的用户
       getUserImgList() {
-        API.GoodsRecord.getList({goods_id: this.goodsId, limit: 5, page: 1, is_remove_duplicate: 1}, false).then((res) => {
+        API.GoodsRecord.getList({ goods_id: this.goodsId, limit: 5, page: 1, is_remove_duplicate: 1 }, false).then((res) => {
           this.userImgList = res.data
           this.userTotal = res.not_duplicate_total || 0
         })
@@ -762,7 +773,7 @@
         let shopId = wx.getStorageSync('shopId')
         // 修改创建二维码的参数
         let path = `pages/${PAGE_ROUTE_NAME}?g=${this.goodsId}&s=${shopId}&a=${this.activityId}`
-        API.Choiceness.createQrCodeApi({path}, loading).then((res) => {
+        API.Choiceness.createQrCodeApi({ path }, loading).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.shareImg = res.data.image_url
           } else {
@@ -778,8 +789,10 @@
         this.goodsId = +options.id || +options.goodsId || 0
         this.activityId = +options.activityId || 0
         this.shopId = +options.shopId || 0
+        // 文章进入详情 带参数
+        this.articleId = options.articleId || 0
         if (options.scene) {
-          let {shopId, activityId, goodsId} = resolveQueryScene(options.scene)
+          let { shopId, activityId, goodsId } = resolveQueryScene(options.scene)
           this.goodsId = goodsId
           this.activityId = activityId
           this.shopId = shopId
@@ -798,7 +811,7 @@
       // 获取购买者的用户信息
       _getBuyUsers() {
         if (this.activityType === ACTIVE_TYPE.GROUP_ON) return
-        API.Choiceness.getUserImg({limit: 20}).then((res) => {
+        API.Choiceness.getUserImg({ limit: 20 }).then((res) => {
           if (res.error !== this.$ERR_OK) {
             this.$wechat.showToast(res.message)
             return
@@ -1022,13 +1035,16 @@
     padding-bottom: 55px
     box-sizing: border-box
     overflow-x: hidden
+
     .banner-box
-      position :relative
+      position: relative
+
       .header-title-wrapper
         position: absolute
         left: 12px
-        right :@left
+        right: @left
         bottom: -1px
+
   // 分享模块
   .share-panel-wrapper
     .share-mask
@@ -1039,44 +1055,51 @@
       right: 0
       z-index: 999
       background: rgba(17, 17, 17, 0.7)
+
     .share-panel
       position: fixed
       bottom: -130%
       left: 0
       background: #fff
       width: 100%
-      z-index:9999
+      z-index: 9999
       transition: all .5s
+
       &.show
-        bottom :0
+        bottom: 0
+
       .header
-        padding :0 12px
-        height :45px
+        padding: 0 12px
+        height: 45px
         background: #F7F7F7
         font-family: $font-family-regular
         font-size: 15px;
         color: #1D2023;
         letter-spacing: 1.36px
-        display :flex
-        justify-content :space-between
-        align-items :center
+        display: flex
+        justify-content: space-between
+        align-items: center
+
         .close-icon
-          width :13px
-          height :@width
+          width: 13px
+          height: @width
+
       .container
-        background :$color-white
-        display :flex
-        padding :29px 0 70px
+        background: $color-white
+        display: flex
+        padding: 29px 0 70px
+
         .container-item-wrapper
           flex: 1
-          position :relative
+          position: relative
+
           .tip-wrapper
             position absolute
-            top:83px
+            top: 83px
             left: 50%
-            transform :translateX(-20%)
-            width :234.5px
-            height :24px
+            transform: translateX(-20%)
+            width: 234.5px
+            height: 24px
             opacity: 0.7;
             font-size: 12px
             color: $color-text-sub
@@ -1084,72 +1107,85 @@
             line-height: @height
             background: #F5F5F5;
             border-radius: @height
+
             .triangle
-              position :absolute
-              top:-13px
-              left:40px
-              width :0
-              height :0
-              border:7px solid #F5F5F5;
+              position: absolute
+              top: -13px
+              left: 40px
+              width: 0
+              height: 0
+              border: 7px solid #F5F5F5;
               border-top-color: transparent
-              border-left-color :transparent
+              border-left-color: transparent
               border-right-color: transparent
+
           .line
-            position :absolute
-            width :1px
-            height :40px
-            left :0
-            top:4px
-            transform :scaleX(0.5)
+            position: absolute
+            width: 1px
+            height: 40px
+            left: 0
+            top: 4px
+            transform: scaleX(0.5)
             background: #E6E6E6
+
           .item-icon
-            width :40px
-            height :@width
-            display :block
-            margin :0 auto 10px
+            width: 40px
+            height: @width
+            display: block
+            margin: 0 auto 10px
+
           .text
             font-family: $font-family-regular
             font-size: 14px
             color: $color-text-sub
             text-align: center
+
             &.button
-              position :relative
-              top:3px
+              position: relative
+              top: 3px
+
   // 购买记录
   .buy-users
-    width :35vw
+    width: 35vw
     height: 24px
     padding: 0 9.5px 0 3px
-    background: rgba(17,17,17,0.6)
+    background: rgba(17, 17, 17, 0.6)
     border-radius: 36px
-    position :absolute
-    left :8px
-    z-index :80
-    overflow :hidden
+    position: absolute
+    left: 8px
+    z-index: 80
+    overflow: hidden
+
     .place-holder
       fill-box(absolute)
-      z-index :3
+      z-index: 3
+
     .carousel
-      height :100%
-      width :100%
+      height: 100%
+      width: 100%
+
       .content-wrapper
         layout(row)
         align-items: center
+
         .avatar-wrapper
           width: 20px
           height: 20px
           border-radius: 50%
           overflow: hidden
-          margin :0 6px 0 0
+          margin: 0 6px 0 0
+
           .img
             width: 100%
             height: 100%
+
         .text
           flex: 1
           font-family: $font-family-regular
           font-size: 12px
           color: #fff
           no-wrap()
+
   // 参团列表
   .collage-box
     padding: 0 10px
@@ -1158,76 +1194,94 @@
     box-sizing: border-box
     margin: 0 12px 10px
     box-shadow: 0 2px 15px 0 rgba(17, 17, 17, 0.06)
+
     .group-rule-wrapper
-      height :45px
-      layout(row,block,nowrap)
-      overflow :hidden
-      align-items :center
+      height: 45px
+      layout(row, block, nowrap)
+      overflow: hidden
+      align-items: center
       font-family: $font-family-regular
       font-size: 3.5vw
       color: #1D2023;
+
       &.active
         border-top-1px(#ECEDF1)
+
       .number
-        font-family :$font-family-din-bold
+        font-family: $font-family-din-bold
+
       .icon-arrow
-        width :4.5px
-        height :7.5px
-        margin :0 4vw
+        width: 4.5px
+        height: 7.5px
+        margin: 0 4vw
+
     .title
-      padding :17px 0 6px
+      padding: 17px 0 6px
       color: #1D2023
       font-size: $font-size-15
       font-family: $font-family-medium
+
     .collage-scroll
       height: 128px
       padding: 4px 0
       overflow: hidden
+
       &.single
-        height :64px
+        height: 64px
+
       .nothing
         text-align: center
         padding-top: 40px
         font-family: $font-family-regular
         font-size: $font-size-16
+
     .collage-content
       display: flex
       align-items: center
       justify-content: space-between
-      height :100%
+      height: 100%
+
       .left
         flex: 1
-        overflow :hidden
+        overflow: hidden
         display: flex
         align-items: center
+
       .logo
         width: 40px
         height: @width
         border-radius: 50%
+
       .name
         flex: 1
         white-space: nowrap
-        overflow :hidden
-        text-overflow :ellipsis
+        overflow: hidden
+        text-overflow: ellipsis
         font-family: $font-family-regular
         font-size: $font-size-14
         color: #1D2023
-        margin:0 10px
+        margin: 0 10px
+
       .right
         display: flex
         align-itmes: center
+
       .context
-        width :80px
+        width: 80px
         font-size: $font-size-12
         color: #1D2023
         font-family: $font-family-regular
+
         .text
           letter-spacing: 0
+
           .color
-            padding :0 3px
+            padding: 0 3px
             color: #FA7500
+
         .time
           margin-top: 5px
+
       .go-collage
         reset-button()
         width: 75px
@@ -1240,12 +1294,13 @@
         border-radius: 30px
         color: $color-white
         background: $color-main
+
   // header-detail
   .header-detail
     padding: 0 12px
     box-sizing: border-box
     position: relative
-    margin-bottom :10px
+    margin-bottom: 10px
 
     .share-wrapper
       position: absolute
@@ -1270,7 +1325,7 @@
       width: 100%
       padding: 10px 10px 15px
       box-sizing: border-box
-      border-radius : 0 0 8px 8px
+      border-radius: 0 0 8px 8px
 
       .title-wrapper
         position: relative
@@ -1339,27 +1394,34 @@
     width: 100vw
     height: 100vw
     position: relative
+
     .banner
       width: 100vw
       height: 100vw
+
       .banner-item
         width: 100%
         height: 100%
         position: relative
+
         .item-img
           width: 100%
           height: 100%
           position: absolute
           left: 0
           top: 0
+
         .item-img-one
           z-index: 1
+
         .item-img-two
           z-index: 2
+
         .play
           all-center()
           height: 63px
           width: 63px
+
     .banner-number
       position: absolute
       bottom: 13.3vw
@@ -1368,6 +1430,7 @@
       align-items: center
       justify-content: center
       width: 100%
+
       .banner-number-box
         display: inline-block
         font-size: $font-size-12
@@ -1384,7 +1447,8 @@
     position: fixed
     width: 100vw
     height: 100vh
-    right :-100%
+    right: -100%
+
     .share-bg
       position: absolute
       left: 0
@@ -1393,21 +1457,25 @@
       width: 100vw
       display: block
       z-index: 9
+
     .share-box
       border-radius: 10px
       background: #fff
       box-shadow: 0 2px 11px 0 rgba(0, 0, 0, 0.10)
       z-index: 11
       position: relative
+
       .share-img
         display: block
         width: 89.4vw
         height: 89.4vw
         border-top-left-radius: 10px
         border-top-right-radius: 10px
+
     .share-bottom
       padding: 15px 15px 30px
       position: relative
+
     .wem-img
       position: absolute
       right: 15px
@@ -1415,16 +1483,19 @@
       width: 90px
       height: 90px
       display: block
+
     .share-title
       font-size: $font-size-16
       color: #1f1f1f
       font-family: $font-family-medium
       margin-bottom: 5px
+
     .share-sub-title
       font-size: $font-size-14
       color: $color-text-sub
       font-family: $font-family-regular
       margin-bottom: 16px
+
     .share-group-box
       font-size: $font-size-14
       color: $color-money
@@ -1434,15 +1505,18 @@
       text-align: center
       line-height: 20px
       margin-bottom: -5px
+
     .price-box
       layout(row)
       align-items: flex-end
+
       .share-price-number
         font-size: 30px
         color: $color-money
         font-family: $font-family-medium
         line-height: 1
         margin-right: 1px
+
       .share-price-icon
         font-size: $font-size-17
         color: $color-money
@@ -1450,6 +1524,7 @@
         line-height: 1
         margin-right: 1px
         padding-bottom: 2px
+
       .share-price-line
         font-size: $font-size-17
         color: #b7b7b7
@@ -1457,11 +1532,13 @@
         line-height: 1
         padding-bottom: 2px
         position: relative
+
         .share-money-line
           height: 1px
           width: 100%
           background: #888
           col-center()
+
   // 普通商品
   .header-title-default
     height: 13vw
@@ -1473,90 +1550,107 @@
     align-items: center
     padding-left: 10px
     box-sizing: border-box
+
     .left-price
       font-size: 30px
       font-family: $font-family-medium
-      color:rgba(255,255,255,1)
+      color: rgba(255, 255, 255, 1)
+
     .left-price-text
       layout(row)
       align-items: flex-end
+
       .price-text
         font-size: 22px
         font-family: $font-family-medium
         margin-right: 5px
-        color:rgba(255,255,255,1)
+        color: rgba(255, 255, 255, 1)
+
       .line-price-text
         font-size: $font-size-12
         font-family: $font-family-regular
         text-decoration: line-through
         line-height: 1
-        color:rgba(255,255,255,0.8)
-        position :relative
-        bottom :4px
-  // 限时抢购-title
+        color: rgba(255, 255, 255, 0.8)
+        position: relative
+        bottom: 4px
+
+    // 限时抢购-title
+
     .header-title
       position relative
+
       .icon-wrapper
         col-center()
-        right:15px
-        width :61px
-        height :19px
-        border :0.5px solid $color-white
-        layout(row,block,nowrap)
-        border-radius :2px
-        overflow :hidden
+        right: 15px
+        width: 61px
+        height: 19px
+        border: 0.5px solid $color-white
+        layout(row, block, nowrap)
+        border-radius: 2px
+        overflow: hidden
+
         .right
-          padding-left :4px
+          padding-left: 4px
           font-family: $font-family-medium
           font-size: 13px;
           color: #FFFFFF;
+
         .left
-          width :19px
-          height :@width
-          background :$color-white
-          display :flex
-          justify-content :center
-          align-items :center
+          width: 19px
+          height: @width
+          background: $color-white
+          display: flex
+          justify-content: center
+          align-items: center
+
           .left-icon
-            display :block
-            width :11px
-            height :10.5px
+            display: block
+            width: 11px
+            height: 10.5px
+
       &.active-common
         height: 13vw
         width: 100%
         border-top-left-radius: 8px
         border-top-right-radius: 8px
-        overflow :hidden
+        overflow: hidden
+
       &.group
-        position :relative
+        position: relative
+
       .banner-title-main
         padding-bottom: 13vw
         width: 100%
         position: relative
+
         .group-icon-wrapper
-          width :53px
-          height :20px
-          border :1px solid $color-white
-          layout(row,block,nowrap)
-          border-radius :2px
-          overflow :hidden
-          margin-right :7px
+          width: 53px
+          height: 20px
+          border: 1px solid $color-white
+          layout(row, block, nowrap)
+          border-radius: 2px
+          overflow: hidden
+          margin-right: 7px
           position relative
-          top :2px
+          top: 2px
           font-family: $font-family-medium
           font-size: 13px;
           color: #FFFFFF
+
           .right
-            padding-left :4px
+            padding-left: 4px
+
           .left
-            width :20px
-            height :@width
-            background :$color-white
-            display :flex
-            justify-content :center
-            align-items :center
-            color:#FD4E44
-            font-size :15px
+            width: 20px
+            height: @width
+            background: $color-white
+            display: flex
+            justify-content: center
+            align-items: center
+            color: #FD4E44
+            font-size: 15px
+
         .banner-title-bg
           position: absolute
           left: 0
@@ -1565,6 +1659,7 @@
           height: 100%
           border-top-left-radius: 8px
           border-top-right-radius: 8px
+
         .banner-main-box
           position: absolute
           left: 0
@@ -1576,25 +1671,30 @@
           layout(row)
           align-items: center
           justify-content: space-between
+
           .banner-main-left
             flex: 1
             layout(row)
             align-items: center
+
             .left-price
               font-size: 30px
               font-family: $font-family-medium
               color: $color-white
+
             .left-price-text
               font-size: 22px
               font-family: $font-family-medium
               color: $color-white
               margin-right: 6px
-              position :relative
-              top:1px
+              position: relative
+              top: 1px
+
             .line-price-top
               height: 11px
               width: 36.5px
               position: relative
+
               .text-img
                 width: 100%
                 height: 100%
@@ -1602,6 +1702,7 @@
                 position: absolute
                 left: 0
                 bottom: 0
+
               .text
                 height: 11px
                 font-size: 9px
@@ -1611,8 +1712,10 @@
                 text-align: center
                 position: relative
                 z-index: 11
+
                 &.group
                   color: #FF4343
+
             .line-price-box
               font-size: $font-size-12
               font-family: $font-family-regular
@@ -1620,24 +1723,28 @@
               line-height: 1
               color: #fff
               margin-top: 2px
+
               &.group
-                position :relative
-                top:-1px
-                opacity :0.8
+                position: relative
+                top: -1px
+                opacity: 0.8
+
           .banner-main-right
             text-align: center
-            position :relative
-            left :5px
+            position: relative
+            left: 5px
+
             .time-text
               font-size: $font-size-13
               color: $color-text-main
               font-family: $font-family-regular
-              line-height:15px
+              line-height: 15px
+
             .time-all-box
-              padding-top :1px
+              padding-top: 1px
               font-size: $font-size-14
               color: $color-text-main
               font-family: $font-family-medium
-              line-height:15px
-              width :65px
+              line-height: 15px
+              width: 65px
 </style>
