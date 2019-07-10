@@ -704,7 +704,7 @@
         let url = `${this.$routes.main.SUBMIT_ORDER}`
         // 通过文章进来直接购买
         if (this.articleId) {
-          url += `?articleId=${this.articleId}`
+          this.setArticleId(this.articleId)
         }
         wx.navigateTo({ url })
       },
