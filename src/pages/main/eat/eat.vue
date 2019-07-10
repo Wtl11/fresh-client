@@ -52,9 +52,9 @@
                         <img :src="item.author.head_image_url" class="fall-author-img">
                         <span class="fall-author-name">{{item.author.nickname}}</span>
                       </div>
-                      <div class="fall-author-right" @click="giveLike('left', index, item)">
-                        <img v-if="imageUrl" :src="imageUrl + '/yx-image/eat/icon-like_big1@2x.png'" class="fall-author-icon">
-                        <img v-if="imageUrl && false" :src="imageUrl + '/yx-image/eat/icon-like_big2@2x.png'" class="fall-author-icon">
+                      <div class="fall-author-right" @click.stop="giveLike('left', index, item)">
+                        <img v-if="imageUrl && !item.is_fabulou" :src="imageUrl + '/yx-image/eat/icon-like_big1@2x.png'" class="fall-author-icon">
+                        <img v-if="imageUrl && item.is_fabulou" :src="imageUrl + '/yx-image/eat/icon-like_big2@2x.png'" class="fall-author-icon">
                         <span class="fall-author-like">{{item.fabulous_num}}</span>
                       </div>
                     </div>
@@ -80,9 +80,9 @@
                         <img :src="item.author.head_image_url" class="fall-author-img">
                         <span class="fall-author-name">{{item.author.nickname}}</span>
                       </div>
-                      <div class="fall-author-right" @click="giveLike('left', index, item)">
-                        <img v-if="imageUrl" :src="imageUrl + '/yx-image/eat/icon-like_big1@2x.png'" class="fall-author-icon">
-                        <img v-if="imageUrl && false" :src="imageUrl + '/yx-image/eat/icon-like_big2@2x.png'" class="fall-author-icon">
+                      <div class="fall-author-right" @click.stop="giveLike('right', index, item)">
+                        <img v-if="imageUrl && !item.is_fabulou" :src="imageUrl + '/yx-image/eat/icon-like_big1@2x.png'" class="fall-author-icon">
+                        <img v-if="imageUrl && item.is_fabulou" :src="imageUrl + '/yx-image/eat/icon-like_big2@2x.png'" class="fall-author-icon">
                         <span class="fall-author-like">{{item.fabulous_num}}</span>
                       </div>
                     </div>
@@ -228,17 +228,23 @@
     },
     methods: {
       goDetail(item) {
-        console.log(item)
         let url = item.type === 'video' ? `${this.$routes.content.CONTENT_ARTICLES_DETAIL_VIDEO}?articleId=${item.id}` : `${this.$routes.content.CONTENT_ARTICLES_DETAIL}?articleId=${item.id}`
         wx.navigateTo({ url })
       },
       // 点赞
       giveLike(type, index, item) {
+        console.log(item.fabulous_num)
         // 点赞，参数未对接
         type = `${type}List`
-        item.isLike = !item.isLike
-        item.isLike ? item.like++ : item.like--
-        this.contentList[this.tabIndex][type][index] = item
+        API.Content.articleOperation({ article_id: item.id, handle: 'fabulou' })
+          .then((res) => {
+            if (res.error !== this.$ERR_OK) {
+              return
+            }
+            item.is_fabulou = !item.is_fabulou
+            item.is_fabulou ? item.fabulous_num++ : item.fabulous_num--
+            this.contentList[this.tabIndex][type][index] = item
+          })
       },
       // 内容列表
       getContentList(id, loading = false) {
@@ -337,11 +343,11 @@
       async _changeTab(index, id, e) {
         if (this.tabIndex === index) return
         // 如果是切换旁边的tab就加上动画，不是旁边的tab就不要动画
-        if (this.tabIndex === index + 1 || this.tabIndex === index - 1) {
-          this.boxTransition = 'all .3s'
-        } else {
-          this.boxTransition = ''
-        }
+        this.boxTransition = 'all .3s'
+        // if (this.tabIndex === index + 1 || this.tabIndex === index - 1) {
+        // } else {
+        //   this.boxTransition = ''
+        // }
         this._setViewToItem(index)
         this.move = e.target.offsetLeft
         this.classifyId = id
