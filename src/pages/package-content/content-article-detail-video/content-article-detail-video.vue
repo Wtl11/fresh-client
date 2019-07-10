@@ -23,7 +23,7 @@
         <div class="name">{{details.authName}}</div>
         <level-icon :num="details.authorLevel"></level-icon>
       </div>
-      <text class="text" space="ensp" :decode="true">{{details.text}}</text>
+      <text class="text" space="ensp" :decode="true">{{details.videoIntroduce}}</text>
       <div class="operate-wrap">
         <div class="operate-wrap-box">
           <div class="operate-item" @click="setLikeBtn">
@@ -31,18 +31,18 @@
             <img v-if="imageUrl && !details.goodStatus" :src="imageUrl + '/yx-image/article/icon-fabulous1@2x.png'" class="operate-icon">
             <img v-if="imageUrl && details.goodStatus" :src="imageUrl + '/yx-image/article/icon-fabulous2@2x.png'" class="operate-icon">
           </div>
-          <button v-if="this.preview===1" class="operate-icon">
+          <button v-if="preview===1" class="operate-icon">
             <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-share_big@2x.png'" class="operate-icon">
           </button>
           <button v-else open-type="share" class="operate-icon">
             <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-share_big@2x.png'" class="operate-icon">
           </button>
           <div class="operate-item" @click="goToBuyCar">
-            <div class="count">{{count || 0}}</div>
+            <div  v-if="count" class="count">{{count || 0}}</div>
             <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-shoping_catbig@2x.png'" class="operate-icon" @clcik="goToBuyCar">
           </div>
         </div>
-        <div class="goods-btn" @click.stop="showGoodsListBtn">
+        <div v-if="details.goodsList.length" class="goods-btn" @click.stop="showGoodsListBtn">
           商品({{details.goodsList.length || 0}})
         </div>
       </div>

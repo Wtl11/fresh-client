@@ -46,4 +46,5 @@
     padding:0 6px 0 10px
     letter-spacing 1px
     text-shadow 0 0 1px 0 #FF440B
+    max-width:30px
 </style>
