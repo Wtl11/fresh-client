@@ -1,10 +1,10 @@
 <template>
-  <div id="navigationBar">
+  <div id="navigationBar" @click="clickNavigation">
     <div class="head-item" :style="headStyleData" :class="showTitle ? '' : 'showNavigation'">
       <div class="status-bar" :style="{height: statusBarHeight + 'px'}"></div>
       <div class="head-content" :style="{color: titleColor}">
         {{currentTitle}}
-        <div class="head-arrow" v-if="showArrow" @click="goBackUrl">
+        <div :class="['head-arrow', {'cricle-back-cricle':isBackCricle}]" v-if="showArrow" @click="goBackUrl">
           <img v-if="imageUrl" :src="imageUrl + arrowUrl" class="head-arrow-img">
         </div>
       </div>
@@ -28,6 +28,11 @@
   export default {
     name: 'HEAD_ITEM',
     props: {
+      // 返回键圆
+      isBackCricle: {
+        type: Boolean,
+        default: false
+      },
       // 标题
       title: {
         type: String,
@@ -103,6 +108,10 @@
       this._initHeadStyle()
     },
     methods: {
+      clickNavigation() {
+        console.log(999)
+        this.$emit('click-nav')
+      },
       setNavigationBarTitle(title) {
         this.translucentTitle = title
       },
@@ -146,9 +155,9 @@
         }
         let pages = getCurrentPages()
         if (+pages.length === 1) {
-          wx.switchTab({url: DEFAULT_PAGE})
+          wx.switchTab({ url: DEFAULT_PAGE })
         } else {
-          wx.navigateBack({delta: 1})
+          wx.navigateBack({ delta: 1 })
         }
       },
       _exceedHeadShow(e) {
@@ -196,6 +205,15 @@
       display: flex
       align-items: center
 
+      &.cricle-back-cricle
+        background rgba(255, 255, 255, 0.60)
+        width: 32px
+        height: @width
+        border-radius: 50%
+        top: 50%
+        left: 7px
+        transform translateY(-50%)
+
       &:after
         content: ''
         position: absolute
@@ -217,6 +235,7 @@
       font-size: 18px
       font-family: PingFangSC-Medium
       color: #000000
+
   .showNavigation
     opacity: 0
 </style>

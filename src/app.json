@@ -39,7 +39,9 @@
     {
       "root": "package-content/",
       "pages": [
-        "content-articles"
+        "content-articles",
+        "content-article-detail",
+        "content-article-detail-video"
       ]
     },
     {
