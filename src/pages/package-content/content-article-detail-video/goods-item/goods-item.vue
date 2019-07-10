@@ -85,7 +85,7 @@
         left:0
         right:0
         bottom 0
-        opacity 0.5
+        z-index:10
     .info
       padding: 5px 0px 5px 12px
       overflow: hidden
