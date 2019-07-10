@@ -84,7 +84,7 @@
               <div class="order-num">{{order.code}}</div>
               <div class="name">{{order.address.nickname}}</div>
               <div class="phone">{{order.address.mobile}}</div>
-              <div v-if="!order.is_new_customer" class="new-tips">新客</div>
+              <div v-if="order.is_new_customer" class="new-tips">新客</div>
               <div class="order-status" :class="'corp-' + corpName + '-money'">{{order.status_text}}</div>
             </div>
             <div class="goods-more">
