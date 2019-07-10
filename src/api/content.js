@@ -20,5 +20,15 @@ export default {
   getLikes(data, loading = false, toast = false) {
     const url = `/api/wap/content/article-fabulou-list`
     return request.get({ url, data, loading, toast })
+  },
+  /**
+   * 我的作品列表
+   * @param data
+   * @param loading
+   * @returns {*}
+   */
+  getWorkList(data, loading = false, toast = false) {
+    const url = `/api/wap/content/article-list`
+    return request.get({ url, data, loading, toast })
   }
 }

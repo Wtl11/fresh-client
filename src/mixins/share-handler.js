@@ -1,15 +1,16 @@
 import API from '@api'
+
 export default {
-  data () {
+  data() {
     return {
       $loginCode: {}
     }
   },
-  async onLoad () {
+  async onLoad() {
     await this.getCode()
   },
   methods: {
-    async $$shareHandler (args) {
+    async $$shareHandler(args) {
       const token = wx.getStorageSync('token')
       if (!token) return
       const options = wx.getStorageSync('options')
@@ -20,7 +21,7 @@ export default {
         const openGId = wx.getStorageSync('openGId')
         if (openGId) {
           const flag = options.query.flag
-          const share = new Share({...args, flag, openGId})
+          const share = new Share({ ...args, flag, openGId })
           API.Share.sendMsgWxGroup(share)
           return
         }
@@ -42,7 +43,7 @@ export default {
           if (!openGId) return
           wx.setStorageSync('openGId', openGId)
           const flag = options.query.flag
-          const share = new Share({...args, flag, openGId})
+          const share = new Share({ ...args, flag, openGId })
           API.Share.sendMsgWxGroup(share)
         } catch (e) {
           console.warn(e)
@@ -50,7 +51,7 @@ export default {
       })
     },
     async checkCode() {
-      await this.$wechat.checkSession().catch(async() => {
+      await this.$wechat.checkSession().catch(async () => {
         await this.getCode()
       })
     },
@@ -81,11 +82,12 @@ export const EVENT_CODE = {
   SHARE_ORDER: 2005,
   COUPON_TAKE: 2006,
   GOODS_RECORD: 2007,
-  COLLAGE_DETAIL: 2008
+  COLLAGE_DETAIL: 2008,
+  EAT: 2009
 }
 
 export class Share {
-  constructor (props) {
+  constructor(props) {
     this.open_gid = props.openGId || ''
     this.randomstr = props.flag || ''
     this.event = props.event || ''

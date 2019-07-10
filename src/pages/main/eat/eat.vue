@@ -1,98 +1,100 @@
 <template>
   <div class="eat">
     <navigation-bar :showArrow="false" title="吃什么"></navigation-bar>
-    <div class="eat-box">
+    <div v-for="(module, moduleIndex) in moduleData" :key="moduleIndex" class="eat-box">
       <!--文章模块-->
-      <article-modal :articleList="articleList"></article-modal>
-      <scroll-view
-        class="scroll-view2"
-        v-if="tabList1.length"
-        id="scrollView"
-        :scroll-into-view="viewToItem"
-        scroll-x
-        scroll-with-animation="true"
-      >
-        <div v-for="(item, index) in tabList1" :class="tabIndex === index ? 'item-active'  : ''" :key="index"
-             class="item scroll-item" :id="'item'+index" @click="_changeTab(index, item.id, $event)">
-          <p class="text">{{item.name}}</p>
-        </div>
-        <div class="line-con" :style="{'transform':'translateX('+lineTranslateX+'px)',width: lineWidth + 'px'}">
-          <div class="line" :class="'corp-' + corpName + '-bg'"></div>
-        </div>
-      </scroll-view>
-      <div class="big-box">
-        <div
-          class="classify-big-box"
-          :style="{'transform': ' translateX('+ -(tabIndex * 100) +'vw)', width:  (tabList1.length * 100) +'vw', transition: boxTransition}"
+      <article-modal v-if="module.module_name === 'article_recommend'" :articleList="module.list"></article-modal>
+      <div v-if="module.module_name === 'article_recommend'">
+        <scroll-view
+          class="scroll-view2"
+          v-if="tabList1.length"
+          id="scrollView"
+          :scroll-into-view="viewToItem"
+          scroll-x
+          scroll-with-animation="true"
         >
+          <div v-for="(item, index) in tabList1" :class="tabIndex === index ? 'item-active'  : ''" :key="index"
+               class="item scroll-item" :id="'item'+index" @click="_changeTab(index, item.other_id, $event)">
+            <p class="text">{{item.name}}</p>
+          </div>
+          <!--<div class="line-con" :style="{'transform':'translateX('+lineTranslateX+'px)',width: lineWidth + 'px'}">-->
+          <!--<div class="line" :class="'corp-' + corpName + '-bg'"></div>-->
+          <!--</div>-->
+        </scroll-view>
+        <div class="big-box">
           <div
-            class="goods-list-box"
-            :style="{height: tabIndex * 1 === tabInx ? -1 : scrollHeight}"
-            v-for="(tabItem, tabInx) in contentList" :key="tabInx"
+            class="classify-big-box"
+            :style="{'transform': ' translateX('+ -(tabIndex * 100) +'vw)', width:  (tabList1.length * 100) +'vw', transition: boxTransition}"
           >
-            <!--瀑布流-->
-            <div class='fall-container'>
-              <!-- 左边一列 -->
-              <div class="fall-box fall-left">
-                <div class="fall-item" v-for="(item, index) in tabItem.leftList" :key="item.id">
-                  <div class="img-box" :style="{height:item.itemHeight+'px'}">
-                    <img v-if="imageUrl" :src="imageUrl + '/yx-image/eat/icon-img_play@2x.png'" class="video-icon">
-                    <image
-                      class='card-img'
-                      mode='aspectFill'
-                      :style="{background:item.color}"
-                      :src="item.image_url"
-                      lazy-load>
-                    </image>
-                  </div>
-                  <div class="fall-title">{{item.text}}</div>
-                  <div class="fall-author">
-                    <div class="fall-author-left">
-                      <img src="" class="fall-author-img">
-                      <span class="fall-author-name">厨师达人厨师达人</span>
+            <div
+              class="goods-list-box"
+              :style="{height: tabIndex * 1 === tabInx ? -1 : scrollHeight}"
+              v-for="(tabItem, tabInx) in contentList" :key="tabInx"
+            >
+              <!--瀑布流-->
+              <div class='fall-container'>
+                <!-- 左边一列 -->
+                <div class="fall-box fall-left">
+                  <div class="fall-item" v-for="(item, index) in tabItem.leftList" :key="item.id" @click="goDetail(item)">
+                    <div class="img-box" :style="{height:item.itemHeight+'px'}">
+                      <img v-if="imageUrl && item.type === 'video'" :src="imageUrl + '/yx-image/eat/icon-img_play@2x.png'" class="video-icon">
+                      <image
+                        v-if="item.cover_image"
+                        class='card-img'
+                        mode='aspectFill'
+                        :src="item.cover_image.source_url"
+                        lazy-load>
+                      </image>
                     </div>
-                    <div class="fall-author-right" @click="giveLike('left', index, item)">
-                      <img v-if="imageUrl" :src="imageUrl + '/yx-image/eat/icon-like_big1@2x.png'" class="fall-author-icon">
-                      <img v-if="imageUrl && false" :src="imageUrl + '/yx-image/eat/icon-like_big2@2x.png'" class="fall-author-icon">
-                      <span class="fall-author-like">30</span>
+                    <div class="fall-title">{{item.title}}</div>
+                    <div class="fall-author">
+                      <div class="fall-author-left" v-if="item.author">
+                        <img :src="item.author.head_image_url" class="fall-author-img">
+                        <span class="fall-author-name">{{item.author.nickname}}</span>
+                      </div>
+                      <div class="fall-author-right" @click="giveLike('left', index, item)">
+                        <img v-if="imageUrl" :src="imageUrl + '/yx-image/eat/icon-like_big1@2x.png'" class="fall-author-icon">
+                        <img v-if="imageUrl && false" :src="imageUrl + '/yx-image/eat/icon-like_big2@2x.png'" class="fall-author-icon">
+                        <span class="fall-author-like">{{item.fabulous_num}}</span>
+                      </div>
                     </div>
+                    <!--瀑布流内容卡片-->
                   </div>
-                  <!--瀑布流内容卡片-->
+                </div>
+                <!--右边一列 -->
+                <div id="right" class="fall-box fall-right">
+                  <div class="fall-item" v-for="item in tabItem.rightList" :key="item.id" @click="goDetail(item)">
+                    <div class="img-box" :style="{height:item.itemHeight+'px'}">
+                      <img v-if="imageUrl && item.type === 'video'" :src="imageUrl + '/yx-image/eat/icon-img_play@2x.png'" class="video-icon">
+                      <image
+                        v-if="item.cover_image"
+                        class='card-img'
+                        mode='aspectFill'
+                        :src="item.cover_image.source_url"
+                        lazy-load>
+                      </image>
+                    </div>
+                    <div class="fall-title">{{item.title}}</div>
+                    <div class="fall-author">
+                      <div class="fall-author-left" v-if="item.author">
+                        <img :src="item.author.head_image_url" class="fall-author-img">
+                        <span class="fall-author-name">{{item.author.nickname}}</span>
+                      </div>
+                      <div class="fall-author-right" @click="giveLike('left', index, item)">
+                        <img v-if="imageUrl" :src="imageUrl + '/yx-image/eat/icon-like_big1@2x.png'" class="fall-author-icon">
+                        <img v-if="imageUrl && false" :src="imageUrl + '/yx-image/eat/icon-like_big2@2x.png'" class="fall-author-icon">
+                        <span class="fall-author-like">{{item.fabulous_num}}</span>
+                      </div>
+                    </div>
+                    <!--瀑布流内容卡片-->
+                  </div>
                 </div>
               </div>
-              <!--右边一列 -->
-              <div id="right" class="fall-box fall-right">
-                <div class="fall-item" v-for="item in tabItem.rightList" :key="item.id">
-                  <div class="img-box" :style="{height:item.itemHeight+'px'}">
-                    <img v-if="imageUrl" :src="imageUrl + '/yx-image/eat/icon-img_play@2x.png'" class="video-icon">
-                    <image
-                      class='card-img'
-                      mode='aspectFill'
-                      :style="{background:item.color}"
-                      :src="item.image_url"
-                      lazy-load>
-                    </image>
-                  </div>
-                  <div class="fall-title">{{item.text}}</div>
-                  <div class="fall-author">
-                    <div class="fall-author-left">
-                      <img src="" class="fall-author-img">
-                      <span class="fall-author-name">厨师达人厨师达人</span>
-                    </div>
-                    <div class="fall-author-right" @click="giveLike('right', index, item)">
-                      <img v-if="imageUrl" :src="imageUrl + '/yx-image/eat/icon-like_big1@2x.png'" class="fall-author-icon">
-                      <img v-if="imageUrl && false" :src="imageUrl + '/yx-image/eat/icon-like_big2@2x.png'" class="fall-author-icon">
-                      <span class="fall-author-like">30</span>
-                    </div>
-                  </div>
-                  <!--瀑布流内容卡片-->
-                </div>
+              <is-active-empty v-if="tabItem.isEmpty"></is-active-empty>
+              <loading-more v-if="tabItem.classifyMore"></loading-more>
+              <div class="foot-ties" v-if="tabItem.page === tabItem.lastPage && !tabItem.isEmpty">
+                <div class="center">— 再拉也没有了 —</div>
               </div>
-            </div>
-            <is-active-empty v-if="tabItem.isEmpty"></is-active-empty>
-            <loading-more v-if="tabItem.classifyMore"></loading-more>
-            <div class="foot-ties" v-if="tabItem.page === tabItem.lastPage && !tabItem.isEmpty">
-              <div class="center">— 再拉也没有了 —</div>
             </div>
           </div>
         </div>
@@ -111,6 +113,10 @@
   import Article from './article-modal/article'
   import LoadingMore from '@components/loading-more/loading-more'
   import isActiveEmpty from '@components/is-active-empty/is-active-empty'
+  import ShareTrick from '@mixins/share-trick'
+  import clearWatch from '@mixins/clear-watch'
+  import ShareHandler, { EVENT_CODE } from '@mixins/share-handler'
+  import GetOptions from '@mixins/get-options'
 
   let leftList = []
   let rightList = []
@@ -122,6 +128,12 @@
   const ARR = { arr: [], classifyMore: false, isEmpty: false, lastPage: 1, page: 1, leftList: [], rightList: [] }
   export default {
     name: PAGE_NAME,
+    mixins: [
+      ShareHandler,
+      ShareTrick,
+      clearWatch,
+      GetOptions
+    ],
     components: {
       NavigationBar,
       CustomTabBar,
@@ -153,7 +165,10 @@
         maxHeight: 500,
         leftList: [],
         rightList: [],
-        elRight: ''
+        elRight: '',
+        moduleData: [],
+        elDom: [],
+        shopId: null
       }
     },
     computed: {
@@ -180,11 +195,18 @@
           // console.log('itemWidth', itemWidth, maxHeight)
         }
       })
-      this.getCategoryData(true)
       this._getArticleList(true)
     },
     onShow() {
+      this.shopId = wx.getStorageSync('shopId')
+      let query = this._$$initOptions()
+      if (!this.shopId) {
+        this.shopId = query.shopId
+        wx.setStorageSync('shopId', this.shopId)
+      }
       this.systemInfoSync = this.$wx.getSystemInfoSync()
+      this._getArticleList(false)
+      this.$$shareHandler({ event: EVENT_CODE.EAT })
     },
     onReachBottom() {
       if (this.contentList[this.tabIndex].page >= this.contentList[this.tabIndex].lastPage) {
@@ -193,7 +215,24 @@
       this.contentList[this.tabIndex].page++
       this.getContentList()
     },
+    onPullDownRefresh() {
+      this._getArticleList(false)
+      wx.stopPullDownRefresh()
+    },
+    onShareAppMessage(res) {
+      return {
+        title: '赞播优鲜：生鲜+社区团购',
+        path: `${this.$routes.main.EAT}?shopId=${this.shopId}`,
+        imageUrl: ''
+      }
+    },
     methods: {
+      goDetail(item) {
+        console.log(item)
+        let url = item.type === 'video' ? `${this.$routes.content.CONTENT_ARTICLES_DETAIL_VIDEO}?articleId=${item.id}` : `${this.$routes.content.CONTENT_ARTICLES_DETAIL}?articleId=${item.id}`
+        wx.navigateTo({ url })
+      },
+      // 点赞
       giveLike(type, index, item) {
         // 点赞，参数未对接
         type = `${type}List`
@@ -204,48 +243,37 @@
       // 内容列表
       getContentList(id, loading = false) {
         this.contentList[this.tabIndex].classifyMore = true
-        // todo
-        let list = []
-        for (let i = 0; i < 10; i++) {
-          let num = Math.random()
-          let item = {
-            width: 200,
-            height: (i + 1) * num * 300,
-            color: `rgb(125 ,${Math.ceil(Math.random() * 255)} , ${Math.ceil(Math.random() * 255)})`,
-            text: '我是模块' + i,
-            image_url: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1562403814&di=9c35111623c9b4948ebebff004d77776&imgtype=jpg&er=1&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201408%2F13%2F20140813104323_4rHCx.jpeg'
-          }
-          list.push(item)
-        }
-        let res = { data: this.tabIndex === 1 ? [] : list, meta: { last_page: 2 } }
-        this.contentList[this.tabIndex].lastPage = res.meta.last_page
-        if (this.contentList[this.tabIndex].page === 1) {
-          this.contentList[this.tabIndex].arr = res.data
-          this.contentList[this.tabIndex].isEmpty = !res.data.length
-        } else {
-          this.contentList[this.tabIndex].arr = this.contentList[this.tabIndex].arr.concat(res.data)
-        }
-        this.fillData(false, this.contentList[this.tabIndex].arr)
-        this.contentList[this.tabIndex].classifyMore = false
-        this.contentList = JSON.parse(JSON.stringify(this.contentList))
+        API.Content.getWorkList({ type: '', status: 1, is_cate_show: 1, category_id: this.classifyId, page: this.contentList[this.tabIndex].page })
+          .then((res) => {
+            this.contentList[this.tabIndex].lastPage = res.meta.last_page
+            if (this.contentList[this.tabIndex].page === 1) {
+              this.contentList[this.tabIndex].arr = res.data
+              this.contentList[this.tabIndex].isEmpty = !res.data.length
+            } else {
+              this.contentList[this.tabIndex].arr = this.contentList[this.tabIndex].arr.concat(res.data)
+            }
+            this.contentList[this.tabIndex].classifyMore = false
+            this.contentList = JSON.parse(JSON.stringify(this.contentList))
+            this.fillData(false, this.contentList[this.tabIndex].arr)
+          })
       },
       // 分开左右两个list
       fillData(isPull, listData) {
         if (isPull) {
           // 是否下拉刷新，是的话清除之前的数据
-          leftList.length = 0
-          rightList.length = 0
-          leftHeight = 0
-          rightHeight = 0
-          this.leftList = []
-          this.rightList = []
         }
+        leftList.length = 0
+        rightList.length = 0
+        leftHeight = 0
+        rightHeight = 0
+        this.leftList = []
+        this.rightList = []
         rightList = []
         leftList = []
         for (let i = 0, len = listData.length; i < len; i++) {
           let tmp = listData[i]
-          tmp.width = parseInt(tmp.width)
-          tmp.height = parseInt(tmp.height)
+          tmp.width = parseInt(tmp.cover_image.width)
+          tmp.height = parseInt(tmp.cover_image.height)
           tmp.itemWidth = itemWidth
           let per = tmp.width / tmp.itemWidth
           tmp.itemHeight = tmp.height / per
@@ -271,22 +299,40 @@
       _getArticleList() {
         let res = this.$wx.getSystemInfoSync()
         this.articleHeight = this.articleList.length ? res.screenWidth * 0.457333 : 0
+        API.FlashSale.getModuleInfo({ page_name: 'food' })
+          .then((json) => {
+            this.moduleData = json.data.modules
+            this.moduleData.forEach((item) => {
+              switch (item.module_name) {
+                case 'article_category':
+                  this.tabList1 = item.list
+                  if (this.tabIndex + 1 > this.tabList1.length) {
+                    this.tabIndex = 0
+                  }
+                  this.getCategoryData()
+                  this.getContentList()
+                  break
+                default:
+                  break
+              }
+            })
+          })
       },
       _changeTabLine() {
         let left = 0
-        setTimeout(() => {
-          wx.createSelectorQuery().selectAll('.scroll-item').boundingClientRect().exec(res => {
-            if (res && res[0]) {
-              let arr = res[0]
-              arr.forEach((item, index) => {
-                if (index < this.tabIndex) {
-                  left += item.width
-                }
-              })
-              this.lineTranslateX = left
-            }
-          })
-        }, 100)
+        wx.createSelectorQuery().selectAll('.scroll-item').boundingClientRect().exec(res => {
+          if (res && res[0]) {
+            let arr = res[0]
+            arr.forEach((item, index) => {
+              if (index < this.tabIndex) {
+                left += item.width
+              }
+              this.lineWidth = res[0][this.tabIndex].width
+            })
+            this.lineTranslateX = left
+          }
+        })
+        // this.getCategoryData()
       },
       async _changeTab(index, id, e) {
         if (this.tabIndex === index) return
@@ -314,29 +360,23 @@
         })
       },
       getCategoryData(isLoad = false) {
-        API.Choiceness.getClassifyCategory().then((res) => {
-          if (res.error !== this.$ERR_OK) {
-            return
+        // setTimeout(() => {
+        //   wx.createSelectorQuery().selectAll('.scroll-item').boundingClientRect().exec(res => {
+        //     if (res && res[0]) {
+        //       this.lineWidth = res[0][this.tabIndex].width
+        //     }
+        //   })
+        // }, 300)
+        this.tabHeight = this.tabList1.length ? 47 : 0
+        this.classifyId = this.tabList1.length ? this.tabList1[this.tabIndex].other_id : ''
+        let length = this.tabList1.length
+        for (let i = 0; i < length; i++) {
+          this.contentList.push(ARR)
+        }
+        this.tabList1.forEach((item, index) => {
+          if (item.id * 1 === this.classifyId * 1) {
+            this._setViewToItem(index)
           }
-          this.tabList1 = res.data
-          setTimeout(() => {
-            wx.createSelectorQuery().selectAll('.scroll-item').boundingClientRect().exec(res => {
-              if (res && res[0]) {
-                this.lineWidth = res[0][this.tabIndex].width
-              }
-            })
-          }, 300)
-          this.tabHeight = this.tabList1.length ? 47 : 0
-          let length = res.data.length
-          for (let i = 0; i < length; i++) {
-            this.contentList.push(ARR)
-          }
-          res.data.forEach((item, index) => {
-            if (item.id * 1 === this.classifyId * 1) {
-              this._setViewToItem(index)
-            }
-          })
-          this.getContentList(this.classifyId, this.tabIndex)
         })
       }
     }
@@ -347,6 +387,7 @@
   @import "~@designCommon"
   $scroll-item-width = 81px
   .eat
+    height: 100vh
     background-image: linear-gradient(180deg, #FFFFFF 11%, #F7F7F7 32%)
 
   .scroll-view2
@@ -396,6 +437,18 @@
     .item-active
       font-family: $font-family-medium
       font-size: $font-size-18
+      position: relative
+      transition: font-size 0.2s
+      transform-origin: 50%
+      &:after
+        transition: all 0.2s
+        content: ''
+        row-center()
+        bottom: 0
+        width: 30px
+        background: $color-main
+        height: 3px
+        border-radius: 3px
 
     .line-con
       box-sizing: border-box
