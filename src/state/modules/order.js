@@ -9,10 +9,14 @@ export const state = {
   deliverAt: '',
   beforeTotal: '',
   couponInfo: {},
-  commodityItem: {}
+  commodityItem: {},
+  articleId: 0
 }
 
 export const getters = {
+  articleId(state) {
+    return state.articleId
+  },
   goodsList(state) {
     return state.goodsList
   },
@@ -42,11 +46,14 @@ export const actions = {
     commit('SAVE_COUPON', coupon)
     commit('SET_TOTAL', total)
   },
-  setOrderInfo({ commit, state }, { goodsList, total, deliverAt }) {
+  setOrderInfo({ commit, state }, { goodsList, total, deliverAt, articleId }) {
     commit('SET_GOODS_LIST', goodsList)
     commit('SET_TOTAL', total)
     commit('DELIVER_AT', deliverAt)
     commit('SET_BEFORE_TOTAL', total)
+  },
+  setArticleId({ commit, state }, id) {
+    commit('SET_ARTICLE_ID', id)
   },
   submitOrder({ commit, state }, { orderInfo, complete, isFree = false }) {
     API.SubmitOrder.submitOrder(orderInfo)
@@ -113,6 +120,9 @@ export const actions = {
 }
 
 export const mutations = {
+  SET_ARTICLE_ID(state, id) {
+    state.articleId = id
+  },
   SAVE_COUPON(state, coupon) {
     state.couponInfo = coupon
   },

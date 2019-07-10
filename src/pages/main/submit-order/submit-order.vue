@@ -168,8 +168,7 @@
         distance: 0,
         isShowPayModal: false,
         isFirst: true,
-        isFree: false,
-        articleId: 0
+        isFree: false
       }
     },
     computed: {
@@ -201,11 +200,11 @@
     onUnload() {
       this.setCommodityItem({})
       this.saveCoupon({})
+      this.setArticleId(0)
     },
     async onShow() {
-      let options = this._$$initOptions()
       // 文章进入详情 带参数
-      this.articleId = options.articleId || 0
+      console.log('this.articleId', this.articleId)
       // ald && ald.aldstat.sendEvent('去支付')
       Ald.sendEvent('去支付')
       this._getCode()
@@ -330,11 +329,14 @@
           longitude
         }
         this.userInfo.mobile = this.mobile
+        console.log('before:', orderInfo, this.articleId)
+
         // 文章进入直接支付
         if (this.articleId) {
           orderInfo.scenes = 'article'
-          orderInfo.scenes = this.articleId
+          orderInfo.scenes_data = this.articleId
         }
+        console.log('after:', orderInfo)
         this.$wechat.setStorage('userInfo', this.userInfo)
         await this.submitOrder({ orderInfo, isFree: this.isFree })
       },

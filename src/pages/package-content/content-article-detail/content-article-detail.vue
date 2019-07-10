@@ -25,7 +25,9 @@
           <div class="total-count">{{details.goodCount >999 ?'999+' :details.goodCount }}</div>
         </div>
         <!-- todo -->
-        <img v-for="(item,idx) in details.likes" :key="idx" :src="item.avatar" class="liker-photo">
+        <div class="good-list-wrap">
+          <img v-for="(item,idx) in details.likes" :key="idx" :src="item.avatar" class="liker-photo">
+        </div>
       </div>
     </div>
     <div class="line-middle"></div>
@@ -176,12 +178,8 @@
         height: 56px
         display flex
         align-items center
-        flex-wrap wrap
-        overflow hidden
-
         .like-total
           margin-right: 18px
-
           .like-icon
             width: 15px
             height: 15px
@@ -190,7 +188,10 @@
             font-size $font-size-10
             color: #111
             margin-top: 4px
-
+        .good-list-wrap
+          flex:1
+          overflow hidden
+          white-space:nowrap
         .liker-photo
           width: 26px
           height: 26px

@@ -3,6 +3,7 @@ import { resolveQueryScene } from '@utils/common'
 import GetOptions from '@mixins/get-options'
 import API from '@api'
 import ShareHandler, { EVENT_CODE } from '@mixins/share-handler'
+import ShareTrick from '@mixins/share-trick'
 
 export default {
   data: {
@@ -39,7 +40,7 @@ export default {
   computed: {
     ...cartComputed
   },
-  mixins: [GetOptions, ShareHandler],
+  mixins: [GetOptions, ShareHandler, ShareTrick],
   onShareAppMessage() {
     this.shareBtn()
     const shopId = wx.getStorageSync('shopId')
@@ -155,7 +156,7 @@ export default {
       })
     },
     _getLikes() {
-      let limit = this.goodStatus < 7 ? this.goodStatus : 7
+      let limit = this.goodStatus < 10 ? this.goodStatus : 10
       return API.Content.getLikes({ preview: this.preview, article_id: this.articleId, page: 1, limit }).then(res => {
         if (res.error === this.$ERR_OK) this.details.likes = res.data
       })
