@@ -1,8 +1,8 @@
 <template>
   <div class="good-item" @click="clickThis">
-    <img v-if="imageUrl && goodsData.is_online === 0" :src="imageUrl + '/yx-image/article/pic-off_shelf@2x.png'" class="goods-photo">
-    <img v-else-if="imageUrl && goodsData.usable_stock === 0" :src="imageUrl + '/yx-image/article/pic-out_stock@2x.png'" class="goods-photo">
-    <img v-else-if="imageUrl" :src="goodsData.goods_cover_image" class="goods-photo">
+    <img v-if="imageUrl && goodsData.is_online === 0" :src="imageUrl + '/yx-image/article/pic-off_shelf@2x.png'" mode="aspectFill" class="goods-photo">
+    <img v-else-if="imageUrl && goodsData.usable_stock === 0" :src="imageUrl + '/yx-image/article/pic-out_stock@2x.png'" mode="aspectFill" class="goods-photo">
+    <img v-else-if="imageUrl" :src="goodsData.goods_cover_image" mode="scaleToFill" class="goods-photo">
     <div class="info">
       <div v-if="goodsData && goodsData.name" class="name">{{goodsData.name}}</div>
       <div class="details">{{goodsData.describe}}</div>
@@ -14,7 +14,9 @@
           </span>
           <span class="price">{{goodsData.original_price}}元</span>
         </div>
-        <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-add_to@2x.png'" class="add-img" @click.stop="addBtn(goodsData)">
+        <div class="add-btn-wrap" @click.stop="addBtn(goodsData)">
+          <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-add_to@2x.png'" class="add-img">
+        </div>
       </div>
     </div>
   </div>
@@ -68,14 +70,14 @@
     box-shadow: 0 4px 6px 0 rgba(17, 17, 17, 0.02)
     border-radius: 8px
     margin-bottom 15px
-
+    height:90px
     .goods-photo
       width: 90px
       height: 90px
       flex-shrink: 0
-
+      border-radius 8px 0px 0px 8px
     .info
-      padding: 5px 12px
+      padding: 5px 0px 5px 12px
       overflow: hidden
       flex: 1
 
@@ -119,6 +121,11 @@
         text-decoration-line line-through
         margin-left 6px
 
+    .add-btn-wrap
+      display flex
+      justify-content space-between
+      align-items center
+      padding:5px 12px
     .add-img
       width: 24px
       height: 24px

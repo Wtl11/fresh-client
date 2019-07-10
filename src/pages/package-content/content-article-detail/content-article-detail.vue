@@ -12,14 +12,14 @@
       <div class="auth-info">
         <div class="name">
           {{details.authName}}
-          <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-lv8@2x.png'" class="level-icon">
+          <level-icon :num="details.authorLevel"></level-icon>
         </div>
         <div class="auth-introduce">{{details.authSignature}}</div>
       </div>
     </div>
-    <div class="browse-wrap">
-      <div class="browse-title">浏览{{details.lookCount>= 10000 ? details.lookCount/10000 +'万':details.lookCount}}</div>
-      <div class="like-wrap">
+    <div  v-if="details.lookCount || details.goodCount" class="browse-wrap">
+      <div v-if="details.lookCount" class="browse-title">浏览{{details.lookCount>= 10000 ? details.lookCount/10000 +'万':details.lookCount}}</div>
+      <div  v-if="details.goodCount" class="like-wrap">
         <div class="like-total">
           <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-like_big1@2x.png'" alt="" class="like-icon">
           <div class="total-count">{{details.goodCount >999 ?'999+' :details.goodCount }}</div>
@@ -37,57 +37,62 @@
       <div class="goods-list">
         <goods-item v-for="(item,idx) in details.goodsList" :key="idx" :goodsData="item" @add="addGoods" @click="goToDetail(item)"></goods-item>
       </div>
-      <div v-for="(item,idx) in details.details" :key="idx" class="article-item">
-        <text v-if="item.type==='text'" class="article-text">{{item.value}}</text>
+      <div v-for="(item,idx) in details.details" :key="idx" class="article-item"><text v-if="item.type==='text'" class="article-text">{{item.value}}</text>
         <img v-if="item.type==='image'" :src="item.value" mode="widthFix" class="article-image"/>
         <video v-if="item.type==='video'" :src="item.value" class="article-video"></video>
-        <goods-item v-if="item.type==='goods'" :goodsData="item.value" @add="addGoods" @click="goToDetail(item)"></goods-item>
+        <goods-item v-if="item.type==='goods'" :goodsData="item.value" @add="addGoods" @click="goToDetail(item.value)"></goods-item>
       </div>
     </div>
-    <div class="bottom-operate-wrap">
-      <div class="bottom-operate">
-        <div class="operate-item" @click="setLikeBtn">
-          <div class="icon-wrap">
-            <div v-if="details.goodCount"  class="count">{{details.goodCount}}</div>
-            <img v-if="imageUrl && !details.goodStatus" :src="imageUrl + '/yx-image/article/icon-like_big1@2x.png'" class="operate-icon">
-            <img v-if="imageUrl && details.goodStatus" :src="imageUrl + '/yx-image/article/icon-like_big2@2x.png'" class="operate-icon">
-          </div>
-        </div>
-        <div>
-          <div v-if="this.preview===1" class="icon-wrap">
-            <div v-if="details.shareCount" class="count">{{details.shareCount}}</div>
-            <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-share@2x.png'" class="operate-icon">
-          </div>
-          <button v-else open-type="share" class="operate-item">
+    <div >
+      <div class="bottom-operate-wrap">
+      </div>
+      <div v-if="BottomEmptyVisible" class="bottom-emty-20"></div>
+      <div class="bottom-operate-fixed">
+        <div class="bottom-operate">
+          <div class="operate-item" @click="setLikeBtn">
             <div class="icon-wrap">
+              <div v-if="details.goodCount"  class="count">{{details.goodCount}}</div>
+              <img v-if="imageUrl && !details.goodStatus" :src="imageUrl + '/yx-image/article/icon-like_big1@2x.png'" class="operate-icon">
+              <img v-if="imageUrl && details.goodStatus" :src="imageUrl + '/yx-image/article/icon-like_big2@2x.png'" class="operate-icon">
+            </div>
+          </div>
+          <div>
+            <div v-if="this.preview===1" class="icon-wrap">
               <div v-if="details.shareCount" class="count">{{details.shareCount}}</div>
               <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-share@2x.png'" class="operate-icon">
             </div>
-          </button>
-        </div>
-        <div class="operate-item" @click="goToBuyCar">
-          <div class="icon-wrap">
-            <div v-if="count" class="count red">{{count || 0}}</div>
-            <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-shopping_cart@2x.png'" class="operate-icon">
+            <button v-else open-type="share" class="operate-item">
+              <div class="icon-wrap">
+                <div v-if="details.shareCount" class="count">{{details.shareCount}}</div>
+                <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-share@2x.png'" class="operate-icon">
+              </div>
+            </button>
+          </div>
+          <div class="operate-item" @click="goToBuyCar">
+            <div class="icon-wrap">
+              <div v-if="count" class="count red">{{count || 0}}</div>
+              <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-shopping_cart@2x.png'" class="operate-icon">
+            </div>
           </div>
         </div>
+        <div v-if="BottomEmptyVisible" class="bottom-emty-20"></div>
       </div>
     </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-  // import API from '@api'
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import goodsItem from '../content-article-detail-video/goods-item/goods-item.vue'
   import contentMix from '@mixins/content-detail'
-
+  import levelIcon from '../content-article-detail-video/level-icon/level-icon'
   const PAGE_NAME = 'CONTENT_ARTICLE_DETAIL'
   export default {
     name: PAGE_NAME,
     components: {
       NavigationBar,
-      goodsItem
+      goodsItem,
+      levelIcon
     },
     mixins: [contentMix],
     data() {
@@ -101,7 +106,8 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@designCommon"
-
+  .bottom-emty-20
+    height: 20px
   .content-article-detail
     width: 100%
 
@@ -131,6 +137,7 @@
         .auth-photo
           width: 36px
           height: 36px
+          border-radius 50%
 
         .auth-photo-v
           position: absolute
@@ -178,11 +185,11 @@
           .like-icon
             width: 15px
             height: 15px
-
+            display:block
           .total-count
             font-size $font-size-10
             color: #111
-            margin-top: 3px
+            margin-top: 4px
 
         .liker-photo
           width: 26px
@@ -190,6 +197,7 @@
           margin-right:19px
           flex-shrink 0
           border-radius 50%
+          border:1px solid #E6E6E6
 
     .line-middle
       border-bottom-1px(#E6E6E6)
@@ -223,18 +231,19 @@
       .article-image
       .article-video
         width: 100%
+        border-radius 8px
 
 
     .bottom-operate-wrap
       height: 50px
-
-    .bottom-operate
+    .bottom-operate-fixed
       position fixed
       bottom 0px
       right: 0
       left: 0
       background white
       box-shadow: 0 -4px 20px 0 rgba(29, 32, 35, 0.06)
+    .bottom-operate
       display flex
       justify-content space-around
       align-items center
@@ -263,6 +272,9 @@
               background #FE3B39
               color: #fff
               height: 16px
+              min-width:@height
+              box-sizing:border-box
+              text-align:center
               border-radius 8px
               font-size: $font-size-10
 
