@@ -5,6 +5,7 @@
         <div class="order-num">{{item.code}}</div>
         <div class="name">{{item.nickname}}</div>
         <div class="phone">{{item.mobile}}</div>
+        <div v-if="item.is_new_customer" class="new-tips">新客</div>
         <div class="order-status" v-if="isShowStatus">{{item.status_text}}</div>
       </div>
       <!--商品信息-->
@@ -112,10 +113,21 @@
       font-family: $font-family-medium
       max-width: 70px
     .phone
-      margin-left: 6px
+      margin: 0 6px
       font-size: $font-size-14
       color: $color-text-main
       font-family: $font-family-medium
+    .new-tips
+      box-sizing: border-box
+      height: 16px
+      line-height: 1
+      padding: 3px 5px
+      background: rgba(115,194,0,0.10)
+      border-1px($color-main,8px)
+      border-radius: 8px
+      font-size: $font-size-10
+      color: $color-main
+      font-family: $font-family-regular
     .order-status
       col-center()
       right: 12px
