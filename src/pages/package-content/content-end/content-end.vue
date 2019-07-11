@@ -17,10 +17,7 @@
   export default {
     name: PAGE_NAME,
     data() {
-
-      return {
-
-      }
+      return {}
     },
     components: {
       NavigationBar
@@ -34,7 +31,7 @@
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
- @import "~@designCommon"
+  @import "~@designCommon"
   .goods-end-box
     padding-top: 110px
     .goods-end-img
@@ -58,6 +55,7 @@
       font-family: $font-family-regular
       text-align: center
       border-radius: 50px
+
   .goods-end
     width: 100%
 </style>
