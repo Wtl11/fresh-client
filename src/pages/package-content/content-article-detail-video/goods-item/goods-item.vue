@@ -1,8 +1,10 @@
 <template>
   <div class="good-item" @click="clickThis">
-    <img v-if="imageUrl && goodsData.is_online === 0" :src="imageUrl + '/yx-image/article/pic-off_shelf@2x.png'" mode="aspectFill" class="goods-photo">
-    <img v-else-if="imageUrl && goodsData.usable_stock === 0" :src="imageUrl + '/yx-image/article/pic-out_stock@2x.png'" mode="aspectFill" class="goods-photo">
-    <img v-else-if="imageUrl" :src="goodsData.goods_cover_image" mode="scaleToFill" class="goods-photo">
+    <div class="goods-photo">
+      <img v-if="imageUrl && goodsData.is_online === 0" :src="imageUrl + '/yx-image/article/pic-off_shelf@2x.png'" mode="aspectFill" class="goods-photo fix-pic">
+      <img v-else-if="imageUrl && goodsData.usable_stock === 0" :src="imageUrl + '/yx-image/article/pic-out_stock@2x.png'" mode="aspectFill" class="goods-photo fix-pic">
+      <img v-if="imageUrl" :src="goodsData.goods_cover_image" mode="scaleToFill" class="goods-photo">
+    </div>
     <div class="info">
       <div v-if="goodsData && goodsData.name" class="name">{{goodsData.name}}</div>
       <div class="details">{{goodsData.describe}}</div>
@@ -76,6 +78,14 @@
       height: 90px
       flex-shrink: 0
       border-radius 8px 0px 0px 8px
+      position:relative
+      &.fix-pic
+        position:absolute
+        top:0
+        left:0
+        right:0
+        bottom 0
+        z-index:10
     .info
       padding: 5px 0px 5px 12px
       overflow: hidden

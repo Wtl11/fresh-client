@@ -20,8 +20,9 @@
     <div  v-if="details.lookCount || details.goodCount" class="browse-wrap">
       <div v-if="details.lookCount" class="browse-title">浏览{{details.lookCount>= 10000 ? details.lookCount/10000 +'万':details.lookCount}}</div>
       <div  v-if="details.goodCount" class="like-wrap">
-        <div class="like-total">
-          <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-like_big1@2x.png'" alt="" class="like-icon">
+        <div class="like-total" @click="setLikeBtn">
+          <img v-if="imageUrl && !details.goodStatus" :src="imageUrl + '/yx-image/article/icon-like_big1@2x.png'" alt="" class="like-icon">
+          <img v-if="imageUrl && details.goodStatus" :src="imageUrl + '/yx-image/article/icon-like_big2@2x.png'" alt="" class="like-icon">
           <div class="total-count">{{details.goodCount >999 ?'999+' :details.goodCount }}</div>
         </div>
         <!-- todo -->
@@ -58,18 +59,16 @@
               <img v-if="imageUrl && details.goodStatus" :src="imageUrl + '/yx-image/article/icon-like_big2@2x.png'" class="operate-icon">
             </div>
           </div>
-          <div>
-            <div v-if="this.preview===1" class="icon-wrap">
+          <div v-if="preview===1" class="operate-item icon-wrap">
+            <div v-if="details.shareCount" class="count">{{details.shareCount}}</div>
+            <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-share@2x.png'" class="operate-icon">
+          </div>
+          <button v-else open-type="share" class="operate-item">
+            <div class="icon-wrap">
               <div v-if="details.shareCount" class="count">{{details.shareCount}}</div>
               <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-share@2x.png'" class="operate-icon">
             </div>
-            <button v-else open-type="share" class="operate-item">
-              <div class="icon-wrap">
-                <div v-if="details.shareCount" class="count">{{details.shareCount}}</div>
-                <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-share@2x.png'" class="operate-icon">
-              </div>
-            </button>
-          </div>
+          </button>
           <div class="operate-item" @click="goToBuyCar">
             <div class="icon-wrap">
               <div v-if="count" class="count red">{{count || 0}}</div>
@@ -252,31 +251,31 @@
       .operate-item
         padding: 13px
 
-        .icon-wrap
-          position relative
-          height: 23px
+      .icon-wrap
+        position relative
+        height: 23px
 
-          .operate-icon
-            width: 23px
-            height: @width
+        .operate-icon
+          width: 23px
+          height: @width
 
-          .count
-            position absolute
-            top: -5px
-            left: 23px
-            color: #111
-            font-size $font-size-12
+        .count
+          position absolute
+          top: -5px
+          left: 23px
+          color: #111
+          font-size $font-size-12
 
-            &.red
-              left: 16px
-              padding: 0px 4px
-              background #FE3B39
-              color: #fff
-              height: 16px
-              min-width:@height
-              box-sizing:border-box
-              text-align:center
-              border-radius 8px
-              font-size: $font-size-10
+          &.red
+            left: 16px
+            padding: 0px 4px
+            background #FE3B39
+            color: #fff
+            height: 16px
+            min-width:@height
+            box-sizing:border-box
+            text-align:center
+            border-radius 8px
+            font-size: $font-size-10
 
 </style>

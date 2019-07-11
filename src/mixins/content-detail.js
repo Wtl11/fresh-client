@@ -60,13 +60,13 @@ export default {
     this.BottomEmptyVisible = (res.statusBarHeight >= 44) ? 1 : false
     let options = this._$$initOptions()
     this.articleId = options.articleId || ''
-    this.preview = options.preview || 0
+    this.preview = +options.preview || 0
     options.shopId && wx.setStorageSync('shopId', options.shopId)
     if (options.scene) {
       wx.hideShareMenu()
       let { shopId, articleId, preview } = resolveQueryScene(options.scene)
       this.articleId = articleId
-      this.preview = preview
+      this.preview = +preview
       shopId && wx.setStorageSync('shopId', options.shopId)
     }
     this.articleId && this._articleOperation('browse')
@@ -147,6 +147,7 @@ export default {
         if (item.type === 'video' && item.style_type === 'content_video') {
           this.details.videoContent.url = item.content[0].video.full_url
           this.details.videoContent.name = item.content[0].video.name
+          this.details.videoIntroduce = item.content[0].introduction
         }
         if (item.type === 'goods' && item.style_type === 'content_goods_list') {
           this.details.goodsList = item.content.map(item => {
@@ -162,17 +163,21 @@ export default {
       })
     },
     setLikeBtn() {
+      if (this.preview) return false
       this.details.goodStatus = !this.details.goodStatus
       this._articleOperation('fabulou')
     },
     shareBtn() {
+      if (this.preview) return false
       this._articleOperation('share')
     },
     goToBuyCar() {
+      if (this.preview) return false
       wx.switchTab({ url: `${this.$routes.main.SHOPPING_CART}` })
     },
     // 去詳情
     goToDetail(item) {
+      if (this.preview) return false
       console.log(item)
       this._articleOperation('guide_goods', { goods_id: item.goods_id, goods_sku_id: item.goods_sku_id })
       const shopId = wx.getStorageSync('shopId')
