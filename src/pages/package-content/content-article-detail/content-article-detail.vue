@@ -1,7 +1,7 @@
 <template>
   <div class="content-article-detail">
     <navigation-bar :translucent="true" :isBackCricle="true"></navigation-bar>
-    <video v-if="details.coverVideo" :src="details.coverVideo" class="cover-photo"></video>
+    <video v-if="details.coverVideo" :src="details.coverVideo" :poster="details.coverImage" class="cover-photo"></video>
     <img v-else :src="details.coverImage" mode="widthFix" class="cover-photo">
     <div class="auth-wrap">
       <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-high_quality@2x.png'" class="good-article-icon">
