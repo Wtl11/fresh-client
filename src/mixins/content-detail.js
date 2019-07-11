@@ -9,7 +9,7 @@ export default {
   data: {
     BottomEmptyVisible: false,
     preview: 0,
-    articleId: '',
+    articleId: 0,
     currentType: 'common',
     details: {
       goodStatus: 0,
@@ -77,6 +77,34 @@ export default {
       event: EVENT_CODE.ARTICLE_DETAIL,
       articleId: this.articleId
     })
+  },
+  onUnload() {
+    console.log('我准备销毁了')
+    this.details = {
+      goodStatus: 0,
+      category: '',
+      title: '',
+      coverImage: '',
+      coverVideo: '',
+      authPhoto: '',
+      authName: '',
+      authSignature: '',
+      authorLevel: 0,
+      goodCount: 0,
+      lookCount: 0,
+      shareCount: 0,
+      // 不同情况的字段
+      videoContent: {
+        url: '',
+        name: ''
+      },
+      videoIntroduce: '',
+      foodList: '',
+      goodsList: [],
+      // 内容详情
+      details: [],
+      likes: []
+    }
   },
   methods: {
     ...cartMethods,
