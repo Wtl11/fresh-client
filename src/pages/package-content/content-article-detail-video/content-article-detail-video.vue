@@ -28,8 +28,8 @@
         <div class="operate-wrap-box">
           <div class="operate-item" @click="setLikeBtn">
             <div v-show="details.goodCount" class="count">{{details.goodCount > 999 ? '999+' :details.goodCount}}</div>
-            <img v-show="imageUrl && !details.goodStatus" :src="imageUrl + '/yx-image/article/icon-fabulous1@2x.png'" class="operate-icon">
-            <img v-show="imageUrl && details.goodStatus" :src="imageUrl + '/yx-image/article/icon-fabulous2@2x.png'" class="operate-icon">
+            <img v-if="imageUrl && !details.goodStatus" :src="imageUrl + '/yx-image/article/icon-fabulous1@2x.png'" class="operate-icon">
+            <img v-if="imageUrl && details.goodStatus" :src="imageUrl + '/yx-image/article/icon-fabulous2@2x.png'" class="operate-icon">
           </div>
           <div class="operate-item">
             <div v-show="details.shareCount" class="count">{{details.shareCount > 999 ? '999+' :details.shareCount}}</div>
