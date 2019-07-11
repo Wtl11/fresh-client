@@ -252,6 +252,7 @@
       // 内容列表
       getContentList(id, loading = false) {
         if (this.classifyId === '') {
+          this.contentList[this.tabIndex].isEmpty = !this.articleList.length
           this.contentList = JSON.parse(JSON.stringify(this.contentList))
           this.fillData(false, this.contentList[this.tabIndex].arr)
           return
@@ -326,6 +327,9 @@
                   this.classifyId = this.tabList1.length ? this.classifyId : ''
                   this.getCategoryData()
                   this.getContentList()
+                  break
+                case 'article_recommend':
+                  this.articleList = item.list
                   break
                 default:
                   break
