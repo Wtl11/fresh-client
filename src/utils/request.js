@@ -96,7 +96,7 @@ async function checkCode(res = {}) {
         }
         wx.redirectTo({url: $$routes.main.APP_UPDATE})
         return
-      case 14000:
+      case 14000: // 内容下架删除
         wx.redirectTo({url: $$routes.content.CONTENT_END})
         return
     }
