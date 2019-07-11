@@ -8,6 +8,7 @@ export default {
   content: {
     PACKAGE: CONTENT,
     CONTENT_ARTICLES:`${CONTENT}/content-articles`,
+    CONTENT_END:`${CONTENT}/content-end`,
     CONTENT_ARTICLES_DETAIL:`${CONTENT}/content-article-detail`,
     CONTENT_ARTICLES_DETAIL_VIDEO:`${CONTENT}/content-article-detail-video`,
     // package-content

@@ -96,6 +96,9 @@ async function checkCode(res = {}) {
         }
         wx.redirectTo({url: $$routes.main.APP_UPDATE})
         return
+      case 14000:
+        wx.redirectTo({url: $$routes.content.CONTENT_END})
+        return
     }
     throw requestException(res)
   }
