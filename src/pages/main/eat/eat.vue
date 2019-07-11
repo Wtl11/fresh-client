@@ -239,7 +239,6 @@
       },
       // 点赞
       giveLike(type, index, item) {
-        console.log(item.fabulous_num)
         // 点赞，参数未对接
         type = `${type}List`
         API.Content.articleOperation({ article_id: item.id, handle: 'fabulou' })
@@ -254,7 +253,6 @@
       },
       // 内容列表
       getContentList(id, loading = false) {
-        console.log('fsfs')
         if (this.classifyId === '') {
           this.contentList[this.tabIndex].isEmpty = !this.articleList.length
           this.contentList = JSON.parse(JSON.stringify(this.contentList))
