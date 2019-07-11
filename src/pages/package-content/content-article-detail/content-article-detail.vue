@@ -17,12 +17,14 @@
         <div class="auth-introduce">{{details.authSignature}}</div>
       </div>
     </div>
-    <div v-if="details.lookCount || details.goodCount" class="browse-wrap">
-      <div v-if="details.lookCount" class="browse-title">浏览{{details.lookCount>= 10000 ? details.lookCount/10000 +'万':details.lookCount}}</div>
-      <div v-if="details.goodCount" class="like-wrap">
+    <div v-show="details.lookCount || details.goodCount" class="browse-wrap">
+      <div v-show="details.lookCount" class="browse-title">浏览{{details.lookCount>= 10000 ? details.lookCount/10000 +'万':details.lookCount}}</div>
+      <div v-show="details.goodCount" class="like-wrap">
         <div class="like-total" @click="setLikeBtn">
-          <img v-if="imageUrl && !details.goodStatus" :src="imageUrl + '/yx-image/article/icon-like_big1@2x.png'" alt="" class="like-icon">
-          <img v-if="imageUrl && details.goodStatus" :src="imageUrl + '/yx-image/article/icon-like_big2@2x.png'" alt="" class="like-icon">
+          <template v-if="imageUrl">
+              <img v-if="details.goodStatus" :src="imageUrl + '/yx-image/article/icon-like_big2@2x.png'" class="like-icon">
+              <img v-else :src="imageUrl + '/yx-image/article/icon-like_big1@2x.png'" class="like-icon">
+          </template>
           <div class="total-count">{{details.goodCount >999 ?'999+' :details.goodCount }}</div>
         </div>
         <!-- todo -->
@@ -55,24 +57,26 @@
         <div class="bottom-operate">
           <div class="operate-item" @click="setLikeBtn">
             <div class="icon-wrap">
-              <div v-if="details.goodCount" class="count">{{details.goodCount}}</div>
-              <img v-if="imageUrl && !details.goodStatus" :src="imageUrl + '/yx-image/article/icon-like_big1@2x.png'" class="operate-icon">
-              <img v-if="imageUrl && details.goodStatus" :src="imageUrl + '/yx-image/article/icon-like_big2@2x.png'" class="operate-icon">
+              <div v-show="details.goodCount" class="count">{{details.goodCount}}</div>
+              <template v-if="imageUrl">
+                <img v-show="!details.goodStatus" :src="imageUrl + '/yx-image/article/icon-like_big1@2x.png'" class="operate-icon">
+                <img v-show="details.goodStatus" :src="imageUrl + '/yx-image/article/icon-like_big2@2x.png'" class="operate-icon">
+              </template>
             </div>
           </div>
           <div v-if="preview===1" class="operate-item icon-wrap">
-            <div v-if="details.shareCount" class="count">{{details.shareCount}}</div>
+            <div v-show="details.shareCount" class="count">{{details.shareCount}}</div>
             <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-share@2x.png'" class="operate-icon">
           </div>
           <button v-else open-type="share" class="operate-item">
             <div class="icon-wrap">
-              <div v-if="details.shareCount" class="count">{{details.shareCount}}</div>
+              <div v-show="details.shareCount" class="count">{{details.shareCount}}</div>
               <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-share@2x.png'" class="operate-icon">
             </div>
           </button>
           <div class="operate-item" @click="goToBuyCar">
             <div class="icon-wrap">
-              <div v-if="count" class="count red">{{count || 0}}</div>
+              <div v-show="count" class="count red">{{count || 0}}</div>
               <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-shopping_cart@2x.png'" class="operate-icon">
             </div>
           </div>
@@ -99,10 +103,16 @@
     },
     mixins: [contentMix],
     data() {
-      return {}
+      return {
+        control: true
+      }
     },
     computed: {},
-    methods: {}
+    methods: {
+      endVideo() {
+        this.control = false
+      }
+    }
   }
 </script>
 
@@ -140,6 +150,7 @@
         height: 36px
         position: relative
         border-1px(#e6e6e6, 18px)
+
         .auth-photo
           width: 36px
           height: 36px
@@ -147,10 +158,11 @@
 
         .auth-photo-v
           position: absolute
-          bottom: 2px
+          bottom: -1px
           right: 3px
           width: 12px
           height: 12px
+          z-index: 1000
 
       .auth-info
         font-family $font-family-regular
@@ -163,8 +175,9 @@
           display flex
           align-items center
           font-weight bold
+
           .name-text
-            margin-right:4px
+            margin-right: 4px
 
         .auth-introduce
           color: #808080
@@ -201,7 +214,8 @@
           flex: 1
           overflow hidden
           white-space: nowrap
-          padding-right:15px
+          padding-right: 15px
+
         .liker-photo
           width: 26px
           height: 26px

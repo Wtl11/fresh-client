@@ -12,9 +12,9 @@
            @play="playVideo"
            @pause="pauseVideo"
     >
-      <div v-if="!playStatus && !endVideoHas" class="puse-btn" @click.stop="videoClick"></div>
+      <div v-show="!playStatus && !endVideoHas" class="puse-btn" @click.stop="videoClick"></div>
     </video>
-    <div v-if="contentVisible" class="info-wrap">
+    <div v-show="contentVisible" class="info-wrap">
       <div class="auth-wrap">
         <div class="auth-photo-wrap">
           <img v-if="details.authPhoto" :src="details.authPhoto" class="auth-photo">
@@ -27,12 +27,12 @@
       <div class="operate-wrap">
         <div class="operate-wrap-box">
           <div class="operate-item" @click="setLikeBtn">
-            <div v-if="details.goodCount" class="count">{{details.goodCount > 999 ? '999+' :details.goodCount}}</div>
-            <img v-if="imageUrl && !details.goodStatus" :src="imageUrl + '/yx-image/article/icon-fabulous1@2x.png'" class="operate-icon">
-            <img v-if="imageUrl && details.goodStatus" :src="imageUrl + '/yx-image/article/icon-fabulous2@2x.png'" class="operate-icon">
+            <div v-show="details.goodCount" class="count">{{details.goodCount > 999 ? '999+' :details.goodCount}}</div>
+            <img v-show="imageUrl && !details.goodStatus" :src="imageUrl + '/yx-image/article/icon-fabulous1@2x.png'" class="operate-icon">
+            <img v-show="imageUrl && details.goodStatus" :src="imageUrl + '/yx-image/article/icon-fabulous2@2x.png'" class="operate-icon">
           </div>
           <div class="operate-item">
-            <div v-if="details.shareCount" class="count">{{details.shareCount > 999 ? '999+' :details.shareCount}}</div>
+            <div v-show="details.shareCount" class="count">{{details.shareCount > 999 ? '999+' :details.shareCount}}</div>
             <button v-if="preview===1" class="operate-icon">
               <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-share_big@2x.png'" class="operate-icon">
             </button>
@@ -41,18 +41,18 @@
             </button>
           </div>
           <div class="operate-item" @click="goToBuyCar">
-            <div v-if="count" class="count">{{count > 999 ? '999+' :count}}</div>
+            <div v-show="count" class="count">{{count > 999 ? '999+' :count}}</div>
             <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-shoping_catbig@2x.png'" class="operate-icon" @clcik="goToBuyCar">
           </div>
         </div>
-        <div v-if="details.goodsList.length" class="goods-btn" @click.stop="showGoodsListBtn">
+        <div v-show="details.goodsList.length" class="goods-btn" @click.stop="showGoodsListBtn">
           商品({{details.goodsList.length || 0}})
         </div>
       </div>
       <div v-if="BottomEmptyVisible" class="bottom-emty-20"></div>
     </div>
     <div :class="['goods-list-wrap',{show:goodsListVisible}]">
-      <div v-if="details.goodsList.length" class="title">全部商品<span class="num">/共{{details.goodsList.length || 0}}个商品</span></div>
+      <div v-show="details.goodsList.length" class="title">全部商品<span class="num">/共{{details.goodsList.length || 0}}个商品</span></div>
       <div class="good-list">
         <goods-item v-for="(item,idx) in details.goodsList" :key="idx" :goods-data="item" @add="addGoods" @click="goToDetail(item)"></goods-item>
       </div>
@@ -162,11 +162,11 @@
 
           .auth-photo-v
             position: absolute
-            bottom: 2px
-            right: 2px
+            bottom: 3px
+            right: 3px
             width: 12px
             height: 12px
-
+            z-index:1000
         .name
           font-size: $font-size-16
           color: #ffffff
@@ -202,7 +202,7 @@
           .count
             position: absolute
             top: -12px
-            right: px-change-vw(25)
+            left: 20px
             color: #fff;
             font-size $font-size-12
             padding: 0 4px
@@ -210,7 +210,7 @@
             line-height 15px
             background: #FE3B39
             border-radius 7px
-
+            z-index:10
         .goods-btn
           flex-shrink 0
           height: 40px
