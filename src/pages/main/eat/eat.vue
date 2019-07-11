@@ -41,7 +41,7 @@
                       <image
                         v-if="item.cover_image"
                         class='card-img'
-                        mode='aspectFill'
+                        mode='widthFix'
                         :src="item.cover_image.source_url"
                         lazy-load>
                       </image>
@@ -69,7 +69,7 @@
                       <image
                         v-if="item.cover_image"
                         class='card-img'
-                        mode='aspectFill'
+                        mode='widthFix'
                         :src="item.cover_image.source_url"
                         lazy-load>
                       </image>
@@ -521,8 +521,9 @@
         overflow: hidden
         position: relative
       .card-img
-        border-top-right-radius: 8px
-        border-top-left-radius: 8px
+        display: block
+        border-top-right-radius: 4px
+        border-top-left-radius: 4px
         width: 100%
       .video-icon
         width: 20px
@@ -536,7 +537,7 @@
         overflow: hidden
         box-shadow: 0 3px 8px 0 rgba(17, 17, 17, 0.05)
         background: $color-white
-        border-radius: 8px
+        border-radius: 4px
         .fall-author
           display: flex
           padding: 0 2.667vw 2.667vw
