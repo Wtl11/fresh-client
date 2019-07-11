@@ -3,7 +3,7 @@
     <div class="goods-photo">
       <img v-if="imageUrl && goodsData.is_online === 0" :src="imageUrl + '/yx-image/article/pic-off_shelf@2x.png'" mode="aspectFill" class="goods-photo fix-pic">
       <img v-else-if="imageUrl && goodsData.usable_stock === 0" :src="imageUrl + '/yx-image/article/pic-out_stock@2x.png'" mode="aspectFill" class="goods-photo fix-pic">
-      <img v-if="imageUrl" :src="goodsData.goods_cover_image" mode="scaleToFill" class="goods-photo">
+      <img v-if="imageUrl" :src="goodsData.goods_cover_image" mode="aspectFill" class="goods-photo">
     </div>
     <div class="info">
       <div v-if="goodsData && goodsData.name" class="name">{{goodsData.name}}</div>
@@ -90,7 +90,9 @@
       padding: 5px 0px 5px 12px
       overflow: hidden
       flex: 1
-
+      display flex
+      flex-direction:column
+      justify-content space-between
       .name
         font-family $font-family-medium
         font-size: $font-size-16

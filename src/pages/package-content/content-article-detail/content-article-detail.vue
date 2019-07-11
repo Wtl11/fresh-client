@@ -242,6 +242,7 @@
       right: 0
       left: 0
       background white
+      z-index:1000
       box-shadow: 0 -4px 20px 0 rgba(29, 32, 35, 0.06)
     .bottom-operate
       display flex
