@@ -83,7 +83,7 @@
       width: 100%
     .article-modal-title
       position: relative
-      font-family: FZLTTHJW--GB1-0
+      font-family: $font-family-medium
       font-weight: 600
       color: $color-white
       font-size: $font-size-18
