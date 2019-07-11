@@ -74,6 +74,7 @@
       left: 0
       width: 100%
       height: 100%
+      z-index: 10
       background: rgba(0, 0, 0, .15)
     .article-modal-img
       position: absolute
@@ -83,9 +84,10 @@
     .article-modal-title
       position: relative
       font-family: FZLTTHJW--GB1-0
+      font-weight: 600
       color: $color-white
       font-size: $font-size-18
-      z-index: 1
+      z-index: 10
 
   .article1
     border-radius: 4px

@@ -342,19 +342,19 @@
           })
       },
       _changeTabLine() {
-        let left = 0
-        wx.createSelectorQuery().selectAll('.scroll-item').boundingClientRect().exec(res => {
-          if (res && res[0]) {
-            let arr = res[0]
-            arr.forEach((item, index) => {
-              if (index < this.tabIndex) {
-                left += item.width
-              }
-              this.lineWidth = res[0][this.tabIndex].width
-            })
-            this.lineTranslateX = left
-          }
-        })
+        // let left = 0
+        // wx.createSelectorQuery().selectAll('.scroll-item').boundingClientRect().exec(res => {
+        //   if (res && res[0]) {
+        //     let arr = res[0]
+        //     arr.forEach((item, index) => {
+        //       if (index < this.tabIndex) {
+        //         left += item.width
+        //       }
+        //       this.lineWidth = res[0][this.tabIndex].width
+        //     })
+        //     this.lineTranslateX = left
+        //   }
+        // })
       },
       async _changeTab(index, id, e) {
         if (this.tabIndex === index) return
