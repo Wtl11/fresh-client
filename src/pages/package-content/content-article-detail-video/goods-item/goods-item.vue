@@ -68,16 +68,15 @@
   .good-item
     display flex
     background: #FFFFFF
-    border: 1px solid #EFEFEF
+    border-1px(#EFEFEF,4px)
     box-shadow: 0 4px 6px 0 rgba(17, 17, 17, 0.02)
-    border-radius: 8px
     margin-bottom 15px
     height:90px
     .goods-photo
       width: 90px
       height: 90px
       flex-shrink: 0
-      border-radius 8px 0px 0px 8px
+      border-radius 4px 0px 0px 4px
       position:relative
       &.fix-pic
         position:absolute
@@ -100,6 +99,7 @@
         overflow hidden
         text-overflow ellipsis
         white-space: nowrap
+        padding-right 12px
 
       .details
         font-family $font-family-regular
@@ -109,6 +109,7 @@
         overflow hidden
         text-overflow ellipsis
         white-space: nowrap
+        padding-right:12px
 
       .operate
         display flex

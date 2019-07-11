@@ -11,7 +11,7 @@
       </div>
       <div class="auth-info">
         <div class="name">
-          {{details.authName}}
+          <div>{{details.authName}}</div>
           <level-icon :num="details.authorLevel"></level-icon>
         </div>
         <div class="auth-introduce">{{details.authSignature}}</div>
@@ -142,8 +142,8 @@
 
         .auth-photo-v
           position: absolute
-          bottom: 0
-          right: 0
+          bottom: 2px
+          right: 3px
           width: 12px
           height: 12px
 
@@ -155,6 +155,8 @@
           font-size: $font-size-14
           color: #111111
           margin-bottom: 6px
+          display flex
+          align-items center
 
           .level-icon
             width: 40px
@@ -186,7 +188,7 @@
           .total-count
             font-size $font-size-10
             color: #111
-            margin-top: 4px
+            margin-top: 3px
         .good-list-wrap
           flex:1
           overflow hidden
@@ -209,8 +211,7 @@
         font-size $font-size-22
         font-family $font-family-medium
         color: #111111
-        margin-bottom 25px
-
+        margin-bottom 20px
       .foods-list
         font-family $font-family-regular
         font-size $font-size-15
@@ -230,8 +231,9 @@
 
       .article-image
       .article-video
+        display block
         width: 100%
-        border-radius 8px
+        border-radius 4px
 
 
     .bottom-operate-wrap
@@ -263,7 +265,7 @@
         .count
           position absolute
           top: -5px
-          left: 23px
+          left: 25px
           color: #111
           font-size $font-size-12
 
