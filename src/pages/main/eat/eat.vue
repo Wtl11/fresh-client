@@ -251,6 +251,11 @@
       },
       // 内容列表
       getContentList(id, loading = false) {
+        if (this.classifyId === '') {
+          this.contentList = JSON.parse(JSON.stringify(this.contentList))
+          this.fillData(false, this.contentList[this.tabIndex].arr)
+          return
+        }
         this.contentList[this.tabIndex].classifyMore = true
         API.Content.getWorkList({ type: '', status: 1, is_cate_show: 1, category_id: this.classifyId, page: this.contentList[this.tabIndex].page })
           .then((res) => {
@@ -318,6 +323,7 @@
                   if (this.tabIndex + 1 > this.tabList1.length || !item.list.length) {
                     this.tabIndex = 0
                   }
+                  this.classifyId = this.tabList1.length ? this.classifyId : ''
                   this.getCategoryData()
                   this.getContentList()
                   break
