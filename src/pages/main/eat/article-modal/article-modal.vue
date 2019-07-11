@@ -47,7 +47,7 @@
     },
     methods: {
       goDetail(item) {
-        let url = item.type === 'video' ? `${this.$routes.content.CONTENT_ARTICLES_DETAIL_VIDEO}?articleId=${item.other_id}` : `${this.$routes.content.CONTENT_ARTICLES_DETAIL}?articleId=${item.other_id}`
+        let url = item.article.type === 'video' ? `${this.$routes.content.CONTENT_ARTICLES_DETAIL_VIDEO}?articleId=${item.other_id}` : `${this.$routes.content.CONTENT_ARTICLES_DETAIL}?articleId=${item.other_id}`
         wx.navigateTo({ url })
       }
     }

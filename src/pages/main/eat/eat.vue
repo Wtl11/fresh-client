@@ -219,6 +219,9 @@
       this.getContentList()
     },
     onPullDownRefresh() {
+      if (this.contentList.length) {
+        this.contentList[this.tabIndex].page = 1
+      }
       this._getArticleList(false)
       wx.stopPullDownRefresh()
     },
@@ -251,6 +254,7 @@
       },
       // 内容列表
       getContentList(id, loading = false) {
+        console.log('fsfs')
         if (this.classifyId === '') {
           this.contentList[this.tabIndex].isEmpty = !this.articleList.length
           this.contentList = JSON.parse(JSON.stringify(this.contentList))
@@ -306,8 +310,6 @@
             rightHeight = rightHeight + tmp.itemHeight
           }
         }
-        // console.log(leftHeight)
-        // console.log(rightList)
         this.contentList[this.tabIndex].leftList = leftList
         this.contentList[this.tabIndex].rightList = rightList
       },
@@ -321,7 +323,7 @@
               switch (item.module_name) {
                 case 'article_category':
                   this.tabList1 = item.list
-                  if (this.tabIndex + 1 > this.tabList1.length || !item.list.length) {
+                  if (this.tabIndex + 1 > this.tabList1.length || !this.tabList1.length) {
                     this.tabIndex = 0
                   }
                   this.classifyId = this.tabList1.length ? this.classifyId : ''
@@ -351,16 +353,11 @@
             this.lineTranslateX = left
           }
         })
-        // this.getCategoryData()
       },
       async _changeTab(index, id, e) {
         if (this.tabIndex === index) return
         // 如果是切换旁边的tab就加上动画，不是旁边的tab就不要动画
         this.boxTransition = 'all .3s'
-        // if (this.tabIndex === index + 1 || this.tabIndex === index - 1) {
-        // } else {
-        //   this.boxTransition = ''
-        // }
         this._setViewToItem(index)
         this.move = e.target.offsetLeft
         this.classifyId = id
@@ -379,13 +376,6 @@
         })
       },
       getCategoryData(isLoad = false) {
-        // setTimeout(() => {
-        //   wx.createSelectorQuery().selectAll('.scroll-item').boundingClientRect().exec(res => {
-        //     if (res && res[0]) {
-        //       this.lineWidth = res[0][this.tabIndex].width
-        //     }
-        //   })
-        // }, 300)
         if (!this.tabList1.length) {
           this.contentList = [JSON.parse(JSON.stringify(ARR))]
           return
@@ -410,7 +400,7 @@
   @import "~@designCommon"
   $scroll-item-width = 81px
   .eat
-    height: 100vh
+    min-height: 100vh
     background-image: linear-gradient(180deg, #FFFFFF 11%, #F7F7F7 32%)
 
   .scroll-view2
