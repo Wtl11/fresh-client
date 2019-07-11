@@ -42,7 +42,7 @@
       </div>
       <div v-for="(item,idx) in details.details" :key="idx" class="article-item"><text v-if="item.type==='text'" class="article-text">{{item.value}}</text>
         <img v-if="item.type==='image'" :src="item.value.source_url" mode="widthFix" class="article-image"/>
-        <video v-if="item.type==='video'" :src="item.value.full_url" :poster="item.value.cover_image_url" class="article-video"></video>
+        <video v-if="item.type==='video'" :src="item.value.full_url" class="article-video"></video>
         <goods-item v-if="item.type==='goods'" :goodsData="item.value" @add="addGoods" @click="goToDetail(item.value)"></goods-item>
       </div>
     </div>
