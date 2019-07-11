@@ -198,14 +198,17 @@
       this._getArticleList(true)
     },
     onShow() {
-      this.shopId = wx.getStorageSync('shopId')
+      let id = wx.getStorageSync('shopId')
       let query = this._$$initOptions()
-      if (!this.shopId) {
+      if (!id) {
         this.shopId = query.shopId
         wx.setStorageSync('shopId', this.shopId)
       }
+      if (this.shopId !== id) {
+        this._getArticleList(false)
+      }
+      this.shopId = id
       this.systemInfoSync = this.$wx.getSystemInfoSync()
-      this._getArticleList(false)
       this.$$shareHandler({ event: EVENT_CODE.EAT })
     },
     onReachBottom() {
@@ -272,8 +275,8 @@
         rightList.length = 0
         leftHeight = 0
         rightHeight = 0
-        this.leftList = []
-        this.rightList = []
+        // this.leftList = []
+        // this.rightList = []
         rightList = []
         leftList = []
         for (let i = 0, len = listData.length; i < len; i++) {
