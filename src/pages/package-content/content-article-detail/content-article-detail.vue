@@ -1,7 +1,7 @@
 <template>
   <div class="content-article-detail">
     <navigation-bar :translucent="true" :isBackCricle="true"></navigation-bar>
-    <video v-if="details.coverVideo" :src="details.coverVideo" :poster="details.coverImage" class="cover-photo"></video>
+    <video v-if="details.coverVideo" :src="details.coverVideo" :autoplay="true" :poster="details.coverImage" class="cover-photo"></video>
     <img v-else :src="details.coverImage" mode="widthFix" class="cover-photo">
     <div class="auth-wrap">
       <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-high_quality@2x.png'" class="good-article-icon">
@@ -11,15 +11,15 @@
       </div>
       <div class="auth-info">
         <div class="name">
-          <div>{{details.authName}}</div>
+          <div class="name-text">{{details.authName}}</div>
           <level-icon :num="details.authorLevel"></level-icon>
         </div>
         <div class="auth-introduce">{{details.authSignature}}</div>
       </div>
     </div>
-    <div  v-if="details.lookCount || details.goodCount" class="browse-wrap">
+    <div v-if="details.lookCount || details.goodCount" class="browse-wrap">
       <div v-if="details.lookCount" class="browse-title">浏览{{details.lookCount>= 10000 ? details.lookCount/10000 +'万':details.lookCount}}</div>
-      <div  v-if="details.goodCount" class="like-wrap">
+      <div v-if="details.goodCount" class="like-wrap">
         <div class="like-total" @click="setLikeBtn">
           <img v-if="imageUrl && !details.goodStatus" :src="imageUrl + '/yx-image/article/icon-like_big1@2x.png'" alt="" class="like-icon">
           <img v-if="imageUrl && details.goodStatus" :src="imageUrl + '/yx-image/article/icon-like_big2@2x.png'" alt="" class="like-icon">
@@ -40,13 +40,14 @@
       <div class="goods-list">
         <goods-item v-for="(item,idx) in details.goodsList" :key="idx" :goodsData="item" @add="addGoods" @click="goToDetail(item)"></goods-item>
       </div>
-      <div v-for="(item,idx) in details.details" :key="idx" class="article-item"><text v-if="item.type==='text'" class="article-text">{{item.value}}</text>
+      <div v-for="(item,idx) in details.details" :key="idx" class="article-item">
+        <text v-if="item.type==='text'" class="article-text">{{item.value}}</text>
         <img v-if="item.type==='image'" :src="item.value.source_url" mode="widthFix" class="article-image"/>
-        <video v-if="item.type==='video'" :src="item.value.full_url" class="article-video"></video>
+        <video v-if="item.type==='video'" :src="item.value.full_url" :poster="item.value.cover_image_url" class="article-video"></video>
         <goods-item v-if="item.type==='goods'" :goodsData="item.value" @add="addGoods" @click="goToDetail(item.value)"></goods-item>
       </div>
     </div>
-    <div >
+    <div>
       <div class="bottom-operate-wrap">
       </div>
       <div v-if="BottomEmptyVisible" class="bottom-emty-20"></div>
@@ -54,7 +55,7 @@
         <div class="bottom-operate">
           <div class="operate-item" @click="setLikeBtn">
             <div class="icon-wrap">
-              <div v-if="details.goodCount"  class="count">{{details.goodCount}}</div>
+              <div v-if="details.goodCount" class="count">{{details.goodCount}}</div>
               <img v-if="imageUrl && !details.goodStatus" :src="imageUrl + '/yx-image/article/icon-like_big1@2x.png'" class="operate-icon">
               <img v-if="imageUrl && details.goodStatus" :src="imageUrl + '/yx-image/article/icon-like_big2@2x.png'" class="operate-icon">
             </div>
@@ -87,6 +88,7 @@
   import goodsItem from '../content-article-detail-video/goods-item/goods-item.vue'
   import contentMix from '@mixins/content-detail'
   import levelIcon from '../content-article-detail-video/level-icon/level-icon'
+
   const PAGE_NAME = 'CONTENT_ARTICLE_DETAIL'
   export default {
     name: PAGE_NAME,
@@ -97,8 +99,7 @@
     },
     mixins: [contentMix],
     data() {
-      return {
-      }
+      return {}
     },
     computed: {},
     methods: {}
@@ -109,11 +110,13 @@
   @import "~@designCommon"
   .bottom-emty-20
     height: 20px
+
   .content-article-detail
     width: 100%
 
     .cover-photo
       width: 100vw
+      display block
 
     .article-cont
       padding: 13px 15px
@@ -122,7 +125,7 @@
       display flex
       align-items center
       margin-bottom: 12px
-      padding: 13px 15px
+      padding: 12px 15px
       position relative
 
       .good-article-icon
@@ -133,8 +136,10 @@
         height: @width
 
       .auth-photo-wrap
+        width: 36px
+        height: 36px
         position: relative
-
+        border-1px(#e6e6e6, 18px)
         .auth-photo
           width: 36px
           height: 36px
@@ -154,13 +159,12 @@
         .name
           font-size: $font-size-14
           color: #111111
-          margin-bottom: 6px
+          margin-bottom: 1px
           display flex
           align-items center
-
-          .level-icon
-            width: 40px
-            height: 13px
+          font-weight bold
+          .name-text
+            margin-right:4px
 
         .auth-introduce
           color: #808080
@@ -179,27 +183,32 @@
         height: 56px
         display flex
         align-items center
+
         .like-total
           margin-right: 18px
+
           .like-icon
             width: 15px
             height: 15px
-            display:block
+            display: block
+
           .total-count
             font-size $font-size-10
             color: #111
             margin-top: 3px
+
         .good-list-wrap
-          flex:1
+          flex: 1
           overflow hidden
-          white-space:nowrap
+          white-space: nowrap
+          padding-right:15px
         .liker-photo
           width: 26px
           height: 26px
-          margin-right:19px
+          margin-right: 19px
           flex-shrink 0
           border-radius 50%
-          border:1px solid #E6E6E6
+          border: 1px solid #E6E6E6
 
     .line-middle
       border-bottom-1px(#E6E6E6)
@@ -212,6 +221,7 @@
         font-family $font-family-medium
         color: #111111
         margin-bottom 20px
+
       .foods-list
         font-family $font-family-regular
         font-size $font-size-15
@@ -238,14 +248,16 @@
 
     .bottom-operate-wrap
       height: 50px
+
     .bottom-operate-fixed
       position fixed
       bottom 0px
       right: 0
       left: 0
       background white
-      z-index:1000
+      z-index: 1000
       box-shadow: 0 -4px 20px 0 rgba(29, 32, 35, 0.06)
+
     .bottom-operate
       display flex
       justify-content space-around
@@ -275,9 +287,9 @@
             background #FE3B39
             color: #fff
             height: 16px
-            min-width:@height
-            box-sizing:border-box
-            text-align:center
+            min-width: @height
+            box-sizing: border-box
+            text-align: center
             border-radius 8px
             font-size: $font-size-10
 

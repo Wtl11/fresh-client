@@ -34,12 +34,13 @@
     top:0
     bottom:0
     left:-8px
+    z-index:100
   .level-icon
     position:relative
     height: 13px
     line-height 13px
     margin-left:10px
-    background-color #FF440B
+    background-color #FF8506
     border-radius 0 6px 6px 0
     font-size :10px
     color: #ffffff

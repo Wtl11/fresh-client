@@ -17,7 +17,11 @@
           <span class="price">{{goodsData.original_price}}元</span>
         </div>
         <div class="add-btn-wrap" @click.stop="addBtn(goodsData)">
-          <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-add_to@2x.png'" class="add-img">
+          <tempalte v-if="imageUrl">
+            <img v-if="goodsData.is_online === 0 || goodsData.usable_stock === 0" :src="imageUrl + '/yx-image/article/icon-add_to@2x.png'" class="add-img">
+            <img v-else :src="imageUrl + '/yx-image/article/icon-add_to@2x.png'" class="add-img">
+          </tempalte>
+
         </div>
       </div>
     </div>
@@ -80,10 +84,12 @@
       position:relative
       &.fix-pic
         position:absolute
-        top:0
-        left:0
-        right:0
-        bottom 0
+        width:60px
+        height:60px
+        top:15px
+        left:15px
+        right:15px
+        bottom 15px
         z-index:10
     .info
       padding: 5px 0px 5px 12px
