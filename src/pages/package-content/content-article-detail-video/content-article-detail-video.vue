@@ -32,7 +32,7 @@
             <img v-if="imageUrl && details.goodStatus" :src="imageUrl + '/yx-image/article/icon-fabulous2@2x.png'" class="operate-icon">
           </div>
           <div class="operate-item">
-            <div v-if="details.lookCount" class="count">{{details.lookCount > 999 ? '999+' :details.lookCount}}</div>
+            <div v-if="details.shareCount" class="count">{{details.shareCount > 999 ? '999+' :details.shareCount}}</div>
             <button v-if="preview===1" class="operate-icon">
               <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-share_big@2x.png'" class="operate-icon">
             </button>

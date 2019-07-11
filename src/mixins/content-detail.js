@@ -8,6 +8,7 @@ import ShareTrick from '@mixins/share-trick'
 export default {
   data: {
     BottomEmptyVisible: false,
+    isLoading: false,
     preview: 0,
     articleId: 0,
     currentType: 'common',
@@ -108,12 +109,12 @@ export default {
   },
   methods: {
     ...cartMethods,
-    _getDetails() {
+    _getDetails(isLikes = true) {
       API.Content.getDetails({ id: this.articleId, preview: this.preview }).then(res => {
-        this.changeData(res.data)
+        this.changeData(res.data, isLikes)
       })
     },
-    changeData(obj) {
+    changeData(obj, isLikes) {
       this.currentType = obj.type || 'common'
       this.details.title = obj.title
       this.details.category = obj.id
@@ -127,7 +128,7 @@ export default {
       this.details.lookCount = obj.browse_count
       this.details.shareCount = obj.share_count
       this.details.goodStatus = obj.is_fabulou
-      if (this.currentType !== 'video') this._getLikes()
+      if (this.currentType !== 'video' && isLikes) this._getLikes()
       obj.assembly.forEach(item => {
         if (item.type === 'combination' && item.style_type === 'content') {
           let details = []
@@ -191,9 +192,10 @@ export default {
       })
     },
     setLikeBtn() {
-      if (this.preview) return false
-      this.details.goodStatus = !this.details.goodStatus
-      this._articleOperation('fabulou')
+      if (this.preview || this.isLoading) return false
+      this._articleOperation('fabulou').then(res => {
+        this.details.goodStatus = !this.details.goodStatus
+      })
     },
     shareBtn() {
       if (this.preview) return false
@@ -231,7 +233,10 @@ export default {
       return API.Content.articleOperation({ article_id: this.articleId, handle: handle, ...other }).then(res => {
         if (res.error === this.$ERR_OK) {
           if (handle === 'fabulou') this._getDetails()
+          if ( handle === 'share') this._getDetails(false)
         }
+      }).finally(res => {
+        this.isLoading = false
       })
     }
   }
