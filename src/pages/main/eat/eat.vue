@@ -49,7 +49,9 @@
                     <div class="fall-title">{{item.title}}</div>
                     <div class="fall-author">
                       <div class="fall-author-left" v-if="item.author">
-                        <img :src="item.author.head_image_url" class="fall-author-img">
+                        <div class="fall-author-img-box">
+                          <image mode='aspectFill' :src="item.author.head_image_url" class="fall-author-img"></image>
+                        </div>
                         <span class="fall-author-name">{{item.author.nickname}}</span>
                       </div>
                       <div class="fall-author-right" @click.stop="giveLike('left', index, item)">
@@ -77,7 +79,9 @@
                     <div class="fall-title">{{item.title}}</div>
                     <div class="fall-author">
                       <div class="fall-author-left" v-if="item.author">
-                        <img :src="item.author.head_image_url" class="fall-author-img">
+                        <div class="fall-author-img-box">
+                          <image mode='aspectFill' :src="item.author.head_image_url" class="fall-author-img"></image>
+                        </div>
                         <span class="fall-author-name">{{item.author.nickname}}</span>
                       </div>
                       <div class="fall-author-right" @click.stop="giveLike('right', index, item)">
@@ -539,14 +543,18 @@
           .fall-author-left
             display: flex
             align-items: center
-            .fall-author-img
+            .fall-author-img-box
+              overflow: hidden
               width: 20px
-              background: $color-background
               min-width: 20px
               height: 20px
-              min-height: 20px
               border-radius: 50%
               margin-right: 5px
+            .fall-author-img
+              width: 20px
+              min-width: 20px
+              height: 20px
+              border-radius: 50%
             .fall-author-name
               line-height: 1.2
               color: #808080
