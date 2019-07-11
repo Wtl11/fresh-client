@@ -12,15 +12,16 @@
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
 
-  const PAGE_NAME = 'GOODS_END'
+  const PAGE_NAME = 'CONTENT_END'
 
   export default {
     name: PAGE_NAME,
-    data() {
-      return {}
-    },
     components: {
       NavigationBar
+    },
+    data() {
+      return {
+      }
     },
     methods: {
       goBack() {
@@ -34,17 +35,20 @@
   @import "~@designCommon"
   .goods-end-box
     padding-top: 110px
+
     .goods-end-img
       width: 116px
       height: 110px
       margin: 0 auto
       display: block
+
     .goods-end-text
       font-family: $font-family-regular
       text-align: center
       margin-top: 15px
       font-size: $font-size-14
       color: $color-text-sub
+
     .goods-go-index
       color: $color-white
       height: 28px
@@ -59,3 +63,4 @@
   .goods-end
     width: 100%
 </style>
+

@@ -39,6 +39,7 @@
     {
       "root": "package-content/",
       "pages": [
+        "content-end",
         "content-articles",
         "content-article-detail",
         "content-article-detail-video"
