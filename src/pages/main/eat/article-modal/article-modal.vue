@@ -88,13 +88,13 @@
       z-index: 1
 
   .article1
-    border-radius: 8px
+    border-radius: 4px
 
   .article2
     display: flex
     justify-content: space-between
     .article-item
-      border-radius: 8px
+      border-radius: 4px
       padding: 12px 0 0 12px
       width: 45.73333vw
       .article-modal-title
@@ -112,7 +112,7 @@
       .article-item
         height: 21.7333vw
     .article-item
-      border-radius: 8px
+      border-radius: 4px
       padding: 12px 0 0 12px
       width: 45.73333vw
       .article-modal-title
