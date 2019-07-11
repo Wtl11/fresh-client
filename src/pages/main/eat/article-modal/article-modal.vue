@@ -47,7 +47,7 @@
     },
     methods: {
       goDetail(item) {
-        let url = item.type === 'video' ? `${this.$routes.content.CONTENT_ARTICLES_DETAIL_VIDEO}?articleId=${item.other_id}` : `${this.$routes.content.CONTENT_ARTICLES_DETAIL}?articleId=${item.other_id}`
+        let url = item.article.type === 'video' ? `${this.$routes.content.CONTENT_ARTICLES_DETAIL_VIDEO}?articleId=${item.other_id}` : `${this.$routes.content.CONTENT_ARTICLES_DETAIL}?articleId=${item.other_id}`
         wx.navigateTo({ url })
       }
     }
@@ -74,6 +74,7 @@
       left: 0
       width: 100%
       height: 100%
+      z-index: 10
       background: rgba(0, 0, 0, .15)
     .article-modal-img
       position: absolute
@@ -82,19 +83,20 @@
       width: 100%
     .article-modal-title
       position: relative
-      font-family: FZLTTHJW--GB1-0
+      font-family: $font-family-medium
+      font-weight: 600
       color: $color-white
       font-size: $font-size-18
-      z-index: 1
+      z-index: 10
 
   .article1
-    border-radius: 8px
+    border-radius: 4px
 
   .article2
     display: flex
     justify-content: space-between
     .article-item
-      border-radius: 8px
+      border-radius: 4px
       padding: 12px 0 0 12px
       width: 45.73333vw
       .article-modal-title
@@ -112,7 +114,7 @@
       .article-item
         height: 21.7333vw
     .article-item
-      border-radius: 8px
+      border-radius: 4px
       padding: 12px 0 0 12px
       width: 45.73333vw
       .article-modal-title

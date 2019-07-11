@@ -41,7 +41,7 @@
                       <image
                         v-if="item.cover_image"
                         class='card-img'
-                        mode='aspectFill'
+                        mode='widthFix'
                         :src="item.cover_image.source_url"
                         lazy-load>
                       </image>
@@ -49,7 +49,9 @@
                     <div class="fall-title">{{item.title}}</div>
                     <div class="fall-author">
                       <div class="fall-author-left" v-if="item.author">
-                        <img :src="item.author.head_image_url" class="fall-author-img">
+                        <div class="fall-author-img-box">
+                          <image mode='aspectFill' :src="item.author.head_image_url" class="fall-author-img"></image>
+                        </div>
                         <span class="fall-author-name">{{item.author.nickname}}</span>
                       </div>
                       <div class="fall-author-right" @click.stop="giveLike('left', index, item)">
@@ -69,7 +71,7 @@
                       <image
                         v-if="item.cover_image"
                         class='card-img'
-                        mode='aspectFill'
+                        mode='widthFix'
                         :src="item.cover_image.source_url"
                         lazy-load>
                       </image>
@@ -77,7 +79,9 @@
                     <div class="fall-title">{{item.title}}</div>
                     <div class="fall-author">
                       <div class="fall-author-left" v-if="item.author">
-                        <img :src="item.author.head_image_url" class="fall-author-img">
+                        <div class="fall-author-img-box">
+                          <image mode='aspectFill' :src="item.author.head_image_url" class="fall-author-img"></image>
+                        </div>
                         <span class="fall-author-name">{{item.author.nickname}}</span>
                       </div>
                       <div class="fall-author-right" @click.stop="giveLike('right', index, item)">
@@ -198,14 +202,17 @@
       this._getArticleList(true)
     },
     onShow() {
-      this.shopId = wx.getStorageSync('shopId')
+      let id = wx.getStorageSync('shopId')
       let query = this._$$initOptions()
-      if (!this.shopId) {
+      if (!id) {
         this.shopId = query.shopId
         wx.setStorageSync('shopId', this.shopId)
       }
+      if (this.shopId !== id) {
+        this._getArticleList(false)
+      }
+      this.shopId = id
       this.systemInfoSync = this.$wx.getSystemInfoSync()
-      this._getArticleList(false)
       this.$$shareHandler({ event: EVENT_CODE.EAT })
     },
     onReachBottom() {
@@ -216,6 +223,9 @@
       this.getContentList()
     },
     onPullDownRefresh() {
+      if (this.contentList.length) {
+        this.contentList[this.tabIndex].page = 1
+      }
       this._getArticleList(false)
       wx.stopPullDownRefresh()
     },
@@ -233,7 +243,6 @@
       },
       // 点赞
       giveLike(type, index, item) {
-        console.log(item.fabulous_num)
         // 点赞，参数未对接
         type = `${type}List`
         API.Content.articleOperation({ article_id: item.id, handle: 'fabulou' })
@@ -248,6 +257,12 @@
       },
       // 内容列表
       getContentList(id, loading = false) {
+        if (this.classifyId === '') {
+          this.contentList[this.tabIndex].isEmpty = !this.articleList.length
+          this.contentList = JSON.parse(JSON.stringify(this.contentList))
+          this.fillData(false, this.contentList[this.tabIndex].arr)
+          return
+        }
         this.contentList[this.tabIndex].classifyMore = true
         API.Content.getWorkList({ type: '', status: 1, is_cate_show: 1, category_id: this.classifyId, page: this.contentList[this.tabIndex].page })
           .then((res) => {
@@ -272,8 +287,8 @@
         rightList.length = 0
         leftHeight = 0
         rightHeight = 0
-        this.leftList = []
-        this.rightList = []
+        // this.leftList = []
+        // this.rightList = []
         rightList = []
         leftList = []
         for (let i = 0, len = listData.length; i < len; i++) {
@@ -297,8 +312,6 @@
             rightHeight = rightHeight + tmp.itemHeight
           }
         }
-        // console.log(leftHeight)
-        // console.log(rightList)
         this.contentList[this.tabIndex].leftList = leftList
         this.contentList[this.tabIndex].rightList = rightList
       },
@@ -312,11 +325,15 @@
               switch (item.module_name) {
                 case 'article_category':
                   this.tabList1 = item.list
-                  if (this.tabIndex + 1 > this.tabList1.length || !item.list.length) {
+                  if (this.tabIndex + 1 > this.tabList1.length || !this.tabList1.length) {
                     this.tabIndex = 0
                   }
+                  this.classifyId = this.tabList1.length ? this.classifyId : ''
                   this.getCategoryData()
                   this.getContentList()
+                  break
+                case 'article_recommend':
+                  this.articleList = item.list
                   break
                 default:
                   break
@@ -325,29 +342,24 @@
           })
       },
       _changeTabLine() {
-        let left = 0
-        wx.createSelectorQuery().selectAll('.scroll-item').boundingClientRect().exec(res => {
-          if (res && res[0]) {
-            let arr = res[0]
-            arr.forEach((item, index) => {
-              if (index < this.tabIndex) {
-                left += item.width
-              }
-              this.lineWidth = res[0][this.tabIndex].width
-            })
-            this.lineTranslateX = left
-          }
-        })
-        // this.getCategoryData()
+        // let left = 0
+        // wx.createSelectorQuery().selectAll('.scroll-item').boundingClientRect().exec(res => {
+        //   if (res && res[0]) {
+        //     let arr = res[0]
+        //     arr.forEach((item, index) => {
+        //       if (index < this.tabIndex) {
+        //         left += item.width
+        //       }
+        //       this.lineWidth = res[0][this.tabIndex].width
+        //     })
+        //     this.lineTranslateX = left
+        //   }
+        // })
       },
       async _changeTab(index, id, e) {
         if (this.tabIndex === index) return
         // 如果是切换旁边的tab就加上动画，不是旁边的tab就不要动画
         this.boxTransition = 'all .3s'
-        // if (this.tabIndex === index + 1 || this.tabIndex === index - 1) {
-        // } else {
-        //   this.boxTransition = ''
-        // }
         this._setViewToItem(index)
         this.move = e.target.offsetLeft
         this.classifyId = id
@@ -366,13 +378,6 @@
         })
       },
       getCategoryData(isLoad = false) {
-        // setTimeout(() => {
-        //   wx.createSelectorQuery().selectAll('.scroll-item').boundingClientRect().exec(res => {
-        //     if (res && res[0]) {
-        //       this.lineWidth = res[0][this.tabIndex].width
-        //     }
-        //   })
-        // }, 300)
         if (!this.tabList1.length) {
           this.contentList = [JSON.parse(JSON.stringify(ARR))]
           return
@@ -397,7 +402,7 @@
   @import "~@designCommon"
   $scroll-item-width = 81px
   .eat
-    height: 100vh
+    min-height: 100vh
     background-image: linear-gradient(180deg, #FFFFFF 11%, #F7F7F7 32%)
 
   .scroll-view2
@@ -512,8 +517,9 @@
         overflow: hidden
         position: relative
       .card-img
-        border-top-right-radius: 8px
-        border-top-left-radius: 8px
+        display: block
+        border-top-right-radius: 4px
+        border-top-left-radius: 4px
         width: 100%
       .video-icon
         width: 20px
@@ -527,7 +533,7 @@
         overflow: hidden
         box-shadow: 0 3px 8px 0 rgba(17, 17, 17, 0.05)
         background: $color-white
-        border-radius: 8px
+        border-radius: 4px
         .fall-author
           display: flex
           padding: 0 2.667vw 2.667vw
@@ -537,14 +543,18 @@
           .fall-author-left
             display: flex
             align-items: center
-            .fall-author-img
+            .fall-author-img-box
+              overflow: hidden
               width: 20px
-              background: $color-background
               min-width: 20px
               height: 20px
-              min-height: 20px
               border-radius: 50%
               margin-right: 5px
+            .fall-author-img
+              width: 20px
+              min-width: 20px
+              height: 20px
+              border-radius: 50%
             .fall-author-name
               line-height: 1.2
               color: #808080
