@@ -3,7 +3,7 @@
     <navigation-bar :showArrow="false" title="吃什么"></navigation-bar>
     <div v-for="(module, moduleIndex) in moduleData" :key="moduleIndex" class="eat-box">
       <!--文章模块-->
-      <article-modal v-if="module.module_name === 'article_recommend'" :articleList="module.list"></article-modal>
+      <article-modal v-if="module.module_name === 'article_recommend' && module.list.length" :articleList="module.list"></article-modal>
       <div v-if="module.module_name === 'article_recommend'">
         <scroll-view
           class="scroll-view2"
@@ -125,7 +125,7 @@
   let itemWidth = 0
   let maxHeight = 0
   const PAGE_NAME = 'EAT'
-  const ARR = { arr: [], classifyMore: false, isEmpty: false, lastPage: 1, page: 1, leftList: [], rightList: [] }
+  const ARR = { arr: [], classifyMore: false, isEmpty: false, lastPage: 2, page: 1, leftList: [], rightList: [] }
   export default {
     name: PAGE_NAME,
     mixins: [
@@ -145,7 +145,7 @@
       return {
         statusBarHeight: 20,
         lineTranslateX: 0,
-        classifyId: null,
+        classifyId: '',
         contentList: [],
         tabList1: [],
         tabIndex: 0,
@@ -312,7 +312,7 @@
               switch (item.module_name) {
                 case 'article_category':
                   this.tabList1 = item.list
-                  if (this.tabIndex + 1 > this.tabList1.length) {
+                  if (this.tabIndex + 1 > this.tabList1.length || !item.list.length) {
                     this.tabIndex = 0
                   }
                   this.getCategoryData()
@@ -373,6 +373,10 @@
         //     }
         //   })
         // }, 300)
+        if (!this.tabList1.length) {
+          this.contentList = [JSON.parse(JSON.stringify(ARR))]
+          return
+        }
         this.tabHeight = this.tabList1.length ? 47 : 0
         this.classifyId = this.tabList1.length ? this.tabList1[this.tabIndex].other_id : ''
         let length = this.tabList1.length
