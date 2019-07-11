@@ -140,14 +140,14 @@ export default {
               case "image":
                 details.push({
                   type: 'image',
-                  value: contItem.image.source_url,
+                  value: contItem.image,
                   id: contItem.image.id
                 })
                 break
               case "video":
                 details.push({
                   type: 'video',
-                  value: contItem.video.full_url,
+                  value: contItem.video,
                   id: contItem.video.id
                 })
                 break

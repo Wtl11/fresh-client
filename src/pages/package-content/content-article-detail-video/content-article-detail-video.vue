@@ -27,18 +27,21 @@
       <div class="operate-wrap">
         <div class="operate-wrap-box">
           <div class="operate-item" @click="setLikeBtn">
-            <div v-if="details.goodCount" class="count">{{details.goodCount}}</div>
+            <div v-if="details.goodCount" class="count">{{details.goodCount > 999 ? '999+' :details.goodCount}}</div>
             <img v-if="imageUrl && !details.goodStatus" :src="imageUrl + '/yx-image/article/icon-fabulous1@2x.png'" class="operate-icon">
             <img v-if="imageUrl && details.goodStatus" :src="imageUrl + '/yx-image/article/icon-fabulous2@2x.png'" class="operate-icon">
           </div>
-          <button v-if="preview===1" class="operate-icon">
-            <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-share_big@2x.png'" class="operate-icon">
-          </button>
-          <button v-else open-type="share" class="operate-icon">
-            <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-share_big@2x.png'" class="operate-icon">
-          </button>
+          <div class="operate-item">
+            <div v-if="details.lookCount" class="count">{{details.lookCount > 999 ? '999+' :details.lookCount}}</div>
+            <button v-if="preview===1" class="operate-icon">
+              <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-share_big@2x.png'" class="operate-icon">
+            </button>
+            <button v-else open-type="share" class="operate-icon">
+              <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-share_big@2x.png'" class="operate-icon">
+            </button>
+          </div>
           <div class="operate-item" @click="goToBuyCar">
-            <div  v-if="count" class="count">{{count || 0}}</div>
+            <div v-if="count" class="count">{{count > 999 ? '999+' :count}}</div>
             <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-shoping_catbig@2x.png'" class="operate-icon" @clcik="goToBuyCar">
           </div>
         </div>
@@ -199,7 +202,7 @@
           .count
             position: absolute
             top: -12px
-            left: 18px
+            right: px-change-vw(25)
             color: #fff;
             font-size $font-size-12
             padding: 0 4px
