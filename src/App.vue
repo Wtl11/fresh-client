@@ -60,6 +60,7 @@
       this.setScene(options)
       let storyShopId = baseURL.defaultId
       if (options.query.scene) {
+        console.log(options)
         let {shopId} = resolveQueryScene(options.query.scene)
         // let sceneMsg = decodeURIComponent(options.query.scene)
         // const params = getParams(sceneMsg)

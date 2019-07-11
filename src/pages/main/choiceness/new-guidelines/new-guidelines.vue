@@ -8,12 +8,12 @@
     >
       添加「我的小程序」团购更方便<p class="triangle"></p>
     </section>
-<!--    <article class="mask-wrapper" v-if="isShow" :animation="maskAnimation">-->
+<!--    <article-modal class="mask-wrapper" v-if="isShow" :animation="maskAnimation">-->
 <!--      <div class="pic-wrapper" :style="{top: top + 'px'}">-->
 <!--        <img class="pic-img" mode="widthFix" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/pic-xszy.png'">-->
 <!--        <div class="button" @click="cancel"></div>-->
 <!--      </div>-->
-<!--    </article>-->
+<!--    </article-modal>-->
   </div>
 </template>
 
