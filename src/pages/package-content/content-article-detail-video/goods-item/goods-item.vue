@@ -18,7 +18,7 @@
         </div>
         <div class="add-btn-wrap" @click.stop="addBtn(goodsData)">
           <tempalte v-if="imageUrl">
-            <img v-if="goodsData.is_online === 0 || goodsData.usable_stock === 0" :src="imageUrl + '/yx-image/article/icon-add_to@2x.png'" class="add-img">
+            <img v-if="goodsData.is_online === 0 || goodsData.usable_stock === 0" :src="imageUrl + '/yx-image/article/icon-add_hui@2x.png'" class="add-img">
             <img v-else :src="imageUrl + '/yx-image/article/icon-add_to@2x.png'" class="add-img">
           </tempalte>
 
