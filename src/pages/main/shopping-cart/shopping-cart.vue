@@ -3,15 +3,16 @@
     <div class="wrap" :class="{'padding-wrap': goodsList.length}">
       <navigation-bar title="购物车" :showArrow="false" :translucent="false"></navigation-bar>
       <div class="shop-list">
-        <div class="shop-item" :class="{'shop-item-opcta' : item.num <= 0}" v-for="(item, index) in goodsList" :key="item.id">
-          <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && !item.checked && item.num > 0" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt=""/>
-          <!--<img class="sel-box" v-if="imageUrl && item.num <= 0" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt="" />-->
-          <div class="sel-box sel-clr-box" v-if="imageUrl && item.num <= 0"></div>
-          <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && item.checked && item.num > 0 && corpName === 'platform'" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
-          <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && item.checked && item.num > 0 && corpName === 'retuan'" :src="imageUrl+'/yx-image/retuan/icon-pick_gwc@2x.png'" alt=""/>
+        <div class="shop-item" :class="{'shop-item-opcta' : !item.allowCheck}" v-for="(item, index) in goodsList" :key="item.id">
+          <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && !item.checked && item.allowCheck" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt=""/>
+          <!--<img class="sel-box" v-if="imageUrl && !item.allowCheck" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt="" />-->
+          <div class="sel-box sel-clr-box" v-if="imageUrl && !item.allowCheck"></div>
+          <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && item.checked && item.allowCheck && corpName === 'platform'" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
+          <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && item.checked && item.allowCheck && corpName === 'retuan'" :src="imageUrl+'/yx-image/retuan/icon-pick_gwc@2x.png'" alt=""/>
           <button formType="submit" class="goods-image" @click.stop="jumpGoodsDetail(item)">
             <img class="goods-img" mode="aspectFill" :src="item.goods_cover_image" alt="">
             <div class="robbed" v-if="item.num <= 0">已抢完</div>
+            <div class="robbed" v-else-if="item.activity && item.activity.activity_theme === ACTIVE_TYPE.NEW_CLIENT && item.is_new_client !== 1">新人专属</div>
           </button>
           <div class="good-info">
             <div formType="submit" class="top" @click.stop="jumpGoodsDetail(item)">
@@ -112,7 +113,6 @@
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import CustomTabBar from '@components/custom-tab-bar/custom-tab-bar'
   import ConfirmMsg from '@components/confirm-msg/confirm-msg'
-  // import GoodsItem from './goods-item/goods-item'
   import API from '@api'
   import {orderMethods, cartMethods} from '@state/helpers'
   import ClearWatch from '@mixins/clear-watch'
@@ -187,12 +187,23 @@
       this.page++
       this.getCarRecommend()
     },
+    async onPullDownRefresh() {
+      this.page = 1
+      this.hasMore = true
+      Promise.all([
+        this.getCarRecommend(),
+        this._getShopCart(this.firstLoad)
+      ]).then(() => {
+        this.$wx.stopPullDownRefresh()
+      })
+    },
     computed: {
       checkedGoods() {
-        return this.goodsList.filter((item) => item.checked)
+        return this.goodsList.filter((item) => item.checked && item.allowCheck)
       },
       totalPrice() {
         return this.checkedGoods.reduce((total, current) => {
+          if (!current.allowCheck) return 0
           let money = (total * 1) + (current.trade_price * current.num)
           money = money.toFixed(2)
           return money
@@ -240,14 +251,21 @@
         }
         res.data.forEach((item) => {
           let usableStock = item.usable_stock * 1
-          // item.checked = true
           item.num = item.num <= usableStock ? item.num : usableStock
           item.num > 0 ? item.checked = true : item.checked = false
+          item.allowCheck = this._allowCheckHandle(item)
         })
         this.goodsList = res.data
         this.goodsList.length > 0 ? this.isShowCart = false : this.isShowCart = true
         this.deliverAt = res.delivery_at
         this.setCartCount()
+      },
+      _allowCheckHandle(item) {
+        if (item.activity && item.activity.activity_theme === ACTIVE_TYPE.NEW_CLIENT) {
+          return item.num > 0 && item.is_new_client === 1 // 老人0 新人1
+        } else {
+          return item.num > 0
+        }
       },
       async getCarRecommend() {
         this.recommendListLoad = true
@@ -331,7 +349,7 @@
         let goodsList = this.goodsList
         let currentAllChecked = this.allChecked
         goodsList.forEach((item) => {
-          if (!currentAllChecked && item.num > 0) {
+          if (!currentAllChecked && item.allowCheck) {
             item.checked = true
           } else {
             item.checked = false
@@ -345,7 +363,7 @@
           return
         }
         const goodsList = objDeepCopy(this.checkedGoods).map(item => {
-          if (item.is_new_client === 0) {
+          if (item.is_new_client === 0) { // 老人0 新人1
             item.trade_price = item.goods_sale_price
           }
           return item
@@ -376,9 +394,9 @@
   .wrap
     width: 100vw
     min-height: 100vh
-    background: $color-background
     position: relative
     padding-bottom: 10px
+    background: #fff
   .padding-wrap
     padding-bottom: 60px
   .payment
@@ -643,6 +661,7 @@
         color: #1D2023
     .recommend-list
       width: 100vw
+      background: $color-background
       layout(row)
       align-items: center
       padding: 0 6px

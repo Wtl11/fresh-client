@@ -49,16 +49,26 @@
       }
     },
     data() {
+      this.allowButton = true
       return {
-
       }
+    },
+    onUnload() {
+      this.allowButton = true
+      clearTimeout(this.timer)
     },
     methods: {
       getUserInfoHandle(e) {
         this.$emit('getUserInfo', e)
       },
       buttonHandle() {
-        this.$emit('buttonHandle')
+        if (this.allowButton) {
+          this.allowButton = false
+          this.$emit('buttonHandle')
+          this.timer = setTimeout(() => {
+            this.allowButton = true
+          }, 500)
+        }
       }
     }
   }

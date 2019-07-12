@@ -14,7 +14,8 @@ const UN_AUTO_SNED_PAGE = [
   'goods-end',
   'error',
   'lost',
-  'open-location'
+  'open-location',
+  'share-order'
 ]
 export default {
   onReady() {

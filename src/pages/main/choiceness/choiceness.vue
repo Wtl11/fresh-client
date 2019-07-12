@@ -145,8 +145,9 @@
                       <section class="bottom-wrapper">
                         <p class="title">{{child.name}}</p>
                         <div class="price-wrapper">
-                          <p class="number">{{child.tradePrice && child.tradePrice.int}}</p>
-                          <p class="dec">{{child.tradePrice && child.tradePrice.dec}}</p>
+                          <p class="number">{{child.trade_price}}</p>
+<!--                          <p class="number">{{child.tradePrice && child.tradePrice.int}}</p>-->
+<!--                          <p class="dec">{{child.tradePrice && child.tradePrice.dec}}</p>-->
                           <p class="unit">元</p>
                           <p class="origin-price">{{child.original_price}}元</p>
                         </div>
@@ -302,8 +303,9 @@
                         <p class="sub-title">{{child.describe}}</p>
                         <span class="active-icon">{{item.iconText}}</span>
                         <div class="money-wrapper">
-                          <p class="m-int">{{child.tradePrice && child.tradePrice.int}}</p>
-                          <p class="m-float">{{child.tradePrice && child.tradePrice.dec}}</p>
+<!--                          <p class="m-int">{{child.tradePrice && child.tradePrice.int}}</p>-->
+<!--                          <p class="m-float">{{child.tradePrice && child.tradePrice.dec}}</p>-->
+                          <p class="m-int">{{child.trade_price}}</p>
                           <p class="m-unit">元</p>
                           <p class="m-origin">{{child.original_price}}元</p>
                         </div>
@@ -493,6 +495,7 @@
       // 监听用户静默登录后调用
       userInfo(val = {}) {
         this._getCouponModalList(val.id)
+        this.setCartCount()
       }
     },
     onLoad(options) {

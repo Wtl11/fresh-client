@@ -1,7 +1,7 @@
 <template>
   <form action="" report-submit @submit="$getFormId">
     <div class="active-detail">
-      <navigation-bar ref="navigationBar" :title="msgTitle" :translucent="true"></navigation-bar>
+      <navigation-bar ref="navigationBar" :title="msgTitle" :translucent="true" :arrowUrl="arrowUrl"></navigation-bar>
       <section class="banner-box">
         <section v-if="buyUsers.length" class="buy-users" :style="{top: statusBarHeight + 44 + 'px'}">
           <swiper
@@ -24,7 +24,16 @@
           <div class="place-holder"></div>
         </section>
         <div class="header-swiper">
-          <swiper v-if="goodsBanner && goodsBanner.length" class="banner" @change="bannerChange" interval="5000">
+          <swiper v-if="goodsBanner && goodsBanner.length" :current="swiperIdx" class="banner" @change="bannerChange" interval="5000">
+            <block v-if="hasVideo&&goodsMsg.goods_videos">
+              <swiper-item class="banner-item">
+                <video v-if="goodsMsg.goods_videos[0].full_url" class="item-img" id="goodsVideo" :src="goodsMsg.goods_videos[0].full_url" :poster="videoPoster" :muted="true" :show-mute-btn="true" :show-center-play-btn="false" :enable-progress-gesture="false" @ended='videoEnd' @waiting="videoWaiting" @progress="videoLoaded"></video>
+                <img v-if="goodsBanner[0].image_url" :class="!playBefore?'hide':''" :src="goodsBanner[0].image_url" mode="aspectFill" class="item-img video-img">
+                <div class="play-btn" @click="playVideo(false)">
+                  <img v-if="imageUrl&&!videoPlaying" :src="imageUrl + '/yx-image/2.6.5/icon-play_big@2x.png'" mode="aspectFill" class="play-btn-icon" @click.stop="playVideo(true)">
+                </div>
+              </swiper-item>
+            </block>
             <block v-for="(item, index) in goodsBanner" :key="index">
               <swiper-item class="banner-item">
                 <img :src="item.image_url + '?' + goodsMsg.image_view" class="item-img item-img-one" mode="aspectFill">
@@ -33,10 +42,19 @@
             </block>
           </swiper>
           <article class="banner-number" v-if="goodsBannerLength !== 0">
-            <div class="banner-number-box">{{currentNum}}/{{goodsBannerLength}}</div>
+            <div></div>
+            <div v-if="hasVideo" class="banner-btn-con">
+              <div :class="currentNum===0?'active':''" class="banner-number-box banner-btn" @click="changeCurrentNum(0)">
+                <img v-if="imageUrl&&currentNum===0" :src="imageUrl + '/yx-image/2.6.5/icon-play_white@2x.png'" mode="aspectFill" class="banner-btn-icon">
+                <img v-if="imageUrl&&currentNum!==0" :src="imageUrl + '/yx-image/2.6.5/icon-play_black@2x.png'" mode="aspectFill" class="banner-btn-icon">
+                视频
+              </div>
+              <div :class="currentNum!==0?'active':''" class="banner-number-box banner-btn" @click="changeCurrentNum(1)">图片</div>
+            </div>
+            <div :style="{opacity: currentNum!==0?'1':'0'}" class="banner-number-box">{{currentNum}}/{{goodsBannerLength}}</div>
           </article>
         </div>
-        <article class="header-title-wrapper">
+        <article :style="{zIndex: hasVideo&&videoPlaying?'-1':'1'}" class="header-title-wrapper">
           <section v-if="activityType === ACTIVE_TYPE.DEFAULT" class="header-title-default">
             <div class="left-price" :class="'corp-' + corpName + '-money'">{{goodsMsg.trade_price}}</div>
             <div class="left-price-text">
@@ -259,6 +277,7 @@
 
   const PAGE_NAME = 'ACTIVE_DETAIL'
   const PAGE_ROUTE_NAME = 'goods-detail'
+  const ARROW_URL = ['/yx-image/2.3/icon-return_white@2x.png', '/zd-image/1.2/icon-title_back@2x.png']
   // 按钮状态映射
   export const BTN_STATUS = {
     WILL: 0,
@@ -320,7 +339,18 @@
         product: null,
         showSharePanel: false,
         runTime: '',
-        articleId: 0
+        articleId: 0,
+        hasVideo: false,
+        isIos: false,
+        videoPoster: '',
+        videoPlaying: false,
+        playBefore: true,
+        videoLoading: false,
+        videoContext: '',
+        swiperIdx: 0,
+        arrowUrl: ARROW_URL[1],
+        runTime: '',
+        isShowOldCustomerButton: false
       }
     },
     computed: {
@@ -393,7 +423,8 @@
           salePrice: this.goodsMsg.goods_sale_price || 0,
           base_usable_stock: this.goodsMsg.base_usable_stock || 0, // 非活动库存
           usable_stock: this.goodsMsg.usable_stock || 0, // 库存
-          tipTop: this.tipTop || ''
+          tipTop: this.tipTop || '',
+          isShowOldCustomerButton: this.isShowOldCustomerButton
         }
       },
       // 二维码
@@ -413,7 +444,9 @@
       Ald.sendEvent('商品详情')
     },
     onShow() {
+      this.checkSystem()
       this._initPageParams()
+      this._checkIsNewClient()
       this.getQrCode()
       this._getLocation()
       this._getGoodsDetailData()
@@ -437,6 +470,7 @@
       // this._clearTimer()
       clearInterval(this._allActiveTimer)
       clearInterval(this._groupTimer)
+      this.autoplayTimer && clearTimeout(this.autoplayTimer)
     },
     onReady() {
       let res = this.$wx.getSystemInfoSync()
@@ -445,6 +479,7 @@
     onUnload() {
       clearInterval(this._allActiveTimer)
       clearInterval(this._groupTimer)
+      this.autoplayTimer && clearTimeout(this.autoplayTimer)
       this.$refs.navigationBar && this.$refs.navigationBar._initHeadStyle()
       this.eventCount = 0
       this.$refs.shareList && this.$refs.shareList.hideLink()
@@ -473,6 +508,11 @@
     methods: {
       ...orderMethods,
       ...cartMethods,
+      checkSystem() {
+        let res = wx.getSystemInfoSync()
+        let system = res.system
+        this.isIos = /Ios/i.test(system)
+      },
       _getRunTime() {
         API.Global.getRunTime().then(res => {
           this.runTime = res.data.run_time
@@ -585,8 +625,26 @@
         }, 1000)
       },
       bannerChange(e) {
-        if (e.target.current) {
-          this.currentNum = e.target.current * 1 + 1
+        if (e.mp.detail.source !== 'touch') return
+        let curNum = e.target.current * 1 + !this.hasVideo
+        this.changeCurrentNum(curNum)
+      },
+      changeCurrentNum(curNum) {
+        this.autoplayTimer && clearTimeout(this.autoplayTimer)
+        if (curNum !== this.currentNum) {
+          this.currentNum = curNum
+          if (this.hasVideo && this.videoContext) {
+            this.swiperIdx = curNum
+            if (curNum === 0) {
+              if (!this.playBefore) {
+                this.arrowUrl = ARROW_URL[0]
+              }
+            } else {
+              this.arrowUrl = ARROW_URL[1]
+              this.videoContext.pause()
+              this.videoPlaying = false
+            }
+          }
         }
       },
       // 画商品海报
@@ -653,12 +711,12 @@
         this.eventNo = EVENT_NO_CONFIG[entryAppType]
       },
       _checkIsNewClient() {
-        let flag = (this.goodsList && this.goodsList.some(val => val.activity.activity_theme === ACTIVE_TYPE.NEW_CLIENT))
-        if (flag) {
-          API.Global.checkIsNewCustomer().then(res => {
-            this.isShowNewCustomer = res.data.is_new_client === 0
-          })
+        if (this.activityType !== ACTIVE_TYPE.NEW_CLIENT) {
+          return
         }
+        API.Global.checkIsNewCustomer().then(res => {
+          this.isShowOldCustomerButton = res.data.is_new_client === 0 // 老人0 新人1
+        })
       },
       // addNumber控件确定按钮
       async comfirmNumer(number, type) {
@@ -842,6 +900,20 @@
           if (res.error === this.$ERR_OK) {
             this.goodsMsg = res.data
             this.msgTitle = this.goodsMsg.name
+            if (this.goodsMsg.goods_videos && this.goodsMsg.goods_videos.length) {
+              this.hasVideo = true
+              this.currentNum = 0// 默认为1，如果有视频设为0
+              this.videoContext = wx.createVideoContext('goodsVideo')
+              let that = this
+              this.autoplayTimer = setTimeout(() => {
+                if (!that.videoPlaying && that.playBefore && that.swiperIdx === 0) {
+                  that.playVideo(true)
+                }
+              }, 2000)
+              if (!this.isIos) {
+                this.videoPoster = this.goodsMsg.goods_videos[0].full_cover_url
+              }
+            }
             // this.$refs.navigationBar && this.$refs.navigationBar.setTranslucentTitle(this.goodsMsg.name)
             this._sendGoodsMsg()
             this._flashAction()
@@ -1035,16 +1107,14 @@
     padding-bottom: 55px
     box-sizing: border-box
     overflow-x: hidden
-
     .banner-box
-      position: relative
-
+      position :relative
       .header-title-wrapper
         position: absolute
         left: 12px
-        right: @left
+        right :@left
         bottom: -1px
-
+        transition: opacity 0.3s
   // 分享模块
   .share-panel-wrapper
     .share-mask
@@ -1055,51 +1125,44 @@
       right: 0
       z-index: 999
       background: rgba(17, 17, 17, 0.7)
-
     .share-panel
       position: fixed
       bottom: -130%
       left: 0
       background: #fff
       width: 100%
-      z-index: 9999
+      z-index:9999
       transition: all .5s
-
       &.show
-        bottom: 0
-
+        bottom :0
       .header
-        padding: 0 12px
-        height: 45px
+        padding :0 12px
+        height :45px
         background: #F7F7F7
         font-family: $font-family-regular
         font-size: 15px;
         color: #1D2023;
         letter-spacing: 1.36px
-        display: flex
-        justify-content: space-between
-        align-items: center
-
+        display :flex
+        justify-content :space-between
+        align-items :center
         .close-icon
-          width: 13px
-          height: @width
-
+          width :13px
+          height :@width
       .container
-        background: $color-white
-        display: flex
-        padding: 29px 0 70px
-
+        background :$color-white
+        display :flex
+        padding :29px 0 70px
         .container-item-wrapper
           flex: 1
-          position: relative
-
+          position :relative
           .tip-wrapper
             position absolute
-            top: 83px
+            top:83px
             left: 50%
-            transform: translateX(-20%)
-            width: 234.5px
-            height: 24px
+            transform :translateX(-20%)
+            width :234.5px
+            height :24px
             opacity: 0.7;
             font-size: 12px
             color: $color-text-sub
@@ -1107,85 +1170,72 @@
             line-height: @height
             background: #F5F5F5;
             border-radius: @height
-
             .triangle
-              position: absolute
-              top: -13px
-              left: 40px
-              width: 0
-              height: 0
-              border: 7px solid #F5F5F5;
+              position :absolute
+              top:-13px
+              left:40px
+              width :0
+              height :0
+              border:7px solid #F5F5F5;
               border-top-color: transparent
-              border-left-color: transparent
+              border-left-color :transparent
               border-right-color: transparent
-
           .line
-            position: absolute
-            width: 1px
-            height: 40px
-            left: 0
-            top: 4px
-            transform: scaleX(0.5)
+            position :absolute
+            width :1px
+            height :40px
+            left :0
+            top:4px
+            transform :scaleX(0.5)
             background: #E6E6E6
-
           .item-icon
-            width: 40px
-            height: @width
-            display: block
-            margin: 0 auto 10px
-
+            width :40px
+            height :@width
+            display :block
+            margin :0 auto 10px
           .text
             font-family: $font-family-regular
             font-size: 14px
             color: $color-text-sub
             text-align: center
-
             &.button
-              position: relative
-              top: 3px
-
+              position :relative
+              top:3px
   // 购买记录
   .buy-users
-    width: 35vw
+    width :35vw
     height: 24px
     padding: 0 9.5px 0 3px
-    background: rgba(17, 17, 17, 0.6)
+    background: rgba(17,17,17,0.6)
     border-radius: 36px
-    position: absolute
-    left: 8px
-    z-index: 80
-    overflow: hidden
-
+    position :absolute
+    left :8px
+    z-index :80
+    overflow :hidden
     .place-holder
       fill-box(absolute)
-      z-index: 3
-
+      z-index :3
     .carousel
-      height: 100%
-      width: 100%
-
+      height :100%
+      width :100%
       .content-wrapper
         layout(row)
         align-items: center
-
         .avatar-wrapper
           width: 20px
           height: 20px
           border-radius: 50%
           overflow: hidden
-          margin: 0 6px 0 0
-
+          margin :0 6px 0 0
           .img
             width: 100%
             height: 100%
-
         .text
           flex: 1
           font-family: $font-family-regular
           font-size: 12px
           color: #fff
           no-wrap()
-
   // 参团列表
   .collage-box
     padding: 0 10px
@@ -1194,94 +1244,76 @@
     box-sizing: border-box
     margin: 0 12px 10px
     box-shadow: 0 2px 15px 0 rgba(17, 17, 17, 0.06)
-
     .group-rule-wrapper
-      height: 45px
-      layout(row, block, nowrap)
-      overflow: hidden
-      align-items: center
+      height :45px
+      layout(row,block,nowrap)
+      overflow :hidden
+      align-items :center
       font-family: $font-family-regular
       font-size: 3.5vw
       color: #1D2023;
-
       &.active
         border-top-1px(#ECEDF1)
-
       .number
-        font-family: $font-family-din-bold
-
+        font-family :$font-family-din-bold
       .icon-arrow
-        width: 4.5px
-        height: 7.5px
-        margin: 0 4vw
-
+        width :4.5px
+        height :7.5px
+        margin :0 4vw
     .title
-      padding: 17px 0 6px
+      padding :17px 0 6px
       color: #1D2023
       font-size: $font-size-15
       font-family: $font-family-medium
-
     .collage-scroll
       height: 128px
       padding: 4px 0
       overflow: hidden
-
       &.single
-        height: 64px
-
+        height :64px
       .nothing
         text-align: center
         padding-top: 40px
         font-family: $font-family-regular
         font-size: $font-size-16
-
     .collage-content
       display: flex
       align-items: center
       justify-content: space-between
-      height: 100%
-
+      height :100%
       .left
         flex: 1
-        overflow: hidden
+        overflow :hidden
         display: flex
         align-items: center
-
       .logo
         width: 40px
         height: @width
         border-radius: 50%
-
       .name
         flex: 1
         white-space: nowrap
-        overflow: hidden
-        text-overflow: ellipsis
+        overflow :hidden
+        text-overflow :ellipsis
         font-family: $font-family-regular
         font-size: $font-size-14
         color: #1D2023
-        margin: 0 10px
-
+        margin:0 10px
       .right
         display: flex
         align-itmes: center
-
       .context
-        width: 80px
+        width :80px
         font-size: $font-size-12
         color: #1D2023
         font-family: $font-family-regular
-
         .text
           letter-spacing: 0
-
           .color
-            padding: 0 3px
+            padding :0 3px
             color: #FA7500
-
         .time
           margin-top: 5px
-
       .go-collage
         reset-button()
         width: 75px
@@ -1294,13 +1326,12 @@
         border-radius: 30px
         color: $color-white
         background: $color-main
-
   // header-detail
   .header-detail
     padding: 0 12px
     box-sizing: border-box
     position: relative
-    margin-bottom: 10px
+    margin-bottom :10px
 
     .share-wrapper
       position: absolute
@@ -1325,7 +1356,7 @@
       width: 100%
       padding: 10px 10px 15px
       box-sizing: border-box
-      border-radius: 0 0 8px 8px
+      border-radius : 0 0 8px 8px
 
       .title-wrapper
         position: relative
@@ -1394,51 +1425,82 @@
     width: 100vw
     height: 100vw
     position: relative
-
     .banner
       width: 100vw
       height: 100vw
-
       .banner-item
         width: 100%
         height: 100%
         position: relative
-
         .item-img
           width: 100%
           height: 100%
           position: absolute
           left: 0
           top: 0
-
+        .video-img
+          transition: all 0.3s
+          &.hide
+            opacity: 0
+            z-index: -1
+        .play-btn
+          width: 100%
+          height: 70%
+          position: absolute
+          left: 0
+          top: 15%
+          z-index: 9
+          layout()
+          justify-content: center
+          align-items: center
+          .play-btn-icon
+            width: 50px
+            height: @width
         .item-img-one
           z-index: 1
-
         .item-img-two
           z-index: 2
-
         .play
           all-center()
           height: 63px
           width: 63px
-
     .banner-number
+      box-sizing: border-box
+      width: 100%
+      padding: 0 12px
       position: absolute
       bottom: 13.3vw
       left: 0
       layout(row)
       align-items: center
-      justify-content: center
-      width: 100%
-
+      justify-content: space-between
       .banner-number-box
         display: inline-block
-        font-size: $font-size-12
-        background: rgba(0, 0, 0, .5)
+        font-size: $font-size-11
+        background: rgba(17,17,17,0.2)
         color: $color-white
         box-sizing: border-box
-        padding: 3px 8px 4px
+        padding: 2px 8px
         border-radius: 20px
+        opacity: .75
+        transition: all 0.3s
+        &.banner-btn
+          min-width: 48px
+          padding: 3px 8px
+          margin: 0 5px
+          background: $color-white
+          font-size: $font-size-10
+          color: $color-text-main
+          font-family: $font-family-regular
+          text-align: center
+          opacity: .75
+          &.active
+            background: linear-gradient(90deg, #FD4C46 0%, #FB6C21 73%)
+            color: $color-white
+            opacity: 1
+          .banner-btn-icon
+            width: 7px
+            height: 7.5px
 
   // 画图
   .share-goods
@@ -1447,8 +1509,7 @@
     position: fixed
     width: 100vw
     height: 100vh
-    right: -100%
-
+    right :-100%
     .share-bg
       position: absolute
       left: 0
@@ -1457,25 +1518,21 @@
       width: 100vw
       display: block
       z-index: 9
-
     .share-box
       border-radius: 10px
       background: #fff
       box-shadow: 0 2px 11px 0 rgba(0, 0, 0, 0.10)
       z-index: 11
       position: relative
-
       .share-img
         display: block
         width: 89.4vw
         height: 89.4vw
         border-top-left-radius: 10px
         border-top-right-radius: 10px
-
     .share-bottom
       padding: 15px 15px 30px
       position: relative
-
     .wem-img
       position: absolute
       right: 15px
@@ -1483,19 +1540,16 @@
       width: 90px
       height: 90px
       display: block
-
     .share-title
       font-size: $font-size-16
       color: #1f1f1f
       font-family: $font-family-medium
       margin-bottom: 5px
-
     .share-sub-title
       font-size: $font-size-14
       color: $color-text-sub
       font-family: $font-family-regular
       margin-bottom: 16px
-
     .share-group-box
       font-size: $font-size-14
       color: $color-money
@@ -1505,18 +1559,15 @@
       text-align: center
       line-height: 20px
       margin-bottom: -5px
-
     .price-box
       layout(row)
       align-items: flex-end
-
       .share-price-number
         font-size: 30px
         color: $color-money
         font-family: $font-family-medium
         line-height: 1
         margin-right: 1px
-
       .share-price-icon
         font-size: $font-size-17
         color: $color-money
@@ -1524,7 +1575,6 @@
         line-height: 1
         margin-right: 1px
         padding-bottom: 2px
-
       .share-price-line
         font-size: $font-size-17
         color: #b7b7b7
@@ -1532,13 +1582,11 @@
         line-height: 1
         padding-bottom: 2px
         position: relative
-
         .share-money-line
           height: 1px
           width: 100%
           background: #888
           col-center()
-
   // 普通商品
   .header-title-default
     height: 13vw
@@ -1550,107 +1598,90 @@
     align-items: center
     padding-left: 10px
     box-sizing: border-box
-
     .left-price
       font-size: 30px
       font-family: $font-family-medium
-      color: rgba(255, 255, 255, 1)
-
+      color:rgba(255,255,255,1)
     .left-price-text
       layout(row)
       align-items: flex-end
-
       .price-text
         font-size: 22px
         font-family: $font-family-medium
         margin-right: 5px
-        color: rgba(255, 255, 255, 1)
-
+        color:rgba(255,255,255,1)
       .line-price-text
         font-size: $font-size-12
         font-family: $font-family-regular
         text-decoration: line-through
         line-height: 1
-        color: rgba(255, 255, 255, 0.8)
-        position: relative
-        bottom: 4px
-
-    // 限时抢购-title
-
+        color:rgba(255,255,255,0.8)
+        position :relative
+        bottom :4px
+  // 限时抢购-title
     .header-title
       position relative
-
       .icon-wrapper
         col-center()
-        right: 15px
-        width: 61px
-        height: 19px
-        border: 0.5px solid $color-white
-        layout(row, block, nowrap)
-        border-radius: 2px
-        overflow: hidden
-
+        right:15px
+        width :61px
+        height :19px
+        border :0.5px solid $color-white
+        layout(row,block,nowrap)
+        border-radius :2px
+        overflow :hidden
         .right
-          padding-left: 4px
+          padding-left :4px
           font-family: $font-family-medium
           font-size: 13px;
           color: #FFFFFF;
-
         .left
-          width: 19px
-          height: @width
-          background: $color-white
-          display: flex
-          justify-content: center
-          align-items: center
-
+          width :19px
+          height :@width
+          background :$color-white
+          display :flex
+          justify-content :center
+          align-items :center
           .left-icon
-            display: block
-            width: 11px
-            height: 10.5px
-
+            display :block
+            width :11px
+            height :10.5px
       &.active-common
         height: 13vw
         width: 100%
         border-top-left-radius: 8px
         border-top-right-radius: 8px
-        overflow: hidden
-
+        overflow :hidden
       &.group
-        position: relative
-
+        position :relative
       .banner-title-main
         padding-bottom: 13vw
         width: 100%
         position: relative
-
         .group-icon-wrapper
-          width: 53px
-          height: 20px
-          border: 1px solid $color-white
-          layout(row, block, nowrap)
-          border-radius: 2px
-          overflow: hidden
-          margin-right: 7px
+          width :53px
+          height :20px
+          border :1px solid $color-white
+          layout(row,block,nowrap)
+          border-radius :2px
+          overflow :hidden
+          margin-right :7px
           position relative
-          top: 2px
+          top :2px
           font-family: $font-family-medium
           font-size: 13px;
           color: #FFFFFF
-
           .right
-            padding-left: 4px
-
+            padding-left :4px
           .left
-            width: 20px
-            height: @width
-            background: $color-white
-            display: flex
-            justify-content: center
-            align-items: center
-            color: #FD4E44
-            font-size: 15px
-
+            width :20px
+            height :@width
+            background :$color-white
+            display :flex
+            justify-content :center
+            align-items :center
+            color:#FD4E44
+            font-size :15px
         .banner-title-bg
           position: absolute
           left: 0
@@ -1659,7 +1690,6 @@
           height: 100%
           border-top-left-radius: 8px
           border-top-right-radius: 8px
-
         .banner-main-box
           position: absolute
           left: 0
@@ -1671,30 +1701,25 @@
           layout(row)
           align-items: center
           justify-content: space-between
-
           .banner-main-left
             flex: 1
             layout(row)
             align-items: center
-
             .left-price
               font-size: 30px
               font-family: $font-family-medium
               color: $color-white
-
             .left-price-text
               font-size: 22px
               font-family: $font-family-medium
               color: $color-white
               margin-right: 6px
-              position: relative
-              top: 1px
-
+              position :relative
+              top:1px
             .line-price-top
               height: 11px
               width: 36.5px
               position: relative
-
               .text-img
                 width: 100%
                 height: 100%
@@ -1702,7 +1727,6 @@
                 position: absolute
                 left: 0
                 bottom: 0
-
               .text
                 height: 11px
                 font-size: 9px
@@ -1712,10 +1736,8 @@
                 text-align: center
                 position: relative
                 z-index: 11
-
                 &.group
                   color: #FF4343
-
             .line-price-box
               font-size: $font-size-12
               font-family: $font-family-regular
@@ -1723,28 +1745,24 @@
               line-height: 1
               color: #fff
               margin-top: 2px
-
               &.group
-                position: relative
-                top: -1px
-                opacity: 0.8
-
+                position :relative
+                top:-1px
+                opacity :0.8
           .banner-main-right
             text-align: center
-            position: relative
-            left: 5px
-
+            position :relative
+            left :5px
             .time-text
               font-size: $font-size-13
               color: $color-text-main
               font-family: $font-family-regular
-              line-height: 15px
-
+              line-height:15px
             .time-all-box
-              padding-top: 1px
+              padding-top :1px
               font-size: $font-size-14
               color: $color-text-main
               font-family: $font-family-medium
-              line-height: 15px
-              width: 65px
+              line-height:15px
+              width :65px
 </style>
