@@ -21,6 +21,7 @@
               <div class="order-num">{{order.code}}</div>
               <div class="name">{{order.address.nickname}}</div>
               <div class="phone">{{order.address.mobile}}</div>
+              <div v-if="order.is_new_customer" class="new-tips">新客</div>
               <div class="order-status" :class="'corp-' + corpName + '-money'">{{order.status_text}}</div>
             </div>
             <div class="goods-more">
@@ -51,6 +52,7 @@
               <div class="order-num">{{order.code}}</div>
               <div class="name">{{order.address.nickname}}</div>
               <div class="phone">{{order.address.mobile}}</div>
+              <div v-if="order.is_new_customer" class="new-tips">新客</div>
               <div class="order-status" :class="'corp-' + corpName + '-money'">{{order.status_text}}</div>
             </div>
             <div class="goods-more">
@@ -82,6 +84,7 @@
               <div class="order-num">{{order.code}}</div>
               <div class="name">{{order.address.nickname}}</div>
               <div class="phone">{{order.address.mobile}}</div>
+              <div v-if="order.is_new_customer" class="new-tips">新客</div>
               <div class="order-status" :class="'corp-' + corpName + '-money'">{{order.status_text}}</div>
             </div>
             <div class="goods-more">
@@ -184,7 +187,9 @@
         if (res.error !== this.$ERR_OK) {
           return
         }
-        this.pageObj[time + 'AllPage'] = res.meta.last_page
+        if (res.meta && res.meta.last_page) {
+          this.pageObj[time + 'AllPage'] = res.meta.last_page
+        }
         return res.data
       },
       async _setList() {
@@ -316,10 +321,21 @@
         font-family: $font-family-medium
         max-width: 70px
       .phone
-        margin-left: 6px
+        margin: 0 6px
         font-size: $font-size-14
         color: $color-text-main
         font-family: $font-family-medium
+      .new-tips
+        box-sizing: border-box
+        height: 16px
+        line-height: 1
+        padding: 3px 5px
+        background: rgba(115,194,0,0.10)
+        border-1px($color-main,8px)
+        border-radius: 8px
+        font-size: $font-size-10
+        color: $color-main
+        font-family: $font-family-regular
       .order-status
         col-center()
         right: 12px

@@ -112,7 +112,8 @@
           second: '00'
         },
         activityType: '',
-        ACTIVE_TYPE
+        ACTIVE_TYPE,
+        isShowOldCustomerButton: false
       }
     },
     computed: {
@@ -151,7 +152,8 @@
           salePrice: this.goodsMsg.goods_sale_price || 0,
           base_usable_stock: this.goodsMsg.base_usable_stock || 0, // 非活动库存
           usable_stock: this.goodsMsg.usable_stock || 0, // 库存
-          tipTop: this.tipTop || ''
+          tipTop: this.tipTop || '',
+          isShowOldCustomerButton: this.isShowOldCustomerButton
         }
       },
       // 二维码
@@ -180,6 +182,7 @@
         return
       }
       this._getLocation()
+      this._checkIsNewClient()
       this._getGoodsDetailData()
       this.getGoodsOtherInfo()
       this.$$shareHandler({
@@ -302,6 +305,14 @@
           name += dot
         }
         return name
+      },
+      _checkIsNewClient() {
+        if (this.activityType !== ACTIVE_TYPE.NEW_CLIENT) {
+          return
+        }
+        API.Global.checkIsNewCustomer().then(res => {
+          this.isShowOldCustomerButton = res.data.is_new_client === 0 // 老人0 新人1
+        })
       },
       _getGoodsDetailData() {
         let data = {

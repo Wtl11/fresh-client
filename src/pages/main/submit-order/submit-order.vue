@@ -255,7 +255,7 @@
         let flag = (this.goodsList && this.goodsList.some(val => val.activity && val.activity.activity_theme === ACTIVE_TYPE.NEW_CLIENT))
         if (flag) {
           API.Global.checkIsNewCustomer().then(res => {
-            this.isShowNewCustomer = res.data.is_new_client === 0
+            this.isShowNewCustomer = res.data.is_new_client === 0 // 老人0 新人1
           })
         }
       },

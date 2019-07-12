@@ -5,7 +5,10 @@
       <img class="avatar-img" mode="aspectFill" v-else-if="imageUrl" :src="imageUrl + '/yx-image/2.1/default_avatar@2x.png'">
     </figure>
     <section class="middle">
-      <h1 class="name">团长：{{dataInfo.name}}</h1>
+      <h1 class="name">
+        <span class="leader">团长：{{dataInfo.name}}</span>
+        <span v-if="dataInfo.distanceText" class="distance">距离{{dataInfo.distanceText}}</span>
+      </h1>
       <p class="position">提货点：{{dataInfo.social_name}} </p>
     </section>
     <img class="right" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/icon-pressed@2x.png'">
@@ -55,12 +58,21 @@
       padding :0 10px
       overflow:hidden
       .name
-        padding-top :20px
+        height: 38px
         font-family: $font-family-medium
         font-size: 15px;
         color: #1D2023;
-        line-height: 1.2
         no-wrap()
+        layout(row)
+        justify-content: space-between
+        align-items: flex-end
+        .leader
+          flex: 1
+          no-wrap()
+        .distance
+          color : #3f454b
+          font-size: $font-size-13
+          font-family: $font-family-regular
       .position
         padding-top :8px
         font-family: $font-family-regular

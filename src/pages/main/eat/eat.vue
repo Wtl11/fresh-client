@@ -3,7 +3,7 @@
     <navigation-bar :showArrow="false" title="吃什么"></navigation-bar>
     <div v-for="(module, moduleIndex) in moduleData" :key="moduleIndex" class="eat-box">
       <!--文章模块-->
-      <article-modal v-if="module.module_name === 'article_recommend' && module.list.length" :articleList="module.list"></article-modal>
+      <article-modal v-if="module.module_name === 'article_recommend' && articleList.length" :articleList="articleList"></article-modal>
       <div v-if="module.module_name === 'article_recommend'">
         <scroll-view
           class="scroll-view2"
@@ -16,10 +16,8 @@
           <div v-for="(item, index) in tabList1" :class="tabIndex === index ? 'item-active'  : ''" :key="index"
                class="item scroll-item" :id="'item'+index" @click="_changeTab(index, item.other_id, $event)">
             <p class="text">{{item.name}}</p>
+            <p class="class-title" v-if="item.title">{{item.title}}</p>
           </div>
-          <!--<div class="line-con" :style="{'transform':'translateX('+lineTranslateX+'px)',width: lineWidth + 'px'}">-->
-          <!--<div class="line" :class="'corp-' + corpName + '-bg'"></div>-->
-          <!--</div>-->
         </scroll-view>
         <div class="big-box">
           <div
@@ -161,7 +159,6 @@
         systemInfoSync: {},
         articleList: new Article(),
         articleHeight: 0,
-        tabHeight: 0,
         // 瀑布流参数
         leftHeight: 0,
         rightHeight: 0,
@@ -172,7 +169,8 @@
         elRight: '',
         moduleData: [],
         elDom: [],
-        shopId: null
+        shopId: null,
+        tabHeight: 0
       }
     },
     computed: {
@@ -191,12 +189,12 @@
           // 750rpx/屏幕宽度
           let percentage = 750 / res.windowWidth
           // 计算瀑布流间距
-          let margin = 20 / percentage
+          let margin = 16 / percentage
+          let padding = res.windowWidth * 0.032 * 2
           // 计算 瀑布流展示的宽度
-          itemWidth = (res.windowWidth - margin) / 2
+          itemWidth = (res.windowWidth - margin - padding) / 2
           // 计算瀑布流的最大高度，防止长图霸屏
           maxHeight = itemWidth / 0.8
-          // console.log('itemWidth', itemWidth, maxHeight)
         }
       })
       this._getArticleList(true)
@@ -259,6 +257,7 @@
       getContentList(id, loading = false) {
         if (this.classifyId === '') {
           this.contentList[this.tabIndex].isEmpty = !this.articleList.length
+          this.contentList[this.tabIndex].arr = []
           this.contentList = JSON.parse(JSON.stringify(this.contentList))
           this.fillData(false, this.contentList[this.tabIndex].arr)
           return
@@ -312,8 +311,8 @@
             rightHeight = rightHeight + tmp.itemHeight
           }
         }
-        this.contentList[this.tabIndex].leftList = leftList
-        this.contentList[this.tabIndex].rightList = rightList
+        this.contentList[this.tabIndex].leftList = JSON.parse(JSON.stringify(leftList))
+        this.contentList[this.tabIndex].rightList = JSON.parse(JSON.stringify(rightList))
       },
       _getArticleList() {
         let res = this.$wx.getSystemInfoSync()
@@ -324,7 +323,13 @@
             this.moduleData.forEach((item) => {
               switch (item.module_name) {
                 case 'article_category':
-                  this.tabList1 = item.list
+                  let arr = []
+                  item.list.map((item) => {
+                    if (item.is_close) {
+                      arr.push(item)
+                    }
+                  })
+                  this.tabList1 = arr
                   if (this.tabIndex + 1 > this.tabList1.length || !this.tabList1.length) {
                     this.tabIndex = 0
                   }
@@ -333,28 +338,19 @@
                   this.getContentList()
                   break
                 case 'article_recommend':
-                  this.articleList = item.list
+                  let arrRe = []
+                  item.list.map((item) => {
+                    if (item.is_close) {
+                      arrRe.push(item)
+                    }
+                  })
+                  this.articleList = arrRe
                   break
                 default:
                   break
               }
             })
           })
-      },
-      _changeTabLine() {
-        // let left = 0
-        // wx.createSelectorQuery().selectAll('.scroll-item').boundingClientRect().exec(res => {
-        //   if (res && res[0]) {
-        //     let arr = res[0]
-        //     arr.forEach((item, index) => {
-        //       if (index < this.tabIndex) {
-        //         left += item.width
-        //       }
-        //       this.lineWidth = res[0][this.tabIndex].width
-        //     })
-        //     this.lineTranslateX = left
-        //   }
-        // })
       },
       async _changeTab(index, id, e) {
         if (this.tabIndex === index) return
@@ -370,12 +366,11 @@
         this.tabIndex = index
         let number = index < 3 ? 0 : index - 2
         this.viewToItem = `item${number}`
-        wx.createSelectorQuery().selectAll('.scroll-item').boundingClientRect().exec(res => {
-          if (res && res[0]) {
-            this.lineWidth = res[0][this.tabIndex].width + this.tabList1[this.tabIndex].name.length * 4
-            this._changeTabLine()
-          }
-        })
+        // wx.createSelectorQuery().selectAll('.scroll-item').boundingClientRect().exec(res => {
+        //   if (res && res[0]) {
+        //     this.lineWidth = res[0][this.tabIndex].width + this.tabList1[this.tabIndex].name.length * 4
+        //   }
+        // })
       },
       getCategoryData(isLoad = false) {
         if (!this.tabList1.length) {
@@ -400,15 +395,14 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@designCommon"
-  $scroll-item-width = 81px
+  $scroll-item-width = 84px
   .eat
     min-height: 100vh
     background-image: linear-gradient(180deg, #FFFFFF 11%, #F7F7F7 32%)
 
   .scroll-view2
-    height: 36px
-    margin-top: 11px
-    padding-left: 5.5px
+    margin-top: 20px
+    padding-left: 2px
     width: 100vw
     z-index: 99
     display: block
@@ -420,51 +414,41 @@
       width: 0
       height: 0
       color: transparent
-
     .item
       white-space: nowrap
       font-family: $font-family-regular
-      font-size: $font-size-14
+      font-size: $font-size-16
       color: $color-text-main
       text-align: center
       display: inline-block
       position: relative
-      padding: 0 12.5px
-      height: 36px
-      line-height: 36px
+      width: $scroll-item-width
+      height: 39px
       box-sizing: border-box
       transform-origin: 50%
-      .text
-        width: 100%
-        text-overflow: ellipsis
-        overflow: hidden
-        white-space: nowrap
-      .classify-icon
-        position: relative
-        margin: 0 auto
-        padding-top: 8px
-        width: 44px
-        height: @width
-        .img
-          width: 100%
-          height: @width
-
+      line-height: 1
+      transition: all 0.2s
+      border-right-1px($color-line)
+      &:last-child
+        border-none()
+      .class-title
+        margin-top: 5px
+        display: inline-block
+        font-size: $font-size-12
+        border-radius: 9px
+        padding: 3px 6px
+        line-height: 1
+        color: #808080
     .item-active
       font-family: $font-family-medium
-      font-size: $font-size-18
+      font-size: $font-size-16
+      color: #73C200
       position: relative
       transition: font-size 0.2s
       transform-origin: 50%
-      &:after
-        transition: all 0.2s
-        content: ''
-        row-center()
-        bottom: 0
-        width: 30px
-        background: $color-main
-        height: 3px
-        border-radius: 3px
-
+      .class-title
+        color: $color-white
+        background: #73C200
     .line-con
       box-sizing: border-box
       position: absolute
@@ -496,7 +480,7 @@
 
   .goods-list-box
     display: block
-    margin-top: 15px
+    margin-top: 10px
     width: 100vw
 
   .fall-container
@@ -529,7 +513,7 @@
         top: 11px
         right: 11px
       .fall-item
-        margin-bottom: 8px
+        margin-bottom: 2.13vw
         overflow: hidden
         box-shadow: 0 3px 8px 0 rgba(17, 17, 17, 0.05)
         background: $color-white
