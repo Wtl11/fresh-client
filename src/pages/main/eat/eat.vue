@@ -3,7 +3,7 @@
     <navigation-bar :showArrow="false" title="吃什么"></navigation-bar>
     <div v-for="(module, moduleIndex) in moduleData" :key="moduleIndex" class="eat-box">
       <!--文章模块-->
-      <article-modal v-if="module.module_name === 'article_recommend' && module.list.length" :articleList="module.list"></article-modal>
+      <article-modal v-if="module.module_name === 'article_recommend' && articleList.length" :articleList="articleList"></article-modal>
       <div v-if="module.module_name === 'article_recommend'">
         <scroll-view
           class="scroll-view2"
@@ -259,6 +259,7 @@
       getContentList(id, loading = false) {
         if (this.classifyId === '') {
           this.contentList[this.tabIndex].isEmpty = !this.articleList.length
+          this.contentList[this.tabIndex].arr = []
           this.contentList = JSON.parse(JSON.stringify(this.contentList))
           this.fillData(false, this.contentList[this.tabIndex].arr)
           return
@@ -324,16 +325,29 @@
             this.moduleData.forEach((item) => {
               switch (item.module_name) {
                 case 'article_category':
-                  this.tabList1 = item.list
+                  let arr = []
+                  item.list.map((item) => {
+                    if (item.is_close) {
+                      arr.push(item)
+                    }
+                  })
+                  this.tabList1 = arr
                   if (this.tabIndex + 1 > this.tabList1.length || !this.tabList1.length) {
                     this.tabIndex = 0
                   }
+                  console.log(this.tabList1.length)
                   this.classifyId = this.tabList1.length ? this.classifyId : ''
                   this.getCategoryData()
                   this.getContentList()
                   break
                 case 'article_recommend':
-                  this.articleList = item.list
+                  let arrRe = []
+                  item.list.map((item) => {
+                    if (item.is_close) {
+                      arrRe.push(item)
+                    }
+                  })
+                  this.articleList = arrRe
                   break
                 default:
                   break
@@ -342,19 +356,6 @@
           })
       },
       _changeTabLine() {
-        // let left = 0
-        // wx.createSelectorQuery().selectAll('.scroll-item').boundingClientRect().exec(res => {
-        //   if (res && res[0]) {
-        //     let arr = res[0]
-        //     arr.forEach((item, index) => {
-        //       if (index < this.tabIndex) {
-        //         left += item.width
-        //       }
-        //       this.lineWidth = res[0][this.tabIndex].width
-        //     })
-        //     this.lineTranslateX = left
-        //   }
-        // })
       },
       async _changeTab(index, id, e) {
         if (this.tabIndex === index) return
