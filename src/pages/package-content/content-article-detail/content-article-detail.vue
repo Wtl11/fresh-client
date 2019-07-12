@@ -1,7 +1,7 @@
 <template>
   <div class="content-article-detail">
     <navigation-bar :translucent="true" :isBackCricle="true"></navigation-bar>
-    <video v-if="details.coverVideo" :src="details.coverVideo" :autoplay="true" :poster="details.coverImage" class="cover-photo"></video>
+    <video v-if="details.coverVideo" id="videocover" :src="details.coverVideo" :autoplay="true" :poster="details.coverImage" class="cover-photo" @play="playVideo('cover')"></video>
     <img v-else :src="details.coverImage" mode="widthFix" class="cover-photo">
     <div v-if="currentType === 'cookbook'" class="cookbook-title">{{details.title }}</div>
     <div :class="['auth-wrap',{cookbook: currentType === 'cookbook' }]">
@@ -56,7 +56,7 @@
       <div v-for="(item,idx) in details.details" :key="idx" class="article-item">
         <text v-if="item.type==='text'" class="article-text">{{item.value}}</text>
         <img v-if="item.type==='image'" :src="item.value.source_url" mode="widthFix" class="article-image"/>
-        <video v-if="item.type==='video'" :src="item.value.full_url" :poster="item.value.cover_image_url" class="article-video"></video>
+        <video v-if="item.type==='video'" :src="item.value.full_url" :poster="item.value.cover_image_url" :id="'video'+item.value.id" class="article-video" @play="playVideo(item.value.id)"></video>
         <goods-item v-if="item.type==='goods'" :goodsData="item.value" @add="addGoods" @click="goToDetail(item.value)"></goods-item>
       </div>
     </div>
@@ -115,13 +115,26 @@
     mixins: [contentMix],
     data() {
       return {
-        control: true
+        videos: {},
+        lastVideo: ''
       }
     },
     computed: {},
     methods: {
-      endVideo() {
-        this.control = false
+      getVideo(id) {
+        return wx.createVideoContext('video' + id)
+      },
+      playVideo(id) {
+        if (!this.videos[id]) {
+          if (this.details.coverVideo) this.videos.cover = this.getVideo('cover')
+          this.details.details.forEach(item => {
+            if (item.type === 'video') this.videos[item.id] = this.getVideo(item.id)
+          })
+        }
+        if (this.lastVideo !== id && this.lastVideo) {
+          this.videos[this.lastVideo].pause()
+        }
+        this.lastVideo = id
       }
     }
   }
@@ -138,12 +151,13 @@
     .cover-photo
       width: 100vw
       display block
+
     .cookbook-title
       font-family: $font-family-medium
       font-size: $font-size-23
       color: #111111;
       text-align: center
-      padding:22px 12px 10px
+      padding: 22px 12px 10px
 
     .auth-wrap
       display flex
@@ -154,8 +168,10 @@
 
       &.cookbook
         justify-content: center
+
         .good-article-icon
-          top:12px
+          top: 12px
+
       .good-article-icon
         position absolute
         right: 11px
@@ -207,14 +223,16 @@
         color: #333
         padding-bottom: 10px
         border-bottom-1px(#E6E6E6)
-        margin-left:15px
+        margin-left: 15px
+
       .like-wrap
         height: 56px
         display flex
         align-items center
 
         .like-total
-          padding:10px 18px 10px  15px
+          padding: 10px 18px 10px 15px
+
           .like-icon
             width: 15px
             height: 15px
@@ -241,37 +259,43 @@
 
     .line-middle
       border-bottom-1px(#E6E6E6)
+
     .emoty-grey-bg
-      height:10px
+      height: 10px
       background-color #F8F8F8
+
     .title
       font-size $font-size-23
       font-family $font-family-medium
       color: #111111
-      padding:22px 15px 5px 15px
+      padding: 22px 15px 5px 15px
+
     .foodlist-title
-      margin-left:15px
-      margin-right:15px
-      height:44px
-      line-height:44px
-      font-size:$font-size-15
+      margin-left: 15px
+      margin-right: 15px
+      height: 44px
+      line-height: 44px
+      font-size: $font-size-15
       border-bottom-1px()
       font-family: $font-family-bold
       color: #111111
       letter-spacing: 0.4px
+
       .foodlist-icon
-        width:16px
-        height:13px
-        margin-right:3px
+        width: 16px
+        height: 13px
+        margin-right: 3px
+
     .foods-list
       font-family $font-family-regular
       font-size $font-size-15
       letter-spacing 0.4px
       color: #111111
-      margin:15px
+      margin: 15px
 
     .goods-list
-      padding:0px 15px 5px
+      padding: 0px 15px 5px
+
     .article-cont
       padding: 15px 15px 10px 15px
 
