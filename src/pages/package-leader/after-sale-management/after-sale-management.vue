@@ -354,8 +354,9 @@
       width: 100vw
     .order-box-hideen
       overflow: hidden
+      height: 70vh
 
-  .noting
+ .noting
     text-align: center
     padding-top: 106px
     .notingimg

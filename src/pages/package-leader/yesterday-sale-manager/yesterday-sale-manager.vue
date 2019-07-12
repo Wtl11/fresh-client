@@ -340,6 +340,7 @@
       width: 100vw
     .order-box-hideen
       overflow: hidden
+      height: 70vh
 
   .order-item
     margin-bottom: 12px
