@@ -15,7 +15,8 @@
     <div class="big-box">
       <div class="order-big-box" :style="{'transform': ' translateX('+ -(navIndex * width) +'px)', width: width * nav.length + 'px'}">
         <!--今日订单-->
-        <scroll-view class="order-box" :style="{'height': scrollHeight + 'px'}" scroll-y @scrolltolower="_getMoreList">
+        <!--<scroll-view class="order-box" :style="{'height': scrollHeight + 'px'}" scroll-y @scrolltolower="_getMoreList">-->
+        <div class="order-box">
           <navigator :url="$routes.leader.GROUP_ORDER_DETAIL + '?id=' + order.order_id" :hover-stop-propagation="true" hover-class="none" class="order-item" v-for="(order, idx) in todayList" :key="idx">
             <div class="order-header">
               <div class="order-num">{{order.code}}</div>
@@ -44,8 +45,10 @@
             <div class="noting-img"><img class="img" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'"></div>
             <div class="txt">空空如也</div>
           </div>
-        </scroll-view>
-        <scroll-view class="order-box" :style="{'height': scrollHeight + 'px'}" scroll-y @scrolltolower="_getMoreList">
+        </div>
+        <!--</scroll-view>-->
+        <!--<scroll-view class="order-box" :style="{'height': scrollHeight + 'px'}" scroll-y @scrolltolower="_getMoreList">-->
+        <div class="order-box">
           <navigator :url="$routes.leader.GROUP_ORDER_DETAIL + '?id=' + order.order_id" :hover-stop-propagation="true" hover-class="none" class="order-item" v-for="(order, idx) in yesterdayList" :key="idx">
             <div class="order-header">
               <div class="order-num">{{order.code}}</div>
@@ -75,8 +78,10 @@
             <div class="noting-img"><img class="img" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'"></div>
             <div class="txt">空空如也</div>
           </div>
-        </scroll-view>
-        <scroll-view class="order-box" :style="{'height': scrollHeight + 'px'}" scroll-y @scrolltolower="_getMoreList">
+        </div>
+        <!--</scroll-view>-->
+        <!--<scroll-view class="order-box" :style="{'height': scrollHeight + 'px'}" scroll-y @scrolltolower="_getMoreList">-->
+        <div class="order-box">
           <navigator :url="$routes.leader.GROUP_ORDER_DETAIL + '?id=' + order.order_id" :hover-stop-propagation="true" hover-class="none" class="order-item" v-for="(order, idx) in list" :key="idx">
             <div class="order-header">
               <div class="order-num">{{order.code}}</div>
@@ -105,7 +110,8 @@
             <div class="noting-img"><img class="img" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'"></div>
             <div class="txt">空空如也</div>
           </div>
-        </scroll-view>
+        </div>
+        <!--</scroll-view>-->
       </div>
     </div>
   </div>
@@ -136,15 +142,15 @@
     },
     computed: {
       todayNull() {
-        let status = this.todayList.length && (this.todayList.length < 10 || this.pageObj.todayPage === this.pageObj.todayAllPage)
+        let status = this.todayList && this.todayList.length && (this.todayList.length < 10 || this.pageObj.todayPage === this.pageObj.todayAllPage)
         return status
       },
       yesterdayNull() {
-        let status = this.yesterdayList.length && (this.yesterdayList.length < 10 || this.pageObj.yesterdayPage === this.pageObj.yesterdayAllPage)
+        let status = this.yesterdayList && this.yesterdayList.length && (this.yesterdayList.length < 10 || this.pageObj.yesterdayPage === this.pageObj.yesterdayAllPage)
         return status
       },
       allNull() {
-        let status = this.list.length && (this.list.length < 10 || this.pageObj.Page === this.pageObj.AllPage)
+        let status = this.list && this.list.length && (this.list.length < 10 || this.pageObj.Page === this.pageObj.AllPage)
         return status
       }
     },
@@ -173,6 +179,10 @@
         await this._setList()
       },
       async _setNav(index, item) {
+        if (this.navIndex === index && this.keyword.length === 0) {
+          return
+        }
+        console.log(222)
         this.navIndex = index
         this.keyword = ''
         this.pageObj[this.nav[this.navIndex].status + 'Page'] = 1
@@ -182,7 +192,7 @@
         let res = await API.Leader.consumerOrder({keyword: this.keyword, page, time}, loading)
         this.$wechat.hideLoading()
         if (res.error !== this.$ERR_OK) {
-          return
+          return false
         }
         this.pageObj[time + 'AllPage'] = res.meta.last_page
         return res.data
@@ -190,15 +200,21 @@
       async _setList() {
         let time = this.nav[this.navIndex].status
         let page = this.pageObj[this.nav[this.navIndex].status + 'Page']
+        console.log(time, `${this.nav[this.navIndex].status}`, 'this.nav[this.navIndex].status')
+        console.log(page, 'this.pageObj[this.nav[this.navIndex].statusPage')
         if (this.pageObj[this.nav[this.navIndex].status + 'AllPage'] < this.pageObj[this.nav[this.navIndex].status + 'Page']) {
           return
         }
         let arr = await this._getConsumerOrder(page, time)
+        if (!arr) {
+          return
+        }
         if (page === 1) {
           this.consumerOrder[this.navIndex] = arr
         } else {
           this.consumerOrder[this.navIndex] = this.consumerOrder[this.navIndex].concat(arr)
         }
+        console.log(arr, 'arr')
         this.pageObj[this.nav[this.navIndex].status + 'None'] = !this.consumerOrder[this.navIndex].length
         this.todayList = this.consumerOrder[0]
         this.yesterdayList = this.consumerOrder[1]
@@ -217,7 +233,7 @@
   .after-sale-management
     height: 100vh
     box-sizing: border-box
-    overflow: hidden
+    /*overflow: hidden*/
     background: $color-white
     width: 100vw
 
@@ -275,7 +291,7 @@
 
   .big-box
     width: 100vw
-    overflow: hidden
+    /*overflow: hidden*/
     .order-big-box
       width: 300vw
       display: flex
