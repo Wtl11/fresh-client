@@ -3,7 +3,8 @@
     <navigation-bar :translucent="true" :isBackCricle="true"></navigation-bar>
     <video v-if="details.coverVideo" :src="details.coverVideo" :autoplay="true" :poster="details.coverImage" class="cover-photo"></video>
     <img v-else :src="details.coverImage" mode="widthFix" class="cover-photo">
-    <div class="auth-wrap">
+    <div v-if="currentType === 'cookbook'" class="cookbook-title">{{details.title }}</div>
+    <div :class="['auth-wrap',{cookbook: currentType === 'cookbook' }]">
       <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-high_quality@2x.png'" class="good-article-icon">
       <div class="auth-photo-wrap">
         <img v-if="details.authPhoto" :src="details.authPhoto" class="auth-photo">
@@ -18,12 +19,15 @@
       </div>
     </div>
     <div v-show="details.lookCount || details.goodCount" class="browse-wrap">
-      <div v-show="details.lookCount" class="browse-title">浏览{{details.lookCount>= 10000 ? details.lookCount/10000 +'万':details.lookCount}}</div>
+      <div v-if="currentType === 'cookbook'" class="browse-title"></div>
+      <div v-else v-show="details.lookCount" class="browse-title">
+        浏览{{details.lookCount}}
+      </div>
       <div v-show="details.goodCount" class="like-wrap">
         <div class="like-total" @click="setLikeBtn">
           <template v-if="imageUrl">
-              <img v-if="details.goodStatus" :src="imageUrl + '/yx-image/article/icon-like_big2@2x.png'" class="like-icon">
-              <img v-else :src="imageUrl + '/yx-image/article/icon-like_big1@2x.png'" class="like-icon">
+            <img v-if="details.goodStatus" :src="imageUrl + '/yx-image/article/icon-like_big2@2x.png'" class="like-icon">
+            <img v-else :src="imageUrl + '/yx-image/article/icon-like_big1@2x.png'" class="like-icon">
           </template>
           <div class="total-count">{{details.goodCount >999 ?'999+' :details.goodCount }}</div>
         </div>
@@ -34,14 +38,21 @@
       </div>
     </div>
     <div class="line-middle"></div>
-    <div class="article-cont">
-      <div class="name">{{details.title }}</div>
-      <div class="foods-list">
+    <div v-if="currentType !== 'cookbook'" class="title">{{details.title }}</div>
+    <tempalte v-else>
+      <div class="emoty-grey-bg"></div>
+      <div class="foodlist-title">
+        <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-ingredients@2x.png'" class="foodlist-icon">食材
+      </div>
+      <div v-if="details.foodList" class="foods-list">
         {{details.foodList}}
       </div>
       <div class="goods-list">
         <goods-item v-for="(item,idx) in details.goodsList" :key="idx" :goodsData="item" @add="addGoods" @click="goToDetail(item)"></goods-item>
       </div>
+      <div class="emoty-grey-bg"></div>
+    </tempalte>
+    <div class="article-cont">
       <div v-for="(item,idx) in details.details" :key="idx" class="article-item">
         <text v-if="item.type==='text'" class="article-text">{{item.value}}</text>
         <img v-if="item.type==='image'" :src="item.value.source_url" mode="widthFix" class="article-image"/>
@@ -127,9 +138,12 @@
     .cover-photo
       width: 100vw
       display block
-
-    .article-cont
-      padding: 13px 15px
+    .cookbook-title
+      font-family: $font-family-medium
+      font-size: $font-size-23
+      color: #111111;
+      text-align: center
+      padding:22px 12px 10px
 
     .auth-wrap
       display flex
@@ -138,6 +152,10 @@
       padding: 12px 15px
       position relative
 
+      &.cookbook
+        justify-content: center
+        .good-article-icon
+          top:12px
       .good-article-icon
         position absolute
         right: 11px
@@ -226,25 +244,39 @@
 
     .line-middle
       border-bottom-1px(#E6E6E6)
+    .emoty-grey-bg
+      height:10px
+      background-color #F8F8F8
+    .title
+      font-size $font-size-23
+      font-family $font-family-medium
+      color: #111111
+      padding:22px 15px 5px 15px
+    .foodlist-title
+      margin-left:15px
+      margin-right:15px
+      height:44px
+      line-height:44px
+      font-size:$font-size-15
+      border-bottom-1px()
+      font-family: $font-family-bold
+      color: #111111
+      letter-spacing: 0.4px
+      .foodlist-icon
+        width:16px
+        height:13px
+        margin-right:3px
+    .foods-list
+      font-family $font-family-regular
+      font-size $font-size-15
+      letter-spacing 0.4px
+      color: #111111
+      margin:15px
 
+    .goods-list
+      padding:0px 15px 5px
     .article-cont
-      padding: 25px 15px 10px 15px
-
-      .name
-        font-size $font-size-22
-        font-family $font-family-medium
-        color: #111111
-        margin-bottom 20px
-
-      .foods-list
-        font-family $font-family-regular
-        font-size $font-size-15
-        letter-spacing 0.4px
-        color: #111111
-
-      .goods-list
-        margin-bottom: 10px
-        margin-top: 25px
+      padding: 15px 15px 10px 15px
 
       .article-item
         margin-bottom 15px

@@ -8,22 +8,19 @@
     <div class="info">
       <div v-if="goodsData && goodsData.name" class="name">{{goodsData.name}}</div>
       <div class="details">{{goodsData.describe}}</div>
-      <div class="operate">
-        <div>
+      <div>
           <span class="price-now">
             <span class="big">{{goodsData.trade_price}}</span>
             <span class="unit">元</span>
           </span>
           <span class="price">{{goodsData.original_price}}元</span>
-        </div>
-        <div class="add-btn-wrap" @click.stop="addBtn(goodsData)">
-          <tempalte v-if="imageUrl">
-            <img v-if="goodsData.is_online === 0 || goodsData.usable_stock === 0" :src="imageUrl + '/yx-image/article/icon-add_hui@2x.png'" class="add-img">
-            <img v-else :src="imageUrl + '/yx-image/article/icon-add_to@2x.png'" class="add-img">
-          </tempalte>
-
-        </div>
       </div>
+    </div>
+    <div class="add-btn-wrap" @click.stop="addBtn(goodsData)">
+      <tempalte v-if="imageUrl">
+        <img v-if="goodsData.is_online === 0 || goodsData.usable_stock === 0" :src="imageUrl + '/yx-image/article/icon-add_hui@2x.png'" class="add-img">
+        <img v-else :src="imageUrl + '/yx-image/article/icon-add_to@2x.png'" class="add-img">
+      </tempalte>
     </div>
   </div>
 </template>
@@ -71,8 +68,8 @@
 
   .good-item
     display flex
-    background: #FFFFFF
-    border-1px(#EFEFEF,4px)
+    background: #F7F7F7
+    border-1px(#EFEFEF, 4px)
     box-shadow: 0 4px 6px 0 rgba(17, 17, 17, 0.02)
     margin-bottom 15px
     height:90px
@@ -117,11 +114,6 @@
         white-space: nowrap
         padding-right:12px
 
-      .operate
-        display flex
-        justify-content space-between
-        align-items center
-
       .price-now
         color: #FA7500
         font-family $font-family-medium
@@ -144,7 +136,7 @@
       display flex
       justify-content space-between
       align-items center
-      padding:5px 12px
+      padding:0px 15px 0px 12px
     .add-img
       width: 24px
       height: 24px

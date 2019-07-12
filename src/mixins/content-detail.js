@@ -125,7 +125,7 @@ export default {
       this.details.authSignature = obj.author.sign
       this.details.authorLevel = obj.author.level
       this.details.goodCount = obj.fabulous_num
-      this.details.lookCount = obj.browse_count
+      this.details.lookCount = obj.browse_count >= 10000 ? obj.browse_count / 10000 + '万' : obj.browse_count
       this.details.shareCount = obj.share_count
       this.details.goodStatus = obj.is_fabulou
       if (this.currentType !== 'video' && isLikes) this._getLikes()
@@ -170,7 +170,7 @@ export default {
           })
           this.details.details = details
         }
-        if (item.type === 'text' && item.style_type === 'content_foods_list') {
+        if (item.type === 'text' && item.style_type === 'content_cookbook_food_list') {
           this.details.foodList = item.content[0].text
         }
         if (item.type === 'video' && item.style_type === 'content_video') {
@@ -233,7 +233,7 @@ export default {
       return API.Content.articleOperation({ article_id: this.articleId, handle: handle, ...other }).then(res => {
         if (res.error === this.$ERR_OK) {
           if (handle === 'fabulou') this._getDetails()
-          if ( handle === 'share') this._getDetails(false)
+          if (handle === 'share') this._getDetails(false)
         }
       }).finally(res => {
         this.isLoading = false
