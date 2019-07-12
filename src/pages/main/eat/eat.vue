@@ -178,7 +178,6 @@
         let navHeight = 44 + this.systemInfoSync.statusBarHeight
         let bottomHeight = 60
         let height = `${this.systemInfoSync.screenHeight - this.articleHeight - this.tabHeight - navHeight - bottomHeight}px`
-        console.log(height)
         return height
       }
     },
@@ -402,7 +401,7 @@
     background-image: linear-gradient(180deg, #FFFFFF 11%, #F7F7F7 32%)
 
   .scroll-view2
-    margin-top: 11px
+    margin-top: 20px
     padding-left: 2px
     width: 100vw
     z-index: 99
@@ -440,7 +439,6 @@
         padding: 3px 6px
         line-height: 1
         color: #808080
-        transition: all 0.2s
     .item-active
       font-family: $font-family-medium
       font-size: $font-size-16
@@ -482,7 +480,7 @@
 
   .goods-list-box
     display: block
-    margin-top: 15px
+    margin-top: 10px
     width: 100vw
 
   .fall-container
