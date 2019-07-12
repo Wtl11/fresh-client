@@ -39,7 +39,7 @@
     </div>
     <div class="line-middle"></div>
     <div v-if="currentType !== 'cookbook'" class="title">{{details.title }}</div>
-    <tempalte v-else>
+    <template v-else>
       <div class="emoty-grey-bg"></div>
       <div class="foodlist-title">
         <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-ingredients@2x.png'" class="foodlist-icon">食材
@@ -51,7 +51,7 @@
         <goods-item v-for="(item,idx) in details.goodsList" :key="idx" :goodsData="item" @add="addGoods" @click="goToDetail(item)"></goods-item>
       </div>
       <div class="emoty-grey-bg"></div>
-    </tempalte>
+    </template>
     <div class="article-cont">
       <div v-for="(item,idx) in details.details" :key="idx" class="article-item">
         <text v-if="item.type==='text'" class="article-text">{{item.value}}</text>
