@@ -16,10 +16,8 @@
           <div v-for="(item, index) in tabList1" :class="tabIndex === index ? 'item-active'  : ''" :key="index"
                class="item scroll-item" :id="'item'+index" @click="_changeTab(index, item.other_id, $event)">
             <p class="text">{{item.name}}</p>
+            <p class="class-title" v-if="item.title">{{item.title}}</p>
           </div>
-          <!--<div class="line-con" :style="{'transform':'translateX('+lineTranslateX+'px)',width: lineWidth + 'px'}">-->
-          <!--<div class="line" :class="'corp-' + corpName + '-bg'"></div>-->
-          <!--</div>-->
         </scroll-view>
         <div class="big-box">
           <div
@@ -387,15 +385,14 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@designCommon"
-  $scroll-item-width = 81px
+  $scroll-item-width = 84px
   .eat
     min-height: 100vh
     background-image: linear-gradient(180deg, #FFFFFF 11%, #F7F7F7 32%)
 
   .scroll-view2
-    height: 36px
     margin-top: 11px
-    padding-left: 5.5px
+    padding-left: 2px
     width: 100vw
     z-index: 99
     display: block
@@ -407,51 +404,42 @@
       width: 0
       height: 0
       color: transparent
-
     .item
       white-space: nowrap
       font-family: $font-family-regular
-      font-size: $font-size-14
+      font-size: $font-size-16
       color: $color-text-main
       text-align: center
       display: inline-block
       position: relative
-      padding: 0 12.5px
-      height: 36px
-      line-height: 36px
+      width: $scroll-item-width
+      height: 39px
       box-sizing: border-box
       transform-origin: 50%
-      .text
-        width: 100%
-        text-overflow: ellipsis
-        overflow: hidden
-        white-space: nowrap
-      .classify-icon
-        position: relative
-        margin: 0 auto
-        padding-top: 2.3vw
-        width: 44px
-        height: @width
-        .img
-          width: 100%
-          height: @width
-
+      line-height: 1
+      transition: all 0.2s
+      border-right-1px($color-line)
+      &:last-child
+        border-none()
+      .class-title
+        margin-top: 5px
+        display: inline-block
+        font-size: $font-size-12
+        border-radius: 9px
+        padding: 3px 6px
+        line-height: 1
+        color: #808080
+        transition: all 0.2s
     .item-active
       font-family: $font-family-medium
-      font-size: $font-size-18
+      font-size: $font-size-16
+      color: #73C200
       position: relative
       transition: font-size 0.2s
       transform-origin: 50%
-      &:after
-        transition: all 0.2s
-        content: ''
-        row-center()
-        bottom: 0
-        width: 30px
-        background: $color-main
-        height: 3px
-        border-radius: 3px
-
+      .class-title
+        color: $color-white
+        background: #73C200
     .line-con
       box-sizing: border-box
       position: absolute
