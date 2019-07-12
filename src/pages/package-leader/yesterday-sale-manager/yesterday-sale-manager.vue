@@ -2,10 +2,30 @@
   <div class="after-sale-management">
     <navigation-bar title="消费者订单"></navigation-bar>
     <div class="after-header">
-      <div class="after-search">
-        <img :src="imageUrl + '/yx-image/group/icon-search@2x.png'" v-if="imageUrl" class="search-icon">
-        <input type="text" class="search" placeholder="提供单号，手机号，微信昵称，搜索" placeholder-class="search-pal" v-model="keyword" @input="_search"/>
-      </div>
+      <!--<div class="after-search">-->
+        <!--<img :src="imageUrl + '/yx-image/group/icon-search@2x.png'" v-if="imageUrl" class="search-icon">-->
+        <!--<input type="text" class="search" placeholder="提供单号，手机号，微信昵称，搜索" placeholder-class="search-pal" v-model="keyword" @input="_search"/>-->
+      <!--</div>-->
+      <section class="search-wrapper">
+        <div class="input-wrapper">
+          <img class="search-img" mode="aspectFit" v-if="imageUrl" :src="imageUrl+'/yx-image/2.3/icon-search@2x.png'">
+          <input
+            type="text"
+            placeholder="提供单号，手机号，微信昵称，搜索"
+            placeholder-class="input-p"
+            :focus="true"
+            confirm-type="search"
+            @focus="handleFocus"
+            @blur="handleBlur"
+            @confirm="_search"
+            v-model="keyword"
+          >
+          <figure v-if="showClearGoodsNameBtn" class="close" @click="handleClearGoodsName">
+            <img class="close-img" mode="aspectFit" v-if="imageUrl" :src="imageUrl+'/yx-image/2.3/icon-delsr@2x.png'">
+          </figure>
+        </div>
+        <div class="btn" @click.stop="_search()">搜索</div>
+      </section>
       <div class="rag-goods-tab">
         <span :class="[navIndex === index ? 'rag-goods-tab-item-active' : '',navIndex === index ? 'corp-' + corpName + '-bg' : '', 'corp-' + corpName + '-tab']" class="rag-goods-tab-item" v-for="(item, index) in nav" :key="index" @click="_setNav(index, item)">
           {{item.title}}
@@ -16,7 +36,7 @@
       <div class="order-big-box" :style="{'transform': ' translateX('+ -(navIndex * width) +'px)', width: width * nav.length + 'px'}">
         <!--今日订单-->
         <!--<scroll-view class="order-box" :style="{'height': scrollHeight + 'px'}" scroll-y @scrolltolower="_getMoreList">-->
-        <div class="order-box">
+        <div class="order-box" :style="{'min-height': scrollHeight + 'px'}" :class="navIndex === 0 ? '' : 'order-box-hideen'">
           <navigator :url="$routes.leader.GROUP_ORDER_DETAIL + '?id=' + order.order_id" :hover-stop-propagation="true" hover-class="none" class="order-item" v-for="(order, idx) in todayList" :key="idx">
             <div class="order-header">
               <div class="order-num">{{order.code}}</div>
@@ -41,7 +61,7 @@
             </div>
           </navigator>
           <!--<order-item :orderList="todayList"></order-item>-->
-          <div class="end" v-if="todayNull">— 没有订单了—</div>
+          <div class="end" v-if="pageObj.todayNull">— 没有订单了—</div>
           <div class="noting" v-if="pageObj.todayNone">
             <div class="noting-img"><img class="img" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'"></div>
             <div class="txt">空空如也</div>
@@ -49,7 +69,7 @@
         </div>
         <!--</scroll-view>-->
         <!--<scroll-view class="order-box" :style="{'height': scrollHeight + 'px'}" scroll-y @scrolltolower="_getMoreList">-->
-        <div class="order-box">
+        <div class="order-box" :style="{'min-height': scrollHeight + 'px'}" :class="navIndex === 1 ? '' : 'order-box-hideen'">
           <navigator :url="$routes.leader.GROUP_ORDER_DETAIL + '?id=' + order.order_id" :hover-stop-propagation="true" hover-class="none" class="order-item" v-for="(order, idx) in yesterdayList" :key="idx">
             <div class="order-header">
               <div class="order-num">{{order.code}}</div>
@@ -75,7 +95,7 @@
             </div>
           </navigator>
           <!--<order-item :orderList="todayList"></order-item>-->
-          <div class="end" v-if="yesterdayNull">— 没有订单了—</div>
+          <div class="end" v-if="pageObj.yesterdayNull">— 没有订单了—</div>
           <div class="noting" v-if="pageObj.yesterdayNone">
             <div class="noting-img"><img class="img" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'"></div>
             <div class="txt">空空如也</div>
@@ -83,7 +103,7 @@
         </div>
         <!--</scroll-view>-->
         <!--<scroll-view class="order-box" :style="{'height': scrollHeight + 'px'}" scroll-y @scrolltolower="_getMoreList">-->
-        <div class="order-box">
+        <div class="order-box" :style="{'min-height': scrollHeight + 'px'}" :class="navIndex === 2 ? '' : 'order-box-hideen'">
           <navigator :url="$routes.leader.GROUP_ORDER_DETAIL + '?id=' + order.order_id" :hover-stop-propagation="true" hover-class="none" class="order-item" v-for="(order, idx) in list" :key="idx">
             <div class="order-header">
               <div class="order-num">{{order.code}}</div>
@@ -108,7 +128,7 @@
             </div>
           </navigator>
           <!--<order-item :orderList="todayList"></order-item>-->
-          <div class="end" v-if="allNull">— 没有订单了—</div>
+          <div class="end" v-if="pageObj.Null">— 没有订单了—</div>
           <div class="noting" v-if="pageObj.None">
             <div class="noting-img"><img class="img" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'"></div>
             <div class="txt">空空如也</div>
@@ -136,7 +156,7 @@
         width: 0,
         consumerOrder: [[], [], []],
         keyword: '',
-        pageObj: {todayPage: 1, yesterdayPage: 1, Page: 1, todayAllPage: 1, yesterdayAllPage: 1, AllPage: 1, todayNone: false, yesterdayNone: false, None: false},
+        pageObj: {todayPage: 1, yesterdayPage: 1, Page: 1, todayAllPage: 1, yesterdayAllPage: 1, AllPage: 1, todayNone: false, yesterdayNone: false, None: false, todayNull: false, yesterdayNull: false, Null: false},
         scrollHeight: 0,
         todayList: [],
         yesterdayList: [],
@@ -144,23 +164,33 @@
       }
     },
     computed: {
-      todayNull() {
-        let status = this.todayList && this.todayList.length && (this.todayList.length < 10 || this.pageObj.todayPage === this.pageObj.todayAllPage)
-        return status
-      },
-      yesterdayNull() {
-        let status = this.yesterdayList && this.yesterdayList.length && (this.yesterdayList.length < 10 || this.pageObj.yesterdayPage === this.pageObj.yesterdayAllPage)
-        return status
-      },
-      allNull() {
-        let status = this.list && this.list.length && (this.list.length < 10 || this.pageObj.Page === this.pageObj.AllPage)
-        return status
+      showClearGoodsNameBtn() {
+        return this.keyword
       }
+      // todayNull() {
+      //   let status = this.todayList && this.todayList.length && (this.todayList.length < 10 || this.pageObj.todayPage === this.pageObj.todayAllPage)
+      //   return status
+      // },
+      // yesterdayNull() {
+      //   let status = this.yesterdayList && this.yesterdayList.length && (this.yesterdayList.length < 10 || this.pageObj.yesterdayPage === this.pageObj.yesterdayAllPage)
+      //   return status
+      // },
+      // allNull() {
+      //   let status = this.list && this.list.length && (this.list.length < 10 || this.pageObj.Page === this.pageObj.AllPage)
+      //   return status
+      // }
     },
     async onPullDownRefresh() {
       this.pageObj[this.nav[this.navIndex].status + 'Page'] = 1
       await this._setList()
       wx.stopPullDownRefresh() // 停止下拉刷新
+    },
+    async onReachBottom() {
+      if (this.pageObj[this.nav[this.navIndex].status + 'Null']) return
+      console.log(this.pageObj[this.nav[this.navIndex].status + 'Page'])
+      this.pageObj[this.nav[this.navIndex].status + 'Page']++
+      await this._setList()
+      console.log(222)
     },
     async onShow() {
       let data = this.$wx.getSystemInfoSync()
@@ -173,6 +203,11 @@
       await this._setList(1, 'today', true)
     },
     methods: {
+      handleClearGoodsName() {
+        this.keyword = ''
+        // this.autoFocus = true
+      },
+      // 搜索
       async _search() {
         this.pageObj[this.nav[this.navIndex].status + 'Page'] = 1
         await this._setList()
@@ -182,10 +217,7 @@
         await this._setList()
       },
       async _setNav(index, item) {
-        if (this.navIndex === index && this.keyword.length === 0) {
-          return
-        }
-        console.log(222)
+        if (this.navIndex === index && this.keyword.length === 0) return
         this.navIndex = index
         this.keyword = ''
         this.pageObj[this.nav[this.navIndex].status + 'Page'] = 1
@@ -219,8 +251,8 @@
         } else {
           this.consumerOrder[this.navIndex] = this.consumerOrder[this.navIndex].concat(arr)
         }
-        console.log(arr, 'arr')
         this.pageObj[this.nav[this.navIndex].status + 'None'] = !this.consumerOrder[this.navIndex].length
+        this.pageObj[this.nav[this.navIndex].status + 'Null'] = this.pageObj[time + 'AllPage'] === this.pageObj[time + 'Page'] && !this.pageObj[this.nav[this.navIndex].status + 'None']
         this.todayList = this.consumerOrder[0]
         this.yesterdayList = this.consumerOrder[1]
         this.list = this.consumerOrder[2]
@@ -239,7 +271,7 @@
     height: 100vh
     box-sizing: border-box
     /*overflow: hidden*/
-    background: $color-white
+    background: $color-background
     width: 100vw
 
   .after-header
@@ -306,6 +338,8 @@
       background: $color-background
       box-sizing: border-box
       width: 100vw
+    .order-box-hideen
+      overflow: hidden
 
   .order-item
     margin-bottom: 12px
@@ -420,6 +454,44 @@
       font-family: $font-family-regular
       font-size: $font-size-14
       color: $color-text-sub
-
+  .search-wrapper
+    font-family :$font-family-regular
+    padding :0 12px
+    layout(block, block, nowrap)
+    align-items :center
+    z-index :50
+    .input-wrapper
+      flex: 1
+      height :32px
+      display :flex
+      align-items :center
+      background :#F0F0F0
+      padding : 0 13px 0 15px
+      border-radius :@height
+      position :relative
+      .close
+        position :absolute
+        right :0
+        height :32px
+        width :@height
+        display :flex
+        align-items :center
+        justify-content :flex-end
+        .close-img
+          width :13px
+          height @width
+          padding-right :13px
+      .search-img
+        width :14px
+        height :13.5px
+      input
+        flex: 1
+        height :20px
+        padding : 0 15px 0 8px
+        font-size :15px
+        line-height :@height
+    .btn
+      font-size :15px
+      padding-left :14px
 
 </style>
