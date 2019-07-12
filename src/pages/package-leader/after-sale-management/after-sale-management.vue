@@ -11,7 +11,7 @@
           <img class="search-img" mode="aspectFit" v-if="imageUrl" :src="imageUrl+'/yx-image/2.3/icon-search@2x.png'">
           <input
             type="text"
-            placeholder="提供单号，手机号，微信昵称，搜索"
+            placeholder="提供单号，手机号，微信昵称"
             placeholder-class="input-p"
             :focus="true"
             confirm-type="search"
@@ -109,7 +109,7 @@
       this.$wx.getSystemInfo({
         success: (res) => {
           this.width = res.screenWidth
-          this.scrollHeight = res.screenHeight - 151 - data.statusBarHeight
+          this.scrollHeight = res.screenHeight - 145 - data.statusBarHeight
         }
       })
       await this._afterManagementList(true)
