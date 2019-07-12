@@ -349,7 +349,6 @@
         videoContext: '',
         swiperIdx: 0,
         arrowUrl: ARROW_URL[1],
-        runTime: '',
         isShowOldCustomerButton: false
       }
     },

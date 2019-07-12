@@ -161,7 +161,6 @@
         systemInfoSync: {},
         articleList: new Article(),
         articleHeight: 0,
-        tabHeight: 0,
         // 瀑布流参数
         leftHeight: 0,
         rightHeight: 0,
@@ -175,14 +174,6 @@
         shopId: null
       }
     },
-    computed: {
-      scrollHeight() {
-        let navHeight = 44 + this.systemInfoSync.statusBarHeight
-        let bottomHeight = 60
-        let height = `${this.systemInfoSync.screenHeight - this.articleHeight - this.tabHeight - navHeight - bottomHeight}px`
-        return height
-      }
-    },
     onPageScroll(e) {
     },
     onLoad(options) {
@@ -193,7 +184,6 @@
           // 计算瀑布流间距
           let margin = 16 / percentage
           let padding = res.windowWidth * 0.032 * 2
-          console.log(padding)
           // 计算 瀑布流展示的宽度
           itemWidth = (res.windowWidth - margin - padding) / 2
           // 计算瀑布流的最大高度，防止长图霸屏
@@ -314,9 +304,8 @@
             rightHeight = rightHeight + tmp.itemHeight
           }
         }
-        console.log(leftList)
-        this.contentList[this.tabIndex].leftList = leftList
-        this.contentList[this.tabIndex].rightList = rightList
+        this.contentList[this.tabIndex].leftList = JSON.parse(JSON.stringify(leftList))
+        this.contentList[this.tabIndex].rightList = JSON.parse(JSON.stringify(rightList))
       },
       _getArticleList() {
         let res = this.$wx.getSystemInfoSync()
@@ -356,8 +345,6 @@
             })
           })
       },
-      _changeTabLine() {
-      },
       async _changeTab(index, id, e) {
         if (this.tabIndex === index) return
         // 如果是切换旁边的tab就加上动画，不是旁边的tab就不要动画
@@ -372,19 +359,17 @@
         this.tabIndex = index
         let number = index < 3 ? 0 : index - 2
         this.viewToItem = `item${number}`
-        wx.createSelectorQuery().selectAll('.scroll-item').boundingClientRect().exec(res => {
-          if (res && res[0]) {
-            this.lineWidth = res[0][this.tabIndex].width + this.tabList1[this.tabIndex].name.length * 4
-            this._changeTabLine()
-          }
-        })
+        // wx.createSelectorQuery().selectAll('.scroll-item').boundingClientRect().exec(res => {
+        //   if (res && res[0]) {
+        //     this.lineWidth = res[0][this.tabIndex].width + this.tabList1[this.tabIndex].name.length * 4
+        //   }
+        // })
       },
       getCategoryData(isLoad = false) {
         if (!this.tabList1.length) {
           this.contentList = [JSON.parse(JSON.stringify(ARR))]
           return
         }
-        this.tabHeight = this.tabList1.length ? 47 : 0
         this.classifyId = this.tabList1.length ? this.tabList1[this.tabIndex].other_id : ''
         let length = this.tabList1.length
         for (let i = 0; i < length; i++) {
@@ -531,7 +516,7 @@
         top: 11px
         right: 11px
       .fall-item
-        margin-bottom: 8px
+        margin-bottom: 2.13vw
         overflow: hidden
         box-shadow: 0 3px 8px 0 rgba(17, 17, 17, 0.05)
         background: $color-white

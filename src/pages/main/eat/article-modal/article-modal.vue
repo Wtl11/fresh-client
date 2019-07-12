@@ -6,7 +6,7 @@
       <div v-for="(item, index) in articleList" :key="index" class="article-item" @click="goDetail(item)">
         <div class="shade"></div>
         <img mode="aspectFill" :src="item.image_url" class="article-modal-img">
-        <div class="article-modal-title">{{item.title}}~</div>
+        <div class="article-modal-title">{{item.title}}</div>
       </div>
     </div>
     <!--三篇文章样式-->
