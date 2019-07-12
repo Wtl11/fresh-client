@@ -202,22 +202,19 @@
           font-size: $font-size-12
 
     .browse-wrap
-      padding-left: 15px
-
       .browse-title
         font-size $font-size-12
         color: #333
         padding-bottom: 10px
         border-bottom-1px(#E6E6E6)
-
+        margin-left:15px
       .like-wrap
         height: 56px
         display flex
         align-items center
 
         .like-total
-          margin-right: 18px
-
+          padding:10px 18px 10px  15px
           .like-icon
             width: 15px
             height: 15px
