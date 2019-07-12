@@ -169,7 +169,17 @@
         elRight: '',
         moduleData: [],
         elDom: [],
-        shopId: null
+        shopId: null,
+        tabHeight: 0
+      }
+    },
+    computed: {
+      scrollHeight() {
+        let navHeight = 44 + this.systemInfoSync.statusBarHeight
+        let bottomHeight = 60
+        let height = `${this.systemInfoSync.screenHeight - this.articleHeight - this.tabHeight - navHeight - bottomHeight}px`
+        console.log(height)
+        return height
       }
     },
     onPageScroll(e) {
@@ -368,6 +378,7 @@
           this.contentList = [JSON.parse(JSON.stringify(ARR))]
           return
         }
+        this.tabHeight = this.tabList1.length ? 47 : 0
         this.classifyId = this.tabList1.length ? this.tabList1[this.tabIndex].other_id : ''
         let length = this.tabList1.length
         for (let i = 0; i < length; i++) {
