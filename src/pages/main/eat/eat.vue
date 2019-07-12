@@ -191,12 +191,13 @@
           // 750rpx/屏幕宽度
           let percentage = 750 / res.windowWidth
           // 计算瀑布流间距
-          let margin = 20 / percentage
+          let margin = 16 / percentage
+          let padding = res.windowWidth * 0.032 * 2
+          console.log(padding)
           // 计算 瀑布流展示的宽度
-          itemWidth = (res.windowWidth - margin) / 2
+          itemWidth = (res.windowWidth - margin - padding) / 2
           // 计算瀑布流的最大高度，防止长图霸屏
           maxHeight = itemWidth / 0.8
-          // console.log('itemWidth', itemWidth, maxHeight)
         }
       })
       this._getArticleList(true)
@@ -313,6 +314,7 @@
             rightHeight = rightHeight + tmp.itemHeight
           }
         }
+        console.log(leftList)
         this.contentList[this.tabIndex].leftList = leftList
         this.contentList[this.tabIndex].rightList = rightList
       },
@@ -335,7 +337,6 @@
                   if (this.tabIndex + 1 > this.tabList1.length || !this.tabList1.length) {
                     this.tabIndex = 0
                   }
-                  console.log(this.tabList1.length)
                   this.classifyId = this.tabList1.length ? this.classifyId : ''
                   this.getCategoryData()
                   this.getContentList()
@@ -443,7 +444,7 @@
       .classify-icon
         position: relative
         margin: 0 auto
-        padding-top: 8px
+        padding-top: 2.3vw
         width: 44px
         height: @width
         .img
