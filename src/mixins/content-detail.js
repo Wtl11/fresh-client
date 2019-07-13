@@ -126,8 +126,8 @@ export default {
       this.details.authorLevel = obj.author.level
       this.details.goodCount = obj.fabulous_num
       this.details.lookCount = obj.browse_count >= 10000 ? obj.browse_count / 10000 + '万' : obj.browse_count
-      this.details.shareCount = obj.share_count
-      this.details.goodStatus = obj.is_fabulou
+      this.details.shareCount = obj.share_count > 999 ? '999+' : obj.share_count
+      this.details.goodStatus = obj.is_fabulou > 999 ? '999+' : obj.is_fabulou
       if (this.currentType !== 'video' && isLikes) this._getLikes()
       obj.assembly.forEach(item => {
         if (item.type === 'combination' && item.style_type === 'content') {
