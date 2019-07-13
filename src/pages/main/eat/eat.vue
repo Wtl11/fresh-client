@@ -263,7 +263,7 @@
           return
         }
         this.contentList[this.tabIndex].classifyMore = true
-        API.Content.getWorkList({ type: '', status: 1, is_cate_show: 1, category_id: this.classifyId, page: this.contentList[this.tabIndex].page })
+        API.Content.getWorkList({ type: '', status: 1, is_cate_show: 0, category_id: this.classifyId, page: this.contentList[this.tabIndex].page })
           .then((res) => {
             this.contentList[this.tabIndex].lastPage = res.meta.last_page
             if (this.contentList[this.tabIndex].page === 1) {
