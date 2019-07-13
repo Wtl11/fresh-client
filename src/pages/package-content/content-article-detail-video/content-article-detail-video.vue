@@ -1,6 +1,6 @@
 <template>
   <div class="content-article-detail-video">
-    <navigation-bar :translucent="true" :isBackCricle="true" @click-nav="videoClick"></navigation-bar>
+    <navigation-bar ref="navigationBar" :translucent="true" :isBackCricle="true" @click-nav="videoClick"></navigation-bar>
     <video id="myVideo"
            :src="details.videoContent.url"
            :autoplay="playStatus"

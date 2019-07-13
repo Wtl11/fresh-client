@@ -1,6 +1,6 @@
 <template>
   <div class="content-article-detail">
-    <navigation-bar :translucent="true" :isBackCricle="true"></navigation-bar>
+    <navigation-bar ref="navigationBar" :translucent="true" :isBackCricle="true"></navigation-bar>
     <video v-if="details.coverVideo" id="videocover" :src="details.coverVideo" :autoplay="true" :poster="details.coverImage" class="cover-photo" @play="playVideo('cover')"></video>
     <img v-else :src="details.coverImage" mode="widthFix" class="cover-photo">
     <div v-if="currentType === 'cookbook'" class="cookbook-title">{{details.title }}</div>

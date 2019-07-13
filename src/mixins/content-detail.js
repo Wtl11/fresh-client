@@ -80,6 +80,7 @@ export default {
     })
   },
   onUnload() {
+    this.$refs.navigationBar && this.$refs.navigationBar._initHeadStyle()
     console.log('我准备销毁了')
     this.details = {
       goodStatus: 0,
