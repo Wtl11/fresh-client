@@ -55,7 +55,7 @@
                       <div class="fall-author-right" @click.stop="giveLike('left', index, item)">
                         <img v-if="imageUrl && !item.is_fabulou" :src="imageUrl + '/yx-image/eat/icon-like_big1@2x.png'" class="fall-author-icon">
                         <img v-if="imageUrl && item.is_fabulou" :src="imageUrl + '/yx-image/eat/icon-like_big2@2x.png'" class="fall-author-icon">
-                        <span class="fall-author-like">{{item.fabulous_num}}</span>
+                        <span class="fall-author-like">{{item.fabulous_num >= 1000 ? '999+' : item.fabulous_num}}</span>
                       </div>
                     </div>
                     <!--瀑布流内容卡片-->
@@ -85,7 +85,7 @@
                       <div class="fall-author-right" @click.stop="giveLike('right', index, item)">
                         <img v-if="imageUrl && !item.is_fabulou" :src="imageUrl + '/yx-image/eat/icon-like_big1@2x.png'" class="fall-author-icon">
                         <img v-if="imageUrl && item.is_fabulou" :src="imageUrl + '/yx-image/eat/icon-like_big2@2x.png'" class="fall-author-icon">
-                        <span class="fall-author-like">{{item.fabulous_num}}</span>
+                        <span class="fall-author-like">{{item.fabulous_num >= 1000 ? '999+' : item.fabulous_num}}</span>
                       </div>
                     </div>
                     <!--瀑布流内容卡片-->
@@ -449,6 +449,7 @@
       .class-title
         color: $color-white
         background: #73C200
+
     .line-con
       box-sizing: border-box
       position: absolute
