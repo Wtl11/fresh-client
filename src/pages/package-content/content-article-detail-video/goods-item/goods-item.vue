@@ -72,7 +72,7 @@
     border-1px(#EFEFEF, 4px)
     box-shadow: 0 4px 6px 0 rgba(17, 17, 17, 0.02)
     margin-bottom 15px
-    height:90px
+    min-height:90px
     .goods-photo
       width: 90px
       height: 90px

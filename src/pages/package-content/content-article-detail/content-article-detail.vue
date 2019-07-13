@@ -16,7 +16,7 @@
       <div class="auth-info">
         <div class="name">
           <div class="name-text">{{details.authName}}</div>
-          <level-icon :num="details.authorLevel"></level-icon>
+          <level-icon v-if="currentType !== 'cookbook'" :num="details.authorLevel"></level-icon>
         </div>
         <div class="auth-introduce">{{details.authSignature}}</div>
       </div>
@@ -241,7 +241,7 @@
         height: 56px
         display flex
         align-items center
-
+        /*padding-right: 15px*/
         .like-total
           padding: 10px 18px 10px 15px
 
@@ -258,13 +258,17 @@
         .good-list-wrap
           flex: 1
           overflow hidden
-          white-space: nowrap
-          padding-right: 15px
+          height: 56px
+          display flex
+          justify-content space-between
+          flex-wrap  wrap
 
         .liker-photo
           width: 26px
           height: 26px
           margin-right: 19px
+          margin-top: 10px
+          margin-bottom: 10px
           flex-shrink 0
           border-radius 50%
           border: 1px solid #E6E6E6
