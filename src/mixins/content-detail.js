@@ -116,8 +116,9 @@ export default {
   methods: {
     ...cartMethods,
     _getDetails(isLikes = true) {
-      API.Content.getDetails({ id: this.articleId, preview: this.preview }).then(res => {
+      API.Content.getDetails({ id: this.articleId, preview: this.preview }, true).then(res => {
         this.changeData(res.data, isLikes)
+        this.$wechat.hideLoading()
       })
     },
     changeData(obj, isLikes) {
@@ -125,7 +126,7 @@ export default {
       this.details.title = obj.title
       this.details.category = obj.id
       this.details.coverImage = obj.cover_image.source_url
-      this.details.coverLittleImage = obj.cover_image.source_url + '?imageView2/3/w/' + 100 + '/q/10'
+      this.details.coverLittleImage = obj.cover_image.source_url + '?imageView2/3/w/30/q/1'
       this.details.coverVideo = obj.cover_video.full_url || ''
       this.details.authPhoto = obj.author.head_image_url
       this.details.authName = obj.author.nickname
