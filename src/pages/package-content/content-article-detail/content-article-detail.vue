@@ -1,8 +1,11 @@
 <template>
   <div class="content-article-detail">
     <navigation-bar ref="navigationBar" :translucent="true" :isBackCricle="true"></navigation-bar>
-    <video v-if="details.coverVideo" id="videocover" :src="details.coverVideo" :autoplay="true" :poster="details.coverImage" class="cover-photo" @play="playVideo('cover')"></video>
-    <img v-else :src="details.coverImage" mode="widthFix" class="cover-photo">
+    <video v-if="details.coverVideo" id="videocover" :src="details.coverVideo" :autoplay="true" :poster="details.coverImage" class="cover-video" @play="playVideo('cover')"></video>
+    <div  v-else class="cover-box">
+      <img :src="details.coverLittleImage" mode="widthFix" class="little-cover">
+      <img :src="details.coverImage" mode="widthFix" class="big-cover">
+    </div>
     <div v-if="currentType === 'cookbook'" class="cookbook-title">{{details.title }}</div>
     <div :class="['auth-wrap',{cookbook: currentType === 'cookbook' }]">
       <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-high_quality@2x.png'" class="good-article-icon">
@@ -29,7 +32,7 @@
             <img v-if="details.goodStatus" :src="imageUrl + '/yx-image/article/icon-like_big2@2x.png'" class="like-icon">
             <img v-else :src="imageUrl + '/yx-image/article/icon-like_big1@2x.png'" class="like-icon">
           </template>
-          <div class="total-count">{{details.goodCount >999 ?'999+' :details.goodCount }}</div>
+          <div class="total-count">{{details.goodCount }}</div>
         </div>
         <!-- todo -->
         <div class="good-list-wrap">
@@ -55,7 +58,7 @@
     <div class="article-cont">
       <div v-for="(item,idx) in details.details" :key="idx" class="article-item">
         <text v-if="item.type==='text'" class="article-text">{{item.value}}</text>
-        <img v-if="item.type==='image'" :src="item.value.source_url" mode="widthFix" class="article-image"/>
+        <img v-if="item.type==='image'" :src="item.value.source_url" mode="widthFix" lazy-load class="article-image"/>
         <video v-if="item.type==='video'" :src="item.value.full_url" :poster="item.value.cover_image_url" :id="'video'+item.value.id" class="article-video" @play="playVideo(item.value.id)"></video>
         <goods-item v-if="item.type==='goods'" :goodsData="item.value" @add="addGoods" @click="goToDetail(item.value)"></goods-item>
       </div>
@@ -147,11 +150,20 @@
 
   .content-article-detail
     width: 100%
-
-    .cover-photo
-      width: 100vw
-      display block
-
+    .cover-video
+      width:100vw
+    .cover-box
+      position:relative
+      .little-cover
+       width:100vw
+      .big-cover
+        width: 100vw
+        display block
+        position:absolute
+        top:0
+        left:0
+        right:0
+        z-index:2
     .cookbook-title
       font-family: $font-family-medium
       font-size: $font-size-23

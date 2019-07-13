@@ -12,11 +12,13 @@ export default {
     preview: 0,
     articleId: 0,
     currentType: 'common',
+    screenWidth: 0,
     details: {
       goodStatus: 0,
       category: '',
       title: '',
       coverImage: '',
+      coverLittleImage: '',
       coverVideo: '',
       authPhoto: '',
       authName: '',
@@ -58,6 +60,8 @@ export default {
   },
   onLoad() {
     let res = this.$wx.getSystemInfoSync()
+    console.log(res)
+    this.screenWidth = res.screenWidth
     this.BottomEmptyVisible = (res.statusBarHeight >= 44) ? 1 : false
     let options = this._$$initOptions()
     this.articleId = options.articleId || ''
@@ -87,6 +91,7 @@ export default {
       category: '',
       title: '',
       coverImage: '',
+      coverLittleImage: '',
       coverVideo: '',
       authPhoto: '',
       authName: '',
@@ -120,12 +125,13 @@ export default {
       this.details.title = obj.title
       this.details.category = obj.id
       this.details.coverImage = obj.cover_image.source_url
+      this.details.coverLittleImage = obj.cover_image.source_url + '?imageView2/3/w/' + 100 + '/q/10'
       this.details.coverVideo = obj.cover_video.full_url || ''
       this.details.authPhoto = obj.author.head_image_url
       this.details.authName = obj.author.nickname
       this.details.authSignature = obj.author.sign
       this.details.authorLevel = obj.author.level
-      this.details.goodCount = obj.fabulous_num
+      this.details.goodCount = obj.fabulous_num > 999 ? '999+' : obj.fabulous_num
       this.details.lookCount = obj.browse_count >= 10000 ? obj.browse_count / 10000 + '万' : obj.browse_count
       this.details.shareCount = obj.share_count > 999 ? '999+' : obj.share_count
       this.details.goodStatus = obj.is_fabulou > 999 ? '999+' : obj.is_fabulou
