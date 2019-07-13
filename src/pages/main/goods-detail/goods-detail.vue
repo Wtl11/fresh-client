@@ -926,6 +926,17 @@
           console.warn(e)
         })
       },
+      playVideo(play) {
+        this.videoPlaying = play
+        this.playBefore = false
+        if (play) {
+          this.videoContext.play()
+          this.arrowUrl = ARROW_URL[0]
+        } else {
+          this.videoContext.pause()
+          this.arrowUrl = ARROW_URL[1]
+        }
+      },
       // 限时抢购倒计时开始
       _flashAction() {
         if (this.activityType === ACTIVE_TYPE.DEFAULT) return
