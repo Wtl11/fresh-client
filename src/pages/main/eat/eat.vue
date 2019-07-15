@@ -257,7 +257,6 @@
         console.log(this.statusBarHeight)
         el.relativeToViewport({ top: -(this.statusBarHeight + 70) })
         el.observe('.scroll-box', res => {
-          console.log(res.boundingClientRect)
           this.isTop = res.boundingClientRect.top <= this.statusBarHeight && res.intersectionRect.top <= 0
           this.activeTabStyles = this.isTop ? `
                 position:fixed;
