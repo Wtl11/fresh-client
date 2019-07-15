@@ -271,9 +271,7 @@
         .liker-photo
           width: 26px
           height: 26px
-          margin-right: 16px
-          margin-top: 10px
-          margin-bottom: 10px
+          margin-top: 10px 15px 10px 0
           flex-shrink 0
           border-radius 50%
           border: 1px solid #E6E6E6
