@@ -16,17 +16,18 @@
       <div class="auth-info">
         <div class="name">
           <div class="name-text">{{details.authName}}</div>
-          <level-icon v-if="currentType !== 'cookbook'" :num="details.authorLevel"></level-icon>
+          <level-icon :num="details.authorLevel"></level-icon>
+          <!-- v-if="currentType !== 'cookbook'"-->
         </div>
         <div class="auth-introduce">{{details.authSignature}}</div>
       </div>
     </div>
     <div v-show="details.lookCount || details.goodCount" class="browse-wrap">
-      <div v-if="currentType === 'cookbook'" class="browse-title"></div>
-      <div v-else v-show="details.lookCount" class="browse-title">
-        浏览{{details.lookCount}}
-      </div>
-      <div v-show="details.goodCount" class="like-wrap">
+      <div  class="browse-title"></div>
+      <!--v-if="currentType === 'cookbook'" <div v-else v-show="details.lookCount" class="browse-title">-->
+        <!--浏览{{details.lookCount}}-->
+      <!--</div>-->
+      <div class="like-wrap">
         <div class="like-total" @click="setLikeBtn">
           <template v-if="imageUrl">
             <img v-if="details.goodStatus" :src="imageUrl + '/yx-image/article/icon-like_big2@2x.png'" class="like-icon">
@@ -36,7 +37,10 @@
         </div>
         <!-- todo -->
         <div class="good-list-wrap">
-          <img v-for="(item,idx) in details.likes" :key="idx" :src="item.avatar" class="liker-photo">
+          <template  v-if="details.goodCount">
+            <img v-for="(item,idx) in details.likes" :key="idx" :src="item.avatar" class="liker-photo">
+          </template>
+          <template v-else>快来第一个点赞吧~</template>
         </div>
       </div>
     </div>
@@ -182,12 +186,12 @@
         justify-content: center
 
         .good-article-icon
-          top: 12px
+          top: 0px
 
       .good-article-icon
         position absolute
         right: 11px
-        top: 35px
+        top: 10px
         width: 48px
         height: @width
 
@@ -233,7 +237,6 @@
       .browse-title
         font-size $font-size-12
         color: #333
-        padding-bottom: 10px
         border-bottom-1px(#E6E6E6)
         margin-left: 15px
 
@@ -259,14 +262,16 @@
           flex: 1
           overflow hidden
           height: 56px
+          line-height: 56px
           display flex
           justify-content space-between
           flex-wrap  wrap
-
+          color:#808080
+          font-size:$font-size-12
         .liker-photo
           width: 26px
           height: 26px
-          margin-right: 19px
+          margin-right: 16px
           margin-top: 10px
           margin-bottom: 10px
           flex-shrink 0
