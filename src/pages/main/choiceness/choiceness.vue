@@ -717,6 +717,7 @@
           const navigationBarHeight = this._navigationBarHeight
           const top = navigationBarHeight + 59
           this._activeTab = wx.createIntersectionObserver()
+          console.log(top)
           this._activeTab.relativeToViewport({ top: -top })
           this.$refs.refActiveTAb && this._activeTab.observe('#activeTab', res => {
             let flag = res.boundingClientRect.top <= top && res.intersectionRect.top <= 0

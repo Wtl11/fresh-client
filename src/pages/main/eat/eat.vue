@@ -23,7 +23,8 @@
             </div>
           </scroll-view>
         </div>
-        <div class="big-box" :style="{'padding-top' : isTop ? '120px' : '0'}">
+        <!---->
+        <div class="big-box">
           <div
             class="classify-big-box"
             :style="{'transform': ' translateX('+ -(tabIndex * 100) +'vw)', width:  (tabList1.length * 100) +'vw', transition: boxTransition}"
@@ -193,8 +194,6 @@
         return height
       }
     },
-    onPageScroll(e) {
-    },
     onLoad(options) {
       wx.getSystemInfo({
         success: (res) => {
@@ -255,8 +254,10 @@
       _addMonitor() {
         if (!this.tabList1.length) return
         let el = wx.createIntersectionObserver()
-        el.relativeToViewport({ top: -this.statusBarHeight })
+        console.log(this.statusBarHeight)
+        el.relativeToViewport({ top: -(this.statusBarHeight + 70) })
         el.observe('.scroll-box', res => {
+          console.log(res.boundingClientRect)
           this.isTop = res.boundingClientRect.top <= this.statusBarHeight && res.intersectionRect.top <= 0
           this.activeTabStyles = this.isTop ? `
                 position:fixed;
