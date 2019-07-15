@@ -210,7 +210,7 @@
       })
       let res = this.$wx.getSystemInfoSync()
       this.statusBarHeight = res.statusBarHeight || 20
-      this.statusBarHeight += 40
+      this.statusBarHeight += 44
       this.bannerTop = res.screenWidth * 0.48532
       this._getArticleList(true)
     },
@@ -254,8 +254,8 @@
       _addMonitor() {
         if (!this.tabList1.length) return
         let el = wx.createIntersectionObserver()
+        el.relativeToViewport({ top: -(this.statusBarHeight + 70 - 4) })
         console.log(this.statusBarHeight)
-        el.relativeToViewport({ top: -(this.statusBarHeight + 70) })
         el.observe('.scroll-box', res => {
           this.isTop = res.boundingClientRect.top <= this.statusBarHeight && res.intersectionRect.top <= 0
           this.activeTabStyles = this.isTop ? `
