@@ -42,7 +42,7 @@
 
   const PAGE_NAME = 'MINE_HOUSING'
   const NAV_WIDTH = 140
-  let REGPHONE = /^(13[0-9]|14[0-9]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/
+  let REGPHONE = /^(13[0-9]|14[0-9]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[0-9])\d{8}$/
   export default {
     name: PAGE_NAME,
     data() {

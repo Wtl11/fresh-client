@@ -49,6 +49,7 @@
     {
       "root": "package-leader/",
       "pages": [
+        "bind-wx-wallet",
         "distribution-commission",
         "leader-invite",
        "leader-invite-success",

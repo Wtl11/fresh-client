@@ -34,7 +34,8 @@ export default {
     DISTRIBUTION_COMMISSION: `${LEADER}/distribution-commission`,
     LEADER_INVITE: `${LEADER}/leader-invite`,
     LEADER_INVITE_SUCCESS: `${LEADER}/leader-invite-success`,
-    APPLY_LEADER: `${LEADER}/apply-leader`
+    APPLY_LEADER: `${LEADER}/apply-leader`,
+    BIND_WX_WALLET:`${LEADER}/bind-wx-wallet`,
     // package-leader
   },
   main: {
