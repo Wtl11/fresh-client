@@ -389,7 +389,6 @@
       },
       async _changeTab(index, id, e) {
         if (this.tabIndex === index) return
-
         // 如果是切换旁边的tab就加上动画，不是旁边的tab就不要动画
         this.boxTransition = 'all .3s'
         this._setViewToItem(index)
