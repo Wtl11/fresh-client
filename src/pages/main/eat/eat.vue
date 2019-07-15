@@ -255,7 +255,6 @@
         if (!this.tabList1.length) return
         let el = wx.createIntersectionObserver()
         el.relativeToViewport({ top: -(this.statusBarHeight + 70 - 4) })
-        console.log(this.statusBarHeight)
         el.observe('.scroll-box', res => {
           this.isTop = res.boundingClientRect.top <= this.statusBarHeight && res.intersectionRect.top <= 0
           this.activeTabStyles = this.isTop ? `
