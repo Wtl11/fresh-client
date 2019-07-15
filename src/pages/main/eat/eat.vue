@@ -5,28 +5,33 @@
       <!--文章模块-->
       <article-modal v-if="module.module_name === 'article_recommend' && articleList.length" :articleList="articleList"></article-modal>
       <div v-if="module.module_name === 'article_recommend'">
-        <scroll-view
-          class="scroll-view2"
-          v-if="tabList1.length"
-          id="scrollView"
-          :scroll-into-view="viewToItem"
-          scroll-x
-          scroll-with-animation="true"
-        >
-          <div v-for="(item, index) in tabList1" :class="tabIndex === index ? 'item-active'  : ''" :key="index"
-               class="item scroll-item" :id="'item'+index" @click="_changeTab(index, item.other_id, $event)">
-            <p class="text">{{item.name}}</p>
-            <p class="class-title" v-if="item.title">{{item.title}}</p>
-          </div>
-        </scroll-view>
-        <div class="big-box">
+        <div class="scroll-box">
+          <scroll-view
+            class="scroll-view2"
+            :class="{'scroll-view2-active': isTop}"
+            :style="activeTabStyles"
+            v-if="tabList1.length"
+            id="scrollView"
+            :scroll-into-view="viewToItem"
+            scroll-x
+            scroll-with-animation="true"
+          >
+            <div v-for="(item, index) in tabList1" :class="tabIndex === index ? 'item-active'  : ''" :key="index"
+                 class="item scroll-item" :id="'item'+index" @click="_changeTab(index, item.other_id, $event)">
+              <p class="text">{{item.name}}</p>
+              <p class="class-title" v-if="item.title">{{item.title}}</p>
+            </div>
+          </scroll-view>
+        </div>
+        <div class="big-box" :style="{'padding-top' : isTop ? '120px' : '0'}">
           <div
             class="classify-big-box"
             :style="{'transform': ' translateX('+ -(tabIndex * 100) +'vw)', width:  (tabList1.length * 100) +'vw', transition: boxTransition}"
           >
+            <!---->
             <div
-              class="goods-list-box"
               :style="{height: tabIndex * 1 === tabInx ? -1 : scrollHeight}"
+              class="goods-list-box"
               v-for="(tabItem, tabInx) in contentList" :key="tabInx"
             >
               <!--瀑布流-->
@@ -92,7 +97,9 @@
                   </div>
                 </div>
               </div>
-              <is-active-empty v-if="tabItem.isEmpty"></is-active-empty>
+              <div class="empty">
+                <is-active-empty v-if="tabItem.isEmpty"></is-active-empty>
+              </div>
               <loading-more v-if="tabItem.classifyMore"></loading-more>
               <div class="foot-ties" v-if="tabItem.page === tabItem.lastPage && !tabItem.isEmpty">
                 <div class="center">— 再拉也没有了 —</div>
@@ -170,14 +177,19 @@
         moduleData: [],
         elDom: [],
         shopId: null,
-        tabHeight: 0
+        tabHeight: 0,
+        isTop: false,
+        activeTabStyles: '',
+        bannerTop: 0
       }
     },
     computed: {
       scrollHeight() {
         let navHeight = 44 + this.systemInfoSync.statusBarHeight
         let bottomHeight = 60
-        let height = `${this.systemInfoSync.screenHeight - this.articleHeight - this.tabHeight - navHeight - bottomHeight}px`
+        let heightNotTop = `${this.systemInfoSync.screenHeight - this.articleHeight - this.tabHeight - navHeight - bottomHeight}px`
+        let heightTop = `${this.systemInfoSync.screenHeight - this.tabHeight - navHeight - bottomHeight}px`
+        let height = this.isTop ? heightTop : heightNotTop
         return height
       }
     },
@@ -197,6 +209,10 @@
           maxHeight = itemWidth / 0.8
         }
       })
+      let res = this.$wx.getSystemInfoSync()
+      this.statusBarHeight = res.statusBarHeight || 20
+      this.statusBarHeight += 40
+      this.bannerTop = res.screenWidth * 0.48532
       this._getArticleList(true)
     },
     onShow() {
@@ -214,6 +230,7 @@
       this.$$shareHandler({ event: EVENT_CODE.EAT })
     },
     onReachBottom() {
+      this._addMonitor()
       if (this.contentList[this.tabIndex].page >= this.contentList[this.tabIndex].lastPage) {
         return
       }
@@ -235,6 +252,21 @@
       }
     },
     methods: {
+      _addMonitor() {
+        if (!this.tabList1.length) return
+        let el = wx.createIntersectionObserver()
+        el.relativeToViewport({ top: -this.statusBarHeight })
+        el.observe('.scroll-box', res => {
+          this.isTop = res.boundingClientRect.top <= this.statusBarHeight && res.intersectionRect.top <= 0
+          this.activeTabStyles = this.isTop ? `
+                position:fixed;
+                top:${this.statusBarHeight}px;
+                left:0;
+                right:0;
+                background: #fff;
+              ` : ''
+        })
+      },
       goDetail(item) {
         let url = item.type === 'video' ? `${this.$routes.content.CONTENT_ARTICLES_DETAIL_VIDEO}?articleId=${item.id}` : `${this.$routes.content.CONTENT_ARTICLES_DETAIL}?articleId=${item.id}`
         wx.navigateTo({ url })
@@ -316,7 +348,7 @@
       },
       _getArticleList() {
         let res = this.$wx.getSystemInfoSync()
-        this.articleHeight = this.articleList.length ? res.screenWidth * 0.457333 : 0
+        this.articleHeight = this.articleList.length ? res.screenWidth * 0.48532 : 0
         API.FlashSale.getModuleInfo({ page_name: 'food' })
           .then((json) => {
             this.moduleData = json.data.modules
@@ -334,6 +366,9 @@
                     this.tabIndex = 0
                   }
                   this.classifyId = this.tabList1.length ? this.classifyId : ''
+                  setTimeout(() => {
+                    this._addMonitor()
+                  }, 300)
                   this.getCategoryData()
                   this.getContentList()
                   break
@@ -354,6 +389,7 @@
       },
       async _changeTab(index, id, e) {
         if (this.tabIndex === index) return
+
         // 如果是切换旁边的tab就加上动画，不是旁边的tab就不要动画
         this.boxTransition = 'all .3s'
         this._setViewToItem(index)
@@ -361,6 +397,7 @@
         this.classifyId = id
         this.contentList[this.tabIndex].page = 1
         this.getContentList(this.classifyId, false)
+        this.contentList[index].arr = this.contentList[index].arr.slice(0, 10)
       },
       _setViewToItem(index = 0) {
         this.tabIndex = index
@@ -400,9 +437,11 @@
     min-height: 100vh
     background-image: linear-gradient(180deg, #FFFFFF 11%, #F7F7F7 32%)
 
+  .scroll-box
+    height: 70px
+
   .scroll-view2
-    margin-top: 20px
-    padding-left: 2px
+    padding: 20px 0 10px 2px
     width: 100vw
     z-index: 99
     display: block
@@ -481,7 +520,6 @@
 
   .goods-list-box
     display: block
-    margin-top: 10px
     width: 100vw
 
   .fall-container
