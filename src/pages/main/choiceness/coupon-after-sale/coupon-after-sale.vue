@@ -74,7 +74,6 @@
   import AnimationModal from '@mixins/animation-modal'
   import CouponItem from './coupon-item/coupon-item'
   import API from '@api'
-  import Item from './coupon-item/coupon'
 
   const COMPONENT_NAME = 'COUPON_MODAL'
 
@@ -86,8 +85,8 @@
     },
     data() {
       return {
-        isShow: true,
-        couponArray: [new Item()]
+        isShow: false,
+        couponArray: []
       }
     },
     methods: {
