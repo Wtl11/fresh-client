@@ -339,6 +339,8 @@
       <coupon-modal ref="couponModal"></coupon-modal>
       <!--兑换券弹窗-->
       <invitation-modal ref="invModal"></invitation-modal>
+      <!-- 售后补偿弹窗     -->
+      <coupon-after-sale ref="couponAfterSale"></coupon-after-sale>
       <!--    添加至我的小程序-->
       <new-guidelines ref="guidelines"></new-guidelines>
       <distance-check ref="distance"></distance-check>
@@ -364,6 +366,7 @@
   import clearWatch from '@mixins/clear-watch'
   import Ald from '@utils/ald'
   import InvitationModal from './invitation-modal/invitation-modal'
+  import CouponAfterSale from './coupon-after-sale/coupon-after-sale'
 
   // import GetOptions from '@mixins/get-options'
 
@@ -386,7 +389,8 @@
       IsEnd,
       LoadingMore,
       DistanceCheck,
-      InvitationModal
+      InvitationModal,
+      CouponAfterSale
     },
     data() {
       this._isLoading = false

@@ -72,6 +72,7 @@ export default {
     SHOPPING_CART: `${MAIN}/shopping-cart`,
     SUBMIT_ORDER: `${MAIN}/submit-order`,
     INVITATION_CHOOSE:`${MAIN}/invitation-choose`,
+    FREEZE_SHOP:`${MAIN}/freeze-shop`,
     // main
   }
 }

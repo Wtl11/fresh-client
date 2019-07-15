@@ -14,7 +14,7 @@
     </section>
     <div v-if="backgroundLoad" class="container">
       <div style="height: 41px"></div>
-      <section class="header panel">
+      <section v-if="groupInfo.id" class="header panel">
         <figure class="avatar">
           <img class="avatar-img" mode="aspectFill" v-if="groupInfo.head_image_url" :src="groupInfo.head_image_url">
           <img class="avatar-img" mode="aspectFill" v-else-if="imageUrl" :src="imageUrl + '/yx-image/2.1/default_avatar@2x.png'">
@@ -22,7 +22,7 @@
         <h1 class="name">团长 {{groupInfo.name}}</h1>
         <p class="position">当前提货点：{{groupInfo.social_name}}</p>
       </section>
-      <dl class="panel list-wrapper">
+      <dl v-if="historyList.length>0" class="panel list-wrapper">
         <dt class="title">历史提货点</dt>
         <div v-if="historyList.length>0" class="list-con">
           <dd v-for="(item, index) in historyList" :key="index" class="list-item-wrapper has-line" @click="handleCheck(item)">
@@ -101,6 +101,7 @@
       }
     },
     async onLoad(options) {
+      this._options = options
       // this.groupInfo = getApp().globalData.$groupInfo
       this._groupInfo()
       this._getSystemInfo()
@@ -114,9 +115,14 @@
     onPageScroll(e) {
       this._changeNavigation(e)
     },
+    onReady() {
+      if (this._options.errorCode === 'freezeShop') return
+      this.$$sendEvent()
+    },
     methods: {
       // 获取团长的信息
       async _groupInfo(loading) {
+        if (this._options.errorCode === 'freezeShop') return
         let res = await API.Choiceness.getGroupInfo(loading)
         if (loading) {
           this.$wechat.hideLoading()
@@ -169,18 +175,6 @@
         }
       },
       _getList(loading) {
-        API.Pickup.getList({page: 1, limit: 2}, loading).then(res => {
-          if (res.data && res.data.length) {
-            this.dataArray = res.data
-            if (res.data && res.data.length > 2) {
-              this.historyList = [this.dataArray[0], this.dataArray[1]]
-            } else {
-              this.historyList = res.data
-            }
-          } else {
-            this.dataIsEmpty = true
-          }
-        })
         API.Pickup.getNearbyList(this.nearbyParams, loading).then(res => {
           if (res.data && res.data.length) {
             this.nearbyList = res.data
@@ -193,6 +187,19 @@
             })
           } else {
             this.nearbyIsEmpty = true
+          }
+        })
+        if (this._options.errorCode === 'freezeShop') return
+        API.Pickup.getList({page: 1, limit: 2}, loading).then(res => {
+          if (res.data && res.data.length) {
+            this.dataArray = res.data
+            if (res.data && res.data.length > 2) {
+              this.historyList = [this.dataArray[0], this.dataArray[1]]
+            } else {
+              this.historyList = res.data
+            }
+          } else {
+            this.dataIsEmpty = true
           }
         })
       },
@@ -210,7 +217,7 @@
       },
       handleConfirm() {
         wx.setStorageSync('shopId', this.currentItem.id)
-        wx.navigateBack()
+        wx.switchTab({url: this.$routes.main.CHOICENESS})
       }
     }
   }

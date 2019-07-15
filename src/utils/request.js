@@ -62,6 +62,7 @@ async function checkCode(res = {}) {
   if (res.data && (res.data.code !== ERR_OK)) {
     // 可以进行switch操作，根据返回的code进行相对应的操作，然后抛异常
     console.warn(res.data.message)
+    const options = wx.getLaunchOptionsSync()
     switch (res.data.code) {
       case 13001: // 无团长权限code,跳转团长登录页面
         wx.removeStorageSync('isLeader')
@@ -84,13 +85,16 @@ async function checkCode(res = {}) {
         ErrorNum++
         // wx.reLaunch({url: '/pages/login'})
         break
-      case 13002: // 冻结
-        wx.redirectTo({url: $$routes.main.LOST + '?shopId=1'})
+      case 13002: // 店铺冻结
+        if (options.path === $$routes.main.FREEZE_SHOP) {
+          return
+        }
+        wx.redirectTo({url: $$routes.main.FREEZE_SHOP})
         break
       case 13003:
         return res.data
       case 13004: // 系统升级
-        const options = wx.getLaunchOptionsSync()
+        // const options = wx.getLaunchOptionsSync()
         if (options.path === $$routes.main.APP_UPDATE) {
           return
         }

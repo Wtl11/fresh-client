@@ -1,6 +1,7 @@
 {
   "pages": [
     "pages/choiceness",
+    "pages/freeze-shop",
     "pages/shopping-cart",
     "pages/mine",
     "pages/goods-detail",
