@@ -1120,7 +1120,7 @@
         position: absolute
         left: 12px
         right :@left
-        bottom: -1px
+        bottom: 0
         transition: opacity 0.3s
   // 分享模块
   .share-panel-wrapper
@@ -1476,7 +1476,7 @@
       width: 100%
       padding: 0 12px
       position: absolute
-      bottom: 13.3vw
+      bottom: px-change-vw(60.5)
       left: 0
       layout(row)
       align-items: center
