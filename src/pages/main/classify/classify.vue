@@ -20,7 +20,7 @@
         <div class="goods-list-box" v-for="(tabItem, tabInx) in tabList1" :key="tabInx"
              :class="tabIndex * 1 === tabInx ? '' : 'order-item-list-active'">
           <div class="goods-list">
-            <div class="goods-item-box" v-for="(item, index) in currentList" :key="index"
+            <div class="goods-item-box" v-for="(item, index) in classifyList[tabInx]" :key="index"
                  @click="jumpGoodsDetail(item)">
               <div class="classify-box">
                 <div class="classify-box-top">
@@ -54,10 +54,10 @@
             </div>
           </div>
           <loading-more v-if="!classifyMore"></loading-more>
-          <div class="foot-ties" v-if="classifyMore && currentList.length !== 0">
+          <div class="foot-ties" v-if="classifyMore && classifyList[tabInx].length !== 0">
             <div class="center">— 再拉也没有了 —</div>
           </div>
-          <div class="noting" v-if="classifyMore && currentList.length === 0">
+          <div class="noting" v-if="classifyMore && classifyList[tabInx].length === 0">
             <div class="notingimg"><img class="img" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'" alt=""></div>
             <div class="txt">空空如也</div>
           </div>
@@ -93,12 +93,12 @@
         viewToItem: 'item0',
         statusBarHeight: 20,
         classifyId: null,
-        // classifyList: [],
+        classifyList: [],
         classifyPage: 1,
         classifyMore: false,
         boxTransition: '',
-        lineTranslateX: 0,
-        currentList: []
+        lineTranslateX: 0
+        // currentList: []
       }
     },
     onLoad(options = {}) {
@@ -114,6 +114,7 @@
       ...cartMethods,
       async _changeTab(index, id, e) {
         if (this.tabIndex === index) return
+        this.classifyList[this.tabIndex] = []
         // 如果是切换旁边的tab就加上动画，不是旁边的tab就不要动画
         if (this.tabIndex === index + 1 || this.tabIndex === index - 1) {
           this.boxTransition = 'all .3s'
@@ -140,10 +141,10 @@
             return
           }
           this.tabList1 = res.data
-          // let length = res.data.length
-          // for (let i = 0; i < length; i++) {
-          //   this.classifyList.push([])
-          // }
+          let length = res.data.length
+          for (let i = 0; i < length; i++) {
+            this.classifyList.push([])
+          }
           res.data.forEach((item, index) => {
             if (item.id * 1 === this.classifyId * 1) {
               this._setViewToItem(index)
@@ -159,14 +160,14 @@
           if (res.error !== this.$ERR_OK) {
             return
           }
-          // this.classifyList[index] = res.data
+          this.classifyList[index] = res.data
           this._isUpList(res)
           wx.pageScrollTo({
             scrollTop: 0,
             duration: 0
           })
           // console.log(this.classifyList[this.tabIndex])
-          this.currentList = res.data
+          // this.currentList = res.data
         })
       },
       getMoreCategoryList(id) {
@@ -181,19 +182,19 @@
           if (res.error !== this.$ERR_OK) {
             return
           }
-          // this.classifyList[this.tabIndex] = this.classifyList[this.tabIndex].concat(res.data)
-          this.currentList = this.currentList.concat(res.data)
+          this.classifyList[this.tabIndex] = this.classifyList[this.tabIndex].concat(res.data)
+          // this.currentList = this.currentList.concat(res.data)
           this._isUpList(res)
         })
       },
       _isUpList(res) {
         this.classifyPage++
-        // if (this.classifyList[this.tabIndex] && (this.classifyList[this.tabIndex].length >= res.meta.total * 1)) {
-        //   this.classifyMore = true
-        // }
-        if (this.currentList && (this.currentList.length >= res.meta.total * 1)) {
+        if (this.classifyList[this.tabIndex] && (this.classifyList[this.tabIndex].length >= res.meta.total * 1)) {
           this.classifyMore = true
         }
+        // if (this.currentList && (this.currentList.length >= res.meta.total * 1)) {
+        //   this.classifyMore = true
+        // }
       },
       jumpGoodsDetail(item) {
         wx.navigateTo({
