@@ -2,7 +2,7 @@
   <div class="content-article-detail">
     <navigation-bar ref="navigationBar" :translucent="true" :isBackCricle="true"></navigation-bar>
     <video v-if="details.coverVideo" id="videocover" :src="details.coverVideo" :autoplay="true" class="cover-video" @play="playVideo('cover')"></video>
-    <div  v-else class="cover-box">
+    <div v-else class="cover-box">
       <img :src="details.coverLittleImage" mode="widthFix" class="little-cover">
       <img :src="details.coverImage" mode="widthFix" class="big-cover">
     </div>
@@ -23,9 +23,9 @@
       </div>
     </div>
     <div v-show="details.lookCount || details.goodCount" class="browse-wrap">
-      <div  class="browse-title"></div>
+      <div class="browse-title"></div>
       <!--v-if="currentType === 'cookbook'" <div v-else v-show="details.lookCount" class="browse-title">-->
-        <!--浏览{{details.lookCount}}-->
+      <!--浏览{{details.lookCount}}-->
       <!--</div>-->
       <div class="like-wrap">
         <div class="like-total" @click="setLikeBtn">
@@ -37,7 +37,7 @@
         </div>
         <!-- todo -->
         <div class="good-list-wrap">
-          <template  v-if="details.goodCount">
+          <template v-if="details.goodCount">
             <img v-for="(item,idx) in details.likes" :key="idx" :src="item.avatar" class="liker-photo">
           </template>
           <template v-else>快来第一个点赞吧~</template>
@@ -54,8 +54,16 @@
       <div v-if="details.foodList" class="foods-list">
         {{details.foodList}}
       </div>
-      <div class="goods-list">
-        <goods-item v-for="(item,idx) in details.goodsList" :key="idx" :goodsData="item" @add="addGoods" @click="goToDetail(item)"></goods-item>
+      <div :class="['goods-list',{active:showAll}]">
+        <div class="goods-item-wrap" v-for="(item,idx) in details.goodsList" :key="idx">
+          <goods-item :goodsData="item" @add="addGoods" @click="goToDetail(item)"></goods-item>
+        </div>
+      </div>
+      <div v-if="details.goodsList.length>2" class="more-btn" @click="showAll=!showAll">
+        {{showAll? '收起':'加载更多'}}
+        <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-more@2x.png'" :class="['arrow-icon',{up: showAll}]">
+      </div>
+      <div v-else class="empty-white-bg">
       </div>
       <div class="emoty-grey-bg"></div>
     </template>
@@ -122,6 +130,7 @@
     mixins: [contentMix],
     data() {
       return {
+        showAll: false,
         videos: {},
         lastVideo: ''
       }
@@ -154,20 +163,25 @@
 
   .content-article-detail
     width: 100%
+
     .cover-video
-      width:100vw
+      width: 100vw
+
     .cover-box
-      position:relative
+      position: relative
+
       .little-cover
-       width:100vw
+        width: 100vw
+
       .big-cover
         width: 100vw
         display block
-        position:absolute
-        top:0
-        left:0
-        right:0
-        z-index:2
+        position: absolute
+        top: 0
+        left: 0
+        right: 0
+        z-index: 2
+
     .cookbook-title
       font-family: $font-family-medium
       font-size: $font-size-23
@@ -245,6 +259,7 @@
         display flex
         align-items center
         /*padding-right: 15px*/
+
         .like-total
           padding: 10px 18px 10px 15px
 
@@ -265,13 +280,14 @@
           line-height: 56px
           display flex
           justify-content space-between
-          flex-wrap  wrap
-          color:#808080
-          font-size:$font-size-12
+          flex-wrap wrap
+          color: #808080
+          font-size: $font-size-12
+
         .liker-photo
           width: 26px
           height: 26px
-          margin-top: 10px 15px 10px 0
+          margin: 10px 15px 10px 0
           flex-shrink 0
           border-radius 50%
           border: 1px solid #E6E6E6
@@ -314,6 +330,37 @@
 
     .goods-list
       padding: 0px 15px 5px
+      height: 200px
+      overflow hidden
+      transition all 0.5s
+
+      &.active
+        transition all 0.5s
+        height: auto
+        .goods-item-wrap
+          &:last-child
+            margin-bottom: 0
+      .goods-item-wrap
+        margin-bottom 15px
+    .empty-white-bg
+      height:16px
+    .more-btn
+      background-color $color-white
+      line-height: 44px
+      height: 44px
+      text-align center
+      font-size: $font-size-14
+      color: #B7B7B7
+      font-family: $font-family-regular
+
+      .arrow-icon
+        width: 10px
+        height: 10px
+        margin: 2px
+
+        &.up
+          transform rotate(180deg)
+          transform all 0.3s
 
     .article-cont
       padding: 15px 15px 10px 15px

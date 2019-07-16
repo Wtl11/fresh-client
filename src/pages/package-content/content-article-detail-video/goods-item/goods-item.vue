@@ -1,6 +1,6 @@
 <template>
   <div class="good-item" @click="clickThis">
-    <div class="goods-photo">
+    <div class="goods-photo-wrap">
       <img v-if="imageUrl && goodsData.is_online === 0" :src="imageUrl + '/yx-image/article/pic-off_shelf@2x.png'" mode="aspectFill" class="goods-photo fix-pic">
       <img v-else-if="imageUrl && goodsData.usable_stock === 0" :src="imageUrl + '/yx-image/article/pic-out_stock@2x.png'" mode="aspectFill" class="goods-photo fix-pic">
       <img v-if="imageUrl" :src="goodsData.goods_cover_image" mode="aspectFill" class="goods-photo">
@@ -71,22 +71,24 @@
     background: #F7F7F7
     border-1px(#EFEFEF, 4px)
     box-shadow: 0 4px 6px 0 rgba(17, 17, 17, 0.02)
-    margin-bottom 15px
+    /*margin-bottom 15px*/
     min-height:90px
-    .goods-photo
-      width: 90px
-      height: 90px
-      flex-shrink: 0
-      border-radius 4px 0px 0px 4px
+    .goods-photo-wrap
+      width:90px
       position:relative
+      border-radius 4px 0px 0px 4px
+      flex-shrink: 0
+    .goods-photo
+      width:100%
+      height:100%
+      border-radius 4px 0px 0px 4px
       &.fix-pic
         position:absolute
         width:60px
         height:60px
-        top:15px
-        left:15px
-        right:15px
-        bottom 15px
+        top:50%
+        left:50%
+        transform translate(-50%,-50%)
         z-index:10
     .info
       padding: 5px 0px 5px 12px
@@ -108,7 +110,7 @@
         font-family $font-family-regular
         font-size: $font-size-14
         color: #808080
-        margin: 4px 0px 5px
+        margin-bottom 5px
         overflow hidden
         text-overflow ellipsis
         white-space: nowrap
