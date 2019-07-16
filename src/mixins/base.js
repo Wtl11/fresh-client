@@ -20,8 +20,13 @@ const UN_AUTO_SNED_PAGE = [
   'choose-pickup'
 ]
 export default {
+  onLoad(e) {
+  },
   onReady() {
     this._autoSend()
+    if (this.$mp && this.$mp.page) {
+      getApp().globalData._path = this.$mp.page.route
+    }
   },
   methods: {
     $sendMsg(obj) {

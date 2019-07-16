@@ -79,14 +79,17 @@
       // this.getBankCardDetail()
       this._getRealInfo()
     },
+    onUnload() {
+      clearInterval(this._timer)
+    },
     methods: {
       _getRealInfo() {
         API.Wallet.getRealInfo().then((res) => {
-          if (res.error === this.$ERR_OK) {
+          if (res && res.error === this.$ERR_OK) {
             this.name = res.data.real_name
             this.phoneNum = res.data.mobile
           } else {
-            this.$wechat.showToast(res.message)
+            // this.$wechat.showToast(res.message)
           }
         })
       },
@@ -118,7 +121,7 @@
             this.isSet = false
             let time = 60
             this.codeText = '重新获取(60s)'
-            let timer = setInterval(() => {
+            this._timer = setInterval(() => {
               // this.tapCode = false
               time--
               this.codeText = `重新获取(${time}s)`
@@ -130,7 +133,7 @@
                 } else {
                   this.isSet = false
                 }
-                clearInterval(timer)
+                clearInterval(this._timer)
               }
             }, 1000)
           }
