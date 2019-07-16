@@ -51,8 +51,8 @@
       <div class="foodlist-title">
         <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-ingredients@2x.png'" class="foodlist-icon">食材
       </div>
-      <div v-if="details.foodList" class="foods-list">
-        {{details.foodList}}
+      <div class="foods-list">
+        <text v-if="details.foodList">{{details.foodList}}</text>
       </div>
       <div :class="['goods-list',{active:showAll}]">
         <div class="goods-item-wrap" v-for="(item,idx) in details.goodsList" :key="idx">
@@ -330,13 +330,13 @@
 
     .goods-list
       padding: 0px 15px 5px
-      height: 200px
+      max-height:200px
       overflow hidden
       transition all 0.5s
 
       &.active
         transition all 0.5s
-        height: auto
+        max-height:none
         .goods-item-wrap
           &:last-child
             margin-bottom: 0

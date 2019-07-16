@@ -71,8 +71,7 @@
     background: #F7F7F7
     border-1px(#EFEFEF, 4px)
     box-shadow: 0 4px 6px 0 rgba(17, 17, 17, 0.02)
-    /*margin-bottom 15px*/
-    min-height:90px
+    height:90px
     .goods-photo-wrap
       width:90px
       position:relative
@@ -96,7 +95,7 @@
       flex: 1
       display flex
       flex-direction:column
-      justify-content space-between
+      justify-content: space-around
       .name
         font-family $font-family-medium
         font-size: $font-size-16
