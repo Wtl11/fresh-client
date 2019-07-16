@@ -123,7 +123,7 @@
       // 获取优惠券信息
       _getCouponInfo() {
         API.Coupon[this.METHODS.getCouponInfo](this.id).then((res) => {
-          this.couponInfo = res.data
+          this.couponInfo = res.data || {}
           this.$$shareHandler({
             event: EVENT_CODE.COUPON_TAKE,
             couponId: res.data.coupon.id
@@ -158,7 +158,8 @@
           return
         }
         if (this.buttonStatus === 1) {
-          this.navHandle(this.couponInfo.coupon.range_type, this.couponId, 'redirectTo')
+          const coupon = (this.couponInfo && this.couponInfo.coupon) || {}
+          this.navHandle(coupon.range_type, this.couponId, 'redirectTo')
           return
         }
         this._takeCouponAction()
