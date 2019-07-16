@@ -27,7 +27,7 @@
           <swiper v-if="goodsBanner && goodsBanner.length" :current="swiperIdx" class="banner" @change="bannerChange" interval="5000">
             <block v-if="hasVideo&&goodsMsg.goods_videos">
               <swiper-item class="banner-item">
-                <video v-if="goodsMsg.goods_videos[0].full_url" class="item-img" id="goodsVideo" :src="goodsMsg.goods_videos[0].full_url" :poster="videoPoster" :muted="true" :show-mute-btn="true" :show-center-play-btn="false" :enable-progress-gesture="false" @ended='videoEnd' @waiting="videoWaiting" @progress="videoLoaded"></video>
+                <video v-if="goodsMsg.goods_videos && goodsMsg.goods_videos[0] && goodsMsg.goods_videos[0].full_url" class="item-img" id="goodsVideo" :src="goodsMsg.goods_videos[0].full_url" :poster="videoPoster" :muted="true" :show-mute-btn="true" :show-center-play-btn="false" :enable-progress-gesture="false" @ended='videoEnd' @waiting="videoWaiting" @progress="videoLoaded"></video>
                 <img v-if="goodsBanner[0].image_url" :class="!playBefore?'hide':''" :src="goodsBanner[0].image_url" mode="aspectFill" class="item-img video-img">
                 <div class="play-btn" @click="playVideo(false)">
                   <img v-if="imageUrl&&!videoPlaying" :src="imageUrl + '/yx-image/2.6.5/icon-play_big@2x.png'" mode="aspectFill" class="play-btn-icon" @click.stop="playVideo(true)">
@@ -648,11 +648,12 @@
       playVideo(play) {
         this.videoPlaying = play
         this.playBefore = false
+        !this.videoContext && (this.videoContext = wx.createVideoContext('goodsVideo'))
         if (play) {
-          this.videoContext.play()
+          this.videoContext && this.videoContext.play()
           this.arrowUrl = ARROW_URL[0]
         } else {
-          this.videoContext.pause()
+          this.videoContext && this.videoContext.pause()
           this.arrowUrl = ARROW_URL[1]
         }
       },
@@ -862,7 +863,10 @@
           this.activityId = activityId
           this.shopId = shopId
         }
-        this.shopId && wx.setStorageSync('shopId', this.shopId)
+        try {
+          this.shopId && wx.setStorageSync('shopId', this.shopId)
+        } catch (e) {
+        }
         this._initPageType(options.activityType)
       },
       _initPageType(type = 'DEFAULT') {

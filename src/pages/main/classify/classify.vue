@@ -101,10 +101,10 @@
         currentList: []
       }
     },
-    onLoad(options) {
+    onLoad(options = {}) {
       let res = this.$wx.getSystemInfoSync()
       this.statusBarHeight = res.statusBarHeight || 20
-      this.classifyId = options.id
+      this.classifyId = options.id || 0
       this.getCategoryData(true)
     },
     onReachBottom() {
