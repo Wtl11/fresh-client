@@ -188,7 +188,7 @@
       }
     },
     onLoad() {
-      this.isFree = this.$mp.query.isFree || false
+      this.isFree = (this.$mp && this.$mp.query && this.$mp.query.isFree) || false
       // 重置优惠券
       this.$wechat.showLoading()
       // this._getGoodsInfo()

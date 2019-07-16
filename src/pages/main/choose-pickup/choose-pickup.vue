@@ -129,8 +129,9 @@
         }
         if (res.error !== this.$ERR_OK) {
           this.$wechat.showToast(res.message)
+          return
         }
-        this.groupInfo = res.data
+        this.groupInfo = res.data || {}
       },
       handleLoad() {
         // wx.nextTick(() => {
