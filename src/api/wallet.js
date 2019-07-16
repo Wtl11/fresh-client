@@ -58,7 +58,7 @@ export default {
   },
   // 提交团长实名信息[v3.8]
   setRealInfo(data, loading = true) {
-    const url = `/api/wap/shop-manager/shop-manager-bind-customer-detail`
+    const url = `/api/wap/shop-manager/shop-manager-bind-customer`
     return request.post(url, data, loading)
   },
   // 获取团长实名信息[v3.8]
