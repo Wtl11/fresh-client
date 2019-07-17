@@ -129,9 +129,9 @@
     methods: {
       _targetList() {
         let arr = this.couponArray.map((item) => {
-          return item.coupon_activity_id || 0
+          return item.coupon_activity_report_id || 0
         })
-        API.Coupon.targetModal({coupon_activity_ids: arr}).catch(e => {
+        API.Coupon.targetModal({coupon_activity_report_ids: arr}).catch(e => {
           console.error(e)
         })
       },
