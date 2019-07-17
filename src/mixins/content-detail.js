@@ -135,8 +135,8 @@ export default {
       this.details.goodCount = obj.fabulous_num > 999 ? '999+' : obj.fabulous_num
       this.details.lookCount = obj.browse_count >= 10000 ? obj.browse_count / 10000 + '万' : obj.browse_count
       this.details.shareCount = obj.share_count > 999 ? '999+' : obj.share_count
-      this.details.goodStatus = obj.is_fabulou > 999 ? '999+' : obj.is_fabulou
-      if (this.currentType !== 'video' && isLikes) this._getLikes()
+      this.details.goodStatus = obj.is_fabulou
+      if (this.currentType !== 'video' && isLikes) this._getLikes(obj.fabulous_num)
       obj.assembly.forEach(item => {
         if (item.type === 'combination' && item.style_type === 'content') {
           let details = []
@@ -193,8 +193,8 @@ export default {
         }
       })
     },
-    _getLikes() {
-      let limit = this.goodStatus < 10 ? this.goodStatus : 10
+    _getLikes(num) {
+      let limit = num < 10 ? num : 10
       return API.Content.getLikes({ preview: this.preview, article_id: this.articleId, page: 1, limit }).then(res => {
         if (res.error === this.$ERR_OK) this.details.likes = res.data
       })
