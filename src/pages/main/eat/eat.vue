@@ -207,7 +207,7 @@
           // 计算 瀑布流展示的宽度
           itemWidth = (res.windowWidth - this.marginBottom - padding) / 2
           // 计算瀑布流的最大高度，防止长图霸屏
-          maxHeight = itemWidth / 0.8
+          // maxHeight = itemWidth / 0.8
         }
       })
       let res = this.$wx.getSystemInfoSync()
