@@ -133,7 +133,6 @@
   let leftHeight = 0
   let rightHeight = 0
   let itemWidth = 0
-  let maxHeight = 0
   const PAGE_NAME = 'EAT'
   const ARR = { arr: [], classifyMore: false, isEmpty: false, lastPage: 2, page: 1, leftList: [], rightList: [] }
   export default {
@@ -152,6 +151,9 @@
       isActiveEmpty
     },
     data() {
+      this.marginBottom = 0
+      this.contentHeight = 0
+      this.maxHeight = 250
       return {
         statusBarHeight: 20,
         lineTranslateX: 0,
@@ -171,7 +173,6 @@
         leftHeight: 0,
         rightHeight: 0,
         itemWidth: 0,
-        maxHeight: 500,
         leftList: [],
         rightList: [],
         elRight: '',
@@ -197,13 +198,14 @@
     onLoad(options) {
       wx.getSystemInfo({
         success: (res) => {
+          this.contentHeight = (0.027 + 0.048 + 0.04 + 0.027 + 0.053) * res.windowWidth
           // 750rpx/屏幕宽度
           let percentage = 750 / res.windowWidth
           // 计算瀑布流间距
-          let margin = 16 / percentage
+          this.marginBottom = 16 / percentage
           let padding = res.windowWidth * 0.032 * 2
           // 计算 瀑布流展示的宽度
-          itemWidth = (res.windowWidth - margin - padding) / 2
+          itemWidth = (res.windowWidth - this.marginBottom - padding) / 2
           // 计算瀑布流的最大高度，防止长图霸屏
           maxHeight = itemWidth / 0.8
         }
@@ -328,18 +330,18 @@
           tmp.itemWidth = itemWidth
           let per = tmp.width / tmp.itemWidth
           tmp.itemHeight = tmp.height / per
-          if (tmp.itemHeight > maxHeight) {
-            tmp.itemHeight = maxHeight
+          if (tmp.itemHeight > this.maxHeight) {
+            tmp.itemHeight = this.maxHeight
           }
           if (leftHeight === rightHeight) {
             leftList.push(tmp)
-            leftHeight = leftHeight + tmp.itemHeight
+            leftHeight = leftHeight + tmp.itemHeight + this.contentHeight + this.marginBottom
           } else if (leftHeight < rightHeight) {
             leftList.push(tmp)
-            leftHeight = leftHeight + tmp.itemHeight
+            leftHeight = leftHeight + tmp.itemHeight + this.contentHeight + this.marginBottom
           } else {
             rightList.push(tmp)
-            rightHeight = rightHeight + tmp.itemHeight
+            rightHeight = rightHeight + tmp.itemHeight + this.contentHeight + this.marginBottom
           }
         }
         this.contentList[this.tabIndex].leftList = JSON.parse(JSON.stringify(leftList))
@@ -539,6 +541,9 @@
         position: relative
       .card-img
         display: block
+        position: absolute
+        top: 0
+        left: 0
         border-top-right-radius: 4px
         border-top-left-radius: 4px
         width: 100%
@@ -566,15 +571,15 @@
             align-items: center
             .fall-author-img-box
               overflow: hidden
-              width: 20px
-              min-width: 20px
-              height: 20px
+              width: 5.333vw
+              min-width: @width
+              height: @width
               border-radius: 50%
               margin-right: 5px
             .fall-author-img
-              width: 20px
-              min-width: 20px
-              height: 20px
+              width: 5.333vw
+              min-width: @width
+              height: @width
               border-radius: 50%
             .fall-author-name
               line-height: 1.2
