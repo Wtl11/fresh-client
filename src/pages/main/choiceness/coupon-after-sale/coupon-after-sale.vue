@@ -4,7 +4,7 @@
       <img class="img-bg"
            mode="aspectFill"
            v-if="imageUrl"
-           :src="imageUrl + '/yx-image/2.3/pic-lqyhqtc.png'">
+           :src="imageUrl + '/yx-image/2.4/pic-lqyhqtc-more.png'">
       <img class="close"
            mode="aspectFill"
            v-if="imageUrl"
