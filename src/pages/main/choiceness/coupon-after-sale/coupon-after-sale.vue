@@ -127,6 +127,9 @@
         this.hideAnimation(() => {
           this.isShow = false
         })
+      },
+      _resetStatus() {
+        // todo some thing
       }
     }
   }
