@@ -51,11 +51,7 @@ export default {
     return {
       title: this.details.title,
       path: `${path}?shopId=${shopId}&articleId=${this.articleId}`,
-      imageUrl: this.details.coverImage,
-      success: (res) => {
-      },
-      fail: (res) => {
-      }
+      imageUrl: this.details.coverImage
     }
   },
   onLoad() {
@@ -77,7 +73,7 @@ export default {
     this.articleId && this._articleOperation('browse')
   },
   onShow() {
-    this._getDetails()
+    this._getDetails(true, true)
     this.$$shareHandler({
       event: EVENT_CODE.ARTICLE_DETAIL,
       articleId: this.articleId
@@ -115,10 +111,10 @@ export default {
   },
   methods: {
     ...cartMethods,
-    _getDetails(isLikes = true) {
-      API.Content.getDetails({ id: this.articleId, preview: this.preview }, true).then(res => {
+    _getDetails(isLikes = true, showLoading = false) {
+      API.Content.getDetails({ id: this.articleId, preview: this.preview }, showLoading).then(res => {
         this.changeData(res.data, isLikes)
-        this.$wechat.hideLoading()
+        showLoading && this.$wechat.hideLoading()
       })
     },
     changeData(obj, isLikes) {
@@ -201,8 +197,10 @@ export default {
     },
     setLikeBtn() {
       if (this.preview || this.isLoading) return false
+      this.isLoading = true
       this._articleOperation('fabulou').then(res => {
         this.details.goodStatus = !this.details.goodStatus
+        this.isLoading = false
       })
     },
     shareBtn() {
@@ -240,8 +238,8 @@ export default {
       console.log('isLogin', isLogin)
       return API.Content.articleOperation({ article_id: this.articleId, handle: handle, ...other }).then(res => {
         if (res.error === this.$ERR_OK) {
-          if (handle === 'fabulou') this._getDetails()
-          if (handle === 'share') this._getDetails(false)
+          if (handle === 'fabulou') this._getDetails(true, false)
+          if (handle === 'share') this._getDetails(false, false)
         }
       }).finally(res => {
         this.isLoading = false
