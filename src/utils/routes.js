@@ -11,6 +11,8 @@ export default {
     ADDRESS_MANAGE:`${POSTAGE}/address-manage`,
     EDIT_ADDRESS:`${POSTAGE}/edit-address`,
     ORDER_LIST:`${POSTAGE}/order-list`,
+    SUBMIT_ORDER:`${POSTAGE}/submit-order`,
+    DISTRIBUTION_DETAIL:`${POSTAGE}/distribution-detail`,
     // package-postage
   },
   activity: {

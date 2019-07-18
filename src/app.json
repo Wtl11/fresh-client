@@ -39,9 +39,11 @@
     {
       "root": "package-postage/",
       "pages": [
+        "submit-order",
         "order-list",
         "edit-address",
         "address-manage",
+        "distribution-detail",
         "goods-details"
       ]
     },
