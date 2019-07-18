@@ -37,6 +37,15 @@
   ],
   "subPackages": [
     {
+      "root": "package-postage/",
+      "pages": [
+        "order-list",
+        "edit-address",
+        "address-manage",
+        "goods-details"
+      ]
+    },
+    {
       "root": "package-activity/",
       "pages": [
         "commodity-certificates",

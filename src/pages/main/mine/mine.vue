@@ -19,6 +19,14 @@
       </div>
     </div>
     <div class="order-nav-box">
+      <!--全国包邮-->
+      <div class="postage-title">
+        <div class="row-con"  @click="jumpOrderList">
+          <p class="title">我的订单</p>
+          <p class="explain">全国包邮</p>
+          <img class="arrow-img" mode="aspectFill" :src="imageUrl + '/yx-image/2.3/icon-pressed@2x.png'">
+        </div>
+      </div>
       <div class="order-nav">
         <div class="order-item" v-for="(item, index) in orderNav" :key="index" @click="jumpOrder(item)">
           <div class="icon"><img class="icon-img" v-if="imageUrl" :src="imageUrl+item.icon_url" alt=""></div>
@@ -248,6 +256,11 @@
       jumpOrderDetail(item) {
         wx.navigateTo({
           url: `${this.$routes.main.ORDER_DETAIL}?id=${item.id}`
+        })
+      },
+      jumpOrderList() {
+        wx.navigateTo({
+          url: this.$routes.postage.ORDER_LIST
         })
       },
       // 获取头部数量
@@ -561,6 +574,29 @@
               color: $color-text-sub
               font-family: $font-family-regular
 
+  /*全国包邮*/
+  .postage-title
+    layout(column)
+    padding: 16px 10px 0
+    .row-con
+      layout(row)
+      align-items: center
+      font-family: $font-family-regular
+      font-size: 16px
+      color: $color-text-main
+      .title
+        padding-left: 3px
+        flex: 1
+        font-family: $font-family-bold
+      .explain
+        color: $color-text-sub
+        font-size: 12px
+        padding-right: 5px
+      .arrow-img
+        display: block
+        width: 7.5px
+        height: 12.5px
+        margin-right: 5px
   .mine-model
     position: fixed
     top: 0

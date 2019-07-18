@@ -1,9 +1,18 @@
 // PACKAGE_PATH
+const POSTAGE = '/package-postage'
 const ACTIVITY = '/package-activity'
 const LEADER = '/package-leader'
 const MAIN = '/pages'
 /* eslint-disable */
 export default {
+  postage: {
+    PACKAGE: POSTAGE,
+    GOODS_DETAILS:`${POSTAGE}/goods-details`,
+    ADDRESS_MANAGE:`${POSTAGE}/address-manage`,
+    EDIT_ADDRESS:`${POSTAGE}/edit-address`,
+    ORDER_LIST:`${POSTAGE}/order-list`,
+    // package-postage
+  },
   activity: {
     PACKAGE: ACTIVITY,
     INVITEE:`${ACTIVITY}/invitee`,
