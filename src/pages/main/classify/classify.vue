@@ -1,7 +1,7 @@
 <template>
   <div class="classify">
     <navigation-bar title="分类"></navigation-bar>
-    <scroll-view class="scroll-view2" :style="{top: statusBarHeight + 44 + 'px'}" v-if="tabList1.length"
+    <scroll-view class="scroll-view2" :style="{top: statusBarHeight + 44 + 'px'}" v-if="tabList1 && tabList1.length"
                  id="scrollView" :scroll-into-view="viewToItem" scroll-x scroll-with-animation="true">
       <div v-for="(item, index) in tabList1" :class="tabIndex === index ? 'item-active'  : ''" :key="index"
            class="item" :id="'item'+index" @click="_changeTab(index, item.id, $event)">
@@ -16,7 +16,7 @@
     </scroll-view>
     <div class="big-box">
       <div class="classify-big-box"
-           :style="{'transform': ' translateX('+ -(tabIndex * 100) +'vw)', width:  (tabList1.length * 100) +'vw', transition: boxTransition}">
+           :style="{'transform': ' translateX('+ -(tabIndex * 100) +'vw)', width:  (tabList1 && tabList1.length * 100) +'vw', transition: boxTransition}">
         <div class="goods-list-box" v-for="(tabItem, tabInx) in tabList1" :key="tabInx"
              :class="tabIndex * 1 === tabInx ? '' : 'order-item-list-active'">
           <div class="goods-list">
@@ -54,10 +54,10 @@
             </div>
           </div>
           <loading-more v-if="!classifyMore"></loading-more>
-          <div class="foot-ties" v-if="classifyMore && classifyList[tabInx].length !== 0">
+          <div class="foot-ties" v-if="classifyMore && classifyList[tabInx] && classifyList[tabInx].length !== 0">
             <div class="center">— 再拉也没有了 —</div>
           </div>
-          <div class="noting" v-if="classifyMore && classifyList[tabInx].length === 0">
+          <div class="noting" v-if="classifyMore && classifyList[tabInx] && classifyList[tabInx].length === 0">
             <div class="notingimg"><img class="img" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'" alt=""></div>
             <div class="txt">空空如也</div>
           </div>
@@ -140,7 +140,7 @@
           if (res.error !== this.$ERR_OK) {
             return
           }
-          this.tabList1 = res.data
+          this.tabList1 = res.data || []
           let length = res.data.length
           for (let i = 0; i < length; i++) {
             this.classifyList.push([])

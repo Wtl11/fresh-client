@@ -157,13 +157,15 @@
       const status = this.currentObj.status
       const shopId = wx.getStorageSync('shopId')
       const flag = Date.now()
-      const title = this.socialName + '-' + ((SHARE_IMG[status] && SHARE_IMG[status].title) || '')
+      const currentObj = SHARE_IMG[status] || {}
+      const title = this.socialName + '-' + currentObj.title || ''
+      const imageUrl = this.imageUrl + currentObj.img || ''
       console.warn(`${this.$routes.main.FLASH_SALE_LIST}?id=${this.currentObj.id}&shopId=${shopId}`)
       console.log(this.socialName)
       return {
         title,
-        path: `${this.$routes.main.FLASH_SALE_LIST}?id=${this.currentObj.id}&shopId=${shopId}&flag=${flag}`,
-        imageUrl: this.imageUrl + SHARE_IMG[status].img
+        imageUrl,
+        path: `${this.$routes.main.FLASH_SALE_LIST}?id=${this.currentObj.id}&shopId=${shopId}&flag=${flag}`
       }
     },
     onUnload() {
