@@ -44,6 +44,7 @@
         "edit-address",
         "address-manage",
         "distribution-detail",
+        "order-detail",
         "goods-details"
       ]
     },

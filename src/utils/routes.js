@@ -13,6 +13,7 @@ export default {
     ORDER_LIST:`${POSTAGE}/order-list`,
     SUBMIT_ORDER:`${POSTAGE}/submit-order`,
     DISTRIBUTION_DETAIL:`${POSTAGE}/distribution-detail`,
+    ORDER_DETAIL:`${POSTAGE}/order-detail`,
     // package-postage
   },
   activity: {
