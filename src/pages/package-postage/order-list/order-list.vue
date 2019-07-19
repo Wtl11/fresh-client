@@ -196,7 +196,7 @@
       },
       jumpDetail(item) {
         wx.navigateTo({
-          url: `${this.$routes.main.ORDER_DETAIL}?id=${item.order_id}`
+          url: `${this.$routes.postage.ORDER_DETAIL}?id=${item.order_id}`
         })
       }
     }

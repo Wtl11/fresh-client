@@ -260,7 +260,7 @@
       },
       jumpOrderList() {
         wx.navigateTo({
-          url: this.$routes.postage.ORDER_LIST
+          url: `${this.$routes.postage.ORDER_LIST}?id=&index=0`
         })
       },
       // 获取头部数量
