@@ -341,7 +341,7 @@
 
   .big-box
     width: 100vw
-    /*overflow: hidden*/
+    overflow: hidden
     background: $color-background
     .line
       height: 10px
