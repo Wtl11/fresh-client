@@ -17,7 +17,7 @@
     <div v-show="contentVisible" class="info-wrap">
       <div class="auth-wrap">
         <div class="auth-photo-wrap">
-          <img v-if="details.authPhoto" :src="details.authPhoto" class="auth-photo">
+          <img v-if="details.authPhoto" :src="details.authPhoto" mode="aspectFill" class="auth-photo">
           <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-v@2x.png'" class="auth-photo-v">
         </div>
         <div class="name">{{details.authName}}</div>

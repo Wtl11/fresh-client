@@ -10,7 +10,7 @@
     <div :class="['auth-wrap',{cookbook: currentType === 'cookbook' }]">
       <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-high_quality@2x.png'" class="good-article-icon">
       <div class="auth-photo-wrap">
-        <img v-if="details.authPhoto" :src="details.authPhoto" class="auth-photo">
+        <img v-if="details.authPhoto" :src="details.authPhoto" mode="aspectFill" class="auth-photo">
         <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-v@2x.png'" class="auth-photo-v">
       </div>
       <div class="auth-info">
