@@ -105,7 +105,7 @@
         </div>
       </div>
       <!--结算-->
-      <div class="payment" :style="{bottom: (49 + height) + 'px'}" v-if="goodsList.length > 0">
+      <div class="payment" :style="{bottom: (49 + height) + 'px'}" v-if="goodsList.length > 0 || postageList.length > 0">
         <button formType="submit" class="check-all" @click.stop="cartCheckAll">
           <img class="sel-box" v-if="imageUrl && allChecked && allPostageChecked" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
           <img class="sel-box" v-if="imageUrl && (!allChecked || !allPostageChecked)" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt=""/>
@@ -287,7 +287,7 @@
       },
       // 自提商品是否全选
       allChecked() {
-        return this.goodsList.length && this.checkedGoods.length === this.goodsList.length
+        return this.goodsList.length === 0 ? true : this.goodsList.length && this.checkedGoods.length === this.goodsList.length
       },
       // 全国包邮选中列表
       checkedPostage() {
@@ -295,7 +295,7 @@
       },
       // 全国包邮是否全选
       allPostageChecked() {
-        return this.postageList.length && this.checkedPostage.length === this.postageList.length
+        return this.postageList.length === 0 ? true : this.postageList.length && this.checkedPostage.length === this.postageList.length
       },
       totalPrice() {
         let arr = this.checkedGoods.concat(this.checkedPostage)
@@ -349,9 +349,20 @@
           item.num > 0 ? item.checked = true : item.checked = false
           item.allowCheck = this._allowCheckHandle(item)
         })
-        this.goodsList = res.data
-        this.postageList = JSON.parse(JSON.stringify(res.data)) // todo
-        this.goodsList.length > 0 ? this.isShowCart = false : this.isShowCart = true
+        console.log(res.data)
+        let goodsList = []
+        let postageList = []
+        res.data.forEach((item) => {
+          console.log(item.source_type)
+          if (item.source_type * 1 === 1) {
+            goodsList.push(item)
+          } else {
+            postageList.push(item)
+          }
+        })
+        this.goodsList = goodsList
+        this.postageList = postageList
+        this.goodsList.length > 0 || this.postageList.length > 0 ? this.isShowCart = false : this.isShowCart = true
         this.deliverAt = res.delivery_at
         this.setCartCount()
       },
@@ -504,6 +515,7 @@
         console.log(this.allChecked, this.allPostageChecked)
         // 判断是否选中
         let currentAllChecked = (this.allChecked && this.allPostageChecked)
+        console.log(currentAllChecked)
         let goodsList = this.goodsList
         // 自提商品
         goodsList.forEach((item) => {
@@ -554,7 +566,26 @@
           }
           this.setOrderInfo(orderInfo)
           wx.navigateTo({url: `${this.$routes.main.SUBMIT_ORDER}`})
-        } else {}
+        } else {
+          const postageList = objDeepCopy(this.checkedPostage).map(item => {
+            if (item.is_new_client === 0) { // 老人0 新人1
+              item.trade_price = item.goods_sale_price
+            }
+            return item
+          })
+          const total = postageList.reduce((total, current) => {
+            let money = (total * 1) + (current.trade_price * current.num)
+            money = money.toFixed(2)
+            return money
+          }, 0)
+          let orderInfo = {
+            goodsList: postageList,
+            total,
+            deliverAt: this.deliverAt
+          }
+          this.setOrderInfo(orderInfo)
+          wx.navigateTo({url: `${this.$routes.postage.SUBMIT_ORDER}`})
+        }
       },
       // 关闭弹窗
       closeModel() {
@@ -584,7 +615,26 @@
           }
           this.setOrderInfo(orderInfo)
           wx.navigateTo({url: `${this.$routes.main.SUBMIT_ORDER}`})
-        } else {}
+        } else {
+          const postageList = objDeepCopy(this.checkedPostage).map(item => {
+            if (item.is_new_client === 0) { // 老人0 新人1
+              item.trade_price = item.goods_sale_price
+            }
+            return item
+          })
+          const total = postageList.reduce((total, current) => {
+            let money = (total * 1) + (current.trade_price * current.num)
+            money = money.toFixed(2)
+            return money
+          }, 0)
+          let orderInfo = {
+            goodsList: postageList,
+            total,
+            deliverAt: this.deliverAt
+          }
+          this.setOrderInfo(orderInfo)
+          wx.navigateTo({url: `${this.$routes.postage.SUBMIT_ORDER}`})
+        }
       }
     }
   }

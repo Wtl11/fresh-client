@@ -24,7 +24,7 @@
         <div class="row-con"  @click="jumpOrderList">
           <p class="title">我的订单</p>
           <p class="explain">全国包邮</p>
-          <img class="arrow-img" mode="aspectFill" :src="imageUrl + '/yx-image/2.3/icon-pressed@2x.png'">
+          <img class="arrow-img" v-if="imageUrl" mode="aspectFill" :src="imageUrl + '/yx-image/2.3/icon-pressed@2x.png'">
         </div>
       </div>
       <div class="order-nav">

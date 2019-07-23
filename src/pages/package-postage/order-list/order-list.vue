@@ -16,7 +16,7 @@
           <div class="order-list" v-if="list.data.length > 0">
             <div v-for="(item, itemIndex) in list.data" :key="itemIndex" @click="jumpDetail(item)" class="order-item">
               <div class="top">
-                <div class="group-name">订单号：1344134314414</div>
+                <div class="group-name">订单号：{{item.order_sn}}</div>
                 <div class="status" :class="'corp-' + corpName + '-money'">{{item.status === 11 || item.status_text === '活动中' ? '已付款' : item.status_text}}</div>
               </div>
               <div class="list-item" v-for="(twoitem, twoindex) in item.goods" :key="index">
@@ -38,7 +38,7 @@
                 <div class="payment"><span class="goods-count">实付:</span><span class="sum">45</span><span class="principal">元</span></div>
               </div>
               <div class="btn-box">
-                <div class="btn-text" @click.stop="showAfter">确认收货</div>
+                <div v-if="item.can_after_sale * 1 === 1" class="btn-text" @click.stop="showAfter">申请售后</div>
               </div>
             </div>
           </div>
@@ -52,15 +52,15 @@
     <div class="after-model" v-if="isShowModel" @click="closeModel">
       <div class="model-box" @click.stop>
         <div class="model-title">请添加客服人员微信进行售后申请</div>
-        <div class="model-img"></div>
-        <div class="model-sub">保存到本地</div>
+        <img :src="staffInfo.image_url" alt="" class="model-img">
+        <div class="model-sub" @click="_drawPosterDone">保存到本地</div>
         <div class="model-copy mb-25">
-          <div class="copy-number">客服微信号1：kefu111</div>
-          <div class="copy-btn" @click="clipOrderId('111')">复制</div>
+          <div class="copy-number">客服微信号1：{{staffInfo.staff_weixin}}</div>
+          <div class="copy-btn" @click="clipOrderId(staffInfo.staff_weixin)">复制</div>
         </div>
         <div class="model-copy">
-          <div class="copy-number">客服微信号1：kefu111</div>
-          <div class="copy-btn"@click="clipOrderId('2222')">复制</div>
+          <div class="copy-number">客服微信号2：{{staffInfo.staff_info}}</div>
+          <div class="copy-btn"@click="clipOrderId(staffInfo.staff_info)">复制</div>
         </div>
       </div>
     </div>
@@ -73,9 +73,10 @@
   import API from '@api'
   import {countDownHandle} from '@utils/common'
 
-  const NAVLIST = [{id: 1, name: '全部订单', status: ''}, {id: 2, name: '待付款', status: 0}, {id: 3, name: '待发货', status: 1}, {id: 4, name: '配送中', status: 2}, {id: 4, name: '已完成', status: 2}]
+  const NAVLIST = [{id: 1, name: '全部订单', status: ''}, {id: 2, name: '待付款', status: 0}, {id: 3, name: '待发货', status: 4}, {id: 4, name: '配送中', status: 1}, {id: 4, name: '已完成', status: 3}]
   const GROUP_STATUS_ARR = [{name: '拼团中'}, {name: '拼团成功'}, {name: '拼团失败'}, {name: '拼团失败'}, {name: '拼团失败'}]
   const ORDER_LIST_ARR = [
+    { page: 1, data: [], hasMore: true },
     { page: 1, data: [], hasMore: true },
     { page: 1, data: [], hasMore: true },
     { page: 1, data: [], hasMore: true },
@@ -96,13 +97,19 @@
         status: '',
         orderPage: 1,
         orderMore: false,
-        isShowModel: false
+        isShowModel: false,
+        staffInfo: {
+          staff_weixin: '',
+          staff_info: '',
+          image_url: ''
+        }
       }
     },
-    onLoad(e) {
+    async onLoad(e) {
       console.log(e)
       this.status = e.id
       this.tabIdx = e.index
+      await this.getAfterInfo()
     },
     onShow() {
       this.getOrderList(this.tabIdx)
@@ -130,16 +137,20 @@
             status = 0
             break
           case 2:
-            status = 1
+            status = 4
             break
           case 3:
-            status = 2
+            status = 1
+            break
+          case 4:
+            status = 3
             break
         }
         return status
       },
       getOrderList(tabIdx, getMore = false) {
         let ol = this.orderListArr[tabIdx]
+        console.log(tabIdx, ol)
         // 加载更多就page+1，否则都重置当前tab的page和hasMore
         if (getMore) {
           if (!ol.hasMore) {
@@ -151,7 +162,7 @@
           ol.hasMore = true
         }
         let status = this.getStatus(tabIdx)
-        API.Order.getOrderListData(status, ol.page).then((res) => {
+        API.Postage.getOrderListData(status, ol.page).then((res) => {
           if (res.error === this.$ERR_OK) {
             let hasCountdown = false
             for (let order of res.data) {
@@ -219,6 +230,34 @@
       },
       closeModel() {
         this.isShowModel = false
+      },
+      // 获取客服信息
+      async getAfterInfo() {
+        let res = await API.Postage.getServiceInfo()
+        if (res.error !== this.$ERR_OK) {
+          this.$wechat.showToast(res.message)
+          return
+        }
+        console.log(res.data)
+      },
+      _drawPosterDone() {
+        this.$wx.downloadFile({
+          url: this.staffInfo.image_url,
+          success: (res) => {
+            this.$wx.saveImageToPhotosAlbum({
+              filePath: res.tempFilePath,
+              success: () => {
+                this.$wechat.showToast('保存成功')
+              },
+              fail: () => {
+                // 拒绝授权重新调起授权
+                setTimeout(() => {
+                  wx.openSetting()
+                }, 500)
+              }
+            })
+          }
+        })
       }
     }
   }
@@ -391,7 +430,7 @@
     width: 100vw
     overflow: hidden
     .order-big-box
-      width: 400vw
+      width: 500vw
       display: flex
       transform: translateX(0)
       transition: all 0.3s
@@ -507,7 +546,6 @@
         height: @width
         display: block
         margin: auto
-        background: $color-text-main
         margin-bottom: 16px
       .model-sub
         font-family: $font-family-regular

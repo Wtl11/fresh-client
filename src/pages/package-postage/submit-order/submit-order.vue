@@ -3,16 +3,16 @@
     <div class="submit-order">
       <navigation-bar title="提交订单"></navigation-bar>
       <div class="order-title" :class="'corp-' + corpName + '-submit-order'">含有快递配送商品必须选择您的具体地址</div>
-      <div class="select-address" v-if="false">
+      <div class="select-address" v-if="addressMsg.name.length === 0" @click="selectAddress">
         <div class="select-left">请选择收货地址</div>
         <img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="item-arrow-img">
       </div>
-      <div class="select-info">
+      <div class="select-info" v-if="addressMsg.name.length !== 0" @click="selectAddress">
         <div class="info-top">
-          <div class="info-top-name">张三丰</div>
-          <div class="info-top-phone">13656567890</div>
+          <div class="info-top-name">{{addressMsg.name}}</div>
+          <div class="info-top-phone">{{addressMsg.mobile}}</div>
         </div>
-        <div class="info-bottom">收货地址：广东省广州市越秀区中山四路288号 (居家佳友便利店)
+        <div class="info-bottom">收货地址：{{addressMsg.province}}{{addressMsg.city}}{{addressMsg.area}}{{addressMsg.address}}
           <img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="item-arrow-img">
         </div>
       </div>
@@ -52,6 +52,8 @@
 
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
+  import API from '@api'
+  import { postageComputed, postageMethods } from '@state/helpers'
 
   const PAGE_NAME = 'SUBMIT_ORDER'
 
@@ -59,6 +61,9 @@
     name: PAGE_NAME,
     components: {
       NavigationBar
+    },
+    onLoad() {
+      this._getAddressDetail(0)
     },
     data() {
       return {
@@ -72,6 +77,27 @@
           }
         ],
         total: 22
+      }
+    },
+    computed: {
+      ...postageComputed
+    },
+    methods: {
+      ...postageMethods,
+      _getAddressDetail() {
+        API.Postage.addressDetail(0).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.setCurrentAddress(res.data)
+          } else {
+            console.log(22)
+            this.setCurrentAddress({name: ''})
+          }
+        })
+      },
+      selectAddress() {
+        wx.navigateTo({
+          url: `${this.$routes.postage.ADDRESS_MANAGE}?select=1`
+        })
       }
     }
   }

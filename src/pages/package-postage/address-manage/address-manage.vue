@@ -3,15 +3,15 @@
     <navigation-bar title="地址管理"></navigation-bar>
     <div class="list-box-item">
       <div class="list-box">
-        <div class="list-item" v-for="(item, idx) in 5">
+        <div class="list-item" v-for="(item, idx) in addressList" :key="idx" @click.stop="selectAddress(item)">
           <div class="list-item-left">
             <div class="info-top">
-              <div class="info-top-name">张三丰张三丰张三丰张三丰</div>
-              <div class="info-top-phone">19252926954</div>
+              <div class="info-top-name">{{item.name}}</div>
+              <div class="info-top-phone">{{item.mobile}}</div>
             </div>
-            <div class="info-bottom"><span class="info-bottom-label">默认</span><span class="info-bottom-name">张三丰张三丰张三丰张三丰张三丰张三丰张三丰张三丰张三丰张三丰张三丰张三丰</span></div>
+            <div class="info-bottom"><span v-if="item.is_default === 1" class="info-bottom-label">默认</span><span class="info-bottom-name">{{item.province}}{{item.city}}{{item.area}}{{item.address}}</span></div>
           </div>
-          <div class="list-item-right" @click="openAddress">
+          <div class="list-item-right" @click.stop="editAddress(item.id)">
             <img :src="imageUrl + '/yx-image/postage/icon-edit_address@2x.png'" v-if="imageUrl" class="address-img">
           </div>
         </div>
@@ -20,7 +20,7 @@
         <button class="btn" @click="openAddress">新增收货地址</button>
       </div>
     </div>
-    <div class="address-null" v-if="false">
+    <div class="address-null" v-if="addressList.length === 0 && isRequest">
       <div class="img-box">
         <img :src="imageUrl + '/yx-image/postage/pic-address@2x.png'" v-if="imageUrl" class="error-img">
         <p class="text">你还没有收货地址哦！</p>
@@ -32,6 +32,8 @@
 
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
+  import API from '@api'
+  import { postageMethods } from '@state/helpers'
 
   const PAGE_NAME = 'ADDRESS_MANAGE'
 
@@ -42,14 +44,45 @@
     },
     data() {
       return {
-        addressList: []
+        addressList: [],
+        isRequest: false,
+        select: ''
       }
     },
+    onLoad(options) {
+      console.log(options)
+      this.select = options.select || ''
+    },
+    async onShow() {
+      await this._getAddressList()
+    },
     methods: {
+      ...postageMethods,
       openAddress() {
         wx.navigateTo({
           url: this.$routes.postage.EDIT_ADDRESS
         })
+      },
+      editAddress(id) {
+        wx.navigateTo({
+          url: `${this.$routes.postage.EDIT_ADDRESS}?id=${id}`
+        })
+      },
+      async _getAddressList() {
+        let res = await API.Postage.getAddress()
+        console.log(res)
+        if (res.error !== this.$ERR_OK) {
+          this.$wechat.showToast(res.message, 1000, false)
+          return
+        }
+        this.addressList = res.data
+        this.isRequest = true
+      },
+      selectAddress(item) {
+        if (this.select) {
+          this.setCurrentAddress(item)
+          wx.navigateBack({delta: 1})
+        }
       }
     }
   }
