@@ -9,6 +9,7 @@
         <div class="line" :style="'transform: translate(' + tabIdx*100 + '%,0)'"><div class="lines" :class="'corp-' + corpName + '-bg'"></div></div>
       </div>
     </div>
+    <div class="postage-title"></div>
     <div class="big-box">
       <div class="order-big-box" :style="{'transform': ' translateX('+ -(tabIdx * 100) +'vw)'}">
         <div v-for="(list, index) in orderListArr" :key="index" class="order-item-list" :class="tabIdx * 1 === index ? '' : 'order-item-list-height70'">
@@ -37,7 +38,7 @@
                 <div class="payment"><span class="goods-count">实付:</span><span class="sum">45</span><span class="principal">元</span></div>
               </div>
               <div class="btn-box">
-                <div class="btn-text">确认收货</div>
+                <div class="btn-text" @click.stop="showAfter">确认收货</div>
               </div>
             </div>
           </div>
@@ -48,18 +49,18 @@
         </div>
       </div>
     </div>
-    <div class="after-model" v-if="false">
-      <div class="model-box">
+    <div class="after-model" v-if="isShowModel" @click="closeModel">
+      <div class="model-box" @click.stop>
         <div class="model-title">请添加客服人员微信进行售后申请</div>
         <div class="model-img"></div>
         <div class="model-sub">保存到本地</div>
         <div class="model-copy mb-25">
           <div class="copy-number">客服微信号1：kefu111</div>
-          <div class="copy-btn">复制</div>
+          <div class="copy-btn" @click="clipOrderId('111')">复制</div>
         </div>
         <div class="model-copy">
           <div class="copy-number">客服微信号1：kefu111</div>
-          <div class="copy-btn">复制</div>
+          <div class="copy-btn"@click="clipOrderId('2222')">复制</div>
         </div>
       </div>
     </div>
@@ -94,7 +95,8 @@
         tabIdx: 0,
         status: '',
         orderPage: 1,
-        orderMore: false
+        orderMore: false,
+        isShowModel: false
       }
     },
     onLoad(e) {
@@ -198,6 +200,25 @@
         wx.navigateTo({
           url: `${this.$routes.postage.ORDER_DETAIL}?id=${item.order_id}`
         })
+      },
+      // 复制微信号
+      clipOrderId(text) {
+        let that = this
+        that.$wx.setClipboardData({
+          data: text,
+          success: function(res) {
+            that.$wx.getClipboardData({
+              success: function(res) {
+              }
+            })
+          }
+        })
+      },
+      showAfter() {
+        this.isShowModel = true
+      },
+      closeModel() {
+        this.isShowModel = false
       }
     }
   }

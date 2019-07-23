@@ -35,21 +35,25 @@
     <div class="list-button-box">
       <button class="btn btn-none" @click="_submit">保存</button>
     </div>
+    <confirm-msg ref="msg" :msg="msg" useType="double" @confirm="_deleteAddress"></confirm-msg>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
+  import ConfirmMsg from '@components/confirm-msg/confirm-msg'
 
   const PAGE_NAME = 'EDIT_ADDRESS'
 
   export default {
     name: PAGE_NAME,
     components: {
-      NavigationBar
+      NavigationBar,
+      ConfirmMsg
     },
     data() {
       return {
+        msg: '确定删除该地址吗?',
         title: '新增收货地址',
         province: '',
         city: '',
@@ -68,8 +72,12 @@
       switch1Change(e) {
         console.log(e)
       },
-      _delAddress() {},
-      _submit() {}
+      _delAddress() {
+        console.log(22)
+        this.$refs.msg.show()
+      },
+      _submit() {},
+      _deleteAddress() {}
     }
   }
 </script>

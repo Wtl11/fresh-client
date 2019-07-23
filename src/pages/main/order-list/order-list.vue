@@ -9,6 +9,16 @@
         <div class="line" :style="'transform: translate(' + tabIdx*100 + '%,0)'"><div class="lines" :class="'corp-' + corpName + '-bg'"></div></div>
       </div>
     </div>
+    <div class="order-title" @click="jumpPostage">
+      <div class="order-title-left">
+        <img v-if="imageUrl" :src="imageUrl+'/yx-image/postage/icon-baoyou_shopping@2x.png'" alt="" class="order-title-icon">
+        <div class="order-title-name">全国包邮</div>
+      </div>
+      <div class="order-title-right">
+        <div class="right-name">查看订单</div>
+        <img v-if="imageUrl" :src="imageUrl+'/yx-image/2.3/icon-pressed@2x.png'" alt="" class="right-icon">
+      </div>
+    </div>
     <div class="big-box">
       <div class="order-big-box" :style="{'transform': ' translateX('+ -(tabIdx * 100) +'vw)'}">
         <div v-for="(list, index) in orderListArr" :key="index" class="order-item-list" :class="tabIdx * 1 === index ? '' : 'order-item-list-height70'">
@@ -195,6 +205,11 @@
       jumpDetail(item) {
         wx.navigateTo({
           url: `${this.$routes.main.ORDER_DETAIL}?id=${item.order_id}`
+        })
+      },
+      jumpPostage(item) {
+        wx.navigateTo({
+          url: `${this.$routes.postage.ORDER_LIST}?id=&index=0`
         })
       }
     }
@@ -427,4 +442,38 @@
         box-sizing: border-box
       .order-item-list-height70
         height: 70vh
+
+  .order-title
+    layout(row)
+    align-items: center
+    justify-content: space-between
+    height: 45px
+    background: $color-white
+    margin-top: 10px
+    padding: 0 12px
+    box-sizing: border-box
+    .order-title-left
+      layout(row)
+      align-items: center
+      .order-title-icon
+        width: 12.5px
+        height: 12.5px
+        display: block
+        margin-right: 5px
+      .order-title-name
+        font-size: $font-size-14
+        font-family: 'PingFang-SC-Bold'
+        color: #111
+    .order-title-right
+      layout(row)
+      align-items: center
+      .right-icon
+        width: 7.5px
+        height: 12.5px
+        display: block
+      .right-name
+        font-size: $font-size-14
+        font-family: $font-family-regular
+        color: #666
+        margin-right: 5px
 </style>

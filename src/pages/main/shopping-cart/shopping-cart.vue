@@ -3,12 +3,12 @@
     <div class="wrap" :class="{'padding-wrap': goodsList.length}">
       <navigation-bar title="购物车" :showArrow="false" :translucent="false"></navigation-bar>
       <!--自提商品-->
-      <div class="shop-list">
+      <div class="shop-list" v-if="goodsList.length">
         <div class="postage-line"></div>
         <div class="postage-title-box">
-          <div class="postage-main-box">
-            <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
-            <img class="sel-box" v-if="imageUrl && false" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt=""/>
+          <div class="postage-main-box" @click.stop="toggleCheckAll">
+            <img class="sel-box" v-if="imageUrl && allChecked" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
+            <img class="sel-box" v-if="imageUrl && !allChecked" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt=""/>
             <img class="postage-icon" v-if="imageUrl" :src="imageUrl+'/yx-image/postage/icon-ziti_shopping@2x.png'" alt=""/>
             <div class="postage-text">自提商品</div>
           </div>
@@ -17,8 +17,7 @@
           <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && !item.checked && item.allowCheck" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt=""/>
           <!--<img class="sel-box" v-if="imageUrl && !item.allowCheck" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt="" />-->
           <div class="sel-box sel-clr-box" v-if="imageUrl && !item.allowCheck"></div>
-          <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && item.checked && item.allowCheck && corpName === 'platform'" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
-          <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && item.checked && item.allowCheck && corpName === 'retuan'" :src="imageUrl+'/yx-image/retuan/icon-pick_gwc@2x.png'" alt=""/>
+          <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && item.checked && item.allowCheck" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
           <button formType="submit" class="goods-image" @click.stop="jumpGoodsDetail(item)">
             <img class="goods-img" mode="aspectFill" :src="item.goods_cover_image" alt="">
             <div class="robbed" v-if="item.num <= 0">已抢完</div>
@@ -55,22 +54,21 @@
         </div>
       </div>
       <!--全国包邮-->
-      <div class="shop-list postage-list">
+      <div class="shop-list postage-list" v-if="postageList.length">
         <div class="postage-line"></div>
         <div class="postage-title-box">
-          <div class="postage-main-box">
-            <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
-            <img class="sel-box" v-if="imageUrl && false" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt=""/>
+          <div class="postage-main-box" @click.stop="postageCheckAll">
+            <img class="sel-box" v-if="imageUrl && allPostageChecked" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
+            <img class="sel-box" v-if="imageUrl && !allPostageChecked" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt=""/>
             <img class="postage-icon" v-if="imageUrl" :src="imageUrl+'/yx-image/postage/icon-baoyou_shopping@2x.png'" alt=""/>
             <div class="postage-text">全国包邮</div>
           </div>
         </div>
-        <div class="shop-item" :class="{'shop-item-opcta' : !item.allowCheck}" v-for="(item, index) in goodsList" :key="item.id">
-          <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && !item.checked && item.allowCheck" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt=""/>
+        <div class="shop-item" :class="{'shop-item-opcta' : !item.allowCheck}" v-for="(item, index) in postageList" :key="item.id">
+          <img class="sel-box" @click.stop="postageCheck(index)" v-if="imageUrl && !item.checked && item.allowCheck" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt=""/>
           <!--<img class="sel-box" v-if="imageUrl && !item.allowCheck" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt="" />-->
           <div class="sel-box sel-clr-box" v-if="imageUrl && !item.allowCheck"></div>
-          <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && item.checked && item.allowCheck && corpName === 'platform'" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
-          <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && item.checked && item.allowCheck && corpName === 'retuan'" :src="imageUrl+'/yx-image/retuan/icon-pick_gwc@2x.png'" alt=""/>
+          <img class="sel-box" @click.stop="postageCheck(index)" v-if="imageUrl && item.checked && item.allowCheck" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
           <button formType="submit" class="goods-image" @click.stop="jumpGoodsDetail(item)">
             <img class="goods-img" mode="aspectFill" :src="item.goods_cover_image" alt="">
             <div class="robbed" v-if="item.num <= 0">已抢完</div>
@@ -108,10 +106,9 @@
       </div>
       <!--结算-->
       <div class="payment" :style="{bottom: (49 + height) + 'px'}" v-if="goodsList.length > 0">
-        <button formType="submit" class="check-all" @click.stop="toggleCheckAll">
-          <img class="sel-box" v-if="imageUrl && allChecked && corpName === 'platform'" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
-          <img class="sel-box" v-if="imageUrl && allChecked && corpName === 'retuan'" :src="imageUrl+'/yx-image/retuan/icon-pick_gwc@2x.png'" alt=""/>
-          <img class="sel-box" v-if="imageUrl && !allChecked" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt=""/>
+        <button formType="submit" class="check-all" @click.stop="cartCheckAll">
+          <img class="sel-box" v-if="imageUrl && allChecked && allPostageChecked" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
+          <img class="sel-box" v-if="imageUrl && (!allChecked || !allPostageChecked)" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt=""/>
           <div class="txt">全选</div>
         </button>
         <div class="payment-content">
@@ -137,8 +134,7 @@
             <!--          <goods-item :item="item" @_getShopCart="_getShopCart"></goods-item>-->
             <div class="classify-item" @click="recommendJumpGoodsDetail(item)">
               <figure class="classify-box-top">
-                <img v-if="imageUrl && corpName === 'platform'" :src="imageUrl + '/yx-image/choiceness/icon-label2@2x.png'" alt="" class="top-label" mode="aspectFill">
-                <img v-if="imageUrl && corpName === 'retuan'" :src="imageUrl + '/yx-image/retuan/icon-label2@2x.png'" alt="" class="top-label" mode="aspectFill">
+                <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/icon-label2@2x.png'" alt="" class="top-label" mode="aspectFill">
                 <img v-if="item.goods_cover_image" :src="item.goods_cover_image" alt="" class="box-top-img" mode="aspectFill">
               </figure>
               <section class="classify-box-bottom">
@@ -151,8 +147,7 @@
                   </div>
                   <form action="" report-submit @submit="$getFormId" @click.stop="addShoppingCart(item)">
                     <button class="price-right" formType="submit">
-                      <img v-if="imageUrl && corpName === 'platform'" :src="imageUrl + '/yx-image/collage/icon-addgoods@2x.png'" alt="" class="price-right-img">
-                      <!--            <img v-if="imageUrl && corpName === 'retuan'" :src="imageUrl + '/yx-image/retuan/icon-shopcart@2x.png'" alt="" class="price-right-img">-->
+                      <img v-if="imageUrl" :src="imageUrl + '/yx-image/collage/icon-addgoods@2x.png'" alt="" class="price-right-img">
                     </button>
                   </form>
                 </div>
@@ -168,24 +163,24 @@
       <confirm-msg ref="msg" :msg="msg" useType="double" @confirm="deleteCartGood"></confirm-msg>
       <custom-tab-bar currentType="cart"></custom-tab-bar>
       <!--全国包邮弹窗-->
-      <div class="select-type-box" v-if="false">
+      <div class="select-type-box" v-if="isShowType">
         <div class="select-model-box">
           <div class="model-box-title">请分开结算以下商品</div>
-          <div class="select-item">
-            <img class="sel-box" v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
-            <img class="sel-box" v-if="imageUrl && false" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt=""/>
+          <div class="select-item" @click="checkGoodsType(true)">
+            <img class="sel-box" v-if="imageUrl && isSelfGoods" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
+            <img class="sel-box" v-if="imageUrl && !isSelfGoods" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt=""/>
             <div class="sel-text">自提商品</div>
-            <div class="sel-number">2件</div>
+            <div class="sel-number">{{checkedGoods.length}}件</div>
           </div>
-          <div class="select-item">
-            <img class="sel-box" v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
-            <img class="sel-box" v-if="imageUrl && false" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt=""/>
+          <div class="select-item" @click="checkGoodsType(false)">
+            <img class="sel-box" v-if="imageUrl && !isSelfGoods" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
+            <img class="sel-box" v-if="imageUrl && isSelfGoods" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt=""/>
             <div class="sel-text">全国包邮商品</div>
-            <div class="sel-number">2件</div>
+            <div class="sel-number">{{checkedPostage.length}}件</div>
           </div>
           <div class="bnt-box">
-            <div class="go-back">返回购物车</div>
-            <div class="go-back go-pay">去支付</div>
+            <div class="go-back" @click="closeModel">返回购物车</div>
+            <div class="go-back go-pay" @click="goPay">去支付</div>
           </div>
         </div>
       </div>
@@ -233,7 +228,11 @@
         hasMore: true,
         curShopId: '',
         recommendListLoad: false,
-        firstLoad: false
+        firstLoad: false,
+        // 全国包邮参数
+        postageList: [],
+        isShowType: false,
+        isSelfGoods: true
       }
     },
     async onTabItemTap() {
@@ -282,19 +281,30 @@
       })
     },
     computed: {
+      // 自提商品选中列表
       checkedGoods() {
         return this.goodsList.filter((item) => item.checked && item.allowCheck)
       },
+      // 自提商品是否全选
+      allChecked() {
+        return this.goodsList.length && this.checkedGoods.length === this.goodsList.length
+      },
+      // 全国包邮选中列表
+      checkedPostage() {
+        return this.postageList.filter((item) => item.checked && item.allowCheck)
+      },
+      // 全国包邮是否全选
+      allPostageChecked() {
+        return this.postageList.length && this.checkedPostage.length === this.postageList.length
+      },
       totalPrice() {
-        return this.checkedGoods.reduce((total, current) => {
+        let arr = this.checkedGoods.concat(this.checkedPostage)
+        return arr.reduce((total, current) => {
           if (!current.allowCheck) return 0
           let money = (total * 1) + (current.trade_price * current.num)
           money = money.toFixed(2)
           return money
         }, 0)
-      },
-      allChecked() {
-        return this.goodsList.length && this.checkedGoods.length === this.goodsList.length
       }
     },
     methods: {
@@ -340,6 +350,7 @@
           item.allowCheck = this._allowCheckHandle(item)
         })
         this.goodsList = res.data
+        this.postageList = JSON.parse(JSON.stringify(res.data)) // todo
         this.goodsList.length > 0 ? this.isShowCart = false : this.isShowCart = true
         this.deliverAt = res.delivery_at
         this.setCartCount()
@@ -441,7 +452,8 @@
         })
         this.goodsList = goodsList
       },
-      submitOrder() {
+      // 老结算函数
+      submitOrderOld() {
         if (!this.checkedGoods.length) {
           this.$wechat.showToast('请选择商品!')
           return
@@ -467,6 +479,112 @@
       },
       toChoicenessPage() {
         wx.switchTab({url: `${this.$routes.main.CHOICENESS}`})
+      },
+      // 全国包邮
+      postageCheck(i) {
+        console.log(i)
+        this.postageList[i].checked = !this.postageList[i].checked
+        console.log(this.goodsList[i].checked)
+        console.log(this.postageList[i].checked)
+      },
+      postageCheckAll() {
+        let postageList = this.postageList
+        let currentAllChecked = this.allPostageChecked
+        postageList.forEach((item) => {
+          if (!currentAllChecked && item.allowCheck) {
+            item.checked = true
+          } else {
+            item.checked = false
+          }
+        })
+        this.postageList = postageList
+      },
+      // 购物车全选
+      cartCheckAll() {
+        console.log(this.allChecked, this.allPostageChecked)
+        // 判断是否选中
+        let currentAllChecked = (this.allChecked && this.allPostageChecked)
+        let goodsList = this.goodsList
+        // 自提商品
+        goodsList.forEach((item) => {
+          if (!currentAllChecked && item.allowCheck) {
+            item.checked = true
+          } else {
+            item.checked = false
+          }
+        })
+        // 全国包邮
+        this.goodsList = goodsList
+        let postageList = this.postageList
+        postageList.forEach((item) => {
+          if (!currentAllChecked && item.allowCheck) {
+            item.checked = true
+          } else {
+            item.checked = false
+          }
+        })
+        this.postageList = postageList
+      },
+      // 新提交订单
+      submitOrder() {
+        if (!this.checkedGoods.length && !this.checkedPostage.length) {
+          this.$wechat.showToast('请选择商品!')
+          return
+        }
+        if (this.checkedGoods.length && this.checkedPostage.length) {
+          this.isShowType = true
+          return
+        }
+        if (this.checkedGoods.length) {
+          const goodsList = objDeepCopy(this.checkedGoods).map(item => {
+            if (item.is_new_client === 0) { // 老人0 新人1
+              item.trade_price = item.goods_sale_price
+            }
+            return item
+          })
+          const total = goodsList.reduce((total, current) => {
+            let money = (total * 1) + (current.trade_price * current.num)
+            money = money.toFixed(2)
+            return money
+          }, 0)
+          let orderInfo = {
+            goodsList,
+            total,
+            deliverAt: this.deliverAt
+          }
+          this.setOrderInfo(orderInfo)
+          wx.navigateTo({url: `${this.$routes.main.SUBMIT_ORDER}`})
+        } else {}
+      },
+      // 关闭弹窗
+      closeModel() {
+        this.isShowType = false
+      },
+      // 切换结算类型
+      checkGoodsType(type) {
+        this.isSelfGoods = type
+      },
+      goPay() {
+        if (this.isSelfGoods) {
+          const goodsList = objDeepCopy(this.checkedGoods).map(item => {
+            if (item.is_new_client === 0) { // 老人0 新人1
+              item.trade_price = item.goods_sale_price
+            }
+            return item
+          })
+          const total = goodsList.reduce((total, current) => {
+            let money = (total * 1) + (current.trade_price * current.num)
+            money = money.toFixed(2)
+            return money
+          }, 0)
+          let orderInfo = {
+            goodsList,
+            total,
+            deliverAt: this.deliverAt
+          }
+          this.setOrderInfo(orderInfo)
+          wx.navigateTo({url: `${this.$routes.main.SUBMIT_ORDER}`})
+        } else {}
       }
     }
   }

@@ -106,7 +106,18 @@
       }
     },
     methods: {
-      clipOrderId() {},
+      clipOrderId() {
+        let that = this
+        that.$wx.setClipboardData({
+          data: '订单详情',
+          success: function(res) {
+            that.$wx.getClipboardData({
+              success: function(res) {
+              }
+            })
+          }
+        })
+      },
       closeOrder() {
         wx.navigateTo({
           url: `${this.$routes.postage.DISTRIBUTION_DETAIL}`
