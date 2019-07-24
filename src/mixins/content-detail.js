@@ -47,28 +47,27 @@ export default {
   onShareAppMessage() {
     this.shareBtn()
     const shopId = wx.getStorageSync('shopId')
+    const userInfo = wx.getStorageSync('userInfo')
+    console.log(userInfo)
     let path = this.currentType === 'video' ? this.$routes.content.CONTENT_ARTICLES_DETAIL_VIDEO : this.$routes.content.CONTENT_ARTICLES_DETAIL
     return {
-      title: this.details.title,
+      title: userInfo.nickname + '分享' + this.details.title,
       path: `${path}?shopId=${shopId}&articleId=${this.articleId}`,
       imageUrl: this.details.coverImage
     }
   },
   onLoad() {
     let res = this.$wx.getSystemInfoSync()
-    console.log(res)
     this.screenWidth = res.screenWidth
     this.BottomEmptyVisible = (res.statusBarHeight >= 44) ? 1 : false
     let options = this._$$initOptions()
     this.articleId = options.articleId || ''
     this.preview = +options.preview || 0
-    options.shopId && wx.setStorageSync('shopId', options.shopId)
     if (options.scene) {
       wx.hideShareMenu()
-      let { shopId, articleId, preview } = resolveQueryScene(options.scene)
+      let { articleId, preview } = resolveQueryScene(options.scene)
       this.articleId = articleId
       this.preview = +preview
-      shopId && wx.setStorageSync('shopId', options.shopId)
     }
     this.articleId && this._articleOperation('browse')
   },
@@ -81,7 +80,6 @@ export default {
   },
   onUnload() {
     this.$refs.navigationBar && this.$refs.navigationBar._initHeadStyle()
-    console.log('我准备销毁了')
     this.details = {
       goodStatus: 0,
       category: '',
@@ -121,9 +119,13 @@ export default {
       this.currentType = obj.type || 'common'
       this.details.title = obj.title
       this.details.category = obj.id
-      this.details.coverImage = obj.cover_image.source_url
-      this.details.coverLittleImage = obj.cover_image.source_url + '?imageView2/3/w/30/q/1'
       this.details.coverVideo = obj.cover_video.full_url || ''
+      if (this.details.coverVideo) {
+        this.details.coverImage = obj.cover_video.cover_image_url
+      } else {
+        this.details.coverImage = obj.cover_image.source_url
+        this.details.coverLittleImage = obj.cover_image.source_url + '?imageView2/3/w/30/q/1'
+      }
       this.details.authPhoto = obj.author.head_image_url
       this.details.authName = obj.author.nickname
       this.details.authSignature = obj.author.sign
