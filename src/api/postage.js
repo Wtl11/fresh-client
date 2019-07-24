@@ -76,5 +76,15 @@ export default {
   getServiceInfo(data, loading = false) {
     let url = '/api/wap/service-sections'
     return request.get(url, data, loading)
+  },
+  /**
+   * 获得订单列表详情
+   * @param id
+   * @param loading
+   * @returns {*}
+   */
+  getOrderDetailData(id, data, loading = false) {
+    let url = `/api/wap/free-post-order/${id}`
+    return request.get(url, data, loading)
   }
 }

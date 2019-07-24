@@ -19,10 +19,10 @@
     </div>
     <div class="select-info">
       <div class="info-top">
-        <div class="info-top-name">张三丰</div>
-        <div class="info-top-phone">13656567890</div>
+        <div class="info-top-name">{{address.nickname}}</div>
+        <div class="info-top-phone">{{address.mobile}}</div>
       </div>
-      <div class="info-bottom">收货地址：广东省广州市越秀区中山四路288号 (居家佳友便利店)</div>
+      <div class="info-bottom">收货地址：{{address.address}}</div>
     </div>
     <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-colour@2x.png'" class="order-line">
     <div class="page-line"></div>
@@ -51,7 +51,7 @@
     </div>
     <div class="order-all">
       <div class="order-left">实付金额</div>
-      <div class="order-right"><span class="all-price">7.6</span><span class="all-text">元</span></div>
+      <div class="order-right"><span class="all-price">{{orderMsg.total}}</span><span class="all-text">元</span></div>
     </div>
     <div class="page-line"></div>
     <div class="order-info">
@@ -72,6 +72,8 @@
 
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
+  import GetOptions from '@mixins/get-options'
+  import API from '@api'
 
   const PAGE_NAME = 'ORDER_DETAIL'
 
@@ -80,13 +82,14 @@
     components: {
       NavigationBar
     },
+    mixins: [GetOptions],
     data() {
       return {
         orderMsg: {
           status: 1,
           status_text: '发货'
         },
-        payTime: '2222',
+        payTime: '',
         goodsList: [
           {
             goods_cover_image: '',
@@ -105,11 +108,19 @@
         ]
       }
     },
+    onShow() {
+      this._initPageParams()
+      this.getGoodsDetailData()
+    },
     methods: {
+      _initPageParams() {
+        let options = this._$$initOptions()
+        this.orderId = options.id
+      },
       clipOrderId() {
         let that = this
         that.$wx.setClipboardData({
-          data: '订单详情',
+          data: this.orderMsg.order_sn,
           success: function(res) {
             that.$wx.getClipboardData({
               success: function(res) {
@@ -122,6 +133,61 @@
         wx.navigateTo({
           url: `${this.$routes.postage.DISTRIBUTION_DETAIL}`
         })
+      },
+      getGoodsDetailData() {
+        API.Postage.getOrderDetailData(this.orderId).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.orderMsg = res.data
+            this.address = res.data.address
+            if (this.orderMsg.status * 1 === 0) {
+              this.getActiveEndTime(this.orderMsg.remind_timestamp)
+            }
+          } else {
+            this.$wechat.showToast(res.message)
+          }
+        })
+      },
+      _groupTimeCheckoutNoDay(time) {
+        // let nowSecond = parseInt(Date.now() / 1000)
+        // let differ = time * 1 - nowSecond
+        let differ = time * 1
+        let hour = Math.floor(differ / (60 * 60))
+        hour = hour >= 10 ? hour : '0' + hour
+        let minute = Math.floor(differ / 60) - (hour * 60)
+        minute = minute >= 10 ? minute : '0' + minute
+        let second = Math.floor(differ) - (hour * 60 * 60) - (minute * 60)
+        second = second >= 10 ? second : '0' + second
+        let times
+        if (differ > 0) {
+          times = {
+            hour,
+            minute,
+            second
+          }
+          this.timeEnd = false
+        } else {
+          times = {
+            hour: '00',
+            minute: '00',
+            second: '00'
+          }
+          this.timeEnd = true
+        }
+        return times
+      },
+      getActiveEndTime(time) {
+        clearInterval(this.timer)
+        this.end_time = time
+        this.timer = setInterval(() => {
+          if (this.end_time > 0) {
+            this.end_time--
+          }
+          let endTime = this._groupTimeCheckoutNoDay(this.end_time)
+          this.payTime = `${endTime.minute}分${endTime.second}秒`
+          if (this.timeEnd) {
+            clearInterval(this.timer)
+          }
+        }, 1000)
       }
     }
   }
