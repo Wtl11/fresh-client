@@ -328,7 +328,7 @@
 
   .big-box
     width: 100vw
-    /*overflow: hidden*/
+    overflow: hidden
     .order-big-box
       width: 300vw
       display: flex
