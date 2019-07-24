@@ -125,10 +125,12 @@
           this.headStyleData = 'background: rgba(255, 255, 255, 1)'
           this.titleColorData = '#000000'
           this.translucentTitle = this.title
+          this.$emit('scrollingShowTitle', true)
         } else {
           this.headStyleData = 'background: rgba(255, 255, 255, 0)'
           this.titleColorData = 'white'
           this.translucentTitle = ''
+          this.$emit('scrollingShowTitle', false)
         }
       },
       _initHeadStyle() {

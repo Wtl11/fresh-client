@@ -1,7 +1,7 @@
 <template>
   <form action="" report-submit @submit="$getFormId">
     <div class="active-detail">
-      <navigation-bar ref="navigationBar" :title="msgTitle" :translucent="true" :arrowUrl="arrowUrl"></navigation-bar>
+      <navigation-bar ref="navigationBar" :title="msgTitle" :translucent="true" :arrowUrl="arrowUrl" @scrollingShowTitle="scrollingShowTitle"></navigation-bar>
       <section class="banner-box">
         <section v-if="buyUsers.length" class="buy-users" :style="{top: statusBarHeight + 44 + 'px'}">
           <swiper
@@ -506,6 +506,12 @@
     methods: {
       ...orderMethods,
       ...cartMethods,
+      scrollingShowTitle(flag) {
+        if (!this.videoPlaying) {
+          return
+        }
+        this.arrowUrl = ARROW_URL[flag ? 1 : 0]
+      },
       checkSystem() {
         let res = wx.getSystemInfoSync()
         let system = res.system

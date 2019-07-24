@@ -1,7 +1,8 @@
 <template>
   <div class="after-sale-management">
     <navigation-bar title="售后管理"></navigation-bar>
-    <div class="after-header">
+    <div class="after-header"></div>
+    <div class="after-header" :style="{position:'fixed', top: statusBarHeight + 44 + 'px',zIndex: 50, left:0, right: 0}">
       <!--<div class="after-search">-->
         <!--<img :src="imageUrl + '/yx-image/group/icon-search@2x.png'" v-if="imageUrl" class="search-icon">-->
         <!--<input type="text" class="search" placeholder="提供单号，手机号，微信昵称，搜索" :placeholder-style="'color: #B7B7B7,font-family:PingFangSC-Regular'" v-model="keyword" @input="_search"/>-->
@@ -13,7 +14,7 @@
             type="text"
             placeholder="提供单号，手机号，微信昵称"
             placeholder-class="input-p"
-            :focus="true"
+            :focus="false"
             confirm-type="search"
             @focus="handleFocus"
             @blur="handleBlur"
@@ -33,7 +34,7 @@
       </div>
     </div>
     <div class="big-box">
-      <div class="order-big-box" :style="{'transform': ' translateX('+ -(navIndex * width) +'px)','height': scrollHeight + 'px'}">
+      <div class="order-big-box" :style="{'transform': ' translateX('+ -(navIndex * width) +'px)'}">
         <!--售后申请-->
         <!--<scroll-view class="order-box" :style="{'height': scrollHeight + 'px'}" scroll-y @scrolltolower="_getMoreList">-->
         <div class="order-box" :style="{'min-height': scrollHeight + 'px'}" :class="navIndex === 0 ? '' : 'order-box-hideen'">
@@ -101,17 +102,24 @@
         afterNull: false,
         recordNull: false,
         afterMore: false,
-        recordMore: false
+        recordMore: false,
+        statusBarHeight: 0
       }
     },
+    onReady() {
+      let res = this.$wx.getSystemInfoSync()
+      this.statusBarHeight = res.statusBarHeight || 20
+      this.width = res.screenWidth
+      this.scrollHeight = res.screenHeight - 145 - res.statusBarHeight
+    },
     async onLoad() {
-      let data = this.$wx.getSystemInfoSync()
-      this.$wx.getSystemInfo({
-        success: (res) => {
-          this.width = res.screenWidth
-          this.scrollHeight = res.screenHeight - 145 - data.statusBarHeight
-        }
-      })
+      // let data = this.$wx.getSystemInfoSync()
+      // this.$wx.getSystemInfo({
+      //   success: (res) => {
+      //     this.width = res.screenWidth
+      //     this.scrollHeight = res.screenHeight - 145 - data.statusBarHeight
+      //   }
+      // })
       await this._afterManagementList(true)
     },
     computed: {
@@ -341,7 +349,7 @@
 
   .big-box
     width: 100vw
-    overflow: hidden
+    overflow-x: hidden
     background: $color-background
     .line
       height: 10px
