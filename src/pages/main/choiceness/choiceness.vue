@@ -718,26 +718,29 @@
           }
         })
       },
+      _formatFSData(arr = []) {
+        return arr.map(item => {
+          return {
+            ...item,
+            tradePrice: formatCouponMoney(item.trade_price),
+            goods_cover_image: item.image_url,
+            describe: item.description
+            // sale_count: item,
+            // goods_units: item
+          }
+        })
+      },
       // 初始化活动tab
       _initTabInfo() {
         let arr = []
         if (this.activityModuleList.length) {
           this.activityModuleList.forEach(item => {
-            if (item.module_name !== 'activity_fixed' && item.starting_point_id > 0) {
+            // 全国包邮没有starting_point_id
+            if ((item.module_name !== 'activity_fixed' && item.starting_point_id > 0) || item.module_name === 'free_shipping') {
               arr.push({
                 ...item,
                 ...TAB_ARR_CONFIG[item.module_name]
               })
-            }
-            // 全国包邮测试数据
-            if (item.module_name === 'groupon') {
-              let freeShipping = {
-                ...item,
-                ...TAB_ARR_CONFIG[ACTIVE_TYPE.FREE_SHIPPING]
-              }
-              freeShipping.module_name = ACTIVE_TYPE.FREE_SHIPPING
-              freeShipping.module_title = '全国包邮'
-              arr.push(freeShipping)
             }
           })
         }
@@ -1048,8 +1051,6 @@
               if (item.module_name === ACTIVE_TYPE.GROUP_ON) {
                 API.Home.getGroupList({ limit: 20 }).then(res => {
                   this.groupList = this._formatListPriceData(res.data)
-                  // 全国包邮测试数据
-                  this.freeShippingList = this._formatListPriceData(res.data)
                 })
               } else {
                 API.Home.getActivityList({ activity_id: activityId, page: 1, limit: key.limit }).then(res => {
@@ -1057,7 +1058,13 @@
                 })
               }
             } else if (activityId === 0 && item.module_name !== ACTIVE_TYPE.FLASH) {
-              this[key.dataArray] = []
+              if (item.module_name === ACTIVE_TYPE.FREE_SHIPPING) {
+                API.Home.getFreeShippingList().then(res => {
+                  this.freeShippingList = this._formatFSData(res.data)
+                })
+              } else {
+                this[key.dataArray] = []
+              }
             }
             // 限时抢购活动
             if (item.module_name === ACTIVE_TYPE.FLASH && item.list.length > 0) {
