@@ -35,6 +35,14 @@ export const TAB_ARR_CONFIG = {
     dataArray: 'groupList',
     limit: 20
   },
+  [ACTIVE_TYPE.FREE_SHIPPING]: {
+    title: '全国包邮',
+    subTitle: '送货到家',
+    iconText: '包邮价',
+    buttonText: '+购物车',
+    dataArray: 'freeShippingList',
+    limit: 20
+  },
   [ACTIVE_TYPE.GUESS]: {
     title: '猜你喜欢',
     subTitle: '为你优选',

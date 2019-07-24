@@ -4,7 +4,7 @@
       <img class="img-bg"
            mode="aspectFill"
            v-if="imageUrl"
-           :src="imageUrl + '/yx-image/2.3/pic-lqyhqtc.png'">
+           :src="imageUrl + '/yx-image/2.4/pic-lqyhqtc-more.png'">
       <img class="close"
            mode="aspectFill"
            v-if="imageUrl"
@@ -92,9 +92,9 @@
     methods: {
       _targetList() {
         let arr = this.couponArray.map((item) => {
-          return item.coupon_activity_id || 0
+          return item.coupon_activity_report_id || 0
         })
-        API.Coupon.targetModal({coupon_activity_ids: arr}).catch(e => {
+        API.Coupon.targetModal({coupon_activity_report_ids: arr}).catch(e => {
           console.error(e)
         })
       },
@@ -127,6 +127,9 @@
         this.hideAnimation(() => {
           this.isShow = false
         })
+      },
+      _resetStatus() {
+        // todo some thing
       }
     }
   }

@@ -26,5 +26,10 @@ export default {
   getActivityList(data, loading = false, toast) {
     const url = `/api/wap/goods/activity-goods`
     return request.get({url, data, loading, toast})
+  },
+  // 全国包邮
+  getFreeShippingList(data, loading = false, toast) {
+    const url = `http://market-api.jkweixin.net/market/v2/api/wap/goods`
+    return request.get({url, data, loading, toast})
   }
 }

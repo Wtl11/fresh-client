@@ -86,9 +86,9 @@
         userImgList: []
       }
     },
-    onLoad(options) {
-      this.orderId = options.id
-      this.shopId = options.shopId
+    onLoad(options = {}) {
+      this.orderId = options.id || 0
+      this.shopId = options.shopId || 0
     },
     onShow() {
       let options = this._$$initOptions()

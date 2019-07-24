@@ -21,7 +21,7 @@
           </div>
           <div class="explain-wrapper">
             <p class="explain">(剩{{dataInfo.usable_stock}}张)</p>
-            <p class="date">有效期至{{dataInfo.coupon.end_at}}</p>
+            <p class="date">{{dataInfo.coupon.available_str}}</p>
           </div>
         </div>
         <div class="tool-wrapper">

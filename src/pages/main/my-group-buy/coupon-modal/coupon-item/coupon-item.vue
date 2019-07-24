@@ -16,7 +16,7 @@
             <p class="use-type">{{dataInfo.coupon.range_type_str}}</p>
             <p class="txt">{{dataInfo.coupon.coupon_name}}</p>
           </div>
-          <p class="condition">有效期至 {{dataInfo.coupon.end_at}}</p>
+          <p class="condition">{{dataInfo.coupon.available_str}}</p>
         </div>
       </section>
     </div>
