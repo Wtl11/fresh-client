@@ -10,7 +10,7 @@
             <img v-if="imageUrl && orderMsg.status * 1 === 3" class="icon-img" :src="imageUrl+'/yx-image/postage/icon_close_xq@2x.png'" alt="">
             <img v-if="imageUrl && orderMsg.status * 1 === 1" class="icon-img" :src="imageUrl+'/yx-image/postage/icon-delivery_xq@2x.png'" alt="">
             <img v-if="imageUrl && orderMsg.status * 1 === 0" class="icon-img" :src="imageUrl+'/yx-image/postage/icon-payment_xq@2x.png'" alt="">
-            <img v-if="imageUrl && orderMsg.status * 1 === 11" class="icon-img" :src="imageUrl+'/yx-image/2.4/icon_refund_xq@2x.png'" alt="">
+            <img v-if="imageUrl && orderMsg.status * 1 === 4" class="icon-img" :src="imageUrl+'/yx-image/postage/icon-fahuo_xq@2x.png'" alt="">
           </div>
           <div class="statu-txt">{{orderMsg.status === 11 || orderMsg.status_text === '活动中' ? '已付款' : orderMsg.status_text}}</div>
         </div>
@@ -31,21 +31,26 @@
         <img v-if="imageUrl" :src="imageUrl+'/yx-image/postage/icon-baoyou_shopping@2x.png'" alt="" class="order-title-icon">
         <div class="order-title-name">全国包邮</div>
       </div>
-      <div class="list-item" v-for="(item, index) in goodsList" :key="index">
-        <div class="item-left-img"><img class="img" :src="item.goods_cover_image" alt=""></div>
-        <div class="item-right">
-          <div class="title">{{item.name}}</div>
-          <div class="sub-title">规格：{{item.goods_units}}</div>
-          <div class="price-box">
-            <div class="price-left">
-              <div class="number">{{item.trade_price}}</div>
-              <div class="icon">元</div>
-            </div>
-            <div class="price-right">
-              <div class="icon">x</div>
-              <div class="number">{{item.num}}</div>
+      <div class="list-big-item" v-for="(item, index) in goodsList" :key="index">
+        <div class="list-item">
+          <div class="item-left-img"><img class="img" :src="item.image_url" alt=""></div>
+          <div class="item-right">
+            <div class="title">{{item.goods_name}}</div>
+            <div class="sub-title">规格：{{item.goods_units}}</div>
+            <div class="price-box">
+              <div class="price-left">
+                <div class="number">{{item.price}}</div>
+                <div class="icon">元</div>
+              </div>
+              <div class="price-right">
+                <div class="icon">x</div>
+                <div class="number">{{item.num}}</div>
+              </div>
             </div>
           </div>
+        </div>
+        <div class="btn-box">
+          <div v-if="orderMsg.status * 1 === 1" class="btn-text" @click.stop="jumpTrace(item)">物流信息</div>
         </div>
       </div>
     </div>
@@ -61,18 +66,20 @@
       </div>
       <div class="order-time">下单时间：{{orderMsg.created_at}}</div>
     </div>
-    <div class="order-fixed">
+    <div class="order-fixed" v-if="orderMsg.status * 1 === 0">
       <div class="order-bottom-right">
         <div class="refund close" @click="closeOrder">取消</div>
         <div class="refund" @click="goPay">去付款</div>
       </div>
     </div>
+    <confirm-msg ref="refundModel" useType="double" :msg="modelMsg" @confirm="confirm"></confirm-msg>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import GetOptions from '@mixins/get-options'
+  import ConfirmMsg from '@components/confirm-msg/confirm-msg'
   import API from '@api'
 
   const PAGE_NAME = 'ORDER_DETAIL'
@@ -80,7 +87,8 @@
   export default {
     name: PAGE_NAME,
     components: {
-      NavigationBar
+      NavigationBar,
+      ConfirmMsg
     },
     mixins: [GetOptions],
     data() {
@@ -90,22 +98,8 @@
           status_text: '发货'
         },
         payTime: '',
-        goodsList: [
-          {
-            goods_cover_image: '',
-            name: 'wqopewq',
-            goods_units: 'wqopewq',
-            trade_price: '2',
-            num: '1'
-          },
-          {
-            goods_cover_image: '',
-            name: 'wqopewq',
-            goods_units: 'wqopewq',
-            trade_price: '2',
-            num: '1'
-          }
-        ]
+        goodsList: [],
+        address: {}
       }
     },
     onShow() {
@@ -129,16 +123,13 @@
           }
         })
       },
-      closeOrder() {
-        wx.navigateTo({
-          url: `${this.$routes.postage.DISTRIBUTION_DETAIL}`
-        })
-      },
       getGoodsDetailData() {
         API.Postage.getOrderDetailData(this.orderId).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.orderMsg = res.data
             this.address = res.data.address
+            this.goodsList = res.data.goods
+            console.log(this.address)
             if (this.orderMsg.status * 1 === 0) {
               this.getActiveEndTime(this.orderMsg.remind_timestamp)
             }
@@ -188,6 +179,80 @@
             clearInterval(this.timer)
           }
         }, 1000)
+      },
+      goPay() {
+        API.SubmitOrder.rePayment(this.orderId)
+          .then(res => {
+            this.$wechat.hideLoading()
+            if (res.error !== this.$ERR_OK) {
+              this.$wechat.showToast(res.message)
+              return
+            }
+            let payRes = res.data
+            const { timestamp, nonceStr, signType, paySign } = payRes
+            this.orderId = res.data.order_id
+            wx.requestPayment({
+              timeStamp: timestamp,
+              nonceStr,
+              package: payRes.package,
+              signType,
+              paySign,
+              success: this._paySuccess
+            })
+          })
+      },
+      _paySuccess(res) {
+        let count = 0
+        this.$wechat.showLoading()
+        API.Global.checkPayResult({ order_id: this.orderId }).then(res => {
+          console.warn(res, '支付：')
+          if (res.data.is_payed === 1) {
+            setTimeout(() => {
+              this.$wechat.hideLoading()
+              this.getGoodsDetailData()
+            }, 1500)
+          } else {
+            this._groupOrderTimer = setInterval(() => {
+              count++
+              if (count > 5) {
+                this.$wechat.hideLoading()
+                clearInterval(this._groupOrderTimer)
+                this.getGoodsDetailData()
+                return
+              }
+              API.Global.checkPayResult({ order_id: this.orderId }).then(res => {
+                console.warn(res, '支付轮询：' + count)
+                if (res.data.is_payed === 1) {
+                  clearInterval(this._groupOrderTimer)
+                  setTimeout(() => {
+                    this.$wechat.hideLoading()
+                    this.getGoodsDetailData()
+                  }, 1500)
+                }
+              })
+            }, 1000)
+          }
+        })
+      },
+      // 关闭订单
+      closeOrder() {
+        this.modelMsg = '确定取消该订单？'
+        this.$refs.refundModel.show()
+      },
+      confirm() {
+        API.Order.colseOrder(this.orderId).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.$wechat.showToast('取消订单成功')
+            this.getGoodsDetailData()
+          } else {
+            this.$wechat.showToast(res.message)
+          }
+        })
+      },
+      // 跳转物流信息
+      jumpTrace(item) {
+        console.log(item)
+        wx.navigateTo({url: `${this.$routes.postage.DISTRIBUTION_DETAIL}?id=${item.goods_sku_id}&orderSn=${this.orderMsg.order_sn}`})
       }
     }
   }
@@ -486,5 +551,17 @@
         background: $color-white
         border: 0.5px solid $color-text-assist
         box-sizing: border-box
-
+  .btn-box
+    padding: 5px 3.2vw 15px
+    layout(row)
+    justify-content: flex-end
+    .btn-text
+      font-family: $font-family-regular
+      color: $color-main
+      font-size: $font-size-12
+      width: 70px
+      height: 25px
+      line-height: 25px
+      text-align: center
+      border-1px($color-main, 15px)
 </style>

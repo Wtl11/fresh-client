@@ -48,7 +48,9 @@ export const actions = {
     commit('DELIVER_AT', deliverAt)
     commit('SET_BEFORE_TOTAL', total)
   },
-  submitOrder({ commit, state }, { orderInfo, complete, isFree = false }) {
+  submitOrder({ commit, state }, {orderInfo, complete, isFree = false, isPostage = false}) {
+    // isPostage 是否是全国包邮订单
+    console.log(isPostage)
     API.SubmitOrder.submitOrder(orderInfo)
       .then(res => {
         if (res.error !== ERR_OK) {
@@ -67,7 +69,13 @@ export const actions = {
         const { timestamp, nonceStr, signType, paySign } = payRes
         let orderId = res.data.order_id || 0
         if (isFree) {
-          wx.redirectTo({ url: `${$$routes.main.PAY_RESULT}?orderId=${orderId}&&type=0&total=${state.total}` })
+          // wx.redirectTo({ url: `${$$routes.main.PAY_RESULT}?orderId=${orderId}&&type=0&total=${state.total}` })
+          // 判断是否全国包邮
+          if (isPostage) {
+            wx.redirectTo({ url: `${$$routes.main.PAY_RESULT}?orderId=${orderId}&&type=0&total=${state.total}&isPostage=1` })
+          } else {
+            wx.redirectTo({ url: `${$$routes.main.PAY_RESULT}?orderId=${orderId}&&type=0&total=${state.total}` })
+          }
           return
         }
         wx.requestPayment({
@@ -90,21 +98,33 @@ export const actions = {
                     wx.redirectTo({ url: `${orderInfo.url}?orderId=${orderId}` })
                   }, 1000)
                 } else {
-                  _loopCheckPay({ orderId, orderInfo, timer, count })
+                  _loopCheckPay({ orderId, orderInfo, timer, count, isPostage })
                 }
               }).catch(e => {
-                _loopCheckPay({ orderId, orderInfo, timer, count })
+                _loopCheckPay({ orderId, orderInfo, timer, count, isPostage })
               })
             } else {
               setTimeout(() => {
                 wechat.hideLoading()
-                wx.redirectTo({ url: `${$$routes.main.PAY_RESULT}?orderId=${orderId}&&type=0&total=${state.total}` })
+                // wx.redirectTo({ url: `${$$routes.main.PAY_RESULT}?orderId=${orderId}&&type=0&total=${state.total}` })
+                // 判断是否全国包邮
+                if (isPostage) {
+                  wx.redirectTo({ url: `${$$routes.main.PAY_RESULT}?orderId=${orderId}&&type=0&total=${state.total}&isPostage=1` })
+                } else {
+                  wx.redirectTo({ url: `${$$routes.main.PAY_RESULT}?orderId=${orderId}&&type=0&total=${state.total}` })
+                }
               }, 1500)
             }
           },
           fail(res) {
             wechat.hideLoading()
-            wx.redirectTo({ url: `${$$routes.main.ORDER_DETAIL}?id=${orderId}&&type=0` })
+            // 判断是否全国包邮
+            if (isPostage) {
+              wx.redirectTo({ url: `${$$routes.postage.ORDER_DETAIL}?id=${orderId}&&type=0` })
+            } else {
+              wx.redirectTo({ url: `${$$routes.main.ORDER_DETAIL}?id=${orderId}&&type=0` })
+            }
+            // wx.redirectTo({ url: `${$$routes.main.ORDER_DETAIL}?id=${orderId}&&type=0` })
           },
           complete
         })
@@ -133,7 +153,7 @@ export const mutations = {
   }
 }
 
-function _loopCheckPay({ orderId, orderInfo, timer = null, count = 0 }) {
+function _loopCheckPay({ orderId, orderInfo, timer = null, count = 0, isPostage }) {
   wechat.showLoading()
   timer && clearInterval(timer)
   timer = setInterval(() => {
@@ -142,7 +162,13 @@ function _loopCheckPay({ orderId, orderInfo, timer = null, count = 0 }) {
     if (count >= 10) {
       wechat.hideLoading()
       clearInterval(timer)
-      wx.redirectTo({ url: `${$$routes.main.ORDER_DETAIL}?id=${orderId}&&type=0` })
+      // 判断是否全国包邮
+      if (isPostage) {
+        wx.redirectTo({ url: `${$$routes.postage.ORDER_DETAIL}?id=${orderId}&&type=0` })
+      } else {
+        wx.redirectTo({ url: `${$$routes.main.ORDER_DETAIL}?id=${orderId}&&type=0` })
+      }
+      // wx.redirectTo({ url: `${$$routes.main.ORDER_DETAIL}?id=${orderId}&&type=0` })
       return
     }
     API.Global.checkPayResult({ order_id: orderId }).then(res => {

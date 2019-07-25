@@ -1,4 +1,5 @@
 import request from './request-handler'
+import {baseURL} from '@utils/config'
 
 export default {
   /** ********** 首页 ************ **/
@@ -29,7 +30,7 @@ export default {
   },
   // 全国包邮
   getFreeShippingList(data, loading = false, toast) {
-    const url = `http://market-api.jkweixin.net/market/v2/api/wap/goods`
+    const url = baseURL.marketApi + `/api/wap/goods`
     return request.get({url, data, loading, toast})
   }
 }

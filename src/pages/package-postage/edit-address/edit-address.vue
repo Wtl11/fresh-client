@@ -20,7 +20,7 @@
       </div>
       <div class="form-box-list">
         <div class="form-list-left">姓名</div>
-        <input v-model="addressMsg.name" type="text" class="form-list-input" placeholder="请输入姓名" placeholder-style="font-size: 14px;font-family: PingFangSC-Regular; color: #b7b7b7">
+        <input v-model="addressMsg.name" type="text" class="form-list-input" :maxlength="25" placeholder="请输入姓名" placeholder-style="font-size: 14px;font-family: PingFangSC-Regular; color: #b7b7b7">
       </div>
       <div class="form-box-list">
         <div class="form-list-left">手机号</div>
@@ -105,6 +105,9 @@
           return
         } else if (this.addressMsg.name === '') {
           this.$wechat.showToast('请输入姓名')
+          return
+        } else if (this.addressMsg.name.length <= 1) {
+          this.$wechat.showToast('请输入真实姓名')
           return
         } else if (this.addressMsg.mobile === '') {
           this.$wechat.showToast('请输入手机号码')
@@ -201,6 +204,8 @@
         .form-list-input
           font-size: $font-size-14
           font-family: $font-family-regular
+          height: 26px
+          line-height: 26px
           color: #111
           flex: 1
         .arrow-img

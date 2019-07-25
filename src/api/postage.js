@@ -1,4 +1,5 @@
 import request from '@utils/request'
+import {baseURL} from '@utils/config'
 
 export default {
   /**
@@ -86,5 +87,25 @@ export default {
   getOrderDetailData(id, data, loading = false) {
     let url = `/api/wap/free-post-order/${id}`
     return request.get(url, data, loading)
+  },
+  /**
+   * 获得订单列表详情
+   * @param id
+   * @param loading
+   * @returns {*}
+   */
+  getGoodsDetail(id, data, loading = false) {
+    const url = baseURL.marketApi + `/api/wap/goods/${id}`
+    return request.get(url, data, loading)
+  },
+  /**
+   * 获得订单列表详情
+   * @param id
+   * @param loading
+   * @returns {*}
+   */
+  getDistributionDetail(data, loading = false) {
+    const url = baseURL.marketApi + `/api/wap/order-logistics-trace-info`
+    return request.post(url, data, loading)
   }
 }
