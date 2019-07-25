@@ -651,7 +651,7 @@
           title = `${this.socialName}-赞播优鲜社区团购`
           break
         case ACTIVE_TYPE.FREE_SHIPPING :
-          imgUrl = '/yx-image/2.4/pic-ptfx_share@2x.png'
+          imgUrl = '/yx-image/2.4/pic-xsqg_ljqg@2x.png'
           title = `${this.socialName}-赞播优鲜社区团购`
           break
         default:
@@ -715,18 +715,6 @@
           return {
             ...item,
             tradePrice: formatCouponMoney(item.trade_price)
-          }
-        })
-      },
-      _formatFSData(arr = []) {
-        return arr.map(item => {
-          return {
-            ...item,
-            tradePrice: formatCouponMoney(item.trade_price),
-            goods_cover_image: item.image_url || item.goods_cover_image,
-            describe: item.description
-            // sale_count: item,
-            // goods_units: item
           }
         })
       },
@@ -1072,7 +1060,7 @@
             } else if (activityId === 0 && item.module_name !== ACTIVE_TYPE.FLASH) {
               if (item.module_name === ACTIVE_TYPE.FREE_SHIPPING) {
                 API.Home.getFreeShippingList().then(res => {
-                  this.freeShippingList = this._formatFSData(res.data)
+                  this.freeShippingList = this._formatListPriceData(res.data)
                 })
               } else {
                 this[key.dataArray] = []
