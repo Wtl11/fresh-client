@@ -194,9 +194,14 @@ export default {
           this.details.videoIntroduce = item.content[0].introduction
         }
         if (item.type === 'goods' && item.style_type === 'content_goods_list') {
-          this.details.goodsList = item.content.map(item => {
+          console.log(item)
+          let arr  = item.content.filter(item => {
+            return item.goods && item.goods.goods_id
+          })
+          this.details.goodsList = arr.map(item=>{
             return item.goods
           })
+          console.log(this.details.goodsList, 'this.details.goodsList ')
         }
       })
       console.log(this.details)
@@ -225,7 +230,7 @@ export default {
     },
     // 去詳情
     goToDetail(item) {
-      if (this.preview ||  item.is_online === 0 || item.usable_stock === 0) return false
+      if (this.preview || item.is_online === 0 || item.usable_stock === 0) return false
       console.log(item)
       this._articleOperation('guide_goods', { goods_id: item.goods_id, goods_sku_id: item.goods_sku_id })
       const shopId = wx.getStorageSync('shopId')
