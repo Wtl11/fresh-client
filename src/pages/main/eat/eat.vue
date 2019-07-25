@@ -224,6 +224,7 @@
         wx.setStorageSync('shopId', this.shopId)
       }
       if (this.shopId !== id) {
+        this.tabIndex = 0
         this._getArticleList(false)
       }
       this.shopId = id
