@@ -2,13 +2,73 @@
   <form action="" report-submit @submit="$getFormId">
     <div class="wrap" :class="{'padding-wrap': goodsList.length}">
       <navigation-bar title="购物车" :showArrow="false" :translucent="false"></navigation-bar>
-      <div class="shop-list">
+      <!--自提商品-->
+      <div class="shop-list" v-if="goodsList.length">
+        <div class="postage-line"></div>
+        <div class="postage-title-box">
+          <div class="postage-main-box" @click.stop="toggleCheckAll">
+            <img class="sel-box" v-if="imageUrl && allChecked" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
+            <img class="sel-box" v-if="imageUrl && !allChecked" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt=""/>
+            <img class="postage-icon" v-if="imageUrl" :src="imageUrl+'/yx-image/postage/icon-ziti_shopping@2x.png'" alt=""/>
+            <div class="postage-text">自提商品</div>
+          </div>
+        </div>
         <div class="shop-item" :class="{'shop-item-opcta' : !item.allowCheck}" v-for="(item, index) in goodsList" :key="item.id">
           <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && !item.checked && item.allowCheck" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt=""/>
           <!--<img class="sel-box" v-if="imageUrl && !item.allowCheck" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt="" />-->
           <div class="sel-box sel-clr-box" v-if="imageUrl && !item.allowCheck"></div>
-          <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && item.checked && item.allowCheck && corpName === 'platform'" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
-          <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && item.checked && item.allowCheck && corpName === 'retuan'" :src="imageUrl+'/yx-image/retuan/icon-pick_gwc@2x.png'" alt=""/>
+          <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && item.checked && item.allowCheck" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
+          <button formType="submit" class="goods-image" @click.stop="jumpGoodsDetail(item)">
+            <img class="goods-img" mode="aspectFill" :src="item.goods_cover_image" alt="">
+            <div class="robbed" v-if="item.num <= 0">已抢完</div>
+            <div class="robbed" v-else-if="item.activity && item.activity.activity_theme === ACTIVE_TYPE.NEW_CLIENT && item.is_new_client !== 1">新人专属</div>
+          </button>
+          <div class="good-info">
+            <div formType="submit" class="top" @click.stop="jumpGoodsDetail(item)">
+              <div class="title">{{item.name}}</div>
+              <button formType="submit" class="del" @click.stop="delGoodsInfo(index, item.id)">
+                <img class="del-img" v-if="imageUrl" :src="imageUrl + '/yx-image/cart/icon_delete@2x.png'" alt="">
+              </button>
+            </div>
+            <div class="bot">
+              <div formType="submit" class="left" @click.stop="jumpGoodsDetail(item)">
+                <div class="spec" v-if="item.goods_units">规格：{{item.goods_units}}</div>
+                <div class="remain">
+                  <div class="txt" :class="'corp-' + corpName + '-money-text'" v-if="item.is_urgency">仅剩{{item.usable_stock}}件</div>
+                </div>
+                <div class="price" :class="'corp-' + corpName + '-money'" v-if="item.trade_price">
+                  <span class="num">{{item.trade_price}}</span>
+                  <span class="unit">元</span>
+                  <img class="new-user-img" v-if="imageUrl && item.activity && item.activity.activity_theme === ACTIVE_TYPE.NEW_CLIENT" :src="imageUrl + '/yx-image/2.4/pic-newlabel@2x.png'" alt="">
+                </div>
+              </div>
+              <div class="right">
+                <div class="number-box">
+                  <button formType="submit" class="minus" @click.stop="subNum(index, item.num, item.id)">-</button>
+                  <div class="num">{{item.num}}</div>
+                  <button formType="submit" class="add" @click.stop="addNum(index, item.num, item.buy_limit, item.id)">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--全国包邮-->
+      <div class="shop-list postage-list" v-if="postageList.length">
+        <div class="postage-line"></div>
+        <div class="postage-title-box">
+          <div class="postage-main-box" @click.stop="postageCheckAll">
+            <img class="sel-box" v-if="imageUrl && allPostageChecked" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
+            <img class="sel-box" v-if="imageUrl && !allPostageChecked" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt=""/>
+            <img class="postage-icon" v-if="imageUrl" :src="imageUrl+'/yx-image/postage/icon-baoyou_shopping@2x.png'" alt=""/>
+            <div class="postage-text">全国包邮</div>
+          </div>
+        </div>
+        <div class="shop-item" :class="{'shop-item-opcta' : !item.allowCheck}" v-for="(item, index) in postageList" :key="item.id">
+          <img class="sel-box" @click.stop="postageCheck(index)" v-if="imageUrl && !item.checked && item.allowCheck" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt=""/>
+          <!--<img class="sel-box" v-if="imageUrl && !item.allowCheck" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt="" />-->
+          <div class="sel-box sel-clr-box" v-if="imageUrl && !item.allowCheck"></div>
+          <img class="sel-box" @click.stop="postageCheck(index)" v-if="imageUrl && item.checked && item.allowCheck" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
           <button formType="submit" class="goods-image" @click.stop="jumpGoodsDetail(item)">
             <img class="goods-img" mode="aspectFill" :src="item.goods_cover_image" alt="">
             <div class="robbed" v-if="item.num <= 0">已抢完</div>
@@ -45,11 +105,10 @@
         </div>
       </div>
       <!--结算-->
-      <div class="payment" :style="{bottom: (49 + height) + 'px'}" v-if="goodsList.length > 0">
-        <button formType="submit" class="check-all" @click.stop="toggleCheckAll">
-          <img class="sel-box" v-if="imageUrl && allChecked && corpName === 'platform'" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
-          <img class="sel-box" v-if="imageUrl && allChecked && corpName === 'retuan'" :src="imageUrl+'/yx-image/retuan/icon-pick_gwc@2x.png'" alt=""/>
-          <img class="sel-box" v-if="imageUrl && !allChecked" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt=""/>
+      <div class="payment" :style="{bottom: (49 + height) + 'px'}" v-if="goodsList.length > 0 || postageList.length > 0">
+        <button formType="submit" class="check-all" @click.stop="cartCheckAll">
+          <img class="sel-box" v-if="imageUrl && allChecked && allPostageChecked" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
+          <img class="sel-box" v-if="imageUrl && (!allChecked || !allPostageChecked)" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt=""/>
           <div class="txt">全选</div>
         </button>
         <div class="payment-content">
@@ -75,8 +134,7 @@
             <!--          <goods-item :item="item" @_getShopCart="_getShopCart"></goods-item>-->
             <div class="classify-item" @click="recommendJumpGoodsDetail(item)">
               <figure class="classify-box-top">
-                <img v-if="imageUrl && corpName === 'platform'" :src="imageUrl + '/yx-image/choiceness/icon-label2@2x.png'" alt="" class="top-label" mode="aspectFill">
-                <img v-if="imageUrl && corpName === 'retuan'" :src="imageUrl + '/yx-image/retuan/icon-label2@2x.png'" alt="" class="top-label" mode="aspectFill">
+                <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/icon-label2@2x.png'" alt="" class="top-label" mode="aspectFill">
                 <img v-if="item.goods_cover_image" :src="item.goods_cover_image" alt="" class="box-top-img" mode="aspectFill">
               </figure>
               <section class="classify-box-bottom">
@@ -89,8 +147,7 @@
                   </div>
                   <form action="" report-submit @submit="$getFormId" @click.stop="addShoppingCart(item)">
                     <button class="price-right" formType="submit">
-                      <img v-if="imageUrl && corpName === 'platform'" :src="imageUrl + '/yx-image/collage/icon-addgoods@2x.png'" alt="" class="price-right-img">
-                      <!--            <img v-if="imageUrl && corpName === 'retuan'" :src="imageUrl + '/yx-image/retuan/icon-shopcart@2x.png'" alt="" class="price-right-img">-->
+                      <img v-if="imageUrl" :src="imageUrl + '/yx-image/collage/icon-addgoods@2x.png'" alt="" class="price-right-img">
                     </button>
                   </form>
                 </div>
@@ -105,6 +162,28 @@
       </div>
       <confirm-msg ref="msg" :msg="msg" useType="double" @confirm="deleteCartGood"></confirm-msg>
       <custom-tab-bar currentType="cart"></custom-tab-bar>
+      <!--全国包邮弹窗-->
+      <div class="select-type-box" v-if="isShowType">
+        <div class="select-model-box">
+          <div class="model-box-title">请分开结算以下商品</div>
+          <div class="select-item" @click="checkGoodsType(true)">
+            <img class="sel-box" v-if="imageUrl && isSelfGoods" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
+            <img class="sel-box" v-if="imageUrl && !isSelfGoods" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt=""/>
+            <div class="sel-text">自提商品</div>
+            <div class="sel-number">{{checkedGoods.length}}件</div>
+          </div>
+          <div class="select-item" @click="checkGoodsType(false)">
+            <img class="sel-box" v-if="imageUrl && !isSelfGoods" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
+            <img class="sel-box" v-if="imageUrl && isSelfGoods" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt=""/>
+            <div class="sel-text">全国包邮商品</div>
+            <div class="sel-number">{{checkedPostage.length}}件</div>
+          </div>
+          <div class="bnt-box">
+            <div class="go-back" @click="closeModel">返回购物车</div>
+            <div class="go-back go-pay" @click="goPay">去支付</div>
+          </div>
+        </div>
+      </div>
     </div>
   </form>
 </template>
@@ -149,7 +228,11 @@
         hasMore: true,
         curShopId: '',
         recommendListLoad: false,
-        firstLoad: false
+        firstLoad: false,
+        // 全国包邮参数
+        postageList: [],
+        isShowType: false,
+        isSelfGoods: true
       }
     },
     async onTabItemTap() {
@@ -198,19 +281,30 @@
       })
     },
     computed: {
+      // 自提商品选中列表
       checkedGoods() {
         return this.goodsList.filter((item) => item.checked && item.allowCheck)
       },
+      // 自提商品是否全选
+      allChecked() {
+        return this.goodsList.length === 0 ? true : this.goodsList.length && this.checkedGoods.length === this.goodsList.length
+      },
+      // 全国包邮选中列表
+      checkedPostage() {
+        return this.postageList.filter((item) => item.checked && item.allowCheck)
+      },
+      // 全国包邮是否全选
+      allPostageChecked() {
+        return this.postageList.length === 0 ? true : this.postageList.length && this.checkedPostage.length === this.postageList.length
+      },
       totalPrice() {
-        return this.checkedGoods.reduce((total, current) => {
+        let arr = this.checkedGoods.concat(this.checkedPostage)
+        return arr.reduce((total, current) => {
           if (!current.allowCheck) return 0
           let money = (total * 1) + (current.trade_price * current.num)
           money = money.toFixed(2)
           return money
         }, 0)
-      },
-      allChecked() {
-        return this.goodsList.length && this.checkedGoods.length === this.goodsList.length
       }
     },
     methods: {
@@ -255,8 +349,20 @@
           item.num > 0 ? item.checked = true : item.checked = false
           item.allowCheck = this._allowCheckHandle(item)
         })
-        this.goodsList = res.data
-        this.goodsList.length > 0 ? this.isShowCart = false : this.isShowCart = true
+        console.log(res.data)
+        let goodsList = []
+        let postageList = []
+        res.data.forEach((item) => {
+          console.log(item.source_type)
+          if (item.source_type * 1 === 1) {
+            goodsList.push(item)
+          } else {
+            postageList.push(item)
+          }
+        })
+        this.goodsList = goodsList
+        this.postageList = postageList
+        this.goodsList.length > 0 || this.postageList.length > 0 ? this.isShowCart = false : this.isShowCart = true
         this.deliverAt = res.delivery_at
         this.setCartCount()
       },
@@ -357,7 +463,8 @@
         })
         this.goodsList = goodsList
       },
-      submitOrder() {
+      // 老结算函数
+      submitOrderOld() {
         if (!this.checkedGoods.length) {
           this.$wechat.showToast('请选择商品!')
           return
@@ -383,6 +490,151 @@
       },
       toChoicenessPage() {
         wx.switchTab({url: `${this.$routes.main.CHOICENESS}`})
+      },
+      // 全国包邮
+      postageCheck(i) {
+        console.log(i)
+        this.postageList[i].checked = !this.postageList[i].checked
+        console.log(this.goodsList[i].checked)
+        console.log(this.postageList[i].checked)
+      },
+      postageCheckAll() {
+        let postageList = this.postageList
+        let currentAllChecked = this.allPostageChecked
+        postageList.forEach((item) => {
+          if (!currentAllChecked && item.allowCheck) {
+            item.checked = true
+          } else {
+            item.checked = false
+          }
+        })
+        this.postageList = postageList
+      },
+      // 购物车全选
+      cartCheckAll() {
+        console.log(this.allChecked, this.allPostageChecked)
+        // 判断是否选中
+        let currentAllChecked = (this.allChecked && this.allPostageChecked)
+        console.log(currentAllChecked)
+        let goodsList = this.goodsList
+        // 自提商品
+        goodsList.forEach((item) => {
+          if (!currentAllChecked && item.allowCheck) {
+            item.checked = true
+          } else {
+            item.checked = false
+          }
+        })
+        // 全国包邮
+        this.goodsList = goodsList
+        let postageList = this.postageList
+        postageList.forEach((item) => {
+          if (!currentAllChecked && item.allowCheck) {
+            item.checked = true
+          } else {
+            item.checked = false
+          }
+        })
+        this.postageList = postageList
+      },
+      // 新提交订单
+      submitOrder() {
+        if (!this.checkedGoods.length && !this.checkedPostage.length) {
+          this.$wechat.showToast('请选择商品!')
+          return
+        }
+        if (this.checkedGoods.length && this.checkedPostage.length) {
+          this.isShowType = true
+          return
+        }
+        if (this.checkedGoods.length) {
+          const goodsList = objDeepCopy(this.checkedGoods).map(item => {
+            if (item.is_new_client === 0) { // 老人0 新人1
+              item.trade_price = item.goods_sale_price
+            }
+            return item
+          })
+          const total = goodsList.reduce((total, current) => {
+            let money = (total * 1) + (current.trade_price * current.num)
+            money = money.toFixed(2)
+            return money
+          }, 0)
+          let orderInfo = {
+            goodsList,
+            total,
+            deliverAt: this.deliverAt
+          }
+          this.setOrderInfo(orderInfo)
+          wx.navigateTo({url: `${this.$routes.main.SUBMIT_ORDER}`})
+        } else {
+          const postageList = objDeepCopy(this.checkedPostage).map(item => {
+            if (item.is_new_client === 0) { // 老人0 新人1
+              item.trade_price = item.goods_sale_price
+            }
+            return item
+          })
+          const total = postageList.reduce((total, current) => {
+            let money = (total * 1) + (current.trade_price * current.num)
+            money = money.toFixed(2)
+            return money
+          }, 0)
+          let orderInfo = {
+            goodsList: postageList,
+            total,
+            deliverAt: this.deliverAt
+          }
+          this.setOrderInfo(orderInfo)
+          wx.navigateTo({url: `${this.$routes.postage.SUBMIT_ORDER}`})
+        }
+      },
+      // 关闭弹窗
+      closeModel() {
+        this.isShowType = false
+      },
+      // 切换结算类型
+      checkGoodsType(type) {
+        this.isSelfGoods = type
+      },
+      goPay() {
+        if (this.isSelfGoods) {
+          const goodsList = objDeepCopy(this.checkedGoods).map(item => {
+            if (item.is_new_client === 0) { // 老人0 新人1
+              item.trade_price = item.goods_sale_price
+            }
+            return item
+          })
+          const total = goodsList.reduce((total, current) => {
+            let money = (total * 1) + (current.trade_price * current.num)
+            money = money.toFixed(2)
+            return money
+          }, 0)
+          let orderInfo = {
+            goodsList,
+            total,
+            deliverAt: this.deliverAt
+          }
+          this.setOrderInfo(orderInfo)
+          wx.navigateTo({url: `${this.$routes.main.SUBMIT_ORDER}`})
+        } else {
+          const postageList = objDeepCopy(this.checkedPostage).map(item => {
+            if (item.is_new_client === 0) { // 老人0 新人1
+              item.trade_price = item.goods_sale_price
+            }
+            return item
+          })
+          const total = postageList.reduce((total, current) => {
+            let money = (total * 1) + (current.trade_price * current.num)
+            money = money.toFixed(2)
+            return money
+          }, 0)
+          let orderInfo = {
+            goodsList: postageList,
+            total,
+            deliverAt: this.deliverAt
+          }
+          this.setOrderInfo(orderInfo)
+          wx.navigateTo({url: `${this.$routes.postage.SUBMIT_ORDER}`})
+        }
       }
     }
   }
@@ -764,4 +1016,105 @@
             width: 23px
             height: 23px
             display: block
+  /*全国包邮*/
+  .postage-line
+    height: 10px
+    width: 100%
+    background: $color-background
+  .postage-list
+    margin-top: 10px
+  .postage-title-box
+    padding-left: 12px
+    box-sizing: border-box
+    .postage-main-box
+      layout(row)
+      align-items: center
+      height: 45px
+      border-bottom-1px($color-line)
+      .sel-box
+        display: block
+        width: 20px
+        height: 20px
+        background: $color-white
+        margin-right: 13px
+      .postage-icon
+        display: block
+        width: 15px
+        height: 15px
+        background: $color-white
+        margin-right: 5px
+      .postage-text
+        font-family: $font-family-medium
+        color: #111
+        font-size: $font-size-14
+  /*全国包邮弹框*/
+  .select-type-box
+    position: fixed
+    width: 100vw
+    height: 100vh
+    left: 0
+    top: 0
+    background: rgba(17,17,17,.7)
+    z-index: 999
+  .select-model-box
+    background: $color-white
+    border: 1px solid rgba(32,32,46,0.10)
+    border-radius: 16px
+    width: 290px
+    height: 240px
+    position: absolute
+    padding: 15px 26px
+    box-sizing: border-box
+    left: 0
+    right: 0
+    top: 0
+    bottom: 0
+    margin: auto
+    .model-box-title
+      font-size: $font-size-17
+      font-family: 'PingFang-SC-Bold'
+      color: #111
+      text-align: center
+      margin-bottom: 30px
+    .select-item
+      layout(row)
+      align-items: center
+      margin-bottom: 27px
+      .sel-box
+        width: 20px
+        height: 20px
+        display: block
+        margin-right: 10px
+      .sel-text
+        font-size: $font-size-15
+        font-family: $font-family-regular
+        color: #333
+        margin-right: 12px
+      .sel-number
+        font-size: $font-size-15
+        font-family: $font-family-regular
+        color: #666
+        margin-right: 12px
+    .bnt-box
+      width: 100%
+      layout(row)
+      align-items: center
+      justify-content: space-between
+      margin-top: 40px
+      .go-back
+        width: 107px
+        height: 36px
+        line-height: 36px
+        text-align: center
+        font-size: $font-size-15
+        font-family: $font-family-regular
+        color: $color-main
+        border-1px($color-main, 18px)
+      .go-pay
+        color: $color-white
+        border-1px($color-main, 18px)
+        background: $color-main
+        border-radius: 18px
+  .w
+    width: 1px
 </style>
