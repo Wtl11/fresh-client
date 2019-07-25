@@ -213,6 +213,7 @@
             background: #FE3B39
             border-radius 8px
             box-sizing border-box
+            text-align: center
         .goods-btn
           flex-shrink 0
           height: 40px
