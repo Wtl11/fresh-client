@@ -175,7 +175,7 @@ export default {
                 })
                 break
               case "goods":
-                if (contItem.goods.goods_id) {
+                if (contItem.goods && contItem.goods.goods_id) {
                   details.push({
                     type: 'goods',
                     value: contItem.goods
