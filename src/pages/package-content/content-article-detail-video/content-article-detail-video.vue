@@ -54,7 +54,9 @@
     <div :class="['goods-list-wrap',{show:goodsListVisible}]">
       <div v-show="details.goodsList.length" class="title">全部商品<span class="num">/共{{details.goodsList.length || 0}}个商品</span></div>
       <div class="good-list">
-        <goods-item v-for="(item,idx) in details.goodsList" :key="idx" :goods-data="item" @add="addGoods" @click="goToDetail(item)"></goods-item>
+        <div v-for="(item,idx) in details.goodsList" class="goods-item-wrap">
+          <goods-item :key="idx" :goods-data="item" @add="addGoods" @click="goToDetail(item)"></goods-item>
+        </div>
       </div>
       <div v-if="BottomEmptyVisible" class="bottom-emty-20"></div>
     </div>
@@ -146,7 +148,7 @@
       left: 0
       right: 0
       padding: 0px 15px
-
+      /*background-image: linear-gradient(top, rgba(0,0,0,0.00) 20%, rgba(0,0,0,0.30) 80%)*/
       .auth-wrap
         display flex
         align-items center
@@ -257,5 +259,8 @@
       .good-list
         padding: 0px 15px 17px 15px
         max-height: 60vh
+        min-height:30vh
         overflow auto
+        .goods-item-wrap
+          margin-bottom:10px
 </style>
