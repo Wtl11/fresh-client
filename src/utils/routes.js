@@ -43,7 +43,8 @@ export default {
     DISTRIBUTION_COMMISSION: `${LEADER}/distribution-commission`,
     LEADER_INVITE: `${LEADER}/leader-invite`,
     LEADER_INVITE_SUCCESS: `${LEADER}/leader-invite-success`,
-    APPLY_LEADER: `${LEADER}/apply-leader`
+    APPLY_LEADER: `${LEADER}/apply-leader`,
+    BIND_WX_WALLET:`${LEADER}/bind-wx-wallet`,
     // package-leader
   },
   main: {
@@ -81,6 +82,7 @@ export default {
     SHOPPING_CART: `${MAIN}/shopping-cart`,
     SUBMIT_ORDER: `${MAIN}/submit-order`,
     INVITATION_CHOOSE:`${MAIN}/invitation-choose`,
+    FREEZE_SHOP:`${MAIN}/freeze-shop`,
     EAT:`${MAIN}/eat`,
     // main
   }

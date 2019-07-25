@@ -6,6 +6,7 @@
     <div class="coupon-container" :class="'corp-' + corpName + '-money'">
       <section class="left">
         <div class="l-top">
+<!--          <p v-if="dataInfo.coupon.preferential_type === 2" class="unit">¥</p>-->
           <p class="number">{{money.int}}</p>
           <p class="unit">{{money.dec}}{{dataInfo.coupon.preferential_type === 1?'折':'元'}}</p>
         </div>
@@ -16,7 +17,7 @@
             <p class="use-type">{{dataInfo.coupon.range_type_str}}</p>
             <p class="txt">{{dataInfo.coupon.coupon_name}}</p>
           </div>
-          <p class="condition">{{dataInfo.coupon.available_str}}</p>
+          <p class="condition">有效期至 {{dataInfo.coupon.end_at}}</p>
         </div>
       </section>
     </div>
@@ -43,6 +44,11 @@
         return formatCouponMoney(this.dataInfo.coupon.denomination)
       }
     }
+    // data() {
+    //   return {
+    //     dataInfo: new Coupon()
+    //   }
+    // }
   }
 </script>
 

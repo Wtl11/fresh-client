@@ -1,11 +1,32 @@
 <template>
   <div class="after-sale-management">
     <navigation-bar title="售后管理"></navigation-bar>
-    <div class="after-header">
-      <div class="after-search">
-        <img :src="imageUrl + '/yx-image/group/icon-search@2x.png'" v-if="imageUrl" class="search-icon">
-        <input type="text" class="search" placeholder="提供单号，手机号，微信昵称，搜索" :placeholder-style="'color: #B7B7B7,font-family:PingFangSC-Regular'" v-model="keyword" @input="_search"/>
-      </div>
+    <div class="after-header"></div>
+    <div class="after-header" :style="{position:'fixed', top: statusBarHeight + 44 + 'px',zIndex: 50, left:0, right: 0}">
+      <!--<div class="after-search">-->
+        <!--<img :src="imageUrl + '/yx-image/group/icon-search@2x.png'" v-if="imageUrl" class="search-icon">-->
+        <!--<input type="text" class="search" placeholder="提供单号，手机号，微信昵称，搜索" :placeholder-style="'color: #B7B7B7,font-family:PingFangSC-Regular'" v-model="keyword" @input="_search"/>-->
+      <!--</div>-->
+      <section class="search-wrapper">
+        <div class="input-wrapper">
+          <img class="search-img" mode="aspectFit" v-if="imageUrl" :src="imageUrl+'/yx-image/2.3/icon-search@2x.png'">
+          <input
+            type="text"
+            placeholder="提供单号，手机号，微信昵称"
+            placeholder-class="input-p"
+            :focus="false"
+            confirm-type="search"
+            @focus="handleFocus"
+            @blur="handleBlur"
+            @confirm="_search"
+            v-model="keyword"
+          >
+          <figure v-if="showClearGoodsNameBtn" class="close" @click="handleClearGoodsName">
+            <img class="close-img" mode="aspectFit" v-if="imageUrl" :src="imageUrl+'/yx-image/2.3/icon-delsr@2x.png'">
+          </figure>
+        </div>
+        <div class="btn" @click.stop="_search()">搜索</div>
+      </section>
       <div class="rag-goods-tab">
         <span :class="[navIndex === index ? 'rag-goods-tab-item-active' : '',navIndex === index ? 'corp-' + corpName + '-bg' : '', 'corp-' + corpName + '-tab']" class="rag-goods-tab-item" v-for="(item, index) in nav" :key="index" @click="_setNav(index, item)">
           {{item.title}}
@@ -13,27 +34,31 @@
       </div>
     </div>
     <div class="big-box">
-      <div class="order-big-box" :style="{'transform': ' translateX('+ -(navIndex * width) +'px)','height': scrollHeight + 'px'}">
+      <div class="order-big-box" :style="{'transform': ' translateX('+ -(navIndex * width) +'px)'}">
         <!--售后申请-->
-        <scroll-view class="order-box" :style="{'height': scrollHeight + 'px'}" scroll-y @scrolltolower="_getMoreList">
+        <!--<scroll-view class="order-box" :style="{'height': scrollHeight + 'px'}" scroll-y @scrolltolower="_getMoreList">-->
+        <div class="order-box" :style="{'min-height': scrollHeight + 'px'}" :class="navIndex === 0 ? '' : 'order-box-hideen'">
           <div class="line"></div>
           <order-item :orderList="afterList" :isShowExamine="false" @dealOrder="applicationAfter"></order-item>
-          <div class="end" v-if="showAfterEnd">— 没有订单了—</div>
+          <div class="end" v-if="afterMore">— 没有订单了—</div>
           <div class="noting" v-if="afterNull">
             <div class="notingimg"><img class="img" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'" alt=""></div>
             <div class="txt">空空如也</div>
           </div>
-        </scroll-view>
+        </div>
+        <!--</scroll-view>-->
         <!--申请记录-->
-        <scroll-view class="order-box" :style="{'height': scrollHeight + 'px'}" scroll-y @scrolltolower="_getMoreList">
+        <!--<scroll-view class="order-box" :style="{'height': scrollHeight + 'px'}" scroll-y @scrolltolower="_getMoreList">-->
+        <div class="order-box" :style="{'min-height': scrollHeight + 'px'}" :class="navIndex === 1 ? '' : 'order-box-hideen'">
           <div class="line"></div>
           <order-item :orderList="applicationRecord" @dealOrder="_cancelApplication"></order-item>
-          <div class="end" v-if="showRecode">— 没有订单了—</div>
+          <div class="end" v-if="recordMore">— 没有订单了—</div>
           <div class="noting" v-if="recordNull">
             <div class="notingimg"><img class="img" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'"></div>
             <div class="txt">空空如也</div>
           </div>
-        </scroll-view>
+        </div>
+        <!--</scroll-view>-->
       </div>
     </div>
     <dialog-model ref="dialog" @confirm="confirm"></dialog-model>
@@ -75,30 +100,54 @@
         afterItem: {},
         afterIdx: 0,
         afterNull: false,
-        recordNull: false
+        recordNull: false,
+        afterMore: false,
+        recordMore: false,
+        statusBarHeight: 0
       }
     },
+    onReady() {
+      let res = this.$wx.getSystemInfoSync()
+      this.statusBarHeight = res.statusBarHeight || 20
+      this.width = res.screenWidth
+      this.scrollHeight = res.screenHeight - 145 - res.statusBarHeight
+    },
     async onLoad() {
-      let data = this.$wx.getSystemInfoSync()
-      this.$wx.getSystemInfo({
-        success: (res) => {
-          this.width = res.screenWidth
-          this.scrollHeight = res.screenHeight - 151 - data.statusBarHeight
-        }
-      })
+      // let data = this.$wx.getSystemInfoSync()
+      // this.$wx.getSystemInfo({
+      //   success: (res) => {
+      //     this.width = res.screenWidth
+      //     this.scrollHeight = res.screenHeight - 145 - data.statusBarHeight
+      //   }
+      // })
       await this._afterManagementList(true)
     },
     computed: {
-      showAfterEnd() {
-        let status = this.afterList.length && (this.afterList.length < 10 || this.page === this.afterTotalPage)
-        return status
-      },
-      showRecode() {
-        let status = this.applicationRecord.length && (this.applicationRecord.length < 10 || this.recordPage === this.recordTotalPage)
-        return status
+      showClearGoodsNameBtn() {
+        return this.keyword
+      }
+      // showRecode() {
+      //   let status = this.applicationRecord.length && (this.applicationRecord.length < 10 || this.recordPage === this.recordTotalPage)
+      //   return status
+      // }
+    },
+    async onReachBottom() {
+      switch (this.navIndex) {
+        case 0:
+          this.page++
+          await this._afterManagementList()
+          break
+        case 1:
+          this.recordPage++
+          await this._applicationRecordList()
+          break
       }
     },
     methods: {
+      handleClearGoodsName() {
+        this.keyword = ''
+        // this.autoFocus = true
+      },
       async _search() {
         switch (this.navIndex) {
           case 0:
@@ -160,6 +209,7 @@
         }
       },
       async _setNav(index, item) {
+        if (this.navIndex === index && this.keyword.length === 0) return
         this.navIndex = index
         this.keyword = ''
         switch (this.navIndex) {
@@ -192,6 +242,8 @@
           this.afterList = this.afterList.concat(arr)
         }
         this.afterNull = !this.afterList.length
+        console.log(this.afterNull)
+        this.afterMore = this.page === this.afterTotalPage && !this.afterNull
       },
       // 申请记录列表
       async _applicationRecordList(loading = false) {
@@ -212,6 +264,7 @@
           this.applicationRecord = this.applicationRecord.concat(arr)
         }
         this.recordNull = !this.applicationRecord.length
+        this.recordMore = !this.recordNull && this.recordPage === this.recordTotalPage
       },
       _infoList(arr) {
         arr = arr.map((item) => {
@@ -296,7 +349,7 @@
 
   .big-box
     width: 100vw
-    overflow: hidden
+    overflow-x: hidden
     background: $color-background
     .line
       height: 10px
@@ -307,8 +360,11 @@
       transition: all 0.3s
     .order-box
       width: 100vw
+    .order-box-hideen
+      overflow: hidden
+      height: 70vh
 
-  .noting
+ .noting
     text-align: center
     padding-top: 106px
     .notingimg
@@ -324,5 +380,44 @@
       font-size: $font-size-14
       color: $color-text-sub
 
+ .search-wrapper
+   font-family :$font-family-regular
+   padding :0 12px
+   layout(block, block, nowrap)
+   align-items :center
+   z-index :50
+   .input-wrapper
+     flex: 1
+     height :32px
+     display :flex
+     align-items :center
+     background :#F0F0F0
+     padding : 0 13px 0 15px
+     border-radius :@height
+     position :relative
+     .close
+       position :absolute
+       right :0
+       height :32px
+       width :@height
+       display :flex
+       align-items :center
+       justify-content :flex-end
+       .close-img
+         width :13px
+         height @width
+         padding-right :13px
+     .search-img
+       width :14px
+       height :13.5px
+     input
+       flex: 1
+       height :20px
+       padding : 0 15px 0 8px
+       font-size :15px
+       line-height :@height
+   .btn
+     font-size :15px
+     padding-left :14px
 
 </style>

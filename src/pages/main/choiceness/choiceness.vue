@@ -339,6 +339,8 @@
       <coupon-modal ref="couponModal"></coupon-modal>
       <!--兑换券弹窗-->
       <invitation-modal ref="invModal"></invitation-modal>
+      <!-- 售后补偿弹窗     -->
+      <coupon-after-sale ref="couponAfterSale"></coupon-after-sale>
       <!--    添加至我的小程序-->
       <new-guidelines ref="guidelines"></new-guidelines>
       <distance-check ref="distance"></distance-check>
@@ -364,6 +366,7 @@
   import clearWatch from '@mixins/clear-watch'
   import Ald from '@utils/ald'
   import InvitationModal from './invitation-modal/invitation-modal'
+  import CouponAfterSale from './coupon-after-sale/coupon-after-sale'
 
   // import GetOptions from '@mixins/get-options'
 
@@ -386,7 +389,8 @@
       IsEnd,
       LoadingMore,
       DistanceCheck,
-      InvitationModal
+      InvitationModal,
+      CouponAfterSale
     },
     data() {
       this._isLoading = false
@@ -918,16 +922,24 @@
         API.Coupon.getModalList({ customer_id: customerId }).then(res => {
           let normalCoupon = []
           let invCoupon = []
+          let couponAfterSale = []
           if (res && res.data && res.data.length) {
             res.data.forEach((item) => {
-              if (item.type === 7) {
-                invCoupon.push(item)
-              } else {
-                normalCoupon.push(item)
+              switch (item.type) {
+                case 7:
+                  invCoupon.push(item)
+                  break
+                case 8:
+                  couponAfterSale.push(item)
+                  break
+                default:
+                  normalCoupon.push(item)
+                  break
               }
             })
             invCoupon.length && this._ref('invModal', 'show', invCoupon)
             normalCoupon.length && this._ref('couponModal', 'show', normalCoupon)
+            couponAfterSale.length && this._ref('couponAfterSale', 'show', couponAfterSale)
           }
         }).catch(e => {
           console.error(e)

@@ -55,5 +55,15 @@ export default {
   postWithdraw(data, loading = false) {
     const url = `/api/wap/shop-manager/withdrawal-weixin-money`
     return request.post(url, data, loading)
+  },
+  // 提交团长实名信息[v3.8]
+  setRealInfo(data, loading = true) {
+    const url = `/api/wap/shop-manager/shop-manager-bind-customer`
+    return request.post(url, data, loading)
+  },
+  // 获取团长实名信息[v3.8]
+  getRealInfo(data, loading = false) {
+    const url = `/api/wap/shop-manager/shop-manager-bind-customer-detail`
+    return request.get(url, data, loading)
   }
 }

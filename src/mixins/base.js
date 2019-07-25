@@ -15,11 +15,18 @@ const UN_AUTO_SNED_PAGE = [
   'error',
   'lost',
   'open-location',
-  'share-order'
+  'share-order',
+  'freeze-shop',
+  'choose-pickup'
 ]
 export default {
+  onLoad(e) {
+  },
   onReady() {
     this._autoSend()
+    if (this.$mp && this.$mp.page) {
+      getApp().globalData._path = this.$mp.page.route
+    }
   },
   methods: {
     $sendMsg(obj) {

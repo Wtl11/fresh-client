@@ -1,42 +1,10 @@
 <template>
   <div class="coupon-modal" v-if="isShow" :animation="maskAnimation">
-<!--    <section class="content" :class="{one: couponArray.length === 1}" :animation="modalAnimation">-->
-<!--      <img class="img-bg"-->
-<!--           mode="aspectFill"-->
-<!--           v-if="imageUrl && couponArray.length === 1"-->
-<!--           :src="imageUrl + '/yx-image/2.1/pic-lqyhqtc-one@2x.png'">-->
-<!--      <img class="img-bg"-->
-<!--           mode="aspectFill"-->
-<!--           v-if="imageUrl && couponArray.length === 2"-->
-<!--           :src="imageUrl + '/yx-image/2.1/pic-lqyhqtc@2x.png'">-->
-<!--      <img class="img-bg"-->
-<!--           mode="aspectFill"-->
-<!--           v-if="imageUrl && couponArray.length === 1"-->
-<!--           :src="imageUrl + '/yx-image/2.1/pic-lqyhqtc-one.png'">-->
-<!--      <img class="img-bg"-->
-<!--           mode="aspectFill"-->
-<!--           v-if="imageUrl && couponArray.length === 2"-->
-<!--           :src="imageUrl + '/yx-image/2.1/pic-lqyhqtc.png'">-->
-<!--      <img class="close"-->
-<!--           mode="aspectFill"-->
-<!--           v-if="imageUrl"-->
-<!--           :src="imageUrl + '/yx-image/2.1/icon-deletetc@2x.png'"-->
-<!--           @click="cancelHandle"-->
-<!--      >-->
-<!--      <article-modal class="wrapper">-->
-<!--        <div class="place-box"></div>-->
-<!--        <div v-for="(item, index) in couponArray" :key="item.coupon_id || index" class="coupon-wrapper">-->
-<!--          <coupon-item :dataInfo="item"></coupon-item>-->
-<!--        </div>-->
-<!--        <p hover-class="none" class="explain" @click="navHandle">优惠券已放入账号 <span class="look">查看></span></p>-->
-<!--        <div class="button" @click="submitHandle"></div>-->
-<!--      </article-modal>-->
-<!--    </section>-->
     <section v-if="couponArray.length > 1" class="content" @touchmove.stop>
       <img class="img-bg"
            mode="aspectFill"
            v-if="imageUrl"
-           :src="imageUrl + '/yx-image/2.3/pic-lqyhqtc.png'">
+           :src="imageUrl + '/yx-image/2.4/pic-lqyhqtc-more.png'">
       <img class="close"
            mode="aspectFill"
            v-if="imageUrl"
@@ -72,7 +40,7 @@
       <img class="img-bg"
            mode="aspectFill"
            v-if="imageUrl"
-           :src="imageUrl + '/yx-image/2.3/pic-lqyhqtc-one.png'">
+           :src="imageUrl + '/yx-image/2.4/pic-lqyhqtc.png'">
       <img class="close"
            mode="aspectFill"
            v-if="imageUrl"
@@ -121,11 +89,6 @@
         couponArray: []
       }
     },
-    // onLoad() {
-    //   setTimeout(() => {
-    //     this.isShow = true
-    //   }, 2000)
-    // },
     methods: {
       _targetList() {
         let arr = this.couponArray.map((item) => {
@@ -194,7 +157,7 @@
   .coupon-modal
     background-color: rgba(17, 17, 17, 0.7)
     fill-box(fixed)
-    z-index: 999
+    z-index: 997
     display :flex
     justify-content :center
     align-items :center

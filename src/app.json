@@ -1,6 +1,7 @@
 {
   "pages": [
     "pages/choiceness",
+    "pages/freeze-shop",
     "pages/eat",
     "pages/shopping-cart",
     "pages/mine",
@@ -58,6 +59,7 @@
     {
       "root": "package-leader/",
       "pages": [
+        "bind-wx-wallet",
         "distribution-commission",
         "leader-invite",
         "leader-invite-success",

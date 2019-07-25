@@ -11,6 +11,10 @@
     </div>
     <div :style="{'transform': ' translateX('+ -(tabIdx * 100) +'vw)'}" class="container">
       <div class="withdraw-con">
+        <div class="withdraw-jump" @click="jumpBindWx">
+          <div class="withdraw-text"  :class="addWx === '实名认证' ? 'withdraw-text-place' : ''">{{addWx}}</div>
+          <img class="jump-arrows" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/cart/icon-pressed@2x.png'">
+        </div>
         <div class="withdraw-money">
           <div class="money-title">提现金额</div>
           <div class="money-input-box">
@@ -77,7 +81,8 @@
         drawMoney: '',
         submitLock: false,
         tabList: ['转出到微信零钱', '转出到银行卡'],
-        tabIdx: 0
+        tabIdx: 0,
+        addWx: '实名认证'
       }
     },
     components: {
@@ -86,10 +91,22 @@
     onShow() {
       this.getWalletMoney()
       this.getBankList()
+      this._getRealInfo()
     },
     methods: {
       selectIndex(index) {
         this.tabIdx = index
+      },
+      _getRealInfo() {
+        API.Wallet.getRealInfo().then((res) => {
+          if (res.error === this.$ERR_OK) {
+            if (res.data.mobile && res.data.real_name) {
+              this.addWx = `${res.data.real_name}(${res.data.mobile})`
+            }
+          } else {
+            this.$wechat.showToast(res.message)
+          }
+        })
       },
       getBankList() {
         API.Wallet.getBankList().then((res) => {
@@ -118,6 +135,10 @@
       submitMoney () {
         if (this.tabIdx === 1 && !this.addBankId) {
           this.$wechat.showToast('请绑定银行卡')
+          return
+        }
+        if (this.tabIdx === 0 && this.addWx === '实名认证') {
+          this.$wechat.showToast('请实名认证')
           return
         }
         if (this.drawMoney === '') {
@@ -153,6 +174,9 @@
         } else {
           wx.navigateTo({url: this.$routes.leader.BANK_CARD + `?id=${this.addBankId}`})
         }
+      },
+      jumpBindWx() {
+        wx.navigateTo({url: this.$routes.leader.BIND_WX_WALLET})
       }
     }
   }

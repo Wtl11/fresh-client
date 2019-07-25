@@ -1,7 +1,7 @@
 <template>
   <form action="" report-submit @submit="$getFormId">
     <div class="active-detail">
-      <navigation-bar ref="navigationBar" :title="msgTitle" :translucent="true" :arrowUrl="arrowUrl"></navigation-bar>
+      <navigation-bar ref="navigationBar" :title="msgTitle" :translucent="true" :arrowUrl="arrowUrl" @scrollingShowTitle="scrollingShowTitle"></navigation-bar>
       <section class="banner-box">
         <section v-if="buyUsers.length" class="buy-users" :style="{top: statusBarHeight + 44 + 'px'}">
           <swiper
@@ -27,7 +27,7 @@
           <swiper v-if="goodsBanner && goodsBanner.length" :current="swiperIdx" class="banner" @change="bannerChange" interval="5000">
             <block v-if="hasVideo&&goodsMsg.goods_videos">
               <swiper-item class="banner-item">
-                <video v-if="goodsMsg.goods_videos[0].full_url" class="item-img" id="goodsVideo" :src="goodsMsg.goods_videos[0].full_url" :poster="videoPoster" :muted="true" :show-mute-btn="true" :show-center-play-btn="false" :enable-progress-gesture="false" @ended='videoEnd' @waiting="videoWaiting" @progress="videoLoaded"></video>
+                <video v-if="goodsMsg.goods_videos && goodsMsg.goods_videos[0] && goodsMsg.goods_videos[0].full_url" class="item-img" id="goodsVideo" :src="goodsMsg.goods_videos[0].full_url" :poster="videoPoster" :muted="true" :show-mute-btn="true" :show-center-play-btn="false" :enable-progress-gesture="false" @ended='videoEnd' @waiting="videoWaiting" @progress="videoLoaded"></video>
                 <img v-if="goodsBanner[0].image_url" :class="!playBefore?'hide':''" :src="goodsBanner[0].image_url" mode="aspectFill" class="item-img video-img">
                 <div class="play-btn" @click="playVideo(false)">
                   <img v-if="imageUrl&&!videoPlaying" :src="imageUrl + '/yx-image/2.6.5/icon-play_big@2x.png'" mode="aspectFill" class="play-btn-icon" @click.stop="playVideo(true)">
@@ -507,6 +507,12 @@
     methods: {
       ...orderMethods,
       ...cartMethods,
+      scrollingShowTitle(flag) {
+        if (!this.videoPlaying) {
+          return
+        }
+        this.arrowUrl = ARROW_URL[flag ? 1 : 0]
+      },
       checkSystem() {
         let res = wx.getSystemInfoSync()
         let system = res.system
@@ -645,6 +651,28 @@
             }
           }
         }
+      },
+      playVideo(play) {
+        this.videoPlaying = play
+        this.playBefore = false
+        !this.videoContext && (this.videoContext = wx.createVideoContext('goodsVideo'))
+        if (play) {
+          this.videoContext && this.videoContext.play()
+          this.arrowUrl = ARROW_URL[0]
+        } else {
+          this.videoContext && this.videoContext.pause()
+          this.arrowUrl = ARROW_URL[1]
+        }
+      },
+      videoWaiting() {
+        this.videoLoading = true
+      },
+      videoLoaded() {
+        this.videoLoading = false
+      },
+      videoEnd() {
+        this.videoPlaying = false
+        this.videoContext.exitFullScreen()
       },
       // 画商品海报
       _actionDrawPoster() {
@@ -854,7 +882,10 @@
           this.activityId = activityId
           this.shopId = shopId
         }
-        this.shopId && wx.setStorageSync('shopId', this.shopId)
+        try {
+          this.shopId && wx.setStorageSync('shopId', this.shopId)
+        } catch (e) {
+        }
         this._initPageType(options.activityType)
       },
       _initPageType(type = 'DEFAULT') {
@@ -925,17 +956,6 @@
         }).catch(e => {
           console.warn(e)
         })
-      },
-      playVideo(play) {
-        this.videoPlaying = play
-        this.playBefore = false
-        if (play) {
-          this.videoContext.play()
-          this.arrowUrl = ARROW_URL[0]
-        } else {
-          this.videoContext.pause()
-          this.arrowUrl = ARROW_URL[1]
-        }
       },
       // 限时抢购倒计时开始
       _flashAction() {
@@ -1123,7 +1143,7 @@
         position: absolute
         left: 12px
         right :@left
-        bottom: -1px
+        bottom: 0
         transition: opacity 0.3s
   // 分享模块
   .share-panel-wrapper
@@ -1479,7 +1499,7 @@
       width: 100%
       padding: 0 12px
       position: absolute
-      bottom: 13.3vw
+      bottom: px-change-vw(60.5)
       left: 0
       layout(row)
       align-items: center
