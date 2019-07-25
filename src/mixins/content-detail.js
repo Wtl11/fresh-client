@@ -52,7 +52,7 @@ export default {
     console.log(userInfo)
     let path = this.currentType === 'video' ? this.$routes.content.CONTENT_ARTICLES_DETAIL_VIDEO : this.$routes.content.CONTENT_ARTICLES_DETAIL
     return {
-      title: userInfo.nickname + '分享' + this.details.title,
+      title: userInfo.nickname + '与你分享#' + this.details.title,
       path: `${path}?shopId=${shopId}&articleId=${this.articleId}`,
       imageUrl: this.details.shareImage
     }
