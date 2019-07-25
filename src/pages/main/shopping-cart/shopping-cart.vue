@@ -69,20 +69,20 @@
           <!--<img class="sel-box" v-if="imageUrl && !item.allowCheck" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt="" />-->
           <div class="sel-box sel-clr-box" v-if="imageUrl && !item.allowCheck"></div>
           <img class="sel-box" @click.stop="postageCheck(index)" v-if="imageUrl && item.checked && item.allowCheck" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
-          <button formType="submit" class="goods-image" @click.stop="jumpGoodsDetail(item)">
+          <button formType="submit" class="goods-image" @click.stop="jumpGoodsDetail(item, 'postage')">
             <img class="goods-img" mode="aspectFill" :src="item.goods_cover_image" alt="">
             <div class="robbed" v-if="item.num <= 0">已抢完</div>
             <div class="robbed" v-else-if="item.activity && item.activity.activity_theme === ACTIVE_TYPE.NEW_CLIENT && item.is_new_client !== 1">新人专属</div>
           </button>
           <div class="good-info">
-            <div formType="submit" class="top" @click.stop="jumpGoodsDetail(item)">
+            <div formType="submit" class="top" @click.stop="jumpGoodsDetail(item, 'postage')">
               <div class="title">{{item.name}}</div>
-              <button formType="submit" class="del" @click.stop="delGoodsInfo(index, item.id)">
+              <button formType="submit" class="del" @click.stop="delGoodsInfo(index, item.id, 'postage')">
                 <img class="del-img" v-if="imageUrl" :src="imageUrl + '/yx-image/cart/icon_delete@2x.png'" alt="">
               </button>
             </div>
             <div class="bot">
-              <div formType="submit" class="left" @click.stop="jumpGoodsDetail(item)">
+              <div formType="submit" class="left" @click.stop="jumpGoodsDetail(item, 'postage')">
                 <div class="spec" v-if="item.goods_units">规格：{{item.goods_units}}</div>
                 <div class="remain">
                   <div class="txt" :class="'corp-' + corpName + '-money-text'" v-if="item.is_urgency">仅剩{{item.usable_stock}}件</div>
@@ -95,9 +95,9 @@
               </div>
               <div class="right">
                 <div class="number-box">
-                  <button formType="submit" class="minus" @click.stop="subNum(index, item.num, item.id)">-</button>
+                  <button formType="submit" class="minus" @click.stop="subNum(index, item.num, item.id, 'postage')">-</button>
                   <div class="num">{{item.num}}</div>
-                  <button formType="submit" class="add" @click.stop="addNum(index, item.num, item.buy_limit, item.id)">+</button>
+                  <button formType="submit" class="add" @click.stop="addNum(index, item.num, item.buy_limit, item.id, 'postage')">+</button>
                 </div>
               </div>
             </div>
@@ -113,7 +113,7 @@
         </button>
         <div class="payment-content">
           <div class="price" :class="'corp-' + corpName + '-money'">合计 {{totalPrice}}元</div>
-          <button formType="submit" class="pay-btn" :class="'corp-' + corpName + '-bg'" @click.stop="submitOrder">去结算</button>
+          <button formType="submit" class="pay-btn" :class="'corp-' + corpName + '-bg'" @click.stop="submitOrderNew">去结算</button>
         </div>
       </div>
       <!--没有商品-->
@@ -349,11 +349,9 @@
           item.num > 0 ? item.checked = true : item.checked = false
           item.allowCheck = this._allowCheckHandle(item)
         })
-        console.log(res.data)
         let goodsList = []
         let postageList = []
         res.data.forEach((item) => {
-          console.log(item.source_type)
           if (item.source_type * 1 === 1) {
             goodsList.push(item)
           } else {
@@ -391,24 +389,24 @@
           this.hasMore = false
         }
       },
-      addNum(i, num, limit, id) {
+      addNum(i, num, limit, id, type) {
         num++
         if (this.isShowNum) {
-          this.editGoodsNum(i, id, num)
+          this.editGoodsNum(i, id, num, type)
         }
       },
-      subNum(i, num, id) {
+      subNum(i, num, id, type) {
         if (num > 1) {
           num--
           if (this.isShowNum) {
-            this.editGoodsNum(i, id, num)
+            this.editGoodsNum(i, id, num, type)
           }
         } else {
-          this.delGoodsInfo(i, id)
+          this.delGoodsInfo(i, id, type)
         }
       },
       // 商品数量
-      async editGoodsNum(i, id, num) {
+      async editGoodsNum(i, id, num, type) {
         this.isShowNum = false
         let res = await API.Cart.editCartGoodsNum(id, num)
         this.isShowNum = true
@@ -416,22 +414,33 @@
           this.$wechat.showToast(res.message)
           return
         }
-        this.goodsList[i].num = num
+        // 判断是否全国包邮
+        if (type === 'postage') {
+          this.postageList[i].num = num
+        } else {
+          this.goodsList[i].num = num
+        }
         this.setCartCount()
       },
-      jumpGoodsDetail(item) {
+      jumpGoodsDetail(item, goodsType) {
         let type = ''
         if (item.activity) {
           type = item.activity.activity_theme || ''
+        }
+        if (goodsType === 'postage') {
+          wx.navigateTo({
+            url: `${this.$routes.postage.GOODS_DETAILS}?id=${item.goods_id}`
+          })
+          return
         }
         wx.navigateTo({
           url: `${this.$routes.main.GOODS_DETAIL}?id=${item.goods_id}&activityId=${item.activity_id}&activityType=${type}`
         })
       },
       // 点击删除按钮
-      delGoodsInfo(delIndex, cartId) {
+      delGoodsInfo(delIndex, cartId, type) {
         this.$refs.msg.show()
-        this.deleteInfo = {delIndex, cartId}
+        this.deleteInfo = {delIndex, cartId, type}
       },
       // 删除购物车商品
       async deleteCartGood() {
@@ -439,11 +448,19 @@
         if (res.error !== this.$ERR_OK) {
           this.$wechat.showToast(res.message)
         }
-        this.goodsList = this.goodsList.filter(item => {
-          return item.id !== this.deleteInfo.cartId
-        })
+        // 判断是否类型全国包邮
+        if (this.deleteInfo.type === 'postage') {
+          this.postageList = this.postageList.filter(item => {
+            return item.id !== this.deleteInfo.cartId
+          })
+        } else {
+          this.goodsList = this.goodsList.filter(item => {
+            return item.id !== this.deleteInfo.cartId
+          })
+        }
         this.setCartCount()
-        if (!this.goodsList.length) {
+        // 判断是两个数组都为空
+        if (!this.goodsList.length && !this.postageList.length) {
           this.isShowCart = true
         }
         this.$wechat.showToast(res.message)
@@ -493,10 +510,7 @@
       },
       // 全国包邮
       postageCheck(i) {
-        console.log(i)
         this.postageList[i].checked = !this.postageList[i].checked
-        console.log(this.goodsList[i].checked)
-        console.log(this.postageList[i].checked)
       },
       postageCheckAll() {
         let postageList = this.postageList
@@ -512,10 +526,8 @@
       },
       // 购物车全选
       cartCheckAll() {
-        console.log(this.allChecked, this.allPostageChecked)
         // 判断是否选中
         let currentAllChecked = (this.allChecked && this.allPostageChecked)
-        console.log(currentAllChecked)
         let goodsList = this.goodsList
         // 自提商品
         goodsList.forEach((item) => {
@@ -538,7 +550,7 @@
         this.postageList = postageList
       },
       // 新提交订单
-      submitOrder() {
+      submitOrderNew() {
         if (!this.checkedGoods.length && !this.checkedPostage.length) {
           this.$wechat.showToast('请选择商品!')
           return
@@ -548,43 +560,9 @@
           return
         }
         if (this.checkedGoods.length) {
-          const goodsList = objDeepCopy(this.checkedGoods).map(item => {
-            if (item.is_new_client === 0) { // 老人0 新人1
-              item.trade_price = item.goods_sale_price
-            }
-            return item
-          })
-          const total = goodsList.reduce((total, current) => {
-            let money = (total * 1) + (current.trade_price * current.num)
-            money = money.toFixed(2)
-            return money
-          }, 0)
-          let orderInfo = {
-            goodsList,
-            total,
-            deliverAt: this.deliverAt
-          }
-          this.setOrderInfo(orderInfo)
-          wx.navigateTo({url: `${this.$routes.main.SUBMIT_ORDER}`})
+          this._paySelfGoods()
         } else {
-          const postageList = objDeepCopy(this.checkedPostage).map(item => {
-            if (item.is_new_client === 0) { // 老人0 新人1
-              item.trade_price = item.goods_sale_price
-            }
-            return item
-          })
-          const total = postageList.reduce((total, current) => {
-            let money = (total * 1) + (current.trade_price * current.num)
-            money = money.toFixed(2)
-            return money
-          }, 0)
-          let orderInfo = {
-            goodsList: postageList,
-            total,
-            deliverAt: this.deliverAt
-          }
-          this.setOrderInfo(orderInfo)
-          wx.navigateTo({url: `${this.$routes.postage.SUBMIT_ORDER}`})
+          this._payPostage()
         }
       },
       // 关闭弹窗
@@ -595,46 +573,57 @@
       checkGoodsType(type) {
         this.isSelfGoods = type
       },
+      // 弹框去支付
       goPay() {
+        this.closeModel()
         if (this.isSelfGoods) {
-          const goodsList = objDeepCopy(this.checkedGoods).map(item => {
-            if (item.is_new_client === 0) { // 老人0 新人1
-              item.trade_price = item.goods_sale_price
-            }
-            return item
-          })
-          const total = goodsList.reduce((total, current) => {
-            let money = (total * 1) + (current.trade_price * current.num)
-            money = money.toFixed(2)
-            return money
-          }, 0)
-          let orderInfo = {
-            goodsList,
-            total,
-            deliverAt: this.deliverAt
-          }
-          this.setOrderInfo(orderInfo)
-          wx.navigateTo({url: `${this.$routes.main.SUBMIT_ORDER}`})
+          this._paySelfGoods()
         } else {
-          const postageList = objDeepCopy(this.checkedPostage).map(item => {
-            if (item.is_new_client === 0) { // 老人0 新人1
-              item.trade_price = item.goods_sale_price
-            }
-            return item
-          })
-          const total = postageList.reduce((total, current) => {
-            let money = (total * 1) + (current.trade_price * current.num)
-            money = money.toFixed(2)
-            return money
-          }, 0)
-          let orderInfo = {
-            goodsList: postageList,
-            total,
-            deliverAt: this.deliverAt
-          }
-          this.setOrderInfo(orderInfo)
-          wx.navigateTo({url: `${this.$routes.postage.SUBMIT_ORDER}`})
+          this._payPostage()
         }
+      },
+      // 自提商品支付
+      _paySelfGoods() {
+        const goodsList = objDeepCopy(this.checkedGoods).map(item => {
+          if (item.is_new_client === 0) { // 老人0 新人1
+            item.trade_price = item.goods_sale_price
+          }
+          return item
+        })
+        const total = goodsList.reduce((total, current) => {
+          let money = (total * 1) + (current.trade_price * current.num)
+          money = money.toFixed(2)
+          return money
+        }, 0)
+        let orderInfo = {
+          goodsList,
+          total,
+          deliverAt: this.deliverAt
+        }
+        this.setOrderInfo(orderInfo)
+        wx.navigateTo({url: `${this.$routes.main.SUBMIT_ORDER}`})
+      },
+      // 全国包邮支付
+      _payPostage() {
+        // const postageList = objDeepCopy(this.checkedPostage).map(item => {
+        //   if (item.is_new_client === 0) { // 老人0 新人1
+        //     item.trade_price = item.goods_sale_price
+        //   }
+        //   return item
+        // })
+        const postageList = objDeepCopy(this.checkedPostage)
+        const total = postageList.reduce((total, current) => {
+          let money = (total * 1) + (current.trade_price * current.num)
+          money = money.toFixed(2)
+          return money
+        }, 0)
+        let orderInfo = {
+          goodsList: postageList,
+          total,
+          deliverAt: ''
+        }
+        this.setOrderInfo(orderInfo)
+        wx.navigateTo({url: `${this.$routes.postage.SUBMIT_ORDER}`})
       }
     }
   }

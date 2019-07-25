@@ -44,7 +44,7 @@
         <div class="money" :class="'corp-' + corpName + '-money'">
           <p>总计 {{total}}元</p>
         </div>
-        <button formType="submit" class="pay" :class="'corp-' + corpName + '-bg'" @click.stop="goPay">去支付</button>
+        <button formType="submit" class="pay" :class="'corp-' + corpName + '-bg'" @click.stop="_goPay">去支付</button>
       </div>
     </div>
   </form>
@@ -53,7 +53,7 @@
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import API from '@api'
-  import { postageComputed, postageMethods } from '@state/helpers'
+  import { postageComputed, postageMethods, orderComputed, orderMethods } from '@state/helpers'
 
   const PAGE_NAME = 'SUBMIT_ORDER'
 
@@ -67,29 +67,25 @@
     },
     data() {
       return {
-        goodsList: [
-          {
-            goods_cover_image: '',
-            name: 'wqopewq',
-            goods_units: 'wqopewq',
-            trade_price: '2',
-            num: '1'
-          }
-        ],
-        total: 22
+        _paying: false,
+        isFree: false,
+        userInfo: {}
       }
     },
     computed: {
-      ...postageComputed
+      ...postageComputed,
+      ...orderComputed
+    },
+    onShow() {
     },
     methods: {
       ...postageMethods,
+      ...orderMethods,
       _getAddressDetail() {
         API.Postage.addressDetail(0).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.setCurrentAddress(res.data)
           } else {
-            console.log(22)
             this.setCurrentAddress({name: ''})
           }
         })
@@ -98,6 +94,30 @@
         wx.navigateTo({
           url: `${this.$routes.postage.ADDRESS_MANAGE}?select=1`
         })
+      },
+      async _goPay() {
+        if (!this.addressMsg.name.length) {
+          this.$wechat.showToast('请选择收货地址！')
+          return
+        }
+        if (this._paying) return
+        this._paying = true
+        clearTimeout(this._payTimer)
+        this._payTimer = setTimeout(() => {
+          this._paying = false
+        }, 1500)
+        this.$wechat.showLoading()
+        let url = this.goodsList[0].url || ''
+        let orderInfo = {
+          goods: this.goodsList,
+          nickname: this.addressMsg.nickname,
+          mobile: this.addressMsg.mobile,
+          url,
+          source: 'c_freepost',
+          customer_coupon_id: 0,
+          address_id: this.addressMsg.id
+        }
+        await this.submitOrder({ orderInfo, isFree: this.isFree, isPostage: true })
       }
     }
   }

@@ -41,14 +41,14 @@
               <div class="banner-title-main">
                 <div class="banner-main-box">
                   <div class="banner-main-left">
-                    <div class="left-price">{{goodsMsg.trade_price || '2'}}</div>
+                    <div class="left-price">{{goodsMsg.trade_price}}</div>
                     <div class="left-price-text">元</div>
                     <div class="left-price-line">
                       <div class="line-price-top">
                         <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-qgj@2x.png'" class="text-img" mode="aspectFill">
                         <div class="text">包邮价</div>
                       </div>
-                      <div class="line-price-box">{{goodsMsg.original_price || '2'}}元</div>
+                      <div class="line-price-box">{{goodsMsg.original_price}}元</div>
                     </div>
                   </div>
                 </div>
@@ -92,6 +92,9 @@
           </div>
           <div class="send-item-list">
             <span class="list-title">• 未划线价格：</span><span class="list-sub">指商品的实时价格，不因表述的差异改变性质。具体成交价根据商品参加活动发生变化，</span><span class="list-line">最终以订单结算页价格为准</span>。
+          </div>
+          <div class="send-item-list">
+            <span class="list-title">• 售后说明：</span><span class="list-sub">如有质量问题，全国包邮商品在确认收货后7天内可进行售后申请。（售后申请方式：请进入全国包邮订单列表-点击售后申请-添加客服人员微信进行售后申请。）</span>
           </div>
         </div>
       </div>
@@ -144,6 +147,7 @@
           </div>
         </section>
       </article>
+      <add-number ref="addNumber" :msgDetail="goodsMsg" :msgDetailInfo="buyGoodsInfo" @comfirmNumer="comfirmNumer" @hide="handleHideAddNumber"></add-number>
       <we-paint ref="wePaint" @drawDone="_drawPosterDone"></we-paint>
     </div>
   </form>
@@ -154,8 +158,12 @@
   import BuyRecord from '@components/goods-detail-element/buy-record/buy-record'
   import DetailImage from '@components/goods-detail-element/detail-image/detail-image'
   import ButtonGroup from '@components/goods-detail-element/button-group/button-group'
+  import AddNumber from '@components/add-number/add-number'
+  import {orderMethods, cartMethods} from '@state/helpers'
   import WePaint from '@components/we-paint/we-paint'
   import base64src from '@utils/create-qr-code-wx'
+  import GetOptions from '@mixins/get-options'
+  import API from '@api'
 
   const PAGE_NAME = 'GOODS_DETAILS'
   const ARROW_URL = ['/yx-image/2.3/icon-return_white@2x.png', '/zd-image/1.2/icon-title_back@2x.png']
@@ -167,27 +175,24 @@
       BuyRecord,
       DetailImage,
       ButtonGroup,
+      AddNumber,
       WePaint
     },
+    mixins: [GetOptions],
     data() {
       return {
         msgTitle: '',
         buyUsers: [],
         goodsMsg: {
-          goods_banner_images: [
-            {
-              image_url: 'https://social-shopping-api-1254297111.picgz.myqcloud.com/corp1%2F2019%2F06%2F15%2F1560569308530-%E6%9F%9A%E5%AD%90.jpg?imageView2/3/w/400/h/400/q/90'
-            },
-            {
-              image_url: 'https://social-shopping-api-1254297111.picgz.myqcloud.com/corp1%2F2019%2F06%2F15%2F1560569308530-%E6%9F%9A%E5%AD%90.jpg?imageView2/3/w/400/h/400/q/90'
-            }
-          ]
+          goods_banner_images: []
         },
         swiperIdx: 0,
         activityType: '',
         currentNum: 1,
         showSharePanel: false,
-        userImgList: []
+        userImgList: [],
+        id: '',
+        isShowOldCustomerButton: false
       }
     },
     computed: {
@@ -205,15 +210,35 @@
           isShowTwoButton: this.isShowTwoButton || false,
           tradePrice: this.goodsMsg.trade_price || 0,
           salePrice: this.goodsMsg.goods_sale_price || 0,
-          base_usable_stock: this.goodsMsg.base_usable_stock || 0, // 非活动库存
+          base_usable_stock: this.goodsMsg.usable_stock || 0, // 非活动库存
           usable_stock: this.goodsMsg.usable_stock || 0, // 库存
           tipTop: this.tipTop || '',
           isShowOldCustomerButton: this.isShowOldCustomerButton
         }
+      },
+      // 是否显示两个按钮
+      isShowTwoButton() {
+        let flag = false
+        if (this.activityId) {
+          flag = this.goodsMsg.usable_stock > 0 && this.activeStatus === 1
+        } else {
+          flag = this.goodsMsg.usable_stock > 0
+        }
+        return flag
       }
+    },
+    onShow() {
+      this._initPageParams()
+      this.getGoodsDetailData()
     },
     onShareAppMessage() {},
     methods: {
+      ...orderMethods,
+      ...cartMethods,
+      _initPageParams() {
+        let options = this._$$initOptions()
+        this.id = options.id
+      },
       bannerChange(e) {
         if (e.mp.detail.source !== 'touch') return
         let curNum = e.target.current * 1 + !this.hasVideo
@@ -374,6 +399,82 @@
             this.$wx.openSetting()
           }
         })
+      },
+      // 获得商品详情
+      getGoodsDetailData() {
+        API.Postage.getGoodsDetail(this.id).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            console.log(res.data)
+            this.goodsMsg = res.data
+            this.msgTitle = this.goodsMsg.name
+          } else {
+            this.$wechat.showToast(res.message)
+          }
+        })
+      },
+      // 执行购买
+      async instantlyBuy(type) {
+        let isLogin = await this.$isLogin()
+        if (!isLogin) {
+          return
+        }
+        // 团购单买
+        this._showAddNumber(type)
+      },
+      // 显示添加数量控件
+      _showAddNumber(type) {
+        this.$refs.addNumber && this.$refs.addNumber.showLink(type)
+      },
+      // addNumber控件确定按钮
+      async comfirmNumer(number) {
+        let goodsList = this.goodsMsg.goods_skus[0]
+        goodsList.sku_id = goodsList.goods_sku_id
+        goodsList.num = number
+        goodsList.goods_units = this.goodsMsg.goods_units
+        let price = goodsList.trade_price
+        const total = (price * number).toFixed(2)
+        goodsList.activity = this.goodsMsg.activity
+        let orderInfo = {
+          goodsList: new Array(goodsList),
+          total: total,
+          deliverAt: ''
+        }
+        console.log(goodsList)
+        this.setOrderInfo(orderInfo)
+        wx.navigateTo({url: `${this.$routes.postage.SUBMIT_ORDER}`})
+      },
+      // 添加购物车
+      async addShoppingCart() {
+        let isLogin = await this.$isLogin()
+        if (!isLogin) {
+          return
+        }
+        let goodsId = this.goodsMsg.goods_skus[0].goods_sku_id
+        API.Choiceness.addShopCart({goods_sku_id: goodsId, activity_id: 0, source_type: 2}).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.$wechat.showToast('加入购物车成功')
+            this.setCartCount()
+          } else {
+            this.$wechat.showToast(res.message)
+          }
+        })
+      },
+      // 按钮导航
+      buttonGroupNav(item) {
+        console.log(item)
+        switch (item.type) {
+          case 0:
+            wx.switchTab({url: `${this.$routes.main.CHOICENESS}`})
+            break
+          case 1:
+            // this.$refs.groupList.showLink()
+            break
+          case 2:
+            if (this.$isLogin()) {
+              wx.switchTab({url: `${this.$routes.main.SHOPPING_CART}`})
+            }
+            break
+        }
       }
     }
   }

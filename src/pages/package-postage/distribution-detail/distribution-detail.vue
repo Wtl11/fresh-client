@@ -2,14 +2,14 @@
   <div class="distribution-detail">
     <navigation-bar title="物流详情"></navigation-bar>
     <div class="info-box">
-      <div class="info-top">韵达快递</div>
-      <div class="info-bottom">快递单号：38419344134134</div>
+      <div class="info-top">{{distributionName}}</div>
+      <div class="info-bottom">快递单号：{{distributionNo}}</div>
     </div>
     <div class="info-line"></div>
     <div class="info-list">
-      <div class="list-item" v-for="(item, index) in 10">
-        <div class="item-title">代签收(*便利店 )，感谢使用</div>
-        <div class="item-time">2019-06-20  20:13:00</div>
+      <div class="list-item" v-for="(item, index) in distributionList" :key="index">
+        <div class="item-title">{{item.remark}}</div>
+        <div class="item-time">{{item.acceptTime}}</div>
         <div class="circle" :class="index === 0 ? 'first-circle' : ''"></div>
       </div>
     </div>
@@ -18,6 +18,8 @@
 
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
+  import GetOptions from '@mixins/get-options'
+  import API from '@api'
 
   const PAGE_NAME = 'DISTRIBUTION_DETAIL'
 
@@ -26,8 +28,39 @@
     components: {
       NavigationBar
     },
+    mixins: [GetOptions],
     data() {
       return {
+        distributionNo: '',
+        distributionName: '',
+        distributionList: '',
+        order_sn: '',
+        goods_sku_id: ''
+      }
+    },
+    onShow() {
+      this._initPageParams()
+      this.getDistributionDetailData()
+    },
+    methods: {
+      _initPageParams() {
+        let options = this._$$initOptions()
+        this.order_sn = options.orderSn
+        this.goods_sku_id = options.id
+      },
+      getDistributionDetailData() {
+        API.Postage.getDistributionDetail({order_sn: this.order_sn, goods_sku_id: this.goods_sku_id}).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            if (res.data.length !== 0) {
+              this.distributionNo = res.data[0].logistics_bill_no
+              this.distributionName = res.data[0].logistics_company_name
+              this.distributionList = res.data[0].logistics_steps
+            }
+            console.log(res.data)
+          } else {
+            this.$wechat.showToast(res.message)
+          }
+        })
       }
     }
   }

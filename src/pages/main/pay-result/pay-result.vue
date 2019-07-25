@@ -10,7 +10,8 @@
       <div class="result-text-box">{{allReady ? '订单支付成功' : '支付中···'}}</div>
     </div>
     <div class="jump-btn-box lost">
-      <button v-if="payType !== 'offline'" class="jump-goods" :class="[allReady ? '' : 'jump-goods-show', 'corp-' + corpName + '-bg']" open-type="share" formType="submit">提醒团长接单</button>
+      <button v-if="payType !== 'offline' && isPostage * 1 !== 1" class="jump-goods" :class="[allReady ? '' : 'jump-goods-show', 'corp-' + corpName + '-bg']" open-type="share" formType="submit">提醒团长接单</button>
+      <button v-if="isPostage * 1 === 1" class="jump-goods" :class="[allReady ? '' : 'jump-goods-show', 'corp-' + corpName + '-bg']" formType="submit" @click="jumpPostageGoods">查看订单</button>
       <form action="" report-submit @submit="$getFormId">
         <button class="jump-goods jump-order" formType="submit" @click="jumpGoods">继续购物</button>
       </form>
@@ -37,7 +38,8 @@
       return {
         allReady: false,
         orderId: '',
-        payType: ''
+        payType: '',
+        isPostage: ''
       }
     },
     components: {
@@ -49,6 +51,7 @@
       Ald.sendEvent('支付成功页')
       this.orderId = e.orderId
       this.payType = e.payType
+      this.isPostage = e.isPostage || ''
       this.$sendMsg({
         event_no: 1006,
         total: e.total
@@ -91,13 +94,11 @@
             this.couponItem = res.data
             this.couponItem.length && this.$refs.invModal.show(this.couponItem)
           })
+      },
+      // 跳转全国包邮订单
+      jumpPostageGoods() {
+        wx.redirectTo({ url: `${this.$routes.postage.ORDER_LIST}?id=&index=0` })
       }
-      // jumpDetail() {
-      //   if (!this.allReady) return
-      //   wx.navigateTo({
-      //     url: `/pages/share-detail?id=${this.orderId}&&type=0&&shareType=1`
-      //   })
-      // }
     }
   }
 </script>
