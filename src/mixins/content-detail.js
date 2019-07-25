@@ -9,6 +9,7 @@ export default {
   data: {
     BottomEmptyVisible: false,
     isLoading: false,
+    isShare: false,
     preview: 0,
     articleId: 0,
     currentType: 'common',
@@ -46,6 +47,7 @@ export default {
   },
   mixins: [GetOptions, ShareHandler, ShareTrick],
   onShareAppMessage() {
+    this.isShare = true
     this.shareBtn()
     const shopId = wx.getStorageSync('shopId')
     const userInfo = wx.getStorageSync('userInfo')
@@ -73,6 +75,10 @@ export default {
     this.articleId && this._articleOperation('browse')
   },
   onShow() {
+    if (this.isShare) {
+      this.isShare = false
+      return false
+    }
     this._getDetails(true, true)
     this.$$shareHandler({
       event: EVENT_CODE.ARTICLE_DETAIL,
@@ -220,7 +226,7 @@ export default {
     },
     // 去詳情
     goToDetail(item) {
-      if (this.preview) return false
+      if (this.preview ||  item.is_online === 0 || item.usable_stock === 0) return false
       console.log(item)
       this._articleOperation('guide_goods', { goods_id: item.goods_id, goods_sku_id: item.goods_sku_id })
       const shopId = wx.getStorageSync('shopId')
