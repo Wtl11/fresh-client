@@ -166,7 +166,7 @@
             right: 3px
             width: 12px
             height: 12px
-            z-index:1000
+            z-index:10
         .name
           font-size: $font-size-16
           color: #ffffff
@@ -203,14 +203,16 @@
             position: absolute
             top: -12px
             left: 20px
-            color: #fff;
+            z-index:10
+            color: #fff
             font-size $font-size-12
             padding: 0 4px
-            height: 15px
-            line-height 15px
+            height: 16px
+            min-width:16px
+            line-height 16px
             background: #FE3B39
-            border-radius 7px
-            z-index:10
+            border-radius 8px
+            box-sizing border-box
         .goods-btn
           flex-shrink 0
           height: 40px

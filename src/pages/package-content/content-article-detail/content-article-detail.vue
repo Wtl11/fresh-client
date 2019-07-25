@@ -180,7 +180,7 @@
         top: 0
         left: 0
         right: 0
-        z-index: 2
+        z-index: 10
 
     .cookbook-title
       font-family: $font-family-medium
@@ -226,7 +226,7 @@
           right: 3px
           width: 12px
           height: 12px
-          z-index: 1000
+          z-index: 10
 
       .auth-info
         font-family $font-family-regular
@@ -388,7 +388,7 @@
       right: 0
       left: 0
       background white
-      z-index: 1000
+      z-index: 10
       box-shadow: 0 -4px 20px 0 rgba(29, 32, 35, 0.06)
 
     .bottom-operate

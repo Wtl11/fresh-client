@@ -34,7 +34,7 @@
     top:0
     bottom:0
     left:-8px
-    z-index:100
+    z-index:10
   .level-icon
     position:relative
     height: 13px
