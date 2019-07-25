@@ -204,6 +204,8 @@
         .form-list-input
           font-size: $font-size-14
           font-family: $font-family-regular
+          height: 26px
+          line-height: 26px
           color: #111
           flex: 1
         .arrow-img

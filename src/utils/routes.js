@@ -14,6 +14,7 @@ export default {
     SUBMIT_ORDER:`${POSTAGE}/submit-order`,
     DISTRIBUTION_DETAIL:`${POSTAGE}/distribution-detail`,
     ORDER_DETAIL:`${POSTAGE}/order-detail`,
+    GOODS_RECORD:`${POSTAGE}/goods-record`,
     // package-postage
   },
   activity: {

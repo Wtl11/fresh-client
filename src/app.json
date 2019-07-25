@@ -45,6 +45,7 @@
         "address-manage",
         "distribution-detail",
         "order-detail",
+        "goods-record",
         "goods-details"
       ]
     },

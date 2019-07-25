@@ -50,7 +50,7 @@
           </div>
         </div>
         <div class="btn-box">
-          <div class="btn-text" @click.stop="jumpTrace(item)">物流信息</div>
+          <div v-if="orderMsg.status * 1 === 1" class="btn-text" @click.stop="jumpTrace(item)">物流信息</div>
         </div>
       </div>
     </div>
