@@ -3,7 +3,7 @@
     <div class="goods-photo-wrap">
       <img v-if="imageUrl && goodsData.is_online === 0" :src="imageUrl + '/yx-image/article/pic-off_shelf@2x.png'" mode="aspectFill" class="goods-photo fix-pic">
       <img v-else-if="imageUrl && goodsData.usable_stock === 0" :src="imageUrl + '/yx-image/article/pic-out_stock@2x.png'" mode="aspectFill" class="goods-photo fix-pic">
-      <img v-if="imageUrl" :src="goodsData.goods_cover_image" mode="aspectFill" class="goods-photo">
+      <img :src="goodsData.goods_cover_image" mode="aspectFill" class="goods-photo">
     </div>
     <div class="info">
       <div v-if="goodsData && goodsData.name" class="name">{{goodsData.name}}</div>

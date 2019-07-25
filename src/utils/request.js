@@ -71,6 +71,7 @@ async function checkCode(res = {}) {
         break
       case 10003: // 活动过期，跳转活动失效页面
         if (checkIsCurrentPage($$routes.main.GOODS_END, _path)) return
+        wx.redirectTo({url: $$routes.main.LOST})
         break
       case 10000: // 登录状态失效时跳转
         if (ErrorNum <= 0) {
@@ -99,6 +100,7 @@ async function checkCode(res = {}) {
 }
 
 function checkIsCurrentPage(current, target) {
+  console.log(current, target, current.includes(target))
   return current.includes(target)
 }
 

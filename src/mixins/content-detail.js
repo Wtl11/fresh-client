@@ -49,7 +49,6 @@ export default {
     this.shareBtn()
     const shopId = wx.getStorageSync('shopId')
     const userInfo = wx.getStorageSync('userInfo')
-    console.log(userInfo)
     let path = this.currentType === 'video' ? this.$routes.content.CONTENT_ARTICLES_DETAIL_VIDEO : this.$routes.content.CONTENT_ARTICLES_DETAIL
     return {
       title: userInfo.nickname + '与你分享#' + this.details.title,

@@ -43,12 +43,17 @@
       wx.setStorageSync('options', options)
       this.setScene(options)
       let storyShopId = baseURL.defaultId
+      let hasShopId = false // 如果有店铺ID则覆盖之前的店铺ID，没有则不处理
       if (options.query.scene) {
         console.log(options)
         let {shopId} = resolveQueryScene(options.query.scene)
+        console.log(shopId, 111)
         // let sceneMsg = decodeURIComponent(options.query.scene)
         // const params = getParams(sceneMsg)
         storyShopId = shopId || wx.getStorageSync('defaultShopId')
+        if (shopId) {
+          hasShopId = true
+        }
       } else {
         if (!wx.getStorageSync('shopId') && !wx.getStorageSync('defaultShopId')) {
           let res = await API.Choiceness.getDefaultShopInfo()
@@ -59,9 +64,12 @@
           }
         }
         storyShopId = wx.getStorageSync('shopId') || wx.getStorageSync('defaultShopId')
+        if (options.query.shopId) {
+          hasShopId = true
+        }
       }
       let shopId = options.query.shopId || +storyShopId
-      shopId > 0 && wx.setStorageSync('shopId', shopId)
+      hasShopId && wx.setStorageSync('shopId', shopId)
       // let token = wx.getStorageSync('token')
       let query = ''
       for (let key in options.query) {
