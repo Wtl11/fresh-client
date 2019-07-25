@@ -14,6 +14,7 @@ export default {
     currentType: 'common',
     screenWidth: 0,
     details: {
+      shareImage: '',
       goodStatus: 0,
       category: '',
       title: '',
@@ -53,7 +54,7 @@ export default {
     return {
       title: userInfo.nickname + '分享' + this.details.title,
       path: `${path}?shopId=${shopId}&articleId=${this.articleId}`,
-      imageUrl: this.details.coverImage
+      imageUrl: this.details.shareImage
     }
   },
   onLoad() {
@@ -81,6 +82,7 @@ export default {
   onUnload() {
     this.$refs.navigationBar && this.$refs.navigationBar._initHeadStyle()
     this.details = {
+      shareImage: '',
       goodStatus: 0,
       category: '',
       title: '',
@@ -111,12 +113,14 @@ export default {
     ...cartMethods,
     _getDetails(isLikes = true, showLoading = false) {
       API.Content.getDetails({ id: this.articleId, preview: this.preview }, showLoading).then(res => {
+        console.log(res)
         this.changeData(res.data, isLikes)
         showLoading && this.$wechat.hideLoading()
       })
     },
     changeData(obj, isLikes) {
       this.currentType = obj.type || 'common'
+      this.details.shareImage = obj.thumb_image || ''
       this.details.title = obj.title
       this.details.category = obj.id
       this.details.coverVideo = obj.cover_video.full_url || ''
@@ -190,6 +194,7 @@ export default {
           })
         }
       })
+      console.log(this.details)
     },
     _getLikes(num) {
       let limit = num < 10 ? num : 10
