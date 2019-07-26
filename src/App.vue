@@ -46,6 +46,27 @@
       let shopId
       let defaultShopId = wx.getStorageSync('defaultShopId')
       let sceneShopId = resolveQueryScene(options.query.scene).shopId
+      if (sceneShopId) {
+        shopId = sceneShopId
+      } else if(options.query.shopId){
+        shopId = options.query.shopId
+      } else if(!wx.getStorageSync('shopId')){
+        if (!defaultShopId) {
+          try {
+            let res = await API.Choiceness.getDefaultShopInfo()
+            if (res.error === 0) {
+              wx.setStorageSync('defaultShopId', res.data.id)
+            } else {
+              wx.setStorageSync('defaultShopId', baseURL.defaultId)
+            }
+            defaultShopId = res.data.id || baseURL.defaultId
+          } catch (e) {
+            console.error(e)
+          }
+        }
+        shopId = defaultShopId || baseURL.defaultId
+      }
+      shopId && wx.setStorageSync('shopId', shopId)
       if (!defaultShopId) {
         try {
           let res = await API.Choiceness.getDefaultShopInfo()
@@ -59,14 +80,6 @@
           console.error(e)
         }
       }
-      if (sceneShopId) {
-        shopId = sceneShopId
-      } else if(options.query.shopId){
-        shopId = options.query.shopId
-      } else if(!wx.getStorageSync('shopId')){
-        shopId = defaultShopId || baseURL.defaultId
-      }
-      shopId && wx.setStorageSync('shopId', shopId)
       // 设页面
       let query = ''
       for (let key in options.query) {

@@ -14,6 +14,7 @@
     >
       <div v-show="!playStatus && !endVideoHas" class="puse-btn" @click.stop="videoClick"></div>
     </video>
+    <div class="cover-bc"></div>
     <div v-show="contentVisible" class="info-wrap">
       <div class="auth-wrap">
         <div class="auth-photo-wrap">
@@ -142,12 +143,21 @@
         background-image url("./icon-play_big2@2x.png")
         background-size 100%
 
+    .cover-bc
+      width: 100vw
+      height: 100vh
+      position: fixed
+      left: 0
+      top: 0
+      background-image: linear-gradient(-180deg, rgba(0,0,0,0.00) 50%, rgba(0,0,0,0.30) 80%)
+      z-index: 1
     .info-wrap
       position: fixed
       bottom: 20px
       left: 0
       right: 0
       padding: 0px 15px
+      z-index: 2
       /*background-image: linear-gradient(top, rgba(0,0,0,0.00) 20%, rgba(0,0,0,0.30) 80%)*/
       .auth-wrap
         display flex
