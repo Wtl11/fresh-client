@@ -54,8 +54,8 @@
     <div :class="['goods-list-wrap',{show:goodsListVisible}]">
       <div v-show="details.goodsList.length" class="title">全部商品<span class="num">/共{{details.goodsList.length || 0}}个商品</span></div>
       <div class="good-list">
-        <div v-for="(item,idx) in details.goodsList" class="goods-item-wrap">
-          <goods-item :key="idx" :goods-data="item" @add="addGoods" @click="goToDetail(item)"></goods-item>
+        <div v-for="(item,idx) in details.goodsList" :key="item.id" class="goods-item-wrap">
+          <goods-item :goods-data="item" @add="addGoods" @click="goToDetail(item)"></goods-item>
         </div>
       </div>
       <div v-if="BottomEmptyVisible" class="bottom-emty-20"></div>

@@ -217,12 +217,17 @@
       this._getArticleList(true)
     },
     onShow() {
-      let id = wx.getStorageSync('shopId')
-      let query = this._$$initOptions()
-      if (!id) {
-        this.shopId = query.shopId
-        wx.setStorageSync('shopId', this.shopId)
-      }
+      // let id = wx.getStorageSync('shopId')
+      // let query = this._$$initOptions()
+      // if (!id) {
+      //   this.shopId = query.shopId
+      //   wx.setStorageSync('shopId', this.shopId)
+      // }
+      const query = this._$$initOptions()
+      const idStorage = wx.getStorageSync('shopId')
+      const id = query.shopId || idStorage
+      this.shopId = id
+      id && id !== idStorage && wx.setStorageSync('shopId', this.shopId)
       if (this.shopId !== id) {
         this.tabIndex = 0
         this._getArticleList(false)

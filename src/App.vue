@@ -41,6 +41,10 @@
     },
     async onShow(options) {
       wx.setStorageSync('options', options)
+      if (!wx.getStorageSync('shopId')){
+        const id = wx.getStorageSync('defaultShopId')
+        id && wx.setStorageSync('shopId', id)
+      }
       this.setScene(options)
       let storyShopId = baseURL.defaultId
       let hasShopId = false // 如果有店铺ID则覆盖之前的店铺ID，没有则不处理
