@@ -439,7 +439,7 @@
         todayHotList: [],
         // 团购列表
         groupList: [],
-        // 全国包邮
+        // 全国包邮-商品列表
         freeShippingList: [],
         // 猜你喜欢列表
         guessList: [],
@@ -723,8 +723,8 @@
         let arr = []
         if (this.activityModuleList.length) {
           this.activityModuleList.forEach(item => {
-            // 全国包邮没有starting_point_id
-            if ((item.module_name !== 'activity_fixed' && item.starting_point_id > 0) || item.module_name === 'free_shipping') {
+            // 全国包邮没有starting_point_id,判断is_close是否开启即可
+            if ((item.module_name !== 'activity_fixed' && item.starting_point_id > 0) || (item.module_name === 'free_shipping' && item.is_close !== 1)) {
               arr.push({
                 ...item,
                 ...TAB_ARR_CONFIG[item.module_name]
@@ -1058,6 +1058,7 @@
                 })
               }
             } else if (activityId === 0 && item.module_name !== ACTIVE_TYPE.FLASH) {
+              // 全国包邮-获取商品列表
               if (item.module_name === ACTIVE_TYPE.FREE_SHIPPING) {
                 API.Home.getFreeShippingList().then(res => {
                   this.freeShippingList = this._formatListPriceData(res.data)
