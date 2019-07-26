@@ -242,7 +242,7 @@ export default {
       this._articleOperation('guide_goods', { goods_id: item.goods_id, goods_sku_id: item.goods_sku_id })
       API.Choiceness.addShopCart({ goods_sku_id: item.goods_sku_id, scenes: 'article', scenes_data: this.articleId }).then((res) => {
         if (res.error === this.$ERR_OK) {
-          this.$wechat.showToast('加入购物车成功')
+          this.$wechat.showToast('加入购物车成功', 1500, false)
           this.setCartCount()
         } else {
           this.$wechat.showToast(res.message)
