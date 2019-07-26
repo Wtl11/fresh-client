@@ -14,6 +14,7 @@ export default {
     articleId: 0,
     currentType: 'common',
     screenWidth: 0,
+    navTitle: '',
     details: {
       shareImage: '',
       goodStatus: 0,
@@ -113,12 +114,14 @@ export default {
       details: [],
       likes: []
     }
+    this.navTitle = ''
   },
   methods: {
     ...cartMethods,
     _getDetails(isLikes = true, showLoading = false) {
       API.Content.getDetails({ id: this.articleId, preview: this.preview }, showLoading).then(res => {
-        console.log(res)
+        // this.$refs.navigationBar && this.$refs.navigationBar.setNavigationBarTitle(res.data.title)
+        this.navTitle = res.data.title
         this.changeData(res.data, isLikes)
         showLoading && this.$wechat.hideLoading()
       })
@@ -194,17 +197,14 @@ export default {
           this.details.videoIntroduce = item.content[0].introduction
         }
         if (item.type === 'goods' && item.style_type === 'content_goods_list') {
-          console.log(item)
           let arr  = item.content.filter(item => {
             return item.goods && item.goods.goods_id
           })
           this.details.goodsList = arr.map(item=>{
             return item.goods
           })
-          console.log(this.details.goodsList, 'this.details.goodsList ')
         }
       })
-      console.log(this.details)
     },
     _getLikes(num) {
       let limit = num < 10 ? num : 10
@@ -231,7 +231,6 @@ export default {
     // 去詳情
     goToDetail(item) {
       if (this.preview || item.is_online === 0 || item.usable_stock === 0) return false
-      console.log(item)
       this._articleOperation('guide_goods', { goods_id: item.goods_id, goods_sku_id: item.goods_sku_id })
       const shopId = wx.getStorageSync('shopId')
       wx.navigateTo({ url: `${this.$routes.main.GOODS_DETAIL}?shopId=${shopId}&id=${item.goods_id}&articleId=${this.articleId}` })
@@ -252,7 +251,6 @@ export default {
     _articleOperation(handle, other) {
       if (this.preview) return false
       let isLogin = this.$isLogin()
-      console.log('isLogin', isLogin)
       return API.Content.articleOperation({ article_id: this.articleId, handle: handle, ...other }).then(res => {
         if (res.error === this.$ERR_OK) {
           if (handle === 'fabulou') this._getDetails(true, false)

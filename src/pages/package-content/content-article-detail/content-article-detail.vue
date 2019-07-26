@@ -1,6 +1,6 @@
 <template>
   <div class="content-article-detail">
-    <navigation-bar ref="navigationBar" :translucent="true" :isBackCricle="true"></navigation-bar>
+    <navigation-bar ref="navigationBar" :translucent="true" :isBackCricle="true" :title="navTitle"></navigation-bar>
     <video v-if="details.coverVideo" id="videocover" :src="details.coverVideo" :autoplay="true" class="cover-video" @play="playVideo('cover')"></video>
     <div v-else class="cover-box">
       <img :src="details.coverLittleImage" mode="widthFix" class="little-cover">
@@ -135,7 +135,8 @@
         lastVideo: ''
       }
     },
-    computed: {},
+    computed: {
+    },
     methods: {
       getVideo(id) {
         return wx.createVideoContext('video' + id)
