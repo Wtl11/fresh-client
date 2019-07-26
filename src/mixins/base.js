@@ -53,7 +53,7 @@ export default {
     //   console.log(pr, pd, scene, options)
     // },
     _autoSend() {
-      if (!wx.getStorageSync('token') || !wx.getStorageSync('shopId')) return
+      if (!wx.getStorageSync('shopId')) return
       if (!this.$mp) return
       if (this.$mp.mpType !== 'page') return
       if (!this.$mp.page) return
