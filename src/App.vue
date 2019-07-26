@@ -41,40 +41,33 @@
     },
     async onShow(options) {
       wx.setStorageSync('options', options)
-      if (!wx.getStorageSync('shopId')){
-        const id = wx.getStorageSync('defaultShopId')
-        id && wx.setStorageSync('shopId', id)
-      }
       this.setScene(options)
-      let storyShopId = baseURL.defaultId
-      let hasShopId = false // 如果有店铺ID则覆盖之前的店铺ID，没有则不处理
-      if (options.query.scene) {
-        console.log(options)
-        let {shopId} = resolveQueryScene(options.query.scene)
-        console.log(shopId, 111)
-        // let sceneMsg = decodeURIComponent(options.query.scene)
-        // const params = getParams(sceneMsg)
-        storyShopId = shopId || wx.getStorageSync('defaultShopId')
-        if (shopId) {
-          hasShopId = true
-        }
-      } else {
-        if (!wx.getStorageSync('shopId') && !wx.getStorageSync('defaultShopId')) {
+      // 获取shopId
+      let shopId
+      let defaultShopId = wx.getStorageSync('defaultShopId')
+      let sceneShopId = resolveQueryScene(options.query.scene).shopId
+      if (!defaultShopId) {
+        try {
           let res = await API.Choiceness.getDefaultShopInfo()
           if (res.error === 0) {
             wx.setStorageSync('defaultShopId', res.data.id)
           } else {
             wx.setStorageSync('defaultShopId', baseURL.defaultId)
           }
-        }
-        storyShopId = wx.getStorageSync('shopId') || wx.getStorageSync('defaultShopId')
-        if (options.query.shopId) {
-          hasShopId = true
+          defaultShopId = res.data.id || baseURL.defaultId
+        } catch (e) {
+          console.error(e)
         }
       }
-      let shopId = options.query.shopId || +storyShopId
-      hasShopId && wx.setStorageSync('shopId', shopId)
-      // let token = wx.getStorageSync('token')
+      if (sceneShopId) {
+        shopId = sceneShopId
+      } else if(options.query.shopId){
+        shopId = options.query.shopId
+      } else if(!wx.getStorageSync('shopId')){
+        shopId = defaultShopId || baseURL.defaultId
+      }
+      shopId && wx.setStorageSync('shopId', shopId)
+      // 设页面
       let query = ''
       for (let key in options.query) {
         // 获取页面请求参数

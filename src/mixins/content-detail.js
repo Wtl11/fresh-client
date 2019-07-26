@@ -4,6 +4,7 @@ import GetOptions from '@mixins/get-options'
 import API from '@api'
 import ShareHandler, { EVENT_CODE } from '@mixins/share-handler'
 import ShareTrick from '@mixins/share-trick'
+import { baseURL } from '@utils/config'
 
 export default {
   data: {
@@ -67,9 +68,12 @@ export default {
     this.preview = +options.preview || 0
     if (options.scene) {
       wx.hideShareMenu()
-      let { articleId, preview } = resolveQueryScene(options.scene)
+      let { articleId, preview, shopId } = resolveQueryScene(options.scene)
       this.articleId = articleId
       this.preview = +preview
+      if (!shopId) {
+        wx.setStorageSync('shopId', baseURL.defaultId)
+      }
     }
     this.articleId && this._articleOperation('browse')
   },
@@ -77,6 +81,9 @@ export default {
     if (this.isShare) {
       this.isShare = false
       return false
+    }
+    if (!wx.getStorageSync('shopId')) {
+      wx.setStorageSync('shopId', baseURL.defaultId)
     }
     this._getDetails(true, true)
     this.$$shareHandler({
