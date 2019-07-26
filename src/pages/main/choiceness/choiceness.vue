@@ -651,7 +651,7 @@
           title = `${this.socialName}-赞播优鲜社区团购`
           break
         case ACTIVE_TYPE.FREE_SHIPPING :
-          imgUrl = '/yx-image/2.4/pic-ptfx_share@2x.png'
+          imgUrl = '/yx-image/2.4/pic-xsqg_ljqg@2x.png'
           title = `${this.socialName}-赞播优鲜社区团购`
           break
         default:
@@ -686,7 +686,7 @@
         if (item.module_name === ACTIVE_TYPE.GROUP_ON) {
           this.handleJumpToGoodsDetail(child, item.module_name)
         } else {
-          this.addShoppingCart(child)
+          this.addShoppingCart(child, item.module_name)
         }
       },
       _resetGuessParams() {
@@ -715,18 +715,6 @@
           return {
             ...item,
             tradePrice: formatCouponMoney(item.trade_price)
-          }
-        })
-      },
-      _formatFSData(arr = []) {
-        return arr.map(item => {
-          return {
-            ...item,
-            tradePrice: formatCouponMoney(item.trade_price),
-            goods_cover_image: item.image_url || item.goods_cover_image,
-            describe: item.description
-            // sale_count: item,
-            // goods_units: item
           }
         })
       },
@@ -887,6 +875,13 @@
       },
       // 跳转至商品详情页
       handleJumpToGoodsDetail(item, type) {
+        console.log(item, type)
+        if (type === 'free_shipping') {
+          wx.navigateTo({
+            url: `${this.$routes.postage.GOODS_DETAILS}?id=${item.goods_id}`
+          })
+          return
+        }
         wx.navigateTo({
           url: `${this.$routes.main.GOODS_DETAIL}?id=${item.goods_id}&activityId=${item.activity_id}&activityType=${type}`
         })
@@ -935,12 +930,17 @@
         }
       },
       // 添加购物车
-      async addShoppingCart(item) {
+      async addShoppingCart(item, type) {
         let isLogin = await this.$isLogin()
         if (!isLogin) {
           return
         }
-        API.Choiceness.addShopCart({ goods_sku_id: item.goods_sku_id, activity_id: item.activity_id }).then((res) => {
+        let sourceType = 1
+        console.log(item)
+        if (type === 'free_shipping') {
+          sourceType = 2
+        }
+        API.Choiceness.addShopCart({ goods_sku_id: item.goods_sku_id, activity_id: item.activity_id, source_type: sourceType }).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.$sendMsg({
               event_no: 1007,
@@ -1061,7 +1061,7 @@
               // 全国包邮-获取商品列表
               if (item.module_name === ACTIVE_TYPE.FREE_SHIPPING) {
                 API.Home.getFreeShippingList().then(res => {
-                  this.freeShippingList = this._formatFSData(res.data)
+                  this.freeShippingList = this._formatListPriceData(res.data)
                 })
               } else {
                 this[key.dataArray] = []
