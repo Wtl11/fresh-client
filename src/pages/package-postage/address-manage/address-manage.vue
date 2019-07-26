@@ -50,7 +50,6 @@
       }
     },
     onLoad(options) {
-      console.log(options)
       this.select = options.select || ''
     },
     async onShow() {
@@ -70,7 +69,6 @@
       },
       async _getAddressList() {
         let res = await API.Postage.getAddress()
-        console.log(res)
         if (res.error !== this.$ERR_OK) {
           this.$wechat.showToast(res.message, 1000, false)
           return
@@ -152,10 +150,10 @@
         width: 100%
         layout(row)
         align-items: center
-        margin-bottom: 15px
+        margin-bottom: 7px
         .info-top-name
           font-size: $font-size-15
-          font-family: $font-family-regular
+          font-family: $font-family-medium
           color: #000
           max-width: 150px
           margin-right: 10px
@@ -165,6 +163,7 @@
           font-family: $font-family-regular
           color: #000
       .info-bottom
+        line-height: 17px
         .info-bottom-label
           font-size: $font-size-12
           color: $color-main
@@ -176,6 +175,7 @@
           display: inline-block
           border-1px($color-main)
           margin-right: 5px
+          background: rgba(115,194,0,0.1)
         .info-bottom-name
           font-size: $font-size-13
           color: #666

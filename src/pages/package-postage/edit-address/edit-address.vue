@@ -33,7 +33,7 @@
     </div>
     <div v-if="id" class="delete-address" @click="_delAddress">删除地址</div>
     <div class="list-button-box">
-      <button class="btn" :class="isSubmit ? '' : 'btn-none'" @click="_submit">保存</button>
+      <button class="btn" :class="isSubmitColor ? '' : 'btn-none'" @click="_submit">保存</button>
     </div>
     <confirm-msg ref="msg" :msg="msg" useType="double" @confirm="_deleteAddress"></confirm-msg>
   </div>
@@ -66,7 +66,8 @@
           mobile: '',
           is_default: 0
         },
-        id: ''
+        id: '',
+        isSubmit: false
       }
     },
     onLoad(options) {
@@ -76,24 +77,21 @@
       }
     },
     computed: {
-      isSubmit() {
+      isSubmitColor() {
         return this.addressMsg.province.length !== 0 && this.addressMsg.address.length !== 0 && this.addressMsg.name.length !== 0 && this.addressMsg.mobile.length === 11
       }
     },
     methods: {
       getBank (e) {
-        console.log(e.mp.detail.value)
         let arr = e.mp.detail.value
         this.addressMsg.province = arr[0]
         this.addressMsg.city = arr[1]
         this.addressMsg.area = arr[2]
       },
       switchChange(e) {
-        console.log(e.mp.detail.value)
         this.addressMsg.is_default = e.mp.detail.value ? 1 : 0
       },
       _delAddress() {
-        console.log(22)
         this.$refs.msg.show()
       },
       async _submit() {
@@ -116,8 +114,14 @@
           this.$wechat.showToast('请输入正确的手机号码')
           return
         }
+        if (this._isSubmit) return
+        this._isSubmit = true
         if (this.id) {
           let res = await API.Postage.putAddress(this.id, this.addressMsg)
+          clearTimeout(this._submitTimer)
+          this._submitTimer = setTimeout(() => {
+            this._isSubmit = false
+          }, 2000)
           if (res.error !== this.$ERR_OK) {
             this.$wechat.showToast(res.message, 1000, false)
             return
@@ -129,6 +133,10 @@
           return
         }
         let res = await API.Postage.createAddress(this.addressMsg)
+        clearTimeout(this._submitTimer)
+        this._submitTimer = setTimeout(() => {
+          this._isSubmit = false
+        }, 2000)
         if (res.error !== this.$ERR_OK) {
           this.$wechat.showToast(res.message, 1000, false)
           return

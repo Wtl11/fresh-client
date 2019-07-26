@@ -304,7 +304,7 @@
                         <img
                           :lazy-load="true"
                           v-if="imageUrl && item.module_name === ACTIVE_TYPE.FREE_SHIPPING"
-                          :src="imageUrl + '/free-shipping/icon-baoyou@2x.png'"
+                          :src="imageUrl + '/yx-image/postage/icon-label_baoyou@2x.png'"
                           class="label-icon">
                         <img
                           :lazy-load="true"

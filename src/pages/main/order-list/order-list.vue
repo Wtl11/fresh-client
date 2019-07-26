@@ -81,7 +81,7 @@
   import API from '@api'
   import {countDownHandle} from '@utils/common'
 
-  const NAVLIST = [{id: 1, name: '全部', status: ''}, {id: 2, name: '待付款', status: 0}, {id: 3, name: '待提货', status: 1}, {id: 4, name: '已完成', status: 2}]
+  const NAVLIST = [{id: 1, name: '全部订单', status: ''}, {id: 2, name: '待付款', status: 0}, {id: 3, name: '待提货', status: 1}, {id: 4, name: '已完成', status: 2}]
   const GROUP_STATUS_ARR = [{name: '拼团中'}, {name: '拼团成功'}, {name: '拼团失败'}, {name: '拼团失败'}, {name: '拼团失败'}]
   const ORDER_LIST_ARR = [
     { page: 1, data: [], hasMore: true },
@@ -456,13 +456,13 @@
       layout(row)
       align-items: center
       .order-title-icon
-        width: 12.5px
-        height: 12.5px
+        width: 15px
+        height: 15px
         display: block
         margin-right: 5px
       .order-title-name
         font-size: $font-size-14
-        font-family: 'PingFang-SC-Bold'
+        font-family: $font-family-medium
         color: #111
     .order-title-right
       layout(row)

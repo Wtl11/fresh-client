@@ -8,13 +8,14 @@
         <img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="item-arrow-img">
       </div>
       <div class="select-info" v-if="addressMsg.name.length !== 0" @click="selectAddress">
-        <div class="info-top">
-          <div class="info-top-name">{{addressMsg.name}}</div>
-          <div class="info-top-phone">{{addressMsg.mobile}}</div>
+        <div class="select-info-left">
+          <div class="info-top">
+            <div class="info-top-name">{{addressMsg.name}}</div>
+            <div class="info-top-phone">{{addressMsg.mobile}}</div>
+          </div>
+          <div class="info-bottom">收货地址：{{addressMsg.province}}{{addressMsg.city}}{{addressMsg.area}}{{addressMsg.address}}</div>
         </div>
-        <div class="info-bottom">收货地址：{{addressMsg.province}}{{addressMsg.city}}{{addressMsg.area}}{{addressMsg.address}}
-          <img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="item-arrow-img">
-        </div>
+        <img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="item-arrow-img">
       </div>
       <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-colour@2x.png'" class="order-line">
       <div class="order-list">
@@ -143,10 +144,15 @@
     padding: 15px 12px
     box-sizing: border-box
     background: $color-white
+    layout(row)
+    align-items: center
+    justify-content: space-between
+    .select-info-left
+      flex: 1
     .info-top
       layout(row)
       align-items: center
-      margin-bottom: 10px
+      margin-bottom: 7px
       .info-top-name
         font-size: $font-size-15
         font-family: $font-family-medium
@@ -158,7 +164,7 @@
         color: #808080
     .info-bottom
       font-size: $font-size-15
-      font-family: $font-family-medium
+      font-family: $font-family-regular
       color: #111
       position: relative
       padding-right: 20px
@@ -196,9 +202,10 @@
       layout(row)
       align-items: center
       height: 45px
+      padding: 0
       .order-title-icon
-        width: 12.5px
-        height: 12.5px
+        width: 15px
+        height: 15px
         display: block
         margin-right: 5px
       .order-title-name

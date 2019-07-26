@@ -308,6 +308,7 @@
           font-family: $font-family-medium
           font-size: $font-size-18
           color: $color-white
+          padding-bottom: 5px
 
         .icon
           width: 31px
@@ -347,7 +348,7 @@
         color: #000
     .info-bottom
       font-size: $font-size-15
-      font-family: $font-family-medium
+      font-family: $font-family-regular
       color: #111
       position: relative
       .item-arrow-img
@@ -392,8 +393,8 @@
       align-items: center
       height: 45px
       .order-title-icon
-        width: 12.5px
-        height: 12.5px
+        width: 15px
+        height: 15px
         display: block
         margin-right: 5px
       .order-title-name

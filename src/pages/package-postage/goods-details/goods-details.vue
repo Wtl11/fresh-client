@@ -48,7 +48,7 @@
             <div class="has-sub-title" v-if="goodsMsg.describe">{{goodsMsg.describe}}</div>
           </article>
           <div class="info-sub">
-            <div class="sub-text">全国包邮，下单后预计48小时内发出</div>
+            <div class="sub-text">下单付款后，由供应商48小时内发货，节假日或特殊情况顺延。</div>
           </div>
           <div class="info-stock">已售<span :class="'corp-' + corpName + '-money'">{{goodsMsg.sale_count}}</span>{{goodsMsg.goods_units}}</div>
         </div>
@@ -65,7 +65,7 @@
         <div class="text-wrap">
           <div class="send-title">服务说明</div>
           <div class="send-item-list">
-            <span class="list-title">• 发货须知：</span><span class="list-sub">下单后预计48小时内发货。</span>
+            <span class="list-title">• 发货须知：</span><span class="list-sub">下单付款后，由供应商48小时内发货，节假日或特殊情况顺延。</span>
           </div>
           <div class="send-item-list">
             <span class="list-title">• 划线价格：</span><span class="list-sub">指商品的厂商指导价、价签价格或该商品的曾经展示过的价格，</span><span class="list-line">并非原价</span><span class="list-sub">，仅供参考。</span>
@@ -218,10 +218,9 @@
     },
     onShareAppMessage() {
       const shopId = wx.getStorageSync('shopId')
-      console.log(`${this.$routes.postage.PACKAGE}/${PAGE_ROUTE_NAME}?id=${this.id}&shopId=${shopId}`)
       return {
         title: this.goodsMsg.name,
-        path: `${this.$routes.postage.PACKAGE}/${PAGE_ROUTE_NAME}?id=${this.id}&shopId=${shopId}`, // 商品详情
+        path: `${this.$routes.postage.GOODS_DETAILS}?id=${this.id}&shopId=${shopId}`, // 商品详情
         imageUrl: this.thumb_image || this.goodsMsg.goods_cover_image,
         success: (res) => {
           // 转发成功
@@ -272,7 +271,6 @@
       getGoodsDetailData() {
         API.Postage.getGoodsDetail(this.id).then((res) => {
           if (res.error === this.$ERR_OK) {
-            console.log(res.data)
             this.goodsMsg = res.data
             this.msgTitle = this.goodsMsg.name
           } else {
@@ -307,7 +305,6 @@
           total: total,
           deliverAt: ''
         }
-        console.log(goodsList)
         this.setOrderInfo(orderInfo)
         wx.navigateTo({url: `${this.$routes.postage.SUBMIT_ORDER}`})
       },
@@ -329,7 +326,6 @@
       },
       // 按钮导航
       buttonGroupNav(item) {
-        console.log(item)
         switch (item.type) {
           case 0:
             wx.switchTab({url: `${this.$routes.main.CHOICENESS}`})
@@ -547,16 +543,18 @@
         transition: opacity 0.3s
   .title-label
     font-size: $font-size-12
-    font-family: $font-family-regular
+    font-family: $font-family-medium
     color: #101010
     display: inline-block
     border-radius: 9.5px
     width: 58px
     height: 19px
     text-align: center
-    line-height: 19px
+    line-height: 20px
     background: #ffe500
     margin-right: 5px
+    position: relative
+    top: -2px
   // 购买记录
   .buy-users
     width :35vw
@@ -669,6 +667,7 @@
         layout(row)
         align-items: center
         margin: 10px 0 10px
+        width: 71vw
 
         .info-sub-img
           width: 14.5px

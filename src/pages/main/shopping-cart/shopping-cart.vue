@@ -10,7 +10,7 @@
             <img class="sel-box" v-if="imageUrl && allChecked" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
             <img class="sel-box" v-if="imageUrl && !allChecked" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt=""/>
             <img class="postage-icon" v-if="imageUrl" :src="imageUrl+'/yx-image/postage/icon-ziti_shopping@2x.png'" alt=""/>
-            <div class="postage-text">自提商品</div>
+            <div class="postage-text">自提</div>
           </div>
         </div>
         <div class="shop-item" :class="{'shop-item-opcta' : !item.allowCheck}" v-for="(item, index) in goodsList" :key="item.id">
@@ -1061,7 +1061,7 @@
     margin: auto
     .model-box-title
       font-size: $font-size-17
-      font-family: 'PingFang-SC-Bold'
+      font-family: $font-family-medium
       color: #111
       text-align: center
       margin-bottom: 30px

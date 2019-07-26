@@ -1,6 +1,6 @@
 <template>
   <div class="wrap">
-    <navigation-bar title="我的订单" :showArrow="true" :translucent="false"></navigation-bar>
+    <navigation-bar title="全国包邮订单" :showArrow="true" :translucent="false"></navigation-bar>
     <div class="nav-box">
       <div class="order-nav">
         <div class="nav-item" :class="tabIdx * 1 === index ? 'nav-item-active' : ''" v-for="(item, index) in navList" :key="index" @click="selectIndex(item, index)">{{item.name}}</div>
@@ -35,10 +35,10 @@
               </div>
               <div class="bot">
                 <div class="time">{{item.created_at}}</div>
-                <div class="payment"><span class="goods-count">实付:</span><span class="sum">45</span><span class="principal">元</span></div>
+                <div class="payment"><span class="goods-count">实付:</span><span class="sum">{{item.total}}</span><span class="principal">元</span></div>
               </div>
-              <div class="btn-box">
-                <div v-if="item.can_after_sale * 1 === 1" class="btn-text" @click.stop="showAfter">申请售后</div>
+              <div v-if="item.can_after_sale * 1 === 1" class="btn-box">
+                <div class="btn-text" @click.stop="showAfter">申请售后</div>
               </div>
             </div>
           </div>
@@ -73,7 +73,7 @@
   import API from '@api'
   import {countDownHandle} from '@utils/common'
 
-  const NAVLIST = [{id: 1, name: '全部订单', status: ''}, {id: 2, name: '待付款', status: 0}, {id: 3, name: '待发货', status: 4}, {id: 4, name: '配送中', status: 1}, {id: 4, name: '已完成', status: 3}]
+  const NAVLIST = [{id: 1, name: '包邮订单', status: ''}, {id: 2, name: '待付款', status: 0}, {id: 3, name: '待发货', status: 4}, {id: 4, name: '配送中', status: 1}, {id: 4, name: '已完成', status: 3}]
   const GROUP_STATUS_ARR = [{name: '拼团中'}, {name: '拼团成功'}, {name: '拼团失败'}, {name: '拼团失败'}, {name: '拼团失败'}]
   const ORDER_LIST_ARR = [
     { page: 1, data: [], hasMore: true },
