@@ -6,15 +6,16 @@
            :autoplay="playStatus"
            :loop="true"
            :controls="!contentVisible"
+           :show-fullscreen-btn="false"
            class="full-screen-video"
            @ended="endVideo"
            @click="videoClick"
            @play="playVideo"
            @pause="pauseVideo"
     >
-      <div v-show="!playStatus && !endVideoHas" class="puse-btn" @click.stop="videoClick"></div>
     </video>
-<!--    <div class="cover-bc"></div>-->
+    <div v-show="!playStatus && !endVideoHas" class="puse-btn" @click.stop="videoClick"></div>
+    <div v-show="contentVisible" class="cover-bc" @click="videoClick"></div>
     <div v-show="contentVisible" class="info-wrap">
       <div class="auth-wrap">
         <div class="auth-photo-wrap">
@@ -103,7 +104,7 @@
         this.endVideoHas = true
         this.playStatus = false
       },
-      videoClick() {
+      videoClick(e) {
         if (!this.playStatus) {
           this.videoContext.play()
           this.playStatus = true
@@ -133,15 +134,16 @@
       width: 100vw
       height: 100vh
 
-      .puse-btn
-        position: absolute
-        top: 50%
-        left: 50%
-        transform translate(-50%)
-        width: 50px
-        height: @width
-        background-image url("./icon-play_big2@2x.png")
-        background-size 100%
+    .puse-btn
+      position: fixed
+      top: 50%
+      left: 50%
+      transform translate(-50%, -50%)
+      width: 50px
+      height: @width
+      background-image url("./icon-play_big2@2x.png")
+      background-size: 100%
+      z-index :6
 
     .cover-bc
       width: 100vw
@@ -156,7 +158,7 @@
       bottom: 20px
       left: 0
       right: 0
-      padding: 0px 15px
+      padding: 0 15px
       z-index: 2
       /*background-image: linear-gradient(top, rgba(0,0,0,0.00) 20%, rgba(0,0,0,0.30) 80%)*/
       .auth-wrap

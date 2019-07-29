@@ -109,7 +109,6 @@
     },
     methods: {
       clickNavigation() {
-        console.log(999)
         this.$emit('click-nav')
       },
       setNavigationBarTitle(title) {

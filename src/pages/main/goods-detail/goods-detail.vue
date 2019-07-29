@@ -29,8 +29,8 @@
               <swiper-item class="banner-item">
                 <video v-if="goodsMsg.goods_videos && goodsMsg.goods_videos[0] && goodsMsg.goods_videos[0].full_url" class="item-img" id="goodsVideo" :src="goodsMsg.goods_videos[0].full_url" :poster="videoPoster" :muted="true" :show-mute-btn="true" :show-center-play-btn="false" :enable-progress-gesture="false" @ended='videoEnd' @waiting="videoWaiting" @progress="videoLoaded"></video>
                 <img v-if="goodsBanner[0].image_url" :class="!playBefore?'hide':''" :src="goodsBanner[0].image_url" mode="aspectFill" class="item-img video-img">
-                <div class="play-btn" @click="playVideo(false)">
-                  <img v-if="imageUrl&&!videoPlaying" :src="imageUrl + '/yx-image/2.6.5/icon-play_big@2x.png'" mode="aspectFill" class="play-btn-icon" @click.stop="playVideo(true)">
+                <div class="play-btn" @click="playVideo && playVideo(false)">
+                  <img v-if="imageUrl&&!videoPlaying" :src="imageUrl + '/yx-image/2.6.5/icon-play_big@2x.png'" mode="aspectFill" class="play-btn-icon" @click.stop="playVideo && playVideo(true)">
                 </div>
               </swiper-item>
             </block>
@@ -937,7 +937,7 @@
               let that = this
               this.autoplayTimer = setTimeout(() => {
                 if (!that.videoPlaying && that.playBefore && that.swiperIdx === 0) {
-                  that.playVideo(true)
+                  that.playVideo && that.playVideo(true)
                 }
               }, 2000)
               if (!this.isIos) {
