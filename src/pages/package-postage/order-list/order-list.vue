@@ -143,7 +143,7 @@
             status = 1
             break
           case 4:
-            status = 3
+            status = 2
             break
         }
         return status
@@ -238,7 +238,7 @@
           this.$wechat.showToast(res.message)
           return
         }
-        console.log(res.data)
+        this.staffInfo = res.data
       },
       _drawPosterDone() {
         this.$wx.downloadFile({

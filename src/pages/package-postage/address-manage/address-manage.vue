@@ -92,6 +92,7 @@
   .address-manage
     width: 100%
     background: $color-background
+    overflow-x: hidden
     min-height: 100vh
   .address-null
     width: 100%
@@ -169,7 +170,7 @@
           color: $color-main
           font-family: $font-family-regular
           height: 15px
-          line-height: 15px
+          line-height: 16px
           width: 30px
           text-align: center
           display: inline-block
