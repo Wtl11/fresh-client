@@ -151,7 +151,7 @@
       position: fixed
       left: 0
       top: 0
-      background-image: linear-gradient(-180deg, rgba(0,0,0,0.00) 50%, rgba(0,0,0,0.30) 80%)
+      background-image: linear-gradient(-180deg, rgba(0,0,0,0.00) 47%, rgba(0,0,0,0.20) 100%);
       z-index: 1
     .info-wrap
       position: fixed
