@@ -4,7 +4,7 @@
     <video id="myVideo"
            :src="details.videoContent.url"
            :autoplay="playStatus"
-           :loop="false"
+           :loop="true"
            :controls="!contentVisible"
            class="full-screen-video"
            @ended="endVideo"
@@ -14,7 +14,7 @@
     >
       <div v-show="!playStatus && !endVideoHas" class="puse-btn" @click.stop="videoClick"></div>
     </video>
-    <div class="cover-bc"></div>
+<!--    <div class="cover-bc"></div>-->
     <div v-show="contentVisible" class="info-wrap">
       <div class="auth-wrap">
         <div class="auth-photo-wrap">
@@ -112,7 +112,7 @@
         this.goodsListVisible = false
       },
       showGoodsListBtn() {
-        this.videoContext.pause()
+        // this.videoContext.pause()
         this.goodsListVisible = true
       }
     }
@@ -247,6 +247,7 @@
       transform translateY(100%)
       border-radius 12px 12px 0 0
       transition all 0.3s
+      z-index: 3
 
       &.show
         transition all 0.3s

@@ -10,6 +10,7 @@
   import {baseURL} from '@utils/config'
   import {corp} from '@utils/saas'
   import ClearWatch from '@mixins/clear-watch'
+  import {resolveQrCode} from '@utils/common'
 
   const PAGE_NAME = 'OUT_HTML'
 
@@ -18,15 +19,26 @@
     mixins: [ClearWatch],
     data() {
       return {
-        url: ''
+        url: '',
+        routeType: ''
       }
     },
     components: {
       // NavigationBar
     },
-    onLoad(e = {}) {
-      const chartsConfig = this.getChartsConfig(e.routeType)
-      const recruit = this.recruitConfig(e.routeType)
+    onLoad(e) {
+      if (e.scene) {
+        let scene = decodeURIComponent(e.scene)
+        let options = resolveQrCode(scene)
+        if (options.s) {
+          wx.setStorageSync('shopId', options.s)
+        }
+        this.routeType = options.routeType
+      } else {
+        this.routeType = e.routeType
+      }
+      const chartsConfig = this.getChartsConfig(this.routeType)
+      const recruit = this.recruitConfig(this.routeType)
       this.url = e.url || chartsConfig || recruit
       // console.log(this.url)
     },
