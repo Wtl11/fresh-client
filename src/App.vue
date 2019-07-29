@@ -3,6 +3,7 @@
   import {entryAppType, resolveQueryScene} from '@utils/common'
   import API from '@api'
   import {ERR_OK, baseURL} from '@utils/config'
+  import $routes from './utils/routes'
   /* eslint-disable */
   export default {
     data() {
@@ -91,8 +92,8 @@
       }
     },
     onPageNotFound(res) {
-      wx.redirectTo({
-        url: this.$routes.main.LOST
+      $routes.main.LOST && wx.redirectTo({
+        url: $routes.main.LOST
       })
     },
     methods: {

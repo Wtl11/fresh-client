@@ -26,10 +26,10 @@
     components: {
       // NavigationBar
     },
-    onLoad(e) {
+    onLoad(e = {}) {
       if (e.scene) {
         let scene = decodeURIComponent(e.scene)
-        let options = resolveQrCode(scene)
+        let options = resolveQrCode(scene) || {}
         if (options.s) {
           wx.setStorageSync('shopId', options.s)
         }
