@@ -49,8 +49,9 @@
             </div>
           </div>
         </div>
-        <div class="btn-box">
-          <div v-if="orderMsg.status * 1 === 1" class="btn-text" @click.stop="jumpTrace(item)">物流信息</div>
+        <div class="btn-box" v-if="orderMsg.status * 1 === 1 || orderMsg.delivery_status * 1 === 0">
+          <div class="btn-text" :class="delivery_status * 1 === 0 ? 'btn-text-color' : ''" @click.stop="jumpTrace(item)" v-if="orderMsg.status * 1 === 1">物流信息</div>
+          <div class="btn-text" @click.stop="deliverySubmit(item)" v-if="orderMsg.delivery_status * 1 === 0">确认收货</div>
         </div>
       </div>
     </div>
@@ -129,7 +130,7 @@
             this.orderMsg = res.data
             this.address = res.data.address
             this.goodsList = res.data.goods
-            console.log(this.address)
+            console.log(this.orderMsg)
             if (this.orderMsg.status * 1 === 0) {
               this.getActiveEndTime(this.orderMsg.remind_timestamp)
             }
@@ -252,7 +253,19 @@
       // 跳转物流信息
       jumpTrace(item) {
         console.log(item)
-        wx.navigateTo({url: `${this.$routes.postage.DISTRIBUTION_DETAIL}?id=${item.goods_sku_id}&orderSn=${this.orderMsg.order_sn}`})
+        wx.navigateTo({url: `${this.$routes.postage.DISTRIBUTION_DETAIL}?id=${item.goods_sku_id}&orderSn=${this.orderMsg.market_order_sn}`})
+      },
+      // 确认收货
+      deliverySubmit(item) {
+        console.log(item)
+        let arr = []
+        arr[0] = item.order_detail_id
+        API.Postage.deliverySubmitFn({ids: arr}).then(res => {
+          if (res.error !== this.$ERR_OK) {
+            return
+          }
+          this.getGoodsDetailData()
+        })
       }
     }
   }
@@ -263,7 +276,7 @@
 
   .order-detail
     width: 100%
-    padding-bottom: 0px
+    padding-bottom: 0
   .order-banner
     width: 100vw
     height: 70px
@@ -553,7 +566,8 @@
         border: 0.5px solid $color-text-assist
         box-sizing: border-box
   .btn-box
-    padding: 5px 3.2vw 15px
+    padding-right: 3.2vw
+    margin: 5px 0 15px
     layout(row)
     justify-content: flex-end
     .btn-text
@@ -562,7 +576,11 @@
       font-size: $font-size-12
       width: 70px
       height: 25px
+      margin-left: 15px
       line-height: 25px
       text-align: center
       border-1px($color-main, 15px)
+    .btn-text-color
+      color: #111111
+      border-1px(#B7B7B7, 15px)
 </style>

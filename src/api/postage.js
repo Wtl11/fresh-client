@@ -107,5 +107,25 @@ export default {
   getDistributionDetail(data, loading = false) {
     const url = baseURL.marketApi + `/api/wap/order-logistics-trace-info`
     return request.post(url, data, loading)
+  },
+  /**
+   * 全国包邮订单是否有新消息[v2.8.5]
+   * @param id
+   * @param loading
+   * @returns {*}
+   */
+  getFreeNotify(data, loading = false) {
+    let url = `/api/wap/free-post-order-notify`
+    return request.get(url, data, loading)
+  },
+  /**
+   *  确定提货/确定收货[v2.8.5]
+   * @param id
+   * @param loading
+   * @returns {*}
+   */
+  deliverySubmitFn(data, loading = false) {
+    let url = `/api/wap/delivery`
+    return request.post(url, data, loading)
   }
 }

@@ -188,7 +188,7 @@
       buttonInfo() {
         return {
           activeStatus: this.activeStatus || 0,
-          btnText: this.btnText || '',
+          btnText: this.btnText || '已售罄',
           isShowTwoButton: this.isShowTwoButton || false,
           tradePrice: this.goodsMsg.trade_price || 0,
           salePrice: this.goodsMsg.goods_sale_price || 0,

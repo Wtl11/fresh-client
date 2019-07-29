@@ -15,7 +15,7 @@
         <div class="order-title-name">全国包邮</div>
       </div>
       <div class="order-title-right">
-        <div class="right-name">查看订单</div>
+        <div class="right-name" :class="newNotify * 1 === 1 ? 'explain-red' : ''">查看订单</div>
         <img v-if="imageUrl" :src="imageUrl+'/yx-image/2.3/icon-pressed@2x.png'" alt="" class="right-icon">
       </div>
     </div>
@@ -103,7 +103,8 @@
         tabIdx: 0,
         status: '',
         orderPage: 1,
-        orderMore: false
+        orderMore: false,
+        newNotify: ''
       }
     },
     onLoad(e) {
@@ -112,6 +113,7 @@
     },
     onShow() {
       this.getOrderList(this.tabIdx)
+      this._getPostageNotify()
     },
     onUnload() {
       this.groupTimer && clearInterval(this.groupTimer)
@@ -210,6 +212,15 @@
       jumpPostage(item) {
         wx.navigateTo({
           url: `${this.$routes.postage.ORDER_LIST}?id=&index=0`
+        })
+      },
+      // 全国包邮订单是否有新消息[v2.8.5]
+      _getPostageNotify() {
+        API.Postage.getFreeNotify().then(res => {
+          if (res.error !== this.$ERR_OK) {
+            return
+          }
+          this.newNotify = res.data.has_new_notify
         })
       }
     }
@@ -475,5 +486,18 @@
         font-size: $font-size-14
         font-family: $font-family-regular
         color: #666
-        margin-right: 5px
+        padding-right: 5px
+      .explain-red
+        padding-right: 10px
+        position: relative
+        &:after
+          width: 5px
+          height: 5px
+          display: block
+          position: absolute
+          right: 5px
+          top: 0
+          border-radius: 50%
+          background: #FE3B39
+          content: ''
 </style>
