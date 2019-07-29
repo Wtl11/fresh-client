@@ -100,7 +100,7 @@
         nearbyIsEmpty: false
       }
     },
-    async onLoad(options) {
+    async onLoad(options = {}) {
       this._options = options
       // this.groupInfo = getApp().globalData.$groupInfo
       this._groupInfo()

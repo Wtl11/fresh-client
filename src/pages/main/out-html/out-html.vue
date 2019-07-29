@@ -24,7 +24,7 @@
     components: {
       // NavigationBar
     },
-    onLoad(e) {
+    onLoad(e = {}) {
       const chartsConfig = this.getChartsConfig(e.routeType)
       const recruit = this.recruitConfig(e.routeType)
       this.url = e.url || chartsConfig || recruit

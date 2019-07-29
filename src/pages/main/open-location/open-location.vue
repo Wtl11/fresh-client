@@ -22,7 +22,7 @@
     },
     onLoad() {},
     onShow() {
-      wx.getSetting({
+      wx && wx.getSetting && wx.getSetting({
         success: (data) => {
           if (data && data.authSetting && data.authSetting['scope.userLocation']) {
             wx.getLocation({
