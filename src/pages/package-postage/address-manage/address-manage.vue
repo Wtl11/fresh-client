@@ -57,16 +57,19 @@
     },
     methods: {
       ...postageMethods,
+      // 新建跳转
       openAddress() {
         wx.navigateTo({
           url: this.$routes.postage.EDIT_ADDRESS
         })
       },
+      // 编辑跳转
       editAddress(id) {
         wx.navigateTo({
           url: `${this.$routes.postage.EDIT_ADDRESS}?id=${id}`
         })
       },
+      // 获取地址列表
       async _getAddressList() {
         let res = await API.Postage.getAddress()
         if (res.error !== this.$ERR_OK) {
@@ -76,6 +79,7 @@
         this.addressList = res.data
         this.isRequest = true
       },
+      // 选择地址
       selectAddress(item) {
         if (this.select) {
           this.setCurrentAddress(item)

@@ -82,18 +82,22 @@
       }
     },
     methods: {
+      // 选择省市区
       getBank (e) {
         let arr = e.mp.detail.value
         this.addressMsg.province = arr[0]
         this.addressMsg.city = arr[1]
         this.addressMsg.area = arr[2]
       },
+      // 是否默认
       switchChange(e) {
         this.addressMsg.is_default = e.mp.detail.value ? 1 : 0
       },
+      // 是否删除
       _delAddress() {
         this.$refs.msg.show()
       },
+      // 提交
       async _submit() {
         if (this.addressMsg.province === '') {
           this.$wechat.showToast('请选择城市')
@@ -158,6 +162,7 @@
           }
         })
       },
+      // 获取地址详情
       _getAddressDetail() {
         API.Postage.addressDetail(this.id).then((res) => {
           if (res.error === this.$ERR_OK) {

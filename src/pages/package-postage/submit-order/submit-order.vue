@@ -82,6 +82,7 @@
     methods: {
       ...postageMethods,
       ...orderMethods,
+      // 获取默认地址
       _getAddressDetail() {
         API.Postage.addressDetail(0).then((res) => {
           if (res.error === this.$ERR_OK) {
@@ -91,11 +92,13 @@
           }
         })
       },
+      // 跳转地址
       selectAddress() {
         wx.navigateTo({
           url: `${this.$routes.postage.ADDRESS_MANAGE}?select=1`
         })
       },
+      // 去支付
       async _goPay() {
         if (!this.addressMsg.name.length) {
           this.$wechat.showToast('请选择收货地址！')

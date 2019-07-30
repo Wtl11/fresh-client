@@ -108,10 +108,12 @@
       this.getGoodsDetailData()
     },
     methods: {
+      // 获取页面参数
       _initPageParams() {
         let options = this._$$initOptions()
         this.orderId = options.id
       },
+      // 复制订单号
       clipOrderId() {
         let that = this
         that.$wx.setClipboardData({
@@ -124,13 +126,13 @@
           }
         })
       },
+      // 获取订单详情
       getGoodsDetailData() {
         API.Postage.getOrderDetailData(this.orderId).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.orderMsg = res.data
             this.address = res.data.address
             this.goodsList = res.data.goods
-            console.log(this.orderMsg)
             if (this.orderMsg.status * 1 === 0) {
               this.getActiveEndTime(this.orderMsg.remind_timestamp)
             }
@@ -140,8 +142,6 @@
         })
       },
       _groupTimeCheckoutNoDay(time) {
-        // let nowSecond = parseInt(Date.now() / 1000)
-        // let differ = time * 1 - nowSecond
         let differ = time * 1
         let hour = Math.floor(differ / (60 * 60))
         hour = hour >= 10 ? hour : '0' + hour
@@ -181,6 +181,7 @@
           }
         }, 1000)
       },
+      // 支付
       goPay() {
         API.SubmitOrder.rePayment(this.orderId)
           .then(res => {
@@ -202,6 +203,7 @@
             })
           })
       },
+      // 支付成功
       _paySuccess(res) {
         let count = 0
         this.$wechat.showLoading()
@@ -252,12 +254,10 @@
       },
       // 跳转物流信息
       jumpTrace(item) {
-        console.log(item)
         wx.navigateTo({url: `${this.$routes.postage.DISTRIBUTION_DETAIL}?id=${item.goods_sku_id}&orderSn=${this.orderMsg.market_order_sn}`})
       },
       // 确认收货
       deliverySubmit(item) {
-        console.log(item)
         let arr = []
         arr[0] = item.order_detail_id
         API.Postage.deliverySubmitFn({ids: arr}).then(res => {

@@ -56,7 +56,6 @@
               this.distributionName = res.data[0].logistics_company_name
               this.distributionList = res.data[0].logistics_steps
             }
-            console.log(res.data)
           } else {
             this.$wechat.showToast(res.message)
           }

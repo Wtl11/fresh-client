@@ -216,12 +216,12 @@
         API.Choiceness.getGoodsBuyInfo(this.goodsId, {activity_id: ''}).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.buyGoodsInfo = res.data
-            console.log(this.buyGoodsInfo)
           } else {
             this.$wechat.showToast(res.message)
           }
         })
       },
+      // 重置数据
       _resetReqListParams() {
         this.page = 1
         this.hasMore = true
@@ -347,7 +347,6 @@
           total: total,
           deliverAt: ''
         }
-        console.log(goodsList)
         this.setOrderInfo(orderInfo)
         wx.navigateTo({url: `${this.$routes.postage.SUBMIT_ORDER}`})
       }

@@ -127,6 +127,7 @@
       getStatusName(status) {
         return this.groupStatusArr[status] || '试试'
       },
+      // 切换Tab
       getStatus(tabIdx) {
         let status = ''
         switch (tabIdx * 1) {
@@ -148,6 +149,7 @@
         }
         return status
       },
+      // 获取订单列表
       getOrderList(tabIdx, getMore = false) {
         let ol = this.orderListArr[tabIdx]
         console.log(tabIdx, ol)
@@ -201,6 +203,7 @@
           clearT && clearInterval(this.groupTimer)
         }, 1000)
       },
+      // 设置Index值
       selectIndex(item, index) {
         this.groupTimer && clearInterval(this.groupTimer)
         this.status = item.status
@@ -240,6 +243,7 @@
         }
         this.staffInfo = res.data
       },
+      // 保存微信号
       _drawPosterDone() {
         this.$wx.downloadFile({
           url: this.staffInfo.image_url,

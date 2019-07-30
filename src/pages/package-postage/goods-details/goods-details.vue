@@ -233,15 +233,18 @@
     methods: {
       ...orderMethods,
       ...cartMethods,
+      // 获取参数
       _initPageParams() {
         let options = this._$$initOptions()
         this.id = options.id
       },
+      // banner切换
       bannerChange(e) {
         if (e.mp.detail.source !== 'touch') return
         let curNum = e.target.current * 1 + !this.hasVideo
         this.changeCurrentNum(curNum)
       },
+      // banner切换
       changeCurrentNum(curNum) {
         this.autoplayTimer && clearTimeout(this.autoplayTimer)
         if (curNum !== this.currentNum) {
