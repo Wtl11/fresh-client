@@ -50,7 +50,7 @@
           </div>
         </div>
         <div class="btn-box" v-if="orderMsg.status * 1 === 1 || orderMsg.delivery_status * 1 === 0">
-          <div class="btn-text" :class="delivery_status * 1 === 0 ? 'btn-text-color' : ''" @click.stop="jumpTrace(item)" v-if="orderMsg.status * 1 === 1">物流信息</div>
+          <div class="btn-text" :class="item.delivery_status * 1 === 0 ? 'btn-text-color' : ''" @click.stop="jumpTrace(item)" v-if="orderMsg.status * 1 === 1">物流信息</div>
           <div class="btn-text" @click.stop="deliverySubmit(item)" v-if="item.delivery_status * 1 === 0">确认收货</div>
         </div>
       </div>
@@ -58,7 +58,7 @@
     <div class="order-all">
       <div class="order-left">实付金额</div>
       <div class="order-right"><span class="all-price">{{orderMsg.total}}</span><span class="all-text">元</span></div>
-    </div>item
+    </div>
     <div class="page-line"></div>
     <div class="order-info">
       <div class="order-iden">
@@ -573,6 +573,7 @@
     .btn-text
       font-family: $font-family-regular
       color: $color-main
+      font-size: $font-size-12
       width: 70px
       height: 25px
       margin-left: 15px
