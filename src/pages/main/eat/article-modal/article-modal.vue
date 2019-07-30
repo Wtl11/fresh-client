@@ -5,7 +5,7 @@
     <div class="article" :class="'article' + articleList.length" v-if="articleList.length <3 ">
       <div v-for="(item, index) in articleList" :key="index" class="article-item" @click="goDetail(item)">
         <div class="shade"></div>
-        <img mode="aspectFill" :src="item.image_url" class="article-modal-img">
+        <img mode="widthFix" :src="item.image_url" class="article-modal-img">
         <div class="article-modal-title">{{item.title}}</div>
       </div>
     </div>
@@ -13,18 +13,18 @@
     <div class="article article3" v-if="articleList.length === 3">
       <div class="article-item" @click="goDetail(articleList[0])">
         <div class="shade"></div>
-        <img mode="aspectFill" :src="articleList[0].image_url" class="article-modal-img">
+        <img mode="widthFix" :src="articleList[0].image_url" class="article-modal-img">
         <div class="article-modal-title">{{articleList[0].title}}</div>
       </div>
       <div class="article-left">
         <div class="article-item" @click="goDetail(articleList[1])">
           <div class="shade"></div>
-          <img mode="aspectFill" :src="articleList[1].image_url" class="article-modal-img">
+          <img mode="widthFix" :src="articleList[1].image_url" class="article-modal-img">
           <div class="article-modal-title">{{articleList[1].title}}</div>
         </div>
         <div class="article-item" @click="goDetail(articleList[2])">
           <div class="shade"></div>
-          <img mode="aspectFill" :src="articleList[2].image_url" class="article-modal-img">
+          <img mode="widthFix" :src="articleList[2].image_url" class="article-modal-img">
           <div class="article-modal-title">{{articleList[2].title}}</div>
         </div>
       </div>
