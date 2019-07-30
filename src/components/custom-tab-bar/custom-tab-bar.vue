@@ -16,7 +16,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import {cartComputed} from '@state/helpers'
+  import { cartComputed } from '@state/helpers'
   import $$routes from '@utils/routes'
 
   const COMPONENT_NAME = 'NAVIGATION_BOTTOM'
@@ -26,6 +26,12 @@
       imgUrlActive: '/yx-image/retuan/hdpi/icon-select_press01.png',
       text: '首页',
       type: 'index'
+    },
+    {
+      imgUrl: '/yx-image/retuan/hdpi/icon-eat_1@2x.png',
+      imgUrlActive: '/yx-image/retuan/hdpi/icon-eat_2@2x.png',
+      text: '吃什么',
+      type: 'eat'
     },
     {
       imgUrl: '/yx-image/retuan/hdpi/icon-goodscart.png',
@@ -46,6 +52,12 @@
       imgUrlActive: '/yx-image/retuan/hdpi/icon-select_press.png',
       text: '首页',
       type: 'index'
+    },
+    {
+      imgUrl: '/yx-image/retuan/hdpi/icon-eat_1@2x.png',
+      imgUrlActive: '/yx-image/retuan/hdpi/icon-eat_2@2x.png',
+      text: '吃什么',
+      type: 'eat'
     },
     {
       imgUrl: '/yx-image/retuan/hdpi/icon-goodscart.png',
@@ -97,14 +109,18 @@
         if (item.type === this.currentType) return
         switch (item.type) {
           case 'index':
-            wx.switchTab({url: $$routes.main.CHOICENESS})
+            wx.switchTab({ url: $$routes.main.CHOICENESS })
             break
           case 'cart':
-            wx.switchTab({url: $$routes.main.SHOPPING_CART})
+            wx.switchTab({ url: $$routes.main.SHOPPING_CART })
             await this.$isLogin()
             break
           case 'mine':
-            wx.switchTab({url: $$routes.main.MINE})
+            wx.switchTab({ url: $$routes.main.MINE })
+            await this.$isLogin()
+            break
+          case 'eat':
+            wx.switchTab({ url: $$routes.main.EAT })
             await this.$isLogin()
             break
           default:
@@ -116,7 +132,7 @@
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
- @import "~@designCommon"
+  @import "~@designCommon"
 
   .navigation-bottom
     width: 100%
@@ -137,7 +153,7 @@
     background: #fff
     z-index: 200
     .nav-list-box
-      width: 33.3333vw
+      width: 25%
       height: 49px
       layout()
       align-items: center

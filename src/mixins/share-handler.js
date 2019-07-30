@@ -1,15 +1,16 @@
 import API from '@api'
+
 export default {
-  data () {
+  data() {
     return {
       $loginCode: {}
     }
   },
-  async onLoad () {
+  async onLoad() {
     await this.getCode()
   },
   methods: {
-    async $$shareHandler (args) {
+    async $$shareHandler(args) {
       const token = wx.getStorageSync('token')
       if (!token) return
       const options = wx.getStorageSync('options')
@@ -20,7 +21,7 @@ export default {
         const openGId = wx.getStorageSync('openGId')
         if (openGId) {
           const flag = options.query.flag
-          const share = new Share({...args, flag, openGId})
+          const share = new Share({ ...args, flag, openGId })
           API.Share.sendMsgWxGroup(share)
           return
         }
@@ -42,7 +43,7 @@ export default {
           if (!openGId) return
           wx.setStorageSync('openGId', openGId)
           const flag = options.query.flag
-          const share = new Share({...args, flag, openGId})
+          const share = new Share({ ...args, flag, openGId })
           API.Share.sendMsgWxGroup(share)
         } catch (e) {
           console.warn(e)
@@ -50,7 +51,7 @@ export default {
       })
     },
     async checkCode() {
-      await this.$wechat.checkSession().catch(async() => {
+      await this.$wechat.checkSession().catch(async () => {
         await this.getCode()
       })
     },
@@ -72,6 +73,7 @@ export default {
 * copy-detail 团长-商品-页 ---> goods-detail 活动详情页
 * coupon-share 团长-优惠券发放页 ---> coupon-take 领取优惠券 2006
 * goods-detail 商品购买记录 2007
+* article-detail 文章详情
 * */
 export const EVENT_CODE = {
   FLASH_SALE_LIST: 2001,
@@ -81,11 +83,13 @@ export const EVENT_CODE = {
   SHARE_ORDER: 2005,
   COUPON_TAKE: 2006,
   GOODS_RECORD: 2007,
-  COLLAGE_DETAIL: 2008
+  COLLAGE_DETAIL: 2008,
+  ARTICLE_DETAIL: 2009,
+  EAT: 2010
 }
 
 export class Share {
-  constructor (props) {
+  constructor(props) {
     this.open_gid = props.openGId || ''
     this.randomstr = props.flag || ''
     this.event = props.event || ''
@@ -95,6 +99,7 @@ export class Share {
     this.goods_id = +props.goodsId || ''
     this.sku_id = +props.skuId || ''
     this.sku_code = props.skuCode || ''
+    this.article_id = +props.articleId || ''
     if (this.event === EVENT_CODE.GOODS_DETAIL) {
       this.event = this.activity_id
         ? EVENT_CODE.ACTIVE_DETAIL

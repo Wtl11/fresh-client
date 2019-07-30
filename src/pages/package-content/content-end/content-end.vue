@@ -2,8 +2,8 @@
   <div class="goods-end">
     <navigation-bar :title="shopName" :showArrow="false"></navigation-bar>
     <div class="goods-end-box">
-      <img v-if="imageUrl" class="goods-end-img" :src="imageUrl+'/yx-image/order/pic-end@2x.png'" alt="">
-      <div class="goods-end-text">活动已结束</div>
+      <img v-if="imageUrl" class="goods-end-img" :src="imageUrl+'/yx-image/article/pic-noresult@2x.png'">
+      <div class="goods-end-text">主人，文章下线啦～</div>
       <div class="goods-go-index" :class="'corp-' + corpName + '-bg'" @click="goBack">返回首页</div>
     </div>
   </div>
@@ -12,15 +12,16 @@
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
 
-  const PAGE_NAME = 'GOODS_END'
+  const PAGE_NAME = 'CONTENT_END'
 
   export default {
     name: PAGE_NAME,
-    data() {
-      return {}
-    },
     components: {
       NavigationBar
+    },
+    data() {
+      return {
+      }
     },
     methods: {
       goBack() {
@@ -62,3 +63,4 @@
   .goods-end
     width: 100%
 </style>
+

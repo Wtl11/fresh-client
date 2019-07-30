@@ -1,7 +1,8 @@
 <template>
   <div class="after-sale-management">
     <navigation-bar title="消费者订单"></navigation-bar>
-    <div class="after-header">
+    <div class="after-header"></div>
+    <div class="after-header" :style="{position:'fixed', top: statusBarHeight + 44 + 'px',zIndex: 50, left:0, right: 0}">
       <!--<div class="after-search">-->
         <!--<img :src="imageUrl + '/yx-image/group/icon-search@2x.png'" v-if="imageUrl" class="search-icon">-->
         <!--<input type="text" class="search" placeholder="提供单号，手机号，微信昵称，搜索" placeholder-class="search-pal" v-model="keyword" @input="_search"/>-->
@@ -13,7 +14,7 @@
             type="text"
             placeholder="提供单号，手机号，微信昵称"
             placeholder-class="input-p"
-            :focus="true"
+            :focus="false"
             confirm-type="search"
             @focus="handleFocus"
             @blur="handleBlur"
@@ -160,7 +161,8 @@
         scrollHeight: 0,
         todayList: [],
         yesterdayList: [],
-        list: []
+        list: [],
+        statusBarHeight: 0
       }
     },
     computed: {
@@ -190,16 +192,21 @@
       console.log(this.pageObj[this.nav[this.navIndex].status + 'Page'])
       this.pageObj[this.nav[this.navIndex].status + 'Page']++
       await this._setList()
-      console.log(222)
+    },
+    onReady() {
+      let res = this.$wx.getSystemInfoSync()
+      this.statusBarHeight = res.statusBarHeight || 20
+      this.width = res.screenWidth
+      this.scrollHeight = res.screenHeight - 145 - res.statusBarHeight
     },
     async onShow() {
-      let data = this.$wx.getSystemInfoSync()
-      this.$wx.getSystemInfo({
-        success: (res) => {
-          this.width = res.screenWidth
-          this.scrollHeight = res.screenHeight - 145 - data.statusBarHeight
-        }
-      })
+      // let data = this.$wx.getSystemInfoSync()
+      // this.$wx.getSystemInfo({
+      //   success: (res) => {
+      //     this.width = res.screenWidth
+      //     this.scrollHeight = res.screenHeight - 145 - data.statusBarHeight
+      //   }
+      // })
       await this._setList(1, 'today', true)
     },
     methods: {
@@ -328,7 +335,7 @@
 
   .big-box
     width: 100vw
-    overflow: hidden
+    overflow-x: hidden
     .order-big-box
       width: 300vw
       display: flex

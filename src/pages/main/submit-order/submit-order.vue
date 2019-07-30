@@ -200,8 +200,11 @@
     onUnload() {
       this.setCommodityItem({})
       this.saveCoupon({})
+      this.setArticleId(0)
     },
     async onShow() {
+      // 文章进入详情 带参数
+      console.log('this.articleId', this.articleId)
       // ald && ald.aldstat.sendEvent('去支付')
       Ald.sendEvent('去支付')
       this._getCode()
@@ -326,6 +329,14 @@
           longitude
         }
         this.userInfo.mobile = this.mobile
+        console.log('before:', orderInfo, this.articleId)
+
+        // 文章进入直接支付
+        if (this.articleId) {
+          orderInfo.scenes = 'article'
+          orderInfo.scenes_data = this.articleId
+        }
+        console.log('after:', orderInfo)
         this.$wechat.setStorage('userInfo', this.userInfo)
         await this.submitOrder({ orderInfo, isFree: this.isFree })
       },
@@ -388,6 +399,7 @@
       right: 0
       z-index: 999
       background: rgba(17, 17, 17, 0.7)
+
     .share-panel
       position: fixed
       bottom: -130%
@@ -396,17 +408,21 @@
       width: 100%
       z-index: 9999
       transition: all .5s
+
       &.show
         bottom: 0
+
       .title
         padding-top: 22px
         font-family: $font-family-medium
         font-size: 16px
         color: #111111
         text-align: center
+
         .distance
           color: #FA7500
           padding: 0 3px
+
       .sub-title
         padding-top: 6px
         font-family: $font-family-regular
@@ -414,44 +430,54 @@
         color: #FA7500
         letter-spacing: 0
         text-align: center
+
       .box-wrapper
         background: #F7F7F7
         border-radius: 4px
         margin: 20px 12px 14.5px
         padding: 20px 15px
+
         .item-wrapper
           display: flex
           font-family: $font-family-regular
           font-size: 14px
           margin-bottom: 16px
+
           .left
             width: 80px
             color: #616161
+
           .right
             flex: 1
             color: $color-text-main
+
         .last-item-wrapper
           display: flex
           font-family: $font-family-regular
+
           .l-title
             flex: 1
             font-size: 14px
             color: $color-text-main
             text-align: right
+
           .l-number
             font-family: $font-family-bold
             font-size: 16px;
             color: #FF8506;
             position: relative
             bottom: 1px
+
           .l-unit
             font-size: 14px;
             color: #FF8506;
             margin-left: 1px
             position: relative
             bottom: 0px
+
       .button-group
         display: flex
+
         .button-wrapper
           flex: 1
           height: 55px
@@ -461,8 +487,10 @@
           text-align: center
           line-height: @height
           box-sizing: border-box
+
           &.left
             border-top: 1px solid $color-line
+
           &.right
             background: #73C200;
             color: #FFFFFF;
@@ -474,19 +502,23 @@
     background: #fff
     border-top-1px(#e6e6e6)
     border-bottom: 11px solid $color-background
+
     .new-rule-wrapper
       padding-top: 6px
       font-size: 12px;
       text-align: right;
       color: #FF8506
+
     .total-wrapper
       display: flex
       align-items: center
       font-size: 14px
       line-height: 1
+
       .name
         flex: 1
         color: #000000
+
       .price
         font-family: $font-family-medium
 
@@ -497,24 +529,30 @@
     font-size: 14px;
     line-height: 1
     background: #fff
+
     .coupon-item
       display: flex
       align-items: center
       padding: 10px 0
+
     .name
       flex: 1
       color: #000000
+
     .price
       font-size: 16px
       font-family: $font-family-medium
+
     .price-disable
       font-size: 14px
       color: #808080
+
     .item-arrow-img
       margin-left: 5px
       display: block
       width: 7.5px
       height: 12.5px
+
       .img
         display: block
         width: 100%
@@ -539,20 +577,24 @@
     box-sizing: border-box
     padding-left: 3.2vw
     background: #fff
+
     .order-info-top
       padding: 15px 3.2vw 15px 0
       box-sizing: border-box
       border-bottom-1px(#e6e6e6)
+
       .info-address
         font-size: 15px
         color: #000000
         font-family: $font-family-regular
         line-height: 20px
         min-height: 20px
+
       .info-phone
         layout(row)
         align-items: center
         margin-bottom: 10px
+
         .icon-text
           font-size: $font-size-12
           color: $color-white
@@ -564,19 +606,23 @@
           box-sizing: border-box
           margin-right: 10px
           border-radius: 2px
+
         .icon-number
           font-size: $font-size-15
           color: $color-text-sub
           font-family: $font-family-regular
+
           .name
             font-size: $font-size-15
             color: $color-text-main
             font-family: $font-family-medium
             margin-right: 10px
+
           .txt
             font-size: $font-size-15
             color: $color-text-sub
             font-family: $font-family-regular
+
     .order-info-bottom
       height: 56px
       line-height: 56px
@@ -585,16 +631,19 @@
       justify-content: space-between
       padding-right: 3.2vw
       box-sizing: border-box
+
       .info-bottom-phone
         font-size: $font-size-15
         color: #000000
         font-family: $font-family-medium
         layout(row)
         align-items: center
+
         .lable
           font-size: $font-size-15
           color: #000000
           font-family: $font-family-medium
+
         .mobile
           font-size: $font-size-15
           color: #000000
@@ -602,6 +651,7 @@
           height: 100%
           line-height: 100%
           font-family: $font-family-medium
+
           .mobile-content
             width: 34vw
             box-sizing: border-box
@@ -609,6 +659,7 @@
             height: 20px
             line-height: 20px
             padding: 0 2px
+
       .wechat-btn
         font-size: $font-size-12
         color: $color-main
@@ -618,6 +669,7 @@
         width: 104px
         text-align: center
         border-1px($color-main, 15px)
+
       .wechat-btn-retuan
         color: #FC4D1A
         border-1px(#FC4D1A, 15px)
@@ -632,6 +684,7 @@
     background: #fff
     padding-left: 3.2vw
     box-sizing: border-box
+
     .list-item
       padding-right: 3.2vw
       box-sizing: border-box
@@ -639,18 +692,22 @@
       layout(row)
       align-items: center
       border-bottom-1px(#e6e6e6)
+
       .item-left-img
         width: 20vw
         height: 20vw
         margin-right: 2.6vw
+
         img
           width: 100%
           height: 100%
           background: #fff
           border-radius: 2px
+
       .item-right
         flex: 1
         overflow: hidden
+
         .title
           font-size: $font-size-14
           color: $color-sub
@@ -659,6 +716,7 @@
           margin-bottom: 7px
           min-height: 16px
           no-wrap()
+
         .sub-title
           font-size: $font-size-14
           color: $color-text-sub
@@ -666,34 +724,42 @@
           line-height: 1
           margin-bottom: 23px
           min-height: $font-size-14
+
         .price-box
           layout(row)
           align-items: center
           justify-content: space-between
+
           .price-left
             layout(row)
             align-items: flex-end
+
             .number
               font-size: $font-size-16
               color: $color-text-main
               font-family: $font-family-regular
+
             .icon
               font-size: $font-size-11
               color: #1f1f1f
               font-family: $font-family-regular
               padding-bottom: 2px
+
           .price-right
             layout(row)
             align-items: flex-end
+
             .number
               font-size: $font-size-16
               color: $color-text-main
               font-family: $font-family-regular
+
             .icon
               font-size: $font-size-12
               color: #1f1f1f
               font-family: $font-family-regular
               padding-bottom: 2px
+
       &:last-child
         border-none()
 
@@ -709,15 +775,18 @@
     padding: 0 3.2vw
     box-sizing: border-box
     background: #fff
+
     .money
       font-size: $font-size-16
       font-family: $font-family-medium
       display: flex
       align-items: flex-end
+
       .explain
         font-family: $font-family-regular
         font-size: 14px
         color: $color-text-main
+
     .pay
       position absolute
       right: 0

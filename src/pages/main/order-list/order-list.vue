@@ -107,9 +107,9 @@
         newNotify: ''
       }
     },
-    onLoad(e) {
-      this.status = e.id
-      this.tabIdx = e.index
+    onLoad(e = {}) {
+      this.status = e.id || 0
+      this.tabIdx = e.index || 0
     },
     onShow() {
       this.getOrderList(this.tabIdx)

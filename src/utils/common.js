@@ -1,7 +1,7 @@
 import API from '@api'
 import * as wechat from './wechat'
-import {ERR_OK} from '@utils/config'
-import {SCENE_QR_CODE, SCENE_DEFAULT, SCENE_SHARE} from './contants'
+import { ERR_OK } from '@utils/config'
+import { SCENE_QR_CODE, SCENE_DEFAULT, SCENE_SHARE } from './contants'
 import $$routes from '@utils/routes'
 
 const shareArr = [1007, 1008, 1036, 1044, 1073, 1074]
@@ -16,6 +16,7 @@ export function entryAppType(options) {
   let source = isShare ? SCENE_SHARE : isQrcord ? SCENE_QR_CODE : SCENE_DEFAULT
   return source
 }
+
 /* 深度拷贝 */
 export function objDeepCopy(source) {
   let sourceCopy = source instanceof Array ? [] : {}
@@ -160,6 +161,7 @@ function getUrl(path = '', query = {}) {
 
 // 白名单
 const WHITE_LIST = ['pages/recommend', 'pages/coupon-take']
+
 // 凭证失效时重新调起接口请求获取登录
 export async function silentAuthorization() {
   /* eslint-disable no-undef */
@@ -172,7 +174,7 @@ export async function silentAuthorization() {
     return
   }
   let codeJson = await wechat.login()
-  let tokenJson = await API.Login.getToken({code: codeJson.code}, false)
+  let tokenJson = await API.Login.getToken({ code: codeJson.code }, false)
   if (tokenJson.error === ERR_OK) {
     wx.setStorageSync('token', tokenJson.data.access_token)
     wx.setStorageSync('userInfo', tokenJson.data.customer_info)
@@ -180,7 +182,7 @@ export async function silentAuthorization() {
     await getCurrentPages()[getCurrentPages().length - 1].onShow()
     return
   }
-  wx.reLaunch({url: $$routes.main.LOGIN})
+  wx.reLaunch({ url: $$routes.main.LOGIN })
 }
 
 // 两个浮点数求和
@@ -234,15 +236,19 @@ export function resolveQueryScene(scene = '') {
   let activityId = 0
   let marketId = 0
   let employeeId = 0
+  let preview = 0
+  let articleId = 0
   if (scene) {
     try {
       let sceneMsg = decodeURIComponent(scene)
       const params = getParams(sceneMsg)
       shopId = +params.shopId || +params.s || 0
       goodsId = +params.id || +params.g || 0
+      articleId = +params.articleId || +params.a || 0
       activityId = +params.activityId || +params.a || 0
       marketId = +params.marketId || +params.m || 0
       employeeId = +params.employeeId || +params.e || 0
+      preview = +params.preview || +params.p || 0
     } catch (e) {
       console.error(e)
     }
@@ -252,12 +258,14 @@ export function resolveQueryScene(scene = '') {
     goodsId,
     activityId,
     marketId,
-    employeeId
+    employeeId,
+    articleId,
+    preview
   }
 }
 
 // 优惠券金额处理
-export function formatCouponMoney (money = '') {
+export function formatCouponMoney(money = '') {
   const arr = ('' + money).split('.')
   return {
     int: arr[0],

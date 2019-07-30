@@ -1,10 +1,19 @@
 // PACKAGE_PATH
+const CONTENT = '/package-content'
 const POSTAGE = '/package-postage'
 const ACTIVITY = '/package-activity'
 const LEADER = '/package-leader'
 const MAIN = '/pages'
 /* eslint-disable */
 export default {
+  content: {
+    PACKAGE: CONTENT,
+    CONTENT_ARTICLES:`${CONTENT}/content-articles`,
+    CONTENT_ARTICLES_DETAIL:`${CONTENT}/content-article-detail`,
+    CONTENT_ARTICLES_DETAIL_VIDEO:`${CONTENT}/content-article-detail-video`,
+    CONTENT_END:`${CONTENT}/content-end`,
+    // package-content
+  },
   postage: {
     PACKAGE: POSTAGE,
     GOODS_DETAILS:`${POSTAGE}/goods-details`,
@@ -87,6 +96,7 @@ export default {
     SUBMIT_ORDER: `${MAIN}/submit-order`,
     INVITATION_CHOOSE:`${MAIN}/invitation-choose`,
     FREEZE_SHOP:`${MAIN}/freeze-shop`,
+    EAT:`${MAIN}/eat`,
     // main
   }
 }

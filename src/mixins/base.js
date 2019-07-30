@@ -1,6 +1,7 @@
 import API from '@api'
 import DefaultMsg from './default-msg'
 import {ERR_OK} from '@utils/config'
+import routes from '@utils/routes'
 // import {isEmptyObject} from '@utils/common'
 // 不自动发送的页面
 const UN_AUTO_SNED_PAGE = [
@@ -17,7 +18,8 @@ const UN_AUTO_SNED_PAGE = [
   'open-location',
   'share-order',
   'freeze-shop',
-  'choose-pickup'
+  'choose-pickup',
+  routes.content.CONTENT_END
 ]
 export default {
   onLoad(e) {
@@ -51,11 +53,12 @@ export default {
     //   console.log(pr, pd, scene, options)
     // },
     _autoSend() {
+      if (!wx.getStorageSync('shopId')) return
       if (!this.$mp) return
       if (this.$mp.mpType !== 'page') return
       if (!this.$mp.page) return
       const _pp = this.$mp.page.route
-      let flag = UN_AUTO_SNED_PAGE.some(val => RegExp(val).test(_pp))
+      let flag = UN_AUTO_SNED_PAGE.some(val => RegExp(val).test(_pp) || RegExp(_pp).test(val))
       if (flag) return
       this.$$sendEvent()
     },

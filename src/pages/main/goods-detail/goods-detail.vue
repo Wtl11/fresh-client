@@ -1,7 +1,7 @@
 <template>
   <form action="" report-submit @submit="$getFormId">
     <div class="active-detail">
-      <navigation-bar ref="navigationBar" :title="msgTitle" :translucent="true" :arrowUrl="arrowUrl"></navigation-bar>
+      <navigation-bar ref="navigationBar" :title="msgTitle" :translucent="true" :arrowUrl="arrowUrl" @scrollingShowTitle="scrollingShowTitle"></navigation-bar>
       <section class="banner-box">
         <section v-if="buyUsers.length" class="buy-users" :style="{top: statusBarHeight + 44 + 'px'}">
           <swiper
@@ -29,8 +29,8 @@
               <swiper-item class="banner-item">
                 <video v-if="goodsMsg.goods_videos && goodsMsg.goods_videos[0] && goodsMsg.goods_videos[0].full_url" class="item-img" id="goodsVideo" :src="goodsMsg.goods_videos[0].full_url" :poster="videoPoster" :muted="true" :show-mute-btn="true" :show-center-play-btn="false" :enable-progress-gesture="false" @ended='videoEnd' @waiting="videoWaiting" @progress="videoLoaded"></video>
                 <img v-if="goodsBanner[0].image_url" :class="!playBefore?'hide':''" :src="goodsBanner[0].image_url" mode="aspectFill" class="item-img video-img">
-                <div class="play-btn" @click="playVideo(false)">
-                  <img v-if="imageUrl&&!videoPlaying" :src="imageUrl + '/yx-image/2.6.5/icon-play_big@2x.png'" mode="aspectFill" class="play-btn-icon" @click.stop="playVideo(true)">
+                <div class="play-btn" @click="playVideo && playVideo(false)">
+                  <img v-if="imageUrl&&!videoPlaying" :src="imageUrl + '/yx-image/2.6.5/icon-play_big@2x.png'" mode="aspectFill" class="play-btn-icon" @click.stop="playVideo && playVideo(true)">
                 </div>
               </swiper-item>
             </block>
@@ -133,7 +133,7 @@
       <!--拼团列表-->
       <div v-if="activityType === ACTIVE_TYPE.GROUP_ON" class="collage-box">
         <div v-if="collageList.length > 0" class="title">{{collageTotal}}位邻居正在拼单，可直接参与</div>
-        <swiper v-if="collageList.length > 1"  class="collage-scroll" :autoplay="autoplay" circular vertical interval="5000" :display-multiple-items="2">
+        <swiper v-if="collageList.length > 1" class="collage-scroll" :autoplay="autoplay" circular vertical interval="5000" :display-multiple-items="2">
           <block v-for="(item, index) in collageList" :key="index">
             <swiper-item class="collage-content">
               <div class="left">
@@ -150,7 +150,7 @@
             </swiper-item>
           </block>
         </swiper>
-        <article v-if="collageList.length === 1"  class="collage-scroll single">
+        <article v-if="collageList.length === 1" class="collage-scroll single">
           <block v-for="(item, index) in collageList" :key="index">
             <section class="collage-content">
               <div class="left">
@@ -167,9 +167,9 @@
             </section>
           </block>
         </article>
-<!--        <div class="collage-scroll" v-if="collageList.length === 0">-->
-<!--          <div class="nothing">暂无参团信息~</div>-->
-<!--        </div>-->
+        <!--        <div class="collage-scroll" v-if="collageList.length === 0">-->
+        <!--          <div class="nothing">暂无参团信息~</div>-->
+        <!--        </div>-->
         <p class="group-rule-wrapper" :class="{active: collageList.length > 0}">
           <span class="number">1</span>
           <span class="text">.发起拼团/参团</span>
@@ -218,8 +218,8 @@
       </article>
     </div>
     <add-number ref="addNumber" :msgDetail="goodsMsg" :msgDetailInfo="buyGoodsInfo" @comfirmNumer="comfirmNumer" @hide="handleHideAddNumber"></add-number>
-<!--    <link-group ref="groupList" :wechatInfo="groupInfo"></link-group>-->
-<!--    <link-group ref="shareList" :linkType="2" @saveImg="_actionDrawPoster"></link-group>-->
+    <!--    <link-group ref="groupList" :wechatInfo="groupInfo"></link-group>-->
+    <!--    <link-group ref="shareList" :linkType="2" @saveImg="_actionDrawPoster"></link-group>-->
     <we-paint ref="wePaint" @drawDone="_drawPosterDone"></we-paint>
     <article class="share-panel-wrapper">
       <div v-if="showSharePanel" class="share-mask" @click="handleHideSharePanel">
@@ -257,11 +257,11 @@
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import clearWatch from '@mixins/clear-watch'
-  import {orderMethods, cartMethods} from '@state/helpers'
-  import {SCENE_SHARE, SCENE_DEFAULT, SCENE_QR_CODE, ACTIVE_TYPE} from '@utils/contants'
-  import ShareHandler, {EVENT_CODE} from '@mixins/share-handler'
+  import { orderMethods, cartMethods } from '@state/helpers'
+  import { SCENE_SHARE, SCENE_DEFAULT, SCENE_QR_CODE, ACTIVE_TYPE } from '@utils/contants'
+  import ShareHandler, { EVENT_CODE } from '@mixins/share-handler'
   import API from '@api'
-  import {resolveQueryScene, countDownHandle} from '@utils/common'
+  import { resolveQueryScene, countDownHandle } from '@utils/common'
   import LinkGroup from '@components/link-group/link-group'
   import BuyRecord from '@components/goods-detail-element/buy-record/buy-record'
   import DetailImage from '@components/goods-detail-element/detail-image/detail-image'
@@ -338,6 +338,8 @@
         statusBarHeight: -100,
         product: null,
         showSharePanel: false,
+        runTime: '',
+        articleId: 0,
         hasVideo: false,
         isIos: false,
         videoPoster: '',
@@ -347,7 +349,6 @@
         videoContext: '',
         swiperIdx: 0,
         arrowUrl: ARROW_URL[1],
-        runTime: '',
         isShowOldCustomerButton: false
       }
     },
@@ -462,7 +463,7 @@
       })
       this.isFirstLoad = false
       const _track = this.activityType === ACTIVE_TYPE.DEFAULT ? 'product' : 'activity'
-      this.$$sendEvent({goodsId: this.goodsId, activityId: this.activityId, _track})
+      this.$$sendEvent({ goodsId: this.goodsId, activityId: this.activityId, _track })
     },
     onHide() {
       // this._clearTimer()
@@ -506,6 +507,12 @@
     methods: {
       ...orderMethods,
       ...cartMethods,
+      scrollingShowTitle(flag) {
+        if (!this.videoPlaying) {
+          return
+        }
+        this.arrowUrl = ARROW_URL[flag ? 1 : 0]
+      },
       checkSystem() {
         let res = wx.getSystemInfoSync()
         let system = res.system
@@ -519,10 +526,10 @@
       _getProduct() {
         const shopId = wx.getStorageSync('shopId')
         const miniPath = `${this.$routes.main.PACKAGE}/${PAGE_ROUTE_NAME}?id=${this.goodsId}&shopId=${shopId}&activityId=${this.activityId}&activityType=${this.activityType}`
-        API.Global.getProduct({goods_id: this.goodsId}).then(res => {
+        API.Global.getProduct({ goods_id: this.goodsId }).then(res => {
           // console.warn(res.data)
           if (res.data) {
-            let product = Object.assign({}, res.data, {src_mini_program_path: miniPath})
+            let product = Object.assign({}, res.data, { src_mini_program_path: miniPath })
             product.src_wxapp_path && delete product.src_wxapp_path
             this.product = product
           }
@@ -685,7 +692,12 @@
           return
         }
         let goodsId = this.goodsMsg.goods_skus[0].goods_sku_id
-        API.Choiceness.addShopCart({goods_sku_id: goodsId, activity_id: this.activityId}).then((res) => {
+        let params = { goods_sku_id: goodsId, activity_id: this.activityId }
+        // 文章进入详情 加购 埋点
+        if (this.articleId) {
+          params = { ...params, scenes: 'article', scenes_data: this.articleId }
+        }
+        API.Choiceness.addShopCart(params).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.$sendMsg({
               event_no: 1007,
@@ -703,14 +715,14 @@
       buttonGroupNav(item) {
         switch (item.type) {
           case 0:
-            wx.switchTab({url: `${this.$routes.main.CHOICENESS}`})
+            wx.switchTab({ url: `${this.$routes.main.CHOICENESS}` })
             break
           case 1:
             // this.$refs.groupList.showLink()
             break
           case 2:
             if (this.$isLogin()) {
-              wx.switchTab({url: `${this.$routes.main.SHOPPING_CART}`})
+              wx.switchTab({ url: `${this.$routes.main.SHOPPING_CART}` })
             }
             break
         }
@@ -718,7 +730,7 @@
       // 购买记录导航
       buyRecordNavTo() {
         const url = `${this.$routes.main.GOODS_RECORD}?goodsId=${this.goodsId}&shopId=${this.shopId}&activityId=${this.activityId}&activityType=${this.activityType}`
-        wx.navigateTo({url})
+        wx.navigateTo({ url })
       },
       // 设置群数据事件号
       _setEventNo() {
@@ -774,11 +786,16 @@
           deliverAt: this.deliverAt
         }
         this.setOrderInfo(orderInfo)
-        wx.navigateTo({url: `${this.$routes.main.SUBMIT_ORDER}`})
+        let url = `${this.$routes.main.SUBMIT_ORDER}`
+        // 通过文章进来直接购买
+        if (this.articleId) {
+          this.setArticleId(this.articleId)
+        }
+        wx.navigateTo({ url })
       },
       // 获取用户的购买信息
       getGoodsOtherInfo() {
-        API.Choiceness.getGoodsBuyInfo(this.goodsId, {activity_id: this.activityId}).then((res) => {
+        API.Choiceness.getGoodsBuyInfo(this.goodsId, { activity_id: this.activityId }).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.buyGoodsInfo = res.data
           } else {
@@ -831,7 +848,7 @@
       },
       // 获取站点购买的用户
       getUserImgList() {
-        API.GoodsRecord.getList({goods_id: this.goodsId, limit: 5, page: 1, is_remove_duplicate: 1}, false).then((res) => {
+        API.GoodsRecord.getList({ goods_id: this.goodsId, limit: 5, page: 1, is_remove_duplicate: 1 }, false).then((res) => {
           this.userImgList = res.data
           this.userTotal = res.not_duplicate_total || 0
         })
@@ -841,7 +858,7 @@
         let shopId = wx.getStorageSync('shopId')
         // 修改创建二维码的参数
         let path = `pages/${PAGE_ROUTE_NAME}?g=${this.goodsId}&s=${shopId}&a=${this.activityId}`
-        API.Choiceness.createQrCodeApi({path}, loading).then((res) => {
+        API.Choiceness.createQrCodeApi({ path }, loading).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.shareImg = res.data.image_url
           } else {
@@ -857,8 +874,10 @@
         this.goodsId = +options.id || +options.goodsId || 0
         this.activityId = +options.activityId || 0
         this.shopId = +options.shopId || 0
+        // 文章进入详情 带参数
+        this.articleId = options.articleId || 0
         if (options.scene) {
-          let {shopId, activityId, goodsId} = resolveQueryScene(options.scene)
+          let { shopId, activityId, goodsId } = resolveQueryScene(options.scene)
           this.goodsId = goodsId
           this.activityId = activityId
           this.shopId = shopId
@@ -880,7 +899,7 @@
       // 获取购买者的用户信息
       _getBuyUsers() {
         if (this.activityType === ACTIVE_TYPE.GROUP_ON) return
-        API.Choiceness.getUserImg({limit: 20}).then((res) => {
+        API.Choiceness.getUserImg({ limit: 20 }).then((res) => {
           if (res.error !== this.$ERR_OK) {
             this.$wechat.showToast(res.message)
             return
@@ -918,7 +937,7 @@
               let that = this
               this.autoplayTimer = setTimeout(() => {
                 if (!that.videoPlaying && that.playBefore && that.swiperIdx === 0) {
-                  that.playVideo(true)
+                  that.playVideo && that.playVideo(true)
                 }
               }, 2000)
               if (!this.isIos) {

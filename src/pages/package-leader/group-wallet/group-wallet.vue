@@ -28,20 +28,41 @@
       </div>
     </div>
     <div class="wallet-list">
-      <div class="item-list" v-for="(item, index) in walletList" v-bind:key="index">
-        <wallet-info :wechatInfo="item"></wallet-info>
+      <div class="item-list" v-for="(wechatInfo, index) in walletList" :key="wechatInfo.id">
+        <div class="wallet-info">
+          <div class="info-left">
+            <img class="info-left-img" :src="wechatInfo.head_image_url" v-if="wechatInfo.customer_id * 1 !== 0">
+            <img class="info-left-img" src="" v-if="wechatInfo.customer_id * 1 === 0 && imageUrl" :src="imageUrl + '/yx-image/wallet/pic-platform_head@2x.png'">
+          </div>
+          <div class="info-right">
+            <div class="info-text-box">
+              <div class="info-text-title">{{wechatInfo.title}}</div>
+              <div class="info-text-bottom">
+                <div class="label-btn " :class="[wechatInfo.type === 30 ? 'corp-' + corpName + '-wallet-label' : '', wechatInfo.type === 31 ? 'corp-' + corpName + '-wallet-label': '']">{{wechatInfo.type_str}}</div>
+                <div class="info-time">{{wechatInfo.created_at}}</div>
+              </div>
+            </div>
+            <div class="info-money-box">
+              <div class="money-number" :class="[wechatInfo.type === 30 ? 'corp-' + corpName + '-money' : '', wechatInfo.type === 31 ? 'corp-' + corpName + '-money': '']">{{wechatInfo.total}}</div>
+              <div class="money-balance" v-if="wechatType * 1 === 1">余额 ¥{{wechatInfo.after_remaining}}</div>
+              <div class="money-balance" v-if="wechatType * 1 === 2">{{wechatInfo.status_str}}</div>
+              <div class="withdraw"></div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="noting" v-if="walletMore && walletList.length === 0">
       <div class="notingimg"><img class="img" :src="imageUrl + '/yx-image/group/pic-kong@2x.png'" alt=""></div>
       <div class="txt">空空如也</div>
     </div>
+    <loading-more v-else-if="!walletMore"></loading-more>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
-  import WalletInfo from '@components/wallet-info/wallet-info'
+  import LoadingMore from '@components/loading-more/loading-more'
   import API from '@api'
 
   const PAGE_NAME = 'GROUP_WALLET'
@@ -58,13 +79,14 @@
     },
     components: {
       NavigationBar,
-      WalletInfo
+      LoadingMore
     },
     onShow() {
       this.getWalletMoney()
       this.getNewWalletList()
     },
     onReachBottom() {
+      // if (this._loadingMore) return
       this.getMoreWalletList()
     },
     methods: {
@@ -112,6 +134,7 @@
           page: this.walletPage,
           limit: 10
         }
+        // this._loadingMore = true
         API.Wallet.getShopBillList(data).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.walletList = this.walletList.concat(res.data)
@@ -119,6 +142,9 @@
           } else {
             this.$wechat.showToast(res.message)
           }
+          // this._loadingMore = false
+        }).catch(e => {
+          // this._loadingMore = false
         })
       },
       _isUpList(res) {
@@ -133,6 +159,69 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
  @import "~@designCommon"
+
+ .wallet-info
+   width: 100%
+   layout(row)
+   align-items: center
+   .info-left
+     width: 40px
+     height: 40px
+     margin-right: 10px
+     .info-left-img
+       width: 100%
+       height: 100%
+       display: block
+       background: #73C200
+       border-radius: 50%
+   .info-right
+     flex: 1
+     padding: 17px 0 15px
+     border-bottom-1px($color-line)
+     layout(row)
+     align-items: center
+     justify-content: space-between
+     padding-right: 15px
+     box-sizing: border-box
+     .info-text-title
+       font-size: $font-size-14
+       min-height: $font-size-16
+       font-family: $font-family-regular
+       color: $color-text-main
+       width: 170px
+       margin-bottom: 8px
+       no-wrap()
+     .info-text-bottom
+       layout(row)
+       align-items: center
+       .label-btn
+         font-size: $font-size-10
+         color: #616161
+         font-family: $font-family-regular
+         height: 14px
+         line-height: 15px
+         padding: 0 5px
+         border-radius: 8.5px
+         border-1px(#616161, 8.5px)
+         margin-right: 5px
+       .info-time
+         font-size: $font-size-11
+         color: $color-text-assist
+         font-family: $font-family-regular
+     .info-money-box
+       text-align: right
+       color: $color-text-main
+     .money-number
+       font-size: $font-size-16
+       font-family: $font-family-medium
+       margin-bottom: 8px
+     .money-subtract
+       color: $color-money
+     .money-balance
+       font-size: $font-size-11
+       color: $color-text-assist
+       font-family: $font-family-regular
+
 
   .group-wallet
     width: 100%

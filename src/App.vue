@@ -3,6 +3,7 @@
   import {entryAppType, resolveQueryScene} from '@utils/common'
   import API from '@api'
   import {ERR_OK, baseURL} from '@utils/config'
+  import $routes from './utils/routes'
   /* eslint-disable */
   export default {
     data() {
@@ -42,26 +43,45 @@
     async onShow(options) {
       wx.setStorageSync('options', options)
       this.setScene(options)
-      let storyShopId = baseURL.defaultId
-      if (options.query.scene) {
-        let {shopId} = resolveQueryScene(options.query.scene)
-        // let sceneMsg = decodeURIComponent(options.query.scene)
-        // const params = getParams(sceneMsg)
-        storyShopId = shopId || wx.getStorageSync('defaultShopId')
-      } else {
-        if (!wx.getStorageSync('shopId') && !wx.getStorageSync('defaultShopId')) {
+      // 获取shopId
+      let shopId
+      let defaultShopId = wx.getStorageSync('defaultShopId')
+      let sceneShopId = resolveQueryScene(options.query.scene).shopId
+      if (sceneShopId) {
+        shopId = sceneShopId
+      } else if(options.query.shopId){
+        shopId = options.query.shopId
+      } else if(!wx.getStorageSync('shopId')){
+        if (!defaultShopId) {
+          try {
+            let res = await API.Choiceness.getDefaultShopInfo()
+            if (res.error === 0) {
+              wx.setStorageSync('defaultShopId', res.data.id)
+            } else {
+              wx.setStorageSync('defaultShopId', baseURL.defaultId)
+            }
+            defaultShopId = res.data.id || baseURL.defaultId
+          } catch (e) {
+            console.error(e)
+          }
+        }
+        shopId = defaultShopId || baseURL.defaultId
+      }
+      shopId && wx.setStorageSync('shopId', shopId)
+      if (!defaultShopId) {
+        try {
           let res = await API.Choiceness.getDefaultShopInfo()
           if (res.error === 0) {
             wx.setStorageSync('defaultShopId', res.data.id)
           } else {
             wx.setStorageSync('defaultShopId', baseURL.defaultId)
           }
+          defaultShopId = res.data.id || baseURL.defaultId
+        } catch (e) {
+          console.error(e)
         }
-        storyShopId = wx.getStorageSync('shopId') || wx.getStorageSync('defaultShopId')
       }
-      let shopId = options.query.shopId || +storyShopId
-      shopId > 0 && wx.setStorageSync('shopId', shopId)
-      // let token = wx.getStorageSync('token')
+      // 设页面
       let query = ''
       for (let key in options.query) {
         // 获取页面请求参数
@@ -72,8 +92,8 @@
       }
     },
     onPageNotFound(res) {
-      wx.redirectTo({
-        url: this.$routes.main.LOST
+      $routes.main.LOST && wx.redirectTo({
+        url: $routes.main.LOST
       })
     },
     methods: {

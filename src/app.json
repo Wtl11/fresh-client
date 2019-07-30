@@ -2,6 +2,7 @@
   "pages": [
     "pages/choiceness",
     "pages/freeze-shop",
+    "pages/eat",
     "pages/shopping-cart",
     "pages/mine",
     "pages/goods-detail",
@@ -37,6 +38,15 @@
   ],
   "subPackages": [
     {
+      "root": "package-content/",
+      "pages": [
+        "content-end",
+        "content-articles",
+        "content-article-detail",
+        "content-article-detail-video"
+      ]
+    },
+    {
       "root": "package-postage/",
       "pages": [
         "submit-order",
@@ -65,7 +75,7 @@
         "bind-wx-wallet",
         "distribution-commission",
         "leader-invite",
-       "leader-invite-success",
+        "leader-invite-success",
         "apply-leader",
         "mine-housing",
         "regimental-commander",
@@ -90,7 +100,16 @@
   "preloadRule": {
     "pages/mine": {
       "network": "all",
-      "packages": ["package-leader/", "package-activity/"]
+      "packages": [
+        "package-leader/",
+        "package-activity/"
+      ]
+    },
+    "pages/eat": {
+      "network": "all",
+      "packages": [
+        "package-content/"
+      ]
     }
   },
   "window": {
@@ -117,6 +136,12 @@
         "text": "首页",
         "iconPath": "/static/img/icon-select.png",
         "selectedIconPath": "/static/img/icon-select_press.png"
+      },
+      {
+        "pagePath": "pages/eat",
+        "text": "吃什么",
+        "iconPath": "/static/img/icon-eat_1@2x.png",
+        "selectedIconPath": "/static/img/icon-eat_2@2x.png"
       },
       {
         "pagePath": "pages/shopping-cart",
