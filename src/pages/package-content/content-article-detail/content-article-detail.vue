@@ -52,7 +52,7 @@
         <img v-if="imageUrl" :src="imageUrl + '/yx-image/article/icon-ingredients@2x.png'" class="foodlist-icon">食材
       </div>
       <div class="foods-list">
-        <text v-if="details.foodList">{{details.foodList}}</text>
+        <text v-if="details.foodList" space="nbsp">{{details.foodList}}</text>
       </div>
       <div :class="['goods-list',{active:showAll}]">
         <div class="goods-item-wrap" v-for="(item,idx) in details.goodsList" :key="idx">
