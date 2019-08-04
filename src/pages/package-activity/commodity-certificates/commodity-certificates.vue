@@ -105,7 +105,7 @@
     async onShow() {
       this.choose = !!this.$mp.query.choose || false
       await this._getListNumber(false)
-      await this._getLIst(true)
+      await this._getList(true)
       // this.setCommodityItem({ sd: 'sdfsd' })
     },
     async onReachBottom() {
@@ -129,7 +129,7 @@
           return
         }
         this.tabList[this.tabIndex].page++
-        await this._getLIst(false)
+        await this._getList(false)
       },
       // 获取头部数量
       _getListNumber(index = 0) {
@@ -144,9 +144,9 @@
       changeHandle(item, index) {
         if (this.tabIndex === index) return
         this.tabIndex = index
-        !this.tabList[this.tabIndex].dataArray.length && this._getLIst()
+        !this.tabList[this.tabIndex].dataArray.length && this._getList()
       },
-      async _getLIst(isFirstLoad = false) {
+      async _getList(isFirstLoad = false) {
         let res = await API.Coupon.getClientList({ status: this.tabList[this.tabIndex].status, page: this.tabList[this.tabIndex].page, tag_type: 1 }, isFirstLoad)
         if (res.error !== this.$ERR_OK) {
           this.$wechat.showToast(res.message)
@@ -168,11 +168,17 @@
         arr[index].showTip = !arr[index].showTip
         this.tabList[this.tabIndex].dataArray = JSON.parse(JSON.stringify(arr))
       },
-      selectCoupon(item) {
+      async selectCoupon(item) {
         if (item.status !== 1) return
         // 商品不可用时的吐司提示
         if (item.other_info.is_enable === 0) {
           this.$wechat.showToast(item.other_info.unusable_str)
+          return
+        }
+        if (!item.other_info.goods_skus) {
+          this.$wechat.showToast('网络异常，刷新一下')
+          await this._getListNumber(false)
+          await this._getList(false)
           return
         }
         // 设置商品信息
