@@ -19,37 +19,31 @@
                 <img class="top-bg-img" v-if="imageUrl" :src="imageUrl + '/yx-image/invitation/pic-couponbg_myzk1.png'">
                 <div class="top-container">
                   <artilce class="left">
-                    <div class="goods-box">
+                    <div class="goods-box" :class="{unable: child.status !== 1}">
                       <img v-if="imageUrl && child.other_info" :src="child.other_info.goods_cover_image" class="goods-img" mode="aspectFill">
-                      <span class="goods-price">0元兑换</span>
                     </div>
                   </artilce>
                   <article class="right">
                     <div class="title">
-                      <!--<p class="use-type" :style="{color, borderColor: color}">{{child.range_type_str}}</p>-->
+                      <p class="use-type" :class="{unable: child.status !== 1}">0元满赠todo</p>
                       <p class="txt goods-name">{{child.coupon_name}}</p>
                     </div>
+                    <p class="explain">满199元可用todo</p>
                     <p class="condition">有效期至 {{child.end_at}}</p>
                     <img class="lab-img" v-if="imageUrl && child.status === 2" :src="imageUrl + '/yx-image/2.3/pic-coupon_ygq.png'">
                     <img class="lab-img" v-if="imageUrl && child.status === 0" :src="imageUrl + '/yx-image/2.3/pic-coupon_ysy.png'">
                   </article>
                 </div>
               </section>
-              <div class="select" v-if="child.status === 1">
-                立即兑换
-              </div>
+              <div class="select" v-if="child.status === 1">立即兑换</div>
               <section class="middle-wrapper">
                 <img class="middle-bg-img" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/pic-couponbg_myzk2.png'">
                 <div class="middle-container">
-                  <div class="middle-box" @click.stop="handleShowTip(childIdx)">
+                  <div class="middle-box" @click.stop="handleShowTip(child, childIdx)">
                     <aritlce class="title">
                       <p>使用说明</p>
                       <img class="down-img" :class="{'rotate': child.showTip}" mode="widthFix" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/icon-pressed_down@2x.png'">
                     </aritlce>
-                    <!--<div class="middle-detail">-->
-                    <!--<span class="middle-detail-text">查看此商品</span>-->
-                    <!--<img class="detail-img" mode="widthFix" v-if="imageUrl" :src="child.status === 1 ? imageUrl + '/yx-image/invitation/icon-coupon_down@2x.png' : imageUrl + '/yx-image/invitation/icon-coupon_downs@2x.png'">-->
-                    <!--</div>-->
                   </div>
                   <p v-if="child.showTip" class="explain">{{child.description}}</p>
                 </div>
@@ -89,7 +83,7 @@
     data() {
       return {
         choose: false,
-        couponList: [],
+        // couponList: new Coupon(),
         select: true,
         page: 1,
         isShowEmpty: false,
@@ -106,7 +100,6 @@
       this.choose = !!this.$mp.query.choose || false
       await this._getListNumber(false)
       await this._getLIst(true)
-      // this.setCommodityItem({ sd: 'sdfsd' })
     },
     async onReachBottom() {
     },
@@ -153,35 +146,47 @@
           return
         }
         this.tabList[this.tabIndex].lastPage = res.meta.last_page
+        const arr = res.data.map(item => {
+          item.showTip = false
+          return item
+        })
         if (this.tabList[this.tabIndex].page === 1) {
-          this.tabList[this.tabIndex].dataArray = res.data
+          this.tabList[this.tabIndex].dataArray = arr
           this.tabList[this.tabIndex].isShowEmpty = !res.meta.total
         } else {
-          this.tabList[this.tabIndex].dataArray = this.tabList[this.tabIndex].dataArray.concat(res.data)
+          this.tabList[this.tabIndex].dataArray = this.tabList[this.tabIndex].dataArray.concat(arr)
         }
       },
       goGoodsDetail(item) {
         // wx.navigateTo({ url: `${this.$routes.main.GOODS_DETAIL}?id=${item.other_info.goods_id}&activityId=0&activityType=DEFAULT` })
       },
-      handleShowTip(index) {
-        let arr = JSON.parse(JSON.stringify(this.tabList[this.tabIndex].dataArray))
-        arr[index].showTip = !arr[index].showTip
-        this.tabList[this.tabIndex].dataArray = JSON.parse(JSON.stringify(arr))
+      handleShowTip(child, index) {
+        try {
+          let arr = JSON.parse(JSON.stringify(this.tabList[this.tabIndex].dataArray))
+          if (!arr || !arr[index]) return
+          arr[index].showTip = !arr[index].showTip
+          this.tabList[this.tabIndex].dataArray = JSON.parse(JSON.stringify(arr))
+        } catch (e) {
+          console.warn(e)
+        }
       },
       selectCoupon(item) {
         if (item.status !== 1) return
         // 商品不可用时的吐司提示
-        if (item.other_info.is_enable === 0) {
-          this.$wechat.showToast(item.other_info.unusable_str)
+        const ohterInfo = item.other_info || {}
+        if (ohterInfo.is_enable === 0) {
+          this.$wechat.showToast(ohterInfo.unusable_str)
           return
         }
         // 设置商品信息
-        let arr = [item.other_info.goods_skus[0]]
+        const goodSKus = ohterInfo.goods_skus
+        if (!goodSKus) return
+        let arr = [goodSKus[0]]
         arr[0].num = 1
         let orderInfo = {
           goodsList: arr,
           total: arr[0].trade_price,
-          deliverAt: item.other_info.delivery_at
+          deliverAt: ohterInfo.delivery_at
         }
         this.setOrderInfo(orderInfo)
         this.setCommodityItem(item)
@@ -193,30 +198,8 @@
 
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
-  @import "~@designCommon"
+  @import "../../../design/certificate.styl"
 
-  .coupon-disable
-    .goods-price
-      background: rgba(17, 17, 17, 0.2) !important
-    .middle-box
-      .title
-        color: #B7B7B7 !important
-    .goods-name, .middle-detail-text
-      color: #B7B7B7 !important
-
-  .select
-    col-center()
-    width: 17.333vw
-    text-align: center
-    height: 6.4vw
-    line-height: 6.4vw
-    position: absolute
-    background: $color-main
-    color: $color-white
-    right: 5.8333vw
-    border-radius: 12px
-    font-size: 3.2vw
-    z-index: 1
 
   .commodity-certificates
     min-height: 100vh
@@ -253,158 +236,6 @@
       &.active
         opacity: 1
 
-  .coupon
-    padding-top: 1.8vw
-    box-sizing: border-box
-
-  .bottom-wrapper
-    width: 100%
-    position: relative
-    .bottom-bg-img
-      position: absolute
-      display: block
-      width: 100%
-      height: 6.133333333333333vw
-
-  .middle-wrapper
-    width: 100vw
-    position: relative
-    min-height: 4vw
-    overflow: hidden
-    margin-top: -2px
-    .middle-bg-img
-      position: absolute
-      display: block
-      width: 100vw
-    .middle-container
-      position: relative
-      padding-left: 6.4vw
-      padding-right: @padding-left
-      font-family: $font-family-regular
-      font-size: 3.4666666666666663vw
-      color: #1D2023
-      .middle-box
-        display: flex
-        justify-content: space-between
-      .title
-        display: flex
-        align-items: center
-        justify-content: space-between
-        width: 70.5px
-        .down-img
-          width: 12.5px
-          height: 7px
-          display: block
-          transition: transform 0.3s
-          transform: rotate(0deg)
-          margin-top: 1px
-          &.rotate
-            transform: rotate(180deg)
-      .explain
-        transition: all 0.2s
-        padding-top: 2.4vw
-        font-size: 3.2vw
-        line-height: 1.42
-      .middle-detail-text
-        color: #73C200
-      .detail-img
-        margin-left: 6px
-        height: 12.5px
-        width: 7px
-
-  .top-wrapper
-    width: 100%
-    height: 28.5vw
-    position: relative
-    .top-bg-img
-      position: absolute
-      display: block
-      width: 100%
-      height: 100%
-    .top-container
-      position: relative
-      padding-top: 1.866666666666667vw
-      padding-left: 3.2vw
-      padding-right: @padding-left
-      height: 83%
-      layout(block, block, nowrap)
-      .left
-        display: flex
-        align-items: center
-        width: 18.4vw
-        height: 100%
-        margin: 0 3.46vw
-        .goods-box
-          position: relative
-          width: 18.4vw
-          height: 18.4vw
-          border-radius: 2px
-          overflow: hidden
-          .goods-img
-            width: 18.4vw
-            height: 18.4vw
-          .goods-price
-            position: absolute
-            bottom: 0
-            left: 0
-            height: 4.8vw
-            color: $color-white
-            font-size: $font-size-13
-            text-align: center
-            line-height: 4.8vw
-            width: 100%
-            background: rgba(17, 17, 17, 0.5)
-      .right
-        flex: 2.548582995951417
-        position: relative
-        layout(column, block, nowrap)
-        box-sizing: border-box
-        .lab-img
-          position: absolute
-          right: 0
-          top: 0
-          width: 16.666666666666664vw
-          height: 18vw
-          z-index: 50
-        .button
-          col-center()
-          right: 4vw
-          width: 17.333333333333336vw
-          height: 6.4vw
-          border-radius: @width
-          font-family: $font-family-regular
-          font-size: 3.2vw
-          background: #73C200
-          color: #FFFFFF;
-          text-align: center;
-          line-height: @height
-        .title
-          layout(row, block, nowrap)
-          align-items: center
-          color: #1D2023
-          .use-type
-            height: 12px
-            border: 1px solid rgba(29, 32, 35, 0.8)
-            border-radius: 2px
-            color: #1d2023
-            font-size: 11px
-            line-height: 12.5px
-            padding: 0 2px
-          .txt
-            font-family: $font-family-medium
-            font-size: 4vw
-            max-width: 51vw
-            margin-top: 4.26667vw
-            color: $color-text-main
-            line-height: 5.0667vw
-            height: 10.13333vw
-        .condition
-          font-family: $font-family-regular
-          padding-top: 1.6vw
-          opacity: 0.8
-          color: $color-text-sub
-          font-size: 3.46667vw
-          line-height: 1
 
   .img
     position: absolute
@@ -416,10 +247,6 @@
     font-size: 0
     line-height: 0
 
-  .coupon-item
-    width: 100vw
-    position: relative
-    margin-bottom: 5.2vw
 
   .big-box
     width: 100vw
