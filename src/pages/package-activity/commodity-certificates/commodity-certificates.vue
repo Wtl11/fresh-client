@@ -14,7 +14,13 @@
           v-for="(item, index) in tabList" :key="index"
         >
           <div class="coupon">
-            <div v-for="(child, childIdx) in item.dataArray" :key="childIdx" :class="{'coupon-disable': child.status !== 1 }" class="coupon-item" @click="selectCoupon(child)">
+            <div
+              v-for="(child, childIdx) in item.dataArray"
+              :key="childIdx"
+              :class="{'coupon-disable': child.status !== 1 }"
+              class="coupon-item c-mb"
+              @click="selectCoupon(child)"
+            >
               <section class="top-wrapper">
                 <img class="top-bg-img" v-if="imageUrl" :src="imageUrl + '/yx-image/invitation/pic-couponbg_myzk1.png'">
                 <div class="top-container">
@@ -99,6 +105,7 @@
     async onShow() {
       this.choose = !!this.$mp.query.choose || false
       await this._getListNumber(false)
+      // this.tabList = this.tabList.map((item, index) => { item.dataArray = Coupon.create({status: ++index}); return item })
       await this._getLIst(true)
     },
     async onReachBottom() {
@@ -161,17 +168,15 @@
         // wx.navigateTo({ url: `${this.$routes.main.GOODS_DETAIL}?id=${item.other_info.goods_id}&activityId=0&activityType=DEFAULT` })
       },
       handleShowTip(child, index) {
-        try {
-          let arr = JSON.parse(JSON.stringify(this.tabList[this.tabIndex].dataArray))
-          if (!arr || !arr[index]) return
-          arr[index].showTip = !arr[index].showTip
-          this.tabList[this.tabIndex].dataArray = JSON.parse(JSON.stringify(arr))
-        } catch (e) {
-          console.warn(e)
-        }
+        child.showTip = !child.showTip
       },
       selectCoupon(item) {
         if (item.status !== 1) return
+        // todo 去下单
+        if (item.type) {
+          wx.switchTab({url: this.$routes.main.CHOICENESS})
+          return
+        }
         // 商品不可用时的吐司提示
         const ohterInfo = item.other_info || {}
         if (ohterInfo.is_enable === 0) {
@@ -200,6 +205,12 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "../../../design/certificate.styl"
 
+
+  .coupon
+    padding-top :1.8vw
+    box-sizing: border-box
+    .coupon-item.c-mb
+      margin-bottom: 5.2vw
 
   .commodity-certificates
     min-height: 100vh

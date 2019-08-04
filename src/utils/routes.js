@@ -20,6 +20,7 @@ export default {
     INVITATION_INTRODUCTION:`${ACTIVITY}/invitation-introduction`,
     MY_RECORD:`${ACTIVITY}/my-record`,
     COMMODITY_CERTIFICATES:`${ACTIVITY}/commodity-certificates`,
+    CHOOSE_CERTIFICATE:`${ACTIVITY}/choose-certificate`,
     // package-activity
   },
   leader: {

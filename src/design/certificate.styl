@@ -1,13 +1,9 @@
 @import "~@designCommon"
 
 /*兑换券start*/
-.coupon
-  padding-top: 1.8vw
-  box-sizing: border-box
   .coupon-item
     width: 100vw
     position: relative
-    margin-bottom: 5.2vw
     .select
       width: 17.333vw
       text-align: center
@@ -70,6 +66,22 @@
           position: relative
           layout(column, block, nowrap)
           box-sizing: border-box
+          .tool-wrapper
+            height: 100%
+            width :px2vw(73)
+            position :absolute
+            right :0
+            top:0
+            .sel-box
+              all-center()
+              display: block
+              width: 20px
+              height: 20px
+              padding: 12px
+              opacity : 0
+              transition :opacity 0.3s
+              &.active
+                opacity : 1
           .lab-img
             position: absolute
             right: 0

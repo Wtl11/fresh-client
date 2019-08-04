@@ -49,6 +49,7 @@
     {
       "root": "package-activity/",
       "pages": [
+        "choose-certificate",
         "commodity-certificates",
         "my-record",
         "invitation-introduction",
