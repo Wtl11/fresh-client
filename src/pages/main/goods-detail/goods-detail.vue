@@ -443,8 +443,14 @@
       Ald.sendEvent('商品详情')
     },
     onShow() {
+      // 分享锁
+      if (this._isSharing) {
+        this._isSharing = false
+        return
+      }
       this.checkSystem()
       this._initPageParams()
+      if (this.goodsId < 1) return
       this._checkIsNewClient()
       this.getQrCode()
       this._getLocation()
@@ -482,8 +488,11 @@
       this.$refs.navigationBar && this.$refs.navigationBar._initHeadStyle()
       this.eventCount = 0
       this.$refs.shareList && this.$refs.shareList.hideLink()
+      this._isSharing = false
     },
     onShareAppMessage() {
+      // 分享锁
+      this._isSharing = true
       const self = this
       const shopId = wx.getStorageSync('shopId')
       const flag = Date.now()
