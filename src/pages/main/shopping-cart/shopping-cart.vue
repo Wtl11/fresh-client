@@ -390,6 +390,9 @@
         }
       },
       addNum(i, num, limit, id, type) {
+        if (num <= 0) {
+          return
+        }
         num++
         if (this.isShowNum) {
           this.editGoodsNum(i, id, num, type)
