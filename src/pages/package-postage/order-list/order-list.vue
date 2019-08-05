@@ -54,14 +54,16 @@
         <div class="model-title">请添加客服人员微信进行售后申请</div>
         <img :src="staffInfo.image_url" alt="" class="model-img">
         <div class="model-sub" @click="_drawPosterDone">保存到本地</div>
-        <div class="model-copy mb-25">
+        <div class="model-copy">
           <div class="copy-number">客服微信号1：{{staffInfo.staff_weixin}}</div>
           <div class="copy-btn" @click="clipOrderId(staffInfo.staff_weixin)">复制</div>
         </div>
+        <div class="model-date mb-25">工作日：9:00-16:30</div>
         <div class="model-copy">
           <div class="copy-number">客服微信号2：{{staffInfo.staff_info}}</div>
-          <div class="copy-btn"@click="clipOrderId(staffInfo.staff_info)">复制</div>
+          <div class="copy-btn" @click="clipOrderId(staffInfo.staff_info)">复制</div>
         </div>
+        <div class="model-date">工作日：16:00-21:30</div>
       </div>
     </div>
   </div>
@@ -529,7 +531,7 @@
     z-index: 100
     .model-box
       width: 290px
-      height: 356px
+      height: 400px
       background: $color-white
       position: absolute
       left: 0
@@ -562,7 +564,8 @@
         align-items: center
         justify-content: space-between
         box-sizing: border-box
-        padding: 0 33px
+        padding: 0 23px
+        margin-bottom: 3px
         .copy-number
           font-family: $font-family-regular
           font-size: $font-size-15
@@ -576,6 +579,11 @@
           height: 20px
           line-height: 20px
           text-align: center
+      .model-date
+        font-family: $font-family-regular
+        font-size: $font-size-14
+        color: #808080
+        padding-left: 23px
   .mb-25
-    margin-bottom: 25px
+    margin-bottom: 20px
 </style>
