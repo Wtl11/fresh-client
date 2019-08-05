@@ -221,7 +221,7 @@
       return {
         title: this.goodsMsg.name,
         path: `${this.$routes.postage.GOODS_DETAILS}?id=${this.id}&shopId=${shopId}`, // 商品详情
-        imageUrl: this.thumb_image || this.goodsMsg.goods_cover_image,
+        imageUrl: this.goodsMsg.thumb_image || this.goodsMsg.goods_cover_image,
         success: (res) => {
           // 转发成功
         },
