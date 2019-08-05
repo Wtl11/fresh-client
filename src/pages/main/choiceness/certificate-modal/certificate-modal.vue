@@ -7,7 +7,7 @@
            :src="imageUrl + '/yx-image/2.4/icon-deletetc@2x.png'"
            @click="submitHandle"
       >
-      <img class="top-img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/invitation/pic-spqtc@2x.png'">
+      <img class="top-img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/certificate/pic-spqtc@2x.png'">
       <div class="coupon-con" :class="couponArray.length === 1?'one':''">
         <div v-if="couponArray.length === 1" class="coupon-list">
           <img class="item-bg" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.4/pic-dcoupon@2x.png'">
@@ -65,9 +65,8 @@
   import AnimationModal from '@mixins/animation-modal'
   // import CouponItem from './coupon-item/coupon-item'
   // import Coupon from '../../../package-activity/commodity-certificates/coupon'
-  // import Coupon from './coupon-item/coupon'
-  import { formatCouponMoney } from '@utils/common'
-  import API from '@api'
+  import Coupon from '../invitation-modal/coupon-item/coupon'
+  // import API from '@api'
 
   const COMPONENT_NAME = 'COUPON_MODAL'
 
@@ -79,8 +78,9 @@
     },
     data() {
       return {
-        isShow: false,
-        couponArray: []
+        isShow: true,
+        couponArray: [new Coupon(), new Coupon()]
+        // couponArray: []
       }
     },
     methods: {
@@ -88,9 +88,8 @@
         let arr = this.couponArray.map((item) => {
           return item.coupon_activity_report_id || 0
         })
-        API.Coupon.targetModal({coupon_activity_report_ids: arr}).catch(e => {
-          console.error(e)
-        })
+        // todo
+        console.log(arr)
       },
       navHandle() {
         this._targetList()
@@ -119,9 +118,6 @@
         this.hideAnimation(() => {
           this.isShow = false
         })
-      },
-      _getPrice(price) {
-        return formatCouponMoney(price)
       }
     }
   }

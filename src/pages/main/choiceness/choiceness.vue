@@ -344,6 +344,8 @@
       <!--    添加至我的小程序-->
       <new-guidelines ref="guidelines"></new-guidelines>
       <distance-check ref="distance"></distance-check>
+      <!-- 兑换券弹窗 满赠  -->
+      <certificate-modal ref="certificateModal"></certificate-modal>
     </div>
   </form>
 </template>
@@ -367,7 +369,7 @@
   import Ald from '@utils/ald'
   import InvitationModal from './invitation-modal/invitation-modal'
   import CouponAfterSale from './coupon-after-sale/coupon-after-sale'
-
+  import CertificateModal from './certificate-modal/certificate-modal'
   // import GetOptions from '@mixins/get-options'
 
   // const ald = getApp()
@@ -390,7 +392,8 @@
       LoadingMore,
       DistanceCheck,
       InvitationModal,
-      CouponAfterSale
+      CouponAfterSale,
+      CertificateModal
     },
     data() {
       this._isLoading = false

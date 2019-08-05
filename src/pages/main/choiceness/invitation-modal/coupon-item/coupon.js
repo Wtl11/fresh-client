@@ -9,7 +9,7 @@ export default class {
       store_id: 0,
       shop_id: 0,
       level: 0,
-      coupon_name: '满100元减5元',
+      coupon_name: '大菜花兑换券',
       preferential_type: 0,
       denomination: 0,
       condition: 0,
@@ -42,7 +42,10 @@ export default class {
           range_type: 0,
           range_id: 0
         }
-      ]
+      ],
+      other_info: {
+        goods_cover_image: 'http://social-shopping-api-1254297111.picgz.myqcloud.com/1/2019/04/25/155619196914944.png?imageView2/3/w/400/h/400/q/90'
+      }
     }
   }
 }
