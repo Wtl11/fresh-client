@@ -20,6 +20,7 @@
                 <!--<p class="type" v-if="couponArray[0].coupon.range_type_str">{{couponArray[0].coupon.range_type_str}}</p>-->
                 <p class="txt">{{couponArray[0].coupon.coupon_name}}</p>
               </div>
+              <div class="explain">满199元可用</div>
               <div class="condition">有效期至 {{couponArray[0].coupon.end_at}}</div>
             </div>
           </div>
@@ -36,6 +37,7 @@
                   <!--<p class="type" v-if="item.range_type_str">{{item.range_type_str}}</p>-->
                   <p class="txt">{{item.coupon.coupon_name}}</p>
                 </div>
+                <div class="explain">满199元可用</div>
                 <div class="condition">有效期至 {{item.coupon.end_at}}</div>
               </div>
             </div>
@@ -211,6 +213,7 @@
             .right-box
               flex: 1
               overflow: hidden
+              line-height: 1
               .title
                 layout(row, block, nowrap)
                 align-items: center
@@ -231,11 +234,17 @@
                   font-family: $font-family-medium
                   font-size: $font-size-14
                   no-wrap()
+              .explain
+                padding-top: 8px
+                opacity: 0.8
+                font-size: $font-size-12
+                color: #3F454B
+                no-wrap()
               .condition
                 padding-top: 4px
                 opacity: 0.8
-                font-size: $font-size-13
-                color: #808080
+                font-size: $font-size-12
+                color: #3F454B
                 no-wrap()
         &.one
           height: 194.5px
