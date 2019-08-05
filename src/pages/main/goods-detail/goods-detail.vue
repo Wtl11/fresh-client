@@ -181,6 +181,7 @@
           <span class="text">.拼主返券</span>
         </p>
       </div>
+      <goods-promotion></goods-promotion>
       <buy-record
         v-if="userImgList.length > 0"
         :userImgList="userImgList"
@@ -274,6 +275,7 @@
   import ShareTrick from '@mixins/share-trick'
   import GetOptions from '@mixins/get-options'
   import Ald from '@utils/ald'
+  import GoodsPromotion from '@components/goods-promotion/goods-promotion'
 
   const PAGE_NAME = 'ACTIVE_DETAIL'
   const PAGE_ROUTE_NAME = 'goods-detail'
@@ -309,7 +311,8 @@
       ServiceDescription,
       ButtonGroup,
       AddNumber,
-      WePaint
+      WePaint,
+      GoodsPromotion
     },
     data() {
       return {
