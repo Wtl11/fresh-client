@@ -130,6 +130,7 @@
           <div class="info-stock">已售<span :class="'corp-' + corpName + '-money'">{{goodsMsg.sale_count}}</span>{{goodsMsg.goods_units}}<span v-if="activityId * 1 > 0">，剩余<span :class="'corp-' + corpName + '-money'">{{goodsMsg.usable_stock}}</span>{{goodsMsg.goods_units}}</span></div>
         </div>
       </div>
+      <goods-promotion></goods-promotion>
       <!--拼团列表-->
       <div v-if="activityType === ACTIVE_TYPE.GROUP_ON" class="collage-box">
         <div v-if="collageList.length > 0" class="title">{{collageTotal}}位邻居正在拼单，可直接参与</div>
@@ -181,13 +182,13 @@
           <span class="text">.拼主返券</span>
         </p>
       </div>
-      <goods-promotion></goods-promotion>
       <buy-record
         v-if="userImgList.length > 0"
         :userImgList="userImgList"
         :userTotal="userTotal"
         @buyRecordNavTo="buyRecordNavTo"
       ></buy-record>
+      <goods-hots></goods-hots>
       <detail-image :goodsMsg="goodsMsg"></detail-image>
       <service-description :runTime="runTime"></service-description>
       <button-group
@@ -276,6 +277,7 @@
   import GetOptions from '@mixins/get-options'
   import Ald from '@utils/ald'
   import GoodsPromotion from '@components/goods-promotion/goods-promotion'
+  import GoodsHots from '@components/goods-hots/goods-hots'
 
   const PAGE_NAME = 'ACTIVE_DETAIL'
   const PAGE_ROUTE_NAME = 'goods-detail'
@@ -312,7 +314,8 @@
       ButtonGroup,
       AddNumber,
       WePaint,
-      GoodsPromotion
+      GoodsPromotion,
+      GoodsHots
     },
     data() {
       return {

@@ -18,7 +18,7 @@
       <article class="modal-panel" :class="{active: isShow}" @click.stop="">
         <p class="title">促销</p>
         <div class="scroll-wrapper">
-          <ul class="ticket-wrapper">
+          <ul class="ticket-wrapper ios-scroll-smooth">
             <li v-for="(item, index) in dataArray" :key="index" class="ticket item-default">
               <div class="icon-ticket">满减</div>
               <p class="text">满188元即赠苹果兑换券，赠完即止</p>
@@ -57,6 +57,10 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@designCommon"
+
+  .ios-scroll-smooth
+    -webkit-overflow-scrolling: touch
+
   /*券icon*/
   .icon-ticket
     font-family: $font-family-regular
