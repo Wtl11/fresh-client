@@ -155,7 +155,7 @@ function postObject(params, fileType = '') {
   return new Promise((resolve, reject) => {
     cos.postObject(params, function (err, data) {
       if (!err && data.statusCode === 200) {
-        Upload.saveFile({path: `/${params.Key}`, file_type: fileType, type: fileType}).then(files => {
+        Upload.saveFile({path: `/${params.Key}`, type: fileType}).then(files => {
           // Todo 隐藏加载器
           if (files.error === ERR_OK) {
             resolve(files.data)
