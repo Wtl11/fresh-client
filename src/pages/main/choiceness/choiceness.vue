@@ -345,7 +345,7 @@
       <new-guidelines ref="guidelines"></new-guidelines>
       <distance-check ref="distance"></distance-check>
       <!-- 兑换券弹窗 满赠  -->
-      <certificate-modal ref="certificateModal"></certificate-modal>
+      <certificate-modal ref="certificateModal" cname="z1000"></certificate-modal>
     </div>
   </form>
 </template>

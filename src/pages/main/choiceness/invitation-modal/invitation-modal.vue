@@ -63,10 +63,7 @@
 
 <script type="text/ecmascript-6">
   import AnimationModal from '@mixins/animation-modal'
-  // import CouponItem from './coupon-item/coupon-item'
-  // import Coupon from '../../../package-activity/commodity-certificates/coupon'
   // import Coupon from './coupon-item/coupon'
-  import { formatCouponMoney } from '@utils/common'
   import API from '@api'
 
   const COMPONENT_NAME = 'COUPON_MODAL'
@@ -74,12 +71,10 @@
   export default {
     name: COMPONENT_NAME,
     mixins: [AnimationModal],
-    components: {
-      // CouponItem
-    },
     data() {
       return {
         isShow: false,
+        // couponArray: [new Coupon()]
         couponArray: []
       }
     },
@@ -119,9 +114,6 @@
         this.hideAnimation(() => {
           this.isShow = false
         })
-      },
-      _getPrice(price) {
-        return formatCouponMoney(price)
       }
     }
   }

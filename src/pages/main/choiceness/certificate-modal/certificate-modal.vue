@@ -1,5 +1,5 @@
 <template>
-  <div class="coupon-modal" v-if="isShow" :animation="maskAnimation" @touchmove.stop>
+  <div class="coupon-modal" v-if="isShow" :class="cname"  :animation="maskAnimation" @touchmove.stop>
     <section class="content" @touchmove.stop>
       <img class="close"
            mode="aspectFill"
@@ -63,8 +63,6 @@
 
 <script type="text/ecmascript-6">
   import AnimationModal from '@mixins/animation-modal'
-  // import CouponItem from './coupon-item/coupon-item'
-  // import Coupon from '../../../package-activity/commodity-certificates/coupon'
   import Coupon from '../invitation-modal/coupon-item/coupon'
   // import API from '@api'
 
@@ -73,23 +71,25 @@
   export default {
     name: COMPONENT_NAME,
     mixins: [AnimationModal],
-    components: {
-      // CouponItem
+    props: {
+      cname: {
+        type: String,
+        default: ''
+      }
     },
     data() {
       return {
         isShow: true,
         couponArray: [new Coupon(), new Coupon()]
-        // couponArray: []
       }
     },
     methods: {
       _targetList() {
-        let arr = this.couponArray.map((item) => {
-          return item.coupon_activity_report_id || 0
-        })
-        // todo
-        console.log(arr)
+        // let arr = this.couponArray.map((item) => {
+        //   return item.coupon_activity_report_id || 0
+        // })
+        // // todo
+        // console.log(arr)
       },
       navHandle() {
         this._targetList()
@@ -129,10 +129,11 @@
   .coupon-modal
     background-color: rgba(17, 17, 17, 0.75)
     fill-box(fixed)
-    z-index: 998
     display: flex
     justify-content: center
     align-items: center
+    &.z1000
+      z-index :1000
 
     .content
       position: relative
