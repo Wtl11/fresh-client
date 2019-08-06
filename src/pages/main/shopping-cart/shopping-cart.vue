@@ -328,16 +328,17 @@
       ...orderMethods,
       ...cartMethods,
       tipNavHandle(type, item, index) {
-        switch (type) {
-          case 'certificate':
-            wx.navigateTo({url: this.$routes.activity.COMMODITY_CERTIFICATES})
-            break
-          case 'coupon':
-            wx.switchTab({url: this.$routes.main.CHOICENESS})
-            break
-          default:
-            break
-        }
+        wx.switchTab({url: this.$routes.main.CHOICENESS})
+        // switch (type) {
+        //   case 'certificate':
+        //     wx.navigateTo({url: this.$routes.activity.COMMODITY_CERTIFICATES})
+        //     break
+        //   case 'coupon':
+        //     wx.switchTab({url: this.$routes.main.CHOICENESS})
+        //     break
+        //   default:
+        //     break
+        // }
       },
       recommendJumpGoodsDetail(item) {
         wx.navigateTo({
