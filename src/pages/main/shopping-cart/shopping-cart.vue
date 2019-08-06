@@ -10,48 +10,65 @@
             <img class="sel-box" v-if="imageUrl && allChecked" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
             <img class="sel-box" v-if="imageUrl && !allChecked" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt=""/>
             <img class="postage-icon" v-if="imageUrl" :src="imageUrl+'/yx-image/postage/icon-ziti_shopping@2x.png'" alt=""/>
-            <div class="postage-text">自提</div>
+            <div class="postage-text">自提商品</div>
           </div>
         </div>
-        <div class="shop-item" :class="{'shop-item-opcta' : !item.allowCheck}" v-for="(item, index) in goodsList" :key="item.id">
-          <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && !item.checked && item.allowCheck" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt=""/>
-          <!--<img class="sel-box" v-if="imageUrl && !item.allowCheck" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt="" />-->
-          <div class="sel-box sel-clr-box" v-if="imageUrl && !item.allowCheck"></div>
-          <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && item.checked && item.allowCheck" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
-          <button formType="submit" class="goods-image" @click.stop="jumpGoodsDetail(item)">
-            <img class="goods-img" mode="aspectFill" :src="item.goods_cover_image" alt="">
-            <div class="robbed" v-if="item.num <= 0">已抢完</div>
-            <div class="robbed" v-else-if="item.activity && item.activity.activity_theme === ACTIVE_TYPE.NEW_CLIENT && item.is_new_client !== 1">新人专属</div>
-          </button>
-          <div class="good-info">
-            <div formType="submit" class="top" @click.stop="jumpGoodsDetail(item)">
-              <div class="title">{{item.name}}</div>
-              <button formType="submit" class="del" @click.stop="delGoodsInfo(index, item.id)">
-                <img class="del-img" v-if="imageUrl" :src="imageUrl + '/yx-image/cart/icon_delete@2x.png'" alt="">
-              </button>
-            </div>
-            <div class="bot">
-              <div formType="submit" class="left" @click.stop="jumpGoodsDetail(item)">
-                <div class="spec" v-if="item.goods_units">规格：{{item.goods_units}}</div>
-                <div class="remain">
-                  <div class="txt" :class="'corp-' + corpName + '-money-text'" v-if="item.is_urgency">仅剩{{item.usable_stock}}件</div>
-                </div>
-                <div class="price" :class="'corp-' + corpName + '-money'" v-if="item.trade_price">
-                  <span class="num">{{item.trade_price}}</span>
-                  <span class="unit">元</span>
-                  <img class="new-user-img" v-if="imageUrl && item.activity && item.activity.activity_theme === ACTIVE_TYPE.NEW_CLIENT" :src="imageUrl + '/yx-image/2.4/pic-newlabel@2x.png'" alt="">
-                </div>
+        <article class="tip-common-wrapper tip-fulfil-gift" @click="tipNavHandle('certificate')">
+          <p class="left">满赠</p>
+          <p class="middle">满188元可领取赠品，还差24元</p>
+          <div class="right">去凑单<block v-if="imageUrl"><img class="right-arrow" mode="aspectFill" :src="imageUrl + '/yx-image/2.3/icon-pressed@2x.png'"></block></div>
+        </article>
+        <block v-for="(item, index) in goodsList" :key="item.id">
+          <article
+            v-if="index == 2"
+            class="tip-common-wrapper tip-coupon"
+            :class="{'hidden-top-line': !index}"
+            @click="tipNavHandle('coupon', item, index)"
+          >
+            <p class="left">满赠</p>
+            <p class="middle">满188元可领取赠品，还差24元</p>
+            <div class="right">去凑单<block v-if="imageUrl"><img class="right-arrow" mode="aspectFill" :src="imageUrl + '/yx-image/2.3/icon-pressed@2x.png'"></block></div>
+          </article>
+          <div class="shop-item" :class="{'shop-item-opcta' : !item.allowCheck}" >
+            <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && !item.checked && item.allowCheck" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt=""/>
+            <!--<img class="sel-box" v-if="imageUrl && !item.allowCheck" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt="" />-->
+            <div class="sel-box sel-clr-box" v-if="imageUrl && !item.allowCheck"></div>
+            <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && item.checked && item.allowCheck" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
+            <button formType="submit" class="goods-image" @click.stop="jumpGoodsDetail(item)">
+              <img class="goods-img" mode="aspectFill" :src="item.goods_cover_image" alt="">
+              <div class="robbed" v-if="item.num <= 0">已抢完</div>
+              <div class="robbed" v-else-if="item.activity && item.activity.activity_theme === ACTIVE_TYPE.NEW_CLIENT && item.is_new_client !== 1">新人专属</div>
+            </button>
+            <div class="good-info">
+              <div formType="submit" class="top" @click.stop="jumpGoodsDetail(item)">
+                <div class="title">{{item.name}}</div>
+                <button formType="submit" class="del" @click.stop="delGoodsInfo(index, item.id)">
+                  <img class="del-img" v-if="imageUrl" :src="imageUrl + '/yx-image/cart/icon_delete@2x.png'" alt="">
+                </button>
               </div>
-              <div class="right">
-                <div class="number-box">
-                  <button formType="submit" class="minus" @click.stop="subNum(index, item.num, item.id)">-</button>
-                  <div class="num">{{item.num}}</div>
-                  <button formType="submit" class="add" @click.stop="addNum(index, item.num, item.buy_limit, item.id)">+</button>
+              <div class="bot">
+                <div formType="submit" class="left" @click.stop="jumpGoodsDetail(item)">
+                  <div class="spec" v-if="item.goods_units">规格：{{item.goods_units}}</div>
+                  <div class="remain">
+                    <div class="txt" :class="'corp-' + corpName + '-money-text'" v-if="item.is_urgency">仅剩{{item.usable_stock}}件</div>
+                  </div>
+                  <div class="price" :class="'corp-' + corpName + '-money'" v-if="item.trade_price">
+                    <span class="num">{{item.trade_price}}</span>
+                    <span class="unit">元</span>
+                    <img class="new-user-img" v-if="imageUrl && item.activity && item.activity.activity_theme === ACTIVE_TYPE.NEW_CLIENT" :src="imageUrl + '/yx-image/2.4/pic-newlabel@2x.png'" alt="">
+                  </div>
+                </div>
+                <div class="right">
+                  <div class="number-box">
+                    <button formType="submit" class="minus" @click.stop="subNum(index, item.num, item.id)">-</button>
+                    <div class="num">{{item.num}}</div>
+                    <button formType="submit" class="add" @click.stop="addNum(index, item.num, item.buy_limit, item.id)">+</button>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </block>
       </div>
       <!--全国包邮-->
       <div class="shop-list postage-list" v-if="postageList.length">
@@ -310,6 +327,18 @@
     methods: {
       ...orderMethods,
       ...cartMethods,
+      tipNavHandle(type, item, index) {
+        switch (type) {
+          case 'certificate':
+            wx.navigateTo({url: this.$routes.activity.COMMODITY_CERTIFICATES})
+            break
+          case 'coupon':
+            wx.switchTab({url: this.$routes.main.CHOICENESS})
+            break
+          default:
+            break
+        }
+      },
       recommendJumpGoodsDetail(item) {
         wx.navigateTo({
           url: `${this.$routes.main.GOODS_DETAIL}?id=${item.goods_id || 0}&activityId=${item.activity_id || 0}`
@@ -630,6 +659,54 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@designCommon"
+
+  /*提示栏start*/
+  .tip-common-wrapper
+    font-family: $font-family-regular
+    line-height: 1
+    layout(row,block,nowrap)
+    .left
+      background: #FF6803;
+      height :14px
+      border-radius: @height
+      line-height: @height
+      font-size: 11px
+      color: #fff
+      padding: 0 3.5px
+    .middle
+      flex:1
+      font-family: $font-family-medium
+      font-size:13px
+      color:#000
+      padding :0 6px 0 4px
+      line-height : 1.2
+    .right
+      font-size: 13px
+      color: #000
+      .right-arrow
+        margin-left: 5px
+        width: 5.5px
+        height: 10.5px
+        line-height: 15px
+  .tip-fulfil-gift
+    background: #F6F9F4;
+    padding :14.5px 12px
+  .tip-coupon
+    padding :20px 12px 7px 45px
+    position: relative
+    &:before
+      content: ""
+      position: absolute
+      top: 0
+      left: 12px
+      right : 0
+      border-top: 1px solid $color-line
+      transform: scaleY(.5) translateZ(0)
+    &.hidden-top-line
+      &:before
+        display :none
+  /*提示栏end*/
+
 
   .wrap
     width: 100vw
