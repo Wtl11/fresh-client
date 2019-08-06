@@ -351,11 +351,13 @@
         })
         let goodsList = []
         let postageList = []
+        let isGlobalModal
         res.data.forEach((item) => {
-          if (item.source_type * 1 === 1) {
-            goodsList.push(item)
-          } else {
+          isGlobalModal = item.source_type != null && +item.source_type !== 1
+          if (isGlobalModal) {
             postageList.push(item)
+          } else {
+            goodsList.push(item)
           }
         })
         this.goodsList = goodsList
@@ -608,12 +610,6 @@
       },
       // 全国包邮支付
       _payPostage() {
-        // const postageList = objDeepCopy(this.checkedPostage).map(item => {
-        //   if (item.is_new_client === 0) { // 老人0 新人1
-        //     item.trade_price = item.goods_sale_price
-        //   }
-        //   return item
-        // })
         const postageList = objDeepCopy(this.checkedPostage)
         const total = postageList.reduce((total, current) => {
           let money = (total * 1) + (current.trade_price * current.num)

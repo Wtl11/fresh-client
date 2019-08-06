@@ -111,6 +111,12 @@
       "packages": [
         "package-content/"
       ]
+    },
+    "pages/submit-order": {
+      "network": "all",
+      "packages": [
+        "package-activity"
+      ]
     }
   },
   "window": {

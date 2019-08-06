@@ -63,6 +63,21 @@
           <!--<img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="img">-->
           <!--</div>-->
         </li>
+        <!--兑换 -->
+<!--        <li v-if="isGroupModal && !isFree" class="coupon-item">-->
+<!--          <p class="name">使用优惠券</p>-->
+<!--          <p class="price-disable">该商品不支持使用优惠券</p>-->
+<!--        </li>-->
+        <li v-if="!isFree" class="coupon-item" @click="chooseCertificateHandle">
+          <p class="name">使用兑换券</p>
+          <p v-if="discount > 0" class="price">-{{discount}}</p>
+          <p v-else class="price-disable">未使用兑换券</p>
+          <p v-if="discount > 0">元</p>
+          <div class="item-arrow-img">
+            <img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="img">
+          </div>
+        </li>
+        <!--优惠券 -->
         <li v-if="isGroupModal && !isFree" class="coupon-item">
           <p class="name">使用优惠券</p>
           <p class="price-disable">该商品不支持使用优惠券</p>
@@ -98,8 +113,7 @@
         <button formType="submit" class="pay" :class="'corp-' + corpName + '-bg'" @click.stop="_goPayAction">去支付</button>
       </div>
       <article class="share-panel-wrapper">
-        <div v-if="isShowPayModal" class="share-mask" @click="_hidePayModal">
-        </div>
+        <div v-if="isShowPayModal" class="share-mask" @click="_hidePayModal"></div>
         <section class="share-panel" :class="{show: isShowPayModal}">
           <p class="title">提货地址距离当前位置<span class="distance">{{distance}}km</span>请确认提货信息</p>
           <p class="sub-title">预计{{deliverAt}}可提货</p>
@@ -123,6 +137,11 @@
             <div class="item-wrapper">
               <p class="left">商品总价：</p>
               <p class="right">{{beforeTotal}}元</p>
+            </div>
+            <div class="item-wrapper mar-0">
+              <p class="left">兑换券：</p>
+              <p v-if="discount > 0" class="right">-{{discount}}元</p>
+              <p v-else class="right">未使用兑换券</p>
             </div>
             <div class="item-wrapper mar-0">
               <p class="left">优惠券：</p>
@@ -216,6 +235,9 @@
     },
     methods: {
       ...orderMethods,
+      chooseCertificateHandle() {
+        wx.navigateTo({url: `${this.$routes.activity.CHOOSE_CERTIFICATE}`})
+      },
       // 免费兑换
       goFree() {
 
