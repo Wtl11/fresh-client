@@ -1,5 +1,6 @@
 // PACKAGE_PATH
 const CONTENT = '/package-content'
+const POSTAGE = '/package-postage'
 const ACTIVITY = '/package-activity'
 const LEADER = '/package-leader'
 const MAIN = '/pages'
@@ -12,6 +13,18 @@ export default {
     CONTENT_ARTICLES_DETAIL_VIDEO:`${CONTENT}/content-article-detail-video`,
     CONTENT_END:`${CONTENT}/content-end`,
     // package-content
+  },
+  postage: {
+    PACKAGE: POSTAGE,
+    GOODS_DETAILS:`${POSTAGE}/goods-details`,
+    ADDRESS_MANAGE:`${POSTAGE}/address-manage`,
+    EDIT_ADDRESS:`${POSTAGE}/edit-address`,
+    ORDER_LIST:`${POSTAGE}/order-list`,
+    SUBMIT_ORDER:`${POSTAGE}/submit-order`,
+    DISTRIBUTION_DETAIL:`${POSTAGE}/distribution-detail`,
+    ORDER_DETAIL:`${POSTAGE}/order-detail`,
+    GOODS_RECORD:`${POSTAGE}/goods-record`,
+    // package-postage
   },
   activity: {
     PACKAGE: ACTIVITY,

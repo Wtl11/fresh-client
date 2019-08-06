@@ -106,7 +106,9 @@
       this.choose = !!this.$mp.query.choose || false
       await this._getListNumber(false)
       // this.tabList = this.tabList.map((item, index) => { item.dataArray = Coupon.create({status: ++index}); return item })
-      await this._getLIst(true)
+      // await this._getLIst(true)
+      await this._getList(true)
+      // this.setCommodityItem({ sd: 'sdfsd' })
     },
     async onReachBottom() {
     },
@@ -129,7 +131,7 @@
           return
         }
         this.tabList[this.tabIndex].page++
-        await this._getLIst(false)
+        await this._getList(false)
       },
       // 获取头部数量
       _getListNumber(index = 0) {
@@ -144,24 +146,20 @@
       changeHandle(item, index) {
         if (this.tabIndex === index) return
         this.tabIndex = index
-        !this.tabList[this.tabIndex].dataArray.length && this._getLIst()
+        !this.tabList[this.tabIndex].dataArray.length && this._getList()
       },
-      async _getLIst(isFirstLoad = false) {
+      async _getList(isFirstLoad = false) {
         let res = await API.Coupon.getClientList({ status: this.tabList[this.tabIndex].status, page: this.tabList[this.tabIndex].page, tag_type: 1 }, isFirstLoad)
         if (res.error !== this.$ERR_OK) {
           this.$wechat.showToast(res.message)
           return
         }
         this.tabList[this.tabIndex].lastPage = res.meta.last_page
-        const arr = res.data.map(item => {
-          item.showTip = false
-          return item
-        })
         if (this.tabList[this.tabIndex].page === 1) {
-          this.tabList[this.tabIndex].dataArray = arr
+          this.tabList[this.tabIndex].dataArray = res.data
           this.tabList[this.tabIndex].isShowEmpty = !res.meta.total
         } else {
-          this.tabList[this.tabIndex].dataArray = this.tabList[this.tabIndex].dataArray.concat(arr)
+          this.tabList[this.tabIndex].dataArray = this.tabList[this.tabIndex].dataArray.concat(res.data)
         }
       },
       goGoodsDetail(item) {
@@ -170,7 +168,7 @@
       handleShowTip(child, index) {
         child.showTip = !child.showTip
       },
-      selectCoupon(item) {
+      async selectCoupon(item) {
         if (item.status !== 1) return
         // todo 去下单
         if (item.type) {
@@ -183,9 +181,20 @@
           this.$wechat.showToast(ohterInfo.unusable_str)
           return
         }
+        // if (!item.other_info.goods_skus) {
+        //   this.$wechat.showToast('网络异常，刷新一下')
+        //   await this._getListNumber(false)
+        //   await this._getList(false)
+        //   return
+        // }
         // 设置商品信息
         const goodSKus = ohterInfo.goods_skus
-        if (!goodSKus) return
+        if (!goodSKus) {
+          this.$wechat.showToast('网络开小差，请重新尝试.')
+          await this._getListNumber(false)
+          await this._getList(false)
+          return
+        }
         let arr = [goodSKus[0]]
         arr[0].num = 1
         let orderInfo = {

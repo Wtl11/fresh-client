@@ -47,6 +47,19 @@
       ]
     },
     {
+      "root": "package-postage/",
+      "pages": [
+        "submit-order",
+        "order-list",
+        "edit-address",
+        "address-manage",
+        "distribution-detail",
+        "order-detail",
+        "goods-record",
+        "goods-details"
+      ]
+    },
+    {
       "root": "package-activity/",
       "pages": [
         "choose-certificate",

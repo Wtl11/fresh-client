@@ -9,5 +9,6 @@ export const ACTIVE_TYPE = {
   GROUP_ON: 'groupon',
   GUESS: 'guess',
   FLASH: 'activity_fixed',
-  DEFAULT: 'DEFAULT'
+  DEFAULT: 'DEFAULT',
+  FREE_SHIPPING: 'free_shipping'
 }

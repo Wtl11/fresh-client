@@ -4,6 +4,7 @@ const version = process.versions
 
 const DEV = {
   api: 'http://social-shopping-api.jerryf.cn/social-shopping' + version,
+  marketApi: 'http://market-api.jkweixin.jerryf.cn/market' + version,
   image: 'https://img.jkweixin.net/defaults',
   upload: 'http://social-shopping-api.jerryf.cn/social-shopping' + version,
   outLink: 'wss://fresh-h5.jkweixin.net', // 外部h5链接
@@ -14,6 +15,7 @@ const DEV = {
 
 const TEST = {
   api: 'https://social-shopping-api.jkweixin.net/social-shopping' + version,
+  marketApi: 'https://market-api.jkweixin.net/market' + version,
   image: 'https://img.jkweixin.net/defaults',
   upload: 'https://social-shopping-api.jkweixin.net/social-shopping' + version,
   outLink: 'https://fresh-h5.jkweixin.net',
@@ -24,6 +26,7 @@ const TEST = {
 
 const PROD = {
   api: 'https://social-shopping-api.jkweixin.com/social-shopping' + version,
+  marketApi: 'https://market-api.jkweixin.com/market' + version,
   image: 'https://img.jkweixin.com/defaults',
   upload: 'https://social-shopping-api.jkweixin.com/social-shopping' + version,
   outLink: 'https://fresh-h5.jkweixin.com',
