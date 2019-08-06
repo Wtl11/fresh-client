@@ -68,12 +68,12 @@
     <div class="gary-box"></div>
     <div class="order-list">
       <div class="order-item">
-        <div class="goods-item" v-for="(item, index) in orderMsg.goods" :key="index">
+        <div class="goods-item" :class="{isGift: index + 1 === 1 || index + 1 === 2}" v-for="(item, index) in orderMsg.goods" :key="index">
           <div class="goods-info-box">
             <img class="goods-img" mode="aspectFill" :src="item.image_url" alt="">
             <div class="goods-info">
               <div class="tit">
-                <div class="name">{{item.goods_name}}</div>
+                <div class="name"><span v-if="index === 1 || index === 2" class="icon-tag">赠品todo</span>{{item.goods_name}}</div>
                 <div class="refund" @click.stop="isRefund(item)"
                      v-if="(orderMsg.status * 1 === 1 || orderMsg.status * 1 === 2) && (item.after_sale_status * 1 === 0 || item.after_sale_status * 1 === 1) && item.can_after_sale * 1 === 1">
                   退款
@@ -98,15 +98,28 @@
       </div>
     </div>
     <section class="goods-total-wrapper">
-      <p class="name">实付金额</p>
-      <p :class="'corp-' + corpName + '-money'"><span class="price">{{orderMsg.total}}</span>元</p>
+      <p class="name">商品总价</p>
+      <p :class="'corp-' + corpName + '-money'"><span class="price">{{orderMsg.price}}</span>元</p>
     </section>
-    <ul v-if="!isGroup" class="coupon-info-wrapper" :class="'corp-' + corpName + '-money'">
+
+    <ul class="coupon-info-wrapper" :class="'corp-' + corpName + '-money'">
+      <!--    兑换券-->
       <li class="coupon-item">
+        <p class="name">使用兑换券</p>
+        <p v-if="orderMsg.promote_price > 0" class="price">-{{orderMsg.promote_price}}兑换券todo</p>
+        <p v-if="orderMsg.promote_price > 0">元</p>
+        <p v-else class="price-disable">未使用兑换券</p>
+      </li>
+      <!-- 优惠券   -->
+      <li v-if="!isGroup"  class="coupon-item">
         <p class="name">使用优惠券</p>
         <p v-if="orderMsg.promote_price > 0" class="price">-{{orderMsg.promote_price}}</p>
         <p v-if="orderMsg.promote_price > 0">元</p>
         <p v-else class="price-disable">未使用优惠券</p>
+      </li>
+      <li class="coupon-item">
+        <p class="name">实付金额</p>
+        <p :class="'corp-' + corpName + '-money'"><span class="price">{{orderMsg.total}}</span>元</p>
       </li>
     </ul>
     <!--<div class="gary-box"></div>-->
@@ -617,6 +630,16 @@
     justify-content: space-between
     align-items: center
     border-bottom-1px($color-line)
+    &.isGift
+      position: relative
+      &:after
+        content: ""
+        position: absolute
+        bottom: 0
+        right: 0
+        left : 3.2vw
+        transform: scaleY(.5) translateZ(0)
+        border-bottom: 1px solid $color-line
 
     .goods-info-box
       height: 77px
@@ -660,8 +683,20 @@
           color: $color-sub
           min-height: 16px
           letter-spacing: 0.3px
+          align-items :center
           no-wrap()
-
+          .icon-tag
+            display :inline-block
+            background: rgba(255,104,3,0.10);
+            border: 1px solid #FF6803;
+            border-radius: 14px;
+            height: 14px
+            line-height :@height
+            padding :0 4px
+            font-family: $font-family-regular
+            font-size: 11px
+            color: #FF6803;
+            margin-right: 4px
         .quantity
           font-family: $font-family-regular
           font-size: $font-size-12
