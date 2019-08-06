@@ -143,10 +143,11 @@
   import WePaint from '@components/we-paint/we-paint'
   import base64src from '@utils/create-qr-code-wx'
   import GetOptions from '@mixins/get-options'
+  import { resolveQueryScene } from '@utils/common'
   import API from '@api'
 
   const PAGE_NAME = 'GOODS_DETAILS'
-  const PAGE_ROUTE_NAME = 'goods-detail'
+  // const PAGE_ROUTE_NAME = 'goods-detail'
   const ARROW_URL = ['/yx-image/2.3/icon-return_white@2x.png', '/zd-image/1.2/icon-title_back@2x.png']
 
   export default {
@@ -236,7 +237,19 @@
       // 获取参数
       _initPageParams() {
         let options = this._$$initOptions()
-        this.id = options.id
+        this.id = +options.id || +options.goodsId || 0
+        this.shopId = +options.shopId || 0
+        // 文章进入详情 带参数
+        this.articleId = options.articleId || 0
+        if (options.scene) {
+          let { shopId, goodsId } = resolveQueryScene(options.scene)
+          this.id = goodsId
+          this.shopId = shopId
+        }
+        try {
+          this.shopId && wx.setStorageSync('shopId', this.shopId)
+        } catch (e) {
+        }
       },
       // banner切换
       bannerChange(e) {
@@ -375,7 +388,7 @@
       getQrCode(loading) {
         let shopId = wx.getStorageSync('shopId')
         // 修改创建二维码的参数
-        let path = `pages/${PAGE_ROUTE_NAME}?g=${this.goodsId}&s=${shopId}&a=${this.activityId}`
+        let path = `package-postage/goods-details?g=${this.id}&s=${shopId}`
         API.Choiceness.createQrCodeApi({path}, loading).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.shareImg = res.data.image_url
