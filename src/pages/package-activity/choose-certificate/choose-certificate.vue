@@ -92,10 +92,10 @@
     },
     methods: {
       _getList() {
-        setTimeout(() => {
-          this.dataArray = []
-          this.isShowEmpty = !this.dataArray.length
-        }, 1000)
+        // setTimeout(() => {
+        //   this.dataArray = []
+        //   this.isShowEmpty = !this.dataArray.length
+        // }, 1000)
       },
       _updateCertificate() {
       },

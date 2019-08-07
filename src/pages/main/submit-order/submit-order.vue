@@ -63,12 +63,12 @@
           <!--<img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="img">-->
           <!--</div>-->
         </li>
-        <!--兑换 -->
-<!--        <li v-if="isGroupModal && !isFree" class="coupon-item">-->
-<!--          <p class="name">使用优惠券</p>-->
-<!--          <p class="price-disable">该商品不支持使用优惠券</p>-->
-<!--        </li>-->
-        <li v-if="!isFree" class="coupon-item" @click="chooseCertificateHandle">
+        <!--兑换券 -->
+        <li v-if="isGroupModal && !isFree" class="coupon-item">
+          <p class="name">使用优惠券</p>
+          <p class="price-disable">该商品不支持使兑换券</p>
+        </li>
+        <li v-if="!isGroupModal && !isFree" class="coupon-item" @click="chooseCertificateHandle">
           <p class="name">使用兑换券</p>
           <p v-if="discount > 0" class="price">-{{discount}}</p>
           <p v-else class="price-disable">未使用兑换券</p>
