@@ -168,20 +168,6 @@
           this.$wechat.showToast(res.message)
           return
         }
-        console.log(res.data)
-        // let goods = {
-        //   length: 0,
-        //   push: Array.prototype.push,
-        //   splice: Array.prototype.splice
-        // }
-        let goods = Object.create(Array.prototype)
-        goods.abc = 'hello wrold'
-        // console.log(goods)
-        // res.data.goods.forEach(item => {
-        //   goods.push(item)
-        // })
-        goods.push(...res.data.goods)
-        res.data.goods = goods
         this.orderDetail = res.data
       },
       _copyOrderSn(text) {
