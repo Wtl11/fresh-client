@@ -134,6 +134,16 @@
             isShow: true
           },
           {
+            // 收货地址
+            cname: '',
+            icon: '/yx-image/postage/icon-address_me@2x.png',
+            title: '我的地址',
+            url: this.$routes.postage.ADDRESS_MANAGE,
+            fn: '_handleNav',
+            type: 'top',
+            isShow: true
+          },
+          {
             cname: '',
             icon: '/yx-image/2.4/icon-question_me@2x.png',
             title: '常见问题',

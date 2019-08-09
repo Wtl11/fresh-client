@@ -23,3 +23,10 @@ export const jwtComputed = {
 export const jwtMethods = {
   ...mapActions('jwt', ['setToken', 'setUserInfo'])
 }
+
+export const postageComputed = {
+  ...mapGetters('postage', ['addressMsg'])
+}
+export const postageMethods = {
+  ...mapActions('postage', ['setCurrentAddress'])
+}

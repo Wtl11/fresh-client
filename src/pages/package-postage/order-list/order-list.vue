@@ -1,6 +1,6 @@
 <template>
   <div class="wrap">
-    <navigation-bar title="我的订单" :showArrow="true" :translucent="false"></navigation-bar>
+    <navigation-bar title="全国包邮订单" :showArrow="true" :translucent="false"></navigation-bar>
     <div class="nav-box">
       <div class="order-nav">
         <div class="nav-item" :class="tabIdx * 1 === index ? 'nav-item-active' : ''" v-for="(item, index) in navList" :key="index" @click="selectIndex(item, index)">{{item.name}}</div>
@@ -9,58 +9,36 @@
         <div class="line" :style="'transform: translate(' + tabIdx*100 + '%,0)'"><div class="lines" :class="'corp-' + corpName + '-bg'"></div></div>
       </div>
     </div>
-    <div class="order-title" @click="jumpPostage">
-      <div class="order-title-left">
-        <img v-if="imageUrl" :src="imageUrl+'/yx-image/postage/icon-baoyou_shopping@2x.png'" alt="" class="order-title-icon">
-        <div class="order-title-name">全国包邮</div>
-      </div>
-      <div class="order-title-right">
-        <div class="right-name" :class="newNotify * 1 === 1 ? 'explain-red' : ''">查看订单</div>
-        <img v-if="imageUrl" :src="imageUrl+'/yx-image/2.3/icon-pressed@2x.png'" alt="" class="right-icon">
-      </div>
-    </div>
+    <div class="postage-title"></div>
     <div class="big-box">
       <div class="order-big-box" :style="{'transform': ' translateX('+ -(tabIdx * 100) +'vw)'}">
         <div v-for="(list, index) in orderListArr" :key="index" class="order-item-list" :class="tabIdx * 1 === index ? '' : 'order-item-list-height70'">
           <div class="order-list" v-if="list.data.length > 0">
             <div v-for="(item, itemIndex) in list.data" :key="itemIndex" @click="jumpDetail(item)" class="order-item">
               <div class="top">
-                <div class="group-name">{{item.social_name}}</div>
+                <div class="group-name">订单号：{{item.order_sn}}</div>
                 <div class="status" :class="'corp-' + corpName + '-money'">{{item.status === 11 || item.status_text === '活动中' ? '已付款' : item.status_text}}</div>
               </div>
-              <div class="center">
-                <p v-if="item.groupon && item.groupon.pay_status !== 0 && item.groupon.groupon_status_str" class="group-status">
-                  <img v-if="imageUrl" :src="imageUrl+'/yx-image/2.4/icon-spellgroup@2x.png'" alt="" class="group-icon">
-                  <span :class="'corp-' + corpName + '-money'">[{{item.groupon.groupon_status_str}}]</span>
-                  <template v-if="item.groupon.groupon_status === 0 && item.groupon.surplus_seconds && item.at_countdown">
-                    只差
-                    <span :class="'corp-' + corpName + '-money'">{{item.groupon.surplus_number}}人</span>成团，剩
-                    <span :class="'corp-' + corpName + '-money'">{{item.at_countdown.hour}}:{{item.at_countdown.minute}}:{{item.at_countdown.second}}</span>结束
-                  </template>
-                </p>
-                <div class="goods-list">
-                  <template v-if="item.goods.length === 1">
-                    <div class="goods-img-list">
-                      <img class="goods-img" mode="aspectFill" :src="item.goods[0].image_url" alt="">
+              <div class="list-item" v-for="(twoitem, twoindex) in item.goods" :key="index">
+                <div class="item-left-img"><img class="img" :src="twoitem.image_url" alt=""></div>
+                <div class="item-right">
+                  <div class="title">{{twoitem.goods_name}}</div>
+                  <div class="sub-title">规格：{{twoitem.goods_units}}</div>
+                  <div class="price-box">
+                    <div class="price-left">
+                      <div class="number">{{twoitem.price}}</div>
+                      <div class="icon">元</div>
                     </div>
-                    <div class="goods-name">{{item.goods[0].goods_name}}</div>
-                  </template>
-                  <div v-else class="goods-img-list">
-                    <img v-for="(img, imgIndex) in item.goods" :key="imgIndex" v-if="imgIndex < 4" class="goods-img" mode="aspectFill" :src="img.image_url" alt="">
-                    <div class="img-item" v-if="item.goods.length > 4">
-                      <div class="circle"></div>
-                      <div class="circle"></div>
-                      <div class="circle"></div>
-                    </div>
-                  </div>
-                  <div class="arr-warp">
-                    <div class="arrlow"><img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="arr"></div>
                   </div>
                 </div>
+                <img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="item-arrow-img">
               </div>
               <div class="bot">
                 <div class="time">{{item.created_at}}</div>
-                <div class="payment"><span class="goods-count">共{{item.goods.length}}件商品</span><span class="actual">总计：</span><span class="sum">{{item.total}}</span><span class="principal">元</span></div>
+                <div class="payment"><span class="goods-count">实付:</span><span class="sum">{{item.total}}</span><span class="principal">元</span></div>
+              </div>
+              <div v-if="item.can_after_sale * 1 === 1" class="btn-box">
+                <div class="btn-text" @click.stop="showAfter">申请售后</div>
               </div>
             </div>
           </div>
@@ -71,8 +49,24 @@
         </div>
       </div>
     </div>
+    <div class="after-model" v-if="isShowModel" @click="closeModel">
+      <div class="model-box" @click.stop>
+        <div class="model-title">请添加客服人员微信进行售后申请</div>
+        <img :src="staffInfo.image_url" alt="" class="model-img">
+        <div class="model-sub" @click="_drawPosterDone">保存到本地</div>
+        <div class="model-copy">
+          <div class="copy-number">客服微信号1：{{staffInfo.staff_weixin}}</div>
+          <div class="copy-btn" @click="clipOrderId(staffInfo.staff_weixin)">复制</div>
+        </div>
+        <div class="model-date mb-25">工作日：9:00-16:30</div>
+        <div class="model-copy">
+          <div class="copy-number">客服微信号2：{{staffInfo.staff_info}}</div>
+          <div class="copy-btn" @click="clipOrderId(staffInfo.staff_info)">复制</div>
+        </div>
+        <div class="model-date">工作日：16:00-21:30</div>
+      </div>
+    </div>
   </div>
-
 </template>
 
 <script type="text/ecmascript-6">
@@ -81,9 +75,10 @@
   import API from '@api'
   import {countDownHandle} from '@utils/common'
 
-  const NAVLIST = [{id: 1, name: '全部订单', status: ''}, {id: 2, name: '待付款', status: 0}, {id: 3, name: '待提货', status: 1}, {id: 4, name: '已完成', status: 2}]
+  const NAVLIST = [{id: 1, name: '包邮订单', status: ''}, {id: 2, name: '待付款', status: 0}, {id: 3, name: '待发货', status: 4}, {id: 4, name: '配送中', status: 1}, {id: 4, name: '已完成', status: 3}]
   const GROUP_STATUS_ARR = [{name: '拼团中'}, {name: '拼团成功'}, {name: '拼团失败'}, {name: '拼团失败'}, {name: '拼团失败'}]
   const ORDER_LIST_ARR = [
+    { page: 1, data: [], hasMore: true },
     { page: 1, data: [], hasMore: true },
     { page: 1, data: [], hasMore: true },
     { page: 1, data: [], hasMore: true },
@@ -104,16 +99,22 @@
         status: '',
         orderPage: 1,
         orderMore: false,
-        newNotify: ''
+        isShowModel: false,
+        staffInfo: {
+          staff_weixin: '',
+          staff_info: '',
+          image_url: ''
+        }
       }
     },
-    onLoad(e = {}) {
-      this.status = e.id || 0
-      this.tabIdx = e.index || 0
+    async onLoad(e) {
+      console.log(e)
+      this.status = e.id
+      this.tabIdx = e.index
+      await this.getAfterInfo()
     },
     onShow() {
       this.getOrderList(this.tabIdx)
-      this._getPostageNotify()
     },
     onUnload() {
       this.groupTimer && clearInterval(this.groupTimer)
@@ -128,6 +129,7 @@
       getStatusName(status) {
         return this.groupStatusArr[status] || '试试'
       },
+      // 切换Tab
       getStatus(tabIdx) {
         let status = ''
         switch (tabIdx * 1) {
@@ -138,16 +140,21 @@
             status = 0
             break
           case 2:
-            status = 1
+            status = 4
             break
           case 3:
+            status = 1
+            break
+          case 4:
             status = 2
             break
         }
         return status
       },
+      // 获取订单列表
       getOrderList(tabIdx, getMore = false) {
         let ol = this.orderListArr[tabIdx]
+        console.log(tabIdx, ol)
         // 加载更多就page+1，否则都重置当前tab的page和hasMore
         if (getMore) {
           if (!ol.hasMore) {
@@ -159,7 +166,7 @@
           ol.hasMore = true
         }
         let status = this.getStatus(tabIdx)
-        API.Order.getOrderListData(status, ol.page).then((res) => {
+        API.Postage.getOrderListData(status, ol.page).then((res) => {
           if (res.error === this.$ERR_OK) {
             let hasCountdown = false
             for (let order of res.data) {
@@ -198,6 +205,7 @@
           clearT && clearInterval(this.groupTimer)
         }, 1000)
       },
+      // 设置Index值
       selectIndex(item, index) {
         this.groupTimer && clearInterval(this.groupTimer)
         this.status = item.status
@@ -206,21 +214,55 @@
       },
       jumpDetail(item) {
         wx.navigateTo({
-          url: `${this.$routes.main.ORDER_DETAIL}?id=${item.order_id}`
+          url: `${this.$routes.postage.ORDER_DETAIL}?id=${item.order_id}`
         })
       },
-      jumpPostage(item) {
-        wx.navigateTo({
-          url: `${this.$routes.postage.ORDER_LIST}?id=&index=0`
-        })
-      },
-      // 全国包邮订单是否有新消息[v2.8.5]
-      _getPostageNotify() {
-        API.Postage.getFreeNotify().then(res => {
-          if (res.error !== this.$ERR_OK) {
-            return
+      // 复制微信号
+      clipOrderId(text) {
+        let that = this
+        that.$wx.setClipboardData({
+          data: text,
+          success: function(res) {
+            that.$wx.getClipboardData({
+              success: function(res) {
+              }
+            })
           }
-          this.newNotify = res.data.has_new_notify
+        })
+      },
+      showAfter() {
+        this.isShowModel = true
+      },
+      closeModel() {
+        this.isShowModel = false
+      },
+      // 获取客服信息
+      async getAfterInfo() {
+        let res = await API.Postage.getServiceInfo()
+        if (res.error !== this.$ERR_OK) {
+          this.$wechat.showToast(res.message)
+          return
+        }
+        this.staffInfo = res.data
+      },
+      // 保存微信号
+      _drawPosterDone() {
+        this.$wx.downloadFile({
+          url: this.staffInfo.image_url,
+          success: (res) => {
+            this.$wx.saveImageToPhotosAlbum({
+              filePath: res.tempFilePath,
+              success: () => {
+                this.$wechat.showToast('保存成功')
+              },
+              fail: () => {
+                // 拒绝授权重新调起授权
+                setTimeout(() => {
+                  wx.openSetting()
+                }, 500)
+              }
+            })
+          }
         })
       }
     }
@@ -228,7 +270,7 @@
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
- @import "~@designCommon"
+  @import "~@designCommon"
   .wrap
     width: 100vw
     min-height: 100vh
@@ -245,7 +287,7 @@
       bottom: 0
       .line
         box-sizing: border-box
-        width: 25%
+        width: 20%
         transform: translate(0, 0)
         transition: all .3s
         height: 3px
@@ -264,7 +306,7 @@
       justify-content: space-around
       align-items: center
       .nav-item
-        width: 25%
+        width: 20%
         height: 40px
         transition: all .3s
         line-height: 40px
@@ -337,66 +379,6 @@
                 font-family: $font-family-regular
                 color: $color-sub
                 font-size: $font-size-16
-      .center
-        padding: 15px 3.2vw
-        border-bottom-1px($color-line)
-        .group-status
-          margin-bottom : 8px
-          height: 22px
-          font-size: $font-size-14
-          font-family: $font-family-regular
-          layout(row)
-          align-items :center
-
-          .group-icon
-            width: 15px
-            height: @width
-            margin-right :4px
-        .goods-list
-          layout(row)
-          align-items: center
-          justify-content: space-between
-
-          .goods-img-list
-            layout(row)
-            align-items: center
-            .goods-img
-              width: 13.33vw
-              height: 13.33vw
-              border-radius: 2px
-              margin-right: 2.67vw
-            .img-item
-              width: 13.33vw
-              height: 13.33vw
-              layout(row)
-              justify-content: center
-              align-items: center
-              .circle
-                width: 6px
-                height: 6px
-                background: #D8D8D8
-                border-radius: 50%
-                &:nth-child(2)
-                  margin: 0 5px
-        .goods-name
-          flex: 1
-          text-align: left
-          font-family: $font-family-medium
-          color: $color-text-main
-          font-size: $font-size-14
-          no-wrap-plus(2)
-        .arr-warp
-          layout(row)
-          align-items: center
-          .arrlow
-            width: 7.5px
-            height: 12.5px
-            margin-left: 6px
-            .arr
-              display: block
-              width: 100%
-              height: 100%
-
       .bot
         height: 45px
         padding: 0 3.2vw
@@ -405,24 +387,34 @@
         justify-content: space-between
         .time
           font-family: $font-family-regular
-          font-size: $font-size-13
-          color: $color-text-sub
+          font-size: $font-size-14
+          color: #000000
         .payment
           color: #000000
           .goods-count
-            font-family: $font-family-regular
-            font-size: $font-size-13
-            margin-right: 5px
-          .actual
             font-family: $font-family-medium
             font-size: $font-size-14
+            margin-right: 5px
           .sum
             font-family: $font-family-medium
-            font-size: $font-size-15
+            font-size: $font-size-18
           .principal
             font-family: $font-family-medium
             font-size: $font-size-12
 
+      .btn-box
+        padding: 5px 3.2vw 15px
+        layout(row)
+        justify-content: flex-end
+        .btn-text
+          font-family: $font-family-regular
+          color: $color-main
+          font-size: $font-size-12
+          width: 70px
+          height: 25px
+          line-height: 25px
+          text-align: center
+          border-1px($color-main, 15px)
   .noting
     text-align: center
     margin-top: 106px
@@ -444,7 +436,7 @@
     width: 100vw
     overflow: hidden
     .order-big-box
-      width: 400vw
+      width: 500vw
       display: flex
       transform: translateX(0)
       transition: all 0.3s
@@ -453,51 +445,145 @@
         box-sizing: border-box
       .order-item-list-height70
         height: 70vh
-
-  .order-title
+  .list-item
+    padding: 0 3.2vw
+    box-sizing: border-box
+    height: 28vw
     layout(row)
     align-items: center
-    justify-content: space-between
-    height: 45px
-    background: $color-white
-    margin-top: 10px
-    padding: 0 12px
-    box-sizing: border-box
-    .order-title-left
-      layout(row)
-      align-items: center
-      .order-title-icon
-        width: 15px
-        height: 15px
-        display: block
-        margin-right: 5px
-      .order-title-name
+    border-bottom-1px(#e6e6e6)
+    .item-arrow-img
+      position: absolute
+      right: 3.2vw
+      top: 0
+      bottom: 0
+      margin: auto
+      margin-left: 5px
+      display: block
+      width: 7.5px
+      height: 12.5px
+    .item-left-img
+      width: 20vw
+      height: 20vw
+      margin-right: 2.6vw
+      img
+        width: 100%
+        height: 100%
+        background: #fff
+        border-radius: 2px
+    .item-right
+      flex: 1
+      overflow: hidden
+      .title
         font-size: $font-size-14
-        font-family: $font-family-medium
-        color: #111
-    .order-title-right
-      layout(row)
-      align-items: center
-      .right-icon
-        width: 7.5px
-        height: 12.5px
-        display: block
-      .right-name
-        font-size: $font-size-14
+        color: $color-sub
         font-family: $font-family-regular
-        color: #666
-        padding-right: 5px
-      .explain-red
-        padding-right: 10px
-        position: relative
-        &:after
-          width: 5px
-          height: 5px
-          display: block
-          position: absolute
-          right: 5px
-          top: 0
-          border-radius: 50%
-          background: #FE3B39
-          content: ''
+        line-height: 1
+        margin-bottom: 7px
+        min-height: 16px
+        no-wrap()
+      .sub-title
+        font-size: $font-size-14
+        color: $color-text-sub
+        font-family: $font-family-regular
+        line-height: 1
+        margin-bottom: 23px
+        min-height: $font-size-14
+      .price-box
+        layout(row)
+        align-items: center
+        justify-content: space-between
+        .price-left
+          layout(row)
+          align-items: flex-end
+          .number
+            font-size: $font-size-16
+            color: $color-text-main
+            font-family: $font-family-regular
+          .icon
+            font-size: $font-size-11
+            color: #1f1f1f
+            font-family: $font-family-regular
+            padding-bottom: 2px
+        .price-right
+          layout(row)
+          align-items: flex-end
+          .number
+            font-size: $font-size-16
+            color: $color-text-main
+            font-family: $font-family-regular
+          .icon
+            font-size: $font-size-12
+            color: #1f1f1f
+            font-family: $font-family-regular
+            padding-bottom: 2px
+
+  /*售后弹框*/
+  .after-model
+    position: fixed
+    width: 100vw
+    height: 100vh
+    left: 0
+    right: 0
+    top: 0
+    bottom: 0
+    background: rgba(17,17,17,.8)
+    z-index: 100
+    .model-box
+      width: 290px
+      height: 400px
+      background: $color-white
+      position: absolute
+      left: 0
+      right: 0
+      top: 0
+      bottom: 0
+      margin: auto
+      border-radius: 8px
+      padding-top: 20px
+      .model-title
+        font-family: $font-family-regular
+        font-size: $font-size-15
+        color: $color-text-main
+        text-align: center
+        margin-bottom: 20px
+      .model-img
+        width: 150px
+        height: @width
+        display: block
+        margin: auto
+        margin-bottom: 16px
+      .model-sub
+        font-family: $font-family-regular
+        font-size: $font-size-15
+        color: $color-text-main
+        text-align: center
+        margin-bottom: 34px
+      .model-copy
+        layout(row)
+        align-items: center
+        justify-content: space-between
+        box-sizing: border-box
+        padding: 0 23px
+        margin-bottom: 3px
+        .copy-number
+          font-family: $font-family-regular
+          font-size: $font-size-15
+          color: $color-text-main
+        .copy-btn
+          font-family: $font-family-regular
+          font-size: $font-size-12
+          color: $color-main
+          border-1px($color-main, 20px)
+          width: 54px
+          height: 20px
+          line-height: 20px
+          text-align: center
+      .model-date
+        font-family: $font-family-regular
+        font-size: $font-size-14
+        color: #808080
+        padding-left: 23px
+  .mb-25
+    margin-bottom: 20px
 </style>

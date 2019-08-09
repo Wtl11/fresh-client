@@ -19,6 +19,14 @@
       </div>
     </div>
     <div class="order-nav-box">
+      <!--全国包邮-->
+      <div class="postage-title">
+        <div class="row-con"  @click="jumpOrderList">
+          <p class="title">我的订单</p>
+          <p class="explain" :class="newNotify * 1 === 1 ? 'explain-red' : ''">全国包邮</p>
+          <img class="arrow-img" v-if="imageUrl" mode="aspectFill" :src="imageUrl + '/yx-image/2.3/icon-pressed@2x.png'">
+        </div>
+      </div>
       <div class="order-nav">
         <div class="order-item" v-for="(item, index) in orderNav" :key="index" @click="jumpOrder(item)">
           <div class="icon"><img class="icon-img" v-if="imageUrl" :src="imageUrl+item.icon_url" alt=""></div>
@@ -120,7 +128,8 @@
         statusBarHeight: 0,
         backgroundHeight: 0,
         placeHeight: 0,
-        enable: false
+        enable: false,
+        newNotify: 0
       }
     },
     onLoad() {
@@ -137,6 +146,7 @@
       if (!wx.getStorageSync('token')) return
       let storageUserInfo = await this.$wechat.getStorage('userInfo')
       this._isOpenInvitation()
+      this._getPostageNotify()
       this.userInfo = storageUserInfo.data
       this.isLeader = wx.getStorageSync('isLeader') || false
       this._getShopDetail()
@@ -250,11 +260,25 @@
           url: `${this.$routes.main.ORDER_DETAIL}?id=${item.id}`
         })
       },
+      jumpOrderList() {
+        wx.navigateTo({
+          url: `${this.$routes.postage.ORDER_LIST}?id=&index=0`
+        })
+      },
       // 获取头部数量
       _getCouponNumber() {
         API.Coupon.getClientListNumber('', false).then(res => {
           this.couponNumber = res.data.can_used_count
           this.goodsNumber = res.data.goods_can_used_count
+        })
+      },
+      // 全国包邮订单是否有新消息[v2.8.5]
+      _getPostageNotify() {
+        API.Postage.getFreeNotify().then(res => {
+          if (res.error !== this.$ERR_OK) {
+            return
+          }
+          this.newNotify = res.data.has_new_notify
         })
       }
     }, // 235
@@ -561,6 +585,42 @@
               color: $color-text-sub
               font-family: $font-family-regular
 
+  /*全国包邮*/
+  .postage-title
+    layout(column)
+    padding: 16px 10px 0
+    .row-con
+      layout(row)
+      align-items: center
+      font-family: $font-family-regular
+      font-size: 16px
+      color: $color-text-main
+      .title
+        padding-left: 3px
+        flex: 1
+        font-family: $font-family-bold
+      .explain
+        color: $color-text-sub
+        font-size: 12px
+        padding-right: 5px
+      .explain-red
+        padding-right: 10px
+        position: relative
+        &:after
+          width: 5px
+          height: 5px
+          display: block
+          position: absolute
+          right: 5px
+          top: 0
+          border-radius: 50%
+          background: #FE3B39
+          content: ''
+      .arrow-img
+        display: block
+        width: 7.5px
+        height: 12.5px
+        margin-right: 5px
   .mine-model
     position: fixed
     top: 0

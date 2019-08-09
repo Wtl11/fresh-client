@@ -233,21 +233,24 @@
                      id="activeTab"
                      v-if="activeTabInfo && activeTabInfo.length > 1"
             >
-              <ul class="active-tab-container"
+              <scroll-view class="active-tab-container"
                   ref="refActiveTabContainer"
                   :style="activeTabStyles"
                   :class="{active: activeTabStyles}"
-              >
-                <li v-for="(item, index) in activeTabInfo"
+                 id="scrollView" :scroll-into-view="viewToItem" scroll-x scroll-with-animation="true">
+                <div v-for="(item, index) in activeTabInfo"
                     :key="index"
-                    class="active-item-wrapper"
+                     class="active-item-wrapper"
+                     :id="'item'+index"
                     :class="{active: index === activeTabIndex}"
                     @click="handleActiveTabChange(index)"
                 >
-                  <p class="title">{{item.title}}</p>
-                  <p class="sub-title">{{item.subTitle}}</p>
-                </li>
-              </ul>
+                  <div class="active-item-con">
+                    <p class="title">{{item.title}}</p>
+                    <p class="sub-title">{{item.subTitle}}</p>
+                  </div>
+                </div>
+              </scroll-view>
             </section>
             <div v-else style="height: 8px"></div>
             <!--          平团返现等各个活动-->
@@ -281,6 +284,12 @@
                   v-if="imageUrl && item.module_name === ACTIVE_TYPE.GUESS"
                   :src="imageUrl + '/yx-image/2.4/pic-cnxh@2x.png'"
                   class="banner-image">
+                <img
+                  lazy-load
+                  mode="widthFix"
+                  v-if="imageUrl && item.module_name === ACTIVE_TYPE.FREE_SHIPPING"
+                  :src="imageUrl + '/free-shipping/pic-ptfx@2x.png'"
+                  class="banner-image">
                 <button v-if="item.module_name !== ACTIVE_TYPE.GUESS" class="share-button" open-type="share" :id="'share-' + item.module_name"></button>
                 <block v-for="(child, idx) in item.list" :key="idx">
                   <div class="panel-goods-wrapper"
@@ -294,7 +303,12 @@
                              :src="child.goods_cover_image" alt="" class="good-image">
                         <img
                           :lazy-load="true"
-                          v-if="imageUrl"
+                          v-if="imageUrl && item.module_name === ACTIVE_TYPE.FREE_SHIPPING"
+                          :src="imageUrl + '/yx-image/postage/icon-label_baoyou@2x.png'"
+                          class="label-icon">
+                        <img
+                          :lazy-load="true"
+                          v-else-if="imageUrl"
                           :src="imageUrl + '/yx-image/2.4/icon-label@2x.png'"
                           class="label-icon">
                       </figure>
@@ -425,6 +439,8 @@
         todayHotList: [],
         // 团购列表
         groupList: [],
+        // 全国包邮-商品列表
+        freeShippingList: [],
         // 猜你喜欢列表
         guessList: [],
         guessPage: 1,
@@ -450,7 +466,8 @@
         ],
         latitude: 0,
         longitude: 0,
-        shareModuleName: ''
+        shareModuleName: '',
+        viewToItem: 'item0'
       }
     },
     computed: {
@@ -500,6 +517,12 @@
       userInfo(val = {}) {
         this._getCouponModalList(val.id)
         this.setCartCount()
+      },
+      activeTabIndex() {
+        // 只有滑动到头尾才会改变
+        if (this.activeTabIndex === 0 || this.activeTabIndex === (this.activeTabInfo.length - 1)) {
+          this.viewToItem = `item${this.activeTabIndex}`
+        }
       }
     },
     onLoad(options) {
@@ -627,6 +650,10 @@
           imgUrl = '/yx-image/2.4/pic-ptfx_share@2x.png'
           title = `${this.socialName}-赞播优鲜社区团购`
           break
+        case ACTIVE_TYPE.FREE_SHIPPING :
+          imgUrl = '/yx-image/2.4/pic-xsqg_ljqg@2x.png'
+          title = `${this.socialName}-赞播优鲜社区团购`
+          break
         default:
           imgUrl = '/yx-image/choiceness/pic-zbyx@2x.png'
           title = `${this.socialName},次日达、直采直销，点击下单↓`
@@ -659,7 +686,7 @@
         if (item.module_name === ACTIVE_TYPE.GROUP_ON) {
           this.handleJumpToGoodsDetail(child, item.module_name)
         } else {
-          this.addShoppingCart(child)
+          this.addShoppingCart(child, item.module_name)
         }
       },
       _resetGuessParams() {
@@ -696,7 +723,8 @@
         let arr = []
         if (this.activityModuleList.length) {
           this.activityModuleList.forEach(item => {
-            if (item.module_name !== 'activity_fixed' && item.starting_point_id > 0) {
+            // 全国包邮没有starting_point_id,判断is_close是否开启即可
+            if ((item.module_name !== 'activity_fixed' && item.starting_point_id > 0) || (item.module_name === 'free_shipping' && item.is_close !== 1)) {
               arr.push({
                 ...item,
                 ...TAB_ARR_CONFIG[item.module_name]
@@ -847,6 +875,13 @@
       },
       // 跳转至商品详情页
       handleJumpToGoodsDetail(item, type) {
+        console.log(item, type)
+        if (type === 'free_shipping') {
+          wx.navigateTo({
+            url: `${this.$routes.postage.GOODS_DETAILS}?id=${item.goods_id}`
+          })
+          return
+        }
         wx.navigateTo({
           url: `${this.$routes.main.GOODS_DETAIL}?id=${item.goods_id}&activityId=${item.activity_id}&activityType=${type}`
         })
@@ -895,12 +930,17 @@
         }
       },
       // 添加购物车
-      async addShoppingCart(item) {
+      async addShoppingCart(item, type) {
         let isLogin = await this.$isLogin()
         if (!isLogin) {
           return
         }
-        API.Choiceness.addShopCart({ goods_sku_id: item.goods_sku_id, activity_id: item.activity_id }).then((res) => {
+        let sourceType = 1
+        console.log(item)
+        if (type === 'free_shipping') {
+          sourceType = 2
+        }
+        API.Choiceness.addShopCart({ goods_sku_id: item.goods_sku_id, activity_id: item.activity_id, source_type: sourceType }).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.$sendMsg({
               event_no: 1007,
@@ -1018,7 +1058,14 @@
                 })
               }
             } else if (activityId === 0 && item.module_name !== ACTIVE_TYPE.FLASH) {
-              this[key.dataArray] = []
+              // 全国包邮-获取商品列表
+              if (item.module_name === ACTIVE_TYPE.FREE_SHIPPING) {
+                API.Home.getFreeShippingList().then(res => {
+                  this.freeShippingList = this._formatListPriceData(res.data)
+                })
+              } else {
+                this[key.dataArray] = []
+              }
             }
             // 限时抢购活动
             if (item.module_name === ACTIVE_TYPE.FLASH && item.list.length > 0) {
@@ -1226,12 +1273,17 @@
     // tab选项卡
     .active-tab-wrapper
       height: 59px
+      background: #f5f5f5
+      hide-scrollbar()
       .active-tab-container
-        height: 59px
         width: 100vw
-        display: flex
         z-index: 99
         position: absolute
+        display: block
+        white-space: nowrap
+        box-sizing: border-box
+        transition: all 0.3s
+        transform: translate3d(0, 0, 0)
         &.active:after
           content: ""
           position: absolute
@@ -1242,12 +1294,27 @@
           transform: scaleY(.5) translateZ(0)
           border-bottom: 1px solid $color-line
         .active-item-wrapper
-          width: 25vw
-          font-family: $font-family-regular
-          display: flex
-          flex-direction: column
-          justify-content: center
-          align-items: center
+          white-space: nowrap
+          display: inline-block
+          .active-item-con
+            position: relative
+            width: 22.5vw
+            min-width: 84px
+            height: 59px
+            font-family: $font-family-regular
+            display: flex
+            flex-direction: column
+            justify-content: center
+            align-items: center
+            &:before
+              content: ""
+              position: absolute
+              top: 10px
+              right: 0
+              width: 1px
+              height: 37px
+              transform: scaleX(.5) translateZ(0)
+              border-left: 1px solid $color-line
           &.active
             .title
               color: #73C200
@@ -1266,6 +1333,9 @@
             border-radius: @height
             font-size: 12px;
             color: $color-text-sub
+          &:last-child
+            .active-item-con
+              border-none()
 
   // 分类
   .classify-wrapper

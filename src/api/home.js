@@ -1,4 +1,5 @@
 import request from './request-handler'
+import {baseURL} from '@utils/config'
 
 export default {
   /** ********** 首页 ************ **/
@@ -25,6 +26,11 @@ export default {
   // 活动商品列表[v2.1]
   getActivityList(data, loading = false, toast) {
     const url = `/api/wap/goods/activity-goods`
+    return request.get({url, data, loading, toast})
+  },
+  // 全国包邮
+  getFreeShippingList(data, loading = false, toast) {
+    const url = baseURL.marketApi + `/api/wap/goods`
     return request.get({url, data, loading, toast})
   }
 }
