@@ -25,7 +25,7 @@ export const TAB_ARR_CONFIG = {
     iconText: '爆款价',
     buttonText: '+购物车',
     dataArray: 'todayHotList',
-    limit: 20
+    limit: 50
   },
   [ACTIVE_TYPE.GROUP_ON]: {
     title: '拼团返现',
