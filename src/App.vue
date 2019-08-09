@@ -67,7 +67,9 @@
         }
         shopId = defaultShopId || baseURL.defaultId
       }
-      +shopId && wx.setStorageSync('shopId', shopId)
+      if (shopId > 0) {
+        wx.setStorageSync('shopId', shopId)
+      }
       if (!defaultShopId) {
         try {
           let res = await API.Choiceness.getDefaultShopInfo()
@@ -76,7 +78,7 @@
           } else {
             wx.setStorageSync('defaultShopId', baseURL.defaultId)
           }
-          defaultShopId = res.data.id || baseURL.defaultId
+          // defaultShopId = res.data.id || baseURL.defaultId
         } catch (e) {
           console.error(e)
         }
