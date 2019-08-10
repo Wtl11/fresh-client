@@ -1,12 +1,12 @@
 <template>
   <div class="distribution-detail">
     <navigation-bar title="物流详情"></navigation-bar>
-    <div class="info-box">
+    <div v-if="distributionNo" class="info-box">
       <div class="info-top">{{distributionName}}</div>
-      <div class="info-bottom">快递单号：{{distributionNo}}<span class="copy-btn" @click="copyHandle">复制</span>
+      <div class="info-bottom">快递单号：{{distributionNo}}<span v-if="distributionNo" class="copy-btn" @click="copyHandle">复制</span>
       </div>
     </div>
-    <div class="info-line"></div>
+    <div v-if="distributionNo" class="info-line"></div>
     <article v-if="isEmpty" class="empty-wrapper">
       <block v-if="imageUrl">
         <img mode="aspectFill" :src="imageUrl + '/yx-image/postage/pic-noresult@2x.png'" alt="" class="e-img">
@@ -73,7 +73,7 @@
             if (res.data.logistics_bill_no) {
               this.distributionNo = res.data.logistics_bill_no
               this.distributionName = res.data.logistics_company_name
-              this.distributionList = res.data.logistics_steps
+              this.distributionList = (res.data.logistics_steps && res.data.logistics_steps[0]) || []
             }
           } else {
             this.$wechat.showToast(res.message)
