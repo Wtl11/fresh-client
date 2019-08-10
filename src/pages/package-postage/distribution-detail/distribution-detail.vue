@@ -9,7 +9,7 @@
     <div class="info-line"></div>
     <article v-if="isEmpty" class="empty-wrapper">
       <block v-if="imageUrl">
-        <img :src="imageUrl + '/yx-image/postage/pic-noresult@2x.png'" alt="" class="e-img">
+        <img mode="aspectFill" :src="imageUrl + '/yx-image/postage/pic-noresult@2x.png'" alt="" class="e-img">
         <p class="e-text">暂无查询到物流跟踪信息！</p>
       </block>
     </article>
@@ -93,8 +93,8 @@
     .e-img
       display block
       margin : 0 auto
-      width: 116px
-      height: 100px
+      width: 111.5px
+      height: 109px
     .e-text
       padding-top :15px
       font-family: PingFangSC-Regular;
