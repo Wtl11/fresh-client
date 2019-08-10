@@ -7,6 +7,12 @@
       </div>
     </div>
     <div class="info-line"></div>
+    <article v-if="isEmpty" class="empty-wrapper">
+      <block v-if="imageUrl">
+        <img :src="imageUrl + '/yx-image/postage/pic-noresult@2x.png'" alt="" class="e-img">
+        <p class="e-text">暂无查询到物流跟踪信息！</p>
+      </block>
+    </article>
     <div class="info-list">
       <div class="list-item" v-for="(item, index) in distributionList" :key="index">
         <div class="item-title">{{item.remark}}</div>
@@ -36,7 +42,8 @@
         distributionName: '',
         distributionList: '',
         order_sn: '',
-        goods_sku_id: ''
+        goods_sku_id: '',
+        isEmpty: false
       }
     },
     onShow() {
@@ -57,15 +64,21 @@
       },
       getDistributionDetailData() {
         API.Postage.getDistributionDetail({order_sn: this.order_sn, goods_sku_id: this.goods_sku_id}).then((res) => {
-          if (res.error === this.$ERR_OK) {
-            if (res.data.length !== 0) {
+          if (res.error === this.$ERR_OK && res.data) {
+            if (res.data[0]) {
               this.distributionNo = res.data[0].logistics_bill_no
               this.distributionName = res.data[0].logistics_company_name
               this.distributionList = res.data[0].logistics_steps
             }
+            if (res.data.logistics_bill_no) {
+              this.distributionNo = res.data.logistics_bill_no
+              this.distributionName = res.data.logistics_company_name
+              this.distributionList = res.data.logistics_steps
+            }
           } else {
             this.$wechat.showToast(res.message)
           }
+          this.isEmpty = !this.distributionList.length
         })
       }
     }
@@ -74,6 +87,21 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@designCommon"
+
+  .empty-wrapper
+    padding-top : 100px
+    .e-img
+      display block
+      margin : 0 auto
+      width: 116px
+      height: 100px
+    .e-text
+      padding-top :15px
+      font-family: PingFangSC-Regular;
+      font-size: 14px;
+      color: #808080;
+      text-align: center;
+      line-height: 19px;
 
   .distribution-detail
     width: 100%
