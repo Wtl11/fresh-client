@@ -141,6 +141,7 @@
                              v-if="imageUrl"
                              :src="imageUrl + '/yx-image/2.3/pic-label_qg@2x.png'"
                         >
+                        <div v-if="child.usable_stock <= 0" class="sold-out">已抢光</div>
                       </figure>
                       <section class="bottom-wrapper">
                         <p class="title">{{child.name}}</p>
@@ -311,6 +312,7 @@
                           v-else-if="imageUrl"
                           :src="imageUrl + '/yx-image/2.4/icon-label@2x.png'"
                           class="label-icon">
+                        <div v-if="child.usable_stock <= 0" class="sold-out">已抢光</div>
                       </figure>
                       <article class="right">
                         <p class="title">{{child.name}}</p>
@@ -1694,5 +1696,24 @@
         width: 100vw
         display: block
 
-
+  .sold-out
+    opacity: 0.75
+    background: rgba(0, 0, 0, 0.6)
+    position: absolute
+    left: 0
+    top: 0
+    bottom: 0
+    right: 0
+    z-index: 9
+    width: 70%
+    height: @width
+    margin: auto
+    color: #fff
+    font-family: $font-family-medium
+    font-size: $font-size-12
+    text-align: center
+    border-radius: 100%
+    layout()
+    align-items: center
+    justify-content: center
 </style>

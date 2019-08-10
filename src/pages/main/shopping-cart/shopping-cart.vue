@@ -20,7 +20,7 @@
           <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && item.checked && item.allowCheck" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
           <button formType="submit" class="goods-image" @click.stop="jumpGoodsDetail(item)">
             <img class="goods-img" mode="aspectFill" :src="item.goods_cover_image" alt="">
-            <div class="robbed" v-if="item.num <= 0">已抢完</div>
+            <div class="robbed" v-if="item.num <= 0">已抢光</div>
             <div class="robbed" v-else-if="item.activity && item.activity.activity_theme === ACTIVE_TYPE.NEW_CLIENT && item.is_new_client !== 1">新人专属</div>
           </button>
           <div class="good-info">
@@ -71,7 +71,7 @@
           <img class="sel-box" @click.stop="postageCheck(index)" v-if="imageUrl && item.checked && item.allowCheck" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
           <button formType="submit" class="goods-image" @click.stop="jumpGoodsDetail(item, 'postage')">
             <img class="goods-img" mode="aspectFill" :src="item.goods_cover_image" alt="">
-            <div class="robbed" v-if="item.num <= 0">已抢完</div>
+            <div class="robbed" v-if="item.num <= 0">已抢光</div>
             <div class="robbed" v-else-if="item.activity && item.activity.activity_theme === ACTIVE_TYPE.NEW_CLIENT && item.is_new_client !== 1">新人专属</div>
           </button>
           <div class="good-info">
@@ -136,6 +136,7 @@
               <figure class="classify-box-top">
                 <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/icon-label2@2x.png'" alt="" class="top-label" mode="aspectFill">
                 <img v-if="item.goods_cover_image" :src="item.goods_cover_image" alt="" class="box-top-img" mode="aspectFill">
+                <div v-if="item.usable_stock <= 0" class="sold-out">已抢光</div>
               </figure>
               <section class="classify-box-bottom">
                 <div class="classify-title">{{item.name}}</div>
@@ -970,6 +971,23 @@
         display: block
         width: 100%
         height: 100%
+      .sold-out
+        opacity: 0.75
+        background: rgba(0, 0, 0, 0.6)
+        position: absolute
+        left: 50%
+        top: 50%
+        z-index: 9
+        width: 15.7vw
+        height: 15.7vw
+        line-height: 15.7vw
+        margin-left: -7.85vw
+        margin-top: -7.85vw
+        color: #fff
+        font-family: $font-family-medium
+        font-size: $font-size-16
+        text-align: center
+        border-radius: 100%
     .classify-box-bottom
       padding-top: 10px
       font-family: $font-family-regular
