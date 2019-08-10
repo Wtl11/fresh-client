@@ -88,15 +88,6 @@
         navList: [
           {
             cname: '',
-            icon: '/yx-image/2.4/icon-mypt_me@2x.png',
-            title: '我的拼团',
-            url: this.$routes.main.MY_GROUP_BUY,
-            fn: '_handleNav',
-            type: 'top',
-            isShow: true
-          },
-          {
-            cname: '',
             icon: '/yx-image/2.4/icon-coupon_me@2x.png',
             title: '优惠券',
             hasExplain: 1,
@@ -126,8 +117,17 @@
           },
           {
             cname: '',
+            icon: '/yx-image/2.4/icon-mypt_me@2x.png',
+            title: '我的拼团',
+            url: this.$routes.main.MY_GROUP_BUY,
+            fn: '_handleNav',
+            type: 'top',
+            isShow: true
+          },
+          {
+            cname: '',
             icon: '/yx-image/2.4/icon-address_me@2x.png',
-            title: '自提点',
+            title: '提货点',
             url: '',
             fn: '_navigateLocation',
             type: 'top',
