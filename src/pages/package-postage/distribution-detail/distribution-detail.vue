@@ -3,7 +3,8 @@
     <navigation-bar title="物流详情"></navigation-bar>
     <div class="info-box">
       <div class="info-top">{{distributionName}}</div>
-      <div class="info-bottom">快递单号：{{distributionNo}}</div>
+      <div class="info-bottom">快递单号：{{distributionNo}}<span class="copy-btn" @click="copyHandle">复制</span>
+      </div>
     </div>
     <div class="info-line"></div>
     <div class="info-list">
@@ -48,6 +49,12 @@
         this.order_sn = options.orderSn
         this.goods_sku_id = options.id
       },
+      copyHandle() {
+        this.$wx.setClipboardData({
+          data: this.distributionNo,
+          success: function(res) {}
+        })
+      },
       getDistributionDetailData() {
         API.Postage.getDistributionDetail({order_sn: this.order_sn, goods_sku_id: this.goods_sku_id}).then((res) => {
           if (res.error === this.$ERR_OK) {
@@ -81,6 +88,22 @@
       font-size: $font-size-14
       font-family: $font-family-regular
       color: #000
+      line-height : 1
+      .copy-btn
+        display inline-block
+        width: 54px;
+        margin-left: 15px;
+        height: 20px;
+        position: relative;
+        text-align: center;
+        line-height: 19px;
+        box-sizing: border-box;
+        font-family: 'PingFangSC-Regular';
+        font-size: 12px;
+        color: #111;
+        letter-spacing: 0.3px;
+        border: 1px solid $color-line
+        border-radius : @height
   .info-line
     height: 10px
     width: 100%
