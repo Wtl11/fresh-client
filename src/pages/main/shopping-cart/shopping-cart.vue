@@ -373,12 +373,21 @@
           this.$wechat.showToast(res.message)
           return
         }
-        res.data.forEach((item) => {
+        let dataArray = this.goodsList.concat(this.postageList)
+        console.log(dataArray)
+        res.data.forEach((item, index) => {
           let usableStock = item.usable_stock * 1
           item.num = item.num <= usableStock ? item.num : usableStock
-          item.num > 0 ? item.checked = true : item.checked = false
+          if (dataArray[index]) {
+            item.checked = dataArray[index].checked
+          } else {
+            item.checked = false
+          }
+          // item.checked = dataArray[index].checked
+          // item.num > 0 ? item.checked = true : item.checked = false
           item.allowCheck = this._allowCheckHandle(item)
         })
+        console.log(res.data)
         let goodsList = []
         let postageList = []
         let isGlobalModal
@@ -390,6 +399,7 @@
             goodsList.push(item)
           }
         })
+        console.log(goodsList)
         this.goodsList = goodsList
         this.postageList = postageList
         this.goodsList.length > 0 || this.postageList.length > 0 ? this.isShowCart = false : this.isShowCart = true
