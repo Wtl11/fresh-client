@@ -19,7 +19,6 @@
               :key="childIdx"
               :class="{'coupon-disable': child.status !== 1 }"
               class="coupon-item c-mb"
-              @click="selectCoupon(child)"
             >
               <section class="top-wrapper">
                 <img class="top-bg-img" v-if="imageUrl" :src="imageUrl + '/yx-image/invitation/pic-couponbg_myzk1.png'">
@@ -31,17 +30,17 @@
                   </artilce>
                   <article class="right">
                     <div class="title">
-                      <p class="use-type" :class="{unable: child.status !== 1}">0元满赠todo</p>
+                      <p class="use-type" :class="{unable: child.status !== 1}">{{child.tag_type === 2? '满赠': '0元支付'}}</p>
                       <p class="txt goods-name">{{child.coupon_name}}</p>
                     </div>
-                    <p class="explain">满199元可用todo</p>
+                    <p class="explain">{{child.condition_str}}</p>
                     <p class="condition">有效期至 {{child.end_at}}</p>
                     <img class="lab-img" v-if="imageUrl && child.status === 2" :src="imageUrl + '/yx-image/2.3/pic-coupon_ygq.png'">
                     <img class="lab-img" v-if="imageUrl && child.status === 0" :src="imageUrl + '/yx-image/2.3/pic-coupon_ysy.png'">
                   </article>
                 </div>
               </section>
-              <div class="select" v-if="child.status === 1">立即兑换</div>
+              <div class="select" v-if="child.status === 1" @click="selectCoupon(child)">{{child.tag_type === 2 ? '去下单' : '立即兑换'}}</div>
               <section class="middle-wrapper">
                 <img class="middle-bg-img" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/pic-couponbg_myzk2.png'">
                 <div class="middle-container">
@@ -149,11 +148,19 @@
         !this.tabList[this.tabIndex].dataArray.length && this._getList()
       },
       async _getList(isFirstLoad = false) {
-        let res = await API.Coupon.getClientList({ status: this.tabList[this.tabIndex].status, page: this.tabList[this.tabIndex].page, tag_type: 1 }, isFirstLoad)
+        let res = await API.Coupon.getClientList({
+          status: this.tabList[this.tabIndex].status,
+          page: this.tabList[this.tabIndex].page,
+          tag_type: '1,2'
+        }, isFirstLoad)
         if (res.error !== this.$ERR_OK) {
           this.$wechat.showToast(res.message)
           return
         }
+        res.data = res.data.map(item => {
+          item.showTip = false
+          return item
+        })
         this.tabList[this.tabIndex].lastPage = res.meta.last_page
         if (this.tabList[this.tabIndex].page === 1) {
           this.tabList[this.tabIndex].dataArray = res.data
@@ -170,8 +177,8 @@
       },
       async selectCoupon(item) {
         if (item.status !== 1) return
-        // todo 去下单
-        if (item.type) {
+        // 去下单 tag_type = 2 满赠
+        if (+item.tag_type === 2) {
           wx.switchTab({url: this.$routes.main.CHOICENESS})
           return
         }
