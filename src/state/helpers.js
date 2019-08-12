@@ -1,15 +1,16 @@
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapActions, mapMutations } from 'vuex'
 
 export const cartComputed = {
   ...mapGetters('cart', ['count'])
 }
 
 export const orderComputed = {
-  ...mapGetters('order', ['goodsList', 'total', 'deliverAt', 'couponInfo', 'beforeTotal', 'commodityItem', 'articleId'])
+  ...mapGetters('order', ['goodsList', 'total', 'deliverAt', 'couponInfo', 'beforeTotal', 'commodityItem', 'articleId', 'certificate'])
 }
 
 export const orderMethods = {
-  ...mapActions('order', ['setOrderInfo', 'submitOrder', 'saveCoupon', 'setCommodityItem', 'setArticleId'])
+  ...mapActions('order', ['setOrderInfo', 'submitOrder', 'saveCoupon', 'setCommodityItem', 'setArticleId']),
+  ...mapMutations('order', ['SAVE_CERTIFICATE'])
 }
 
 export const cartMethods = {

@@ -13,21 +13,27 @@
             <div class="postage-text">自提商品</div>
           </div>
         </div>
-        <article class="tip-common-wrapper tip-fulfil-gift" @click="tipNavHandle('certificate')">
-          <p class="left">满赠</p>
-          <p class="middle">满188元可领取赠品，还差24元</p>
-          <div class="right">去凑单<block v-if="imageUrl"><img class="right-arrow" mode="aspectFill" :src="imageUrl + '/yx-image/2.3/icon-pressed@2x.png'"></block></div>
+        <article v-if="fitGift.id" class="tip-common-wrapper tip-fulfil-gift" @click="tipNavHandle('certificate')">
+          <p class="left">{{fitGift.gift_icon_str}}</p>
+          <p class="middle">{{fitGift.gift_tips||''}}</p>
+          <div class="right">{{fitGift.is_gift_satisfied?'再逛逛':'去凑单'}}<block v-if="imageUrl"><img class="right-arrow" mode="aspectFill" :src="imageUrl + '/yx-image/2.3/icon-pressed@2x.png'"></block></div>
         </article>
         <block v-for="(item, index) in goodsList" :key="item.id">
           <article
-            v-if="index == 2"
+            v-if="tipList[index] && tipList[index].isDefault"
+            class="default-goods-line"
+            :class="{'hidden-top-line': !index}"
+          >
+          </article>
+          <article
+            v-else-if="tipList[index]"
             class="tip-common-wrapper tip-coupon"
             :class="{'hidden-top-line': !index}"
             @click="tipNavHandle('coupon', item, index)"
           >
-            <p class="left">满赠</p>
-            <p class="middle">满188元可领取赠品，还差24元</p>
-            <div class="right">去凑单<block v-if="imageUrl"><img class="right-arrow" mode="aspectFill" :src="imageUrl + '/yx-image/2.3/icon-pressed@2x.png'"></block></div>
+            <p class="left">{{tipList[index].coupon_icon_str}}</p>
+            <p class="middle">{{tipList[index].common_coupon_tips || tipList[index].cate_coupon_tips || tipList[index].goods_coupon_tips||''}}</p>
+            <div class="right">{{(tipList[index].is_common_coupon_satisfied||tipList[index].is_cate_coupon_satisfied||tipList[index].is_goods_coupon_satisfied)?'再逛逛':'去凑单'}}<block v-if="imageUrl"><img class="right-arrow" mode="aspectFill" :src="imageUrl + '/yx-image/2.3/icon-pressed@2x.png'"></block></div>
           </article>
           <div class="shop-item" :class="{'shop-item-opcta' : !item.allowCheck}" >
             <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && !item.checked && item.allowCheck" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt=""/>
@@ -249,7 +255,9 @@
         // 全国包邮参数
         postageList: [],
         isShowType: false,
-        isSelfGoods: true
+        isSelfGoods: true,
+        tipList: [], // 提示数组
+        fitGift: {}
       }
     },
     async onTabItemTap() {
@@ -327,6 +335,27 @@
     methods: {
       ...orderMethods,
       ...cartMethods,
+      _getCarTips() {
+        let arr = []
+        this.goodsList.forEach(item => {
+          if (item.checked) {
+            arr.push({
+              card_id: item.cart_id
+            })
+          }
+        })
+        API.Cart.chooseGoods4Tips({choose_carts: arr}).then((res) => {
+          if (res.error !== this.$ERR_OK) return
+          res.data.forEach(item => {
+            if (item.is_gift) {
+              this.fitGift = item
+            } else {
+              let index = this.tipList.findIndex(val => val.id === item.id)
+              index > -1 && (this.tipList[index] = item)
+            }
+          })
+        })
+      },
       tipNavHandle(type, item, index) {
         wx.switchTab({url: this.$routes.main.CHOICENESS})
         // switch (type) {
@@ -374,7 +403,6 @@
           return
         }
         let dataArray = this.goodsList.concat(this.postageList)
-        console.log(dataArray)
         res.data.forEach((item, index) => {
           let usableStock = item.usable_stock * 1
           item.num = item.num <= usableStock ? item.num : usableStock
@@ -383,23 +411,47 @@
           } else {
             item.checked = false
           }
-          // item.checked = dataArray[index].checked
-          // item.num > 0 ? item.checked = true : item.checked = false
           item.allowCheck = this._allowCheckHandle(item)
         })
-        console.log(res.data)
         let goodsList = []
         let postageList = []
         let isGlobalModal
+        let index = 0
+        let obj = {}
         res.data.forEach((item) => {
           isGlobalModal = item.source_type != null && +item.source_type !== 1
           if (isGlobalModal) {
             postageList.push(item)
           } else {
+            if (item.is_gift && !this.fitGift.id) {
+              this.fitGift = item
+            }
+            // 处理营销提示
+            if (item.is_common_coupon) { // 为通用券时
+              !this.tipList[0] && (this.tipList[0] = item)
+            } else if (item.is_cate_coupon) { // 为品类券时
+              let key = item.cate_coupon_id
+              if (!obj[key]) {
+                obj[key] = true
+                this.tipList[index] = item
+              }
+            } else if (item.is_goods_coupon) { // 为单品券时
+              let key = item.goods_coupon_id
+              if (!obj[key]) {
+                obj[key] = true
+                this.tipList[index] = item
+              }
+            } else {
+              if (!obj['noDiscount']) {
+                obj['noDiscount'] = true
+                item.isDefault = true
+                this.tipList[index] = item
+              }
+            }
             goodsList.push(item)
+            index++
           }
         })
-        console.log(goodsList)
         this.goodsList = goodsList
         this.postageList = postageList
         this.goodsList.length > 0 || this.postageList.length > 0 ? this.isShowCart = false : this.isShowCart = true
@@ -512,6 +564,7 @@
       },
       toggelCheck(i) {
         this.goodsList[i].checked = !this.goodsList[i].checked
+        this._getCarTips()
       },
       toggleCheckAll() {
         let goodsList = this.goodsList
@@ -524,6 +577,7 @@
           }
         })
         this.goodsList = goodsList
+        this._getCarTips()
       },
       // 老结算函数
       submitOrderOld() {
@@ -582,8 +636,9 @@
             item.checked = false
           }
         })
-        // 全国包邮
         this.goodsList = goodsList
+        this._getCarTips()
+        // 全国包邮
         let postageList = this.postageList
         postageList.forEach((item) => {
           if (!currentAllChecked && item.allowCheck) {
@@ -716,6 +771,19 @@
     &.hidden-top-line
       &:before
         display :none
+  .default-goods-line
+    position: relative
+    &:before
+      content: ""
+      position: absolute
+      top: 0
+      left: 12px
+      right : 0
+      border-top: 1px solid $color-line
+      transform: scaleY(.5) translateZ(0)
+      &.hidden-top-line
+        &:before
+          display :none
   /*提示栏end*/
 
 

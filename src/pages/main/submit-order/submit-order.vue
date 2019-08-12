@@ -70,9 +70,8 @@
         </li>
         <li v-if="!isGroupModal && !isFree" class="coupon-item" @click="chooseCertificateHandle">
           <p class="name">使用兑换券</p>
-          <p v-if="discount > 0" class="price">-{{discount}}</p>
+          <p v-if="certificate.customer_coupon_id" class="price">{{certificate.coupon_name}}</p>
           <p v-else class="price-disable">未使用兑换券</p>
-          <p v-if="discount > 0">元</p>
           <div class="item-arrow-img">
             <img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="img">
           </div>
@@ -140,7 +139,7 @@
             </div>
             <div class="item-wrapper mar-0">
               <p class="left">兑换券：</p>
-              <p v-if="discount > 0" class="right">-{{discount}}元</p>
+              <p v-if="certificate.customer_coupon_id" class="right">{{certificate.coupon_name}}</p>
               <p v-else class="right">未使用兑换券</p>
             </div>
             <div class="item-wrapper mar-0">
@@ -202,7 +201,6 @@
         return false
       },
       goodsDiscount() {
-        // console.log(this.commodityItem)
         return this.commodityItem ? +this.commodityItem.denomination ? +this.commodityItem.denomination : 0 : 0
       }
     },
@@ -223,7 +221,7 @@
     },
     async onShow() {
       // 文章进入详情 带参数
-      console.log('this.articleId', this.articleId)
+      console.warn('this.articleId', this.articleId)
       // ald && ald.aldstat.sendEvent('去支付')
       Ald.sendEvent('去支付')
       this._getCode()
@@ -294,6 +292,15 @@
             let coupon = res.data[0]
             this.saveCoupon(coupon)
           })
+        // 获取兑换券
+        API.Coupon.getChooseList({ goods: this.goodsList, is_usable: 1, tag_type: 2 })
+          .then((res) => {
+            if (!res.data.length) {
+              this['SAVE_CERTIFICATE']()
+              return
+            }
+            this['SAVE_CERTIFICATE'](res.data[0])
+          })
       },
       chooseCouponHandle() {
         wx.navigateTo({ url: `${this.$routes.main.COUPON_CHOOSE}` })
@@ -348,17 +355,16 @@
           url,
           source: this.isFree ? 'c_exchange' : source,
           latitude,
-          longitude
+          longitude,
+          gift_exchange_customer_coupon_id: this.certificate.customer_coupon_id || 0
         }
         this.userInfo.mobile = this.mobile
-        console.log('before:', orderInfo, this.articleId)
 
         // 文章进入直接支付
         if (this.articleId) {
           orderInfo.scenes = 'article'
           orderInfo.scenes_data = this.articleId
         }
-        console.log('after:', orderInfo)
         this.$wechat.setStorage('userInfo', this.userInfo)
         await this.submitOrder({ orderInfo, isFree: this.isFree })
       },

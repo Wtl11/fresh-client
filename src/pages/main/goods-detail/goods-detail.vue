@@ -130,7 +130,7 @@
           <div class="info-stock">已售<span :class="'corp-' + corpName + '-money'">{{goodsMsg.sale_count}}</span>{{goodsMsg.goods_units}}<span v-if="activityId * 1 > 0">，剩余<span :class="'corp-' + corpName + '-money'">{{goodsMsg.usable_stock}}</span>{{goodsMsg.goods_units}}</span></div>
         </div>
       </div>
-      <goods-promotion></goods-promotion>
+      <goods-promotion :dataArray="tipList"></goods-promotion>
       <!--拼团列表-->
       <div v-if="activityType === ACTIVE_TYPE.GROUP_ON" class="collage-box">
         <div v-if="collageList.length > 0" class="title">{{collageTotal}}位邻居正在拼单，可直接参与</div>
@@ -188,7 +188,7 @@
         :userTotal="userTotal"
         @buyRecordNavTo="buyRecordNavTo"
       ></buy-record>
-      <goods-hots></goods-hots>
+      <goods-hots :dataArray="hotList"></goods-hots>
       <detail-image :goodsMsg="goodsMsg"></detail-image>
       <service-description :runTime="runTime"></service-description>
       <button-group
@@ -355,7 +355,9 @@
         videoContext: '',
         swiperIdx: 0,
         arrowUrl: ARROW_URL[1],
-        isShowOldCustomerButton: false
+        isShowOldCustomerButton: false,
+        hotList: [], // 今日爆品
+        tipList: [] // 促销提示
       }
     },
     computed: {
@@ -366,6 +368,7 @@
         return (this.activityInfo.config || {}).person_limit || 0
       },
       goodsBanner() {
+        console.log(this.goodsMsg.goods_banner_images, 666) // todo
         return this.goodsMsg.goods_banner_images || []
       },
       goodsBannerLength() {
@@ -460,6 +463,7 @@
       this._checkIsNewClient()
       this.getQrCode()
       this._getLocation()
+      this._getGoodsTips()
       this._getGoodsDetailData()
       this.getUserImgList()
       this.getGoodsOtherInfo()
@@ -522,6 +526,12 @@
     methods: {
       ...orderMethods,
       ...cartMethods,
+      _getGoodsTips() {
+        if (!this.goodsId) return
+        API.Goods.getTipList({goods_id: this.goodsId}).then(res => {
+          this.tipList = res.data
+        })
+      },
       scrollingShowTitle(flag) {
         if (!this.videoPlaying) {
           return
@@ -944,6 +954,7 @@
           this.$wechat.hideLoading()
           if (res.error === this.$ERR_OK) {
             this.goodsMsg = res.data
+            this._getHotActive(res.data)
             this.msgTitle = this.goodsMsg.name
             if (this.goodsMsg.goods_videos && this.goodsMsg.goods_videos.length) {
               this.hasVideo = true
@@ -971,6 +982,14 @@
         }).catch(e => {
           console.warn(e)
         })
+      },
+      // 获取今日爆款列表
+      _getHotActive(data) {
+        if (!data.hot_tag_activity_id) return
+        API.Home.getActivityList({ activity_id: data.hot_tag_activity_id, page: 1, limit: 10 })
+          .then(res => {
+            this.hotList = res.data
+          })
       },
       // 限时抢购倒计时开始
       _flashAction() {

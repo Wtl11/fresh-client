@@ -7,22 +7,22 @@
       <ul class="middle">
         <block v-for="(item, index) in dataArray" :key="index">
           <li v-if="index < 2" class="middle-item item-default">
-            <div class="icon-ticket">满减</div>
-            <p class="text">满188元即赠苹果兑换券，赠完即止</p>
+            <div class="icon-ticket">{{item.icon_str}}</div>
+            <p class="text">{{item.tips}}</p>
           </li>
         </block>
       </ul>
       <img class="right" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/icon-pressed@2x.png'">
       <article v-show="isShow" class="modal" @click.stop="hide">
       </article>
-      <article class="modal-panel" :class="{active: isShow}" @click.stop="">
+      <article class="modal-panel" :class="{active: isShow}" @click.stop="navHandle">
         <p class="title">促销</p>
         <div class="scroll-wrapper">
           <ul class="ticket-wrapper ios-scroll-smooth">
             <li v-for="(item, index) in dataArray" :key="index" class="ticket item-default">
-              <div class="icon-ticket">满减</div>
-              <p class="text">满188元即赠苹果兑换券，赠完即止</p>
-              <block v-if="imageUrl">
+              <div class="icon-ticket">{{item.icon_str}}</div>
+              <p class="text">{{item.tips}}</p>
+              <block v-if="imageUrl && item.tag_type === 2">
                 <img class="arrow" mode="aspectFill" :src="imageUrl + '/yx-image/certificate/icon-promotion_enter@2x.png'">
               </block>
             </li>
@@ -38,9 +38,14 @@
 
   export default {
     name: COMPONENT_NAME,
+    props: {
+      dataArray: {
+        type: Array,
+        default: () => []
+      }
+    },
     data() {
       return {
-        dataArray: new Array(30).fill(1),
         isShow: false
       }
     },
@@ -50,6 +55,9 @@
       },
       hide() {
         this.isShow = false
+      },
+      navHandle() {
+        wx.navigateTo({url: this.$routes.activity.COMMODITY_CERTIFICATES})
       }
     }
   }

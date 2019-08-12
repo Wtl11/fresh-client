@@ -31,7 +31,7 @@
                   <article class="right">
                     <div class="title">
                       <p class="use-type" :class="{unable: child.status !== 1}">{{child.tag_type === 2? '满赠': '0元支付'}}</p>
-                      <p class="txt goods-name">{{child.coupon_name}}</p>
+                      <p class="txt goods-name" :class="{unable: child.status !== 1}">{{child.coupon_name}}</p>
                     </div>
                     <p class="explain">{{child.condition_str}}</p>
                     <p class="condition">有效期至 {{child.end_at}}</p>

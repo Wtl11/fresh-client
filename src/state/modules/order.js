@@ -10,7 +10,8 @@ export const state = {
   beforeTotal: '',
   couponInfo: {},
   commodityItem: {},
-  articleId: 0
+  articleId: 0,
+  certificate: {} // 兑换券
 }
 
 export const getters = {
@@ -31,7 +32,8 @@ export const getters = {
   },
   beforeTotal: state => state.beforeTotal,
   couponInfo: state => state.couponInfo,
-  commodityItem: state => state.commodityItem
+  commodityItem: state => state.commodityItem,
+  certificate: state => state.certificate
 }
 
 export const actions = {
@@ -159,6 +161,9 @@ export const mutations = {
   },
   SET_COMMODITY_ITEM(state, commodityItem) {
     state.commodityItem = commodityItem
+  },
+  SAVE_CERTIFICATE(state, certificate = {}) {
+    state.certificate = certificate
   }
 }
 

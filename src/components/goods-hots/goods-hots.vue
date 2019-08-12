@@ -6,11 +6,11 @@
         <ul class="goods-wrapper no-scroll-bar ios-scroll-smooth">
           <block v-for="(item, index) in dataArray" :key="index" >
             <li v-if="index<10" class="goods goods-default" @click="navHandle(item)">
-              <block v-if="true">
-                <img mode="aspectFill" src="http://social-shopping-api-1254297111.picgz.myqcloud.com/1/2019/04/25/155619196914944.png?imageView2/3/w/400/h/400/q/90" alt="" class="goods-cover">
+              <block v-if="item.goods_cover_image">
+                <img mode="aspectFill" :src="item.goods_cover_image" alt="" class="goods-cover">
               </block>
-              <p class="name">超值特新鲜柠</p>
-              <p class="money"><span class="price">10.8</span><span class="unit">元</span><span class="origin-price">21元</span></p>
+              <p class="name">{{item.name}}</p>
+              <p class="money"><span class="price">{{item.trade_price}}</span><span class="unit">元</span><span class="origin-price">{{item.original_price}}元</span></p>
             </li>
           </block>
         </ul>
@@ -21,18 +21,27 @@
 </template>
 
 <script type="text/ecmascript-6">
+  import { ACTIVE_TYPE } from '@utils/contants'
+
   const COMPONENT_NAME = 'GOODS_HOTS'
 
   export default {
     name: COMPONENT_NAME,
+    props: {
+      dataArray: {
+        type: Array,
+        default: () => []
+      }
+    },
     data() {
       return {
-        dataArray: new Array(30).fill(1)
       }
     },
     methods: {
       navHandle(item) {
-        console.log(item + ' todo')
+        wx.navigateTo({
+          url: `${this.$routes.main.GOODS_DETAIL}?id=${item.goods_id}&activityId=${item.activity_id}&activityType=${ACTIVE_TYPE.GOODS_HOT_TAG}`
+        })
       }
     }
   }

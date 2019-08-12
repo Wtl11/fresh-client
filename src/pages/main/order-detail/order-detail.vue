@@ -68,12 +68,12 @@
     <div class="gary-box"></div>
     <div class="order-list">
       <div class="order-item">
-        <div class="goods-item" :class="{isGift: index + 1 === 1 || index + 1 === 2}" v-for="(item, index) in orderMsg.goods" :key="index">
+        <div class="goods-item" :class="{isGift: item.is_gift}" v-for="(item, index) in orderMsg.goods" :key="index">
           <div class="goods-info-box">
             <img class="goods-img" mode="aspectFill" :src="item.image_url" alt="">
             <div class="goods-info">
               <div class="tit">
-                <div class="name"><span v-if="index === 1 || index === 2" class="icon-tag">赠品todo</span>{{item.goods_name}}</div>
+                <div class="name"><span v-if="item.is_gift" class="icon-tag">赠品</span>{{item.goods_name}}</div>
                 <div class="refund" @click.stop="isRefund(item)"
                      v-if="(orderMsg.status * 1 === 1 || orderMsg.status * 1 === 2) && (item.after_sale_status * 1 === 0 || item.after_sale_status * 1 === 1) && item.can_after_sale * 1 === 1">
                   退款
@@ -106,8 +106,7 @@
       <!--    兑换券-->
       <li class="coupon-item">
         <p class="name">使用兑换券</p>
-        <p v-if="orderMsg.promote_price > 0" class="price">-{{orderMsg.promote_price}}兑换券todo</p>
-        <p v-if="orderMsg.promote_price > 0">元</p>
+        <p v-if="orderMsg.gift_coupon_name" class="price">{{orderMsg.gift_coupon_name}}</p>
         <p v-else class="price-disable">未使用兑换券</p>
       </li>
       <!-- 优惠券   -->

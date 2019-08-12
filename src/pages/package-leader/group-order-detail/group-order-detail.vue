@@ -32,7 +32,7 @@
     <div class="goods-wrapper">
       <block v-for="(item, index) in orderDetail.goods" :key="index">
         <div class="goods-item">
-          <div class="goods-detail">
+          <div v-if="!item.is_gift" class="goods-detail">
             <block v-if="item.image_url">
               <img :src="item.image_url" class="goods-img" mode="aspectFill">
             </block>
@@ -52,7 +52,7 @@
             </div>
           </div>
           <block v-for="(child,cIdx) in 1" :key="cIdx">
-            <div class="goods-detail gift" :class="{'first-style': !cIdx}">
+            <div v-if="item.is_gift" class="goods-detail gift" :class="{'first-style': !cIdx}">
               <block v-if="item.image_url">
                 <img :src="item.image_url" class="goods-img" mode="aspectFill">
               </block>
@@ -73,7 +73,7 @@
               </div>
             </div>
           </block>
-          <div class="btn-box" v-if="!item.delivery_status">
+          <div v-if="item.delivery_status" class="btn-box">
             <div class="goods-btn"
                  :class="'corp-' + corpName + '-goods-btn'"
                  v-if="orderDetail.status === 1 && orderDetail.delivery_status === 3 && (item.after_sale_status === 0 || item.after_sale_status === 1)"
@@ -90,9 +90,8 @@
     <ul class="coupon-info-wrapper" :class="'corp-' + corpName + '-money'">
       <li class="coupon-item">
         <p class="name">使用兑换券</p>
-        <p v-if="orderDetail.promote_price > 0" class="price">-{{orderDetail.promote_price}}</p>
-        <p v-if="orderDetail.promote_price > 0">元todo</p>
-        <p v-else class="price-disable">未使用兑换券todo</p>
+        <p v-if="orderDetail.gift_coupon_name" class="price">{{orderDetail.gift_coupon_name}}</p>
+        <p v-else class="price-disable">未使用兑换券</p>
       </li>
       <li class="coupon-item">
         <p class="name">使用优惠券</p>

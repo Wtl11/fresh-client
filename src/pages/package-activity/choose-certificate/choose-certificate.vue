@@ -5,27 +5,27 @@
       <div
         v-for="(child, childIdx) in dataArray"
         :key="childIdx"
-        :class="[{'coupon-disable': child.status !== 1 }, {unableIndex: childIdx === useAbleIndex}]"
+        :class="[{'coupon-disable': child.status !== 1 }, {unableIndex: childIdx >= useAbleIndex}]"
         class="coupon-item c-mb"
       >
         <section class="top-wrapper" @click.stop="selectCoupon(child, childIdx)">
           <img class="top-bg-img" v-if="imageUrl" :src="imageUrl + '/yx-image/invitation/pic-couponbg_myzk1.png'">
           <div class="top-container">
             <artilce class="left">
-              <div class="goods-box" :class="{unable: child.status !== 1}">
+              <div class="goods-box" :class="{unable: child.status !== 1 || childIdx >= useAbleIndex}">
                 <img v-if="imageUrl && child.other_info" :src="child.other_info.goods_cover_image" class="goods-img" mode="aspectFill">
               </div>
             </artilce>
             <article class="right">
               <div class="title">
-                <p class="use-type" :class="{unable: child.status !== 1}">0元满赠todo</p>
-                <p class="txt goods-name">{{child.coupon_name}}</p>
+                <p class="use-type" :class="{unable: child.status !== 1 || childIdx >= useAbleIndex}">{{child.tag_type === 2? '满赠': '0元支付'}}</p>
+                <p class="txt goods-name" :class="{unable: child.status !== 1 || childIdx >= useAbleIndex}">{{child.coupon_name}}</p>
               </div>
-              <p class="explain">满199元可用todo</p>
+              <p class="explain">{{child.condition_str}}</p>
               <p class="condition">有效期至 {{child.end_at}}</p>
               <img class="lab-img" v-if="imageUrl && child.status === 2" :src="imageUrl + '/yx-image/2.3/pic-coupon_ygq.png'">
               <img class="lab-img" v-if="imageUrl && child.status === 0" :src="imageUrl + '/yx-image/2.3/pic-coupon_ysy.png'">
-              <figure v-if="child.status === 1" class="tool-wrapper">
+              <figure v-if="childIdx < useAbleIndex" class="tool-wrapper">
                 <img class="sel-box"
                      :class="{active: !child.isChecked}"
                      v-if="imageUrl"
@@ -44,11 +44,11 @@
           <div class="middle-container">
             <div class="middle-box" @click.stop="handleShowTip(child, childIdx)">
               <aritlce class="title">
-                <p>使用说明</p>
+                <p>{{childIdx >= useAbleIndex?'不可用原因': '使用说明'}}</p>
                 <img class="down-img" :class="{'rotate': child.showTip}" mode="widthFix" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/icon-pressed_down@2x.png'">
               </aritlce>
             </div>
-            <p v-if="child.showTip" class="explain">{{child.description}}</p>
+            <p v-if="child.showTip" class="explain">{{childIdx >= useAbleIndex?child.unusable_reason:child.description}}</p>
           </div>
         </section>
         <section class="bottom-wrapper">
@@ -62,8 +62,10 @@
 
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
-  import Coupon from '../commodity-certificates/coupon'
+  // import Coupon from '../commodity-certificates/coupon'
   import isActiveEmpty from '@components/is-active-empty/is-active-empty'
+  import API from '@api'
+  import { orderComputed, orderMethods } from '@state/helpers'
 
   const PAGE_NAME = 'CHOOSE_CERTIFICATE'
 
@@ -74,30 +76,39 @@
       isActiveEmpty
     },
     data() {
-      let arr = Coupon.create({status: 1}, 3)
-      let arr2 = Coupon.create({status: 0}, 10)
+      // let arr = Coupon.create({status: 1}, 3)
+      // let arr2 = Coupon.create({status: 0}, 10)
       return {
-        dataArray: arr.concat(arr2),
-        useAbleIndex: arr.length - 1,
+        dataArray: [],
+        useAbleIndex: -1,
         isShowEmpty: false
       }
+    },
+    computed: {
+      ...orderComputed
     },
     onLoad() {
       // 1. 请求服务器获取列表
       this._getList()
     },
-    onUnload() {
-      // 1. 请求服务器发送所选的兑换券
-      this._updateCertificate()
-    },
     methods: {
-      _getList() {
-        // setTimeout(() => {
-        //   this.dataArray = []
-        //   this.isShowEmpty = !this.dataArray.length
-        // }, 1000)
-      },
-      _updateCertificate() {
+      ...orderMethods,
+      async _getList() {
+        let res, arr, data
+        res = await API.Coupon.getChooseList({ goods: this.goodsList, is_usable: 1, tag_type: 2 }, true)
+        data = res.data || []
+        arr = data
+        this.useAbleIndex = arr.length
+        res = await API.Coupon.getChooseList({ goods: this.goodsList, is_usable: 0, tag_type: 2 }, false)
+        data = res.data || []
+        arr = arr.concat(data)
+        arr = arr.map(item => {
+          item.isChecked = item.customer_coupon_id === this.certificate.customer_coupon_id
+          item.showTip = false
+          return item
+        })
+        this.isShowEmpty = !arr.length
+        this.dataArray = arr
       },
       handleShowTip(child, index) {
         child.showTip = !child.showTip
@@ -110,8 +121,8 @@
         }
         child.isChecked = !child.isChecked
         if (child.isChecked) {
-          // todo
-          console.log('back')
+          this['SAVE_CERTIFICATE'](child)
+          wx.navigateBack()
         }
       }
     }
