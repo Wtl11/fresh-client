@@ -965,6 +965,7 @@
           let normalCoupon = []
           let invCoupon = []
           let couponAfterSale = []
+          let fitGift = []
           if (res && res.data && res.data.length) {
             res.data.forEach((item) => {
               switch (item.type) {
@@ -974,6 +975,9 @@
                 case 8:
                   couponAfterSale.push(item)
                   break
+                case 9:
+                  fitGift.push(item)
+                  break
                 default:
                   normalCoupon.push(item)
                   break
@@ -982,6 +986,7 @@
             invCoupon.length && this._ref('invModal', 'show', invCoupon)
             normalCoupon.length && this._ref('couponModal', 'show', normalCoupon)
             couponAfterSale.length && this._ref('couponAfterSale', 'show', couponAfterSale)
+            fitGift.length && this._ref('certificateModal', 'show', fitGift)
           }
         }).catch(e => {
           console.error(e)

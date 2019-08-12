@@ -20,7 +20,7 @@
                 <!--<p class="type" v-if="couponArray[0].coupon.range_type_str">{{couponArray[0].coupon.range_type_str}}</p>-->
                 <p class="txt">{{couponArray[0].coupon.coupon_name}}</p>
               </div>
-              <div class="explain">满199元可用</div>
+              <div class="explain">{{couponArray[0].coupon.condition_str}}</div>
               <div class="condition">有效期至 {{couponArray[0].coupon.end_at}}</div>
             </div>
           </div>
@@ -37,7 +37,7 @@
                   <!--<p class="type" v-if="item.range_type_str">{{item.range_type_str}}</p>-->
                   <p class="txt">{{item.coupon.coupon_name}}</p>
                 </div>
-                <div class="explain">满199元可用</div>
+                <div class="explain">{{item.coupon.condition_str}}</div>
                 <div class="condition">有效期至 {{item.coupon.end_at}}</div>
               </div>
             </div>
@@ -65,8 +65,8 @@
 
 <script type="text/ecmascript-6">
   import AnimationModal from '@mixins/animation-modal'
-  import Coupon from '../invitation-modal/coupon-item/coupon'
-  // import API from '@api'
+  // import Coupon from '../invitation-modal/coupon-item/coupon'
+  import API from '@api'
 
   const COMPONENT_NAME = 'COUPON_MODAL'
 
@@ -81,17 +81,18 @@
     },
     data() {
       return {
-        isShow: true,
-        couponArray: [new Coupon(), new Coupon()]
+        isShow: false,
+        couponArray: []
       }
     },
     methods: {
       _targetList() {
-        // let arr = this.couponArray.map((item) => {
-        //   return item.coupon_activity_report_id || 0
-        // })
-        // // todo
-        // console.log(arr)
+        let arr = this.couponArray.map((item) => {
+          return item.coupon_activity_report_id || 0
+        })
+        API.Coupon.targetModal({coupon_activity_report_ids: arr}).catch(e => {
+          console.error(e)
+        })
       },
       navHandle() {
         this._targetList()
