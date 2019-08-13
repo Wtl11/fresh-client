@@ -259,7 +259,7 @@
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import clearWatch from '@mixins/clear-watch'
-  import { orderMethods, cartMethods } from '@state/helpers'
+  import { orderMethods, cartMethods, pageStackComputed, pageStackMethods } from '@state/helpers'
   import { SCENE_SHARE, SCENE_DEFAULT, SCENE_QR_CODE, ACTIVE_TYPE } from '@utils/contants'
   import ShareHandler, { EVENT_CODE } from '@mixins/share-handler'
   import API from '@api'
@@ -361,6 +361,7 @@
       }
     },
     computed: {
+      ...pageStackComputed,
       activityInfo() {
         return this.goodsMsg.activity || {}
       },
@@ -450,6 +451,8 @@
       // }
       // ald && ald.aldstat.sendEvent('商品详情')
       Ald.sendEvent('商品详情')
+      // console.log(options)
+      this['PUSH_PAGE']({pageRoute: this.$routes.main.GOODS_DETAIL, options})
     },
     onShow() {
       // 分享锁
@@ -499,6 +502,7 @@
       this.eventCount = 0
       this.$refs.shareList && this.$refs.shareList.hideLink()
       this._isSharing = false
+      this['POP_PAGE']({pageRoute: this.$routes.main.GOODS_DETAIL})
     },
     onShareAppMessage() {
       // 分享锁
@@ -526,6 +530,7 @@
     methods: {
       ...orderMethods,
       ...cartMethods,
+      ...pageStackMethods,
       _getGoodsTips() {
         if (!this.goodsId) return
         API.Goods.getTipList({goods_id: this.goodsId}).then(res => {
@@ -895,7 +900,10 @@
       },
       // 初始化页面参数
       _initPageParams() {
-        let options = this._$$initOptions()
+        // let options = this._$$initOptions()
+        // 从页面栈获取options信息
+        let pageStack = this.pageStacker[this.$routes.main.GOODS_DETAIL]
+        let options = pageStack[pageStack.length - 1]
         this.goodsId = +options.id || +options.goodsId || 0
         this.activityId = +options.activityId || 0
         this.shopId = +options.shopId || 0

@@ -31,3 +31,11 @@ export const postageComputed = {
 export const postageMethods = {
   ...mapActions('postage', ['setCurrentAddress'])
 }
+
+export const pageStackComputed = {
+  ...mapGetters('pageStack', ['pageStacker'])
+}
+
+export const pageStackMethods = {
+  ...mapMutations('pageStack', ['PUSH_PAGE', 'POP_PAGE'])
+}
