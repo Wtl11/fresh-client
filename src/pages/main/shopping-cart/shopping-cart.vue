@@ -781,9 +781,10 @@
       right : 0
       border-top: 1px solid $color-line
       transform: scaleY(.5) translateZ(0)
-      &.hidden-top-line
-        &:before
-          display :none
+    &.hidden-top-line
+      &:before
+        display :none
+
   /*提示栏end*/
 
 
