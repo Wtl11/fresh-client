@@ -219,34 +219,44 @@
     </div>
     <add-number ref="addNumber" :msgDetail="goodsMsg" :msgDetailInfo="buyGoodsInfo" @comfirmNumer="comfirmNumer" @hide="handleHideAddNumber"></add-number>
     <!--    <link-group ref="groupList" :wechatInfo="groupInfo"></link-group>-->
-    <!--    <link-group ref="shareList" :linkType="2" @saveImg="_actionDrawPoster"></link-group>-->
-    <we-paint ref="wePaint" @drawDone="_drawPosterDone"></we-paint>
+    <!--    <link-group ref="shareList" :linkType="2" @saveImg="_actionDrawPosterBefore"></link-group>-->
+    <we-paint ref="wePaint" @drawDone="_setPosterUrl"></we-paint>
     <article class="share-panel-wrapper">
-      <div v-if="showSharePanel" class="share-mask" @click="handleHideSharePanel">
+      <div v-if="showSharePanel" class="share-mask" @click="handleHideSharePanel"></div>
+      <div v-if="showSharePanel&&posterData.name" class="poster-wrapper">
+        <!--<img :src="poster" class="poster">-->
+        <div class="background">
+          <img v-if="imageUrl&&posterData.bg" :src="posterData.bg" class="bg-img">
+        </div>
+        <div class="goods-con">
+          <img v-if="goodsMsg.goods_cover_image" :src="goodsMsg.goods_cover_image" class="goods-img">
+          <div class="info-bottom">
+            <div class="goods-info">
+              <div class="name">{{posterData.name}}</div>
+              <div class="text">{{posterData.text}}</div>
+              <div class="price-text">{{iconText}}</div>
+              <div class="price">{{goodsMsg.trade_price}}元<span class="old-price">{{goodsMsg.original_price}}元</span></div>
+            </div>
+            <div class="qr-code">
+              <img v-if="shareImg" :src="shareImg" class="img">
+              <div class="text">长按扫码疯抢</div>
+            </div>
+          </div>
+        </div>
       </div>
       <section class="share-panel" :class="{show: showSharePanel}">
-        <div class="header">
-          <p>分享</p>
-          <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.4/icon-del@2x.png'" class="close-icon" @click="handleHideSharePanel">
-        </div>
         <div class="container">
           <share-button v-if="product" type="3" :product="product" class="container-item-wrapper" @click="handleHideSharePanel">
             <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.4/icon-tjhwq@2x.png'" class="item-icon">
-            <p class="text">推荐到好物圈</p>
-            <div class="tip-wrapper">
-              <p>好物推荐，和大家一起分享你发现的好物</p>
-              <div class="triangle"></div>
-            </div>
+            <p class="text">好物圈</p>
           </share-button>
           <button open-type="share" class="container-item-wrapper" @click="handleHideSharePanel">
-            <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.4/pic-wechat@2x.png'" class="item-icon">
-            <p class="text button">分享给好友</p>
-            <div v-if="product" class="line"></div>
+            <img v-if="imageUrl" :src="imageUrl + '/yx-image/goods/pic-wechat@2x.png'" class="item-icon">
+            <p class="text button">分享好友</p>
           </button>
-          <nav class="container-item-wrapper" @click="_actionDrawPoster">
-            <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.4/icon-wechatq@2x.png'" class="item-icon">
-            <p class="text">生成分享海报</p>
-            <div class="line"></div>
+          <nav class="container-item-wrapper" @click="_savePoster">
+            <img v-if="imageUrl" :src="imageUrl + '/yx-image/goods/icon-poster@2x.png'" class="item-icon">
+            <p class="text">保存海报</p>
           </nav>
         </div>
       </section>
@@ -349,7 +359,10 @@
         videoContext: '',
         swiperIdx: 0,
         arrowUrl: ARROW_URL[1],
-        isShowOldCustomerButton: false
+        isShowOldCustomerButton: false,
+        poster: '',
+        saveImgAuth: false,
+        posterData: {}
       }
     },
     computed: {
@@ -443,6 +456,7 @@
       Ald.sendEvent('商品详情')
     },
     onShow() {
+      this.poster = ''
       // 分享锁
       if (this._isSharing) {
         this._isSharing = false
@@ -452,7 +466,6 @@
       this._initPageParams()
       if (this.goodsId < 1) return
       this._checkIsNewClient()
-      this.getQrCode()
       this._getLocation()
       this._getGoodsDetailData()
       this.getUserImgList()
@@ -683,17 +696,6 @@
         this.videoPlaying = false
         this.videoContext.exitFullScreen()
       },
-      // 画商品海报
-      _actionDrawPoster() {
-        if (!this.shareImg) {
-          this.$wechat.showToast('图片生成失败，请重新尝试！')
-          this.getQrCode()
-          return
-        }
-        this.action()
-        this.handleHideSharePanel()
-        this.$sendMsg({ event_no: 1005, goods_id: this.goodsId, title: this.goodsMsg.name })
-      },
       // 添加购物车
       async addShoppingCart() {
         let isLogin = await this.$isLogin()
@@ -844,37 +846,11 @@
       _showAddNumber(type) {
         this.$refs.addNumber && this.$refs.addNumber.showLink(type)
       },
-      // 显示分享控件
-      handleShowShare() {
-        // if (this.activityType !== ACTIVE_TYPE.DEFAULT) {
-        //   return
-        // }
-        // this.$refs.shareList && this.$refs.shareList.showLink()
-        this.showSharePanel = true
-      },
-      handleHideSharePanel() {
-        this.showSharePanel = false
-      },
       // 获取站点购买的用户
       getUserImgList() {
         API.GoodsRecord.getList({ goods_id: this.goodsId, limit: 5, page: 1, is_remove_duplicate: 1 }, false).then((res) => {
           this.userImgList = res.data
           this.userTotal = res.not_duplicate_total || 0
-        })
-      },
-      // 获取二维码
-      getQrCode(loading) {
-        let shopId = wx.getStorageSync('shopId')
-        // 修改创建二维码的参数
-        let path = `pages/${PAGE_ROUTE_NAME}?g=${this.goodsId}&s=${shopId}&a=${this.activityId}`
-        API.Choiceness.createQrCodeApi({ path }, loading).then((res) => {
-          if (res.error === this.$ERR_OK) {
-            this.shareImg = res.data.image_url
-          } else {
-            console.warn(res)
-          }
-        }).catch(e => {
-          console.warn(e)
         })
       },
       // 初始化页面参数
@@ -959,6 +935,7 @@
             this._getUnGroupList()
             this._getFinishGroupList()
             // this._initActiveType()
+            this.getQrCode()
           } else {
             this.$wechat.showToast(res.message)
           }
@@ -1003,9 +980,65 @@
           })
         }
       },
-      async action() {
+      // 获取分享二维码
+      getQrCode(loading = false) {
+        let shopId = wx.getStorageSync('shopId')
+        // 修改创建二维码的参数
+        let path = `pages/${PAGE_ROUTE_NAME}?g=${this.goodsId}&s=${shopId}&a=${this.activityId}`
+        API.Choiceness.createQrCodeApi({ path }, loading).then((res) => {
+          if (res.error === this.$ERR_OK) {
+            this.shareImg = res.data.image_url
+            this._getPosterData()
+          } else {
+            console.warn(res)
+          }
+        }).catch(e => {
+          console.warn(e)
+        })
+      },
+      _getPosterData() {
         let name = this.goodsMsg.name.length >= 12 ? this.goodsMsg.name.slice(0, 12) + '...' : this.goodsMsg.name
         let subName = this.goodsMsg.describe.length >= 12 ? this.goodsMsg.describe.slice(0, 12) + '...' : this.goodsMsg.describe
+        let backgroundImg
+        let moneyColor
+        switch (this.corpName) {
+          case 'platform':
+            backgroundImg = this.imageUrl + '/yx-image/goods/pic-sharegoods1.png'
+            moneyColor = '#FF8300'
+            break
+          case 'retuan':
+            backgroundImg = this.imageUrl + '/yx-image/goods/pic-sharegoods2.png'
+            moneyColor = '#FC4D1A'
+            break
+          default:
+            break
+        }
+        this.posterData = {
+          name: name,
+          text: subName,
+          bg: backgroundImg,
+          color: moneyColor
+        }
+      },
+      // 显示分享控件
+      handleShowShare() {
+        // if (this.activityType !== ACTIVE_TYPE.DEFAULT) {
+        //   return
+        // }
+        // this.$refs.shareList && this.$refs.shareList.showLink()
+        this.showSharePanel = true
+        if (!this.poster) {
+          // 没有海报且没有正在生成海报,重新生成海报
+          this._actionDrawPoster()// 画海报
+        }
+        this.$sendMsg({ event_no: 1005, goods_id: this.goodsId, title: this.goodsMsg.name })
+      },
+      // 隐藏分享控件
+      handleHideSharePanel() {
+        this.showSharePanel = false
+      },
+      // 海报绘图
+      async _actionDrawPoster() {
         let qrCodeIsBase64 = /base64/i.test(this.shareImg)
         try {
           if (qrCodeIsBase64) {
@@ -1013,20 +1046,6 @@
           }
         } catch (e) {
           console.error(e)
-        }
-        let backGroundImg
-        let moneyColor
-        switch (this.corpName) {
-          case 'platform':
-            backGroundImg = this.imageUrl + '/yx-image/choiceness/pic-sharegoods@2x.png'
-            moneyColor = '#FF8300'
-            break
-          case 'retuan':
-            backGroundImg = this.imageUrl + '/yx-image/retuan/pic-sharegoods@2x.png'
-            moneyColor = '#FC4D1A'
-            break
-          default:
-            break
         }
         let options = {
           canvasId: 'we-paint',
@@ -1044,7 +1063,7 @@
               el: '#share-goods > .share-bg', // 背景图
               drawType: 'img',
               mode: 'aspectFill',
-              source: backGroundImg
+              source: this.posterData.bg
             },
             {
               el: '.share-box',
@@ -1061,14 +1080,14 @@
             {
               el: '.share-title', // 店铺名称
               drawType: 'text-area',
-              source: name,
+              source: this.posterData.name,
               fontSize: 16,
               color: '#1f1f1f'
             },
             {
               el: '.share-sub-title', // 签名
               drawType: 'text-area',
-              source: subName,
+              source: this.posterData.text,
               fontSize: 14,
               align: 'left',
               color: '#808080'
@@ -1078,21 +1097,21 @@
               drawType: 'text-area',
               source: this.iconText,
               fontSize: 14,
-              color: moneyColor
+              color: this.posterData.color
             },
             {
               el: '.share-price-number',
               drawType: 'text',
               source: this.goodsMsg.trade_price,
               fontSize: 30,
-              color: moneyColor
+              color: this.posterData.color
             },
             {
               el: '.share-price-icon',
               drawType: 'text',
               source: '元',
               fontSize: 17,
-              color: moneyColor
+              color: this.posterData.color
             },
             {
               el: '.share-price-line',
@@ -1115,18 +1134,40 @@
             }
           ]
         }
-        this.$refs.wePaint && this.$refs.wePaint.action(options, false)
+        this.$refs.wePaint && this.$refs.wePaint.action(options, false)// 绘图
       },
-      _drawPosterDone(pic) {
-        this.pic = pic
-        // 保存到本地，并预览
+      // 设置海报图片
+      _setPosterUrl(pic) {
+        console.log(`_setPosterUrl: ${pic}`)
+        this.poster = pic
+      },
+      // 保存海报到本地
+      _savePoster() {
+        if (!this.poster) return
         this.$wx.saveImageToPhotosAlbum({
-          filePath: pic,
+          filePath: this.poster,
           success: () => {
+            console.log('_savePoster success')
+            this.handleHideSharePanel()
           },
           fail: () => {
-            // 拒绝授权重新调起授权
-            this.$wx.openSetting()
+            // 没有授权，重新调起授权
+          }
+        })
+      },
+      // 打开授权设置页
+      _openWxSetting() {
+        // let self = this
+        console.log('_openWxSetting')
+        this.$wx.openSetting({
+          success: (res) => {
+            console.log(res.authSetting)
+            if (res.authSetting && res.authSetting['scope.writePhotosAlbum']) {
+              this._savePoster()
+            }
+          },
+          fail: (e) => {
+            console.log(e)
           }
         })
       }
@@ -1171,67 +1212,23 @@
       background: #fff
       width: 100%
       z-index:9999
-      transition: all .5s
+      transition: all .25s
       &.show
         bottom :0
-      .header
-        padding :0 12px
-        height :45px
-        background: #F7F7F7
-        font-family: $font-family-regular
-        font-size: 15px;
-        color: #1D2023;
-        letter-spacing: 1.36px
-        display :flex
-        justify-content :space-between
-        align-items :center
-        .close-icon
-          width :13px
-          height :@width
       .container
         background :$color-white
         display :flex
-        padding :29px 0 70px
+        box-sizing: border-box
+        height: px-change-vw(100)
+        padding-top: px-change-vw(14)
         .container-item-wrapper
           flex: 1
           position :relative
-          .tip-wrapper
-            position absolute
-            top:83px
-            left: 50%
-            transform :translateX(-20%)
-            width :234.5px
-            height :24px
-            opacity: 0.7;
-            font-size: 12px
-            color: $color-text-sub
-            text-align: center
-            line-height: @height
-            background: #F5F5F5;
-            border-radius: @height
-            .triangle
-              position :absolute
-              top:-13px
-              left:40px
-              width :0
-              height :0
-              border:7px solid #F5F5F5;
-              border-top-color: transparent
-              border-left-color :transparent
-              border-right-color: transparent
-          .line
-            position :absolute
-            width :1px
-            height :40px
-            left :0
-            top:4px
-            transform :scaleX(0.5)
-            background: #E6E6E6
           .item-icon
-            width :40px
+            width : px-change-vw(45)
             height :@width
             display :block
-            margin :0 auto 10px
+            margin :0 auto px-change-vw(8)
           .text
             font-family: $font-family-regular
             font-size: 14px
@@ -1804,4 +1801,77 @@
               font-family: $font-family-medium
               line-height:15px
               width :65px
+  .poster-wrapper
+    position: fixed
+    top: px-change-vh(60)
+    left: 0
+    right: 0
+    margin: auto
+    padding: px-change-vw(82) 0 px-change-vw(15)
+    background: #fff
+    width: px-change-vw(270)
+    overflow: hidden
+    z-index: 9999
+    -webkit-transition: all .5s
+    transition: all .5s
+    layout()
+    justify-content: center
+    align-items: center
+    .poster
+      width: 100%
+      height: 100%
+    .background
+      position: absolute
+      top: 0
+      z-index: -1
+      width: px-change-vw(270)
+      height: px-change-vw(141)
+      .bg-img
+        width: 100%
+        height: 100%
+    .goods-con
+      width: px-change-vw(240)
+      box-shadow: 0 3px 16px 0 rgba(0,0,0,0.10)
+      layout()
+      .goods-img
+        width: px-change-vw(240)
+        height: @width
+      .info-bottom
+        padding: px-change-vw(14)
+        layout(row)
+        .goods-info
+          flex: 1
+          font-family: $font-family-regular
+          .name
+            width: 100%
+            no-wrap-plus(1)
+            font-size: 15px
+            font-family: $font-family-medium
+            color: $color-text-main
+          .text
+            width: 100%
+            no-wrap-plus(1)
+            margin-bottom: px-change-vw(10)
+            font-size: 13px
+            color: $color-text-sub
+          .price-text
+            font-size: 13px
+            color: $color-money
+          .price
+            font-size: 22px
+            color: $color-money
+            .old-price
+              font-size: 12px
+              color: $color-text-sub
+              text-decoration: line-through
+        .qr-code
+          align-self: flex-end
+          width: 63px
+          .img
+            width: 63px
+            height: @width
+          .text
+            font-size: 9px
+            font-family: $font-family-regular
+            color: $color-text-sub
 </style>

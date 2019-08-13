@@ -174,10 +174,10 @@
        * @private
        */
       _downloadPictures(arr, callback) {
-        wechat.showLoading()
+        // wechat.showLoading()
         let flag = arr.every(val => val)
         if (!flag) {
-          wechat.hideLoading()
+          // wechat.hideLoading()
           this.$emit('downloadFile', '图片数组为空', arr)
           return
           // return this.$refs.toast.show('下载图片失败，请重新尝试')
@@ -188,7 +188,7 @@
         Promise.all(ImgArr).then(res => {
           callback && callback(res)
         }).catch((err) => {
-          wechat.hideLoading()
+          // wechat.hideLoading()
           this.$emit('downloadFile', err)
           // this.$refs.toast.show('下载图片失败，请重新尝试！')
         })
@@ -225,7 +225,7 @@
             this._canvasToFile(ctx)
           }, 380)
         }).catch((err) => {
-          wechat.hideLoading()
+          // wechat.hideLoading()
           this.$emit('draw', err)
           // this.$refs.toast.show('绘图失败，请重新尝试！')
         })
@@ -241,17 +241,17 @@
           y: 0,
           width: this.panelW * this.multiple,
           height: this.panelH * this.multiple,
-          destWidth: this.panelW * 3,
-          destHeight: this.panelH * 3,
+          destWidth: this.panelW * 2,
+          destHeight: this.panelH * 2,
           canvasId: this.canvasId,
           fileType: 'jpg'
         }, ctx).then(res => {
-          wechat.hideLoading()
-          wechat.previewImage({ urls: [res.tempFilePath] })
+          // wechat.hideLoading()
+          // wechat.previewImage({ urls: [res.tempFilePath] })
           this.$emit('drawDone', res.tempFilePath)
         }).catch(err => {
           this.$emit('canvasToTempFilePath', err)
-          wechat.hideLoading()
+          // wechat.hideLoading()
           // this.$refs.toast.show('请重新尝试！')
         })
       }
