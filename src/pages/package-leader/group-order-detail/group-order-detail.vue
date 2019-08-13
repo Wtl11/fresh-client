@@ -32,7 +32,7 @@
     <div class="goods-wrapper">
       <block v-for="(item, index) in orderDetail.goods" :key="index">
         <div class="goods-item">
-          <div v-if="!item.is_gift" class="goods-detail">
+          <div class="goods-detail">
             <block v-if="item.image_url">
               <img :src="item.image_url" class="goods-img" mode="aspectFill">
             </block>
@@ -51,29 +51,29 @@
               </p>
             </div>
           </div>
-          <block v-for="(child,cIdx) in 1" :key="cIdx">
-            <div v-if="item.is_gift" class="goods-detail gift" :class="{'first-style': !cIdx}">
-              <block v-if="item.image_url">
-                <img :src="item.image_url" class="goods-img" mode="aspectFill">
+          <block v-if="gifts[index]" v-for="(child,cIdx) in gifts[index]" :key="cIdx">
+            <div v-if="child.is_gift" class="goods-detail gift" :class="{'first-style': !cIdx}">
+              <block v-if="child.image_url">
+                <img :src="child.image_url" class="goods-img" mode="aspectFill">
               </block>
               <div class="goods-content">
                 <p class="goods-title">
                   <span class="icon-tip m-r-4">赠品</span>
-                  <span class="goods-title-left">{{item.goods_name}}</span>
-                  <span class="goods-title-right" v-if="item.after_sale_status * 1 === 2">{{item.after_sale_status_text}}</span>
+                  <span class="goods-title-left">{{child.goods_name}}</span>
+                  <span class="goods-title-right" v-if="child.after_sale_status * 1 === 2">{{child.after_sale_status_text}}</span>
                 </p>
-                <div class="goods-sku">规格：{{item.goods_units}}</div>
+                <div class="goods-sku">规格：{{child.goods_units}}</div>
                 <p class="goods-money">
-                  {{item.price}}
+                  {{child.price}}
                   <span class="small">元</span>
                   <span class="goods-num-box">x
-                <span class="goods-num">{{item.num}}</span>
+                <span class="goods-num">{{child.num}}</span>
               </span>
                 </p>
               </div>
             </div>
           </block>
-          <div v-if="item.delivery_status" class="btn-box">
+          <div v-if="item.delivery_status === 0" class="btn-box">
             <div class="goods-btn"
                  :class="'corp-' + corpName + '-goods-btn'"
                  v-if="orderDetail.status === 1 && orderDetail.delivery_status === 3 && (item.after_sale_status === 0 || item.after_sale_status === 1)"
@@ -146,7 +146,8 @@
       return {
         id: null,
         orderDetail: {address: {}, goods: []},
-        ids: []
+        ids: [],
+        gifts: []
       }
     },
     async onLoad(option) {
@@ -167,6 +168,20 @@
           this.$wechat.showToast(res.message)
           return
         }
+        let index = 0
+        let gifts = {}
+        res.data.goods = res.data.goods.filter((item) => {
+          let flag = !item.is_gift
+          if (flag) {
+            index++
+          } else {
+            !gifts[index - 1] && (gifts[index - 1] = [])
+            gifts[index - 1].push(item)
+          }
+          return flag
+        })
+        this.gifts = gifts
+        console.log(gifts)
         this.orderDetail = res.data
       },
       _copyOrderSn(text) {

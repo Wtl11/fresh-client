@@ -74,10 +74,12 @@
             <div class="goods-info">
               <div class="tit">
                 <div class="name"><span v-if="item.is_gift" class="icon-tag">赠品</span>{{item.goods_name}}</div>
-                <div class="refund" @click.stop="isRefund(item)"
-                     v-if="(orderMsg.status * 1 === 1 || orderMsg.status * 1 === 2) && (item.after_sale_status * 1 === 0 || item.after_sale_status * 1 === 1) && item.can_after_sale * 1 === 1">
-                  退款
-                </div>
+                <block v-if="!item.is_gift">
+                  <div class="refund" @click.stop="isRefund(item)"
+                       v-if="(orderMsg.status * 1 === 1 || orderMsg.status * 1 === 2) && (item.after_sale_status * 1 === 0 || item.after_sale_status * 1 === 1) && item.can_after_sale * 1 === 1">
+                    退款
+                  </div>
+                </block>
                 <div class="refund-text" :class="'corp-' + corpName + '-money'"
                      v-if="item.after_sale_status * 1 === 2 && item.can_after_sale * 1 === 1">
                   {{item.after_sale_status_text}}
