@@ -1175,7 +1175,15 @@
       layout(row)
       align-items: center
       height: 45px
-      border-bottom-1px($color-line)
+      position: relative
+      &:after
+        content: ""
+        position: absolute
+        bottom: 0
+        right: 0
+        left: -12px
+        transform: scaleY(.5) translateZ(0)
+        border-bottom: 1px solid $color-line
       .sel-box
         display: block
         width: 20px

@@ -68,7 +68,7 @@
     <div class="gary-box"></div>
     <div class="order-list">
       <div class="order-item">
-        <div class="goods-item" :class="{isGift: item.is_gift}" v-for="(item, index) in orderMsg.goods" :key="index">
+        <div class="goods-item" :class="{isGift: orderMsg.goods[index+1] && orderMsg.goods[index+1].is_gift}" v-for="(item, index) in orderMsg.goods" :key="index">
           <div class="goods-info-box">
             <img class="goods-img" mode="aspectFill" :src="item.image_url" alt="">
             <div class="goods-info">
@@ -689,7 +689,7 @@
           .icon-tag
             display :inline-block
             background: rgba(255,104,3,0.10);
-            border: 1px solid #FF6803;
+            border-1px(#FF6803, 14px)
             border-radius: 14px;
             height: 14px
             line-height :@height

@@ -51,6 +51,12 @@
               </p>
             </div>
           </div>
+          <div v-if="item.delivery_status === 0" class="btn-box">
+            <div class="goods-btn"
+                 :class="'corp-' + corpName + '-goods-btn'"
+                 v-if="orderDetail.status === 1 && orderDetail.delivery_status === 3 && (item.after_sale_status === 0 || item.after_sale_status === 1)"
+                 @click="_showDialog('', item.order_detail_id)">确认提货</div>
+          </div>
           <block v-if="gifts[index]" v-for="(child,cIdx) in gifts[index]" :key="cIdx">
             <div v-if="child.is_gift" class="goods-detail gift" :class="{'first-style': !cIdx}">
               <block v-if="child.image_url">
@@ -72,13 +78,13 @@
                 </p>
               </div>
             </div>
+            <div v-if="child.delivery_status === 0" class="btn-box">
+              <div class="goods-btn"
+                   :class="'corp-' + corpName + '-goods-btn'"
+                   v-if="orderDetail.status === 1 && orderDetail.delivery_status === 3 && (child.after_sale_status === 0 || child.after_sale_status === 1)"
+                   @click="_showDialog('', child.order_detail_id)">确认提货</div>
+            </div>
           </block>
-          <div v-if="item.delivery_status === 0" class="btn-box">
-            <div class="goods-btn"
-                 :class="'corp-' + corpName + '-goods-btn'"
-                 v-if="orderDetail.status === 1 && orderDetail.delivery_status === 3 && (item.after_sale_status === 0 || item.after_sale_status === 1)"
-                 @click="_showDialog('', item.order_detail_id)">确认提货</div>
-          </div>
         </div>
       </block>
     </div>
@@ -181,7 +187,6 @@
           return flag
         })
         this.gifts = gifts
-        console.log(gifts)
         this.orderDetail = res.data
       },
       _copyOrderSn(text) {
@@ -198,14 +203,17 @@
       },
       _showDialog(type, id) {
         this.$refs.dialog.show({msg: '确定已经提货？'})
+        let arr = [id]
         if (type === 'all') {
-          this.ids = []
-          this.ids = this.orderDetail.goods.map((item) => {
+          arr = []
+          arr = this.orderDetail.goods.map((item) => {
             return item.order_detail_id
           })
-          return
+          for (let key in this.gifts) {
+            arr = arr.concat(this.gifts[key].map(child => child.order_detail_id))
+          }
         }
-        this.ids = [id]
+        this.ids = arr
       },
       // 提现收货
       async _remind() {
@@ -401,7 +409,7 @@
     height: 14px
     padding: 0 4px
     background: rgba(255,104,3,0.10)
-    border: 1px solid #FF6803;
+    border-1px(#FF6803,14px)
     border-radius: @height
     color: #FF6803;
     line-height: @height
