@@ -258,7 +258,7 @@
               .price-box
                 max-width: 62px
           .title
-            padding-top: 8px
+            padding-top: 0
 
         .bottom-bg
           position: absolute
