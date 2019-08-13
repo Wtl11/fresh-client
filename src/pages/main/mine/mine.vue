@@ -65,8 +65,11 @@
       :isLeader="isLeader"
       :isInvitation="enable"
     ></mine-navigation>
-    <div class="mine-model" v-if="showModal" :animation="maskAnimation" @click="_cancelQrCodeBox">
+    <div class="mine-model" v-if="showModal" :animation="maskAnimation">
       <div class="model-con" :animation="modalAnimation">
+        <div class="close-btn" @click="_cancelQrCodeBox">
+          <img v-if="imageUrl" :src="imageUrl+'/yx-image/mine/icon-deletetc@2x.png'" class="close-img" mode="aspectFit">
+        </div>
         <div class="erm" @click.stop>
           <img class="erm-img" :src="testSrc">
         </div>
@@ -634,6 +637,7 @@
     justify-content: center
     align-items: center
     .model-con
+      position: relative
       display: flex
       align-items: center
       justify-content: center
@@ -643,6 +647,15 @@
       width: 290px
       height: 319.5px
       flex-direction: column
+      .close-btn
+        width: 30px
+        height: @width
+        position: absolute
+        top: -43px
+        right: 0
+        .close-img
+          width: 100%
+          height: 100%
       .erm-img
         height: 150px
         width: 150px

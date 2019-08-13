@@ -53,14 +53,16 @@
                       <div class="circle"></div>
                     </div>
                   </div>
-                  <div class="arr-warp">
-                    <div class="arrlow"><img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="arr"></div>
-                  </div>
+                </div>
+                <div class="num-info">
+                  <div class="price"><span class="price-unit">￥</span>{{item.total}}</div>
+                  <div class="count">共{{item.goods.length}}件</div>
                 </div>
               </div>
               <div class="bot">
                 <div class="time">{{item.created_at}}</div>
-                <div class="payment"><span class="goods-count">共{{item.goods.length}}件商品</span><span class="actual">总计：</span><span class="sum">{{item.total}}</span><span class="principal">元</span></div>
+                <!--<div class="payment"><span class="goods-count">共{{item.goods.length}}件商品</span><span class="actual">总计：</span><span class="sum">{{item.total}}</span><span class="principal">元</span></div>-->
+                <button :id="item.order_id" open-type="share" class="share-btn" @click.stop="">晒单</button>
               </div>
             </div>
           </div>
@@ -80,6 +82,7 @@
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import API from '@api'
   import {countDownHandle} from '@utils/common'
+  import ShareTrick from '@mixins/share-trick'
 
   const NAVLIST = [{id: 1, name: '全部订单', status: ''}, {id: 2, name: '待付款', status: 0}, {id: 3, name: '待提货', status: 1}, {id: 4, name: '已完成', status: 2}]
   const GROUP_STATUS_ARR = [{name: '拼团中'}, {name: '拼团成功'}, {name: '拼团失败'}, {name: '拼团失败'}, {name: '拼团失败'}]
@@ -91,6 +94,7 @@
   ]
 
   export default {
+    mixins: [ShareTrick],
     components: {
       WePaint,
       NavigationBar
@@ -123,6 +127,25 @@
     },
     onReachBottom() {
       this.getOrderList(this.tabIdx, true)
+    },
+    onShareAppMessage(e) {
+      // shopId待接口增加返回参数
+      let shopId = wx.getStorageSync('shopId')
+      let nickname = wx.getStorageSync('userInfo').nickname
+      const flag = Date.now()
+      console.log(shopId)
+      console.log(e.target.id)
+      return {
+        title: `团长，我是“${nickname}”，刚在店里买了商品↓，请接单！`,
+        path: `${this.$routes.main.SHARE_ORDER}?id=${e.target.id}&shopId=${shopId}&flag=${flag}`,
+        imageUrl: `${this.imageUrl}/yx-image/order/pic-share_order@2x.png`,
+        success: (res) => {
+          // 转发成功
+        },
+        fail: (res) => {
+          // 转发失败
+        }
+      }
     },
     methods: {
       getStatusName(status) {
@@ -338,6 +361,9 @@
                 color: $color-sub
                 font-size: $font-size-16
       .center
+        layout(row)
+        align-items: center
+        justify-content: space-between
         padding: 15px 3.2vw
         border-bottom-1px($color-line)
         .group-status
@@ -353,6 +379,7 @@
             height: @width
             margin-right :4px
         .goods-list
+          flex: 1
           layout(row)
           align-items: center
           justify-content: space-between
@@ -364,10 +391,11 @@
               width: 13.33vw
               height: 13.33vw
               border-radius: 2px
-              margin-right: 2.67vw
+              margin-right: 2.5vw
             .img-item
-              width: 13.33vw
-              height: 13.33vw
+              width: 12.5vw
+              height: 12.5vw
+              margin-left: -2.5vw
               layout(row)
               justify-content: center
               align-items: center
@@ -385,17 +413,32 @@
           color: $color-text-main
           font-size: $font-size-14
           no-wrap-plus(2)
-        .arr-warp
-          layout(row)
-          align-items: center
-          .arrlow
-            width: 7.5px
-            height: 12.5px
-            margin-left: 6px
-            .arr
-              display: block
-              width: 100%
-              height: 100%
+      .num-info
+        width: 64px
+        layout(row)
+        text-align: right
+        line-height: 1
+        font-family: $font-family-regular
+        .price
+          width: 100%
+          margin-bottom: 4px
+          font-size: $font-size-16
+          color: $color-text-main
+          font-family: $font-family-medium
+          .price-unit
+            font-size: $font-size-12
+        .count
+          width: 100%
+          font-size: $font-size-11
+          color: $color-text-sub
+      .share-btn
+        width: 75px
+        height: 28px
+        line-height: 28px
+        font-family: $font-family-regular
+        font-size: $font-size-14
+        color: $color-main
+        border-1px($color-main, 14px)
 
       .bot
         height: 45px
