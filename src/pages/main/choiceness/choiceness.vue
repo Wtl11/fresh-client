@@ -976,7 +976,12 @@
                   couponAfterSale.push(item)
                   break
                 case 9:
-                  fitGift.push(item)
+                  let coupon = item.coupon || {}
+                  if (+coupon.tag_type === 2) {
+                    fitGift.push(item)
+                  } else {
+                    normalCoupon.push(item)
+                  }
                   break
                 default:
                   normalCoupon.push(item)
