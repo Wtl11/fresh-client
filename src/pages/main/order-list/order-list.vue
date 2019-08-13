@@ -62,7 +62,7 @@
               <div class="bot">
                 <div class="time">{{item.created_at}}</div>
                 <!--<div class="payment"><span class="goods-count">共{{item.goods.length}}件商品</span><span class="actual">总计：</span><span class="sum">{{item.total}}</span><span class="principal">元</span></div>-->
-                <button :id="item.order_id" open-type="share" class="share-btn" @click.stop="">晒单</button>
+                <button :id="item.order_id" :shopId="item.shop_id" open-type="share" class="share-btn" @click.stop="">晒单</button>
               </div>
             </div>
           </div>
@@ -130,11 +130,10 @@
     },
     onShareAppMessage(e) {
       // shopId待接口增加返回参数
-      let shopId = wx.getStorageSync('shopId')
+      let shopId = e.target.shopId || 0
       let nickname = wx.getStorageSync('userInfo').nickname
       const flag = Date.now()
       console.log(shopId)
-      console.log(e.target.id)
       return {
         title: `团长，我是“${nickname}”，刚在店里买了商品↓，请接单！`,
         path: `${this.$routes.main.SHARE_ORDER}?id=${e.target.id}&shopId=${shopId}&flag=${flag}`,

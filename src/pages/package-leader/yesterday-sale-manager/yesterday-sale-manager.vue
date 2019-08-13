@@ -49,16 +49,20 @@
             <div class="goods-more">
               <div class="goods-box">
                 <img v-for="(img, imgIdx) in order.goods" :src="img.image_url" :key="imgIdx" v-if="imgIdx < 4" class="goods-img" mode="aspectFill">
+                <div class="img-item" v-if="order.goods.length > 4">
+                  <div class="circle"></div>
+                  <div class="circle"></div>
+                  <div class="circle"></div>
+                </div>
               </div>
               <div class="num-box">
-                <div class="num-text">共{{order.goods.length}}件</div>
-                <img :src="imageUrl + '/yx-image/group/icon-pressed@2x.png'" v-if="imageUrl" class="way">
+                <div class="price"><span class="price-unit">￥</span>{{order.total}}</div>
+                <div class="count">共{{order.goods.length}}件</div>
               </div>
             </div>
             <div class="order-footer">
               <div class="time">下单时间：{{order.created_at}}</div>
-              <div class="money">实付:<span class="price">{{order.total}}</span><span class="small">元</span></div>
-              <!--item.btn_text格式化功能按钮-->
+              <div class="order-btn" @click.stop="_checkAddress(order)">客户地址</div>
             </div>
           </navigator>
           <!--<order-item :orderList="todayList"></order-item>-->
@@ -82,17 +86,20 @@
             <div class="goods-more">
               <div class="goods-box">
                 <img v-for="(img, imgIdx) in order.goods" :src="img.image_url" :key="imgIdx" v-if="imgIdx <= 4" class="goods-img" mode="aspectFill">
-                <img :src="imageUrl + '/yx-image/group/pic-order_more@2x.png'" v-if="imgIdx > 4" class="goods-img" mode="aspectFill">
+                <div class="img-item" v-if="order.goods.length > 4">
+                  <div class="circle"></div>
+                  <div class="circle"></div>
+                  <div class="circle"></div>
+                </div>
               </div>
               <div class="num-box">
-                <div class="num-text">共{{order.goods.length}}件</div>
-                <img :src="imageUrl + '/yx-image/group/icon-pressed@2x.png'" v-if="imageUrl" class="way">
+                <div class="price"><span class="price-unit">￥</span>{{order.total}}</div>
+                <div class="count">共{{order.goods.length}}件</div>
               </div>
             </div>
             <div class="order-footer">
               <div class="time">下单时间：{{order.created_at}}</div>
-              <div class="money">实付:<span class="price">{{order.total}}</span><span class="small">元</span></div>
-              <!--item.btn_text格式化功能按钮-->
+              <div class="order-btn" @click.stop="_checkAddress(order)">客户地址</div>
             </div>
           </navigator>
           <!--<order-item :orderList="todayList"></order-item>-->
@@ -116,16 +123,20 @@
             <div class="goods-more">
               <div class="goods-box">
                 <img v-for="(img, imgIdx) in order.goods" :src="img.image_url" :key="imgIdx" v-if="imgIdx < 4" class="goods-img" mode="aspectFill">
+                <div class="img-item" v-if="order.goods.length > 4">
+                  <div class="circle"></div>
+                  <div class="circle"></div>
+                  <div class="circle"></div>
+                </div>
               </div>
               <div class="num-box">
-                <div class="num-text">共{{order.goods.length}}件</div>
-                <img :src="imageUrl + '/yx-image/group/icon-pressed@2x.png'" v-if="imageUrl" class="way">
+                <div class="price"><span class="price-unit">￥</span>{{order.total}}</div>
+                <div class="count">共{{order.goods.length}}件</div>
               </div>
             </div>
             <div class="order-footer">
               <div class="time">下单时间：{{order.created_at}}</div>
-              <div class="money">实付:<span class="price">{{order.total}}</span><span class="small">元</span></div>
-              <!--item.btn_text格式化功能按钮-->
+              <div class="order-btn" @click.stop="_checkAddress(order)">客户地址</div>
             </div>
           </navigator>
           <!--<order-item :orderList="todayList"></order-item>-->
@@ -263,6 +274,11 @@
         this.todayList = this.consumerOrder[0]
         this.yesterdayList = this.consumerOrder[1]
         this.list = this.consumerOrder[2]
+      },
+      _checkAddress(item) {
+        // wx.navigateTo({
+        //   url: `${this.$routes.main.ORDER_DETAIL}?id=${item.order_id}`
+        // })
       }
     },
     components: {
@@ -422,6 +438,15 @@
           margin-right: 2px
         .small
           font-size: $font-size-12
+      .order-btn
+        width: 82px
+        height: 28px
+        line-height: 28px
+        text-align: center
+        font-family: $font-family-regular
+        font-size: $font-size-14
+        color: $color-main
+        border-1px($color-main, 14px)
     .goods-more
       display: flex
       justify-content: space-between
@@ -436,9 +461,25 @@
           height: @width
           margin-right: 10px
           display: block
+
+        .img-item
+          width: 12.5vw
+          height: 12.5vw
+          margin-left: -2.5vw
+          layout(row)
+          justify-content: center
+          align-items: center
+          .circle
+            width: 6px
+            height: 6px
+            background: #D8D8D8
+            border-radius: 50%
+            &:nth-child(2)
+              margin: 0 5px
       .num-box
-        display: flex
+        layout()
         line-height: 1
+        text-align: right
         font-size: $font-size-12
         color: $color-text-assist
         .way
@@ -446,6 +487,20 @@
           display: block
           width: 7.5px
           height: 12.5px
+        .price
+          width: 100%
+          margin-bottom: 4px
+          font-size: $font-size-16
+          color: $color-text-main
+          font-family: $font-family-medium
+          .price-unit
+            font-family: $font-family-regular
+            font-size: $font-size-12
+        .count
+          width: 100%
+          font-family: $font-family-regular
+          font-size: $font-size-11
+          color: $color-text-sub
 
   .noting
     text-align: center
