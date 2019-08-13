@@ -64,9 +64,9 @@ async function checkCode(res = {}) {
     console.warn(res.data.message)
     const _path = getApp().globalData._path
     switch (res.data.code) {
-      case 13001: // 无团长权限code,跳转团长登录页面
+      case 13001: // 无团长权限code,跳转团长登录页面, 我的页面除外
         wx.removeStorageSync('isLeader')
-        if (checkIsCurrentPage($$routes.leader.REGIMENTAL_COMMANDER, _path)) return
+        if (checkIsCurrentPage($$routes.main.MINE, _path)) return
         wx.redirectTo({url: $$routes.leader.MINE_HOUSING})
         break
       case 10003: // 活动过期，跳转活动失效页面
