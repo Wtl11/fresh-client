@@ -27,6 +27,10 @@
       </div>
       <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-colour@2x.png'" class="order-line">
       <div class="order-list">
+        <div class="arrive-time-box">
+          <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.9/icon-order_yuji@2x.png'" class="arrive-time-img">
+          <div class="arrive-text">预计6月28日(周六) 可提货</div>
+        </div>
         <div class="list-item" v-for="(item, index) in goodsList" :key="index">
           <div class="item-left-img"><img class="img" :src="item.goods_cover_image" alt=""></div>
           <div class="item-right">
@@ -684,6 +688,7 @@
     background: #fff
     padding-left: 3.2vw
     box-sizing: border-box
+    border-bottom-1px($color-line, dashed)
 
     .list-item
       padding-right: 3.2vw
@@ -763,6 +768,20 @@
       &:last-child
         border-none()
 
+
+    .arrive-time-box
+      layout(row)
+      align-items: center
+      height: 45px
+      border-bottom-1px($color-line)
+      .arrive-time-img
+        width: 12px
+        height: @width
+        margin-right: 5px
+      .arrive-text
+        font-size: $font-size-14
+        font-family: $font-family-medium
+        color: #111
   .fixed-btn
     position: fixed
     width: 100%

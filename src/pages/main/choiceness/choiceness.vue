@@ -290,6 +290,12 @@
                   v-if="imageUrl && item.module_name === ACTIVE_TYPE.FREE_SHIPPING"
                   :src="imageUrl + '/free-shipping/pic-ptfx@2x.png'"
                   class="banner-image">
+                <img
+                  lazy-load
+                  mode="widthFix"
+                  v-if="imageUrl && item.module_name === ACTIVE_TYPE.CENTRALIZE_PURCHASE"
+                  :src="imageUrl + '/yx-image/2.9/pic-xrth@2x.png'"
+                  class="banner-image">
                 <button v-if="item.module_name !== ACTIVE_TYPE.GUESS" class="share-button" open-type="share" :id="'share-' + item.module_name"></button>
                 <block v-for="(child, idx) in item.list" :key="idx">
                   <div class="panel-goods-wrapper"
@@ -305,6 +311,11 @@
                           :lazy-load="true"
                           v-if="imageUrl && item.module_name === ACTIVE_TYPE.FREE_SHIPPING"
                           :src="imageUrl + '/yx-image/postage/icon-label_baoyou@2x.png'"
+                          class="label-icon">
+                        <img
+                          :lazy-load="true"
+                          v-else-if="imageUrl && item.module_name === ACTIVE_TYPE.CENTRALIZE_PURCHASE"
+                          :src="imageUrl + '/yx-image/2.9/icon-label copy@2x.png'"
                           class="label-icon">
                         <img
                           :lazy-load="true"
@@ -652,6 +663,10 @@
           break
         case ACTIVE_TYPE.FREE_SHIPPING :
           imgUrl = '/yx-image/2.4/pic-xsqg_ljqg@2x.png'
+          title = `${this.socialName}-赞播优鲜社区团购`
+          break
+        case ACTIVE_TYPE.CENTRALIZE_PURCHASE :
+          imgUrl = '/yx-image/2.9/pic-xsqg_cdjc@2x.png'
           title = `${this.socialName}-赞播优鲜社区团购`
           break
         default:

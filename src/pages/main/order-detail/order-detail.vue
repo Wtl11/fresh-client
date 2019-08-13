@@ -67,6 +67,10 @@
     <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-colour@2x.png'" class="order-line">
     <div class="gary-box"></div>
     <div class="order-list">
+      <div class="arrive-time-box">
+        <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.9/icon-order_yuji@2x.png'" class="arrive-time-img">
+        <div class="arrive-text">预计6月28日(周六) 可提货</div>
+      </div>
       <div class="order-item">
         <div class="goods-item" v-for="(item, index) in orderMsg.goods" :key="index">
           <div class="goods-info-box">
@@ -611,7 +615,7 @@
     height: 105px
     width: 100vw
     box-sizing: border-box
-    padding: 0 3.2vw
+    padding-right: 10px
     position: relative
     layout(row)
     justify-content: space-between
@@ -642,7 +646,7 @@
 
     .goods-info
       box-sizing: border-box
-      padding-left: 10px
+      padding: 0 10px
       flex: 1
       overflow: hidden
 
@@ -737,6 +741,8 @@
 
   .order-list
     background: $color-white
+    padding-left: 10px
+    box-sizing: border-box
 
   .actual-amount
     layout(row)
@@ -902,4 +908,17 @@
       height: 12.5px
       col-center()
       right: 12px
+  .arrive-time-box
+    layout(row)
+    align-items: center
+    height: 45px
+    border-bottom-1px($color-line)
+    .arrive-time-img
+      width: 12px
+      height: @width
+      margin-right: 5px
+    .arrive-text
+      font-size: $font-size-14
+      font-family: $font-family-medium
+      color: #111
 </style>

@@ -119,13 +119,15 @@
         </div>
         <div class="info-box">
           <article class="title-wrapper">
-            <div class="title" :class="goodsMsg.name ? 'has-title' : ''">{{goodsMsg.name}}</div>
+            <!--<div class="title" :class="goodsMsg.name ? 'has-title' : ''">{{goodsMsg.name}}</div>-->
+            <div class="title" :class="goodsMsg.name ? 'has-title' : ''"><span class="title-label">集采</span>{{goodsMsg.name}}</div>
             <div class="has-sub-title" v-if="goodsMsg.describe">{{goodsMsg.describe}}</div>
           </article>
           <div class="info-sub">
-            <img v-if="imageUrl && corpName === 'platform'" :src="imageUrl + '/yx-image/choiceness/icon-fast@2x.png'" mode="aspectFill" class="info-sub-img">
+            <!--<img v-if="imageUrl && corpName === 'platform'" :src="imageUrl + '/yx-image/choiceness/icon-fast@2x.png'" mode="aspectFill" class="info-sub-img">-->
             <img v-if="imageUrl && corpName === 'retuan'" :src="imageUrl + '/yx-image/retuan/icon-fast@2x.png'" mode="aspectFill" class="info-sub-img">
-            <div class="sub-text">现在下单，预计({{goodsMsg.delivery_at}})可自提</div>
+            <img v-if="imageUrl && corpName === 'platform'" :src="imageUrl + '/yx-image/2.9/icon-fast@2x.png'" mode="aspectFill" class="info-sub-img">
+            <div class="sub-text">现在下单，预计(<span class="sub-text-color">{{goodsMsg.delivery_at}}</span>)可自提</div>
           </div>
           <div class="info-stock">已售<span :class="'corp-' + corpName + '-money'">{{goodsMsg.sale_count}}</span>{{goodsMsg.goods_units}}<span v-if="activityId * 1 > 0">，剩余<span :class="'corp-' + corpName + '-money'">{{goodsMsg.usable_stock}}</span>{{goodsMsg.goods_units}}</span></div>
         </div>
@@ -1453,6 +1455,8 @@
           color: #9B9B9B
           font-size: $font-size-14
           font-family: $font-family-regular
+        .sub-text-color
+          color: #ff8311
 
     .info-stock
       font-size: $font-size-14
@@ -1626,6 +1630,20 @@
           width: 100%
           background: #888
           col-center()
+  .title-label
+    font-size: $font-size-12
+    font-family: $font-family-medium
+    display: inline-block
+    border-radius: 9.5px
+    width: 38px
+    height: 19px
+    text-align: center
+    line-height: 20px
+    color: #fff
+    background-image: linear-gradient(131deg, #FF7900 0%, #FF4400 100%)
+    margin-right: 5px
+    position: relative
+    top: -2px
   // 普通商品
   .header-title-default
     height: 13vw

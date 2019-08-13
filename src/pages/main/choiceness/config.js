@@ -43,6 +43,14 @@ export const TAB_ARR_CONFIG = {
     dataArray: 'freeShippingList',
     limit: 20
   },
+  [ACTIVE_TYPE.CENTRALIZE_PURCHASE]: {
+    title: '产地集采',
+    subTitle: '现采现卖',
+    iconText: '预售价',
+    buttonText: '+购物车',
+    dataArray: 'purchaseList',
+    limit: 20
+  },
   [ACTIVE_TYPE.GUESS]: {
     title: '猜你喜欢',
     subTitle: '为你优选',
