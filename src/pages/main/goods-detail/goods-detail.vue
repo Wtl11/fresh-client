@@ -361,7 +361,6 @@
         arrowUrl: ARROW_URL[1],
         isShowOldCustomerButton: false,
         poster: '',
-        saveImgAuth: false,
         posterData: {}
       }
     },
@@ -1027,6 +1026,9 @@
         // }
         // this.$refs.shareList && this.$refs.shareList.showLink()
         this.showSharePanel = true
+        if (!this.shareImg) {
+          this.getQrCode()
+        }
         if (!this.poster) {
           // 没有海报且没有正在生成海报,重新生成海报
           this._actionDrawPoster()// 画海报
@@ -1138,16 +1140,13 @@
       },
       // 设置海报图片
       _setPosterUrl(pic) {
-        console.log(`_setPosterUrl: ${pic}`)
         this.poster = pic
       },
       // 保存海报到本地
       _savePoster() {
-        if (!this.poster) return
         this.$wx.saveImageToPhotosAlbum({
           filePath: this.poster,
           success: () => {
-            console.log('_savePoster success')
             this.handleHideSharePanel()
           },
           fail: () => {
@@ -1157,11 +1156,8 @@
       },
       // 打开授权设置页
       _openWxSetting() {
-        // let self = this
-        console.log('_openWxSetting')
         this.$wx.openSetting({
           success: (res) => {
-            console.log(res.authSetting)
             if (res.authSetting && res.authSetting['scope.writePhotosAlbum']) {
               this._savePoster()
             }
@@ -1234,9 +1230,6 @@
             font-size: 14px
             color: $color-text-sub
             text-align: center
-            &.button
-              position :relative
-              top:3px
   // 购买记录
   .buy-users
     width :35vw
