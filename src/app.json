@@ -93,7 +93,8 @@
         "bank-card",
         "sale-service",
         "find-product",
-        "copy-detail"
+        "copy-detail",
+        "address-list"
       ]
     }
   ],

@@ -276,9 +276,9 @@
         this.list = this.consumerOrder[2]
       },
       _checkAddress(item) {
-        // wx.navigateTo({
-        //   url: `${this.$routes.main.ORDER_DETAIL}?id=${item.order_id}`
-        // })
+        wx.navigateTo({
+          url: `${this.$routes.leader.ADDRESS_LIST}?customerId=${item.customer_id}`
+        })
       }
     },
     components: {

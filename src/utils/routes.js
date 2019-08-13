@@ -58,6 +58,7 @@ export default {
     LEADER_INVITE_SUCCESS: `${LEADER}/leader-invite-success`,
     APPLY_LEADER: `${LEADER}/apply-leader`,
     BIND_WX_WALLET:`${LEADER}/bind-wx-wallet`,
+    ADDRESS_LIST:`${LEADER}/address-list`,
     // package-leader
   },
   main: {
