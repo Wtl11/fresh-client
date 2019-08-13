@@ -220,7 +220,7 @@
     <add-number ref="addNumber" :msgDetail="goodsMsg" :msgDetailInfo="buyGoodsInfo" @comfirmNumer="comfirmNumer" @hide="handleHideAddNumber"></add-number>
     <!--    <link-group ref="groupList" :wechatInfo="groupInfo"></link-group>-->
     <!--    <link-group ref="shareList" :linkType="2" @saveImg="_actionDrawPosterBefore"></link-group>-->
-    <we-paint ref="wePaint" @drawDone="_setPosterUrl"></we-paint>
+    <we-paint :preview='false' :loading="false" ref="wePaint" @drawDone="_setPosterUrl"></we-paint>
     <article class="share-panel-wrapper">
       <div v-if="showSharePanel" class="share-mask" @click="handleHideSharePanel"></div>
       <div v-if="showSharePanel&&posterData.name" class="poster-wrapper">
