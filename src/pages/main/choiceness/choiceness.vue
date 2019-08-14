@@ -291,7 +291,7 @@
                   v-if="imageUrl && item.module_name === ACTIVE_TYPE.FREE_SHIPPING"
                   :src="imageUrl + '/free-shipping/pic-ptfx@2x.png'"
                   class="banner-image">
-                <button v-if="item.module_name !== ACTIVE_TYPE.GUESS" class="share-button" open-type="share" :id="'share-' + item.module_name"></button>
+                <button v-if="item.module_name !== ACTIVE_TYPE.GUESS" class="share-button" :id="'share-' + item.module_name" @click="_showShareModal(item)"></button>
                 <block v-for="(child, idx) in item.list" :key="idx">
                   <div class="panel-goods-wrapper"
                        @click="handleJumpToGoodsDetail(child, item.module_name)"
@@ -360,6 +360,8 @@
       <!--    添加至我的小程序-->
       <new-guidelines ref="guidelines"></new-guidelines>
       <distance-check ref="distance"></distance-check>
+      <!--海报画布-->
+      <share-modal ref="shareModal" :shopId="shopId"></share-modal>
     </div>
   </form>
 </template>
@@ -383,6 +385,7 @@
   import Ald from '@utils/ald'
   import InvitationModal from './invitation-modal/invitation-modal'
   import CouponAfterSale from './coupon-after-sale/coupon-after-sale'
+  import ShareModal from './share-modal/share-modal.vue'
 
   // import GetOptions from '@mixins/get-options'
 
@@ -406,7 +409,8 @@
       LoadingMore,
       DistanceCheck,
       InvitationModal,
-      CouponAfterSale
+      CouponAfterSale,
+      ShareModal
     },
     data() {
       this._isLoading = false
@@ -469,7 +473,8 @@
         latitude: 0,
         longitude: 0,
         shareModuleName: '',
-        viewToItem: 'item0'
+        viewToItem: 'item0',
+        showSharePanel: false
       }
     },
     computed: {
@@ -1090,6 +1095,9 @@
         } catch (e) {
           console.error(e)
         }
+      },
+      _showShareModal(item) {
+        this.$refs.shareModal && this.$refs.shareModal._showShareFun(item)
       }
     }
   }
