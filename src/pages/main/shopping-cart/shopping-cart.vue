@@ -292,6 +292,16 @@
       await this._getShopCart(this.firstLoad)
       this.firstLoad = false
     },
+    onHide() {
+      this.goodsList = this.goodsList.map(item => {
+        item.checked = false
+        return item
+      })
+      this.postageList = this.postageList.map(item => {
+        item.checked = false
+        return item
+      })
+    },
     onReachBottom() {
       if (!this.hasMore) return
       this.page++
@@ -478,13 +488,13 @@
         if (item.is_common_coupon) { // 为通用券时
           !this.tipList[0] && (this.tipList[0] = item)
         } else if (item.is_cate_coupon) { // 为品类券时
-          let key = item.cate_coupon_id
+          let key = item.cate_coupon_id + 'cate'
           if (!obj[key]) {
             obj[key] = true
             this.tipList[index] = item
           }
         } else if (item.is_goods_coupon) { // 为单品券时
-          let key = item.goods_coupon_id
+          let key = item.goods_coupon_id + 'single'
           if (!obj[key]) {
             obj[key] = true
             this.tipList[index] = item
