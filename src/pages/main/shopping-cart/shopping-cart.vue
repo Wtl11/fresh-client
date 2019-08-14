@@ -257,7 +257,8 @@
         isShowType: false,
         isSelfGoods: true,
         tipList: [], // 提示数组
-        fitGift: {}
+        fitGift: {}, // 满赠对象
+        tipGroup: {} // 提示分组，添加对应的商品id
       }
     },
     async onTabItemTap() {
@@ -360,16 +361,42 @@
         })
         API.Cart.chooseGoods4Tips({choose_carts: arr}).then((res) => {
           if (res.error !== this.$ERR_OK) return
-          for (let i in res.data) {
-            let item = res.data[i]
-            if (item.is_gift) {
-              this.fitGift = item
-            }
-            let index = this.tipList.findIndex(val => val.id === item.id)
-            if (index > -1) {
-              !this.tipList[index].isDefault && (this.tipList[index] = item)
-            }
-          }
+          console.log(123)
+          this.tipList.forEach((item, index) => {
+            this.tipList[index].find(val => val.id ==)
+          })
+        //   let resData = res.data || []
+        //   // this.tipList = this.tipList.map((item) => {
+        //   //   let old = {...item}
+        //   //   let target = resData.find(val => val.id === old.id)
+        //   //   console.log(target, resData[0], 'data')
+        //   //   if (target) {
+        //   //     old = target
+        //   //   }
+        //   //   if (old.is_gift) {
+        //   //     this.fitGift = old
+        //   //   }
+        //   //   return old
+        //   // })
+        //   let arr = this.goodsList.map((item) => {
+        //     let old = item
+        //     let target = resData.find(val => val.id === item.id)
+        //     console.log(target, 'tar')
+        //     if (target) {
+        //       old = target
+        //     }
+        //     return old
+        //   })
+        //   let idx = 0
+        //   let wrapper = {}
+        //   this.tipList = []
+        //   this.fitGift = {}
+        //   console.log(arr, 'arr')
+        //   arr.forEach((item) => {
+        //     this._formatData4TipList(item, idx, wrapper)
+        //     idx++
+        //   })
+        //   console.log(this.tipList, '123123')
         })
       },
       tipNavHandle(type, item, index) {
@@ -394,7 +421,7 @@
         if (!this.$isLogin()) {
           return
         }
-        API.Choiceness.addShopCart({goods_sku_id: item.goods_sku_id || 0, activity_id: item.activity_id || 0}).then((res) => {
+        API.Choiceness.addShopCart({goods_sku_id: item.goods_sku_id || 0, activity_id: item.activity_id || 0}).then(async (res) => {
           if (res.error === this.$ERR_OK) {
             this.$sendMsg({
               event_no: 1007,
@@ -402,7 +429,8 @@
               title: item.name
             })
             // this.$emit('_getShopCart')
-            this._getShopCart()
+            await this._getShopCart()
+            this._getCarTips()
             this.$wechat.showToast('加入购物车成功', 1000, false)
             this.setCartCount()
           } else {
@@ -442,32 +470,6 @@
           if (isGlobalModal) {
             postageList.push(item)
           } else {
-            // // 处理满赠兑换券
-            // if (item.is_gift && !this.fitGift.id) {
-            //   this.fitGift = item
-            // }
-            // // 处理营销提示
-            // if (item.is_common_coupon) { // 为通用券时
-            //   !this.tipList[0] && (this.tipList[0] = item)
-            // } else if (item.is_cate_coupon) { // 为品类券时
-            //   let key = item.cate_coupon_id
-            //   if (!obj[key]) {
-            //     obj[key] = true
-            //     this.tipList[index] = item
-            //   }
-            // } else if (item.is_goods_coupon) { // 为单品券时
-            //   let key = item.goods_coupon_id
-            //   if (!obj[key]) {
-            //     obj[key] = true
-            //     this.tipList[index] = item
-            //   }
-            // } else {
-            //   if (!obj['noDiscount']) {
-            //     obj['noDiscount'] = true
-            //     item.isDefault = true
-            //     this.tipList[index] = item
-            //   }
-            // }
             this._formatData4TipList(item, index, obj)
             index++
             goodsList.push(item)
@@ -506,6 +508,11 @@
             this.tipList[index] = item
           }
         }
+        let key = this.tipList.length - 1
+        if (!this.tipGroup[key]) {
+          this.tipGroup[key] = []
+        }
+        this.tipGroup[key].push(item.id)
       },
       _allowCheckHandle(item) {
         if (item.activity && item.activity.activity_theme === ACTIVE_TYPE.NEW_CLIENT) {
