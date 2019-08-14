@@ -181,7 +181,7 @@
         this._getGoodsDetailData()
         return
       }
-      this._getLocation()
+      this._checkCanGroup()
       this._checkIsNewClient()
       this._getGoodsDetailData()
       this.getGoodsOtherInfo()

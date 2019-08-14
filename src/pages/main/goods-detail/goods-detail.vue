@@ -465,7 +465,7 @@
       this._initPageParams()
       if (this.goodsId < 1) return
       this._checkIsNewClient()
-      this._getLocation()
+      this._checkCanGroup()
       this._getGoodsDetailData()
       this.getUserImgList()
       this.getGoodsOtherInfo()

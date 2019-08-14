@@ -10,11 +10,15 @@ export default {
     }
   },
   methods: {
-    // 获取地理位置
-    async _getLocation() {
+    // 检查是否能参加拼团活动
+    async _checkCanGroup() {
       if (this.activityType !== ACTIVE_TYPE.GROUP_ON) return
       if (this.latitude && this.longitude) return
+      const newCustomer = await API.Global.checkIsNewCustomer()
+      // 只有新人才判断地理位置, 老人0 新人1
+      if (newCustomer.data && newCustomer.data.is_new_client === 0) return
       try {
+        // 获取地理位置
         let res = await this.$wechat.getLocation()
         this.longitude = res.longitude
         this.latitude = res.latitude
