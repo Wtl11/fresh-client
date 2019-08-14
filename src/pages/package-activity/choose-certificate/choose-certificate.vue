@@ -123,6 +123,8 @@
         if (child.isChecked) {
           this['SAVE_CERTIFICATE'](child)
           wx.navigateBack()
+        } else {
+          this['SAVE_CERTIFICATE']({})
         }
       }
     }
