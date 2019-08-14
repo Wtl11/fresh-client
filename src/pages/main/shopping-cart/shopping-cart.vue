@@ -270,8 +270,6 @@
     },
     async onShow() {
       if (!wx.getStorageSync('token')) return
-      await this._getShopCart(this.firstLoad)
-      this.firstLoad = false
       let shopId = wx.getStorageSync('shopId')
       if (!shopId) {
         let res = await API.Choiceness.getDefaultShopInfo()
@@ -286,9 +284,13 @@
         })
         this.page = 1
         this.hasMore = true
+        this.tipList = [] // 提示数组
+        this.fitGift = {}
         this.getCarRecommend()
       }
       this.curShopId = shopId
+      await this._getShopCart(this.firstLoad)
+      this.firstLoad = false
     },
     onReachBottom() {
       if (!this.hasMore) return
@@ -298,6 +300,8 @@
     async onPullDownRefresh() {
       this.page = 1
       this.hasMore = true
+      // this.tipList = [] // 提示数组
+      // this.fitGift = {}
       Promise.all([
         this.getCarRecommend(),
         this._getShopCart(this.firstLoad)
@@ -349,10 +353,9 @@
           res.data.forEach(item => {
             if (item.is_gift) {
               this.fitGift = item
-            } else {
-              let index = this.tipList.findIndex(val => val.id === item.id)
-              index > -1 && (this.tipList[index] = item)
             }
+            let index = this.tipList.findIndex(val => val.id === item.id)
+            index > -1 && (this.tipList[index] = item)
           })
         })
       },
@@ -404,10 +407,11 @@
         }
         let dataArray = this.goodsList.concat(this.postageList)
         res.data.forEach((item, index) => {
+          let oldItem = dataArray.find(val => val.id === item.id)
           let usableStock = item.usable_stock * 1
           item.num = item.num <= usableStock ? item.num : usableStock
-          if (dataArray[index]) {
-            item.checked = dataArray[index].checked
+          if (oldItem) {
+            item.checked = oldItem.checked
           } else {
             item.checked = false
           }
@@ -517,6 +521,9 @@
         } else {
           this.goodsList[i].num = num
         }
+        if (this.goodsList[i].checked) {
+          this._getCarTips()
+        }
         this.setCartCount()
       },
       jumpGoodsDetail(item, goodsType) {
@@ -561,6 +568,7 @@
           this.isShowCart = true
         }
         this.$wechat.showToast(res.message)
+        this._getCarTips()
       },
       toggelCheck(i) {
         this.goodsList[i].checked = !this.goodsList[i].checked
