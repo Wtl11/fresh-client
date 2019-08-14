@@ -369,7 +369,6 @@
         return (this.activityInfo.config || {}).person_limit || 0
       },
       goodsBanner() {
-        console.log(this.goodsMsg.goods_banner_images, 666) // todo
         return this.goodsMsg.goods_banner_images || []
       },
       goodsBannerLength() {

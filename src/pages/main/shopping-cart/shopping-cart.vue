@@ -350,13 +350,16 @@
         })
         API.Cart.chooseGoods4Tips({choose_carts: arr}).then((res) => {
           if (res.error !== this.$ERR_OK) return
-          res.data.forEach(item => {
+          for (let i in res.data) {
+            let item = res.data[i]
             if (item.is_gift) {
               this.fitGift = item
             }
             let index = this.tipList.findIndex(val => val.id === item.id)
-            index > -1 && (this.tipList[index] = item)
-          })
+            if (index > -1) {
+              !this.tipList[index].isDefault && (this.tipList[index] = item)
+            }
+          }
         })
       },
       tipNavHandle(type, item, index) {
@@ -422,38 +425,42 @@
         let isGlobalModal
         let index = 0
         let obj = {}
+        this.tipList = []
+        this.fitGift = {}
         res.data.forEach((item) => {
           isGlobalModal = item.source_type != null && +item.source_type !== 1
           if (isGlobalModal) {
             postageList.push(item)
           } else {
-            if (item.is_gift && !this.fitGift.id) {
-              this.fitGift = item
-            }
-            // 处理营销提示
-            if (item.is_common_coupon) { // 为通用券时
-              !this.tipList[0] && (this.tipList[0] = item)
-            } else if (item.is_cate_coupon) { // 为品类券时
-              let key = item.cate_coupon_id
-              if (!obj[key]) {
-                obj[key] = true
-                this.tipList[index] = item
-              }
-            } else if (item.is_goods_coupon) { // 为单品券时
-              let key = item.goods_coupon_id
-              if (!obj[key]) {
-                obj[key] = true
-                this.tipList[index] = item
-              }
-            } else {
-              if (!obj['noDiscount']) {
-                obj['noDiscount'] = true
-                item.isDefault = true
-                this.tipList[index] = item
-              }
-            }
-            goodsList.push(item)
+            // // 处理满赠兑换券
+            // if (item.is_gift && !this.fitGift.id) {
+            //   this.fitGift = item
+            // }
+            // // 处理营销提示
+            // if (item.is_common_coupon) { // 为通用券时
+            //   !this.tipList[0] && (this.tipList[0] = item)
+            // } else if (item.is_cate_coupon) { // 为品类券时
+            //   let key = item.cate_coupon_id
+            //   if (!obj[key]) {
+            //     obj[key] = true
+            //     this.tipList[index] = item
+            //   }
+            // } else if (item.is_goods_coupon) { // 为单品券时
+            //   let key = item.goods_coupon_id
+            //   if (!obj[key]) {
+            //     obj[key] = true
+            //     this.tipList[index] = item
+            //   }
+            // } else {
+            //   if (!obj['noDiscount']) {
+            //     obj['noDiscount'] = true
+            //     item.isDefault = true
+            //     this.tipList[index] = item
+            //   }
+            // }
+            this._formatData4TipList(item, index, obj)
             index++
+            goodsList.push(item)
           }
         })
         this.goodsList = goodsList
@@ -461,6 +468,34 @@
         this.goodsList.length > 0 || this.postageList.length > 0 ? this.isShowCart = false : this.isShowCart = true
         this.deliverAt = res.delivery_at
         this.setCartCount()
+      },
+      _formatData4TipList(item, index, obj) {
+        // 处理满赠兑换券
+        if (item.is_gift && !this.fitGift.id) {
+          this.fitGift = item
+        }
+        // 处理营销提示
+        if (item.is_common_coupon) { // 为通用券时
+          !this.tipList[0] && (this.tipList[0] = item)
+        } else if (item.is_cate_coupon) { // 为品类券时
+          let key = item.cate_coupon_id
+          if (!obj[key]) {
+            obj[key] = true
+            this.tipList[index] = item
+          }
+        } else if (item.is_goods_coupon) { // 为单品券时
+          let key = item.goods_coupon_id
+          if (!obj[key]) {
+            obj[key] = true
+            this.tipList[index] = item
+          }
+        } else {
+          if (!obj['noDiscount']) {
+            obj['noDiscount'] = true
+            item.isDefault = true
+            this.tipList[index] = item
+          }
+        }
       },
       _allowCheckHandle(item) {
         if (item.activity && item.activity.activity_theme === ACTIVE_TYPE.NEW_CLIENT) {
@@ -568,6 +603,15 @@
           this.isShowCart = true
         }
         this.$wechat.showToast(res.message)
+        // 处理促销信息
+        let index = 0
+        let obj = {}
+        this.fitGift = {}
+        this.tipList = []
+        this.goodsList.forEach(item => {
+          this._formatData4TipList(item, index, obj)
+          index++
+        })
         this._getCarTips()
       },
       toggelCheck(i) {
