@@ -14,9 +14,9 @@ export default {
     async _checkCanGroup() {
       if (this.activityType !== ACTIVE_TYPE.GROUP_ON) return
       if (this.latitude && this.longitude) return
-      const newCustomer = await API.Global.checkIsNewCustomer()
-      // 只有新人才判断地理位置, 老人0 新人1
-      if (newCustomer.data && newCustomer.data.is_new_client === 0) return
+      const hasOrder = await API.Global.checkHasGroupOrder()
+      // 检查是否有拼团订单，没有订单才判断地理位置, 没有0 有1
+      if (hasOrder.data && hasOrder.data.is_buy_groupon === 1) return
       try {
         // 获取地理位置
         let res = await this.$wechat.getLocation()

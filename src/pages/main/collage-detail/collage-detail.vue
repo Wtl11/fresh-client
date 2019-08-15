@@ -636,10 +636,9 @@
         this.hasMore = res.data.length > 0 && res.data.length >= 10
       },
       _checkNewClient() {
-        // 判断用户新老, 老人0 新人1
-        API.Global.checkIsNewCustomer().then(res => {
-          if (res.data && res.data.is_new_client === 1) {
-            // 只有新人才判断地理位置
+        // 检查是否有拼团订单，没有订单才判断地理位置, 没有0 有1
+        API.Global.checkHasGroupOrder().then(res => {
+          if (res.data && res.data.is_buy_groupon === 0) {
             this._initLocation()
           }
         })
