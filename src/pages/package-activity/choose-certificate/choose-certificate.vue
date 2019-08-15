@@ -8,7 +8,7 @@
         :class="[{'coupon-disable': child.status !== 1 }, {unableIndex: childIdx >= useAbleIndex}]"
         class="coupon-item c-mb"
       >
-        <section class="top-wrapper" @click.stop="selectCoupon(child, childIdx)">
+        <section class="top-wrapper" @click.stop="selectCoupon(child, childIdx, childIdx >= useAbleIndex)">
           <img class="top-bg-img" v-if="imageUrl" :src="imageUrl + '/yx-image/invitation/pic-couponbg_myzk1.png'">
           <div class="top-container">
             <artilce class="left">
@@ -113,7 +113,8 @@
       handleShowTip(child, index) {
         child.showTip = !child.showTip
       },
-      selectCoupon(child, index) {
+      selectCoupon(child, index, unable) {
+        if (unable) return
         if (child.status !== 1) return
         const pre = this.dataArray.find(val => val.isChecked)
         if (pre && pre !== child) {

@@ -344,6 +344,11 @@
         }, 0)
       }
     },
+    watch: {
+      tipGroup(val) {
+        // console.log(val, 'w')
+      }
+    },
     methods: {
       ...orderMethods,
       ...cartMethods,
@@ -367,13 +372,14 @@
           if (resData[0] && resData[0].is_gift) {
             this.fitGift = resData[0]
           }
+          console.log(this.tipGroup, this.tipList, '1231231')
           for (let i in this.tipGroup) {
-            let flag = false
             for (let idx in this.tipGroup[i]) {
               let id = this.tipGroup[i][idx]
-              flag = resData.some(val => val.id === id)
-              if (flag && !this.tipList[i].isDefault) {
-                this.tipList[i] = resData[i]
+              let newTip = resData.find(val => val.id === id)
+              if (newTip && !this.tipList[i].isDefault) {
+                console.log(6666, newTip)
+                this.tipList[i] = {...newTip}
               }
             }
           }
@@ -427,17 +433,17 @@
           return
         }
         let dataArray = this.goodsList.concat(this.postageList)
-        res.data.forEach((item, index) => {
-          let oldItem = dataArray.find(val => val.id === item.id)
-          let usableStock = item.usable_stock * 1
-          item.num = item.num <= usableStock ? item.num : usableStock
-          if (oldItem) {
-            item.checked = oldItem.checked
-          } else {
-            item.checked = false
-          }
-          item.allowCheck = this._allowCheckHandle(item)
-        })
+        // res.data.forEach((item, index) => {
+        //   let oldItem = dataArray.find(val => val.id === item.id)
+        //   let usableStock = item.usable_stock * 1
+        //   item.num = item.num <= usableStock ? item.num : usableStock
+        //   if (oldItem) {
+        //     item.checked = oldItem.checked
+        //   } else {
+        //     item.checked = false
+        //   }
+        //   item.allowCheck = this._allowCheckHandle(item)
+        // })
         let goodsList = []
         let postageList = []
         let isGlobalModal
@@ -445,6 +451,7 @@
         let obj = {}
         this.resetTipsConfig()
         res.data.forEach((item) => {
+          item = this._formatItemStatus(dataArray, item)
           isGlobalModal = item.source_type != null && +item.source_type !== 1
           if (isGlobalModal) {
             postageList.push(item)
@@ -454,11 +461,25 @@
             goodsList.push(item)
           }
         })
+        console.log(this.tipGroup, 'gorup')
+        console.log(123131312313)
         this.goodsList = goodsList
         this.postageList = postageList
         this.goodsList.length > 0 || this.postageList.length > 0 ? this.isShowCart = false : this.isShowCart = true
         this.deliverAt = res.delivery_at
         this.setCartCount()
+      },
+      _formatItemStatus(dataArray, item) {
+        let oldItem = dataArray.find(val => val.id === item.id)
+        let usableStock = item.usable_stock * 1
+        item.num = item.num <= usableStock ? item.num : usableStock
+        if (oldItem) {
+          item.checked = oldItem.checked
+        } else {
+          item.checked = false
+        }
+        item.allowCheck = this._allowCheckHandle(item)
+        return item
       },
       _formatData4TipList(item, index, obj) {
         // 处理满赠兑换券
