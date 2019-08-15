@@ -285,8 +285,7 @@
         })
         this.page = 1
         this.hasMore = true
-        this.tipList = [] // 提示数组
-        this.fitGift = {}
+        this.resetTipsConfig()
         this.getCarRecommend()
       }
       this.curShopId = shopId
@@ -311,8 +310,6 @@
     async onPullDownRefresh() {
       this.page = 1
       this.hasMore = true
-      // this.tipList = [] // 提示数组
-      // this.fitGift = {}
       Promise.all([
         this.getCarRecommend(),
         this._getShopCart(this.firstLoad)
@@ -350,6 +347,11 @@
     methods: {
       ...orderMethods,
       ...cartMethods,
+      resetTipsConfig () {
+        this.fitGift = {}
+        this.tipList = []
+        this.tipGroup = {}
+      },
       _getCarTips() {
         let arr = []
         this.goodsList.forEach(item => {
@@ -361,42 +363,20 @@
         })
         API.Cart.chooseGoods4Tips({choose_carts: arr}).then((res) => {
           if (res.error !== this.$ERR_OK) return
-          console.log(123)
-          this.tipList.forEach((item, index) => {
-            this.tipList[index].find(val => val.id ==)
-          })
-        //   let resData = res.data || []
-        //   // this.tipList = this.tipList.map((item) => {
-        //   //   let old = {...item}
-        //   //   let target = resData.find(val => val.id === old.id)
-        //   //   console.log(target, resData[0], 'data')
-        //   //   if (target) {
-        //   //     old = target
-        //   //   }
-        //   //   if (old.is_gift) {
-        //   //     this.fitGift = old
-        //   //   }
-        //   //   return old
-        //   // })
-        //   let arr = this.goodsList.map((item) => {
-        //     let old = item
-        //     let target = resData.find(val => val.id === item.id)
-        //     console.log(target, 'tar')
-        //     if (target) {
-        //       old = target
-        //     }
-        //     return old
-        //   })
-        //   let idx = 0
-        //   let wrapper = {}
-        //   this.tipList = []
-        //   this.fitGift = {}
-        //   console.log(arr, 'arr')
-        //   arr.forEach((item) => {
-        //     this._formatData4TipList(item, idx, wrapper)
-        //     idx++
-        //   })
-        //   console.log(this.tipList, '123123')
+          const resData = res.data || []
+          if (resData[0] && resData[0].is_gift) {
+            this.fitGift = resData[0]
+          }
+          for (let i in this.tipGroup) {
+            let flag = false
+            for (let idx in this.tipGroup[i]) {
+              let id = this.tipGroup[i][idx]
+              flag = resData.some(val => val.id === id)
+              if (flag && !this.tipList[i].isDefault) {
+                this.tipList[i] = resData[i]
+              }
+            }
+          }
         })
       },
       tipNavHandle(type, item, index) {
@@ -463,8 +443,7 @@
         let isGlobalModal
         let index = 0
         let obj = {}
-        this.tipList = []
-        this.fitGift = {}
+        this.resetTipsConfig()
         res.data.forEach((item) => {
           isGlobalModal = item.source_type != null && +item.source_type !== 1
           if (isGlobalModal) {
@@ -623,8 +602,7 @@
         // 处理促销信息
         let index = 0
         let obj = {}
-        this.fitGift = {}
-        this.tipList = []
+        this.resetTipsConfig()
         this.goodsList.forEach(item => {
           this._formatData4TipList(item, index, obj)
           index++
