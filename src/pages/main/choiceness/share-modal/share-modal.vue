@@ -3,19 +3,41 @@
     <we-paint :preview='false' ref="wePaint" @drawDone="_setPosterUrl"></we-paint>
     <article class="share-panel-wrapper">
       <div v-if="showShare" class="share-mask" @click="_hideShareModal"></div>
-      <div v-if="showShare&&posterData.name" class="poster-wrapper">
+      <div v-if="showShare&&posterData.bg" class="poster-wrapper">
         <div class="background">
           <img v-if="imageUrl&&posterData.bg" :src="posterData.bg" class="bg-img">
         </div>
-        <div class="goods-con">
-          <img v-if="posterData.img" :src="posterData.img" class="goods-img">
-          <div class="info-bottom">
-            <div class="goods-info">
-              <div class="name">{{posterData.name}}</div>
-              <div class="text">{{posterData.goods.name}}</div>
-              <div class="price-text">{{iconText}}</div>
-              <div class="price">{{posterData.price}}元
+        <div class="poster-con">
+          <div class="top-con">
+            <div class="top-img">
+              <img v-if="posterData.userImg" :src="posterData.userImg" class="user-img">
+            </div>
+            <div class="top-text">
+              <div class="user-name">{{posterData.userName}}</div>
+              <div class="title">{{posterData.textArr.topText}}</div>
+            </div>
+          </div>
+          <div v-if="posterData.goods.length>1" class="goods-list">
+            <div v-for="(item, index) in posterData.goods" :key="index" class="goods-con">
+              <img v-if="item.img" :src="item.img" class="goods-img">
+              <div class="text-con">
+                <div class="price"><span class="unit">￥</span>{{item.price}}</div>
+                <div class="buy-text">{{posterData.textArr.buyText}}</div>
               </div>
+            </div>
+          </div>
+          <div v-else-if="posterData.goods[0]" class="one-goods">
+            <img v-if="posterData.goods[0].img" :src="posterData.goods[0].img" class="goods-img">
+            <div class="text-con">
+              <div class="price"><span class="unit">￥</span>{{posterData.goods[0].price}}</div>
+              <div class="buy-text">{{posterData.textArr.buyText}}</div>
+            </div>
+          </div>
+          <div class="bottom-con">
+            <div class="goods-info">
+              <div class="text1">{{posterData.textArr.text1}}</div>
+              <div class="text2">{{posterData.textArr.text2}}</div>
+              <div class="text3">{{posterData.textArr.text3}}</div>
             </div>
             <div class="qr-code">
               <img v-if="shareQRCode" :src="shareQRCode" class="img">
@@ -83,12 +105,13 @@
       // 隐藏分享控件
       _hideShareModal() {
         this.showShare = false
+        this.posterData = {}
       },
       // 获取分享二维码
       getQrCode(loading = false) {
-        const flag = Date.now()
-        let path = `${this.$routes.main.CHOICENESS}?shopId=${this.shopId}&moduleName=${this.moduleName}&flag=${flag}`
-        API.Choiceness.createQrCodeApi({ path }, loading).then((res) => {
+        // const flag = Date.now()
+        // let path = `${this.$routes.main.CHOICENESS}?shopId=${this.shopId}&moduleName=${this.moduleName}&flag=${flag}`
+        API.Choiceness.createQrCodeApi({ path: 'pages/goods-detail?g=55322&s=192&a=4464' }, loading).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.shareQRCode = res.data.image_url
             this._getPosterData()
@@ -100,8 +123,6 @@
         })
       },
       _getPosterData() {
-        const goods = this.shareItem.list[0]
-        let name = goods.name.length >= 12 ? goods.name.slice(0, 12) + '...' : goods.name
         let backgroundImg
         let moneyColor
         const corpName = 'platform'
@@ -117,12 +138,64 @@
           default:
             break
         }
+        let _goodsArr = []
+        if (this.shareItem && this.shareItem.list.length) {
+          let length = this.shareItem.list.length < 4 ? this.shareItem.list.length : 4
+          for (let i = 0; i < length; i++) {
+            const item = this.shareItem.list[i]
+            _goodsArr.push({
+              img: item.goods_cover_image,
+              price: item.trade_price
+            })
+          }
+        }
+        const textConfig = {
+          new_client: {
+            topText: '太划算了吧，新人特惠速度抢',
+            text1: '新人特惠',
+            text2: '首单钜惠，新人专享',
+            text3: '美好实惠生活上赞播',
+            buyText: '抢'
+          },
+          goods_hot_tag: {
+            topText: '太划算了吧，今日爆款速度抢',
+            text1: '今日爆款',
+            text2: '热销爆品，超值人气',
+            text3: '每天9点更新商品',
+            buyText: '抢'
+          },
+          activity_fixed: {
+            topText: '太划算了吧，限时抢购速度抢',
+            text1: '限时抢购',
+            text2: '每日更新正在疯抢中',
+            text3: '本场 08月10日 21：00结束',
+            buyText: '抢'
+          },
+          groupon: {
+            topText: '太划算了吧，拼团返现速度抢',
+            text1: '拼团返现',
+            text2: '与社区邻居拼团购',
+            text3: '本场 08月10日 21：00结束',
+            buyText: '拼'
+          },
+          free_shipping: {
+            topText: '太划算了吧，全国包邮速度抢',
+            text1: '全国包邮',
+            text2: '精选商品，送货到家',
+            text3: '来自阿里巴巴的源头好货',
+            buyText: '抢'
+          }
+        }
         this.posterData = {
-          img: goods.goods_cover_image,
-          name: name,
-          price: goods.trade_price,
           bg: backgroundImg,
-          color: moneyColor
+          color: moneyColor,
+          goods: _goodsArr,
+          textArr: textConfig[this.shareItem.module_name]
+        }
+        const userInfo = wx.getStorageSync('userInfo') || ''
+        if (userInfo) {
+          this.posterData.userName = userInfo.nickname || ''
+          this.posterData.userImg = userInfo.avatar || ''
         }
       },
       // 海报绘图
@@ -326,41 +399,100 @@
       .bg-img
         width: 100%
         height: 100%
-    .goods-con
+    .poster-con
+      box-sizing: border-box
+      background: #fff
       width: px-change-vw(240)
+      margin: 0 px-change-vw(14)
+      padding: px-change-vw(12) px-change-vw(14)
       box-shadow: 0 3px 16px 0 rgba(0,0,0,0.10)
       layout()
-      .goods-img
-        width: px-change-vw(240)
-        height: @width
-      .info-bottom
-        padding: px-change-vw(14)
+      .top-con
+        width: 100%
+        padding-bottom: px-change-vh(9)
+        layout(row)
+        .top-img
+          width: 35px
+          height: @width
+          margin-right: 6px
+          border: 1px solid #E7E7E7
+          border-radius: 100%
+          overflow: hidden
+          .user-img
+            width: 100%
+            height: 100%
+        .top-text
+          flex: 1
+          font-family: $font-family-regular
+          font-size: 11px
+          line-height: 1
+          .user-name
+            color: $color-text-sub
+            padding-bottom: 6px
+          .title
+            color: #1f1f1f
+      .goods-list
+        width: 100%
+        layout(row)
+        justify-content: space-between
+        .goods-con
+          width: px-change-vw(102)
+          height: @width
+          max-width: 49%
+          position: relative
+          margin-bottom: px-change-vw(8)
+          .goods-img
+            width: 100%
+            height: 100%
+      .one-goods
+        width: px-change-vw(212)
+        position: relative
+        .goods-img
+          width: px-change-vw(212)
+          height: @width
+      .text-con
+        box-sizing: border-box
+        position: absolute
+        bottom: 0
+        width: 100%
+        height: 23px
+        line-height: 23px
+        padding: 0 5px
+        color: #fff
+        background: #ff8300
+        layout(row)
+        justify-content: space-between
+        .price
+          font-family: $font-family-medium
+          font-size: 18px
+          .unit
+            font-size: 13px
+            font-family: $font-family-regular
+        .buy-text
+          font-family: $font-family-regular
+          font-size: 14px
+      .bottom-con
+        box-sizing: border-box
+        padding-top: px-change-vh(15)
         layout(row)
         .goods-info
           flex: 1
           font-family: $font-family-regular
-          .name
+          line-height: 1
+          .text1
             width: 100%
-            no-wrap-plus(1)
-            font-size: 15px
+            margin-bottom: px-change-vh(9)
+            font-size: 20px
             font-family: $font-family-medium
-            color: $color-text-main
-          .text
+            color: #1f1f1f
+          .text2
             width: 100%
-            no-wrap-plus(1)
-            margin-bottom: px-change-vw(10)
-            font-size: 13px
+            margin-bottom: px-change-vh(20)
+            font-size: 11px
             color: $color-text-sub
-          .price-text
-            font-size: 13px
+          .text3
+            font-size: 11px
             color: $color-money
-          .price
-            font-size: 22px
-            color: $color-money
-            .old-price
-              font-size: 12px
-              color: $color-text-sub
-              text-decoration: line-through
         .qr-code
           align-self: flex-end
           width: 63px
