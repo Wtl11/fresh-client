@@ -44,7 +44,7 @@
             <img class="goods-img" mode="aspectFill" :src="item.image_url" alt="">
             <div class="goods-info">
               <div class="tit share-tit">
-                <div class="name"><span v-if="item.is_gift" class="icon-tag">赠品</span>{{item.goods_name}}</div>
+                <p class="name"><span v-if="item.is_gift" class="icon-tag">赠品</span><span class="text">{{item.goods_name}}</span></p>
                 <div class="share-tit-btn">立即抢购</div>
               </div>
               <div class="guige">规格：{{item.goods_units}}</div>
@@ -317,8 +317,10 @@
           color: $color-sub
           min-height: 16px
           letter-spacing: 0.3px
-          max-width: 50vw;
-          no-wrap()
+          width: 30vw
+          .text
+            flex: 1
+            no-wrap()
           .icon-tag
             display :inline-block
             background: rgba(255,104,3,0.10);

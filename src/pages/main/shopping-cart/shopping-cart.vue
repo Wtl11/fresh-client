@@ -257,8 +257,7 @@
         isShowType: false,
         isSelfGoods: true,
         tipList: [], // 提示数组
-        fitGift: {}, // 满赠对象
-        tipGroup: {} // 提示分组，添加对应的商品id
+        fitGift: {} // 满赠对象
       }
     },
     async onTabItemTap() {
@@ -344,18 +343,12 @@
         }, 0)
       }
     },
-    watch: {
-      tipGroup(val) {
-        // console.log(val, 'w')
-      }
-    },
     methods: {
       ...orderMethods,
       ...cartMethods,
       resetTipsConfig () {
         this.fitGift = {}
         this.tipList = []
-        this.tipGroup = {}
       },
       _getCarTips() {
         let arr = []
@@ -369,34 +362,15 @@
         API.Cart.chooseGoods4Tips({choose_carts: arr}).then((res) => {
           if (res.error !== this.$ERR_OK) return
           const resData = res.data || []
-          if (resData[0] && resData[0].is_gift) {
-            this.fitGift = resData[0]
-          }
-          console.log(this.tipGroup, this.tipList, '1231231')
-          for (let i in this.tipGroup) {
-            for (let idx in this.tipGroup[i]) {
-              let id = this.tipGroup[i][idx]
-              let newTip = resData.find(val => val.id === id)
-              if (newTip && !this.tipList[i].isDefault) {
-                console.log(6666, newTip)
-                this.tipList[i] = {...newTip}
-              }
-            }
-          }
+          let obj = {}
+          this.resetTipsConfig()
+          resData.forEach((item, index) => {
+            this._formatData4TipList(item, index, obj)
+          })
         })
       },
       tipNavHandle(type, item, index) {
         wx.switchTab({url: this.$routes.main.CHOICENESS})
-        // switch (type) {
-        //   case 'certificate':
-        //     wx.navigateTo({url: this.$routes.activity.COMMODITY_CERTIFICATES})
-        //     break
-        //   case 'coupon':
-        //     wx.switchTab({url: this.$routes.main.CHOICENESS})
-        //     break
-        //   default:
-        //     break
-        // }
       },
       recommendJumpGoodsDetail(item) {
         wx.navigateTo({
@@ -433,36 +407,21 @@
           return
         }
         let dataArray = this.goodsList.concat(this.postageList)
-        // res.data.forEach((item, index) => {
-        //   let oldItem = dataArray.find(val => val.id === item.id)
-        //   let usableStock = item.usable_stock * 1
-        //   item.num = item.num <= usableStock ? item.num : usableStock
-        //   if (oldItem) {
-        //     item.checked = oldItem.checked
-        //   } else {
-        //     item.checked = false
-        //   }
-        //   item.allowCheck = this._allowCheckHandle(item)
-        // })
         let goodsList = []
         let postageList = []
         let isGlobalModal
-        let index = 0
         let obj = {}
         this.resetTipsConfig()
-        res.data.forEach((item) => {
+        res.data.forEach((item, index) => {
           item = this._formatItemStatus(dataArray, item)
           isGlobalModal = item.source_type != null && +item.source_type !== 1
           if (isGlobalModal) {
             postageList.push(item)
           } else {
             this._formatData4TipList(item, index, obj)
-            index++
             goodsList.push(item)
           }
         })
-        console.log(this.tipGroup, 'gorup')
-        console.log(123131312313)
         this.goodsList = goodsList
         this.postageList = postageList
         this.goodsList.length > 0 || this.postageList.length > 0 ? this.isShowCart = false : this.isShowCart = true
@@ -508,11 +467,6 @@
             this.tipList[index] = item
           }
         }
-        let key = this.tipList.length - 1
-        if (!this.tipGroup[key]) {
-          this.tipGroup[key] = []
-        }
-        this.tipGroup[key].push(item.id)
       },
       _allowCheckHandle(item) {
         if (item.activity && item.activity.activity_theme === ACTIVE_TYPE.NEW_CLIENT) {
@@ -620,14 +574,6 @@
           this.isShowCart = true
         }
         this.$wechat.showToast(res.message)
-        // 处理促销信息
-        let index = 0
-        let obj = {}
-        this.resetTipsConfig()
-        this.goodsList.forEach(item => {
-          this._formatData4TipList(item, index, obj)
-          index++
-        })
         this._getCarTips()
       },
       toggelCheck(i) {
