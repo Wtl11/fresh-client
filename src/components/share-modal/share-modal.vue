@@ -1,9 +1,9 @@
 <template>
   <div class="share-modal">
     <we-paint :preview='false' ref="wePaint" @drawDone="_savePoster"></we-paint>
-    <div class="share-panel-wrapper">
-      <div v-if="showShare" class="share-mask" @click="_hideShareModal"></div>
-      <div v-if="showShare&&posterData.bg" class="poster-wrapper" id="share-goods">
+    <div v-if="showShare" class="share-panel-wrapper">
+      <div class="share-mask" @click="_hideShareModal"></div>
+      <div v-if="posterData.bg" class="poster-wrapper" id="share-goods">
         <div class="background">
           <img v-if="posterData.bg" :src="posterData.bg" class="bg-img">
         </div>
@@ -68,12 +68,6 @@
 
   export default {
     name: COMPONENT_NAME,
-    props: {
-      shopId: {
-        type: String,
-        default: '0'
-      }
-    },
     components: {
       WePaint
     },
@@ -126,7 +120,14 @@
       },
       // 获取分享二维码
       getQrCode(drawPoster = false) {
-        let path = `pages/choiceness?s=${this.shopId}&mn=${this.moduleName}`
+        const shopId = wx.getStorageSync('shopId')
+        let path = ''
+        if (this.moduleName === 'activity_fixed') {
+          path = `pages/flash-sale-list?id=${this.shareItem.id}&s=${shopId}`
+        } else {
+          path = `pages/choiceness?s=${shopId}&mn=${this.moduleName}`
+        }
+        console.log(`share path : ${path}`)
         API.Choiceness.createQrCodeApi({ path }, drawPoster).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.shareQRCode = res.data.image_url

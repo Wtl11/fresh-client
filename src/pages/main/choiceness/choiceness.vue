@@ -360,8 +360,8 @@
       <!--    添加至我的小程序-->
       <new-guidelines ref="guidelines"></new-guidelines>
       <distance-check ref="distance"></distance-check>
-      <!--海报画布-->
-      <share-modal ref="shareModal" :shopId="shopId"></share-modal>
+      <!--分享模块-->
+      <share-modal ref="shareModal"></share-modal>
     </div>
   </form>
 </template>
@@ -385,7 +385,7 @@
   import Ald from '@utils/ald'
   import InvitationModal from './invitation-modal/invitation-modal'
   import CouponAfterSale from './coupon-after-sale/coupon-after-sale'
-  import ShareModal from './share-modal/share-modal.vue'
+  import ShareModal from '@components/share-modal/share-modal'
 
   // import GetOptions from '@mixins/get-options'
 
