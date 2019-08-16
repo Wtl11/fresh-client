@@ -864,6 +864,9 @@
           case 'mini_link':
             url = `${item.url}`
             break
+          case 'activity_cate':
+            url = `${this.$routes.main.FLASH_SALE_LIST}`
+            break
           default:
             url = `${this.$routes.main.OUT_HTML}?url=${item.url}`
             break
