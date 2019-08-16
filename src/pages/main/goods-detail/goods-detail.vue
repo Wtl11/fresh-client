@@ -1146,6 +1146,7 @@
         this.$wx.saveImageToPhotosAlbum({
           filePath: this.poster,
           success: () => {
+            this.$wechat.showToast('海报保存成功')
             this.handleHideSharePanel()
             this.$sendMsg({ event_no: 1005, goods_id: this.goodsId, title: this.goodsMsg.name })
           },

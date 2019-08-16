@@ -358,9 +358,12 @@
         this.$wx.saveImageToPhotosAlbum({
           filePath: pic,
           success: () => {
+            this.$wechat.showToast('海报保存成功')
             this._hideShareModal()
+            this.$wechat.hideLoading()
           },
           fail: (e) => {
+            this.$wechat.hideLoading()
             // 没有授权，重新调起授权
             self.$wx.showModal({
               content: '保存海报需进行相册授权，请到小程序设置中打开授权',
@@ -371,7 +374,7 @@
                   self.$wx.openSetting({
                     success: (res) => {
                       if (res.authSetting && res.authSetting['scope.writePhotosAlbum']) {
-                        self._savePoster(pic)
+                        pic && self._savePoster(pic)
                       }
                     }
                   })
@@ -380,7 +383,6 @@
             })
           }
         })
-        this.$wechat.hideLoading()
       }
     }
   }
