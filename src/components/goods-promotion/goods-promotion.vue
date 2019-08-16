@@ -15,11 +15,11 @@
       <img class="right" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/icon-pressed@2x.png'">
       <article v-show="isShow" class="modal" @click.stop="hide">
       </article>
-      <article class="modal-panel" :class="{active: isShow}" @click.stop="navHandle">
+      <article class="modal-panel" :class="{active: isShow}" @click.stop="">
         <p class="title">促销</p>
         <div class="scroll-wrapper">
           <ul class="ticket-wrapper ios-scroll-smooth">
-            <li v-for="(item, index) in dataArray" :key="index" class="ticket item-default">
+            <li v-for="(item, index) in dataArray" :key="index" class="ticket item-default" @click.stop="navHandle(item.tag_type)">
               <div class="icon-ticket">{{item.icon_str}}</div>
               <p class="text">{{item.tips}}</p>
               <block v-if="imageUrl && item.tag_type === 2">
@@ -56,7 +56,8 @@
       hide() {
         this.isShow = false
       },
-      navHandle() {
+      navHandle(type) {
+        if (type !== 2) return
         wx.navigateTo({url: this.$routes.activity.COMMODITY_CERTIFICATES})
       }
     }
