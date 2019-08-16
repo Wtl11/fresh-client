@@ -10,5 +10,6 @@ export const ACTIVE_TYPE = {
   GUESS: 'guess',
   FLASH: 'activity_fixed',
   DEFAULT: 'DEFAULT',
-  FREE_SHIPPING: 'free_shipping'
+  FREE_SHIPPING: 'free_shipping',
+  CENTRALIZE_PURCHASE: 'centralize_purchase'
 }

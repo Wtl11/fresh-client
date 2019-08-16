@@ -14,10 +14,10 @@
           </div>
         </div>
         <div class="shop-item" :class="{'shop-item-opcta' : !item.allowCheck}" v-for="(item, index) in goodsList" :key="item.id">
-          <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && !item.checked && item.allowCheck" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt=""/>
+          <img class="sel-box" @click.stop="toggleCheck(index)" v-if="imageUrl && !item.checked && item.allowCheck" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt=""/>
           <!--<img class="sel-box" v-if="imageUrl && !item.allowCheck" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt="" />-->
           <div class="sel-box sel-clr-box" v-if="imageUrl && !item.allowCheck"></div>
-          <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && item.checked && item.allowCheck" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
+          <img class="sel-box" @click.stop="toggleCheck(index)" v-if="imageUrl && item.checked && item.allowCheck" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
           <button formType="submit" class="goods-image" @click.stop="jumpGoodsDetail(item)">
             <img class="goods-img" mode="aspectFill" :src="item.goods_cover_image" alt="">
             <div class="robbed" v-if="item.num <= 0">已抢完</div>
@@ -468,7 +468,7 @@
         }
         this.$wechat.showToast(res.message)
       },
-      toggelCheck(i) {
+      toggleCheck(i) {
         this.goodsList[i].checked = !this.goodsList[i].checked
       },
       toggleCheckAll() {

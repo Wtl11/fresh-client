@@ -26,12 +26,12 @@
         </div>
       </div>
       <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-colour@2x.png'" class="order-line">
-      <div class="order-list">
+      <div class="order-list" :class="{'order-none': bigIndex + 1 === submitList.length}" v-for="(bigItem, bigIndex) in submitList" :key="bigIndex">
         <div class="arrive-time-box">
           <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.9/icon-order_yuji@2x.png'" class="arrive-time-img">
-          <div class="arrive-text">预计6月28日(周六) 可提货</div>
+          <div class="arrive-text">预计{{bigItem.dayAt}}({{bigItem.dayWeek}}) 可提货</div>
         </div>
-        <div class="list-item" v-for="(item, index) in goodsList" :key="index">
+        <div class="list-item" v-for="(item, index) in bigItem.dayList" :key="index">
           <div class="item-left-img"><img class="img" :src="item.goods_cover_image" alt=""></div>
           <div class="item-right">
             <div class="title">{{item.name}}</div>
@@ -172,7 +172,8 @@
         distance: 0,
         isShowPayModal: false,
         isFirst: true,
-        isFree: false
+        isFree: false,
+        submitList: [] // 商品列表重置
       }
     },
     computed: {
@@ -200,6 +201,8 @@
         this._getCouponInfo()
       }
       this._checkIsNewClient()
+      // 修改数据
+      this._setListData(this.goodsList)
     },
     onUnload() {
       this.setCommodityItem({})
@@ -238,6 +241,40 @@
       },
       chooseGoodsCouponHandle() {
         wx.navigateTo({ url: `${this.$routes.main.INVITATION_CHOOSE}` })
+      },
+      _setListData(goodsList) {
+        console.log(goodsList)
+        let arr = JSON.parse(JSON.stringify(goodsList))
+        let arrNull = []
+        arr.forEach((item) => {
+          if (arrNull.length !== 0) {
+            let index = arrNull.findIndex((nullItem) => nullItem.dayStamp === item.delivery_timestamp)
+            if (index === -1) {
+              let obj = {
+                dayWeek: item.day_of_week,
+                dayAt: item.delivery_at,
+                dayStamp: item.delivery_timestamp,
+                dayList: new Array(item)
+              }
+              arrNull.push(obj)
+            } else {
+              arrNull[index].dayList.push(item)
+            }
+          } else {
+            let obj = {
+              dayWeek: item.day_of_week,
+              dayAt: item.delivery_at,
+              dayStamp: item.delivery_timestamp,
+              dayList: new Array(item)
+            }
+            arrNull.push(obj)
+          }
+        })
+        arrNull = arrNull.sort((a, b) => {
+          return a.dayStamp - b.dayStamp
+        })
+        console.log(arrNull)
+        this.submitList = arrNull
       },
       // 获取地理位置
       async _getLocation() {
@@ -782,6 +819,8 @@
         font-size: $font-size-14
         font-family: $font-family-medium
         color: #111
+  .order-none
+      border-none()
   .fixed-btn
     position: fixed
     width: 100%

@@ -66,13 +66,13 @@
     </div>
     <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-colour@2x.png'" class="order-line">
     <div class="gary-box"></div>
-    <div class="order-list">
+    <div class="order-list" v-for="(bigItem, bigIndex) in submitList" :key="bigIndex">
       <div class="arrive-time-box">
         <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.9/icon-order_yuji@2x.png'" class="arrive-time-img">
-        <div class="arrive-text">预计6月28日(周六) 可提货</div>
+        <div class="arrive-text">预计{{bigItem.dayAt}}({{bigItem.dayWeek}}) 可提货</div>
       </div>
       <div class="order-item">
-        <div class="goods-item" v-for="(item, index) in orderMsg.goods" :key="index">
+        <div class="goods-item" v-for="(item, index) in bigItem.dayList" :key="index">
           <div class="goods-info-box">
             <img class="goods-img" mode="aspectFill" :src="item.image_url" alt="">
             <div class="goods-info">
@@ -169,7 +169,8 @@
         curItem: '',
         saleText: '',
         shareType: 0,
-        at_countdown: { hour: 0, minute: 0, second: 0 }
+        at_countdown: { hour: 0, minute: 0, second: 0 },
+        submitList: [] // 商品列表重置
       }
     },
     components: {
@@ -276,7 +277,8 @@
             if (res.data.is_payed === 1) {
               setTimeout(() => {
                 this.$wechat.hideLoading()
-                this.getGoodsDetailData()
+                // this.getGoodsDetailData()
+                wx.redirectTo({ url: `${this.$routes.main.ORDER_LIST}?id=1&&index=2` })
               }, 1500)
             } else {
               this._groupOrderTimer = setInterval(() => {
@@ -284,7 +286,8 @@
                 if (count > 5) {
                   this.$wechat.hideLoading()
                   clearInterval(this._groupOrderTimer)
-                  this.getGoodsDetailData()
+                  // this.getGoodsDetailData()
+                  wx.redirectTo({ url: `${this.$routes.main.ORDER_LIST}?id=1&&index=2` })
                   return
                 }
                 API.Global.checkPayResult({ order_id: this.orderId }).then(res => {
@@ -293,7 +296,8 @@
                     clearInterval(this._groupOrderTimer)
                     setTimeout(() => {
                       this.$wechat.hideLoading()
-                      this.getGoodsDetailData()
+                      // this.getGoodsDetailData()
+                      wx.redirectTo({ url: `${this.$routes.main.ORDER_LIST}?id=1&&index=2` })
                     }, 1500)
                   }
                 })
@@ -301,7 +305,10 @@
             }
           })
         } else {
-          this.getGoodsDetailData()
+          setTimeout(() => {
+            // this.getGoodsDetailData()
+            wx.redirectTo({ url: `${this.$routes.main.ORDER_LIST}?id=1&&index=2` })
+          }, 1500)
         }
         this.getReceiveInviteCoupon()
         // this.getGoodsDetailData()
@@ -346,6 +353,7 @@
               wx_account: this.address.wx_account,
               mobile: this.address.shop_mobile
             }
+            this._setListData(res.data.goods)
             if (this.orderMsg.status * 1 === 0) {
               this.getActiveEndTime(this.orderMsg.remind_timestamp)
             }
@@ -358,6 +366,39 @@
             this.$wechat.showToast(res.message)
           }
         })
+      },
+      _setListData(goodsList) {
+        let arr = JSON.parse(JSON.stringify(goodsList))
+        let arrNull = []
+        arr.forEach((item) => {
+          if (arrNull.length !== 0) {
+            let index = arrNull.findIndex((nullItem) => nullItem.dayStamp === item.delivery_timestamp)
+            if (index === -1) {
+              let obj = {
+                dayWeek: item.day_of_week,
+                dayAt: item.delivery_at,
+                dayStamp: item.delivery_timestamp,
+                dayList: new Array(item)
+              }
+              arrNull.push(obj)
+            } else {
+              arrNull[index].dayList.push(item)
+            }
+          } else {
+            let obj = {
+              dayWeek: item.day_of_week,
+              dayAt: item.delivery_at,
+              dayStamp: item.delivery_timestamp,
+              dayList: new Array(item)
+            }
+            arrNull.push(obj)
+          }
+        })
+        arrNull = arrNull.sort((a, b) => {
+          return a.dayStamp - b.dayStamp
+        })
+        console.log(arrNull)
+        this.submitList = arrNull
       },
       _setGroupTimer() {
         this.groupTimer && clearInterval(this.groupTimer)

@@ -120,12 +120,11 @@
         <div class="info-box">
           <article class="title-wrapper">
             <!--<div class="title" :class="goodsMsg.name ? 'has-title' : ''">{{goodsMsg.name}}</div>-->
-            <div class="title" :class="goodsMsg.name ? 'has-title' : ''"><span class="title-label">集采</span>{{goodsMsg.name}}</div>
+            <div class="title" :class="goodsMsg.name ? 'has-title' : ''"><span v-if="activityType === ACTIVE_TYPE.CENTRALIZE_PURCHASE" class="title-label">集采</span>{{goodsMsg.name}}</div>
             <div class="has-sub-title" v-if="goodsMsg.describe">{{goodsMsg.describe}}</div>
           </article>
           <div class="info-sub">
             <!--<img v-if="imageUrl && corpName === 'platform'" :src="imageUrl + '/yx-image/choiceness/icon-fast@2x.png'" mode="aspectFill" class="info-sub-img">-->
-            <img v-if="imageUrl && corpName === 'retuan'" :src="imageUrl + '/yx-image/retuan/icon-fast@2x.png'" mode="aspectFill" class="info-sub-img">
             <img v-if="imageUrl && corpName === 'platform'" :src="imageUrl + '/yx-image/2.9/icon-fast@2x.png'" mode="aspectFill" class="info-sub-img">
             <div class="sub-text">现在下单，预计(<span class="sub-text-color">{{goodsMsg.delivery_at}}</span>)可自提</div>
           </div>
@@ -381,6 +380,9 @@
             break
           case ACTIVE_TYPE.FLASH:
             text = '秒杀价'
+            break
+          case ACTIVE_TYPE.CENTRALIZE_PURCHASE:
+            text = '集采价'
             break
           default:
             text = '团购价'
@@ -788,6 +790,11 @@
             goodsList.latitude = this.latitude
             goodsList.longitude = this.longitude
           }
+        }
+        if (this.activityType === ACTIVE_TYPE.CENTRALIZE_PURCHASE) {
+          goodsList.day_of_week = this.goodsMsg.day_of_week
+          goodsList.delivery_at = this.goodsMsg.delivery_at
+          goodsList.delivery_timestamp = this.goodsMsg.delivery_timestamp
         }
         const total = (price * number).toFixed(2)
         goodsList.activity = this.goodsMsg.activity

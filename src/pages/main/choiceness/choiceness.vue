@@ -315,7 +315,7 @@
                         <img
                           :lazy-load="true"
                           v-else-if="imageUrl && item.module_name === ACTIVE_TYPE.CENTRALIZE_PURCHASE"
-                          :src="imageUrl + '/yx-image/2.9/icon-label copy@2x.png'"
+                          :src="imageUrl + '/yx-image/2.9/icon-label_jicai@2x.png'"
                           class="label-icon">
                         <img
                           :lazy-load="true"
@@ -454,6 +454,8 @@
         freeShippingList: [],
         // 猜你喜欢列表
         guessList: [],
+        // 产地集采
+        purchaseList: [],
         guessPage: 1,
         guessHasMore: true,
         // 服务icon
@@ -739,7 +741,7 @@
         if (this.activityModuleList.length) {
           this.activityModuleList.forEach(item => {
             // 全国包邮没有starting_point_id,判断is_close是否开启即可
-            if ((item.module_name !== 'activity_fixed' && item.starting_point_id > 0) || (item.module_name === 'free_shipping' && item.is_close !== 1)) {
+            if ((item.module_name !== 'activity_fixed' && item.starting_point_id > 0) || (item.module_name === 'free_shipping' && item.is_close !== 1) || (item.module_name === 'centralize_purchase' && item.is_close !== 1)) {
               arr.push({
                 ...item,
                 ...TAB_ARR_CONFIG[item.module_name]
@@ -1077,6 +1079,11 @@
               if (item.module_name === ACTIVE_TYPE.FREE_SHIPPING) {
                 API.Home.getFreeShippingList().then(res => {
                   this.freeShippingList = this._formatListPriceData(res.data)
+                })
+              } else if (item.module_name === ACTIVE_TYPE.CENTRALIZE_PURCHASE && item.is_close === 0) {
+                // 产地集采
+                API.Home.getActivityList({activity_theme: 'centralize', page: 1, limit: key.limit}).then(res => {
+                  this.purchaseList = this._formatListPriceData(res.data)
                 })
               } else {
                 this[key.dataArray] = []

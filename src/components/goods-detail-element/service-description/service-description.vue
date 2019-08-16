@@ -1,6 +1,6 @@
 <template>
   <div class="service-description">
-    <img v-if="imageUrl && corpName === 'platform'" :src="imageUrl + '/yx-image/goods/pic-zbyx@2x.png'" mode="widthFix" class="send-box-img">
+    <img v-if="imageUrl && corpName === 'platform'" :src="imageUrl + '/yx-image/2.9/pic-zbyx@2x.png'" mode="widthFix" class="send-box-img">
     <img v-if="imageUrl && corpName === 'retuan'" :src="imageUrl + '/yx-image/retuan/pic-platform_head@2x.png'" mode="widthFix" class="send-box-img-retuan">
     <div class="text-wrap">
       <div class="send-title">服务说明</div>
