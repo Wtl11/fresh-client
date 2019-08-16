@@ -1035,13 +1035,13 @@
       // 初始化页面配置
       _initPageParams(options = {}) {
         // let options = this._$$initOptions()
-        this.shopId = options.shopId
+        this.shopId = options.shopId || options.s
         if (options.scene) {
           let { shopId } = resolveQueryScene(options.scene)
           this.shopId = shopId
         }
         this.shopId > 0 && wx.setStorageSync('shopId', this.shopId)
-        this.shareModuleName = options.moduleName || ''
+        this.shareModuleName = options.moduleName || options.mn || ''
         console.warn(options, '==>home')
       },
       // 获取模块信息

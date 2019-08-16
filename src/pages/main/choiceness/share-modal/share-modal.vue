@@ -101,9 +101,9 @@
         // 如果分享的活动和上次分享的不一样，初始化参数并，重新获取二维码
         if (this.moduleName !== item.module_name) {
           this._initData()
+          this.moduleName = item.module_name
           this.getQrCode()
         }
-        this.moduleName = item.module_name
       },
       // 隐藏分享控件
       _hideShareModal() {
@@ -126,9 +126,7 @@
       },
       // 获取分享二维码
       getQrCode(drawPoster = false) {
-        // const flag = Date.now()
-        // let path = `pages/choiceness?shopId=${this.shopId}&moduleName=${this.moduleName}&flag=${flag}`
-        let path = `pages/choiceness`
+        let path = `pages/choiceness?s=${this.shopId}&mn=${this.moduleName}`
         API.Choiceness.createQrCodeApi({ path }, drawPoster).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.shareQRCode = res.data.image_url
@@ -481,6 +479,7 @@
             color: #1f1f1f
       .goods-list
         width: 100%
+        min-height: px-change-vw(212)
         layout(row)
         justify-content: space-between
         .goods-con
