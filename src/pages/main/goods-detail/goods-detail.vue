@@ -533,15 +533,15 @@
       ...pageStackMethods,
       _getGoodsTips() {
         if (!this.goodsId) return
-        const closeList = [
-          ACTIVE_TYPE.GROUP_ON,
-          ACTIVE_TYPE.NEW_CLIENT,
-          ACTIVE_TYPE.FLASH
-        ]
-        if (closeList.some(val => val === this.activityType)) {
-          return
-        }
-        API.Goods.getTipList({goods_id: this.goodsId}).then(res => {
+        // const closeList = [
+        //   ACTIVE_TYPE.GROUP_ON,
+        //   ACTIVE_TYPE.NEW_CLIENT,
+        //   ACTIVE_TYPE.FLASH
+        // ]
+        // if (closeList.some(val => val === this.activityType)) {
+        //   return
+        // }
+        API.Goods.getTipList({goods_id: this.goodsId, activity_id: this.activityId}).then(res => {
           this.tipList = res.data
         })
       },

@@ -257,7 +257,8 @@
         isShowType: false,
         isSelfGoods: true,
         tipList: [], // 提示数组
-        fitGift: {} // 满赠对象
+        fitGift: {}, // 满赠对象
+        isRefresh: false
       }
     },
     async onTabItemTap() {
@@ -309,6 +310,7 @@
     async onPullDownRefresh() {
       this.page = 1
       this.hasMore = true
+      this.isRefresh = true
       Promise.all([
         this.getCarRecommend(),
         this._getShopCart(this.firstLoad)
@@ -407,6 +409,10 @@
           return
         }
         let dataArray = this.goodsList.concat(this.postageList)
+        if (this.isRefresh) {
+          dataArray = []
+          this.isRefresh = false
+        }
         let goodsList = []
         let postageList = []
         let isGlobalModal
