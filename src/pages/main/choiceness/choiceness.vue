@@ -559,6 +559,7 @@
       })
     },
     onHide() {
+      this.$refs.shareModal && this.$refs.shareModal._hideShareModal()
       this.$refs.shareModal && this.$refs.shareModal._initData()
     },
     onPageScroll(e) {

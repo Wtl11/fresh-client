@@ -1149,7 +1149,7 @@
             this.handleHideSharePanel()
             this.$sendMsg({ event_no: 1005, goods_id: this.goodsId, title: this.goodsMsg.name })
           },
-          fail: () => {
+          fail: (e) => {
             // 没有授权，重新调起授权
             self.$wx.showModal({
               content: '保存海报需进行相册授权，请到小程序设置中打开授权',
