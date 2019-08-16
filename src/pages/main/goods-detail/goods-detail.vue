@@ -450,6 +450,7 @@
       // }
       // ald && ald.aldstat.sendEvent('商品详情')
       Ald.sendEvent('商品详情')
+      this.goodsMsg = {}
       // console.log(options)
       this['PUSH_PAGE']({pageRoute: this.$routes.main.GOODS_DETAIL, options})
     },

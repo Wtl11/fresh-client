@@ -763,6 +763,7 @@
     .right
       font-size: 13px
       color: #000
+      align-self  center
       .right-arrow
         margin-left: 5px
         width: 5.5px
@@ -922,7 +923,7 @@
             flex: 1
             padding-right: 12px
             no-wrap()
-            font-family: $font-family-medium
+            font-family: $font-family-regular
             font-size: $font-size-14
             color: #111111
             height: 16px

@@ -64,11 +64,7 @@
           <!--</div>-->
         </li>
         <!--兑换券 -->
-        <li v-if="isGroupModal && !isFree" class="coupon-item">
-          <p class="name">使用优惠券</p>
-          <p class="price-disable">该商品不支持使兑换券</p>
-        </li>
-        <li v-if="!isGroupModal && !isFree" class="coupon-item" @click="chooseCertificateHandle">
+        <li v-if="!isFree" class="coupon-item" @click="chooseCertificateHandle">
           <p class="name">使用兑换券</p>
           <p v-if="certificate.customer_coupon_id" class="price">{{certificate.coupon_name}}</p>
           <p v-else class="price-disable">未使用兑换券</p>
@@ -280,6 +276,16 @@
         }
       },
       _getCouponInfo() {
+        // 获取最佳兑换券
+        API.Coupon.getChooseList({ goods: this.goodsList, is_usable: 1, tag_type: 2 })
+          .then((res) => {
+            if (!res.data.length) {
+              this['SAVE_CERTIFICATE']()
+              return
+            }
+            this['SAVE_CERTIFICATE'](res.data[0])
+          })
+        // 获取最佳优惠券
         if (this.isGroupModal) {
           return
         }
@@ -291,15 +297,6 @@
             }
             let coupon = res.data[0]
             this.saveCoupon(coupon)
-          })
-        // 获取兑换券
-        API.Coupon.getChooseList({ goods: this.goodsList, is_usable: 1, tag_type: 2 })
-          .then((res) => {
-            if (!res.data.length) {
-              this['SAVE_CERTIFICATE']()
-              return
-            }
-            this['SAVE_CERTIFICATE'](res.data[0])
           })
       },
       chooseCouponHandle() {
