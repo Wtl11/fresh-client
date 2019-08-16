@@ -101,7 +101,7 @@
             els.map((item) => {
               if (item.el) {
                 if (res[index] == null) {
-                  throw new Error('你选的元素不存在')
+                  throw new Error(`你选的元素: ${index}不存在`)
                 }
                 // 扁平化同类元素信息
                 if (res[index].length) {

@@ -559,6 +559,7 @@
       })
     },
     onHide() {
+      this.$refs.shareModal && this.$refs.shareModal._initData()
     },
     onPageScroll(e) {
       if (this.guessList.length === 0) {

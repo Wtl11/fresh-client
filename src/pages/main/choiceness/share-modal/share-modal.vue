@@ -1,35 +1,33 @@
 <template>
   <div class="share-modal">
-    <we-paint :preview='false' ref="wePaint" @drawDone="_setPosterUrl"></we-paint>
-    <article class="share-panel-wrapper">
+    <we-paint :preview='false' ref="wePaint" @drawDone="_savePoster"></we-paint>
+    <div class="share-panel-wrapper">
       <div v-if="showShare" class="share-mask" @click="_hideShareModal"></div>
-      <div v-if="showShare&&posterData.bg" class="poster-wrapper">
+      <div v-if="showShare&&posterData.bg" class="poster-wrapper" id="share-goods">
         <div class="background">
-          <img v-if="imageUrl&&posterData.bg" :src="posterData.bg" class="bg-img">
+          <img v-if="posterData.bg" :src="posterData.bg" class="bg-img">
         </div>
         <div class="poster-con">
           <div class="top-con">
-            <div class="top-img">
-              <img v-if="posterData.userImg" :src="posterData.userImg" class="user-img">
-            </div>
+            <img v-if="posterData.userImg" :src="posterData.userImg" class="user-img">
             <div class="top-text">
               <div class="user-name">{{posterData.userName}}</div>
               <div class="title">{{posterData.textArr.topText}}</div>
             </div>
           </div>
           <div v-if="posterData.goods.length>1" class="goods-list">
-            <div v-for="(item, index) in posterData.goods" :key="index" class="goods-con">
+            <div v-for="(item, index) in posterData.goods" :key="index" :id="'goods-'+index" class="goods-con">
               <img v-if="item.img" :src="item.img" class="goods-img">
               <div class="text-con">
-                <div class="price"><span class="unit">￥</span>{{item.price}}</div>
+                <div class="price-con"><span class="unit">￥</span><span class="price">{{posterData.goods[0].price}}</span></div>
                 <div class="buy-text">{{posterData.textArr.buyText}}</div>
               </div>
             </div>
           </div>
-          <div v-else-if="posterData.goods[0]" class="one-goods">
+          <div v-else-if="posterData.goods[0]" id="goods-0" class="one-goods">
             <img v-if="posterData.goods[0].img" :src="posterData.goods[0].img" class="goods-img">
             <div class="text-con">
-              <div class="price"><span class="unit">￥</span>{{posterData.goods[0].price}}</div>
+              <div class="price-con"><span class="unit">￥</span><span class="price">{{posterData.goods[0].price}}</span></div>
               <div class="buy-text">{{posterData.textArr.buyText}}</div>
             </div>
           </div>
@@ -52,19 +50,20 @@
             <img v-if="imageUrl" :src="imageUrl + '/yx-image/goods/pic-wechat@2x.png'" class="item-icon">
             <p class="text button">分享好友</p>
           </button>
-          <nav class="container-item-wrapper" @click="_savePoster">
+          <nav class="container-item-wrapper" @click="_handleSavePoster">
             <img v-if="imageUrl" :src="imageUrl + '/yx-image/goods/icon-poster@2x.png'" class="item-icon">
             <p class="text">保存海报</p>
           </nav>
         </div>
       </section>
-    </article>
+    </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import API from '@api'
   import base64src from '@utils/create-qr-code-wx'
+  import WePaint from '@components/we-paint/we-paint'
   const COMPONENT_NAME = 'SHARE_MODAL'
 
   export default {
@@ -74,6 +73,9 @@
         type: String,
         default: '0'
       }
+    },
+    components: {
+      WePaint
     },
     data() {
       return {
@@ -86,35 +88,51 @@
       }
     },
     methods: {
+      _initData() {
+        this.posterData = {}
+        this.poster = ''
+        this.shareQRCode = ''
+        this.moduleName = ''
+      },
       // 显示分享控件
       _showShareFun(item) {
         this.showShare = true
         this.shareItem = item
-        console.log(item)
-        // 如果分享的活动和上次分享的不一样，重新获取二维码
+        // 如果分享的活动和上次分享的不一样，初始化参数并，重新获取二维码
         if (this.moduleName !== item.module_name) {
+          this._initData()
           this.getQrCode()
         }
         this.moduleName = item.module_name
-        // if (!this.poster) {
-        //   // 没有海报且没有正在生成海报,重新生成海报
-        //   this._actionDrawPoster()// 画海报
-        // }
-        // this.$sendMsg({ event_no: 1005, goods_id: this.goodsId, title: this.goodsMsg.name })
       },
       // 隐藏分享控件
       _hideShareModal() {
         this.showShare = false
-        this.posterData = {}
+      },
+      // 点击保存海报
+      _handleSavePoster() {
+        if (!this.shareQRCode) {
+          // 没有二维码，重新获取二维码并画海报
+          this.getQrCode(true)
+          return
+        }
+        if (!this.poster) {
+          // 没有海报,重新生成海报
+          this._actionDrawPoster()// 画海报
+        } else {
+          this._savePoster(this.poster)// 保存海报
+        }
+        this.moduleName = this.shareItem.module_name
       },
       // 获取分享二维码
-      getQrCode(loading = false) {
+      getQrCode(drawPoster = false) {
         // const flag = Date.now()
-        // let path = `${this.$routes.main.CHOICENESS}?shopId=${this.shopId}&moduleName=${this.moduleName}&flag=${flag}`
-        API.Choiceness.createQrCodeApi({ path: 'pages/goods-detail?g=55322&s=192&a=4464' }, loading).then((res) => {
+        // let path = `pages/choiceness?shopId=${this.shopId}&moduleName=${this.moduleName}&flag=${flag}`
+        let path = `pages/choiceness`
+        API.Choiceness.createQrCodeApi({ path }, drawPoster).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.shareQRCode = res.data.image_url
-            this._getPosterData()
+            this._getPosterData(drawPoster)
           } else {
             console.warn(res)
           }
@@ -122,7 +140,8 @@
           console.warn(e)
         })
       },
-      _getPosterData() {
+      // 设置画海报的参数
+      _getPosterData(drawPoster = false) {
         let backgroundImg
         let moneyColor
         const corpName = 'platform'
@@ -140,6 +159,7 @@
         }
         let _goodsArr = []
         if (this.shareItem && this.shareItem.list.length) {
+          // 最多只展示4个商品
           let length = this.shareItem.list.length < 4 ? this.shareItem.list.length : 4
           for (let i = 0; i < length; i++) {
             const item = this.shareItem.list[i]
@@ -149,6 +169,7 @@
             })
           }
         }
+        // 不同活动的海报文案
         const textConfig = {
           new_client: {
             topText: '太划算了吧，新人特惠速度抢',
@@ -197,6 +218,7 @@
           this.posterData.userName = userInfo.nickname || ''
           this.posterData.userImg = userInfo.avatar || ''
         }
+        drawPoster && this._actionDrawPoster()
       },
       // 海报绘图
       async _actionDrawPoster() {
@@ -221,97 +243,126 @@
               color: '#fff'
             },
             {
-              el: '#share-goods > .share-bg', // 背景图
+              el: '.bg-img', // 背景图
               drawType: 'img',
               mode: 'aspectFill',
               source: this.posterData.bg
             },
             {
-              el: '.share-box',
+              el: '.poster-con',
               drawType: 'rect-shadow',
               color: '#fff',
-              shadow: [0, 2, 22, 'rgba(0,0,0,0.10)', '#fff', 0]
+              shadow: [0, 3, 16, 'rgba(0,0,0,0.10)', '#fff', 0]
             },
             {
-              el: '.share-box > .share-img', // 图片
+              el: '.user-img',
               drawType: 'img',
-              source: this.posterData.img,
+              source: this.posterData.userImg,
               mode: 'aspectFill'
             },
             {
-              el: '.share-title', // 店铺名称
+              el: '.top-text .user-name',
               drawType: 'text-area',
-              source: this.posterData.name,
-              fontSize: 16,
-              color: '#1f1f1f'
-            },
-            {
-              el: '.share-sub-title', // 签名
-              drawType: 'text-area',
-              source: this.posterData.text,
-              fontSize: 14,
-              align: 'left',
+              source: this.posterData.userName,
+              fontSize: 11,
               color: '#808080'
             },
             {
-              el: '.share-group-box',
+              el: '.top-text .title',
               drawType: 'text-area',
-              source: this.iconText,
-              fontSize: 14,
+              source: this.posterData.textArr.topText,
+              fontSize: 11,
+              color: '#1f1f1f'
+            },
+            {
+              el: '.text1',
+              drawType: 'text-area',
+              source: this.posterData.textArr.text1,
+              fontSize: 20,
+              color: '#1f1f1f'
+            },
+            {
+              el: '.text2',
+              drawType: 'text-area',
+              source: this.posterData.textArr.text2,
+              fontSize: 11,
+              color: '#808080',
+              marginBottom: '8px'
+            },
+            {
+              el: '.text3',
+              drawType: 'text-area',
+              source: this.posterData.textArr.text3,
+              fontSize: 11,
               color: this.posterData.color
             },
             {
-              el: '.share-price-number',
-              drawType: 'text',
-              source: this.posterData.price,
-              fontSize: 30,
-              color: this.posterData.color
-            },
-            {
-              el: '.share-price-icon',
-              drawType: 'text',
-              source: '元',
-              fontSize: 17,
-              color: this.posterData.color
-            },
-            {
-              el: '.share-price-line',
-              drawType: 'text',
-              source: `${this.posterData.price}元`,
-              fontSize: 17,
-              color: '#B7B7B7'
-            },
-            {
-              el: '.share-money-line',
-              drawType: 'rect',
-              color: '#b7b7b7'
-            },
-            {
-              el: '.share-bottom > .wem-img',
+              el: '.qr-code > .img',
               drawType: 'img',
               source: this.shareQRCode,
               unLoad: /tmp/i.test(this.shareQRCode)
-              // source: qrCode
+            },
+            {
+              el: '.qr-code > .text',
+              drawType: 'text',
+              source: '长按扫码疯抢',
+              color: '#808080',
+              fontSize: 9
             }
           ]
         }
+        this.posterData.goods.forEach((item, idx) => {
+          let goodsItem = [
+            {
+              el: `#goods-${idx} > .goods-img`,
+              drawType: 'img',
+              source: item.img,
+              mode: 'aspectFill'
+            },
+            {
+              el: `#goods-${idx} .text-con`,
+              drawType: 'rect',
+              color: '#ff8300'
+            },
+            {
+              el: `#goods-${idx} .unit`,
+              drawType: 'text',
+              source: '￥',
+              color: '#ffffff'
+            },
+            {
+              el: `#goods-${idx} .price`,
+              drawType: 'text',
+              source: this.posterData.goods[0].price,
+              fontSize: 18,
+              height: '30px',
+              color: '#ffffff'
+            },
+            {
+              el: `#goods-${idx} .buy-text`,
+              drawType: 'text-area',
+              source: this.posterData.textArr.buyText,
+              fontSize: 13,
+              color: '#ffffff'
+            }
+          ]
+          options.els = options.els.concat(goodsItem)
+        })
         this.$refs.wePaint && this.$refs.wePaint.action(options, false)// 绘图
       },
-      // 设置海报图片
-      _setPosterUrl(pic) {
-        this.poster = pic
-      },
       // 保存海报到本地
-      _savePoster() {
+      _savePoster(pic) {
+        this.poster = pic
         this.$wx.saveImageToPhotosAlbum({
-          filePath: this.poster,
+          filePath: pic,
           success: () => {
-            this.handleHideSharePanel()
+            this._hideShareModal()
           },
           fail: () => {
             // 没有授权，重新调起授权
           }
         })
+        // this.$sendMsg({ event_no: 1005, goods_id: this.goodsId, title: this.goodsMsg.name })
       },
       // 打开授权设置页
       _openWxSetting() {
@@ -411,16 +462,13 @@
         width: 100%
         padding-bottom: px-change-vh(9)
         layout(row)
-        .top-img
+        .user-img
           width: 35px
           height: @width
           margin-right: 6px
           border: 1px solid #E7E7E7
           border-radius: 100%
           overflow: hidden
-          .user-img
-            width: 100%
-            height: 100%
         .top-text
           flex: 1
           font-family: $font-family-regular
@@ -455,14 +503,14 @@
         position: absolute
         bottom: 0
         width: 100%
-        height: 23px
-        line-height: 23px
+        height: 24px
+        line-height: 24px
         padding: 0 5px
         color: #fff
         background: #ff8300
         layout(row)
         justify-content: space-between
-        .price
+        .price-con
           font-family: $font-family-medium
           font-size: 18px
           .unit

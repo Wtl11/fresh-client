@@ -980,14 +980,15 @@
         }
       },
       // 获取分享二维码
-      getQrCode(loading = false) {
+      getQrCode(drawPoster = false) {
         let shopId = wx.getStorageSync('shopId')
         // 修改创建二维码的参数
         let path = `pages/${PAGE_ROUTE_NAME}?g=${this.goodsId}&s=${shopId}&a=${this.activityId}`
-        API.Choiceness.createQrCodeApi({ path }, loading).then((res) => {
+        API.Choiceness.createQrCodeApi({ path }, false).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.shareImg = res.data.image_url
             this._getPosterData()
+            drawPoster && this._actionDrawPoster()
           } else {
             console.warn(res)
           }
@@ -1019,25 +1020,22 @@
           color: moneyColor
         }
       },
-      // 显示分享控件
-      handleShowShare() {
-        // if (this.activityType !== ACTIVE_TYPE.DEFAULT) {
-        //   return
-        // }
-        // this.$refs.shareList && this.$refs.shareList.showLink()
-        this.showSharePanel = true
-        if (!this.shareImg) {
-          this.getQrCode()
-        }
-        if (!this.poster) {
-          // 没有海报且没有正在生成海报,重新生成海报
-          this._actionDrawPoster()// 画海报
-        }
-        this.$sendMsg({ event_no: 1005, goods_id: this.goodsId, title: this.goodsMsg.name })
-      },
       // 隐藏分享控件
       handleHideSharePanel() {
         this.showSharePanel = false
+      },
+      // 显示分享控件
+      handleShowShare() {
+        this.showSharePanel = true
+        if (!this.shareImg) {
+          // 没有二维码，重新请求二维码，并重画海报
+          this.getQrCode(true)
+          return
+        }
+        if (!this.poster) {
+          // 没有海报,重新生成海报
+          this._actionDrawPoster()
+        }
       },
       // 海报绘图
       async _actionDrawPoster() {
@@ -1148,6 +1146,7 @@
           filePath: this.poster,
           success: () => {
             this.handleHideSharePanel()
+            this.$sendMsg({ event_no: 1005, goods_id: this.goodsId, title: this.goodsMsg.name })
           },
           fail: () => {
             // 没有授权，重新调起授权
