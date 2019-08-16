@@ -1142,6 +1142,7 @@
       },
       // 保存海报到本地
       _savePoster() {
+        let self = this
         this.$wx.saveImageToPhotosAlbum({
           filePath: this.poster,
           success: () => {
@@ -1150,19 +1151,22 @@
           },
           fail: () => {
             // 没有授权，重新调起授权
-          }
-        })
-      },
-      // 打开授权设置页
-      _openWxSetting() {
-        this.$wx.openSetting({
-          success: (res) => {
-            if (res.authSetting && res.authSetting['scope.writePhotosAlbum']) {
-              this._savePoster()
-            }
-          },
-          fail: (e) => {
-            console.log(e)
+            self.$wx.showModal({
+              content: '保存海报需进行相册授权，请到小程序设置中打开授权',
+              confirmText: '去授权',
+              confirmColor: '#73C200',
+              success(res) {
+                if (res.confirm) {
+                  self.$wx.openSetting({
+                    success: (res) => {
+                      if (res.authSetting && res.authSetting['scope.writePhotosAlbum']) {
+                        self._savePoster()
+                      }
+                    }
+                  })
+                }
+              }
+            })
           }
         })
       }

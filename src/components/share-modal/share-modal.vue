@@ -1,6 +1,6 @@
 <template>
   <div class="share-modal">
-    <we-paint :preview='false' ref="wePaint" @drawDone="_savePoster"></we-paint>
+    <we-paint :loading="false" :preview="false" ref="wePaint" @drawDone="_savePoster"></we-paint>
     <div v-if="showShare" class="share-panel-wrapper">
       <div class="share-mask" @click="_hideShareModal"></div>
       <div v-if="posterData.bg" class="poster-wrapper" id="share-goods">
@@ -46,7 +46,7 @@
       </div>
       <section class="share-panel" :class="{show: showShare}">
         <div class="container">
-          <button open-type="share" class="container-item-wrapper" @click="_hideShareModal">
+          <button :id="'share-'+moduleName" open-type="share" class="container-item-wrapper" @click="_hideShareModal">
             <img v-if="imageUrl" :src="imageUrl + '/yx-image/goods/pic-wechat@2x.png'" class="item-icon">
             <p class="text button">分享好友</p>
           </button>
@@ -105,6 +105,7 @@
       },
       // 点击保存海报
       _handleSavePoster() {
+        this.$wechat.showLoading('海报保存中...')
         if (!this.shareQRCode) {
           // 没有二维码，重新获取二维码并画海报
           this.getQrCode(true)
@@ -137,6 +138,7 @@
           }
         }).catch(e => {
           console.warn(e)
+          this.$wechat.hideLoading()
         })
       },
       // 设置画海报的参数
@@ -248,40 +250,40 @@
               source: this.posterData.bg
             },
             {
-              el: '.poster-con',
+              el: '#share-goods .poster-con',
               drawType: 'rect-shadow',
               color: '#fff',
               shadow: [0, 3, 16, 'rgba(0,0,0,0.10)', '#fff', 0]
             },
             {
-              el: '.user-img',
+              el: '#share-goods .user-img',
               drawType: 'img',
               source: this.posterData.userImg,
               mode: 'aspectFill'
             },
             {
-              el: '.top-text .user-name',
+              el: '#share-goods .user-name',
               drawType: 'text-area',
               source: this.posterData.userName,
               fontSize: 11,
               color: '#808080'
             },
             {
-              el: '.top-text .title',
+              el: '#share-goods .title',
               drawType: 'text-area',
               source: this.posterData.textArr.topText,
               fontSize: 11,
               color: '#1f1f1f'
             },
             {
-              el: '.text1',
+              el: '#share-goods .text1',
               drawType: 'text-area',
               source: this.posterData.textArr.text1,
               fontSize: 20,
               color: '#1f1f1f'
             },
             {
-              el: '.text2',
+              el: '#share-goods .text2',
               drawType: 'text-area',
               source: this.posterData.textArr.text2,
               fontSize: 11,
@@ -289,20 +291,20 @@
               marginBottom: '8px'
             },
             {
-              el: '.text3',
+              el: '#share-goods .text3',
               drawType: 'text-area',
               source: this.posterData.textArr.text3,
               fontSize: 11,
               color: this.posterData.color
             },
             {
-              el: '.qr-code > .img',
+              el: '#share-goods .qr-code > .img',
               drawType: 'img',
               source: this.shareQRCode,
               unLoad: /tmp/i.test(this.shareQRCode)
             },
             {
-              el: '.qr-code > .text',
+              el: '#share-goods .qr-code > .text',
               drawType: 'text',
               source: '长按扫码疯抢',
               color: '#808080',
@@ -352,6 +354,7 @@
       // 保存海报到本地
       _savePoster(pic) {
         this.poster = pic
+        let self = this
         this.$wx.saveImageToPhotosAlbum({
           filePath: pic,
           success: () => {
@@ -359,22 +362,25 @@
           },
           fail: () => {
             // 没有授权，重新调起授权
+            self.$wx.showModal({
+              content: '保存海报需进行相册授权，请到小程序设置中打开授权',
+              confirmText: '去授权',
+              confirmColor: '#73C200',
+              success(res) {
+                if (res.confirm) {
+                  self.$wx.openSetting({
+                    success: (res) => {
+                      if (res.authSetting && res.authSetting['scope.writePhotosAlbum']) {
+                        self._savePoster(pic)
+                      }
+                    }
+                  })
+                }
+              }
+            })
           }
         })
-        // this.$sendMsg({ event_no: 1005, goods_id: this.goodsId, title: this.goodsMsg.name })
-      },
-      // 打开授权设置页
-      _openWxSetting() {
-        this.$wx.openSetting({
-          success: (res) => {
-            if (res.authSetting && res.authSetting['scope.writePhotosAlbum']) {
-              this._savePoster()
-            }
-          },
-          fail: (e) => {
-            console.log(e)
-          }
-        })
+        this.$wechat.hideLoading()
       }
     }
   }
@@ -480,7 +486,7 @@
             color: #1f1f1f
       .goods-list
         width: 100%
-        min-height: px-change-vw(212)
+        min-height: px-change-vw(160)
         layout(row)
         justify-content: space-between
         .goods-con
