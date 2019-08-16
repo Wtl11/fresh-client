@@ -2,8 +2,8 @@
   <block v-if="dataArray.length">
     <div class="goods-hots">
       <p class="title">今日爆款</p>
-      <div class="scroll-wrapper">
-        <ul class="goods-wrapper no-scroll-bar ios-scroll-smooth">
+      <div class="scroll-wrapper no-scroll-bar">
+        <ul class="goods-wrapper ios-scroll-smooth">
           <block v-for="(item, index) in dataArray" :key="index" >
             <li v-if="index<10" class="goods goods-default" @click="navHandle(item)">
               <block v-if="item.goods_cover_image">
@@ -59,47 +59,7 @@
     ::-webkit-scrollbar
       width: 0
       height: 0
-      background-color: transparent
-      display: none
-    ::-webkit-scrollbar-button
-      background-color: rgba(0, 0, 0, 0)
-
-    ::-webkit-scrollbar-track
-      background-color: rgba(0, 0, 0, 0)
-
-    ::-webkit-scrollbar-track-piece
-      background-color: rgba(0, 0, 0, 0)
-
-    ::-webkit-scrollbar-thumb
-      background-color: rgba(0, 0, 0, 0)
-
-    ::-webkit-scrollbar-corner
-      background-color: rgba(0, 0, 0, 0)
-
-    ::-webkit-scrollbar-resizer
-      background-color: rgba(0, 0, 0, 0)
-
-    .-o-scrollbar
-      -moz-appearance: none !important
-      background: rgba(0, 255, 0, 0) !important
-
-    ::-o-scrollbar-button
-      background-color: rgba(0, 0, 0, 0)
-
-    ::-o-scrollbar-track
-      background-color: rgba(0, 0, 0, 0)
-
-    ::-o-scrollbar-track-piece
-      background-color: rgba(0, 0, 0, 0)
-
-    ::-o-scrollbar-thumb
-      background-color: rgba(0, 0, 0, 0)
-
-    ::-o-scrollbar-corner
-      background-color: rgba(0, 0, 0, 0)
-
-    ::-o-scrollbar-resizer
-      background-color: rgba(0, 0, 0, 0)
+      color: transparent
 
   /*商品卡片*/
   .goods-default
