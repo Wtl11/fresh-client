@@ -49,6 +49,9 @@
         isShow: false
       }
     },
+    onUnload() {
+      this.hide()
+    },
     methods: {
       show() {
         this.isShow = true
@@ -58,6 +61,7 @@
       },
       navHandle(type) {
         if (type !== 2) return
+        this.hide()
         wx.navigateTo({url: this.$routes.activity.COMMODITY_CERTIFICATES})
       }
     }

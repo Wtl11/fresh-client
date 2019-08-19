@@ -365,9 +365,13 @@
           if (res.error !== this.$ERR_OK) return
           const resData = res.data || []
           let obj = {}
+          let idx = 0
           this.resetTipsConfig()
           resData.forEach((item, index) => {
-            this._formatData4TipList(item, index, obj)
+            if (item.source_type === 1) {
+              this._formatData4TipList(item, idx, obj)
+              idx++
+            }
           })
         })
       },
@@ -417,6 +421,7 @@
         let postageList = []
         let isGlobalModal
         let obj = {}
+        let idx = 0
         this.resetTipsConfig()
         res.data.forEach((item, index) => {
           item = this._formatItemStatus(dataArray, item)
@@ -424,7 +429,8 @@
           if (isGlobalModal) {
             postageList.push(item)
           } else {
-            this._formatData4TipList(item, index, obj)
+            this._formatData4TipList(item, idx, obj)
+            idx++
             goodsList.push(item)
           }
         })
