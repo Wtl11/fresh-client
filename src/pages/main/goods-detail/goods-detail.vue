@@ -947,6 +947,10 @@
           this.$wechat.hideLoading()
           if (res.error === this.$ERR_OK) {
             this.goodsMsg = res.data
+            console.log(this.goodsMsg)
+            if (this.goodsMsg.activity_theme) {
+              this.activityType = this.goodsMsg.activity_theme
+            }
             this.msgTitle = this.goodsMsg.name
             if (this.goodsMsg.goods_videos && this.goodsMsg.goods_videos.length) {
               this.hasVideo = true

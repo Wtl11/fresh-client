@@ -24,28 +24,26 @@
                  @click="jumpGoodsDetail(item)">
               <div class="classify-box">
                 <div class="classify-box-top">
-                  <img v-if="imageUrl && corpName === 'platform'"
-                       :src="imageUrl + '/yx-image/choiceness/icon-label2@2x.png'" alt="" class="top-label"
-                       mode="aspectFill">
-                  <img v-if="imageUrl && corpName === 'retuan'" :src="imageUrl + '/yx-image/retuan/icon-label2@2x.png'"
-                       alt="" class="top-label" mode="aspectFill">
+                  <!--<img v-if="imageUrl && corpName === 'platform'"-->
+                       <!--:src="imageUrl + '/yx-image/choiceness/icon-label2@2x.png'" alt="" class="top-label"-->
+                       <!--mode="aspectFill">-->
                   <img v-if="item.goods_cover_image" :src="item.goods_cover_image" alt="" class="box-top-img"
                        mode="aspectFill">
                 </div>
                 <div class="classify-box-bottom">
                   <div class="title">{{item.name}}</div>
+                  <div class="title-label-box"><span v-if="item.activity_theme" class="label-box-span">{{typeText[item.activity_theme]}}</span></div>
                   <div class="classify-price-box">
                     <div class="price-left">
                       <div class="price-number" :class="'corp-' + corpName + '-money'">{{item.trade_price}}</div>
                       <div class="price-money" :class="'corp-' + corpName + '-money'">元</div>
                       <div class="price-line">{{item.original_price}}元</div>
                     </div>
-                    <form action="" report-submit @submit="$getFormId" @click.stop="addShoppingCart(item)">
+                    <div v-if="item.activity_theme === 'groupon'" class="go-group">去拼团</div>
+                    <form v-else action="" report-submit @submit="$getFormId" @click.stop="addShoppingCart(item)">
                       <button class="price-right" formType="submit">
                         <img v-if="imageUrl && corpName === 'platform'"
                              :src="imageUrl + '/yx-image/collage/icon-addgoods@2x.png'" alt="" class="price-right-img">
-<!--                        <img v-if="imageUrl && corpName === 'retuan'"-->
-<!--                             :src="imageUrl + '/yx-image/retuan/icon-shopcart@2x.png'" alt="" class="price-right-img">-->
                       </button>
                     </form>
                   </div>
@@ -97,7 +95,15 @@
         classifyPage: 1,
         classifyMore: false,
         boxTransition: '',
-        lineTranslateX: 0
+        lineTranslateX: 0,
+        typeText: {
+          fixed: '限时抢购',
+          new_client: '新人特惠',
+          hot_tag: '今日爆品',
+          offline: '线下扩展',
+          groupon: '拼团返现',
+          centralize: '产地集采'
+        }
         // currentList: []
       }
     },
@@ -197,6 +203,12 @@
         // }
       },
       jumpGoodsDetail(item) {
+        if (item.activity_theme) {
+          wx.navigateTo({
+            url: `${this.$routes.main.GOODS_DETAIL}?id=${item.goods_id}&activityId=${item.activity_id}&activityType=${item.activity_theme}`
+          })
+          return
+        }
         wx.navigateTo({
           url: `${this.$routes.main.GOODS_DETAIL}?id=${item.goods_id}&activityId=${item.activity_id}`
         })
@@ -293,14 +305,28 @@
 
         .classify-box-bottom
           padding-top: 7px
-
+          .title-label-box
+            height: 14px
+            display :flex
+            width: 100%
+            margin-bottom: 14px
+            .label-box-span
+              font-family: $font-family-regular
+              font-size: $font-size-10
+              color: #FA7500
+              height: 14px
+              line-height: 14px
+              display: inline-block
+              background: rgba(250,117,0,0.1)
+              padding: 0 5px
+              border-1px(#FA7500, 14px)
           .title
             color: $color-text-main
             font-size: $font-size-14
             font-family: $font-family-regular
             min-height: $font-size-16
             no-wrap()
-            margin-bottom: 7px
+            margin-bottom: 10px
 
           .classify-price-box
             layout(row)
@@ -330,7 +356,16 @@
                 text-decoration: line-through
                 position: relative
                 top: 2px
-
+            .go-group
+              width: 52px
+              height: 23px
+              line-height: 23px
+              background: #FF8506
+              font-size: $font-size-12
+              color: $color-white
+              font-family: $font-family-regular
+              text-align: center
+              border-radius: 11.5px
             .price-right
               width: 23px
               height: 23px
