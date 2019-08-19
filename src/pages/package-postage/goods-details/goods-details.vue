@@ -136,7 +136,7 @@
           </button>
           <nav class="container-item-wrapper" @click="_savePoster">
             <img v-if="imageUrl" :src="imageUrl + '/yx-image/goods/icon-poster@2x.png'" class="item-icon">
-            <p class="text">保存海报</p>
+            <p class="text">{{poster?'保存海报':'海报生成中'}}</p>
           </nav>
         </div>
       </section>
@@ -176,6 +176,7 @@
     },
     mixins: [GetOptions],
     data() {
+      this.clickSave = false
       return {
         msgTitle: '',
         buyUsers: [],
@@ -549,30 +550,43 @@
       // 设置海报图片
       _setPosterUrl(pic) {
         this.poster = pic
+        // 如果生成好海报前点击了保存海报，则在生成好海报后调用保存方法
+        if (this.clickSave) {
+          this._savePoster()
+          this.clickSave = false
+        }
       },
       // 保存海报到本地
       _savePoster() {
-        if (!this.poster) return
+        let self = this
+        if (!self.poster) {
+          this.clickSave = true
+          return
+        }
         this.$wx.saveImageToPhotosAlbum({
           filePath: this.poster,
           success: () => {
+            this.$wechat.showToast('海报保存成功')
             this.handleHideSharePanel()
           },
           fail: () => {
             // 没有授权，重新调起授权
-          }
-        })
-      },
-      // 打开授权设置页
-      _openWxSetting() {
-        this.$wx.openSetting({
-          success: (res) => {
-            if (res.authSetting && res.authSetting['scope.writePhotosAlbum']) {
-              this._savePoster()
-            }
-          },
-          fail: (e) => {
-            console.log(e)
+            self.$wx.showModal({
+              content: '保存海报需进行相册授权，请到小程序设置中打开授权',
+              confirmText: '去授权',
+              confirmColor: '#73C200',
+              success(res) {
+                if (res.confirm) {
+                  self.$wx.openSetting({
+                    success: (res) => {
+                      if (res.authSetting && res.authSetting['scope.writePhotosAlbum']) {
+                        self._savePoster()
+                      }
+                    }
+                  })
+                }
+              }
+            })
           }
         })
       }

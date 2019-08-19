@@ -256,7 +256,7 @@
           </button>
           <nav class="container-item-wrapper" @click="_savePoster">
             <img v-if="imageUrl" :src="imageUrl + '/yx-image/goods/icon-poster@2x.png'" class="item-icon">
-            <p class="text">保存海报</p>
+            <p class="text">{{poster?'保存海报':'海报生成中'}}</p>
           </nav>
         </div>
       </section>
@@ -322,6 +322,7 @@
       WePaint
     },
     data() {
+      this.clickSave = false
       return {
         msgTitle: '',
         isFirstLoad: true,
@@ -1139,10 +1140,19 @@
       // 设置海报图片
       _setPosterUrl(pic) {
         this.poster = pic
+        // 如果生成好海报前点击了保存海报，则在生成好海报后调用保存方法
+        if (this.clickSave) {
+          this._savePoster()
+          this.clickSave = false
+        }
       },
       // 保存海报到本地
       _savePoster() {
         let self = this
+        if (!self.poster) {
+          this.clickSave = true
+          return
+        }
         this.$wx.saveImageToPhotosAlbum({
           filePath: this.poster,
           success: () => {
