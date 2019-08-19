@@ -251,8 +251,8 @@
           y: 0,
           width: this.panelW * this.multiple,
           height: this.panelH * this.multiple,
-          destWidth: this.panelW * 2,
-          destHeight: this.panelH * 2,
+          destWidth: this.panelW * 3,
+          destHeight: this.panelH * 3,
           canvasId: this.canvasId,
           fileType: 'jpg'
         }, ctx).then(res => {

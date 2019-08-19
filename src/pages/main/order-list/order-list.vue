@@ -62,7 +62,7 @@
               <div class="bot">
                 <div class="time">{{item.created_at}}</div>
                 <!--<div class="payment"><span class="goods-count">共{{item.goods.length}}件商品</span><span class="actual">总计：</span><span class="sum">{{item.total}}</span><span class="principal">元</span></div>-->
-                <button :id="item.order_id" :shopId="item.shop_id" open-type="share" class="share-btn" @click.stop="">晒单</button>
+                <button v-if="!item.groupon.id && item.status!==0 && item.status!==3" :id="item.order_id" :shopId="item.shop_id" open-type="share" class="share-btn" @click.stop="">晒单</button>
               </div>
             </div>
           </div>
@@ -148,7 +148,7 @@
     },
     methods: {
       getStatusName(status) {
-        return this.groupStatusArr[status] || '试试'
+        return this.groupStatusArr[status] || ''
       },
       getStatus(tabIdx) {
         let status = ''
