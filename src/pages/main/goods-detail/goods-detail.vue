@@ -369,7 +369,6 @@
         isShowOldCustomerButton: false,
         hotList: [], // 今日爆品
         tipList: [], // 促销提示
-        isShowOldCustomerButton: false,
         poster: '',
         posterData: {}
       }

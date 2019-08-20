@@ -411,8 +411,7 @@
       DistanceCheck,
       InvitationModal,
       CouponAfterSale,
-      CertificateModal
-      CouponAfterSale,
+      CertificateModal,
       ShareModal
     },
     data() {
@@ -1070,6 +1069,7 @@
           this.activityModuleList.forEach((item) => {
             index++
             let key = TAB_ARR_CONFIG[item.module_name]
+            if (!key) return
             let activityId = item.starting_point_id || 0
             // 所有活动
             if (activityId > 0 && item.module_name !== ACTIVE_TYPE.FLASH) {
@@ -1089,7 +1089,7 @@
                   this.freeShippingList = this._formatListPriceData(res.data)
                 })
               } else {
-                this[key.dataArray] = []
+                (key && key.dataArray) && (this[key.dataArray] = [])
               }
             }
             // 限时抢购活动
