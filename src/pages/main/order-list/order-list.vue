@@ -38,25 +38,27 @@
                     <span :class="'corp-' + corpName + '-money'">{{item.at_countdown.hour}}:{{item.at_countdown.minute}}:{{item.at_countdown.second}}</span>结束
                   </template>
                 </p>
-                <div class="goods-list">
-                  <template v-if="item.goods.length === 1">
-                    <div class="goods-img-list">
-                      <img class="goods-img" mode="aspectFill" :src="item.goods[0].image_url" alt="">
-                    </div>
-                    <div class="goods-name">{{item.goods[0].goods_name}}</div>
-                  </template>
-                  <div v-else class="goods-img-list">
-                    <img v-for="(img, imgIndex) in item.goods" :key="imgIndex" v-if="imgIndex < 4" class="goods-img" mode="aspectFill" :src="img.image_url" alt="">
-                    <div class="img-item" v-if="item.goods.length > 4">
-                      <div class="circle"></div>
-                      <div class="circle"></div>
-                      <div class="circle"></div>
+                <div class="goods-con">
+                  <div class="goods-list">
+                    <template v-if="item.goods.length === 1">
+                      <div class="goods-img-list">
+                        <img class="goods-img" mode="aspectFill" :src="item.goods[0].image_url" alt="">
+                      </div>
+                      <div class="goods-name">{{item.goods[0].goods_name}}</div>
+                    </template>
+                    <div v-else class="goods-img-list">
+                      <img v-for="(img, imgIndex) in item.goods" :key="imgIndex" v-if="imgIndex < 4" class="goods-img" mode="aspectFill" :src="img.image_url" alt="">
+                      <div class="img-item" v-if="item.goods.length > 4">
+                        <div class="circle"></div>
+                        <div class="circle"></div>
+                        <div class="circle"></div>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div class="num-info">
-                  <div class="price"><span class="price-unit">￥</span>{{item.total}}</div>
-                  <div class="count">共{{item.goods.length}}件</div>
+                  <div class="num-info">
+                    <div class="price"><span class="price-unit">￥</span>{{item.total}}</div>
+                    <div class="count">共{{item.goods.length}}件</div>
+                  </div>
                 </div>
               </div>
               <div class="bot">
@@ -360,9 +362,7 @@
                 color: $color-sub
                 font-size: $font-size-16
       .center
-        layout(row)
-        align-items: center
-        justify-content: space-between
+        layout()
         padding: 15px 3.2vw
         border-bottom-1px($color-line)
         .group-status
@@ -377,6 +377,10 @@
             width: 15px
             height: @width
             margin-right :4px
+        .goods-con
+          layout(row)
+          align-items: center
+          justify-content: space-between
         .goods-list
           flex: 1
           layout(row)
