@@ -444,14 +444,9 @@
         return this.goodsMsg.delivery_at || ''
       }
     },
-    onLoad(options) {
-      // if (!isEmptyObject(options)) {
-      //   this._options = options || {}
-      // }
-      // ald && ald.aldstat.sendEvent('商品详情')
+    onLoad(options = {}) {
       Ald.sendEvent('商品详情')
       this.goodsMsg = {}
-      // console.log(options)
       this['PUSH_PAGE']({pageRoute: this.$routes.main.GOODS_DETAIL, options})
     },
     onShow() {
@@ -485,7 +480,6 @@
       this.$$sendEvent({ goodsId: this.goodsId, activityId: this.activityId, _track })
     },
     onHide() {
-      // this._clearTimer()
       clearInterval(this._allActiveTimer)
       clearInterval(this._groupTimer)
       this.autoplayTimer && clearTimeout(this.autoplayTimer)
@@ -911,7 +905,7 @@
         // let options = this._$$initOptions()
         // 从页面栈获取options信息
         let pageStack = this.pageStacker[this.$routes.main.GOODS_DETAIL]
-        let options = pageStack[pageStack.length - 1]
+        let options = pageStack[pageStack.length - 1] || {}
         this.goodsId = +options.id || +options.goodsId || 0
         this.activityId = +options.activityId || 0
         this.shopId = +options.shopId || 0
