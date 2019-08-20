@@ -6,7 +6,7 @@
       <img :src="goodsData.goods_cover_image" mode="aspectFill" class="goods-photo">
     </div>
     <div class="info">
-      <div v-if="goodsData && goodsData.name" class="name">{{goodsData.name}}</div>
+      <div v-if="goodsData && goodsData.name" class="name"><span v-if="goodsData.activity_theme" class="title-label">{{typeText[goodsData.activity_theme]}}</span>{{goodsData.goods_id}}{{goodsData.name}}</div>
       <div class="details">{{goodsData.describe}}</div>
       <div>
           <span class="price-now">
@@ -16,7 +16,10 @@
           <span class="price">{{goodsData.original_price}}元</span>
       </div>
     </div>
-    <div class="add-btn-wrap" @click.stop="addBtn(goodsData)">
+    <div v-if="goodsData.activity_theme === 'groupon'" class="add-btn-group">
+      <div class="go-group">去拼团</div>
+    </div>
+    <div v-else class="add-btn-wrap" @click.stop="addBtn(goodsData)">
       <tempalte v-if="imageUrl">
         <img v-if="goodsData.is_online === 0 || goodsData.usable_stock === 0" :src="imageUrl + '/yx-image/article/icon-add_hui@2x.png'" class="add-img">
         <img v-else :src="imageUrl + '/yx-image/article/icon-add_to@2x.png'" class="add-img">
@@ -27,6 +30,7 @@
 
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
+  import {ACTIVE_TYPE_TEXT} from '@utils/contants'
 
   const PAGE_NAME = 'GOODS_ITEM'
 
@@ -50,7 +54,9 @@
       }
     },
     data() {
-      return {}
+      return {
+        typeText: ACTIVE_TYPE_TEXT
+      }
     },
     methods: {
       addBtn(value) {
@@ -104,6 +110,19 @@
         text-overflow ellipsis
         white-space: nowrap
         padding-right 12px
+        .title-label
+          font-family: $font-family-regular
+          font-size: $font-size-10
+          color: #FF8506
+          height: 14px
+          line-height: 14px
+          display: inline-block
+          background: rgba(250,117,0,0.1)
+          padding: 0 5px
+          margin-right: 5px
+          border-1px(#FF8506, 14px)
+          position: relative
+          top: -2px
 
       .details
         font-family $font-family-regular
@@ -132,7 +151,21 @@
         font-family $font-family-regular
         text-decoration-line line-through
         margin-left 6px
-
+    .add-btn-group
+      display flex
+      justify-content space-between
+      align-items center
+      padding:0px 15px 0px 5px
+      .go-group
+        width: 52px
+        height: 23px
+        line-height: 23px
+        background: #FF8506
+        font-size: $font-size-12
+        color: $color-white
+        font-family: $font-family-regular
+        text-align: center
+        border-radius: 11.5px
     .add-btn-wrap
       display flex
       justify-content space-between

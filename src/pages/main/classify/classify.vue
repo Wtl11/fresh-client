@@ -29,6 +29,10 @@
                        <!--mode="aspectFill">-->
                   <img v-if="item.goods_cover_image" :src="item.goods_cover_image" alt="" class="box-top-img"
                        mode="aspectFill">
+                  <img v-if="imageUrl && item.usable_stock <= 0"
+                       :src="imageUrl + '/yx-image/article/pic-out_stock@2x.png'"
+                       mode="aspectFill"
+                       class="box-top-img fix-pic">
                 </div>
                 <div class="classify-box-bottom">
                   <div class="title">{{item.name}}</div>
@@ -69,6 +73,7 @@
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import API from '@api'
   import {cartMethods} from '@state/helpers'
+  import { ACTIVE_TYPE_TEXT } from '@utils/contants'
   import ClearWatch from '@mixins/clear-watch'
   import LoadingMore from '@components/loading-more/loading-more'
 
@@ -96,14 +101,7 @@
         classifyMore: false,
         boxTransition: '',
         lineTranslateX: 0,
-        typeText: {
-          fixed: '限时抢购',
-          new_client: '新人特惠',
-          hot_tag: '今日爆品',
-          offline: '线下扩展',
-          groupon: '拼团返现',
-          centralize: '产地集采'
-        }
+        typeText: ACTIVE_TYPE_TEXT
         // currentList: []
       }
     },
@@ -302,6 +300,14 @@
             display: block
             width: 100%
             height: 100%
+            &.fix-pic
+              position:absolute
+              width:60px
+              height:60px
+              top:50%
+              left:50%
+              transform translate(-50%,-50%)
+              z-index:10
 
         .classify-box-bottom
           padding-top: 7px

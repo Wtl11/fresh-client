@@ -237,7 +237,7 @@ export default {
     },
     // 加购
     addGoods(item) {
-      if (this.preview) return false
+      if (this.preview || item.is_online === 0 || item.usable_stock === 0) return false
       this._articleOperation('guide_goods', { goods_id: item.goods_id, goods_sku_id: item.goods_sku_id })
       API.Choiceness.addShopCart({ goods_sku_id: item.goods_sku_id, scenes: 'article', scenes_data: this.articleId }).then((res) => {
         if (res.error === this.$ERR_OK) {

@@ -136,6 +136,10 @@
               <figure class="classify-box-top">
                 <!--<img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/icon-label2@2x.png'" alt="" class="top-label" mode="aspectFill">-->
                 <img v-if="item.goods_cover_image" :src="item.goods_cover_image" alt="" class="box-top-img" mode="aspectFill">
+                <img v-if="imageUrl && item.usable_stock <= 0"
+                     :src="imageUrl + '/yx-image/article/pic-out_stock@2x.png'"
+                     mode="aspectFill"
+                     class="box-top-img fix-pic">
               </figure>
               <section class="classify-box-bottom">
                 <div class="classify-title">{{item.name}}</div>
@@ -198,7 +202,7 @@
   import {orderMethods, cartMethods} from '@state/helpers'
   import ClearWatch from '@mixins/clear-watch'
   import LoadingMore from '@components/loading-more/loading-more'
-  import {ACTIVE_TYPE} from '@utils/contants'
+  import {ACTIVE_TYPE, ACTIVE_TYPE_TEXT} from '@utils/contants'
   import {objDeepCopy} from '@utils/common'
 
   export default {
@@ -235,14 +239,7 @@
         postageList: [],
         isShowType: false,
         isSelfGoods: true,
-        typeText: {
-          fixed: '限时抢购',
-          new_client: '新人特惠',
-          hot_tag: '今日爆品',
-          offline: '线下扩展',
-          groupon: '拼团返现',
-          centralize: '产地集采'
-        }
+        typeText: ACTIVE_TYPE_TEXT
       }
     },
     async onTabItemTap() {
@@ -980,6 +977,14 @@
         display: block
         width: 100%
         height: 100%
+        &.fix-pic
+          position:absolute
+          width:60px
+          height:60px
+          top:50%
+          left:50%
+          transform translate(-50%,-50%)
+          z-index:10
     .classify-box-bottom
       padding-top: 10px
       font-family: $font-family-regular

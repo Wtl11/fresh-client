@@ -141,6 +141,11 @@
                              v-if="imageUrl"
                              :src="imageUrl + '/yx-image/2.3/pic-label_qg@2x.png'"
                         >
+                        <img v-if="imageUrl && child.usable_stock <= 0"
+                             :src="imageUrl + '/yx-image/article/pic-out_stock@2x.png'"
+                             mode="aspectFill"
+                             class="img-goods fix-pic"
+                        >
                       </figure>
                       <section class="bottom-wrapper">
                         <p class="title">{{child.name}}</p>
@@ -307,6 +312,10 @@
                              :lazy-load="true"
                              v-if="child.goods_cover_image"
                              :src="child.goods_cover_image" alt="" class="good-image">
+                        <img v-if="imageUrl && child.usable_stock <= 0"
+                             :src="imageUrl + '/yx-image/article/pic-out_stock@2x.png'"
+                             mode="aspectFill"
+                             class="good-image fix-pic">
                         <img
                           :lazy-load="true"
                           v-if="imageUrl && item.module_name === ACTIVE_TYPE.FREE_SHIPPING"
@@ -1285,6 +1294,15 @@
               height: @width
               background: #f5f5f5
               border-radius: 2px
+              &.fix-pic
+                position:absolute
+                width:60px
+                height:60px
+                top:50%
+                left:50%
+                background: transparent
+                transform translate(-50%,-50%)
+                z-index:10
             .label-icon
               position: absolute
               top: -1px
@@ -1452,6 +1470,14 @@
         display: block
         overflow: auto
         border-radius: 3px
+        &.fix-pic
+          position:absolute
+          width:60px
+          height:60px
+          top:50%
+          left:50%
+          transform translate(-50%,-50%)
+          z-index:10
       .img-label
         position: absolute
         left: 0
