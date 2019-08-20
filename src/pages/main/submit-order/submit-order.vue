@@ -214,6 +214,8 @@
       this.setCommodityItem({})
       this.saveCoupon({})
       this.setArticleId(0)
+      this['SAVE_CERTIFICATE']()
+      this.saveCoupon({})
     },
     async onShow() {
       // 文章进入详情 带参数
