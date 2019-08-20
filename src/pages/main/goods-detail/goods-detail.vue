@@ -791,11 +791,9 @@
             goodsList.longitude = this.longitude
           }
         }
-        if (this.activityType === ACTIVE_TYPE.CENTRALIZE_PURCHASE) {
-          goodsList.day_of_week = this.goodsMsg.day_of_week
-          goodsList.delivery_at = this.goodsMsg.delivery_at
-          goodsList.delivery_timestamp = this.goodsMsg.delivery_timestamp
-        }
+        goodsList.day_of_week = this.goodsMsg.day_of_week
+        goodsList.delivery_at = this.goodsMsg.delivery_at
+        goodsList.delivery_timestamp = this.goodsMsg.delivery_timestamp
         const total = (price * number).toFixed(2)
         goodsList.activity = this.goodsMsg.activity
         let orderInfo = {

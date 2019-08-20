@@ -65,6 +65,10 @@
         <p class="price">{{orderDetail.total}}</p>
         <p>元</p>
       </li>
+      <li class="coupon-item">
+        <p class="name">提货日期</p>
+        <p class="name">{{orderDetail.delivery_at}} ({{orderDetail.day_of_week}})</p>
+      </li>
     </ul>
     <!--订单信息-->
     <div class="order-msg">

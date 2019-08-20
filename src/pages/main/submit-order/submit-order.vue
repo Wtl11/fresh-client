@@ -2,7 +2,7 @@
   <form action="" report-submit @submit="$getFormId">
     <div class="submit-order">
       <navigation-bar title="提交订单" :showArrow="true" :translucent="false"></navigation-bar>
-      <div class="order-title" :class="'corp-' + corpName + '-submit-order'">请在{{deliverAt}}到货后，到团长代理点自提</div>
+      <!--<div class="order-title" :class="'corp-' + corpName + '-submit-order'">请在{{deliverAt}}到货后，到团长代理点自提</div>-->
       <div class="order-info">
         <div class="order-info-top">
           <div class="info-phone">

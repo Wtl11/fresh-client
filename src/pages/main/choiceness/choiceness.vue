@@ -328,7 +328,7 @@
                           class="label-icon">
                         <img
                           :lazy-load="true"
-                          v-else-if="imageUrl"
+                          v-else-if="imageUrl && child.purchase_cycle * 1 === 1"
                           :src="imageUrl + '/yx-image/2.4/icon-label@2x.png'"
                           class="label-icon">
                       </figure>
@@ -750,7 +750,7 @@
         if (this.activityModuleList.length) {
           this.activityModuleList.forEach(item => {
             // 全国包邮没有starting_point_id,判断is_close是否开启即可
-            if ((item.module_name !== 'activity_fixed' && item.starting_point_id > 0) || (item.module_name === 'free_shipping' && item.is_close !== 1) || (item.module_name === 'centralize_purchase' && item.is_close !== 1)) {
+            if ((item.module_name !== 'activity_fixed' && item.starting_point_id > 0) || (item.module_name === 'free_shipping' && item.is_close !== 1) || (item.module_name === 'centralize' && item.is_close !== 1)) {
               arr.push({
                 ...item,
                 ...TAB_ARR_CONFIG[item.module_name]
@@ -1092,7 +1092,7 @@
               } else if (item.module_name === ACTIVE_TYPE.CENTRALIZE_PURCHASE && item.is_close === 0) {
                 // 产地集采
                 API.Home.getActivityList({activity_theme: 'centralize', page: 1, limit: key.limit}).then(res => {
-                  this.purchaseList = this._formatListPriceData(res.data)
+                  this.purchaseList = res.data
                 })
               } else {
                 this[key.dataArray] = []
