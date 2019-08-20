@@ -552,6 +552,7 @@
         this.poster = pic
         // 如果生成好海报前点击了保存海报，则在生成好海报后调用保存方法
         if (this.clickSave) {
+          this.$wechat.hideLoading()
           this._savePoster()
           this.clickSave = false
         }
@@ -560,6 +561,7 @@
       _savePoster() {
         let self = this
         if (!self.poster) {
+          this.$wechat.showLoading('海报生成中')
           this.clickSave = true
           return
         }
