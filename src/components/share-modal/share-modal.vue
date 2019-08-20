@@ -547,7 +547,7 @@
             color: #1f1f1f
           .text2
             width: 100%
-            margin-bottom: px-change-vh(24)
+            margin-bottom: px-change-vh(23)
             font-size: 11px
             color: $color-text-sub
           .text3
