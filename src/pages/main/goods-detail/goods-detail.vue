@@ -259,7 +259,7 @@
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import clearWatch from '@mixins/clear-watch'
-  import { orderMethods, cartMethods, pageStackComputed, pageStackMethods } from '@state/helpers'
+  import { orderMethods, cartMethods } from '@state/helpers'
   import { SCENE_SHARE, SCENE_DEFAULT, SCENE_QR_CODE, ACTIVE_TYPE } from '@utils/contants'
   import ShareHandler, { EVENT_CODE } from '@mixins/share-handler'
   import API from '@api'
@@ -301,7 +301,7 @@
     [SCENE_SHARE]: 1002,
     [SCENE_DEFAULT]: 1003
   }
-  // const ald = getApp()
+
   export default {
     name: PAGE_NAME,
     mixins: [clearWatch, ShareHandler, GoodsDetailMixins, ShareTrick, GetOptions],
@@ -357,11 +357,11 @@
         arrowUrl: ARROW_URL[1],
         isShowOldCustomerButton: false,
         hotList: [], // 今日爆品
-        tipList: [] // 促销提示
+        tipList: [], // 促销提示
+        options: {}
       }
     },
     computed: {
-      ...pageStackComputed,
       activityInfo() {
         return this.goodsMsg.activity || {}
       },
@@ -445,9 +445,9 @@
       }
     },
     onLoad(options = {}) {
+      this.options = options
+      this.checkSystem()
       Ald.sendEvent('商品详情')
-      this.goodsMsg = {}
-      this['PUSH_PAGE']({pageRoute: this.$routes.main.GOODS_DETAIL, options})
     },
     onShow() {
       // 分享锁
@@ -455,7 +455,7 @@
         this._isSharing = false
         return
       }
-      this.checkSystem()
+      // this.checkSystem()
       this._initPageParams()
       if (this.goodsId < 1) return
       this._checkIsNewClient()
@@ -496,7 +496,6 @@
       this.eventCount = 0
       this.$refs.shareList && this.$refs.shareList.hideLink()
       this._isSharing = false
-      this['POP_PAGE']({pageRoute: this.$routes.main.GOODS_DETAIL})
     },
     onShareAppMessage() {
       // 分享锁
@@ -524,7 +523,6 @@
     methods: {
       ...orderMethods,
       ...cartMethods,
-      ...pageStackMethods,
       _getGoodsTips() {
         if (!this.goodsId) return
         // const closeList = [
@@ -904,8 +902,7 @@
       _initPageParams() {
         // let options = this._$$initOptions()
         // 从页面栈获取options信息
-        let pageStack = this.pageStacker[this.$routes.main.GOODS_DETAIL]
-        let options = pageStack[pageStack.length - 1] || {}
+        const options = this.options || {}
         this.goodsId = +options.id || +options.goodsId || 0
         this.activityId = +options.activityId || 0
         this.shopId = +options.shopId || 0
