@@ -478,13 +478,17 @@
           overflow: hidden
         .top-text
           flex: 1
+          layout()
+          align-items: center
           font-family: $font-family-regular
           font-size: 11px
           line-height: 1
           .user-name
+            width: 100%
             color: $color-text-sub
             padding-bottom: 6px
           .title
+            width: 100%
             color: #1f1f1f
       .goods-list
         width: 100%
@@ -543,7 +547,7 @@
             color: #1f1f1f
           .text2
             width: 100%
-            margin-bottom: px-change-vh(20)
+            margin-bottom: px-change-vh(24)
             font-size: 11px
             color: $color-text-sub
           .text3
