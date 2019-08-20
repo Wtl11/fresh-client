@@ -29,24 +29,64 @@
       <img :src="imageUrl + '/yx-image/choiceness/pic-colour@2x.png'" v-if="imageUrl" mode="aspectFill" class="group-border">
     </div>
     <!--商品-->
-    <div class="goods">
-      <div class="goods-item" v-for="(item, index) in orderDetail.goods" :key="index">
-        <div class="goods-detail">
-          <img :src="item.image_url" class="goods-img" mode="aspectFill">
-          <div class="goods-content">
-            <div class="goods-title">
-              <div class="goods-title-left">{{item.goods_name}}</div>
-              <div class="goods-title-right" v-if="item.after_sale_status * 1 === 2">{{item.after_sale_status_text}}</div>
+    <div class="goods-wrapper">
+      <block v-for="(item, index) in orderDetail.goods" :key="index">
+        <div class="goods-item">
+          <div class="goods-detail">
+            <block v-if="item.image_url">
+              <img :src="item.image_url" class="goods-img" mode="aspectFill">
+            </block>
+            <div class="goods-content">
+              <p class="goods-title">
+                <span class="goods-title-left">{{item.goods_name}}</span>
+                <span class="goods-title-right" v-if="item.after_sale_status * 1 === 2">{{item.after_sale_status_text}}</span>
+              </p>
+              <div class="goods-sku">规格：{{item.goods_units}}</div>
+              <p class="goods-money">
+                {{item.price}}
+                <span class="small">元</span>
+                <span class="goods-num-box">x
+                <span class="goods-num">{{item.num}}</span>
+              </span>
+              </p>
             </div>
-            <div class="goods-sku">规格：{{item.goods_units}}</div>
-            <div class="goods-money">{{item.price}}<span class="small">元</span></div>
           </div>
-          <div class="goods-num-box">x<span class="goods-num">{{item.num}}</span></div>
+          <div v-if="item.delivery_status === 0" class="btn-box">
+            <div class="goods-btn"
+                 :class="'corp-' + corpName + '-goods-btn'"
+                 v-if="orderDetail.status === 1 && orderDetail.delivery_status === 3 && (item.after_sale_status === 0 || item.after_sale_status === 1)"
+                 @click="_showDialog('', item.order_detail_id)">确认提货</div>
+          </div>
+          <block v-if="gifts[index]" v-for="(child,cIdx) in gifts[index]" :key="cIdx">
+            <div v-if="child.is_gift" class="goods-detail gift" :class="{'first-style': !cIdx}">
+              <block v-if="child.image_url">
+                <img :src="child.image_url" class="goods-img" mode="aspectFill">
+              </block>
+              <div class="goods-content">
+                <p class="goods-title">
+                  <span class="icon-tip m-r-4">赠品</span>
+                  <span class="goods-title-left">{{child.goods_name}}</span>
+                  <span class="goods-title-right" v-if="child.after_sale_status * 1 === 2">{{child.after_sale_status_text}}</span>
+                </p>
+                <div class="goods-sku">规格：{{child.goods_units}}</div>
+                <p class="goods-money">
+                  {{child.price}}
+                  <span class="small">元</span>
+                  <span class="goods-num-box">x
+                <span class="goods-num">{{child.num}}</span>
+              </span>
+                </p>
+              </div>
+            </div>
+            <div v-if="child.delivery_status === 0" class="btn-box">
+              <div class="goods-btn"
+                   :class="'corp-' + corpName + '-goods-btn'"
+                   v-if="orderDetail.status === 1 && orderDetail.delivery_status === 3 && (child.after_sale_status === 0 || child.after_sale_status === 1)"
+                   @click="_showDialog('', child.order_detail_id)">确认提货</div>
+            </div>
+          </block>
         </div>
-        <div class="btn-box" v-if="!item.delivery_status">
-          <div class="goods-btn" :class="'corp-' + corpName + '-goods-btn'" v-if="orderDetail.status === 1 && orderDetail.delivery_status === 3 && (item.after_sale_status === 0 || item.after_sale_status === 1)" @click="_showDialog('', item.order_detail_id)">确认提货</div>
-        </div>
-      </div>
+      </block>
     </div>
     <section class="goods-total-wrapper">
       <p class="name">商品总价</p>
@@ -54,6 +94,11 @@
       <p>元</p>
     </section>
     <ul class="coupon-info-wrapper" :class="'corp-' + corpName + '-money'">
+      <li class="coupon-item">
+        <p class="name">使用兑换券</p>
+        <p v-if="orderDetail.gift_coupon_name" class="price">{{orderDetail.gift_coupon_name}}</p>
+        <p v-else class="price-disable">未使用兑换券</p>
+      </li>
       <li class="coupon-item">
         <p class="name">使用优惠券</p>
         <p v-if="orderDetail.promote_price > 0" class="price">-{{orderDetail.promote_price}}</p>
@@ -107,7 +152,8 @@
       return {
         id: null,
         orderDetail: {address: {}, goods: []},
-        ids: []
+        ids: [],
+        gifts: []
       }
     },
     async onLoad(option) {
@@ -128,7 +174,19 @@
           this.$wechat.showToast(res.message)
           return
         }
-        console.log(res.data)
+        let index = 0
+        let gifts = {}
+        res.data.goods = res.data.goods.filter((item) => {
+          let flag = !item.is_gift
+          if (flag) {
+            index++
+          } else {
+            !gifts[index - 1] && (gifts[index - 1] = [])
+            gifts[index - 1].push(item)
+          }
+          return flag
+        })
+        this.gifts = gifts
         this.orderDetail = res.data
       },
       _copyOrderSn(text) {
@@ -145,14 +203,17 @@
       },
       _showDialog(type, id) {
         this.$refs.dialog.show({msg: '确定已经提货？'})
+        let arr = [id]
         if (type === 'all') {
-          this.ids = []
-          this.ids = this.orderDetail.goods.map((item) => {
+          arr = []
+          arr = this.orderDetail.goods.map((item) => {
             return item.order_detail_id
           })
-          return
+          for (let key in this.gifts) {
+            arr = arr.concat(this.gifts[key].map(child => child.order_detail_id))
+          }
         }
-        this.ids = [id]
+        this.ids = arr
       },
       // 提现收货
       async _remind() {
@@ -178,59 +239,60 @@
   }
 </script>
 
+
 <style scoped lang="stylus" rel="stylesheet/stylus">
- @import "~@designCommon"
+  @import "~@designCommon"
 
- .goods-total-wrapper
-   padding :15.5px 12px
-   display :flex
-   align-items :center
-   font-family: $font-family-regular
-   font-size: 14px
-   line-height: 1
-   color: $color-text-main
-   background :#fff
-   border-top-1px(#e6e6e6)
-   border-bottom :11px solid $color-background
-   .name
-     flex:1
-     color: #000000
-   .price
-     font-family: $font-family-medium
+  .goods-total-wrapper
+    padding :15.5px 12px
+    display :flex
+    align-items :center
+    font-family: $font-family-regular
+    font-size: 14px
+    line-height: 1
+    color: $color-text-main
+    background :#fff
+    border-top-1px(#e6e6e6)
+    border-bottom :11px solid $color-background
+    .name
+      flex:1
+      color: #000000
+    .price
+      font-family: $font-family-medium
 
- .coupon-info-wrapper
-   border-bottom :11px solid $color-background
-   padding :10.5px 12px 0
-   font-family: $font-family-regular
-   font-size: 14px;
-   line-height: 1
-   background :#fff
-   .coupon-item
-     display :flex
-     align-items :center
-     padding :10px 0
-   .name
-     flex:1
-     color: #000000
-   .price
-     font-size: 16px
-     font-family: $font-family-medium
-   .price-disable
-     font-size :14px
-     color: #808080
-   .item-arrow-img
-     margin-left :5px
-     display: block
-     width: 7.5px
-     height: 12.5px
-     .img
-       display :block
-       width :100%
-       height :100%
+  .coupon-info-wrapper
+    border-bottom :11px solid $color-background
+    padding :10.5px 12px 0
+    font-family: $font-family-regular
+    font-size: 14px;
+    line-height: 1
+    background :#fff
+    .coupon-item
+      display :flex
+      align-items :center
+      padding :10px 0
+    .name
+      flex:1
+      color: #000000
+    .price
+      font-size: 16px
+      font-family: $font-family-medium
+    .price-disable
+      font-size :14px
+      color: #808080
+    .item-arrow-img
+      margin-left :5px
+      display: block
+      width: 7.5px
+      height: 12.5px
+      .img
+        display :block
+        width :100%
+        height :100%
 
 
 
- button
+  button
     padding: 0
     margin: 0
     &:after
@@ -341,7 +403,20 @@
         color #000
         font-family: $font-family-regular
 
-  .goods
+  .icon-tip
+    font-famliy: $font-family-regular
+    font-size: 10px
+    height: 14px
+    padding: 0 4px
+    background: rgba(255,104,3,0.10)
+    border-1px(#FF6803,14px)
+    border-radius: @height
+    color: #FF6803;
+    line-height: @height
+  .m-r-4
+    margin-right: 4px
+
+  .goods-wrapper
     background: $color-white
     margin-top: 10px
     .goods-item
@@ -352,74 +427,65 @@
         border-none()
       .goods-detail
         display: flex
-        width: 100%
         background: #FAFAFA
-        margin: 12px 0
-        padding: 10px
-        box-sizing: border-box
-        position: relative
+        padding: 8px
+        flex-wrap: nowrap
+        &.gift
+          margin-top :10px
+        &.first-style
+          margin-top: 15px
         .goods-img
           background: $color-white
-          min-width: 60px
-          min-height: 60px
           height: 60px
           width: 60px
         .goods-content
-          margin-left: 10px
-          width: 79%
-          display: flex
-          flex-direction: column
-          height: 60px
+          flex: 1
+          overflow hidden
+          padding-left: 10px
           font-family: $font-family-regular
+          line-height : 1
           .goods-title
-            layout(row)
+            display :flex
             align-items: center
-            justify-content: space-between
+            color: $color-text-main
+            font-size: $font-size-14
             .goods-title-left
-              min-height: 15px
-              font-size: $font-size-14
-              color: $color-text-main
+              flex: 1
               no-wrap()
-              width: 50vw
             .goods-title-right
-              min-height: 15px
-              font-size: $font-size-14
-              color: $color-text-main
               color: #ff8300
           .goods-money
             height: 14px
-            margin-top: 13px
+            padding-top: 13px
             font-size: $font-size-14
             color: $color-text-main
             .small
               font-size: $font-size-11
               margin-left: 1.5px
           .goods-sku
-            height: 14px
-            margin-top: 7px
+            padding-top: 7px
             color: $color-text-sub
             font-size $font-size-14
-        .goods-num-box
-          font-size: $font-size-12
-          position: absolute
-          bottom: 8px
-          right: 10px
-          .goods-num
-            margin-left: 1.5px
-            font-size: $font-size-16
+          .goods-num-box
+            font-size: $font-size-12
+            float :right
+            .goods-num
+              margin-left: 1.5px
+              font-size: $font-size-16
 
       .btn-box
+        padding-top :10px
         height: 25px
         display: flex
         justify-content: flex-end
-      .goods-btn
-        text-align: center
-        box-sizing: border-box
-        font-size: $font-size-12
-        font-family: $font-family-regular
-        line-height: 25px
-        width: 70px
-        height: 25px
+        .goods-btn
+          text-align: center
+          box-sizing: border-box
+          font-size: $font-size-12
+          font-family: $font-family-regular
+          line-height: 25px
+          width: 70px
+          height: 25px
 
   .order-msg
     margin-top: 0

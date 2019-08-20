@@ -62,6 +62,7 @@
     {
       "root": "package-activity/",
       "pages": [
+        "choose-certificate",
         "commodity-certificates",
         "my-record",
         "invitation-introduction",
@@ -110,6 +111,12 @@
       "network": "all",
       "packages": [
         "package-content/"
+      ]
+    },
+    "pages/submit-order": {
+      "network": "all",
+      "packages": [
+        "package-activity"
       ]
     }
   },

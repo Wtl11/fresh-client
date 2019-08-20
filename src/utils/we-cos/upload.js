@@ -16,7 +16,6 @@ const {IMAGE_TYPE, VIDEO_TYPE} = fileType
 let cos = new COS({
   getAuthorization: function (params, callback) {
     Upload.getUploadSign().then((res) => {
-      console.log(res, 222)
       if (res.error !== ERR_OK) {
         throw new Error(res)
       }
@@ -44,7 +43,6 @@ export default function chooseFiles(fileType = IMAGE_TYPE, count = 9, showProces
       let type = fileType === VIDEO_TYPE ? 'video' : 'image'
       let requests = filePaths.map((filePath) => {
         return Upload.getUploadParam().then((res) => {
-          console.log(res, 111)
           if (res.error !== ERR_OK) {
             throw new Error(res)
           }
@@ -153,11 +151,11 @@ function fileController(type, count) {
  * @param fileType 上传文件类型（入库用到）
  * @returns {Promise}
  */
-function postObject(params, fileType) {
+function postObject(params, fileType = '') {
   return new Promise((resolve, reject) => {
     cos.postObject(params, function (err, data) {
       if (!err && data.statusCode === 200) {
-        Upload.saveFile({path: `/${params.Key}`, file_type: fileType || ''}).then(files => {
+        Upload.saveFile({path: `/${params.Key}`, type: fileType}).then(files => {
           // Todo 隐藏加载器
           if (files.error === ERR_OK) {
             resolve(files.data)

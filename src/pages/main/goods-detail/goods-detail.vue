@@ -130,6 +130,7 @@
           <div class="info-stock">已售<span :class="'corp-' + corpName + '-money'">{{goodsMsg.sale_count}}</span>{{goodsMsg.goods_units}}<span v-if="activityId * 1 > 0">，剩余<span :class="'corp-' + corpName + '-money'">{{goodsMsg.usable_stock}}</span>{{goodsMsg.goods_units}}</span></div>
         </div>
       </div>
+      <goods-promotion :dataArray="tipList"></goods-promotion>
       <!--拼团列表-->
       <div v-if="activityType === ACTIVE_TYPE.GROUP_ON" class="collage-box">
         <div v-if="collageList.length > 0" class="title">{{collageTotal}}位邻居正在拼单，可直接参与</div>
@@ -187,6 +188,7 @@
         :userTotal="userTotal"
         @buyRecordNavTo="buyRecordNavTo"
       ></buy-record>
+      <goods-hots :dataArray="hotList"></goods-hots>
       <detail-image :goodsMsg="goodsMsg"></detail-image>
       <service-description :runTime="runTime"></service-description>
       <button-group
@@ -267,7 +269,7 @@
 <script type="text/ecmascript-6">
   import NavigationBar from '@components/navigation-bar/navigation-bar'
   import clearWatch from '@mixins/clear-watch'
-  import { orderMethods, cartMethods } from '@state/helpers'
+  import { orderMethods, cartMethods, pageStackComputed, pageStackMethods } from '@state/helpers'
   import { SCENE_SHARE, SCENE_DEFAULT, SCENE_QR_CODE, ACTIVE_TYPE } from '@utils/contants'
   import ShareHandler, { EVENT_CODE } from '@mixins/share-handler'
   import API from '@api'
@@ -284,6 +286,8 @@
   import ShareTrick from '@mixins/share-trick'
   import GetOptions from '@mixins/get-options'
   import Ald from '@utils/ald'
+  import GoodsPromotion from '@components/goods-promotion/goods-promotion'
+  import GoodsHots from '@components/goods-hots/goods-hots'
 
   const PAGE_NAME = 'ACTIVE_DETAIL'
   const PAGE_ROUTE_NAME = 'goods-detail'
@@ -319,7 +323,9 @@
       ServiceDescription,
       ButtonGroup,
       AddNumber,
-      WePaint
+      WePaint,
+      GoodsPromotion,
+      GoodsHots
     },
     data() {
       this.clickSave = false
@@ -361,11 +367,15 @@
         swiperIdx: 0,
         arrowUrl: ARROW_URL[1],
         isShowOldCustomerButton: false,
+        hotList: [], // 今日爆品
+        tipList: [], // 促销提示
+        isShowOldCustomerButton: false,
         poster: '',
         posterData: {}
       }
     },
     computed: {
+      ...pageStackComputed,
       activityInfo() {
         return this.goodsMsg.activity || {}
       },
@@ -448,12 +458,10 @@
         return this.goodsMsg.delivery_at || ''
       }
     },
-    onLoad(options) {
-      // if (!isEmptyObject(options)) {
-      //   this._options = options || {}
-      // }
-      // ald && ald.aldstat.sendEvent('商品详情')
+    onLoad(options = {}) {
       Ald.sendEvent('商品详情')
+      this.goodsMsg = {}
+      this['PUSH_PAGE']({pageRoute: this.$routes.main.GOODS_DETAIL, options})
     },
     onShow() {
       this.poster = ''
@@ -466,6 +474,7 @@
       this._initPageParams()
       if (this.goodsId < 1) return
       this._checkIsNewClient()
+      this._getGoodsTips()
       this._checkCanGroup()
       this._getGoodsDetailData()
       this.getUserImgList()
@@ -485,7 +494,6 @@
       this.$$sendEvent({ goodsId: this.goodsId, activityId: this.activityId, _track })
     },
     onHide() {
-      // this._clearTimer()
       clearInterval(this._allActiveTimer)
       clearInterval(this._groupTimer)
       this.autoplayTimer && clearTimeout(this.autoplayTimer)
@@ -502,6 +510,7 @@
       this.eventCount = 0
       this.$refs.shareList && this.$refs.shareList.hideLink()
       this._isSharing = false
+      this['POP_PAGE']({pageRoute: this.$routes.main.GOODS_DETAIL})
     },
     onShareAppMessage() {
       // 分享锁
@@ -529,6 +538,21 @@
     methods: {
       ...orderMethods,
       ...cartMethods,
+      ...pageStackMethods,
+      _getGoodsTips() {
+        if (!this.goodsId) return
+        // const closeList = [
+        //   ACTIVE_TYPE.GROUP_ON,
+        //   ACTIVE_TYPE.NEW_CLIENT,
+        //   ACTIVE_TYPE.FLASH
+        // ]
+        // if (closeList.some(val => val === this.activityType)) {
+        //   return
+        // }
+        API.Goods.getTipList({goods_id: this.goodsId, activity_id: this.activityId}).then(res => {
+          this.tipList = res.data
+        })
+      },
       scrollingShowTitle(flag) {
         if (!this.videoPlaying) {
           return
@@ -855,7 +879,10 @@
       },
       // 初始化页面参数
       _initPageParams() {
-        let options = this._$$initOptions()
+        // let options = this._$$initOptions()
+        // 从页面栈获取options信息
+        let pageStack = this.pageStacker[this.$routes.main.GOODS_DETAIL]
+        let options = pageStack[pageStack.length - 1] || {}
         this.goodsId = +options.id || +options.goodsId || 0
         this.activityId = +options.activityId || 0
         this.shopId = +options.shopId || 0
@@ -914,6 +941,7 @@
           this.$wechat.hideLoading()
           if (res.error === this.$ERR_OK) {
             this.goodsMsg = res.data
+            this._getHotActive(res.data)
             this.msgTitle = this.goodsMsg.name
             if (this.goodsMsg.goods_videos && this.goodsMsg.goods_videos.length) {
               this.hasVideo = true
@@ -942,6 +970,14 @@
         }).catch(e => {
           console.warn(e)
         })
+      },
+      // 获取今日爆款列表
+      _getHotActive(data) {
+        if (!data.hot_tag_activity_id) return
+        API.Home.getActivityList({ activity_id: data.hot_tag_activity_id, page: 1, limit: 10 })
+          .then(res => {
+            this.hotList = res.data
+          })
       },
       // 限时抢购倒计时开始
       _flashAction() {

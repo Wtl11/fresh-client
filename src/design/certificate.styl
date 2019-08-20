@@ -1,0 +1,211 @@
+@import "~@designCommon"
+
+/*兑换券start*/
+  .coupon-item
+    width: 100vw
+    position: relative
+    .select
+      width: 17.333vw
+      text-align: center
+      height: 6.4vw
+      line-height: 6.4vw
+      position: absolute
+      right: 5.8333vw
+      top: px-change-vw(57)
+      background: $color-main
+      color: $color-white
+      border-radius: px-change-vw(12)
+      font-size: 3.2vw
+      z-index: 1
+    .top-wrapper
+      width: 100%
+      height: 28.5vw
+      position: relative
+      .top-bg-img
+        position: absolute
+        display: block
+        width: 100%
+        height: 100%
+      .top-container
+        position: relative
+        padding-top: 1.866666666666667vw
+        padding-left: 3.2vw
+        padding-right: @padding-left
+        height: 83%
+        layout(block, block, nowrap)
+        .left
+          display: flex
+          align-items: center
+          width: 18.4vw
+          height: 100%
+          margin: 0 3.46vw
+          .goods-box
+            position: relative
+            width: 18.4vw
+            height: 18.4vw
+            border-radius: 2px
+            overflow: hidden
+            &.unable
+              opacity: 0.5
+            .goods-img
+              width: 18.4vw
+              height: 18.4vw
+            .goods-price
+              position: absolute
+              bottom: 0
+              left: 0
+              height: 4.8vw
+              color: $color-white
+              font-size: $font-size-13
+              text-align: center
+              line-height: 4.8vw
+              width: 100%
+              background: rgba(17, 17, 17, 0.5)
+        .right
+          flex: 2.548582995951417
+          position: relative
+          layout(column, block, nowrap)
+          box-sizing: border-box
+          .tool-wrapper
+            height: 100%
+            width :px2vw(73)
+            position :absolute
+            right :0
+            top:0
+            .sel-box
+              all-center()
+              display: block
+              width: 20px
+              height: 20px
+              padding: 12px
+              opacity : 0
+              transition :opacity 0.3s
+              &.active
+                opacity : 1
+          .lab-img
+            position: absolute
+            right: 0
+            top: 0
+            width: 16.666666666666664vw
+            height: 18vw
+            z-index: 50
+          .button
+            col-center()
+            right: 4vw
+            width: 17.333333333333336vw
+            height: 6.4vw
+            border-radius: @width
+            font-family: $font-family-regular
+            font-size: 3.2vw
+            background: #73C200
+            color: #FFFFFF;
+            text-align: center;
+            line-height: @height
+          .title
+            layout(row, block, nowrap)
+            align-items: center
+            padding-top: px-change-vw(13)
+            padding-right :10px
+            .use-type
+              font-family : $font-family-regular
+              height: px-change-vw(14)
+              background: #FF6803;
+              border-radius: px-change-vw(14)
+              color: #fff
+              font-size: px-change-vw(11)
+              padding: 0 px-change-vw(3.5)
+              margin-right: px-change-vw(7.5)
+              &.unable
+                opacity: 0.5
+                background: #B7B7B7
+            .txt
+              flex: 1
+              font-family: $font-family-medium
+              height: px-change-vw(15)
+              font-size: @height
+              color: $color-text-main
+              line-height: 1
+              max-width :51vw
+              overflow :hidden
+              white-space :nowrap
+              text-overflow :ellipsis
+              &.unable
+                color: #B7B7B7
+          .explain
+            font-family: $font-family-regular
+            opacity: 0.8;
+            padding-top : px-change-vw(14)
+            font-size: px-change-vw(13)
+            color: $color-text-sub
+            line-height: 1
+          .condition
+            font-family: $font-family-regular
+            padding-top: px-change-vw(7)
+            opacity: 0.8
+            color: $color-text-sub
+            font-size: 3.46667vw
+            line-height: 1
+    .bottom-wrapper
+      width: 100%
+      position: relative
+      .bottom-bg-img
+        position: absolute
+        display: block
+        width: 100%
+        height: 6.133333333333333vw
+    .middle-wrapper
+      width: 100vw
+      position: relative
+      min-height: 4vw
+      overflow: hidden
+      margin-top: -2px
+      .middle-bg-img
+        position: absolute
+        display: block
+        width: 100vw
+      .middle-container
+        position: relative
+        padding-left: 6.4vw
+        padding-right: @padding-left
+        font-family: $font-family-regular
+        font-size: 3.4666666666666663vw
+        color: #1D2023
+        .middle-box
+          display: flex
+          justify-content: space-between
+          transform : translate3d(0, 0, 0)
+          .title
+            display: flex
+            align-items: center
+            justify-content: space-between
+            flex: 1
+            .down-img
+              width: 12.5px
+              height: 7px
+              display: block
+              transition: transform 0.3s
+              transform: rotate(0deg)
+              margin-top: 1px
+              &.rotate
+                transform: rotate(180deg)
+        .explain
+          transition: all 0.2s
+          padding-top: 2.4vw
+          font-size: 3.2vw
+          line-height: 1.42
+        .middle-detail-text
+          color: #73C200
+        .detail-img
+          margin-left: 6px
+          height: 12.5px
+          width: 7px
+
+.coupon-disable
+  .goods-price
+    background: rgba(17, 17, 17, 0.2) !important
+  .middle-box
+    .title
+      color: #B7B7B7 !important
+  .goods-name, .middle-detail-text
+    color: #B7B7B7 !important
+/*兑换券end*/

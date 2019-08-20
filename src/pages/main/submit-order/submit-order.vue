@@ -63,6 +63,16 @@
           <!--<img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="img">-->
           <!--</div>-->
         </li>
+        <!--兑换券 -->
+        <li v-if="!isFree" class="coupon-item" @click="chooseCertificateHandle">
+          <p class="name">使用兑换券</p>
+          <p v-if="certificate.customer_coupon_id" class="price">{{certificate.coupon_name}}</p>
+          <p v-else class="price-disable">未使用兑换券</p>
+          <div class="item-arrow-img">
+            <img v-if="imageUrl" :src="imageUrl+'/yx-image/cart/icon-pressed@2x.png'" alt="" class="img">
+          </div>
+        </li>
+        <!--优惠券 -->
         <li v-if="isGroupModal && !isFree" class="coupon-item">
           <p class="name">使用优惠券</p>
           <p class="price-disable">该商品不支持使用优惠券</p>
@@ -98,8 +108,7 @@
         <button formType="submit" class="pay" :class="'corp-' + corpName + '-bg'" @click.stop="_goPayAction">去支付</button>
       </div>
       <article class="share-panel-wrapper">
-        <div v-if="isShowPayModal" class="share-mask" @click="_hidePayModal">
-        </div>
+        <div v-if="isShowPayModal" class="share-mask" @click="_hidePayModal"></div>
         <section class="share-panel" :class="{show: isShowPayModal}">
           <p class="title">提货地址距离当前位置<span class="distance">{{distance}}km</span>请确认提货信息</p>
           <p class="sub-title">预计{{deliverAt}}可提货</p>
@@ -123,6 +132,11 @@
             <div class="item-wrapper">
               <p class="left">商品总价：</p>
               <p class="right">{{beforeTotal}}元</p>
+            </div>
+            <div class="item-wrapper mar-0">
+              <p class="left">兑换券：</p>
+              <p v-if="certificate.customer_coupon_id" class="right">{{certificate.coupon_name}}</p>
+              <p v-else class="right">未使用兑换券</p>
             </div>
             <div class="item-wrapper mar-0">
               <p class="left">优惠券：</p>
@@ -183,7 +197,6 @@
         return false
       },
       goodsDiscount() {
-        // console.log(this.commodityItem)
         return this.commodityItem ? +this.commodityItem.denomination ? +this.commodityItem.denomination : 0 : 0
       }
     },
@@ -201,10 +214,12 @@
       this.setCommodityItem({})
       this.saveCoupon({})
       this.setArticleId(0)
+      this['SAVE_CERTIFICATE']()
+      this.saveCoupon({})
     },
     async onShow() {
       // 文章进入详情 带参数
-      console.log('this.articleId', this.articleId)
+      console.warn('this.articleId', this.articleId)
       // ald && ald.aldstat.sendEvent('去支付')
       Ald.sendEvent('去支付')
       this._getCode()
@@ -216,6 +231,9 @@
     },
     methods: {
       ...orderMethods,
+      chooseCertificateHandle() {
+        wx.navigateTo({url: `${this.$routes.activity.CHOOSE_CERTIFICATE}`})
+      },
       // 免费兑换
       goFree() {
 
@@ -260,6 +278,16 @@
         }
       },
       _getCouponInfo() {
+        // 获取最佳兑换券
+        API.Coupon.getChooseList({ goods: this.goodsList, is_usable: 1, tag_type: 2 })
+          .then((res) => {
+            if (!res.data.length) {
+              this['SAVE_CERTIFICATE']()
+              return
+            }
+            this['SAVE_CERTIFICATE'](res.data[0])
+          })
+        // 获取最佳优惠券
         if (this.isGroupModal) {
           return
         }
@@ -326,17 +354,16 @@
           url,
           source: this.isFree ? 'c_exchange' : source,
           latitude,
-          longitude
+          longitude,
+          gift_exchange_customer_coupon_id: this.certificate.customer_coupon_id || 0
         }
         this.userInfo.mobile = this.mobile
-        console.log('before:', orderInfo, this.articleId)
 
         // 文章进入直接支付
         if (this.articleId) {
           orderInfo.scenes = 'article'
           orderInfo.scenes_data = this.articleId
         }
-        console.log('after:', orderInfo)
         this.$wechat.setStorage('userInfo', this.userInfo)
         await this.submitOrder({ orderInfo, isFree: this.isFree })
       },

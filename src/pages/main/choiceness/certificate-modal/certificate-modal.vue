@@ -1,5 +1,5 @@
 <template>
-  <div class="coupon-modal" v-if="isShow" :animation="maskAnimation" @touchmove.stop>
+  <div class="coupon-modal" v-if="isShow" :class="cname"  :animation="maskAnimation" @touchmove.stop>
     <section class="content" @touchmove.stop>
       <img class="close"
            mode="aspectFill"
@@ -7,7 +7,7 @@
            :src="imageUrl + '/yx-image/2.4/icon-deletetc@2x.png'"
            @click="submitHandle"
       >
-      <img class="top-img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/invitation/pic-spqtc@2x.png'">
+      <img class="top-img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/certificate/pic-spqtc@2x.png'">
       <div class="coupon-con" :class="couponArray.length === 1?'one':''">
         <div v-if="couponArray.length === 1" class="coupon-list">
           <img class="item-bg" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.4/pic-dcoupon@2x.png'">
@@ -20,6 +20,7 @@
                 <!--<p class="type" v-if="couponArray[0].coupon.range_type_str">{{couponArray[0].coupon.range_type_str}}</p>-->
                 <p class="txt">{{couponArray[0].coupon.coupon_name}}</p>
               </div>
+              <div class="explain">{{couponArray[0].coupon.condition_str}}</div>
               <div class="condition">有效期至 {{couponArray[0].coupon.end_at}}</div>
             </div>
           </div>
@@ -36,6 +37,7 @@
                   <!--<p class="type" v-if="item.range_type_str">{{item.range_type_str}}</p>-->
                   <p class="txt">{{item.coupon.coupon_name}}</p>
                 </div>
+                <div class="explain">{{item.coupon.condition_str}}</div>
                 <div class="condition">有效期至 {{item.coupon.end_at}}</div>
               </div>
             </div>
@@ -63,7 +65,7 @@
 
 <script type="text/ecmascript-6">
   import AnimationModal from '@mixins/animation-modal'
-  // import Coupon from './coupon-item/coupon'
+  // import Coupon from '../invitation-modal/coupon-item/coupon'
   import API from '@api'
 
   const COMPONENT_NAME = 'COUPON_MODAL'
@@ -71,10 +73,15 @@
   export default {
     name: COMPONENT_NAME,
     mixins: [AnimationModal],
+    props: {
+      cname: {
+        type: String,
+        default: ''
+      }
+    },
     data() {
       return {
         isShow: false,
-        // couponArray: [new Coupon()]
         couponArray: []
       }
     },
@@ -125,10 +132,11 @@
   .coupon-modal
     background-color: rgba(17, 17, 17, 0.75)
     fill-box(fixed)
-    z-index: 998
     display: flex
     justify-content: center
     align-items: center
+    &.z1000
+      z-index :1000
 
     .content
       position: relative
@@ -206,6 +214,7 @@
             .right-box
               flex: 1
               overflow: hidden
+              line-height: 1
               .title
                 layout(row, block, nowrap)
                 align-items: center
@@ -226,11 +235,17 @@
                   font-family: $font-family-medium
                   font-size: $font-size-14
                   no-wrap()
+              .explain
+                padding-top: 8px
+                opacity: 0.8
+                font-size: $font-size-12
+                color: #3F454B
+                no-wrap()
               .condition
                 padding-top: 4px
                 opacity: 0.8
-                font-size: $font-size-13
-                color: #808080
+                font-size: $font-size-12
+                color: #3F454B
                 no-wrap()
         &.one
           height: 194.5px
@@ -243,7 +258,7 @@
               .price-box
                 max-width: 62px
           .title
-            padding-top: 8px
+            padding-top: 0
 
         .bottom-bg
           position: absolute

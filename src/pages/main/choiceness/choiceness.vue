@@ -141,7 +141,6 @@
                              v-if="imageUrl"
                              :src="imageUrl + '/yx-image/2.3/pic-label_qg@2x.png'"
                         >
-                        <div v-if="child.usable_stock <= 0" class="sold-out">已抢光</div>
                       </figure>
                       <section class="bottom-wrapper">
                         <p class="title">{{child.name}}</p>
@@ -312,7 +311,6 @@
                           v-else-if="imageUrl"
                           :src="imageUrl + '/yx-image/2.4/icon-label@2x.png'"
                           class="label-icon">
-                        <div v-if="child.usable_stock <= 0" class="sold-out">已抢光</div>
                       </figure>
                       <article class="right">
                         <p class="title">{{child.name}}</p>
@@ -360,6 +358,8 @@
       <!--    添加至我的小程序-->
       <new-guidelines ref="guidelines"></new-guidelines>
       <distance-check ref="distance"></distance-check>
+      <!-- 兑换券弹窗 满赠  -->
+      <certificate-modal ref="certificateModal" cname="z1000"></certificate-modal>
       <!--分享模块-->
       <share-modal ref="shareModal"></share-modal>
     </div>
@@ -385,6 +385,7 @@
   import Ald from '@utils/ald'
   import InvitationModal from './invitation-modal/invitation-modal'
   import CouponAfterSale from './coupon-after-sale/coupon-after-sale'
+  import CertificateModal from './certificate-modal/certificate-modal'
   import ShareModal from '@components/share-modal/share-modal'
 
   // import GetOptions from '@mixins/get-options'
@@ -409,6 +410,8 @@
       LoadingMore,
       DistanceCheck,
       InvitationModal,
+      CouponAfterSale,
+      CertificateModal
       CouponAfterSale,
       ShareModal
     },
@@ -974,6 +977,7 @@
           let normalCoupon = []
           let invCoupon = []
           let couponAfterSale = []
+          let fitGift = []
           if (res && res.data && res.data.length) {
             res.data.forEach((item) => {
               switch (item.type) {
@@ -983,6 +987,14 @@
                 case 8:
                   couponAfterSale.push(item)
                   break
+                case 9:
+                  let coupon = item.coupon || {}
+                  if (+coupon.tag_type === 2) {
+                    fitGift.push(item)
+                  } else {
+                    normalCoupon.push(item)
+                  }
+                  break
                 default:
                   normalCoupon.push(item)
                   break
@@ -991,6 +1003,7 @@
             invCoupon.length && this._ref('invModal', 'show', invCoupon)
             normalCoupon.length && this._ref('couponModal', 'show', normalCoupon)
             couponAfterSale.length && this._ref('couponAfterSale', 'show', couponAfterSale)
+            fitGift.length && this._ref('certificateModal', 'show', fitGift)
           }
         }).catch(e => {
           console.error(e)
@@ -1709,24 +1722,5 @@
         width: 100vw
         display: block
 
-  .sold-out
-    opacity: 0.75
-    background: rgba(0, 0, 0, 0.6)
-    position: absolute
-    left: 0
-    top: 0
-    bottom: 0
-    right: 0
-    z-index: 9
-    width: 70%
-    height: @width
-    margin: auto
-    color: #fff
-    font-family: $font-family-medium
-    font-size: $font-size-12
-    text-align: center
-    border-radius: 100%
-    layout()
-    align-items: center
-    justify-content: center
+
 </style>

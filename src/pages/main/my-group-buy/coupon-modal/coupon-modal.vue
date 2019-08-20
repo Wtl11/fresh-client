@@ -18,7 +18,7 @@
                 <p class="type">{{couponArray[0].range_type_str}}</p>
                 <p class="txt">{{couponArray[0].coupon_name}}</p>
               </div>
-              <div class="condition">有效期至 {{couponArray[0].end_at_day}}</div>
+              <div class="condition">有效期至 {{couponArray[0].end_at}}</div>
             </div>
           </div>
         </div>
@@ -32,7 +32,7 @@
                   <p class="type">{{item.range_type_str}}</p>
                   <p class="txt">{{item.coupon_name}}</p>
                 </div>
-                <div class="condition">有效期至 {{item.end_at_day}}</div>
+                <div class="condition">有效期至 {{item.end_at}}</div>
               </div>
             </div>
           </div>

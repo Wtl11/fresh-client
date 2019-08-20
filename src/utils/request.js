@@ -52,7 +52,10 @@ function checkStatus(response) {
  * @param res
  * @returns {string|Object[]|CanvasPixelArray}
  */
-async function checkCode(res = {}) {
+async function checkCode(res = {}, url) {
+  if (res.data.error !== ERR_OK || res.data.code !== ERR_OK) {
+    console.error(`${url}<<<<<接口异常>>>>>${typeof res.data === 'object' && JSON.stringify(res.data)}`)
+  }
   // silentAuthorization()
   // 如果code异常(这里已经包括网络错误，服务器错误，后端抛出的错误)，可以弹出一个错误提示，告诉用户
   if (res.status === ERR_NO) {
@@ -61,7 +64,7 @@ async function checkCode(res = {}) {
   // 如果网络请求成功，而提交的数据，或者是后端的一些未知错误所导致的，可以根据实际情况进行捕获异常
   if (res.data && (res.data.code !== ERR_OK)) {
     // 可以进行switch操作，根据返回的code进行相对应的操作，然后抛异常
-    console.warn(res.data.message)
+    // console.warn(res.data.message)
     const _path = getApp().globalData._path
     switch (res.data.code) {
       case 13001: // 无团长权限code,跳转团长登录页面, 我的页面除外
@@ -94,6 +97,8 @@ async function checkCode(res = {}) {
         if (checkIsCurrentPage($$routes.content.CONTENT_END, _path)) return
         wx.redirectTo({url: $$routes.content.CONTENT_END})
         return
+      default:
+        break
     }
     throw requestException(res)
   }
@@ -135,7 +140,7 @@ export default {
     }).then((response) => {
       return checkStatus(response)
     }).then((res) => {
-      return checkCode(res)
+      return checkCode(res, url)
     })
   },
   get(url, params, loading = true) {
@@ -148,7 +153,7 @@ export default {
     }).then((response) => {
       return checkStatus(response)
     }).then((res) => {
-      return checkCode(res)
+      return checkCode(res, url)
     })
   },
   put(url, data, loading = true) {
@@ -161,7 +166,7 @@ export default {
     }).then((response) => {
       return checkStatus(response)
     }).then((res) => {
-      return checkCode(res)
+      return checkCode(res, url)
     })
   },
   delete(url, data, loading = true) {
@@ -174,7 +179,7 @@ export default {
     }).then((response) => {
       return checkStatus(response)
     }).then((res) => {
-      return checkCode(res)
+      return checkCode(res, url)
     })
   }
 }
