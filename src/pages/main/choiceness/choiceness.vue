@@ -361,7 +361,7 @@
       <!-- 兑换券弹窗 满赠  -->
       <certificate-modal ref="certificateModal" cname="z1000"></certificate-modal>
       <!--分享模块-->
-      <share-modal ref="shareModal"></share-modal>
+      <share-modal :endTime="endTime" ref="shareModal"></share-modal>
     </div>
   </form>
 </template>
@@ -476,7 +476,8 @@
         longitude: 0,
         shareModuleName: '',
         viewToItem: 'item0',
-        showSharePanel: false
+        showSharePanel: false,
+        endTime: ''
       }
     },
     computed: {
@@ -1076,6 +1077,7 @@
               if (item.module_name === ACTIVE_TYPE.GROUP_ON) {
                 API.Home.getGroupList({ limit: 20 }).then(res => {
                   this.groupList = this._formatListPriceData(res.data)
+                  this._getEndTime(res.data)
                 })
               } else {
                 API.Home.getActivityList({ activity_id: activityId, page: 1, limit: key.limit }).then(res => {
@@ -1113,6 +1115,15 @@
         } catch (e) {
           console.error(e)
         }
+      },
+      _getEndTime(res) {
+        if (!res || !res[0].end_at) return
+        let date = new Date(res[0].end_at)
+        const month = date.getMonth() + 1
+        const day = date.getDate()
+        const hour = date.getHours() < 10 ? '0' + date.getHours() : date.getHours()
+        const minute = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()
+        this.endTime = `${month}月${day}日 ${hour}:${minute}`
       },
       _showShareModal(item) {
         this.$refs.shareModal && this.$refs.shareModal._showShareFun(item)

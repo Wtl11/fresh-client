@@ -68,6 +68,12 @@
 
   export default {
     name: COMPONENT_NAME,
+    props: {
+      endTime: {
+        type: String,
+        default: ''
+      }
+    },
     components: {
       WePaint
     },
@@ -190,14 +196,14 @@
             topText: '太划算了吧，限时抢购速度抢',
             text1: '限时抢购',
             text2: '每日更新正在疯抢中',
-            text3: '本场 08月10日 21：00结束',
+            text3: `本场 ${this.endTime} 结束`,
             buyText: '抢'
           },
           groupon: {
             topText: '太划算了吧，拼团返现速度抢',
             text1: '拼团返现',
             text2: '与社区邻居拼团购',
-            text3: '本场 08月10日 21：00结束',
+            text3: `本场 ${this.endTime} 结束`,
             buyText: '拼'
           },
           free_shipping: {

@@ -50,7 +50,7 @@
       <p v-if="count" class="red-wrapper">{{count * 1 > 99 ? 99 : count}}</p>
     </button>
     <!--分享模块-->
-    <share-modal ref="shareModal"></share-modal>
+    <share-modal :endTime="endTime" ref="shareModal"></share-modal>
   </div>
   </form>
 </template>
@@ -104,7 +104,8 @@
         id: undefined, // 活动id
         sharing: false, // 分享中
         goChildPage: false,
-        groupInfo: {}
+        groupInfo: {},
+        endTime: ''
       }
     },
     computed: {
@@ -236,6 +237,7 @@
         try {
           let res = await API.FlashSale.getFlashTabList('', loading)
           this.tabList = res.data
+          this._getEndTime()
           if (this.tabList && this.tabList.length === 0) {
             wx.redirectTo({url: `${this.$routes.main.GOODS_END}`})
             return
@@ -249,6 +251,15 @@
         } catch (e) {
           console.error(e)
         }
+      },
+      _getEndTime() {
+        if (!this.tabList[this.tabIndex] || !this.tabList[this.tabIndex].end_at) return
+        let date = new Date(this.tabList[this.tabIndex].end_at)
+        const month = date.getMonth() + 1
+        const day = date.getDate()
+        const hour = date.getHours() < 10 ? '0' + date.getHours() : date.getHours()
+        const minute = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()
+        this.endTime = `${month}月${day}日 ${hour}:${minute}`
       },
       // 倒计时
       _countDownAction() {
