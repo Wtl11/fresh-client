@@ -334,23 +334,26 @@
             {
               el: `#goods-${idx} .unit`,
               drawType: 'text',
-              source: '￥',
-              color: '#ffffff'
+              source: '¥',
+              fontSize: 13,
+              color: '#ffffff',
+              yAdjust: 2
             },
             {
               el: `#goods-${idx} .price`,
               drawType: 'text',
               source: this.posterData.goods[idx].price,
               fontSize: 18,
-              height: '30px',
-              color: '#ffffff'
+              color: '#ffffff',
+              yAdjust: 4
             },
             {
               el: `#goods-${idx} .buy-text`,
               drawType: 'text-area',
               source: this.posterData.textArr.buyText,
-              fontSize: 13,
-              color: '#ffffff'
+              fontSize: 14,
+              color: '#ffffff',
+              yAdjust: 1
             }
           ]
           options.els = options.els.concat(goodsItem)
@@ -522,18 +525,20 @@
         bottom: 0
         width: 100%
         height: 24px
-        line-height: 24px
+        line-height : 1
         padding: 0 5px
         color: #fff
         background: #ff8300
-        layout(row)
-        justify-content: space-between
+        layout(row,block,nowrap)
+        align-items:center
         .price-con
-          font-family: $font-family-medium
-          font-size: 18px
+          flex: 1
+          .price
+            font-family: $font-family-medium
+            font-size: 18px
           .unit
-            font-size: 13px
             font-family: $font-family-regular
+            font-size: 13px
         .buy-text
           font-family: $font-family-regular
           font-size: 14px

@@ -251,10 +251,11 @@
           y: 0,
           width: this.panelW * this.multiple,
           height: this.panelH * this.multiple,
-          destWidth: this.panelW * 3,
-          destHeight: this.panelH * 3,
+          destWidth: this.panelW * 9,
+          destHeight: this.panelH * 9,
           canvasId: this.canvasId,
-          fileType: 'jpg'
+          fileType: 'jpg',
+          quality: 1
         }, ctx).then(res => {
           this.loading && wechat.hideLoading()
           this.preview && wechat.previewImage({ urls: [res.tempFilePath] })
