@@ -33,6 +33,7 @@
                        :src="imageUrl + '/yx-image/article/pic-out_stock@2x.png'"
                        mode="aspectFill"
                        class="box-top-img fix-pic">
+                  <!--<div v-if="item.usable_stock <= 0" class="sold-out">已抢光</div>-->
                 </div>
                 <div class="classify-box-bottom">
                   <div class="title">{{item.name}}</div>
@@ -516,4 +517,25 @@
   .price-right
     &:after
       border: none
+
+  .sold-out
+    opacity: 0.75
+    background: rgba(0, 0, 0, 0.6)
+    position: absolute
+    left: 0
+    top: 0
+    bottom: 0
+    right: 0
+    z-index: 9
+    width: 70%
+    height: @width
+    margin: auto
+    color: #fff
+    font-family: $font-family-medium
+    font-size: $font-size-16
+    text-align: center
+    border-radius: 100%
+    layout()
+    align-items: center
+    justify-content: center
 </style>

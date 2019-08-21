@@ -11,7 +11,7 @@
           </nav>
         </dt>
         <dd class="bottom-wrapper">
-          <button class="share-button" open-type="share" formType="submit">
+          <button class="share-button" @click="_showShareModal">
             <img class="share-img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/icon-sharexsqg@2x.png'" alt="">
             <p class="share-text">分享</p>
           </button>
@@ -49,6 +49,8 @@
       <img class="car-img" mode="aspectFill" v-if="imageUrl" :src="imageUrl + '/yx-image/2.3/icon-shopcart@2x.png'" alt="">
       <p v-if="count" class="red-wrapper">{{count * 1 > 99 ? 99 : count}}</p>
     </button>
+    <!--分享模块-->
+    <share-modal :endTime="endTime" ref="shareModal"></share-modal>
   </div>
   </form>
 </template>
@@ -62,6 +64,7 @@
   import ShareTrick from '@mixins/share-trick'
   import {cartComputed} from '@state/helpers'
   import ClearWatch from '@mixins/clear-watch'
+  import ShareModal from '@components/share-modal/share-modal'
 
   const PAGE_NAME = 'FLASH_SALE_LIST'
   const SHARE_IMG = {
@@ -80,7 +83,8 @@
     mixins: [ShareHandler, ShareTrick, ClearWatch],
     components: {
       NavigationBar,
-      ClassifyItem
+      ClassifyItem,
+      ShareModal
     },
     data() {
       return {
@@ -100,7 +104,8 @@
         id: undefined, // 活动id
         sharing: false, // 分享中
         goChildPage: false,
-        groupInfo: {}
+        groupInfo: {},
+        endTime: ''
       }
     },
     computed: {
@@ -173,6 +178,7 @@
     },
     onHide() {
       this.timer && clearInterval(this.timer)
+      this.$refs.shareModal && this.$refs.shareModal._initData()
     },
     methods: {
       // 获取团长的信息
@@ -219,6 +225,7 @@
         })
         this._resetListParams()
         this._getTabList(0, false)
+        this.$refs.shareModal && this.$refs.shareModal._initData()// 切换tab后要重置分享的参数
       },
       // 重置
       _resetListParams() {
@@ -230,6 +237,7 @@
         try {
           let res = await API.FlashSale.getFlashTabList('', loading)
           this.tabList = res.data
+          this._getEndTime()
           if (this.tabList && this.tabList.length === 0) {
             wx.redirectTo({url: `${this.$routes.main.GOODS_END}`})
             return
@@ -243,6 +251,15 @@
         } catch (e) {
           console.error(e)
         }
+      },
+      _getEndTime() {
+        if (!this.tabList[this.tabIndex] || !this.tabList[this.tabIndex].end_at) return
+        let date = new Date(this.tabList[this.tabIndex].end_at)
+        const month = date.getMonth() + 1
+        const day = date.getDate()
+        const hour = date.getHours() < 10 ? '0' + date.getHours() : date.getHours()
+        const minute = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()
+        this.endTime = `${month}月${day}日 ${hour}:${minute}`
       },
       // 倒计时
       _countDownAction() {
@@ -282,6 +299,14 @@
         }).catch(() => {
           callback && callback()
         })
+      },
+      _showShareModal() {
+        let moduleItem = {
+          module_name: 'activity_fixed',
+          list: this.goodsList,
+          id: this.currentObj.id
+        }
+        this.$refs.shareModal && this.$refs.shareModal._showShareFun(moduleItem)
       }
     }
   }

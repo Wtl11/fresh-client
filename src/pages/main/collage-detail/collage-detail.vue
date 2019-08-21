@@ -458,9 +458,9 @@
           arr[index] = item
         })
         this.grouponHead = arr
-        // 没参团先获取定位信息
+        // 没参团先检查是否是新客，如果是新客再获取定位信息
         if (!this.isGroup) {
-          this._initLocation()
+          this._checkNewClient()
         }
         if ((!this.isGroup && +this.status === 1) || (!this.isGroup && this.isActivityEnd)) {
           this.getCarRecommend()
@@ -634,6 +634,14 @@
           this.recommendList = arr
         }
         this.hasMore = res.data.length > 0 && res.data.length >= 10
+      },
+      _checkNewClient() {
+        // 检查是否有拼团订单，没有订单才判断地理位置, 没有0 有1
+        API.Global.checkHasGroupOrder().then(res => {
+          if (res.data && res.data.is_buy_groupon === 0) {
+            this._initLocation()
+          }
+        })
       },
       // 初始化地理位置
       _initLocation() {

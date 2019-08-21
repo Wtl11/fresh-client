@@ -4,6 +4,7 @@
 <!--      <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.1/icon-qiang2@2x.png'" alt="" class="top-label" mode="aspectFill">-->
       <!--<img v-if="imageUrl && corpName === 'retuan'" :src="imageUrl + '/yx-image/retuan/icon-label2@2x.png'" alt="" class="top-label" mode="aspectFill">-->
       <img v-if="item.goods_cover_image" :src="item.goods_cover_image" alt="" class="box-top-img" mode="aspectFill">
+      <div v-if="item.usable_stock <= 0" class="sold-out">已抢光</div>
     </figure>
     <section class="classify-box-bottom">
       <div class="title">{{item.name}}</div>
@@ -162,4 +163,24 @@
             width: 23px
             height: 23px
             display: block
+  .sold-out
+    opacity: 0.75
+    background: rgba(0, 0, 0, 0.6)
+    position: absolute
+    left: 0
+    top: 0
+    bottom: 0
+    right: 0
+    z-index: 9
+    width: 70%
+    height: @width
+    margin: auto
+    color: #fff
+    font-family: $font-family-medium
+    font-size: $font-size-16
+    text-align: center
+    border-radius: 100%
+    layout()
+    align-items: center
+    justify-content: center
 </style>

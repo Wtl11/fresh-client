@@ -6,6 +6,11 @@ export default {
     const url = `/api/wap/check-new-client`
     return request.get({url, data, loading, toast})
   },
+  // 检查是否有拼团订单
+  checkHasGroupOrder(data = null, loading = false, toast = false) {
+    const url = `/api/wap/check-groupon-order`
+    return request.get({url, data, loading, toast})
+  },
   // 当前位置离自提点距离判断[v2.4.1.2]
   checkShopDistance(data = null, loading = false, toast = false) {
     const url = `/api/wap/shop-distance-judge`

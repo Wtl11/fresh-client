@@ -29,11 +29,11 @@
       <ul class="nav-row">
         <li v-for="(item, index) in rowNavList" :key="index" class="item-wrapper" :class="item.cname" @click="handleClick(item)">
           <div class="row-con">
-            <p v-if="item.titleIsArray" class="title">{{item.title}}</p>
+            <p v-if="item.leaderService" class="title">{{item.title}}</p>
             <p class="explain">查看全部</p>
             <img class="arrow-img" mode="aspectFill" v-if="imageUrl && !item.hideArrow" :src="imageUrl + '/yx-image/2.3/icon-pressed@2x.png'">
           </div>
-          <div v-if="isLeader && item.hasData" class="row-con data-con">
+          <div v-if="isLeader && orderTotal.today_income" class="row-con data-con">
             <div class="data-box">
               <p class="data-val">{{orderTotal.today_income}}</p>
               <p class="data-title">今日收入(元)</p>
@@ -88,15 +88,6 @@
         navList: [
           {
             cname: '',
-            icon: '/yx-image/2.4/icon-mypt_me@2x.png',
-            title: '我的拼团',
-            url: this.$routes.main.MY_GROUP_BUY,
-            fn: '_handleNav',
-            type: 'top',
-            isShow: true
-          },
-          {
-            cname: '',
             icon: '/yx-image/2.4/icon-coupon_me@2x.png',
             title: '优惠券',
             hasExplain: 1,
@@ -126,8 +117,17 @@
           },
           {
             cname: '',
+            icon: '/yx-image/2.4/icon-mypt_me@2x.png',
+            title: '我的拼团',
+            url: this.$routes.main.MY_GROUP_BUY,
+            fn: '_handleNav',
+            type: 'top',
+            isShow: true
+          },
+          {
+            cname: '',
             icon: '/yx-image/2.4/icon-address_me@2x.png',
-            title: '自提点',
+            title: '提货点',
             url: '',
             fn: '_navigateLocation',
             type: 'top',
@@ -184,7 +184,7 @@
           {
             icon: '/yx-image/2.4/icon-myxq_me@2x.png',
             title: '团长服务',
-            titleIsArray: true,
+            leaderService: true,
             url: '',
             fn: '_handleNav',
             hasData: true
@@ -212,7 +212,7 @@
         typeof this[item.fn] === 'function' && this[item.fn](item)
       },
       _handleNav(item) {
-        if (item.titleIsArray) {
+        if (item.leaderService) {
           this._goMyHosing()
         } else {
           wx.navigateTo({ url: `${item.url}` })
@@ -220,6 +220,7 @@
       },
       // 跳转我的小区
       _goMyHosing() {
+        this.isLeader = wx.getStorageSync('isLeader') || false
         let page = this.isLeader ? this.$routes.leader.REGIMENTAL_COMMANDER : this.$routes.leader.MINE_HOUSING
         wx.navigateTo({ url: page })
       },

@@ -302,6 +302,7 @@
                   :src="imageUrl + '/yx-image/2.9/pic-xrth@2x.png'"
                   class="banner-image">
                 <button v-if="item.module_name !== ACTIVE_TYPE.GUESS" class="share-button" open-type="share" :id="'share-' + item.module_name"></button>
+                <!--<button v-if="item.module_name !== ACTIVE_TYPE.GUESS" class="share-button" :id="'share-' + item.module_name" @click="_showShareModal(item)"></button>-->
                 <block v-for="(child, idx) in item.list" :key="idx">
                   <div class="panel-goods-wrapper"
                        @click="handleJumpToGoodsDetail(child, item.module_name)"
@@ -378,6 +379,10 @@
       <!--    添加至我的小程序-->
       <new-guidelines ref="guidelines"></new-guidelines>
       <distance-check ref="distance"></distance-check>
+      <!-- 兑换券弹窗 满赠  -->
+      <certificate-modal ref="certificateModal" cname="z1000"></certificate-modal>
+      <!--分享模块-->
+      <share-modal :endTime="endTime" ref="shareModal"></share-modal>
     </div>
   </form>
 </template>
@@ -401,6 +406,8 @@
   import Ald from '@utils/ald'
   import InvitationModal from './invitation-modal/invitation-modal'
   import CouponAfterSale from './coupon-after-sale/coupon-after-sale'
+  import CertificateModal from './certificate-modal/certificate-modal'
+  import ShareModal from '@components/share-modal/share-modal'
 
   // import GetOptions from '@mixins/get-options'
 
@@ -424,7 +431,9 @@
       LoadingMore,
       DistanceCheck,
       InvitationModal,
-      CouponAfterSale
+      CouponAfterSale,
+      CertificateModal,
+      ShareModal
     },
     data() {
       this._isLoading = false
@@ -489,7 +498,9 @@
         latitude: 0,
         longitude: 0,
         shareModuleName: '',
-        viewToItem: 'item0'
+        viewToItem: 'item0',
+        showSharePanel: false,
+        endTime: ''
       }
     },
     computed: {
@@ -574,6 +585,8 @@
       })
     },
     onHide() {
+      this.$refs.shareModal && this.$refs.shareModal._hideShareModal()
+      this.$refs.shareModal && this.$refs.shareModal._initData()
     },
     onPageScroll(e) {
       if (this.guessList.length === 0) {
@@ -882,6 +895,9 @@
           case 'mini_link':
             url = `${item.url}`
             break
+          case 'activity_cate':
+            url = `${this.$routes.main.FLASH_SALE_LIST}`
+            break
           default:
             url = `${this.$routes.main.OUT_HTML}?url=${item.url}`
             break
@@ -988,6 +1004,7 @@
           let normalCoupon = []
           let invCoupon = []
           let couponAfterSale = []
+          let fitGift = []
           if (res && res.data && res.data.length) {
             res.data.forEach((item) => {
               switch (item.type) {
@@ -997,6 +1014,14 @@
                 case 8:
                   couponAfterSale.push(item)
                   break
+                case 9:
+                  let coupon = item.coupon || {}
+                  if (+coupon.tag_type === 2) {
+                    fitGift.push(item)
+                  } else {
+                    normalCoupon.push(item)
+                  }
+                  break
                 default:
                   normalCoupon.push(item)
                   break
@@ -1005,6 +1030,7 @@
             invCoupon.length && this._ref('invModal', 'show', invCoupon)
             normalCoupon.length && this._ref('couponModal', 'show', normalCoupon)
             couponAfterSale.length && this._ref('couponAfterSale', 'show', couponAfterSale)
+            fitGift.length && this._ref('certificateModal', 'show', fitGift)
           }
         }).catch(e => {
           console.error(e)
@@ -1053,13 +1079,13 @@
       // 初始化页面配置
       _initPageParams(options = {}) {
         // let options = this._$$initOptions()
-        this.shopId = options.shopId
+        this.shopId = options.shopId || options.s
         if (options.scene) {
           let { shopId } = resolveQueryScene(options.scene)
           this.shopId = shopId
         }
         this.shopId > 0 && wx.setStorageSync('shopId', this.shopId)
-        this.shareModuleName = options.moduleName || ''
+        this.shareModuleName = options.moduleName || options.mn || ''
         console.warn(options, '==>home')
       },
       // 获取模块信息
@@ -1071,12 +1097,14 @@
           this.activityModuleList.forEach((item) => {
             index++
             let key = TAB_ARR_CONFIG[item.module_name]
+            if (!key) return
             let activityId = item.starting_point_id || 0
             // 所有活动
             if (activityId > 0 && item.module_name !== ACTIVE_TYPE.FLASH) {
               if (item.module_name === ACTIVE_TYPE.GROUP_ON) {
                 API.Home.getGroupList({ limit: 20 }).then(res => {
                   this.groupList = this._formatListPriceData(res.data)
+                  this._getEndTime(res.data)
                 })
               } else {
                 API.Home.getActivityList({ activity_id: activityId, page: 1, limit: key.limit }).then(res => {
@@ -1095,7 +1123,7 @@
                   this.purchaseList = res.data
                 })
               } else {
-                this[key.dataArray] = []
+                (key && key.dataArray) && (this[key.dataArray] = [])
               }
             }
             // 限时抢购活动
@@ -1119,6 +1147,18 @@
         } catch (e) {
           console.error(e)
         }
+      },
+      _getEndTime(res) {
+        if (!res || !res[0].end_at) return
+        let date = new Date(res[0].end_at)
+        const month = date.getMonth() + 1
+        const day = date.getDate()
+        const hour = date.getHours() < 10 ? '0' + date.getHours() : date.getHours()
+        const minute = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()
+        this.endTime = `${month}月${day}日 ${hour}:${minute}`
+      },
+      _showShareModal(item) {
+        this.$refs.shareModal && this.$refs.shareModal._showShareFun(item)
       }
     }
   }

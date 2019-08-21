@@ -48,5 +48,10 @@ export default {
   getCarRecommend(data = null, loading = false) {
     const url = `/api/wap/recommend/goods`
     return request.get(url, data, loading)
+  },
+  // 勾选购物车获得提示信息
+  chooseGoods4Tips(data, loading = false) {
+    const url = `/api/wap/choose-cart-goods-tips`
+    return request.post(url, data, loading)
   }
 }

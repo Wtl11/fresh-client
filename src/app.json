@@ -62,6 +62,7 @@
     {
       "root": "package-activity/",
       "pages": [
+        "choose-certificate",
         "commodity-certificates",
         "my-record",
         "invitation-introduction",
@@ -93,7 +94,8 @@
         "bank-card",
         "sale-service",
         "find-product",
-        "copy-detail"
+        "copy-detail",
+        "address-list"
       ]
     }
   ],
@@ -109,6 +111,12 @@
       "network": "all",
       "packages": [
         "package-content/"
+      ]
+    },
+    "pages/submit-order": {
+      "network": "all",
+      "packages": [
+        "package-activity"
       ]
     }
   },

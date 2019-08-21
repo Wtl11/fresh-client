@@ -33,6 +33,7 @@ export default {
     INVITATION_INTRODUCTION:`${ACTIVITY}/invitation-introduction`,
     MY_RECORD:`${ACTIVITY}/my-record`,
     COMMODITY_CERTIFICATES:`${ACTIVITY}/commodity-certificates`,
+    CHOOSE_CERTIFICATE:`${ACTIVITY}/choose-certificate`,
     // package-activity
   },
   leader: {
@@ -58,6 +59,7 @@ export default {
     LEADER_INVITE_SUCCESS: `${LEADER}/leader-invite-success`,
     APPLY_LEADER: `${LEADER}/apply-leader`,
     BIND_WX_WALLET:`${LEADER}/bind-wx-wallet`,
+    ADDRESS_LIST:`${LEADER}/address-list`,
     // package-leader
   },
   main: {

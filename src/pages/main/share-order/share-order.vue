@@ -34,12 +34,17 @@
     <div class="gary-box"></div>
     <div class="order-list">
       <div class="order-item">
-        <div class="goods-item" v-for="(item, index) in orderMsg.goods" :key="index"  @click="jumpGoodsDetail(item)">
+        <div class="goods-item"
+             v-for="(item, index) in orderMsg.goods"
+             :key="index"
+             :class="{isGift: orderMsg.goods[index+1] && orderMsg.goods[index+1].is_gift}"
+             @click="jumpGoodsDetail(item)"
+        >
           <div class="goods-info-box">
             <img class="goods-img" mode="aspectFill" :src="item.image_url" alt="">
             <div class="goods-info">
               <div class="tit share-tit">
-                <div class="name">{{item.goods_name}}</div>
+                <p class="name"><span v-if="item.is_gift" class="icon-tag">赠品</span><span class="text">{{item.goods_name}}</span></p>
                 <div class="share-tit-btn">立即抢购</div>
               </div>
               <div class="guige">规格：{{item.goods_units}}</div>
@@ -267,6 +272,16 @@
     justify-content: space-between
     align-items: center
     border-bottom-1px($color-line)
+    &.isGift
+      position: relative
+      &:after
+        content: ""
+        position: absolute
+        bottom: 0
+        right: 0
+        left : 3.2vw
+        transform: scaleY(.5) translateZ(0)
+        border-bottom: 1px solid $color-line
     .goods-info-box
       layout(row)
       flex: 1
@@ -292,13 +307,32 @@
         height: 16px
         justify-content: space-between
         .name
-          width: 61.2vw
+          display :flex
+          align-items :center
+          flex : 1
+          overflow :hidden
+          padding-right :5px
           font-family: $font-family-medium
           font-size: $font-size-14
           color: $color-sub
           min-height: 16px
           letter-spacing: 0.3px
-          no-wrap()
+          width: 30vw
+          .text
+            flex: 1
+            no-wrap()
+          .icon-tag
+            display :inline-block
+            background: rgba(255,104,3,0.10);
+            border-1px(#FF6803, 14px)
+            border-radius: 14px;
+            height: 14px
+            line-height :@height
+            padding :0 4px
+            font-family: $font-family-regular
+            font-size: 11px
+            color: #FF6803;
+            margin-right: 4px
         .quantity
           font-family: $font-family-regular
           font-size: $font-size-12

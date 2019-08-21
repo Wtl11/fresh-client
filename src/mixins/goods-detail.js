@@ -10,11 +10,15 @@ export default {
     }
   },
   methods: {
-    // 获取地理位置
-    async _getLocation() {
+    // 检查是否能参加拼团活动
+    async _checkCanGroup() {
       if (this.activityType !== ACTIVE_TYPE.GROUP_ON) return
       if (this.latitude && this.longitude) return
+      const hasOrder = await API.Global.checkHasGroupOrder()
+      // 检查是否有拼团订单，没有订单才判断地理位置, 没有0 有1
+      if (hasOrder.data && hasOrder.data.is_buy_groupon === 1) return
       try {
+        // 获取地理位置
         let res = await this.$wechat.getLocation()
         this.longitude = res.longitude
         this.latitude = res.latitude

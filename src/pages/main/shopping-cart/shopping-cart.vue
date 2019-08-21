@@ -10,48 +10,71 @@
             <img class="sel-box" v-if="imageUrl && allChecked" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
             <img class="sel-box" v-if="imageUrl && !allChecked" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt=""/>
             <img class="postage-icon" v-if="imageUrl" :src="imageUrl+'/yx-image/postage/icon-ziti_shopping@2x.png'" alt=""/>
-            <div class="postage-text">自提</div>
+            <div class="postage-text">自提商品</div>
           </div>
         </div>
-        <div class="shop-item" :class="{'shop-item-opcta' : !item.allowCheck}" v-for="(item, index) in goodsList" :key="item.id">
-          <img class="sel-box" @click.stop="toggleCheck(index)" v-if="imageUrl && !item.checked && item.allowCheck" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt=""/>
-          <!--<img class="sel-box" v-if="imageUrl && !item.allowCheck" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt="" />-->
-          <div class="sel-box sel-clr-box" v-if="imageUrl && !item.allowCheck"></div>
-          <img class="sel-box" @click.stop="toggleCheck(index)" v-if="imageUrl && item.checked && item.allowCheck" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
-          <button formType="submit" class="goods-image" @click.stop="jumpGoodsDetail(item)">
-            <img class="goods-img" mode="aspectFill" :src="item.goods_cover_image" alt="">
-            <div class="robbed" v-if="item.num <= 0">已抢完</div>
-            <div class="robbed" v-else-if="item.activity && item.activity.activity_theme === ACTIVE_TYPE.NEW_CLIENT && item.is_new_client !== 1">新人专属</div>
-          </button>
-          <div class="good-info">
-            <div formType="submit" class="top" @click.stop="jumpGoodsDetail(item)">
-              <div class="title">{{item.name}}</div>
-              <button formType="submit" class="del" @click.stop="delGoodsInfo(index, item.id)">
-                <img class="del-img" v-if="imageUrl" :src="imageUrl + '/yx-image/cart/icon_delete@2x.png'" alt="">
-              </button>
-            </div>
-            <div class="bot">
-              <div formType="submit" class="left" @click.stop="jumpGoodsDetail(item)">
-                <div class="spec" v-if="item.goods_units">规格：{{item.goods_units}}</div>
-                <div class="remain">
-                  <div class="txt" :class="'corp-' + corpName + '-money-text'" v-if="item.is_urgency">仅剩{{item.usable_stock}}件</div>
-                </div>
-                <div class="price" :class="'corp-' + corpName + '-money'" v-if="item.trade_price">
-                  <span class="num">{{item.trade_price}}</span>
-                  <span class="unit">元</span>
-                  <img class="new-user-img" v-if="imageUrl && item.activity && item.activity.activity_theme === ACTIVE_TYPE.NEW_CLIENT" :src="imageUrl + '/yx-image/2.4/pic-newlabel@2x.png'" alt="">
-                </div>
+        <article v-if="fitGift.id" class="tip-common-wrapper tip-fulfil-gift" @click="tipNavHandle('certificate')">
+          <p class="left">{{fitGift.gift_icon_str}}</p>
+          <p class="middle">{{fitGift.gift_tips||''}}</p>
+          <div class="right">{{fitGift.is_gift_satisfied?'再逛逛':'去凑单'}}<block v-if="imageUrl"><img class="right-arrow" mode="aspectFill" :src="imageUrl + '/yx-image/2.3/icon-pressed@2x.png'"></block></div>
+        </article>
+        <block v-for="(item, index) in goodsList" :key="item.id">
+          <article
+            v-if="tipList[index] && tipList[index].isDefault"
+            class="default-goods-line"
+            :class="{'hidden-top-line': !index}"
+          >
+          </article>
+          <article
+            v-else-if="tipList[index]"
+            class="tip-common-wrapper tip-coupon"
+            :class="{'hidden-top-line': !index}"
+            @click="tipNavHandle('coupon', item, index)"
+          >
+            <p class="left">{{tipList[index].coupon_icon_str}}</p>
+            <p class="middle">{{tipList[index].common_coupon_tips || tipList[index].cate_coupon_tips || tipList[index].goods_coupon_tips||''}}</p>
+            <div class="right">{{(tipList[index].is_common_coupon_satisfied||tipList[index].is_cate_coupon_satisfied||tipList[index].is_goods_coupon_satisfied)?'再逛逛':'去凑单'}}<block v-if="imageUrl"><img class="right-arrow" mode="aspectFill" :src="imageUrl + '/yx-image/2.3/icon-pressed@2x.png'"></block></div>
+          </article>
+          <div class="shop-item" :class="{'shop-item-opcta' : !item.allowCheck}" >
+            <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && !item.checked && item.allowCheck" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt=""/>
+            <!--<img class="sel-box" v-if="imageUrl && !item.allowCheck" :src="imageUrl+'/yx-image/cart/icon-pick@2x.png'" alt="" />-->
+            <div class="sel-box sel-clr-box" v-if="imageUrl && !item.allowCheck"></div>
+            <img class="sel-box" @click.stop="toggelCheck(index)" v-if="imageUrl && item.checked && item.allowCheck" :src="imageUrl+'/yx-image/cart/icon-pick1@2x.png'" alt=""/>
+            <button formType="submit" class="goods-image" @click.stop="jumpGoodsDetail(item)">
+              <img class="goods-img" mode="aspectFill" :src="item.goods_cover_image" alt="">
+              <div class="robbed" v-if="item.num <= 0">已抢完</div>
+              <div class="robbed" v-else-if="item.activity && item.activity.activity_theme === ACTIVE_TYPE.NEW_CLIENT && item.is_new_client !== 1">新人专属</div>
+            </button>
+            <div class="good-info">
+              <div formType="submit" class="top" @click.stop="jumpGoodsDetail(item)">
+                <div class="title">{{item.name}}</div>
+                <button formType="submit" class="del" @click.stop="delGoodsInfo(index, item.id)">
+                  <img class="del-img" v-if="imageUrl" :src="imageUrl + '/yx-image/cart/icon_delete@2x.png'" alt="">
+                </button>
               </div>
-              <div class="right">
-                <div class="number-box">
-                  <button formType="submit" class="minus" @click.stop="subNum(index, item.num, item.id)">-</button>
-                  <div class="num">{{item.num}}</div>
-                  <button formType="submit" class="add" @click.stop="addNum(index, item.num, item.buy_limit, item.id)">+</button>
+              <div class="bot">
+                <div formType="submit" class="left" @click.stop="jumpGoodsDetail(item)">
+                  <div class="spec" v-if="item.goods_units">规格：{{item.goods_units}}</div>
+                  <div class="remain">
+                    <div class="txt" :class="'corp-' + corpName + '-money-text'" v-if="item.is_urgency">仅剩{{item.usable_stock}}件</div>
+                  </div>
+                  <div class="price" :class="'corp-' + corpName + '-money'" v-if="item.trade_price">
+                    <span class="num">{{item.trade_price}}</span>
+                    <span class="unit">元</span>
+                    <img class="new-user-img" v-if="imageUrl && item.activity && item.activity.activity_theme === ACTIVE_TYPE.NEW_CLIENT" :src="imageUrl + '/yx-image/2.4/pic-newlabel@2x.png'" alt="">
+                  </div>
+                </div>
+                <div class="right">
+                  <div class="number-box">
+                    <button formType="submit" class="minus" @click.stop="subNum(index, item.num, item.id)">-</button>
+                    <div class="num">{{item.num}}</div>
+                    <button formType="submit" class="add" @click.stop="addNum(index, item.num, item.buy_limit, item.id)">+</button>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </block>
       </div>
       <!--全国包邮-->
       <div class="shop-list postage-list" v-if="postageList.length">
@@ -239,7 +262,10 @@
         postageList: [],
         isShowType: false,
         isSelfGoods: true,
-        typeText: ACTIVE_TYPE_TEXT
+        typeText: ACTIVE_TYPE_TEXT,
+        tipList: [], // 提示数组
+        fitGift: {}, // 满赠对象
+        isRefresh: false
       }
     },
     async onTabItemTap() {
@@ -252,8 +278,6 @@
     },
     async onShow() {
       if (!wx.getStorageSync('token')) return
-      await this._getShopCart(this.firstLoad)
-      this.firstLoad = false
       let shopId = wx.getStorageSync('shopId')
       if (!shopId) {
         let res = await API.Choiceness.getDefaultShopInfo()
@@ -268,9 +292,22 @@
         })
         this.page = 1
         this.hasMore = true
+        this.resetTipsConfig()
         this.getCarRecommend()
       }
       this.curShopId = shopId
+      await this._getShopCart(this.firstLoad)
+      this.firstLoad = false
+    },
+    onHide() {
+      this.goodsList = this.goodsList.map(item => {
+        item.checked = false
+        return item
+      })
+      this.postageList = this.postageList.map(item => {
+        item.checked = false
+        return item
+      })
     },
     onReachBottom() {
       if (!this.hasMore) return
@@ -280,6 +317,7 @@
     async onPullDownRefresh() {
       this.page = 1
       this.hasMore = true
+      this.isRefresh = true
       Promise.all([
         this.getCarRecommend(),
         this._getShopCart(this.firstLoad)
@@ -317,6 +355,36 @@
     methods: {
       ...orderMethods,
       ...cartMethods,
+      resetTipsConfig () {
+        this.fitGift = {}
+        this.tipList = []
+      },
+      _getCarTips() {
+        let arr = []
+        this.goodsList.forEach(item => {
+          if (item.checked) {
+            arr.push({
+              card_id: item.cart_id
+            })
+          }
+        })
+        API.Cart.chooseGoods4Tips({choose_carts: arr}).then((res) => {
+          if (res.error !== this.$ERR_OK) return
+          const resData = res.data || []
+          let obj = {}
+          let idx = 0
+          this.resetTipsConfig()
+          resData.forEach((item, index) => {
+            if (item.source_type === 1) {
+              this._formatData4TipList(item, idx, obj)
+              idx++
+            }
+          })
+        })
+      },
+      tipNavHandle(type, item, index) {
+        wx.switchTab({url: this.$routes.main.CHOICENESS})
+      },
       recommendJumpGoodsDetail(item) {
         wx.navigateTo({
           url: `${this.$routes.main.GOODS_DETAIL}?id=${item.goods_id || 0}&activityId=${item.activity_id || 0}`
@@ -326,7 +394,7 @@
         if (!this.$isLogin()) {
           return
         }
-        API.Choiceness.addShopCart({goods_sku_id: item.goods_sku_id || 0, activity_id: item.activity_id || 0}).then((res) => {
+        API.Choiceness.addShopCart({goods_sku_id: item.goods_sku_id || 0, activity_id: item.activity_id || 0}).then(async (res) => {
           if (res.error === this.$ERR_OK) {
             this.$sendMsg({
               event_no: 1007,
@@ -334,7 +402,8 @@
               title: item.name
             })
             // this.$emit('_getShopCart')
-            this._getShopCart()
+            await this._getShopCart()
+            this._getCarTips()
             this.$wechat.showToast('加入购物车成功', 1000, false)
             this.setCartCount()
           } else {
@@ -350,19 +419,26 @@
           this.$wechat.showToast(res.message)
           return
         }
-        res.data.forEach((item) => {
-          let usableStock = item.usable_stock * 1
-          item.num = item.num <= usableStock ? item.num : usableStock
-          item.num > 0 ? item.checked = true : item.checked = false
-          item.allowCheck = this._allowCheckHandle(item)
-        })
+        let dataArray = this.goodsList.concat(this.postageList)
+        if (this.isRefresh) {
+          dataArray = []
+          this.isRefresh = false
+        }
         let goodsList = []
         let postageList = []
-        res.data.forEach((item) => {
-          if (item.source_type * 1 === 1) {
-            goodsList.push(item)
-          } else {
+        let isGlobalModal
+        let obj = {}
+        let idx = 0
+        this.resetTipsConfig()
+        res.data.forEach((item, index) => {
+          item = this._formatItemStatus(dataArray, item)
+          isGlobalModal = item.source_type != null && +item.source_type !== 1
+          if (isGlobalModal) {
             postageList.push(item)
+          } else {
+            this._formatData4TipList(item, idx, obj)
+            idx++
+            goodsList.push(item)
           }
         })
         this.goodsList = goodsList
@@ -370,6 +446,46 @@
         this.goodsList.length > 0 || this.postageList.length > 0 ? this.isShowCart = false : this.isShowCart = true
         this.deliverAt = res.delivery_at
         this.setCartCount()
+      },
+      _formatItemStatus(dataArray, item) {
+        let oldItem = dataArray.find(val => val.id === item.id)
+        let usableStock = item.usable_stock * 1
+        item.num = item.num <= usableStock ? item.num : usableStock
+        if (oldItem) {
+          item.checked = oldItem.checked
+        } else {
+          item.checked = false
+        }
+        item.allowCheck = this._allowCheckHandle(item)
+        return item
+      },
+      _formatData4TipList(item, index, obj) {
+        // 处理满赠兑换券
+        if (item.is_gift && !this.fitGift.id) {
+          this.fitGift = item
+        }
+        // 处理营销提示
+        if (item.is_common_coupon) { // 为通用券时
+          !this.tipList[0] && (this.tipList[0] = item)
+        } else if (item.is_cate_coupon) { // 为品类券时
+          let key = item.cate_coupon_id + 'cate'
+          if (!obj[key]) {
+            obj[key] = true
+            this.tipList[index] = item
+          }
+        } else if (item.is_goods_coupon) { // 为单品券时
+          let key = item.goods_coupon_id + 'single'
+          if (!obj[key]) {
+            obj[key] = true
+            this.tipList[index] = item
+          }
+        } else {
+          if (!obj['noDiscount']) {
+            obj['noDiscount'] = true
+            item.isDefault = true
+            this.tipList[index] = item
+          }
+        }
       },
       _allowCheckHandle(item) {
         if (item.activity && item.activity.activity_theme === ACTIVE_TYPE.NEW_CLIENT) {
@@ -430,6 +546,9 @@
         } else {
           this.goodsList[i].num = num
         }
+        if (this.goodsList[i].checked) {
+          this._getCarTips()
+        }
         this.setCartCount()
       },
       jumpGoodsDetail(item, goodsType) {
@@ -474,9 +593,11 @@
           this.isShowCart = true
         }
         this.$wechat.showToast(res.message)
+        this._getCarTips()
       },
-      toggleCheck(i) {
+      toggelCheck(i) {
         this.goodsList[i].checked = !this.goodsList[i].checked
+        this._getCarTips()
       },
       toggleCheckAll() {
         let goodsList = this.goodsList
@@ -489,6 +610,7 @@
           }
         })
         this.goodsList = goodsList
+        this._getCarTips()
       },
       // 老结算函数
       submitOrderOld() {
@@ -547,8 +669,9 @@
             item.checked = false
           }
         })
-        // 全国包邮
         this.goodsList = goodsList
+        this._getCarTips()
+        // 全国包邮
         let postageList = this.postageList
         postageList.forEach((item) => {
           if (!currentAllChecked && item.allowCheck) {
@@ -615,12 +738,6 @@
       },
       // 全国包邮支付
       _payPostage() {
-        // const postageList = objDeepCopy(this.checkedPostage).map(item => {
-        //   if (item.is_new_client === 0) { // 老人0 新人1
-        //     item.trade_price = item.goods_sale_price
-        //   }
-        //   return item
-        // })
         const postageList = objDeepCopy(this.checkedPostage)
         const total = postageList.reduce((total, current) => {
           let money = (total * 1) + (current.trade_price * current.num)
@@ -641,6 +758,69 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@designCommon"
+
+  /*提示栏start*/
+  .tip-common-wrapper
+    font-family: $font-family-regular
+    line-height: 1
+    layout(row,block,nowrap)
+    .left
+      background: #FF6803;
+      height :14px
+      border-radius: @height
+      line-height: @height
+      font-size: 11px
+      color: #fff
+      padding: 0 3.5px
+    .middle
+      flex:1
+      font-family: $font-family-medium
+      font-size:13px
+      color:#000
+      padding :0 6px 0 4px
+      line-height : 1.2
+    .right
+      font-size: 13px
+      color: #000
+      align-self  center
+      .right-arrow
+        margin-left: 5px
+        width: 5.5px
+        height: 10.5px
+        line-height: 15px
+  .tip-fulfil-gift
+    background: #F6F9F4;
+    padding :14.5px 12px
+  .tip-coupon
+    padding :20px 12px 7px 45px
+    position: relative
+    &:before
+      content: ""
+      position: absolute
+      top: 0
+      left: 12px
+      right : 0
+      border-top: 1px solid $color-line
+      transform: scaleY(.5) translateZ(0)
+    &.hidden-top-line
+      &:before
+        display :none
+  .default-goods-line
+    position: relative
+    &:before
+      content: ""
+      position: absolute
+      top: 0
+      left: 12px
+      right : 0
+      border-top: 1px solid $color-line
+      transform: scaleY(.5) translateZ(0)
+    &.hidden-top-line
+      &:before
+        display :none
+
+  /*提示栏end*/
+
 
   .wrap
     width: 100vw
@@ -762,7 +942,7 @@
             flex: 1
             padding-right: 12px
             no-wrap()
-            font-family: $font-family-medium
+            font-family: $font-family-regular
             font-size: $font-size-14
             color: #111111
             height: 16px
@@ -1063,7 +1243,15 @@
       layout(row)
       align-items: center
       height: 45px
-      border-bottom-1px($color-line)
+      position: relative
+      &:after
+        content: ""
+        position: absolute
+        bottom: 0
+        right: 0
+        left: -12px
+        transform: scaleY(.5) translateZ(0)
+        border-bottom: 1px solid $color-line
       .sel-box
         display: block
         width: 20px
