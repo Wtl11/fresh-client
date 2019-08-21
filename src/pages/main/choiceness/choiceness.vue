@@ -1118,11 +1118,13 @@
       },
       _getEndTime(res) {
         if (!res || !res[0].end_at) return
-        let date = new Date(res[0].end_at)
-        const month = date.getMonth() + 1
-        const day = date.getDate()
-        const hour = date.getHours() < 10 ? '0' + date.getHours() : date.getHours()
-        const minute = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()
+        const date = res[0].end_at.split(' ')
+        const yymmdd = date[0].split('-')
+        const hhmmss = date[1].split(':')
+        const month = yymmdd[1].replace(/^0/, '')
+        const day = yymmdd[2].replace(/^0/, '')
+        const hour = hhmmss[0]
+        const minute = hhmmss[1]
         this.endTime = `${month}月${day}日 ${hour}:${minute}`
       },
       _showShareModal(item) {
