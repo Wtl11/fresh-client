@@ -199,26 +199,26 @@
         @buttonGroupNav="buttonGroupNav"
         @addShoppingCart="addShoppingCart"
       ></button-group>
-      <article class="share-goods" id="share-goods">
-        <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-sharegoods@2x.png'" class="share-bg" mode="aspectFill">
-        <div class="share-box">
-          <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/5@1x.png'" class="share-img" mode="aspectFill">
-          <div class="share-bottom">
-            <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/5@1x.png'" class="wem-img" mode="aspectFill">
-            <div class="share-title">智利J级车厘子250g</div>
-            <div class="share-sub-title">智利J级车厘子250g</div>
-            <div class="share-group-box">团购价</div>
-            <div class="price-box">
-              <div class="share-price-number">{{goodsMsg.trade_price}}</div>
-              <div class="share-price-icon">元</div>
-              <div class="share-price-line">
-                {{goodsMsg.original_price}}元
-                <i class="share-money-line"></i>
-              </div>
-            </div>
-          </div>
-        </div>
-      </article>
+<!--      <article class="share-goods" id="share-goods">-->
+<!--        <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/pic-sharegoods@2x.png'" class="share-bg" mode="aspectFill">-->
+<!--        <div class="share-box">-->
+<!--          <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/5@1x.png'" class="share-img" mode="aspectFill">-->
+<!--          <div class="share-bottom">-->
+<!--            <img v-if="imageUrl" :src="imageUrl + '/yx-image/choiceness/5@1x.png'" class="wem-img" mode="aspectFill">-->
+<!--            <div class="share-title">智利J级车厘子250g</div>-->
+<!--            <div class="share-sub-title">智利J级车厘子250g</div>-->
+<!--            <div class="share-group-box">团购价</div>-->
+<!--            <div class="price-box">-->
+<!--              <div class="share-price-number">{{goodsMsg.trade_price}}</div>-->
+<!--              <div class="share-price-icon">元</div>-->
+<!--              <div class="share-price-line">-->
+<!--                {{goodsMsg.original_price}}元-->
+<!--                <i class="share-money-line"></i>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </article>-->
     </div>
     <add-number ref="addNumber" :msgDetail="goodsMsg" :msgDetailInfo="buyGoodsInfo" @comfirmNumer="comfirmNumer" @hide="handleHideAddNumber"></add-number>
     <!--    <link-group ref="groupList" :wechatInfo="groupInfo"></link-group>-->
@@ -232,13 +232,13 @@
           <img v-if="imageUrl&&posterData.bg" :src="posterData.bg" class="bg-img">
         </div>
         <div class="goods-con">
-          <img v-if="goodsMsg.goods_cover_image" :src="goodsMsg.goods_cover_image" class="goods-img">
+          <img v-if="goodsMsg.goods_cover_image" :src="goodsMsg.goods_cover_image" class="goods-img" mode="aspectFill">
           <div class="info-bottom">
             <div class="goods-info">
               <div class="name">{{posterData.name}}</div>
               <div class="text">{{posterData.text}}</div>
-              <div class="price-text">{{iconText}}</div>
-              <div class="price">{{goodsMsg.trade_price}}元<span class="old-price">{{goodsMsg.original_price}}元</span></div>
+<!--              <div class="price-text">{{iconText}}</div>-->
+              <p class="price"><span class="number">{{goodsMsg.trade_price}}</span><span class="unit">元</span><span class="old-price"><i class="line-through"></i>{{goodsMsg.original_price}}元</span></p>
             </div>
             <div class="qr-code">
               <img v-if="shareImg" :src="shareImg" class="img">
@@ -1041,8 +1041,9 @@
         })
       },
       _getPosterData() {
-        let name = this.goodsMsg.name.length >= 12 ? this.goodsMsg.name.slice(0, 12) + '...' : this.goodsMsg.name
-        let subName = this.goodsMsg.describe.length >= 12 ? this.goodsMsg.describe.slice(0, 12) + '...' : this.goodsMsg.describe
+        let maxLen = 9
+        let name = this.goodsMsg.name.length >= maxLen ? this.goodsMsg.name.slice(0, maxLen) + '...' : this.goodsMsg.name
+        let subName = this.goodsMsg.describe.length >= maxLen ? this.goodsMsg.describe.slice(0, maxLen) + '...' : this.goodsMsg.describe
         let backgroundImg
         let moneyColor
         switch (this.corpName) {
@@ -1095,86 +1096,97 @@
           canvasId: 'we-paint',
           multiple: 1,
           panel: {
-            el: '#share-goods'
+            el: '.poster-wrapper'
           },
           els: [
             {
-              el: '#share-goods',
+              el: '.poster-wrapper',
               drawType: 'rect',
               color: '#fff'
             },
             {
-              el: '#share-goods > .share-bg', // 背景图
+              el: '.poster-wrapper > .background', // 背景图
               drawType: 'img',
               mode: 'aspectFill',
               source: this.posterData.bg
             },
             {
-              el: '.share-box',
+              el: '.goods-con',
               drawType: 'rect-shadow',
               color: '#fff',
               shadow: [0, 2, 22, 'rgba(0,0,0,0.10)', '#fff', 0]
             },
             {
-              el: '.share-box > .share-img', // 图片
+              el: '.goods-con > .goods-img', // 图片
               drawType: 'img',
               source: this.goodsMsg.goods_cover_image,
               mode: 'aspectFill'
             },
             {
-              el: '.share-title', // 店铺名称
+              el: '.goods-info > .name', // 店铺名称
               drawType: 'text-area',
               source: this.posterData.name,
               fontSize: 16,
-              color: '#1f1f1f'
+              color: '#111111'
             },
             {
-              el: '.share-sub-title', // 签名
+              el: '.goods-info > .text', // 签名
               drawType: 'text-area',
               source: this.posterData.text,
-              fontSize: 14,
+              fontSize: 13,
               align: 'left',
               color: '#808080'
             },
+            // {
+            //   el: '.goods-info > .price-text',
+            //   drawType: 'text-area',
+            //   source: this.iconText,
+            //   fontSize: 13,
+            //   color: this.posterData.color
+            // },
             {
-              el: '.share-group-box',
-              drawType: 'text-area',
-              source: this.iconText,
-              fontSize: 14,
-              color: this.posterData.color
-            },
-            {
-              el: '.share-price-number',
+              el: '.goods-info > .price > .number',
               drawType: 'text',
               source: this.goodsMsg.trade_price,
-              fontSize: 30,
-              color: this.posterData.color
+              fontSize: 22,
+              color: this.posterData.color,
+              yAdjust: 6
             },
             {
-              el: '.share-price-icon',
+              el: '.goods-info > .price > .unit',
               drawType: 'text',
               source: '元',
-              fontSize: 17,
-              color: this.posterData.color
+              fontSize: 20,
+              color: this.posterData.color,
+              yAdjust: 6
             },
             {
-              el: '.share-price-line',
+              el: '.goods-info > .price > .old-price',
               drawType: 'text',
               source: `${this.goodsMsg.original_price}元`,
-              fontSize: 17,
-              color: '#B7B7B7'
+              fontSize: 12,
+              color: '#B7B7B7',
+              yAdjust: 3
             },
             {
-              el: '.share-money-line',
+              el: '.goods-info > .price > .old-price > .line-through',
               drawType: 'rect',
               color: '#b7b7b7'
             },
             {
-              el: '.share-bottom > .wem-img',
+              el: '.info-bottom > .qr-code > .img',
               drawType: 'img',
               source: this.shareImg,
               unLoad: /tmp/i.test(this.shareImg)
               // source: qrCode
+            },
+            {
+              el: '.info-bottom > .qr-code > .text',
+              drawType: 'text',
+              source: `长按扫码疯抢`,
+              fontSize: 9,
+              color: '#808080',
+              xAdjust: 2
             }
           ]
         }
@@ -1871,7 +1883,8 @@
               width :65px
   .poster-wrapper
     position: fixed
-    top: px-change-vh(60)
+    top: 45%
+    transform :translateY(-50%)
     left: 0
     right: 0
     margin: auto
@@ -1929,9 +1942,16 @@
             font-size: 22px
             color: $color-money
             .old-price
+              margin-left: 2px
               font-size: 12px
               color: $color-text-sub
-              text-decoration: line-through
+              position :relative
+              display :inline-block
+              .line-through
+                col-center()
+                height : 1px
+                width :100%
+                background: #b7b7b7
         .qr-code
           align-self: flex-end
           width: 63px

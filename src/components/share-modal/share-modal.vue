@@ -17,7 +17,7 @@
           </div>
           <div v-if="posterData.goods.length>1" class="goods-list">
             <div v-for="(item, index) in posterData.goods" :key="index" :id="'goods-'+index" class="goods-con">
-              <img v-if="item.img" :src="item.img" class="goods-img">
+              <img v-if="item.img" :src="item.img" class="goods-img" mode="aspectFill">
               <div class="text-con">
                 <div class="price-con"><span class="unit">￥</span><span class="price">{{posterData.goods[index].price}}</span></div>
                 <div class="buy-text">{{posterData.textArr.buyText}}</div>
@@ -25,7 +25,7 @@
             </div>
           </div>
           <div v-else-if="posterData.goods[0]" id="goods-0" class="one-goods">
-            <img v-if="posterData.goods[0].img" :src="posterData.goods[0].img" class="goods-img">
+            <img v-if="posterData.goods[0].img" :src="posterData.goods[0].img" class="goods-img" mode="aspectFill">
             <div class="text-con">
               <div class="price-con"><span class="unit">￥</span><span class="price">{{posterData.goods[0].price}}</span></div>
               <div class="buy-text">{{posterData.textArr.buyText}}</div>
@@ -341,23 +341,26 @@
             {
               el: `#goods-${idx} .unit`,
               drawType: 'text',
-              source: '￥',
-              color: '#ffffff'
+              source: '¥',
+              fontSize: 13,
+              color: '#ffffff',
+              yAdjust: 2
             },
             {
               el: `#goods-${idx} .price`,
               drawType: 'text',
               source: this.posterData.goods[idx].price,
               fontSize: 18,
-              height: '30px',
-              color: '#ffffff'
+              color: '#ffffff',
+              yAdjust: 4
             },
             {
               el: `#goods-${idx} .buy-text`,
               drawType: 'text-area',
               source: this.posterData.textArr.buyText,
-              fontSize: 13,
-              color: '#ffffff'
+              fontSize: 14,
+              color: '#ffffff',
+              yAdjust: 1
             }
           ]
           options.els = options.els.concat(goodsItem)
@@ -444,7 +447,8 @@
             text-align: center
   .poster-wrapper
     position: fixed
-    top: px-change-vh(60)
+    top: 45%
+    transform :translateY(-50%)
     left: 0
     right: 0
     margin: auto
@@ -529,18 +533,20 @@
         bottom: 0
         width: 100%
         height: 24px
-        line-height: 24px
+        line-height : 1
         padding: 0 5px
         color: #fff
         background: #ff8300
-        layout(row)
-        justify-content: space-between
+        layout(row,block,nowrap)
+        align-items:center
         .price-con
-          font-family: $font-family-medium
-          font-size: 18px
+          flex: 1
+          .price
+            font-family: $font-family-medium
+            font-size: 18px
           .unit
-            font-size: 13px
             font-family: $font-family-regular
+            font-size: 13px
         .buy-text
           font-family: $font-family-regular
           font-size: 14px
