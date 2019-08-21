@@ -67,7 +67,7 @@
       </li>
       <li class="coupon-item">
         <p class="name">提货日期</p>
-        <p class="name">{{orderDetail.delivery_at}} ({{orderDetail.day_of_week}})</p>
+        <p class="time">{{orderDetail.delivery_at}} ({{orderDetail.day_of_week}})</p>
       </li>
     </ul>
     <!--订单信息-->
@@ -215,6 +215,8 @@
      padding :10px 0
    .name
      flex:1
+     color: #000000
+   .time
      color: #000000
    .price
      font-size: 16px
