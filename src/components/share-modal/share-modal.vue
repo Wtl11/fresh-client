@@ -17,7 +17,7 @@
           </div>
           <div v-if="posterData.goods.length>1" class="goods-list">
             <div v-for="(item, index) in posterData.goods" :key="index" :id="'goods-'+index" class="goods-con">
-              <img v-if="item.img" :src="item.img" class="goods-img">
+              <img v-if="item.img" :src="item.img" class="goods-img" mode="aspectFill">
               <div class="text-con">
                 <div class="price-con"><span class="unit">￥</span><span class="price">{{posterData.goods[index].price}}</span></div>
                 <div class="buy-text">{{posterData.textArr.buyText}}</div>
@@ -25,7 +25,7 @@
             </div>
           </div>
           <div v-else-if="posterData.goods[0]" id="goods-0" class="one-goods">
-            <img v-if="posterData.goods[0].img" :src="posterData.goods[0].img" class="goods-img">
+            <img v-if="posterData.goods[0].img" :src="posterData.goods[0].img" class="goods-img" mode="aspectFill">
             <div class="text-con">
               <div class="price-con"><span class="unit">￥</span><span class="price">{{posterData.goods[0].price}}</span></div>
               <div class="buy-text">{{posterData.textArr.buyText}}</div>
@@ -440,7 +440,8 @@
             text-align: center
   .poster-wrapper
     position: fixed
-    top: px-change-vh(60)
+    top: 45%
+    transform :translateY(-50%)
     left: 0
     right: 0
     margin: auto
