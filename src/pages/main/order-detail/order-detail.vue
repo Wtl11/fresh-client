@@ -74,7 +74,7 @@
       <div class="order-item">
         <!--<div class="goods-item" v-for="(item, index) in bigItem.dayList" :key="index">-->
         <!--<div class="goods-item" :class="{isGift: orderMsg.goods[index+1] && orderMsg.goods[index+1].is_gift}" v-for="(item, index) in orderMsg.goods" :key="index">-->
-        <div class="goods-item" :class="{isGift: bigItem.dayList[index+1] && bigItem.dayList[index+1].is_gift}" v-for="(item, index) in bigItem.dayList" :key="index">
+        <div class="goods-item" v-for="(item, index) in bigItem.dayList" :key="index">
           <div class="goods-info-box">
             <img class="goods-img" mode="aspectFill" :src="item.image_url" alt="">
             <div class="goods-info">
@@ -497,7 +497,6 @@
     color: $color-text-main
     background: #fff
     margin-top: -1px
-    border-top-1px(#e6e6e6)
     border-bottom: 11px solid $color-background
 
     .name
@@ -677,7 +676,7 @@
     layout(row)
     justify-content: space-between
     align-items: center
-    border-bottom-1px($color-line)
+    border-bottom-1px(#E6E6E6)
     &.isGift
       position: relative
       &:after
@@ -820,9 +819,13 @@
 
   .order-list
     background: $color-white
-    padding-left: 10px
     box-sizing: border-box
-
+    .order-item
+      padding-left: 12px
+      border-bottom-1px(#E6E6E6)
+      .goods-item
+        &:last-child
+          border-none()
   .actual-amount
     layout(row)
     padding: 0 3.2vw
@@ -991,7 +994,8 @@
     layout(row)
     align-items: center
     height: 45px
-    border-bottom-1px($color-line)
+    border-bottom-1px(#E6E6E6)
+    padding-left: 12px
     .arrive-time-img
       width: 12px
       height: @width

@@ -31,19 +31,21 @@
           <img v-if="imageUrl" :src="imageUrl + '/yx-image/2.9/icon-order_yuji@2x.png'" class="arrive-time-img">
           <div class="arrive-text">预计{{bigItem.dayAt}}({{bigItem.dayWeek}}) 可提货</div>
         </div>
-        <div class="list-item" v-for="(item, index) in bigItem.dayList" :key="index">
-          <div class="item-left-img"><img class="img" :src="item.goods_cover_image" alt=""></div>
-          <div class="item-right">
-            <div class="title">{{item.name}}</div>
-            <div class="sub-title">规格：{{item.goods_units}}</div>
-            <div class="price-box">
-              <div class="price-left">
-                <div class="number">{{item.trade_price}}</div>
-                <div class="icon">元</div>
-              </div>
-              <div class="price-right">
-                <div class="icon">x</div>
-                <div class="number">{{item.num}}</div>
+        <div class="list-item-box">
+          <div class="list-item" v-for="(item, index) in bigItem.dayList" :key="index">
+            <div class="item-left-img"><img class="img" :src="item.goods_cover_image" alt=""></div>
+            <div class="item-right">
+              <div class="title">{{item.name}}</div>
+              <div class="sub-title">规格：{{item.goods_units}}</div>
+              <div class="price-box">
+                <div class="price-left">
+                  <div class="number">{{item.trade_price}}</div>
+                  <div class="icon">元</div>
+                </div>
+                <div class="price-right">
+                  <div class="icon">x</div>
+                  <div class="number">{{item.num}}</div>
+                </div>
               </div>
             </div>
           </div>
@@ -750,10 +752,10 @@
 
   .order-list
     background: #fff
-    padding-left: 3.2vw
     box-sizing: border-box
-    border-bottom-1px($color-line, dashed)
-
+    border-bottom-1px($color-line)
+    .list-item-box
+      padding-left: 3.2vw
     .list-item
       padding-right: 3.2vw
       box-sizing: border-box
@@ -837,6 +839,7 @@
       layout(row)
       align-items: center
       height: 45px
+      padding-left: 12px
       border-bottom-1px($color-line)
       .arrive-time-img
         width: 12px

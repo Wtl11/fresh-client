@@ -301,8 +301,8 @@
                   v-if="imageUrl && item.module_name === ACTIVE_TYPE.CENTRALIZE_PURCHASE"
                   :src="imageUrl + '/yx-image/2.9/pic-xrth@2x.png'"
                   class="banner-image">
-                <button v-if="item.module_name !== ACTIVE_TYPE.GUESS" class="share-button" open-type="share" :id="'share-' + item.module_name"></button>
-                <!--<button v-if="item.module_name !== ACTIVE_TYPE.GUESS" class="share-button" :id="'share-' + item.module_name" @click="_showShareModal(item)"></button>-->
+                <!--<button v-if="item.module_name !== ACTIVE_TYPE.GUESS" class="share-button" open-type="share" :id="'share-' + item.module_name"></button>-->
+                <button v-if="item.module_name !== ACTIVE_TYPE.GUESS" class="share-button" :id="'share-' + item.module_name" @click="_showShareModal(item)"></button>
                 <block v-for="(child, idx) in item.list" :key="idx">
                   <div class="panel-goods-wrapper"
                        @click="handleJumpToGoodsDetail(child, item.module_name)"

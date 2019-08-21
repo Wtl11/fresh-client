@@ -212,6 +212,13 @@
             text2: '精选商品，送货到家',
             text3: '来自阿里巴巴的源头好货',
             buyText: '抢'
+          },
+          centralize: {
+            topText: '太划算了吧，产地集采速度抢',
+            text1: '产地集采',
+            text2: '精选商品，送货到家',
+            text3: '来自阳光产地的新鲜食品',
+            buyText: '抢'
           }
         }
         this.posterData = {

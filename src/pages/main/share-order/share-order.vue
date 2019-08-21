@@ -34,10 +34,15 @@
     <div class="gary-box"></div>
     <div class="order-list">
       <div class="order-item">
+        <!--<div class="goods-item"-->
+             <!--v-for="(item, index) in orderMsg.goods"-->
+             <!--:key="index"-->
+             <!--:class="{isGift: orderMsg.goods[index+1] && orderMsg.goods[index+1].is_gift}"-->
+             <!--@click="jumpGoodsDetail(item)"-->
+        <!--&gt;-->
         <div class="goods-item"
              v-for="(item, index) in orderMsg.goods"
              :key="index"
-             :class="{isGift: orderMsg.goods[index+1] && orderMsg.goods[index+1].is_gift}"
              @click="jumpGoodsDetail(item)"
         >
           <div class="goods-info-box">
