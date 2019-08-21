@@ -303,9 +303,10 @@
       _showShareModal() {
         let moduleItem = {
           module_name: 'activity_fixed',
-          list: this.goodsList,
+          list: this.goodsList.slice(0, 4),
           id: this.currentObj.id
         }
+        console.log(moduleItem)
         this.$refs.shareModal && this.$refs.shareModal._showShareFun(moduleItem)
       }
     }
