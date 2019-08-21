@@ -46,7 +46,7 @@ export const TAB_ARR_CONFIG = {
   [ACTIVE_TYPE.CENTRALIZE_PURCHASE]: {
     title: '产地集采',
     subTitle: '现采现卖',
-    iconText: '预售价',
+    iconText: '集采价',
     buttonText: '+购物车',
     dataArray: 'purchaseList',
     limit: 20

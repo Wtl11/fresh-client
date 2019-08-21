@@ -346,7 +346,17 @@
                         </div>
                         <button formType="submit"
                                 class="button-wrapper"
+                                v-if="child.activity_theme === ACTIVE_TYPE.GROUP_ON"
+                        >
+                          <div class="button">
+                            <p class="text">去拼团</p>
+                          </div>
+                          <p class="sub-text">已售{{child.sale_count}}{{child.goods_units}}</p>
+                        </button>
+                        <button formType="submit"
+                                class="button-wrapper"
                                 @click.stop="handleGoodsButton(child, item)"
+                                v-else
                         >
                           <div class="button" :class="{guess: item.module_name === ACTIVE_TYPE.GUESS}">
                             <p class="text">{{item.buttonText}}</p>

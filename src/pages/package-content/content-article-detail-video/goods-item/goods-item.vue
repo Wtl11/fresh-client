@@ -115,14 +115,15 @@
           font-size: $font-size-10
           color: #FF8506
           height: 14px
-          line-height: 14px
+          line-height: 15px
           display: inline-block
           background: rgba(250,117,0,0.1)
           padding: 0 5px
           margin-right: 5px
           border-1px(#FF8506, 14px)
+          border-radius: 14px
           position: relative
-          top: -2px
+          top: -3px
 
       .details
         font-family $font-family-regular

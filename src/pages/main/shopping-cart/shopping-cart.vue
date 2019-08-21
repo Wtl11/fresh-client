@@ -1172,24 +1172,25 @@
         height: 14px
         display :flex
         width: 100%
-        margin-bottom: 14px
+        margin-bottom: 8px
         .label-box-span
           font-family: $font-family-regular
           font-size: $font-size-10
           color: #FA7500
           height: 14px
-          line-height: 14px
+          line-height: 15px
           display: inline-block
           background: rgba(250,117,0,0.1)
           padding: 0 5px
           border-1px(#FA7500, 14px)
+          border-radius: 14px
           margin-right: 5px
       .classify-title
         color: $color-text-main
         font-size: $font-size-14
         min-height: $font-size-16
         no-wrap()
-        margin-bottom: 10px
+        margin-bottom: 8px
       .classify-price-box
         layout(row)
         align-items: center

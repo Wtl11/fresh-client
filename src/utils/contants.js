@@ -17,7 +17,7 @@ export const ACTIVE_TYPE = {
 export const ACTIVE_TYPE_TEXT = {
   activity_fixed: '限时抢购',
   new_client: '新人特惠',
-  goods_hot_tag: '今日爆品',
+  goods_hot_tag: '今日爆款',
   offline: '线下扩展',
   groupon: '拼团返现',
   centralize: '产地集采'

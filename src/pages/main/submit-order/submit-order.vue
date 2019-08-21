@@ -115,7 +115,7 @@
         <div v-if="isShowPayModal" class="share-mask" @click="_hidePayModal"></div>
         <section class="share-panel" :class="{show: isShowPayModal}">
           <p class="title">提货地址距离当前位置<span class="distance">{{distance}}km</span>请确认提货信息</p>
-          <p class="sub-title">预计{{deliverAt}}可提货</p>
+          <!--<p class="sub-title">预计{{deliverAt}}可提货</p>-->
           <article class="box-wrapper">
             <!--          <div class="item-wrapper">-->
             <!--            <p class="left">提货人：</p>-->
