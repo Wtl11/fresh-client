@@ -19,7 +19,7 @@
             <div v-for="(item, index) in posterData.goods" :key="index" :id="'goods-'+index" class="goods-con">
               <img v-if="item.img" :src="item.img" class="goods-img">
               <div class="text-con">
-                <div class="price-con"><span class="unit">￥</span><span class="price">{{posterData.goods[0].price}}</span></div>
+                <div class="price-con"><span class="unit">￥</span><span class="price">{{posterData.goods[index].price}}</span></div>
                 <div class="buy-text">{{posterData.textArr.buyText}}</div>
               </div>
             </div>
@@ -134,7 +134,7 @@
         } else {
           path = `pages/choiceness?s=${shopId}&mn=${this.moduleName}`
         }
-        console.log(`share path : ${path}`)
+        console.info(`share path : ${path}`)
         API.Choiceness.createQrCodeApi({ path }, drawPoster).then((res) => {
           if (res.error === this.$ERR_OK) {
             this.shareQRCode = res.data.image_url
@@ -340,7 +340,7 @@
             {
               el: `#goods-${idx} .price`,
               drawType: 'text',
-              source: this.posterData.goods[0].price,
+              source: this.posterData.goods[idx].price,
               fontSize: 18,
               height: '30px',
               color: '#ffffff'
@@ -364,9 +364,9 @@
         this.$wx.saveImageToPhotosAlbum({
           filePath: pic,
           success: () => {
+            this.$wechat.hideLoading()
             this.$wechat.showToast('海报保存成功')
             this._hideShareModal()
-            this.$wechat.hideLoading()
           },
           fail: (e) => {
             this.$wechat.hideLoading()
