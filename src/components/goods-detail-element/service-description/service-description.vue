@@ -17,7 +17,7 @@
         <span class="list-title">• 关于发货</span>
       </div>
       <div class="send-item-list">
-        <span class="list-title">自提商品：</span><span class="list-sub">当天{{runTime}}[该出需要读取配送仓的实际截单时间]前下单，该订单会于次日配货送至团长提货处，请留意团长的提货通知，如有疑问请联系团长咨询。产地集采及采购周期长的商品以详情页预计到货时间为准。</span>
+        <span class="list-title">自提商品：</span><span class="list-sub">当天{{runTime}}前下单，该订单会于次日配货送至团长提货处，请留意团长的提货通知，如有疑问请联系团长咨询。产地集采及采购周期长的商品以详情页预计到货时间为准。</span>
       </div>
       <div class="send-item-list">
         <span class="list-title">• 关于签收：</span><span class="list-sub">为保障客户的权益，签收时请与团长当面核对无误后再进行认领提货，如由他人代提货而没有团长在场的情况下验货，则视为客户所选购的商品无任何问题。由于生鲜类商品的特殊性，如因个人原因（包括但不限于联系人信息错误、无人签收、无法取得联系）导致延迟取货，造成商品异常，不予售后处理。</span>
