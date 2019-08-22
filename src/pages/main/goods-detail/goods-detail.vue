@@ -1126,7 +1126,7 @@
               el: '.goods-info > .name', // 店铺名称
               drawType: 'text-area',
               source: this.posterData.name,
-              fontSize: 16,
+              fontSize: 15,
               color: '#111111'
             },
             {
@@ -1171,7 +1171,8 @@
             {
               el: '.goods-info > .price > .old-price > .line-through',
               drawType: 'rect',
-              color: '#b7b7b7'
+              color: '#b7b7b7',
+              yAdjust: 1
             },
             {
               el: '.info-bottom > .qr-code > .img',
