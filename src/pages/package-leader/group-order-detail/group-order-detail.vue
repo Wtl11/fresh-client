@@ -38,6 +38,7 @@
             </block>
             <div class="goods-content">
               <p class="goods-title">
+                <span v-if="item.is_gift" class="icon-tip m-r-4">赠品</span>
                 <span class="goods-title-left">{{item.goods_name}}</span>
                 <span class="goods-title-right" v-if="item.after_sale_status * 1 === 2">{{item.after_sale_status_text}}</span>
               </p>
@@ -57,34 +58,34 @@
                  v-if="orderDetail.status === 1 && orderDetail.delivery_status === 3 && (item.after_sale_status === 0 || item.after_sale_status === 1)"
                  @click="_showDialog('', item.order_detail_id)">确认提货</div>
           </div>
-          <block v-if="gifts[index]" v-for="(child,cIdx) in gifts[index]" :key="cIdx">
-            <div v-if="child.is_gift" class="goods-detail gift" :class="{'first-style': !cIdx}">
-              <block v-if="child.image_url">
-                <img :src="child.image_url" class="goods-img" mode="aspectFill">
-              </block>
-              <div class="goods-content">
-                <p class="goods-title">
-                  <span class="icon-tip m-r-4">赠品</span>
-                  <span class="goods-title-left">{{child.goods_name}}</span>
-                  <span class="goods-title-right" v-if="child.after_sale_status * 1 === 2">{{child.after_sale_status_text}}</span>
-                </p>
-                <div class="goods-sku">规格：{{child.goods_units}}</div>
-                <p class="goods-money">
-                  {{child.price}}
-                  <span class="small">元</span>
-                  <span class="goods-num-box">x
-                <span class="goods-num">{{child.num}}</span>
-              </span>
-                </p>
-              </div>
-            </div>
-            <div v-if="child.delivery_status === 0" class="btn-box">
-              <div class="goods-btn"
-                   :class="'corp-' + corpName + '-goods-btn'"
-                   v-if="orderDetail.status === 1 && orderDetail.delivery_status === 3 && (child.after_sale_status === 0 || child.after_sale_status === 1)"
-                   @click="_showDialog('', child.order_detail_id)">确认提货</div>
-            </div>
-          </block>
+          <!--<block v-if="gifts[index]" v-for="(child,cIdx) in gifts[index]" :key="cIdx">-->
+            <!--<div v-if="child.is_gift" class="goods-detail gift" :class="{'first-style': !cIdx}">-->
+              <!--<block v-if="child.image_url">-->
+                <!--<img :src="child.image_url" class="goods-img" mode="aspectFill">-->
+              <!--</block>-->
+              <!--<div class="goods-content">-->
+                <!--<p class="goods-title">-->
+                  <!--<span class="icon-tip m-r-4">赠品</span>-->
+                  <!--<span class="goods-title-left">{{child.goods_name}}</span>-->
+                  <!--<span class="goods-title-right" v-if="child.after_sale_status * 1 === 2">{{child.after_sale_status_text}}</span>-->
+                <!--</p>-->
+                <!--<div class="goods-sku">规格：{{child.goods_units}}</div>-->
+                <!--<p class="goods-money">-->
+                  <!--{{child.price}}-->
+                  <!--<span class="small">元</span>-->
+                  <!--<span class="goods-num-box">x-->
+                <!--<span class="goods-num">{{child.num}}</span>-->
+              <!--</span>-->
+                <!--</p>-->
+              <!--</div>-->
+            <!--</div>-->
+            <!--<div v-if="child.delivery_status === 0" class="btn-box">-->
+              <!--<div class="goods-btn"-->
+                   <!--:class="'corp-' + corpName + '-goods-btn'"-->
+                   <!--v-if="orderDetail.status === 1 && orderDetail.delivery_status === 3 && (child.after_sale_status === 0 || child.after_sale_status === 1)"-->
+                   <!--@click="_showDialog('', child.order_detail_id)">确认提货</div>-->
+            <!--</div>-->
+          <!--</block>-->
         </div>
       </block>
     </div>
@@ -178,19 +179,19 @@
           this.$wechat.showToast(res.message)
           return
         }
-        let index = 0
-        let gifts = {}
-        res.data.goods = res.data.goods.filter((item) => {
-          let flag = !item.is_gift
-          if (flag) {
-            index++
-          } else {
-            !gifts[index - 1] && (gifts[index - 1] = [])
-            gifts[index - 1].push(item)
-          }
-          return flag
-        })
-        this.gifts = gifts
+        // let index = 0
+        // let gifts = {}
+        // res.data.goods = res.data.goods.filter((item) => {
+        //   let flag = !item.is_gift
+        //   if (flag) {
+        //     index++
+        //   } else {
+        //     !gifts[index - 1] && (gifts[index - 1] = [])
+        //     gifts[index - 1].push(item)
+        //   }
+        //   return flag
+        // })
+        // this.gifts = gifts
         this.orderDetail = res.data
       },
       _copyOrderSn(text) {

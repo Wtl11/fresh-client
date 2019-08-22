@@ -166,7 +166,7 @@
               </figure>
               <section class="classify-box-bottom">
                 <div class="classify-title">{{item.name}}</div>
-                <div class="title-label-box"><span v-if="item.activity_theme" class="label-box-span">{{typeText[item.activity_theme]}}</span><span v-if="item.purchase_cycle * 1 === 1" class="label-box-span">次日达</span><span v-else class="label-box-span">非次日达</span></div>
+                <div class="title-label-box"><span v-if="item.activity_theme" class="label-box-span">{{typeText[item.activity_theme]}}</span><span v-if="item.purchase_cycle * 1 === 1" class="label-box-span">次日达</span></div>
                 <div class="classify-price-box">
                   <div class="price-left">
                     <div class="price-number" :class="'corp-' + corpName + '-money'">{{item.trade_price}}</div>
