@@ -2,10 +2,8 @@
   <div class="home-classify-item" @click="jumpGoodsDetail(item)">
     <div class="goods-left">
       <img class="goods-left-img" lazy-load mode="aspectFill" v-if="item.goods_cover_image" :src="item.goods_cover_image">
-      <img class="goods-left-icon" lazy-load mode="aspectFill" v-if="imageUrl && corpName === 'platform'"
+      <img class="goods-left-icon" lazy-load mode="aspectFill" v-if="imageUrl && item.purchase_cycle * 1 === 1"
            :src="imageUrl + '/yx-image/choiceness/icon-label@2x.png'">
-      <img class="goods-left-icon" lazy-load mode="aspectFill" v-if="imageUrl && corpName === 'retuan'"
-           :src="imageUrl + '/yx-image/retuan/icon-label@2x.png'">
     </div>
     <div class="goods-right">
       <div class="goods-right-top">
@@ -31,7 +29,12 @@
           </div>
         </div>
         <div class="right">
-          <form action="" report-submit @submit="$getFormId" @click.stop="addShoppingCart(item)">
+          <button class="add-box-right" v-if="item.usable_stock * 1 > 0 && item.activity_theme === 'groupon'">
+            <div class="add-goods-btn" style="background: #fa7500">
+              <div class="add-text">去拼团</div>
+            </div>
+          </button>
+          <form v-else action="" report-submit @submit="$getFormId" @click.stop="addShoppingCart(item)">
             <button class="add-box-right" v-if="item.usable_stock * 1 > 0" formType="submit">
               <div class="add-goods-btn" :class="'corp-' + corpName + '-bg'">
                 <div class="add-icon">

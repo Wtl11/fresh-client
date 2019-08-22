@@ -167,7 +167,7 @@
           let res = await API.GoodsSearch.getList(data, loading)
           if (res.meta.current_page === 1) {
             this.classifyArray = res.data
-            this.classifyShowEmpty = res.meta.total === 0
+            this.classifyShowEmpty = res.data.length === 0
           } else {
             res.data.forEach((item) => {
               this.classifyArray.push(item)

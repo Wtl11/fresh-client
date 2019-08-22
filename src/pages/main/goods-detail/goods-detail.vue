@@ -525,6 +525,7 @@
         goods_id: self.goodsId,
         title: self.goodsMsg.name
       })
+      console.log(`${this.$routes.main.PACKAGE}/${PAGE_ROUTE_NAME}?id=${this.goodsId}&shopId=${shopId}&activityId=${this.activityId}&activityType=${this.activityType}&flag=${flag}`)
       return {
         title: this.goodsMsg.name,
         path: `${this.$routes.main.PACKAGE}/${PAGE_ROUTE_NAME}?id=${this.goodsId}&shopId=${shopId}&activityId=${this.activityId}&activityType=${this.activityType}&flag=${flag}`, // 商品详情
