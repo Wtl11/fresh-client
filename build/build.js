@@ -60,9 +60,9 @@ function checkBuildBranch() {
   if (!isBuild) return
   const fs = require('fs')
   const currentBranch = fs.readFileSync(path.join(__dirname, '../.git/HEAD'), 'utf-8').trim().replace('ref: refs/heads/', '')
-  const allowBuildBranch = /(master|release)/g.test(currentBranch)
+  const allowBuildBranch = /(release)/g.test(currentBranch)
   if (!allowBuildBranch) {
-    console.log(chalk.cyan('\n请在release或master分支上传正式站代码，记得push origin'))
+    console.log(chalk.cyan('\n请在release分支上传正式站代码，记得push origin；\n由管理员进行整合master和release分支！！！'))
     spinner.stop()
     process.exit(1)
   }
