@@ -44,7 +44,7 @@ export default {
      * 画海报
      * @private
      */
-    _getPosterData() {
+    async _getPosterData() {
       let maxLen = 9
       let name = this.goodsMsg.name.length >= maxLen ? this.goodsMsg.name.slice(0, maxLen) + '...' : this.goodsMsg.name
       let subName = this.goodsMsg.describe.length >= maxLen ? this.goodsMsg.describe.slice(0, maxLen) + '...' : this.goodsMsg.describe
@@ -68,19 +68,6 @@ export default {
         bg: backgroundImg,
         color: moneyColor
       }
-    },
-    // 隐藏分享控件
-    handleHideSharePanel() {
-      this.showSharePanel = false
-    },
-    // 显示分享控件
-    handleShowShare() {
-      this.showSharePanel = true
-      // 没有二维码，重新请求二维码，并重画海报
-      !this.shareImg && this.getQrCode(true)
-    },
-    // 海报绘图
-    async _actionDrawPoster() {
       let qrCodeIsBase64 = /base64/i.test(this.shareImg)
       try {
         if (qrCodeIsBase64) {
@@ -89,6 +76,34 @@ export default {
       } catch (e) {
         console.error(e)
       }
+    },
+    // 隐藏分享控件
+    handleHideSharePanel() {
+      this.showSharePanel = false
+    },
+    // 显示分享控件
+    async handleShowShare() {
+      this.showSharePanel = true
+      // 没有二维码，重新请求二维码，并重画海报
+      if (!this.shareImg) {
+        this.getQrCode(true)
+      } else if (!this.poster) {
+        await this._getPosterData()
+        setTimeout(() => {
+          this._actionDrawPoster()
+        }, 1000)
+      }
+    },
+    // 海报绘图
+    async _actionDrawPoster() {
+      // let qrCodeIsBase64 = /base64/i.test(this.shareImg)
+      // try {
+      //   if (qrCodeIsBase64) {
+      //     this.shareImg = await base64src(this.shareImg)
+      //   }
+      // } catch (e) {
+      //   console.error(e)
+      // }
       let options = {
         canvasId: 'we-paint',
         multiple: 1,
@@ -193,25 +208,26 @@ export default {
     // 设置海报图片
     _setPosterUrl(pic) {
       this.poster = pic
+      this.$wechat.hideLoading()
       // 如果生成好海报前点击了保存海报，则在生成好海报后调用保存方法
       // if (this.clickSave) {
       //   this.$wechat.hideLoading()
       //   this._savePoster()
       //   this.clickSave = false
       // }
-      this.$wechat.hideLoading()
-      this._savePoster()
-      this.clickSave = false
     },
     // 保存海报到本地
     _savePoster() {
-      this.$wechat.showLoading('海报生成中')
-      if (!this.poster) {
-        // 没有海报,重新生成海报
-        this._actionDrawPoster()
-        this.clickSave = true
-        return
-      }
+      if (!this.poster) return this.$wechat.showToast('海报生成中')
+      this.$wechat.showLoading('海报保存中')
+      // if (!this.poster) {
+      //   // 没有海报,重新生成海报
+      //   this.$wechat.showLoading('海报生成中')
+      //   // this._actionDrawPoster()
+      //   this.clickSave = true
+      //   return
+      // }
+      this._isSharing = true
       const self = this
       this.$wx.saveImageToPhotosAlbum({
         filePath: this.poster,

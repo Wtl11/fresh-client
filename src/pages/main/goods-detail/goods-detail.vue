@@ -259,7 +259,7 @@
           </button>
           <nav class="container-item-wrapper" @click="_savePoster">
             <img v-if="imageUrl" :src="imageUrl + '/yx-image/goods/icon-poster@2x.png'" class="item-icon">
-            <p class="text">{{'保存海报'}}</p>
+            <p class="text">{{poster? '保存海报' : '海报生成中...'}}</p>
           </nav>
         </div>
       </section>
@@ -1024,15 +1024,19 @@
         }
       },
       // 获取分享二维码
-      async getQrCode(drawPoster = false) {
+      getQrCode(drawPoster = false) {
         let shopId = wx.getStorageSync('shopId')
         // 修改创建二维码的参数
         let path = `pages/${PAGE_ROUTE_NAME}?g=${this.goodsId}&s=${shopId}&a=${this.activityId}`
-        API.Choiceness.createQrCodeApi({ path }, false).then((res) => {
+        API.Choiceness.createQrCodeApi({ path }, false).then(async (res) => {
           if (res.error === this.$ERR_OK) {
             this.shareImg = res.data.image_url
-            this._getPosterData()
-            drawPoster && this._actionDrawPoster()
+            if (drawPoster) {
+              await this._getPosterData()
+              setTimeout(() => {
+                this._actionDrawPoster()
+              }, 1000)
+            }
           } else {
             console.warn(res)
           }
