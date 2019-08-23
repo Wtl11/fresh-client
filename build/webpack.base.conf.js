@@ -71,6 +71,7 @@ let baseWebpackConfig = {
       '@assets': resolve('src/assets'),
       '@design': resolve('src/design/index.styl'),
       '@designCommon': resolve('src/design/common.styl'),
+      '@designPath': resolve('src/design'),
       '@state': resolve('src/state'),
       '@mixins': resolve('src/mixins'),
       '@pages': resolve('src/pages'),
