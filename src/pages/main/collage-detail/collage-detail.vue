@@ -520,6 +520,8 @@
         goodsList.longitude = this.longitude
         const total = (price * number).toFixed(2)
         goodsList.activity = this.data.activity
+        goodsList.day_of_week = this.data.day_of_week
+        goodsList.delivery_at = this.data.delivery_at
         let orderInfo = {
           goodsList: new Array(goodsList),
           total: total,
