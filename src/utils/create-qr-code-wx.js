@@ -1,6 +1,6 @@
 import base64ToArrayBuffer from 'base64-arraybuffer'
 const fsm = wx.getFileSystemManager()
-const FILE_BASE_NAME = 'tmp_base64src'
+const FILE_BASE_NAME = 'tmp_image_src'
 
 const base64src = function(base64data) {
   return new Promise((resolve, reject) => {
@@ -9,9 +9,7 @@ const base64src = function(base64data) {
       reject(new Error('ERROR_BASE64SRC_PARSE'))
     }
     const filePath = `${wx.env.USER_DATA_PATH}/${FILE_BASE_NAME + Date.now()}.${format}`
-    // const buffer = wx.base64ToArrayBuffer(bodyData)
     const buffer = base64ToArrayBuffer.decode(bodyData)
-    // console.log(typeof buffer)
     fsm.writeFile({
       filePath,
       data: buffer,

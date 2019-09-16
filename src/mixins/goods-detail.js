@@ -14,12 +14,12 @@ export default {
     // 检查是否能参加拼团活动
     async _checkCanGroup() {
       if (this.activityType !== ACTIVE_TYPE.GROUP_ON) return
-      if (this.latitude && this.longitude) return
       const hasOrder = await API.Global.checkHasGroupOrder()
-      // 检查是否有拼团订单，没有订单才判断地理位置, 没有0 有1
+      // 检查是否有拼团订单，没有订单才判断地理位置, 没有0  有1
       if (hasOrder.data && hasOrder.data.is_buy_groupon === 1) return
       try {
         // 获取地理位置
+        // if (this.latitude && this.longitude) return
         let res = await this.$wechat.getLocation()
         this.longitude = res.longitude
         this.latitude = res.latitude
@@ -74,7 +74,6 @@ export default {
           this.shareImg = await base64src(this.shareImg)
         }
       } catch (e) {
-        console.error(e)
       }
     },
     // 隐藏分享控件
@@ -87,23 +86,15 @@ export default {
       // 没有二维码，重新请求二维码，并重画海报
       if (!this.shareImg) {
         this.getQrCode(true)
-      } else if (!this.poster) {
-        await this._getPosterData()
-        setTimeout(() => {
-          this._actionDrawPoster()
-        }, 1000)
       }
+      this._getPosterData()
     },
     // 海报绘图
     async _actionDrawPoster() {
-      // let qrCodeIsBase64 = /base64/i.test(this.shareImg)
-      // try {
-      //   if (qrCodeIsBase64) {
-      //     this.shareImg = await base64src(this.shareImg)
-      //   }
-      // } catch (e) {
-      //   console.error(e)
-      // }
+      this.$wechat.showLoading('海报保存中')
+      if (this.poster) {
+        this._setPosterUrl(this.poster)
+      }
       let options = {
         canvasId: 'we-paint',
         multiple: 1,
@@ -209,6 +200,7 @@ export default {
     _setPosterUrl(pic) {
       this.poster = pic
       this.$wechat.hideLoading()
+      this._savePoster()
       // 如果生成好海报前点击了保存海报，则在生成好海报后调用保存方法
       // if (this.clickSave) {
       //   this.$wechat.hideLoading()
@@ -218,8 +210,7 @@ export default {
     },
     // 保存海报到本地
     _savePoster() {
-      if (!this.poster) return this.$wechat.showToast('海报生成中')
-      this.$wechat.showLoading('海报保存中')
+      // if (!this.poster) return this.$wechat.showToast('海报生成中')
       // if (!this.poster) {
       //   // 没有海报,重新生成海报
       //   this.$wechat.showLoading('海报生成中')
@@ -238,7 +229,7 @@ export default {
         },
         fail: (e) => {
           // 没有授权，重新调起授权
-          self.$wx.showModal({
+          this.$wx.showModal({
             content: '保存海报需进行相册授权，请到小程序设置中打开授权',
             confirmText: '去授权',
             confirmColor: '#73C200',
