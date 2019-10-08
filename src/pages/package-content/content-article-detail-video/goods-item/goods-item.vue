@@ -6,7 +6,7 @@
       <img :src="goodsData.goods_cover_image" mode="aspectFill" class="goods-photo">
     </div>
     <div class="info">
-      <div v-if="goodsData && goodsData.name" class="name"><span v-if="goodsData.activity_theme" class="title-label">{{typeText[goodsData.activity_theme]}}</span>{{goodsData.goods_id}}{{goodsData.name}}</div>
+      <div v-if="goodsData && goodsData.name" class="name"><span v-if="goodsData.activity_theme" class="title-label">{{typeText[goodsData.activity_theme]}}</span>{{goodsData.name}}</div>
       <div class="details">{{goodsData.describe}}</div>
       <div>
           <span class="price-now">
